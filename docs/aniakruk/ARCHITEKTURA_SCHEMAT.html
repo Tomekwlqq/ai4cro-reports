@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIcommerce — CRO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --ink:#0a0a0a; --muted:#5b6472; --faint:#8b93a2; --line:#e6e6e9;
+    --green:#16a34a; --green-d:#15803d; --green-soft:#e7f6ec; --green-line:#b7e3c4;
+    --orange:#f5751a; --orange-d:#dd5e0a; --orange-soft:#fff2e8; --orange-line:#f8c39a;
+    --blue:#0f7ae5; --blue-d:#0a63bd; --blue-soft:#e9f3fd; --blue-line:#a9d2f6;
+    --violet:#7c5cff; --violet-d:#5a3ff0; --violet-soft:#efeaff; --violet-line:#d4c9ff;
+    --dark:#1a1f2b;
+    --grotesk:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--grotesk);background:var(--bg);color:var(--ink);line-height:1.55;padding:74px 34px 120px;-webkit-font-smoothing:antialiased;font-size:16px}
+  .wrap{max-width:1600px;margin:0 auto}
+  .kicker{font-family:var(--mono);font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);font-weight:600;margin-bottom:16px}
+  h1{font-size:clamp(40px,5vw,58px);font-weight:700;letter-spacing:-.03em;line-height:1.03;margin-bottom:14px}
+  h1 .g{color:var(--violet)}
+  .lede{color:var(--muted);font-size:20px;max-width:820px;margin-bottom:12px;line-height:1.5}
+  .hint{font-family:var(--mono);font-size:15px;color:var(--faint);margin-bottom:40px;display:flex;align-items:center;gap:10px}
+  .hint::before{content:'';width:10px;height:10px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 5px var(--violet-soft)}
+
+  .shell{display:flex;flex-direction:column;gap:0}
+  .rail{height:32px;display:flex;align-items:center;justify-content:center}
+  .rail svg{height:32px}
+  .band{border-radius:18px;padding:20px 24px}
+  .band-h{display:flex;align-items:baseline;gap:14px;margin-bottom:16px}
+  .band-h .t{font-size:20px;font-weight:700;letter-spacing:-.01em}
+  .band-h .s{font-family:var(--mono);font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-left:auto;font-weight:600}
+
+  .el{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px 20px;cursor:pointer;position:relative;
+    transition:transform .15s cubic-bezier(.2,.7,.3,1),box-shadow .15s,border-color .15s}
+  .el:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(20,26,45,.12)}
+  .el:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+  .el .plus{position:absolute;top:14px;right:17px;font-family:var(--mono);font-size:16px;color:var(--faint);font-weight:600;transition:.15s}
+  .el:hover .plus{color:var(--violet)}
+  .el .en{font-size:17px;font-weight:700;letter-spacing:-.01em;padding-right:20px}
+  .el .ed{font-size:14px;color:var(--muted);margin-top:6px;line-height:1.5}
+  .grid{display:grid;gap:12px}
+  .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:1100px){.g4{grid-template-columns:1fr 1fr}}
+  @media(max-width:880px){.g3{grid-template-columns:1fr 1fr}}
+  @media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  @media(max-width:520px){body{padding:28px 16px 80px}.wrap{max-width:100%}.band{padding:14px 14px}.exec-cols{gap:10px}
+    .modal header{padding:20px 18px 16px;gap:12px}.modal .body{padding:18px 18px}
+    .modal .ic{width:44px;height:44px;font-size:17px}.modal h2{font-size:22px}
+    .modal .body li{font-size:16px;padding-left:20px}
+    .el{padding:12px 14px}.el .en{font-size:15px}.el .ed{font-size:13px}
+    .chip{font-size:13px;padding:8px 10px;padding-right:22px}
+    .persona{padding:12px 13px}.persona .pn{font-size:15px}.persona .pd{font-size:13px}
+    .lstep{padding:12px 14px;font-size:15px}.lar{font-size:16px}
+    .rail{height:22px}.rail svg{height:22px}
+    h1{font-size:28px}.lede{font-size:16px}.kicker{font-size:12px}}
+
+  .tech{background:var(--green-soft);border:1.5px solid var(--green-line)}
+  .tech .band-h .t{color:var(--green-d)}.tech .el{border-color:var(--green-line)}.tech .el:hover{border-color:var(--green)}.tech .el .en{color:var(--green-d)}
+
+  .exec{background:var(--dark);border:1.5px solid #2f3846;border-radius:20px;padding:16px 18px}
+  .exec .band-h .t{color:#fff;font-size:20px}.exec .band-h .s{color:#7a8399}
+  .exec-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:1100px){.exec-cols{grid-template-columns:1fr}}
+  .sec{background:var(--orange-soft);border:1px solid var(--orange-line);border-radius:15px;padding:18px 20px}
+  .sec.full{grid-column:1/-1}
+  .sec .band-h .t{color:var(--orange-d);font-size:18px}.sec .band-h .s{color:#c98a5e}
+  .sec .el{border-color:var(--orange-line)}.sec .el:hover{border-color:var(--orange)}.sec .el .en{color:var(--orange-d)}
+  .subcap{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#c07d4e;font-weight:600;margin:4px 0 10px;display:flex;align-items:center;gap:8px}
+  .swap{background:var(--orange);color:#fff;font-size:10px;padding:3px 8px;border-radius:20px;letter-spacing:.04em}
+  .keep{background:#e4e7ec;color:#5b6472;font-size:10px;padding:3px 8px;border-radius:20px;letter-spacing:.04em}
+
+  .persona{border-radius:13px;padding:15px 17px;border:1.5px solid;cursor:pointer;transition:.15s;position:relative}
+  .persona:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(20,26,45,.13)}
+  .persona .pn{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .persona .pr{font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.7;margin:3px 0 6px}
+  .persona .pd{font-size:14px;color:var(--muted);line-height:1.5}
+  .p-d{background:var(--green-soft);border-color:var(--green-line)}.p-d .pn{color:var(--green-d)}
+  .p-l{background:var(--blue-soft);border-color:var(--blue-line)}.p-l .pn{color:var(--blue-d)}
+  .p-n{background:#fdeceb;border-color:#f4c0bc}.p-n .pn{color:#c0392b}
+  .dot{width:11px;height:11px;border-radius:50%}
+
+  .power{grid-column:1/-1}
+  .pwr-cols{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}
+  @media(max-width:1100px){.pwr-cols{grid-template-columns:1fr}}
+  .pwr-box{background:var(--blue-soft);border:1px solid var(--blue-line);border-radius:14px;padding:16px 18px}
+  .pwr-box .band-h .t{color:var(--blue-d);font-size:17px}
+  .chip{background:#fff;border:1.5px solid var(--orange-line);border-radius:11px;padding:10px 14px;font-size:14px;font-weight:600;color:var(--orange-d);transition:.16s;animation:pop .3s;cursor:pointer;position:relative;padding-right:28px}
+  .chip::after{content:'+';position:absolute;right:10px;top:9px;font-family:var(--mono);font-size:13px;color:var(--faint);font-weight:600}
+  .chip:hover{transform:translateY(-2px);border-color:var(--orange);box-shadow:0 10px 22px rgba(245,117,26,.18)}
+  .chip:hover::after{color:var(--orange)}
+  .chip:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+  .pwr-box .chip{border-color:var(--blue-line);color:var(--blue-d)}
+  .pwr-box .chip:hover{border-color:var(--blue);box-shadow:0 10px 22px rgba(15,122,229,.18)}
+  .pwr-box .chip:hover::after{color:var(--blue)}
+  @keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .chips{display:flex;flex-wrap:wrap;gap:9px}
+
+  .learn{background:linear-gradient(135deg,#132a1e,#0f2418);border:1.5px solid #2c5741;border-radius:20px;padding:26px 28px}
+  .learn .band-h .t{color:#7fd99f;font-size:22px}
+  .learn .band-h .s{color:#5d8a72}
+  .learn .ld{font-size:17px;color:#a8c9b6;margin-bottom:20px}
+  .loop{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;width:100%}
+  .lstep{background:rgba(255,255,255,.07);border:1.5px solid #35674e;border-radius:13px;padding:16px 16px;font-size:17px;font-weight:700;color:#c8ecd6;cursor:pointer;transition:.16s;text-align:center;flex:1 1 0;min-width:80px}
+  .lstep:hover{transform:translateY(-3px);border-color:#5fbf85;background:rgba(95,191,133,.16);box-shadow:0 12px 28px rgba(0,0,0,.3)}
+  .lar{color:#4d8767;font-weight:700;font-family:var(--mono);font-size:20px;flex-shrink:0}
+  .lfeed{margin-top:20px;padding-top:18px;border-top:1px dashed #2c5741;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:800px){.lfeed{grid-template-columns:1fr}}
+  .lfeed .lf{background:rgba(255,255,255,.05);border:1px solid #2c5741;border-radius:13px;padding:16px 18px;cursor:pointer;transition:.16s}
+  .lfeed .lf:hover{transform:translateY(-2px);border-color:#5fbf85;background:rgba(95,191,133,.12)}
+  .lfeed .lf .n{font-size:17px;font-weight:700;color:#c8ecd6}
+  .lfeed .lf .d{font-size:14px;color:#8fb3a0;margin-top:4px;line-height:1.5}
+
+  .backdrop{position:fixed;inset:0;background:rgba(10,10,10,.6);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s;z-index:90}
+  .backdrop.open{opacity:1;pointer-events:auto}
+  .modal{position:fixed;z-index:91;top:50%;left:50%;transform:translate(-50%,-48%) scale(.96);opacity:0;pointer-events:none;
+    width:min(1024px,95vw);max-height:92vh;background:#fff;border-radius:26px;box-shadow:0 50px 120px rgba(10,10,10,.4);transition:opacity .25s,transform .25s;display:flex;flex-direction:column;overflow:hidden}
+  .modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+  .modal header{display:flex;align-items:flex-start;gap:20px;padding:32px 36px 22px;border-bottom:1px solid var(--line)}
+  .modal .ic{width:60px;height:60px;border-radius:14px;background:var(--violet-soft);color:var(--violet);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:22px;flex-shrink:0}
+  .modal h2{font-size:30px;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+  .modal .mtag{font-family:var(--mono);font-size:15px;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-top:5px;font-weight:600}
+  .modal .x{margin-left:auto;background:none;border:none;font-size:34px;color:var(--faint);cursor:pointer;line-height:1;padding:5px 10px;border-radius:8px;flex-shrink:0}
+  .modal .x:hover{background:#f2f2f4;color:var(--ink)}
+  .modal .body{padding:30px 36px;overflow-y:auto}
+  .modal .body p{font-size:21px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+  .modal .body ul{list-style:none;margin:18px 0}
+  .modal .body li{position:relative;padding-left:28px;margin-bottom:13px;font-size:20px;color:var(--muted);line-height:1.5}
+  .modal .body li::before{content:'';position:absolute;left:4px;top:13px;width:7px;height:7px;background:var(--violet);border-radius:50%}
+  .exlink{display:block;margin-top:10px;background:var(--violet-soft);border:1px solid var(--violet-line);border-radius:14px;padding:20px 22px;text-decoration:none}
+  .exlink:hover{background:#fff;border-color:var(--violet)}
+  .exlink .el2{font-family:var(--mono);font-size:13px;text-transform:uppercase;color:var(--violet);font-weight:600}
+  .exlink .en2{font-size:21px;font-weight:600;color:var(--ink);margin-top:4px}
+  .exlink .ed2{font-size:17px;color:var(--muted);margin-top:4px}
+  .exlink.dead{background:#f5f5f7;border-color:var(--line);pointer-events:none}.exlink.dead .el2{color:var(--faint)}
+  .shotwrap{margin-top:18px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#f7f7f9}
+  .shotwrap .cap{font-family:var(--mono);font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);padding:12px 16px;border-bottom:1px solid var(--line);font-weight:600;background:#fff}
+  .shotwrap img{display:block;width:100%;height:auto}
+  .band-h.clickable{cursor:pointer;border-radius:10px;padding:4px 9px;margin-left:-9px;transition:.15s}
+  .band-h.clickable:hover{background:rgba(245,117,26,.13)}
+  .band-h.clickable .t::after{content:' +';font-family:var(--mono);font-size:14px;color:var(--orange);font-weight:700}
+  .foot{margin-top:36px;font-family:var(--mono);font-size:13px;color:var(--faint);text-align:center;padding-bottom:20px}
+
+  /* rozszerzenia obszarów — karty co się zmienia */
+  .extend-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:1100px){.extend-row{grid-template-columns:1fr}}
+  .ext-card{background:#fff;border:1.5px solid var(--violet-line);border-radius:16px;padding:18px 20px}
+  .ext-card .nm{font-size:20px;font-weight:700;color:var(--violet-d);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .ext-card .nm .num{font-family:var(--mono);font-size:12px;color:var(--violet)}
+  .ext-card .sub{color:var(--muted);font-size:14px;margin-bottom:14px;line-height:1.45}
+
+  .ext-card .swap-box{background:var(--orange-soft);border:1px solid var(--orange-line);border-radius:11px;padding:12px 14px;margin-top:12px}
+  .ext-card .swap-box .shead{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--orange-d);margin-bottom:7px;display:flex;align-items:center;gap:6px}
+  .ext-card .swap-box .shead::before{content:'↻';font-size:14px}
+  .ext-card .swap-box .row{display:flex;align-items:baseline;gap:12px;margin-top:8px}
+  .ext-card .swap-box .row:first-of-type{margin-top:0}
+  .ext-card .swap-box .old{text-decoration:line-through;color:var(--faint);font-size:13px;flex-shrink:0;min-width:44px;font-weight:600}
+  .ext-card .swap-box .arr{color:var(--orange);font-weight:700;font-family:var(--mono);font-size:14px}
+  .ext-card .swap-box .neww{font-size:13px;font-weight:600;color:var(--ink);line-height:1.4}
+  .ext-card .swap-box .new-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px}
+  .ext-card .swap-box .nwt{background:#fff;border:1px solid var(--orange-line);border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;color:var(--orange-d)}
+
+  .ext-card .keep-box{background:var(--green-soft);border:1px solid var(--green-line);border-radius:11px;padding:10px 14px;margin-top:10px}
+  .ext-card .keep-box .khead{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--green-d);margin-bottom:5px}
+  .ext-card .keep-box .klist{font-size:12.5px;color:var(--muted);line-height:1.55}
+</style>
+</head>
+<body>
+<a href="ANIAKRUK_START.html" style="position:fixed;top:18px;left:18px;z-index:99;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5b6472;text-decoration:none;padding:8px 14px;border:1px solid #e6e6e9;border-radius:9px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);transition:.15s;box-shadow:0 2px 10px rgba(20,26,45,.06)" onmouseover="this.style.borderColor='#7c5cff';this.style.color='#5a3ff0'" onmouseout="this.style.borderColor='#e6e6e9';this.style.color='#5b6472'">← start</a>
+
+<div class="wrap">
+  <div class="kicker">AIcommerce · CRO</div>
+  <h1>AIcommerce <span class="g">Backbone</span></h1>
+  <p class="lede">Kręgosłup operacyjny systemu — szkielet, na którym można osadzić dowolny obszar do optymalizacji. Zaczynamy od <b>CRO</b>: UX/UI i funkcjonalności, a później systematycznie możemy dokładać nowe. Każdy element z <span class="g">+</span> klikalny — zobacz realne przykłady.</p>
+  <p class="hint">elementy z „+" mają referencję lub przykład na żywo</p>
+
+  <div class="shell">
+
+    <!-- SETUP TECHNICZNY -->
+    <div class="band tech">
+      <div class="band-h"><span class="t">Setup techniczny</span><span class="s">wspólny · gdzie to mieszka</span></div>
+      <div class="grid g4">
+        <div class="el" tabindex="0" data-k="serwer"><span class="plus">+</span><div class="en">Serwer — VPS Linux + Docker</div><div class="ed">Mieszka na nim cały mózg: bazy (Postgres/Supabase), silniki, pamięć Honcho. Nigdy nie stoi u klienta — metodologia zostaje po naszej stronie.</div></div>
+        <div class="el" tabindex="0" data-k="orkiestrator"><span class="plus">+</span><div class="en">Orkiestrator — Claude Agent SDK</div><div class="ed">Headless na serwerze + scheduler (cron/systemd). Odpala agentów bez człowieka przy klawiaturze i dobiera model do zadania.</div></div>
+        <div class="el" tabindex="0" data-k="modele"><span class="plus">+</span><div class="en">Modele — Claude · Hermes · DeepSeek / OpenRouter · Ollama</div><div class="ed">Claude API do analiz i strategii, Hermes + DeepSeek / OpenRouter API do prostych zadañ, Ollama z modelem lokalnym do batchu i embeddingów.</div></div>
+        <div class="el" tabindex="0" data-k="konektory"><span class="plus">+</span><div class="en">Konektory — MCP</div><div class="ed">GA4 przez gotowy serwer MCP, Segmentify przez własny konektor REST. Tylko odczyt, szyfrowane, nic do instalowania u klienta.</div></div>
+      </div>
+    </div>
+
+    <div class="rail"><svg viewBox="0 0 40 24" fill="none"><path d="M20 1 L20 22" stroke="#b7e3c4" stroke-width="2.5"/><path d="M13 16 L20 22 L27 16" stroke="#16a34a" stroke-width="2.5" fill="none"/></svg></div>
+
+    <!-- SETUP WYKONAWCZY (CRO) -->
+    <div class="exec">
+      <div class="band-h"><span class="t">Setup wykonawczy — CRO</span><span class="s">mózg u nas · klient nie konfiguruje</span></div>
+      <div class="exec-cols">
+
+        <div class="sec">
+          <div class="band-h clickable" tabindex="0" data-k="kokpit-hub"><span class="t">Kokpit — Mission Control</span><span class="keep">wspólny</span></div>
+          <div class="grid g2">
+            <div class="el" tabindex="0" data-k="k-brief"><span class="plus">+</span><div class="en">Moduł briefingu</div><div class="ed">Ustalacie, co system ma monitorować: które ścieżki, które elementy strony i które KPI. To wy mówicie, co jest ważne.</div></div>
+              <div class="el" tabindex="0" data-k="k-eventy"><span class="plus">+</span><div class="en">Moduł rejestrowania eventów</div><div class="ed">Rejestr zdarzeń mierzonych w sklepie — co jest śledzone, czy działa poprawnie i czego brakuje, żeby zamknąć obraz ścieżki.</div></div>
+              <div class="el" tabindex="0" data-k="k-dane"><span class="plus">+</span><div class="en">Dane live</div><div class="ed">Liczby klienta zestawione z benchmarkami kategorii i konkurencji w jednym widoku.</div></div>
+            <div class="el" tabindex="0" data-k="k-analizy"><span class="plus">+</span><div class="en">Analizy obszarowe</div><div class="ed">Raporty per obszar w ludzkim języku: co, dlaczego, co zrobić.</div></div>
+            <div class="el" tabindex="0" data-k="k-napraw"><span class="plus">+</span><div class="en">Lista napraw</div><div class="ed">Wszystkie problemy z audytów w jednym miejscu — priorytet, obszar, status, komentarz.</div></div>
+            <div class="el" tabindex="0" data-k="k-taktyki"><span class="plus">+</span><div class="en">Lista taktyk do testów</div><div class="ed">Kolejka taktyk zaproponowanych przez system — co testujemy teraz, co czeka.</div></div>
+            <div class="el" tabindex="0" data-k="k-komun"><span class="plus">+</span><div class="en">Komunikaty</div><div class="ed">System sam zgłasza, co wymaga uwagi: anomalie, spadki, szanse.</div></div>
+            <div class="el" tabindex="0" data-k="k-uruch"><span class="plus">+</span><div class="en">Uruchamianie dowolnych silników wykonawczych</div><div class="ed">Z kokpitu odpala się analizy i audyty — klikasz i system rusza.</div></div>
+            <div class="el" tabindex="0" data-k="k-asystent"><span class="plus">+</span><div class="en">Interaktywny asystent</div><div class="ed">Pytasz językiem naturalnym, odpowiada z Twoich danych. Dyskutuje, nie dyktuje.</div></div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <div class="band-h"><span class="t">Silnik wykonawczy</span><span class="keep">wspólny</span></div>
+          <div class="subcap"><span class="dot" style="background:#16a34a"></span>Agenci — <span class="keep">niezmienni dla każdego obszaru</span></div>
+          <div class="grid" style="gap:8px">
+            <div class="persona p-d" tabindex="0" data-k="agent-d"><div class="pn"><span class="dot" style="background:#16a34a"></span>Pan Dobrze</div><div class="pr">operacyjny</div><div class="pd">Raporty, dane, komentarze — dowozi rytm, o który nie trzeba prosić.</div></div>
+            <div class="persona p-l" tabindex="0" data-k="agent-l"><div class="pn"><span class="dot" style="background:#0f7ae5"></span>Pan Lepiej</div><div class="pr">eksperymentator</div><div class="pd">Sam szuka lepszych rozwiązań: generuje taktyki, rekomenduje testy.</div></div>
+            <div class="persona p-n" tabindex="0" data-k="agent-n"><div class="pn"><span class="dot" style="background:#c0392b"></span>Pan Napraw</div><div class="pr">diagnosta</div><div class="pd">Kopie głębiej, gdy coś nie gra: wchodzi w anomalię, szuka przyczyny.</div></div>
+          </div>
+          <div class="subcap" style="margin-top:11px"><span class="swap">CRO</span>Skille</div>
+          <div class="chips">
+            <div class="chip" tabindex="0" data-k="Audyt CRO: UX/UI obszaru">Audyt CRO: UX/UI obszaru</div>
+            <div class="chip" tabindex="0" data-k="Buduj Benchmark elementu">Buduj Benchmark elementu</div>
+            <div class="chip" tabindex="0" data-k="Audyt Konkurencji">Audyt Konkurencji</div>
+            <div class="chip" tabindex="0" data-k="Analiza Ścieżki GA4">Analiza Ścieżki GA4</div>
+            <div class="chip" tabindex="0" data-k="Analiza Heat Map">Analiza Heat Map</div>
+            <div class="chip" tabindex="0" data-k="Analiza Click Map">Analiza Click Map</div>
+            <div class="chip" tabindex="0" data-k="Znajdź taktykę">Znajdź taktykę</div>
+          </div>
+          <div class="subcap" style="margin-top:11px"><span class="keep">wspólne</span>Workflowy · Automatyzacje · Skrypty</div>
+          <div class="grid g3">
+            <div class="el" tabindex="0" data-k="workflowy"><span class="plus">+</span><div class="en">Workflowy</div><div class="ed">Ustalona kolejność: który agent co robi, kiedy, po kolei. Procedura firmy, tylko wykonuje się sama.</div></div>
+            <div class="el" tabindex="0" data-k="auto"><span class="plus">+</span><div class="en">Automatyzacje</div><div class="ed">Czasowe (zegar — raport co poniedziałek) i triggerowane (wydarzenie — spadek CR odpala alert).</div></div>
+            <div class="el" tabindex="0" data-k="skrypty"><span class="plus">+</span><div class="en">Skrypty</div><div class="ed">Zastepuja prace LLM tam, gdzie wynik ma byc identyczny za kazdym razem — oszczednosc kosztów i gwarancja powtarzalnosci.</div></div>
+          </div>
+        </div>
+
+        <div class="sec power">
+          <div class="band-h"><span class="t">Układ zasilania mocą</span><span class="swap">CRO</span></div>
+          <div class="pwr-cols">
+            <div class="pwr-box">
+              <div class="band-h"><span class="t">Bazy wiedzy (paliwo) — CRO</span></div>
+              <div class="chips">
+                <div class="chip" tabindex="0" data-k="Baza Elementów Ecommerce">Baza Elementów Ecommerce</div>
+                <div class="chip" tabindex="0" data-k="Baza Mechanizmów Zakupowych">Baza Mechanizmów Zakupowych</div>
+                <div class="chip" tabindex="0" data-k="Baza Taktyk CRO">Baza Taktyk CRO</div>
+                <div class="chip" tabindex="0" data-k="Baza Benchmarków Kategorii">Baza Benchmarków Kategorii</div>
+                <div class="chip" tabindex="0" data-k="Baza Benchmarków Własnych">Baza Benchmarków Własnych</div>
+              </div>
+            </div>
+            <div class="pwr-box">
+              <div class="band-h"><span class="t">Silniki (przetwarzanie)</span></div>
+              <div class="chips">
+                <div class="chip" tabindex="0" data-k="Silnik Oceny Elementów">Silnik Oceny Elementów</div>
+                <div class="chip" tabindex="0" data-k="Silnik Mechanizmów Zakupowych">Silnik Mechanizmów Zakupowych</div>
+                <div class="chip" tabindex="0" data-k="Silnik Taktyk">Silnik Taktyk</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ROZSZERZENIA: co zmienia każdy kolejny obszar -->
+    <div class="band" style="border:1.5px solid var(--violet-line);background:var(--violet-soft)">
+      <div class="band-h"><span class="t">Dokładasz kolejny obszar</span><span class="s">fundament (CRO) zostaje · zmienia się tylko wsad</span></div>
+      <div class="extend-row">
+        <div class="ext-card"><div class="nm"><span class="num">2</span>Kontent</div><div class="sub">Treść produktowa: PDP, kategorie, FAQ. Spójność, czytelność, pokrycie intencji.</div>
+          <div class="swap-box"><div class="shead">zamienia się</div>
+            <div class="row"><span class="old">CRO</span><span class="arr">→</span><span class="neww">Audyt kontentowy · Gen. opisów PDP · Analiza czytelności · Pokrycie fraz · Spójność cross-PDP</span></div>
+            <div class="row"><span class="old">bazy</span><span class="arr">→</span><div class="new-tags"><span class="nwt">Wzorców Treści</span><span class="nwt">Fraz i Intencji</span><span class="nwt">Taktyk Contentowych</span><span class="nwt">Benchmarków Treści</span></div></div>
+            <div class="row"><span class="old">silniki</span><span class="arr">→</span><div class="new-tags"><span class="nwt">Oceny Treści</span><span class="nwt">Generowania Copy</span><span class="nwt">Taktyk</span></div></div>
+          </div>
+          <div class="keep-box"><div class="khead">zostaje bez zmian</div><div class="klist">Kokpit · Agenci (Dobrze/Lepiej/Napraw) · Workflowy · Automatyzacje · Skrypty · Pętla uczenia · Setup techniczny</div></div>
+        </div>
+        <div class="ext-card"><div class="nm"><span class="num">3</span>Asortyment i ceny</div><div class="sub">Ceny, promocje, bundling — marża, nie tylko obrót. Elastyczność cenowa i kalendarz promocji.</div>
+          <div class="swap-box"><div class="shead">zamienia się</div>
+            <div class="row"><span class="old">CRO</span><span class="arr">→</span><span class="neww">Analiza cenowa · Elastyczność cenowa · Budowa bundli · Kalendarz promocji</span></div>
+            <div class="row"><span class="old">bazy</span><span class="arr">→</span><div class="new-tags"><span class="nwt">Cen Konkurencji</span><span class="nwt">Marż</span><span class="nwt">Reguł Cenowych</span><span class="nwt">Taktyk Promocyjnych</span></div></div>
+            <div class="row"><span class="old">silniki</span><span class="arr">→</span><div class="new-tags"><span class="nwt">Wyceny</span><span class="nwt">Bundlingu</span><span class="nwt">Taktyk</span></div></div>
+          </div>
+          <div class="keep-box"><div class="khead">zostaje bez zmian</div><div class="klist">Kokpit · Agenci (Dobrze/Lepiej/Napraw) · Workflowy · Automatyzacje · Skrypty · Pętla uczenia · Setup techniczny</div></div>
+        </div>
+        <div class="ext-card"><div class="nm"><span class="num">4</span>Traffic &amp; Visibility</div><div class="sub">Atrybucja kanałów, SEO/GEO, analityka weryfikacyjna, łączenie danych z wielu źródeł.</div>
+          <div class="swap-box"><div class="shead">zamienia się</div>
+            <div class="row"><span class="old">CRO</span><span class="arr">→</span><span class="neww">Atrybucja kanałów · Audyt SEO/GEO · Analiza źródeł · Łączenie danych</span></div>
+            <div class="row"><span class="old">bazy</span><span class="arr">→</span><div class="new-tags"><span class="nwt">Atrybucji</span><span class="nwt">Źródeł Ruchu</span><span class="nwt">Widoczności AI</span><span class="nwt">Benchmarków Ruchu</span></div></div>
+            <div class="row"><span class="old">silniki</span><span class="arr">→</span><div class="new-tags"><span class="nwt">Atrybucji</span><span class="nwt">Widoczności</span><span class="nwt">Taktyk</span></div></div>
+          </div>
+          <div class="keep-box"><div class="khead">zostaje bez zmian</div><div class="klist">Kokpit · Agenci (Dobrze/Lepiej/Napraw) · Workflowy · Automatyzacje · Skrypty · Pętla uczenia · Setup techniczny</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rail"><svg viewBox="0 0 40 24" fill="none"><path d="M20 1 L20 22" stroke="#b7e3c4" stroke-width="2.5"/><path d="M13 16 L20 22 L27 16" stroke="#16a34a" stroke-width="2.5" fill="none"/></svg></div>
+
+    <div class="learn">
+      <div class="band-h"><span class="t">Model uczenia — system, który mądrzeje</span><span class="s">kto odchodzi, traci narastającą wiedzę</span></div>
+      <p class="ld">Dwa źródła nauki: <b style="color:#c8ecd6">cykl danych</b> (co zadziałało w liczbach) oraz <b style="color:#c8ecd6">rozmowy z waszym zespołem</b> (kontekst, którego nie ma w żadnym raporcie). Oba zasilają te same bazy.</p>
+      <div class="loop">
+        <span class="lstep" data-k="l-dane">dane</span><span class="lar">→</span>
+        <span class="lstep" data-k="l-analiza">analiza</span><span class="lar">→</span>
+        <span class="lstep" data-k="l-taktyka">taktyka</span><span class="lar">→</span>
+        <span class="lstep" data-k="l-wynik">wynik</span><span class="lar">→</span>
+        <span class="lstep" data-k="l-poprawa">poprawa reguł</span><span class="lar">↻</span>
+      </div>
+      <div class="lfeed">
+        <div class="lf" tabindex="0" data-k="l-rozmowy"><div class="n">💬 Uczenie z rozmów z ekipą</div><div class="d">Wasze uwagi, korekty i wiedza o sklepie wchodzą do systemu na bieżąco. „Tego nie róbmy, bo…" zapamiętane raz — nie wraca po miesiącu.</div></div>
+        <div class="lf" tabindex="0" data-k="l-pamiec"><div class="n">🧠 Pamięć między sesjami</div><div class="d">System pamięta kontekst, decyzje i ustalenia. Nie zaczynacie od zera przy każdej rozmowie.</div></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="foot">AIcommerce Backbone · CRO — Tomasz Waligóra</div>
+</div>
+
+<div class="backdrop" id="bd"></div>
+<div class="modal" id="md" role="dialog" aria-modal="true" aria-labelledby="mdt">
+  <header><div class="ic" id="mdi">+</div><div><h2 id="mdt">—</h2><div class="mtag" id="mdtag">—</div></div><button class="x" id="mdx" aria-label="Zamknij">×</button></header>
+  <div class="body" id="mdb"></div>
+</div>
+
+<script>
+const AK="https://tomekwlqq.github.io/eel-reports/";
+const REF={
+"Audyt CRO: UX/UI obszaru":{tag:"Skill - CRO",t:"Audyt CRO: UX/UI obszaru",li:["Audyt jednego obszaru sklepu (np. PDP, koszyk, kategoria)","Pipeline: screenshoty > density / hierarchia / martwe strefy > overlay","Kryteria czyta z Bazy Elementow - skill sam ich nie zna"],ex:{el:"Realny skill",en:"eel-audit-visual",ed:"~/.claude/skills/eel-audit-visual/",url:null}},
+"Buduj Benchmark elementu":{tag:"Skill - CRO",t:"Buduj Benchmark elementu",li:["Bierze jeden element (hero, trust, ATC) i sprawdza go na 50-100 sklepach","Wynik: norma rynku - element u 50% konkurencji = standard","Zasila Baze Benchmarkow Kategorii"],ex:{el:"Przyklad live",en:"Benchmark Beauty - 52 retailerow",ed:"hero / trust / bestsellers / bundles",url:AK+"glov/product/BENCHMARK_BEAUTY_HP.html"}},
+"Audyt Konkurencji":{tag:"Skill - CRO",t:"Audyt Konkurencji",li:["Analiza konkretnych rywali: co maja, czego wam brakuje","Biale plamy = przewagi do przekucia","Cykliczny - rynek sie zmienia"]},
+"Analiza Ścieżki GA4":{tag:"Skill - CRO",t:"Analiza Ścieżki GA4",li:["Lejek krok po kroku: wejscie > produkt > ATC > checkout > zakup","Pokazuje, gdzie dokladnie wypada najwiecej kupujacych"],ex:{el:"Przyklad",en:"GLOV - Analiza GA4 R01-R09",ed:"lejek zamkniety, sesja sekwencyjna, 90 dni",url:null},img:"schemat_img/dane_live_glov.png",imgcap:"Analiza sciezki GA4 - realny raport (GLOV)"},
+"Analiza Heat Map":{tag:"Skill - CRO",t:"Analiza Heat Map",li:["Mapa cieplna: dokad siega wzrok i scroll","Pokazuje, co jest widziane, a co ponizej progu uwagi","Wymaga narzedzia (Hotjar/Clarity) - warstwa warunkowa"]},
+"Analiza Click Map":{tag:"Skill - CRO",t:"Analiza Click Map",li:["Gdzie klikaja - i gdzie klikaja w rzeczy, ktore nie sa klikalne","Rage clicks i dead clicks = frustracja kupujacego","Wymaga narzedzia (Hotjar/Clarity)"]},
+"Znajdź taktykę":{tag:"Skill - CRO",t:"Znajdź taktykę",li:["Z diagnozy > konkretna taktyka z uzasadnieniem","Czyta Baze Taktyk i Baze Mechanizmow Zakupowych","Format: Element > Problem > Akcja > Taktyka"],ex:{el:"Tactics Hub na zywo",en:"EEL_TACTICS_HUB.html",ed:"203 taktyk / kazda z biasami, KPI, krokami wdrozenia, przykladami zdjec",url:"EEL_TACTICS_HUB.html"},img:"schemat_img/taktyka_exp002.png",imgcap:"EXP-002 w Tactics Hub - widok szczegolowy taktyki"},
+"Baza Elementów Ecommerce":{tag:"Baza wiedzy (paliwo)",t:"Baza Elementów Ecommerce",li:["Slownik elementów sklepu + reguly oceny kazdego","202 kryteria / 39 elementów z wagami","Zrodlo: element_criteria.json (HTML to tylko widok)"],ex:{el:"Baza kryteriów na zywo",en:"BAZA_KRYTERIOW.html",ed:"6 kolumn: kryterium, rodzaj, kat, próg, waga, rule_id, biasy",url:"BAZA_KRYTERIOW.html"},img:"schemat_img/BAZA_KRYTERIOW_full.png",imgcap:"Baza kryteriów - 202 kryteria / 39 elementów kanonu"},
+"Baza Mechanizmów Zakupowych":{tag:"Baza wiedzy (paliwo)",t:"Baza Mechanizmów Zakupowych",li:["137 udowodnionych mechanizmów psychologii zakupu","Z klasyfikacja ryzyka etycznego"],ex:{el:"Baza biasów na zywo",en:"EEL_BIAS_EXPERIMENTS.html",ed:"7 serii (Social Proof, Attention, Belief...) / kazdy z KPI, eksperymentem i ryzykiem",url:"EEL_BIAS_EXPERIMENTS.html"},img:"schemat_img/bias_biases_hub.png",imgcap:"Tactics Hub - widok biasu (Mere Exposure Effect) z definicja, mechanizmem i linked tactics"},
+"Baza Taktyk CRO":{tag:"Baza wiedzy (paliwo)",t:"Baza Taktyk CRO",li:["200+ taktyk z rankingiem skutecznosci","Rosnie z kazda wdrozenia zmiana"],ex:{el:"Tactics Hub na zywo",en:"EEL_TACTICS_HUB.html",ed:"203 taktyk / ranking Impact * Effort / biasy / KPI / przyklady zdjec",url:"EEL_TACTICS_HUB.html"},img:"schemat_img/taktyka_exp002.png",imgcap:"Tactics Hub - 203 taktyk z biasami i KPI"},
+"Baza Benchmarków Kategorii":{tag:"Baza wiedzy (paliwo)",t:"Baza Benchmarków Kategorii",li:["Standard rynku z 50-100 sklepow kategorii","Element u 50% konkurencji = norma"],ex:{el:"Beauty INDEX + Benchmark HP na zywo",en:"INDEX / BENCHMARK_BEAUTY_HP",ed:"52 sklepy beauty / elementy, hero, layout, rekomendacje / luki vs norma rynku",url:AK+"glov/beauty_vision/INDEX.html"},img:"schemat_img/beauty_index_52.png",imgcap:"Beauty Vision Reports INDEX - 52 sklepy beauty z benchmarkiem zbiorczym"},
+"Baza Benchmarków Własnych":{tag:"Baza wiedzy (paliwo)",t:"Baza Benchmarków Własnych",li:["Historia wynikow klienta: dzis vs miesiac temu","Dowod, czy taktyki ruszly liczby"],ex:{el:"Cleangang - benchmarki na zywo",en:"CG_Weekly_Hub.html",ed:"benchmarki tygodniowe vs Q1: sesje, ATC, CR, bounce rate per typ strony (HP, kategorie, PDP, LP)",url:"CG_Weekly_Hub.html"},img:"schemat_img/cleangang_benchmark_weekly.png",imgcap:"Cleangang Weekly Hub - benchmarki tygodniowe vs Q1: sesje, ATC, CR per page type"},
+"Silnik Oceny Elementów":{tag:"Silnik (przetwarzanie)",t:"Silnik Oceny Elementów",li:["Czyta Baze Elementow filtrowana po element_key","Ocenia strone element po elemencie > diagnoza"],ex:{el:"Baza kryteriów na zywo",en:"BAZA_KRYTERIOW.html",ed:"202 kryteria / 39 elementów / kazde z waga, progiem, rule_id i biasami",url:"BAZA_KRYTERIOW.html"},img:"schemat_img/BAZA_KRYTERIOW_full.png",imgcap:"Baza kryteriów - tabela elementu z progami, wagami, rule_id i biasami"},
+"Silnik Mechanizmów Zakupowych":{tag:"Silnik (przetwarzanie)",t:"Silnik Mechanizmów Zakupowych",li:["Dobiera bodziec psychologiczny do sytuacji zakupowej","Bazuje na 137 mechanizmach"],ex:{el:"Baza biasow na zywo",en:"EEL_BIAS_EXPERIMENTS.html",ed:"7 serii / kazdy z KPI, eksperymentem i ryzykiem",url:"EEL_BIAS_EXPERIMENTS.html"},img:"schemat_img/bias_biases_hub.png",imgcap:"Tactics Hub - widok biasu (Mere Exposure Effect) z definicja, mechanizmem i linked tactics"},
+"Silnik Taktyk":{tag:"Silnik (przetwarzanie)",t:"Silnik Taktyk",li:["Wybier co wdrozyc teraz - priorytet Impact * Effort","Zamienia liste mozliwosci w uszeregowany plan"],ex:{el:"Tactics Hub na zywo",en:"EEL_TACTICS_HUB.html",ed:"203 taktyk / ranking Impact * Effort / biasy / KPI / przyklady zdjec",url:"EEL_TACTICS_HUB.html"},img:"schemat_img/taktyka_exp002.png",imgcap:"EXP-002 w Tactics Hub - widok szczegolowy taktyki"},
+};
+const DATA={
+serwer:{tag:"Setup techniczny",t:"Serwer - VPS Linux + Docker",li:["Hetzner / DigitalOcean / kontenery Docker","Na nim: bazy (Postgres/Supabase) / silniki / pamiec Honcho self-hosted","Mozg u nas - klient dostaje wynik, nie silnik"]},
+orkiestrator:{tag:"Setup techniczny",t:"Orkiestrator - Claude Agent SDK",li:["Headless na serwerze + scheduler (cron / systemd timers)","Odpala agentow bez czlowieka przy klawiaturze","To NIE Claude Desktop - Desktop to klient GUI dla ludzi, nie orkiestrator serwerowy","Plan Team u klienta potrzebny do dostepu ludzi i konektorow, nie do orkiestracji"]},
+modele:{tag:"Setup techniczny",t:"Modele - Claude / Hermes / DeepSeek / OpenRouter / Ollama",li:["Claude API: Sonnet 4.6 (robocze) / Opus (strategia)","Hermes + DeepSeek / OpenRouter API do prostych zadan","Ollama lokalnie: batch + embeddingi","Orkiestrator dobiera model per zadanie = koszt pod kontrola"]},
+konektory:{tag:"Setup techniczny",t:"Konektory - MCP",li:["GA4 - gotowy serwer MCP","Segmentify - wlasny konektor REST (brak gotowego MCP)","Do potwierdzenia: czy Segmentify pozwala CZYTAC dane (API glownie do wysylki)","Wymaga planu Claude Pro+/Team u klienta (blokada nr 1)"]},
+"kokpit-hub":{tag:"Kokpit - calosc",t:"Mission Control - centrum klienta",li:["Jedno miejsce: dane, analizy, bazy wiedzy, asystent","Klient wchodzi przez URL - nic nie instaluje","Wy widzicie swoje, my widzimy wszystkich klientow"],ex:{el:"Realny przyklad",en:"glov.hub - centrum analiz",ed:"kafelki: audyt 360 / live dashboard / benchmark 48 stron",url:null},img:"schemat_img/kokpit_glov_hub.png",imgcap:"Realny kokpit u innego klienta (GLOV)"},
+"k-dane":{tag:"Kokpit",t:"Dane live",li:["Zamowienia, sprzedaz, AOV, sesje, ATC - dzis i wczoraj","Shopify jako zrodlo prawdy + GA4 jako ruch","Odswiezane na zadanie"],ex:{el:"Realny przyklad",en:"glov.live - Live Shopify Raport",ed:"dane dzienne + kanaly GA4 vs Shopify UTM",url:null},img:"schemat_img/asystent_glov_live.png",imgcap:"Dane live u innego klienta (GLOV)"},
+"k-analizy":{tag:"Kokpit",t:"Analizy obszarowe",li:["Raporty per obszar: lejek, sciezka, wizualny, straty","KPI strip + krytyczne blokery na wierzchu","W ludzkim jezyku - co, dlaczego, co zrobic"],ex:{el:"Realny audyt",en:"GLOV - Audyt 360 SEO i GEO",ed:"10 z 13 modulow z twardymi danymi / kazda liczba ma repro",url:AK+"glov/GLOV_Audyt_360_2026-07-17.html"},img:"schemat_img/audyt360_glov.png",imgcap:"Audyt 360 GLOV - widocznosc, on-page, CWV, kanaly, konkurencja"},
+"k-napraw":{tag:"Kokpit",t:"Lista napraw",li:["Wszystkie problemy ze wszystkich audytow w jednym miejscu","Priorytet / obszar / zrodlo / status / komentarz","Odhaczasz zrobione - stan zapisuje sie sam"],ex:{el:"Realny przyklad",en:"Master lista napraw GLOV",ed:"70 problemow / 24 krytyczne / filtrowanie po priorytecie",url:null},img:"schemat_img/lista_napraw_glov.png",imgcap:"Lista napraw u innego klienta (GLOV)"},
+"k-taktyki":{tag:"Kokpit",t:"Lista taktyk do testow",li:["Kolejka taktyk zaproponowanych przez system","Co testujemy teraz, co czeka, co odrzucone i dlaczego","Priorytet Impact * Effort"],ex:{el:"Tactics Hub na zywo",en:"EEL_TACTICS_HUB.html",ed:"203 taktyk / kazda z biasami, KPI, przykladami, krokami wdrozenia",url:"EEL_TACTICS_HUB.html"},img:"schemat_img/taktyka_exp002.png",imgcap:"EXP-002 w Tactics Hub - lifestyle primary z BEFORE/AFTER"},
+"k-komun":{tag:"Kokpit",t:"Komunikaty",li:["System sam zglasza: anomalie, spadki, szanse","Nie musisz szukac - wazne rzeczy same sie pokazuja","Np. 3 krytyczne blokery: View do ATC drop 82%"],ex:{el:"Realny przyklad",en:"Pasek krytycznych blokerow",ed:"czerwony alert nad raportem (GLOV)",url:null},img:"schemat_img/dane_live_glov.png",imgcap:"Komunikaty krytyczne u innego klienta (GLOV)"},
+"k-uruch":{tag:"Kokpit",t:"Uruchamianie dowolnych silnikow wykonawczych",li:["Odpalasz analizy i audyty z poziomu kokpitu","Nie trzeba pisac do agencji - klikasz i system rusza"],ex:{el:"Status",en:"Do zbudowania (TBD)",ed:"dzis: odpalane przez orkiestrator; docelowo przycisk w kokpicie",url:null}},
+"k-asystent":{tag:"Kokpit",t:"Interaktywny asystent",li:["Pytasz normalnym jezykiem > odpowiada z Waszych danych","Zna kanaly, produkty, lejek, trendy - i rekomenduje","Wbudowany w dashboard, nie osobne narzedzie"],ex:{el:"Realny przyklad",en:"Ask Assistant (glov.live)",ed:"asystent wbudowany w dashboard live",url:null},img:"schemat_img/asystent_glov_rozwiniety.png",imgcap:"Asystent rozwiniety u innego klienta (GLOV)"},
+"agent-d":{tag:"Agenci (wspolni)",t:"Pan Dobrze - operacyjny",li:["Raporty, dane, komentarze - dowozi rytm","Ci sami dla kazdego obszaru"]},
+"agent-l":{tag:"Agenci (wspolni)",t:"Pan Lepiej - eksperymentator",li:["Szuka lepszych rozwiazan, samooptymalizuje"]},
+"agent-n":{tag:"Agenci (wspolni)",t:"Pan Napraw - diagnosta",li:["Wchodzi w anomalie, szuka przyczyny nie objawu"]},
+workflowy:{tag:"Silnik (wspolny)",t:"Workflowy",li:["Weekly Pulse / Anomalia / Visual audit"],ex:{el:"Przyklad live",en:"CRO - 6 workflowow",ed:"od onboardingu do syntezy reko",url:AK+"aniakruk/CRO_WORKFLOWS.html"}},
+auto:{tag:"Silnik (wspolny)",t:"Automatyzacje",li:["Czasowe (zegar) / triggerowane (wydarzenie)"]},
+skrypty:{tag:"Silnik (wspolny)",t:"Skrypty",li:["Zastepuja prace LLM tam, gdzie wynik ma byc identyczny","Oszczednosc kosztow - skrypt wykonuje sie za grosze, nie za tokeny","Gwarancja powtarzalnosci - ten sam input = zawsze ten sam output","Przyklady: ekstrakcja danych z DOM, walidacja CSV, generowanie JSON, scrape"]},
+"l-dane":{tag:"Petla",t:"Dane",li:["Swieze dane zasilaja analize"]},
+"l-analiza":{tag:"Petla",t:"Analiza",li:["Silniki przetwarzaja dane w diagnoze"]},
+"l-taktyka":{tag:"Petla",t:"Taktyka",li:["Rekomendacja z uzasadnieniem i priorytetem"]},
+"l-wynik":{tag:"Petla",t:"Wynik",li:["Mierzony before/after na wlasnych liczbach"]},
+"l-poprawa":{tag:"Petla",t:"Poprawa regul",li:["Wynik wraca do baz > reguly lepsze > runda trafniejsza"]},
+"przyklad-agenta":{tag:"Przyklad",t:"Agent - plik .md",li:["Jeden plik w ~/.claude/agents/<nazwa>.md","Frontmatter YAML: name, description, tools, model","System prompt: kim jest, co robi, z jakich folderow korzysta","Przyklad: eel-po.md (69 linii) - Product Owner EEL","Inne: strateg, head-of-sales, net-researcher"]},
+"przyklad-skilla":{tag:"Przyklad",t:"Skill - folder z SKILL.md",li:["Folder w ~/.claude/skills/<nazwa>/ z SKILL.md","Frontmatter: name, description (kiedy odpalic), version","Tresc: framework, pipeline, metoda - NIE tresc regul","Dobry wzorzec: eel-audit-visual/ (cienki, czyta baze)","Antywzorzec: cro/ (ma kryteria wklepane w proze - wariant A)"]},
+};
+const bd=document.getElementById('bd'),md=document.getElementById('md');
+var openModal=function(k){var d=DATA[k]||REF[k];if(!d)return;
+document.getElementById('mdt').textContent=d.t;
+document.getElementById('mdtag').textContent=d.tag;
+document.getElementById('mdi').textContent=d.t.charAt(0);
+var h='';if(d.li)h+='<ul>'+d.li.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';
+if(d.ex){var e=d.ex;var dead=!e.url;
+h+=(dead?'<div class="exlink dead">':'<a class="exlink" href="'+e.url+'" target="_blank" rel="noopener">')+
+'<div class="el2">'+e.el+(dead?' / lokalny':'')+'</div><div class="en2">'+e.en+'</div><div class="ed2">'+e.ed+'</div>'+(dead?'</div>':'</a>');}
+if(d.img){h+='<div class="shotwrap"><div class="cap">'+(d.imgcap||'')+'</div><img src="'+d.img+'" alt="'+d.t+'" loading="lazy"></div>';}
+document.getElementById('mdb').innerHTML=h;
+bd.classList.add('open');md.classList.add('open');};
+var closeModal=function(){bd.classList.remove('open');md.classList.remove('open');};
+document.addEventListener('click',function(e){var el=e.target.closest('[data-k]');if(el)openModal(el.dataset.k);});
+document.addEventListener('keydown',function(e){if(e.key!=='Enter'&&e.key!==' ')return;var el=e.target.closest&&e.target.closest('[data-k]');if(el){e.preventDefault();openModal(el.dataset.k);}});
+bd.addEventListener('click',closeModal);
+document.getElementById('mdx').addEventListener('click',closeModal);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+</script>
+</body>
+</html>
