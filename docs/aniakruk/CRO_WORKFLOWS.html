@@ -1,759 +1,311 @@
-<title>CRO System — Mapa Workflowów</title>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Setup AIcommerce: edycja CRO — workflowy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  @font-face {
-    font-family: 'JBMono';
-    font-style: normal;
-    font-weight: 400 700;
-    src: local('JetBrains Mono'), local('Courier New');
+  :root{
+    --bg:#ffffff; --ink:#0a0a0a; --muted:#5b6472; --faint:#8b93a2; --line:#e6e6e9;
+    --green:#16a34a; --green-d:#15803d; --green-soft:#e7f6ec; --green-line:#b7e3c4;
+    --orange:#f5751a; --orange-d:#dd5e0a; --orange-soft:#fff2e8; --orange-line:#f8c39a;
+    --blue:#0f7ae5; --blue-d:#0a63bd; --blue-soft:#e9f3fd; --blue-line:#a9d2f6;
+    --violet:#7c5cff; --violet-d:#5a3ff0; --violet-soft:#efeaff; --violet-line:#d4c9ff;
+    --red:#c0392b; --red-soft:#fdeceb; --red-line:#f4c0bc;
+    --amber:#b8862b; --amber-soft:#fdf5e6; --amber-line:#e9d3a3;
+    --grotesk:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
   }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--grotesk);background:var(--bg);color:var(--ink);line-height:1.55;padding:66px 28px 90px;-webkit-font-smoothing:antialiased;font-size:16px}
+  .wrap{max-width:1200px;margin:0 auto}
 
-  :root {
-    --bg:        #0A0F1E;
-    --surface:   #111827;
-    --card:      #1A2235;
-    --border:    #243050;
-    --text:      #E8EDF5;
-    --muted:     #8B9BB8;
-    --green:     #00C896;
-    --green-dim: #00C89620;
-    --orange:    #FF6B35;
-    --orange-dim:#FF6B3520;
-    --blue:      #4A8FE7;
-    --blue-dim:  #4A8FE720;
-    --purple:    #A78BFA;
-    --purple-dim:#A78BFA20;
-    --mono: 'JBMono', 'Courier New', monospace;
-    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  }
+  .kicker{font-family:var(--mono);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);font-weight:600;margin-bottom:14px}
+  h1{font-size:clamp(32px,4.4vw,46px);font-weight:700;letter-spacing:-.03em;line-height:1.03;margin-bottom:12px}
+  h1 .g{color:var(--violet)}
+  .lede{color:var(--muted);font-size:18px;max-width:800px;margin-bottom:10px}
+  .hint{font-family:var(--mono);font-size:13px;color:var(--faint);margin-bottom:22px;display:flex;align-items:center;gap:9px}
+  .hint::before{content:'';width:9px;height:9px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 5px var(--violet-soft)}
 
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg:        #F0F4FC;
-      --surface:   #FFFFFF;
-      --card:      #EAF0FB;
-      --border:    #C8D5EC;
-      --text:      #0D1930;
-      --muted:     #5A6E8A;
-      --green-dim: #00C89612;
-      --orange-dim:#FF6B3512;
-      --blue-dim:  #4A8FE712;
-      --purple-dim:#A78BFA12;
-    }
-  }
+  .rolebox{background:var(--green-soft);border:1.5px solid var(--green-line);border-radius:14px;padding:15px 19px;margin-bottom:16px;font-size:14.5px;color:var(--muted)}
+  .rolebox b{color:var(--green-d)}
 
-  :root[data-theme="light"] {
-    --bg:        #F0F4FC;
-    --surface:   #FFFFFF;
-    --card:      #EAF0FB;
-    --border:    #C8D5EC;
-    --text:      #0D1930;
-    --muted:     #5A6E8A;
-    --green-dim: #00C89612;
-    --orange-dim:#FF6B3512;
-    --blue-dim:  #4A8FE712;
-    --purple-dim:#A78BFA12;
-  }
+  .legend{display:flex;flex-wrap:wrap;gap:16px;padding:13px 18px;background:#fafbfd;border:1px solid var(--line);border-radius:14px;margin-bottom:26px;font-size:13.5px;color:var(--muted);align-items:center}
+  .legend b{color:var(--ink)}
+  .lg{display:flex;align-items:center;gap:7px}
+  .lgdot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
-  :root[data-theme="dark"] {
-    --bg:        #0A0F1E;
-    --surface:   #111827;
-    --card:      #1A2235;
-    --border:    #243050;
-    --text:      #E8EDF5;
-    --muted:     #8B9BB8;
-    --green-dim: #00C89620;
-    --orange-dim:#FF6B3520;
-    --blue-dim:  #4A8FE720;
-    --purple-dim:#A78BFA20;
-  }
+  .wf{border:1px solid var(--line);border-radius:16px;background:#fff;margin-bottom:14px;overflow:hidden;transition:box-shadow .15s}
+  .wf:hover{box-shadow:0 10px 28px rgba(20,26,45,.09)}
+  .wf-head{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:16px 20px;cursor:pointer;user-select:none}
+  .wf-head:hover{background:#fafbfd}
+  .wf-id{font-family:var(--mono);font-size:12px;color:var(--faint);font-weight:600}
+  .wf-name{font-size:19px;font-weight:700;letter-spacing:-.01em;margin-top:2px}
+  .wf-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .trig{font-family:var(--mono);font-size:11px;padding:5px 11px;border-radius:20px;font-weight:600;white-space:nowrap}
+  .t-cron{background:var(--blue-soft);color:var(--blue-d);border:1px solid var(--blue-line)}
+  .t-manual{background:var(--violet-soft);color:var(--violet-d);border:1px solid var(--violet-line)}
+  .t-event{background:var(--red-soft);color:var(--red);border:1px solid var(--red-line)}
+  .t-auto{background:var(--green-soft);color:var(--green-d);border:1px solid var(--green-line)}
+  .chev{font-family:var(--mono);color:var(--faint);font-size:15px;transition:.2s}
+  .wf.open .chev{transform:rotate(90deg)}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .wf-body{display:none;border-top:1px solid var(--line);background:#fafbfd;padding:20px}
+  .wf.open .wf-body{display:block}
+  .rows{display:grid;gap:11px}
+  .row{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:start;padding:13px 15px;background:#fff;border:1px solid var(--line);border-radius:12px}
+  @media(max-width:680px){.row{grid-template-columns:1fr;gap:7px}.wf-head{grid-template-columns:1fr auto}}
+  .row-lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600;padding-top:4px}
+  .row-body{font-size:14.5px;color:var(--muted);line-height:1.55}
+  .row-body b{color:var(--ink)}
+  .why{font-size:13px;margin-top:7px;color:var(--muted)}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
-    line-height: 1.6;
-    padding: 40px 24px 80px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
+  .tags{display:flex;flex-wrap:wrap;gap:7px}
+  .tag{font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:9px;border:1.5px solid;white-space:nowrap}
+  .tg-agent{background:var(--green-soft);border-color:var(--green-line);color:var(--green-d)}
+  .tg-agent.lepiej{background:var(--blue-soft);border-color:var(--blue-line);color:var(--blue-d)}
+  .tg-agent.napraw{background:var(--red-soft);border-color:var(--red-line);color:var(--red)}
+  .tg-skill{background:var(--orange-soft);border-color:var(--orange-line);color:var(--orange-d)}
+  .tg-script{background:#f2f3f7;border-color:#d8dbe4;color:#454b58;font-family:var(--mono);font-size:11.5px}
+  .tg-base{background:var(--blue-soft);border-color:var(--blue-line);color:var(--blue-d)}
+  .tg-engine{background:var(--violet-soft);border-color:var(--violet-line);color:var(--violet-d)}
+  .tg-tbd{background:var(--amber-soft);border-color:var(--amber-line);color:var(--amber);font-family:var(--mono);font-size:11px}
 
-  /* HEADER */
-  .header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 24px;
-    margin-bottom: 48px;
-    padding-bottom: 28px;
-    border-bottom: 1px solid var(--border);
-  }
-  .header-left {}
-  .eyebrow {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--green);
-    margin-bottom: 8px;
-  }
-  h1 {
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: -.02em;
-    line-height: 1.2;
-    text-wrap: balance;
-    color: var(--text);
-  }
-  .subtitle {
-    margin-top: 8px;
-    color: var(--muted);
-    font-size: 13px;
-    max-width: 520px;
-  }
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 4px;
-    background: var(--green-dim);
-    color: var(--green);
-    border: 1px solid var(--green);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  .note{margin-top:12px;background:#fff;border-left:3px solid var(--violet);border-radius:0 10px 10px 0;padding:12px 16px;font-size:13.5px;color:var(--muted)}
+  .note b{color:var(--violet-d)}
+  .warn{margin-top:12px;background:var(--amber-soft);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:12px 16px;font-size:13.5px;color:var(--muted)}
+  .warn b{color:var(--amber)}
+  .sec-lab{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:600;margin:38px 0 12px;display:flex;align-items:center;gap:12px}
+  .sec-lab .ln{flex:1;height:1px;background:var(--line)}
 
-  /* SECTION */
-  .section-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-  section { margin-bottom: 52px; }
+  /* tryb pomiaru */
+  .ab{margin-bottom:18px}
+  .abx{background:#fafbfd;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .abt{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:11px}
+  .abrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:680px){.abrow{grid-template-columns:1fr}}
+  .abcard{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px}
+  .abcard.rec{border-color:var(--green);background:var(--green-soft)}
+  .abname{font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .abcard.rec .abname{color:var(--green-d)}
+  .pill{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;background:var(--green);color:#fff;padding:3px 8px;border-radius:20px;font-weight:700}
+  .abdesc{font-size:13.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+  .abwhen{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:8px}
 
-  /* WORKFLOW CARDS */
-  .workflows { display: flex; flex-direction: column; gap: 16px; }
+  /* tabela taktyk */
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
+  .tt{width:100%;border-collapse:collapse;font-size:14px}
+  .tt thead{background:#fafbfd}
+  .tt th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600;text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+  .tt td{padding:14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--muted)}
+  .tt tbody tr:last-child td{border-bottom:none}
+  .tt tbody tr:hover{background:#fafbfd}
+  .tt td b{color:var(--ink);font-size:14.5px;display:block}
+  .tt .sub{display:block;font-size:12px;color:var(--faint);margin-top:3px;line-height:1.4}
+  .ar{font-size:12px;font-weight:600;padding:4px 10px;border-radius:8px;background:var(--orange-soft);border:1px solid var(--orange-line);color:var(--orange-d);white-space:nowrap}
+  .tt .num{font-family:var(--mono);font-weight:600;color:var(--green-d);white-space:nowrap}
+  .st{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap}
+  .st-go{background:var(--violet-soft);color:var(--violet-d);border:1px solid var(--violet-line)}
+  .st-wait{background:#f2f3f7;color:var(--faint);border:1px solid var(--line)}
+  .st-run{background:var(--blue-soft);color:var(--blue-d);border:1px solid var(--blue-line)}
+  .st-done{background:var(--green-soft);color:var(--green-d);border:1px solid var(--green-line)}
 
-  .wf-card {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--surface);
-    overflow: hidden;
-  }
-  .wf-header {
-    display: grid;
-    grid-template-columns: 280px 1fr auto;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 20px;
-    cursor: pointer;
-    user-select: none;
-  }
-  .wf-header:hover { background: var(--card); }
-
-  .wf-id {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--muted);
-    margin-bottom: 3px;
-  }
-  .wf-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-  }
-  .trigger-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-family: var(--mono);
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 3px;
-    font-weight: 500;
-  }
-  .trigger-cron { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue); }
-  .trigger-manual { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple); }
-  .trigger-event { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange); }
-  .trigger-auto { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
-
-  .output-tag {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--muted);
-    text-align: right;
-    white-space: nowrap;
-  }
-  .output-tag strong {
-    color: var(--text);
-    display: block;
-    font-size: 11px;
-  }
-
-  .wf-body {
-    border-top: 1px solid var(--border);
-    padding: 20px;
-    background: var(--card);
-    display: none;
-  }
-  .wf-body.open { display: block; }
-
-  .flow-row {
-    display: grid;
-    grid-template-columns: 120px 1fr 1fr 1fr;
-    gap: 0;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    margin-bottom: 16px;
-    font-size: 13px;
-  }
-  .flow-col {
-    padding: 12px 14px;
-    border-right: 1px solid var(--border);
-  }
-  .flow-col:last-child { border-right: none; }
-  .flow-col-head {
-    font-family: var(--mono);
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-  .flow-col-body { color: var(--text); line-height: 1.5; }
-  .flow-col-body code {
-    font-family: var(--mono);
-    font-size: 11px;
-    background: var(--bg);
-    padding: 1px 5px;
-    border-radius: 3px;
-    color: var(--green);
-  }
-
-  .agents-list {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .agent-node {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--mono);
-    font-size: 11px;
-  }
-  .agent-node::before {
-    content: '▸';
-    color: var(--muted);
-    font-size: 9px;
-  }
-  .agent-exists { color: var(--green); }
-  .agent-new { color: var(--orange); }
-
-  .wf-desc {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 8px;
-    line-height: 1.6;
-  }
-
-  /* BACKLOG TABLE */
-  .table-wrap { overflow-x: auto; }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-  thead { background: var(--card); }
-  th {
-    font-family: var(--mono);
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    color: var(--muted);
-    padding: 10px 14px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-  td {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: top;
-    color: var(--text);
-  }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: var(--card); }
-
-  .tag {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 10px;
-    padding: 2px 7px;
-    border-radius: 3px;
-    font-weight: 500;
-  }
-  .tag-agent { background: var(--green-dim); color: var(--green); }
-  .tag-skill { background: var(--blue-dim); color: var(--blue); }
-  .tag-workflow { background: var(--purple-dim); color: var(--purple); }
-  .tag-script { background: var(--orange-dim); color: var(--orange); }
-  .tag-reuse { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-
-  .priority {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 700;
-  }
-  .p0 { color: var(--orange); }
-  .p1 { color: var(--blue); }
-  .p2 { color: var(--muted); }
-
-  /* ARROW */
-  .arrow {
-    text-align: center;
-    color: var(--muted);
-    font-size: 18px;
-    line-height: 1;
-    padding: 4px 0;
-  }
-
-  /* LEGEND */
-  .legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 28px;
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .legend-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .note {
-    background: var(--orange-dim);
-    border-left: 3px solid var(--orange);
-    padding: 10px 14px;
-    border-radius: 0 6px 6px 0;
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 12px;
-  }
-  .note strong { color: var(--orange); }
+  .foot{margin-top:32px;font-family:var(--mono);font-size:11.5px;color:var(--faint);text-align:center}
 </style>
+</head>
+<body>
+<a href="ANIAKRUK_START.html" style="position:fixed;top:18px;left:18px;z-index:99;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5b6472;text-decoration:none;padding:8px 14px;border:1px solid #e6e6e9;border-radius:9px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);transition:.15s;box-shadow:0 2px 10px rgba(20,26,45,.06)" onmouseover="this.style.borderColor='#7c5cff';this.style.color='#5a3ff0'" onmouseout="this.style.borderColor='#e6e6e9';this.style.color='#5b6472'">← start</a>
 
-<div class="header">
-  <div class="header-left">
-    <div class="eyebrow">AIcommerce · System Design</div>
-    <h1>CRO System — Infrastruktura workflowów</h1>
-    <p class="subtitle">Mapa: kto kogo odpala, kiedy, w jakim celu, jaki trigger, jaki rezultat. Cowork Team + GA4 + Clarity.</p>
+<div class="wrap">
+  <div class="kicker">AIcommerce · obszar CRO</div>
+  <h1>Workflowy — <span class="g">jak system pracuje</span></h1>
+  <p class="lede">Sześć przebiegów, które składają się na ciągłą opiekę nad konwersją. Każdy ma swój trigger, wykonawców i wynik.</p>
+  <p class="hint">kliknij workflow — rozwinie się skład: agenci, skille, skrypty, bazy</p>
+
+  <div class="rolebox">
+    <b>Agent to rola, nie wiedza.</b> Ci sami trzej agenci obsługują każdy obszar — zmienia się scenariusz, który realizują, oraz wsad (skille i bazy), z którego korzystają. Dokładając obszar nie tworzycie nowych agentów.
   </div>
-  <div class="badge"><div class="dot"></div> v0.1 · draft</div>
-</div>
 
-<!-- LEGEND -->
-<div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> CRON — cykliczny</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div> MANUAL — na żądanie</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div> EVENT — alert/anomalia</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> AUTO — po poprzednim</div>
-  <div class="legend-item" style="margin-left:auto">
-    <span style="font-family:var(--mono);font-size:11px;color:var(--green)">▸ zielony</span>&nbsp;=&nbsp;agent istnieje&nbsp;&nbsp;
-    <span style="font-family:var(--mono);font-size:11px;color:var(--orange)">▸ pomarańcz</span>&nbsp;=&nbsp;do zbudowania
+  <div class="legend">
+    <span class="lg"><span class="lgdot" style="background:var(--blue)"></span><b>CRON</b> — zegar</span>
+    <span class="lg"><span class="lgdot" style="background:var(--violet)"></span><b>MANUAL</b> — na żądanie</span>
+    <span class="lg"><span class="lgdot" style="background:var(--red)"></span><b>EVENT</b> — wydarzenie</span>
+    <span class="lg"><span class="lgdot" style="background:var(--green)"></span><b>AUTO</b> — po poprzednim</span>
+    <span class="lg" style="margin-left:auto;gap:5px"><span class="tag tg-agent" style="padding:2px 8px;font-size:11px">agent</span><span class="tag tg-skill" style="padding:2px 8px;font-size:11px">skill</span><span class="tag tg-script" style="padding:2px 8px;font-size:11px">skrypt</span><span class="tag tg-base" style="padding:2px 8px;font-size:11px">baza</span><span class="tag tg-engine" style="padding:2px 8px;font-size:11px">silnik</span></span>
   </div>
-</div>
 
-<!-- WORKFLOWS -->
-<section>
-  <div class="section-label">Workflowy — 6 procesów</div>
-  <div class="workflows">
-
-    <!-- WF-01 -->
-    <div class="wf-card">
-      <div class="wf-header" onclick="toggle(this)">
-        <div>
-          <div class="wf-id">WF-01</div>
-          <div class="wf-name">Onboarding klienta</div>
-        </div>
-        <div><span class="trigger-pill trigger-manual">⚡ MANUAL — raz przy starcie</span></div>
-        <div class="output-tag">Output<strong>CRO_BASELINE.html</strong></div>
-      </div>
-      <div class="wf-body">
-        <div class="flow-row">
-          <div class="flow-col" style="background:var(--card)">
-            <div class="flow-col-head">Trigger</div>
-            <div class="flow-col-body">Tomek odpala ręcznie:<br><code>/cro-onboarding</code><br>przy nowym kliencie</div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Agenci / skille</div>
-            <div class="flow-col-body agents-list">
-              <div class="agent-node agent-new">cro-po (zbiera brief, URL, GA4)</div>
-              <div class="agent-node agent-new">cro-setup (łączy GA4, Clarity API)</div>
-              <div class="agent-node agent-new">visual-capture (screeny homepage + kluczowe URL)</div>
-              <div class="agent-node agent-new">cro-analyst (baseline: CR, BR, funnel)</div>
-            </div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Co robi</div>
-            <div class="flow-col-body">Zbiera: URL-e do audytu · dane GA4 (30 dni baseline) · heatmapy Clarity · strukturę sklepu · kategorie do CS · dane transakcyjne</div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Rezultat</div>
-            <div class="flow-col-body"><code>CRO_BASELINE.html</code><br><br>· metryki baseline<br>· priorytety URL-i<br>· lista kategorii do CS<br>· lista hipotez #1</div>
-          </div>
-        </div>
-        <p class="wf-desc">Jednorazowy fundament. Bez niego żaden kolejny workflow nie ma kontekstu. Baseline to „zero" — wszystko liczymy od niego.</p>
-      </div>
+  <!-- WF-01 -->
+  <div class="wf open">
+    <div class="wf-head" onclick="this.parentElement.classList.toggle('open')">
+      <div><div class="wf-id">WF-01 · wynik: baseline + lista napraw</div><div class="wf-name">Onboarding klienta</div></div>
+      <div class="wf-meta"><span class="trig t-manual">MANUAL · raz na starcie</span></div>
+      <span class="chev">›</span>
     </div>
-
-    <!-- WF-02 -->
-    <div class="wf-card">
-      <div class="wf-header" onclick="toggle(this)">
-        <div>
-          <div class="wf-id">WF-02</div>
-          <div class="wf-name">Weekly Pulse</div>
-        </div>
-        <div><span class="trigger-pill trigger-cron">🕐 CRON — pon. 8:00</span></div>
-        <div class="output-tag">Output<strong>CRO_WEEKLY_PULSE.html</strong></div>
-      </div>
-      <div class="wf-body">
-        <div class="flow-row">
-          <div class="flow-col" style="background:var(--card)">
-            <div class="flow-col-head">Trigger</div>
-            <div class="flow-col-body">Automatyczny cron<br>poniedziałek 8:00<br><br>lub manualny:<br><code>/cro-pulse</code></div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Agenci / skille</div>
-            <div class="flow-col-body agents-list">
-              <div class="agent-node agent-new">ga4-puller (7-dniowe dane)</div>
-              <div class="agent-node agent-new">clarity-reader (heatmapy, rage clicks)</div>
-              <div class="agent-node agent-new">cro-analyst (delta vs baseline)</div>
-              <div class="agent-node agent-exists">strateg (interpretacja przez 3D Commerce)</div>
-            </div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Co robi</div>
-            <div class="flow-col-body">Pull GA4 (CR, sessions, revenue, funnel dropoffs) · Clarity (rage clicks, dead clicks, scroll depth) · porównanie week-over-week · wykrycie anomalii</div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Rezultat</div>
-            <div class="flow-col-body"><code>CRO_WEEKLY.html</code><br><br>· KPI delta<br>· top 3 problemy<br>· lista URL-i do audytu<br>· trigger WF-03 jeśli anomalia</div>
-          </div>
-        </div>
-        <p class="wf-desc">Rytm systemu. Nie analizujesz co tydzień od zera — system przywozi dane, Ty czytasz raport i decydujesz czy i co odpala.</p>
-      </div>
-    </div>
-
-    <!-- WF-03 -->
-    <div class="wf-card">
-      <div class="wf-header" onclick="toggle(this)">
-        <div>
-          <div class="wf-id">WF-03</div>
-          <div class="wf-name">Anomalia Alert</div>
-        </div>
-        <div><span class="trigger-pill trigger-event">🔴 EVENT — spike / drop &gt;15%</span></div>
-        <div class="output-tag">Output<strong>ANOMALY_BRIEF.md</strong></div>
-      </div>
-      <div class="wf-body">
-        <div class="flow-row">
-          <div class="flow-col" style="background:var(--card)">
-            <div class="flow-col-head">Trigger</div>
-            <div class="flow-col-body">Auto z WF-02 gdy delta CR lub revenue &gt;15%<br><br>lub manualny gdy klient zgłasza problem</div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Agenci / skille</div>
-            <div class="flow-col-body agents-list">
-              <div class="agent-node agent-new">cro-analyst (diagnoza: gdzie pęknięcie)</div>
-              <div class="agent-node agent-new">ga4-puller (segment: device, channel, URL)</div>
-              <div class="agent-node agent-exists">strateg (czy to symptom czy przyczyna)</div>
-            </div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Co robi</div>
-            <div class="flow-col-body">Segmentuje anomalię: urządzenie / kanał / strona / czas. Szuka przyczyny (nowy landing? zmiana ceny? problem tech?). Hierarchia STRONA→SHOPPER→AKCJE→DANE.</div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Rezultat</div>
-            <div class="flow-col-body"><code>ANOMALY_BRIEF.md</code><br><br>· co się stało<br>· gdzie (URL / segment)<br>· hipoteza przyczyny<br>· trigger WF-04 na URL</div>
-          </div>
-        </div>
-        <p class="wf-desc">Fast-lane. Gdy coś się sypie, nie czekasz do poniedziałku. Brief idzie do Tomka + do klienta w ciągu godziny od wykrycia.</p>
-      </div>
-    </div>
-
-    <!-- WF-04 -->
-    <div class="wf-card">
-      <div class="wf-header" onclick="toggle(this)">
-        <div>
-          <div class="wf-id">WF-04</div>
-          <div class="wf-name">Visual Audit per URL</div>
-        </div>
-        <div><span class="trigger-pill trigger-auto">↳ AUTO po WF-02/03 lub MANUAL</span></div>
-        <div class="output-tag">Output<strong>VISUAL_REPORT.html</strong></div>
-      </div>
-      <div class="wf-body">
-        <div class="flow-row">
-          <div class="flow-col" style="background:var(--card)">
-            <div class="flow-col-head">Trigger</div>
-            <div class="flow-col-body">Auto: URL flagowany przez WF-02 lub WF-03<br><br>Manual: <code>/cro-visual [url]</code></div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Agenci / skille</div>
-            <div class="flow-col-body agents-list">
-              <div class="agent-node agent-new">visual-capture (screenshot desktop+mobile)</div>
-              <div class="agent-node agent-new">elements-mapper (above fold inventory)</div>
-              <div class="agent-node agent-new">vision-analyst (okiem: co shopper widzi w 3s)</div>
-              <div class="agent-node agent-exists">strateg (weryfikacja reko przez bramki)</div>
-            </div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Co robi</div>
-            <div class="flow-col-body">Capture → Elements mapping (fold, CTA, trust, cena) → Vision: narracja shoppera → identyfikacja pęknięć → Clarity overlay (rage clicks na screenie)</div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Rezultat</div>
-            <div class="flow-col-body"><code>VISUAL_[url].html</code><br><br>· screeny z annotacjami<br>· pęknięcia per fold<br>· reko: Element→Problem→Akcja<br>· trigger WF-05 (CS)</div>
-          </div>
-        </div>
-        <div class="note"><strong>Skrypty do reuse:</strong> visual_capture.py z EEL pipeline · elements_dict z EEL · vision LLM slot (Sonnet 4.6). NIE buduj od zera — wzbogać istniejące.</div>
-      </div>
-    </div>
-
-    <!-- WF-05 -->
-    <div class="wf-card">
-      <div class="wf-header" onclick="toggle(this)">
-        <div>
-          <div class="wf-id">WF-05</div>
-          <div class="wf-name">CS per Kategoria</div>
-        </div>
-        <div><span class="trigger-pill trigger-manual">⚡ MANUAL — nowa kategoria</span></div>
-        <div class="output-tag">Output<strong>WPIS_CS.html</strong></div>
-      </div>
-      <div class="wf-body">
-        <div class="flow-row">
-          <div class="flow-col" style="background:var(--card)">
-            <div class="flow-col-head">Trigger</div>
-            <div class="flow-col-body">Manual:<br><code>/cro-cs [kategoria]</code><br><br>lub po WF-04 gdy visual audit pokazuje problem z kontentem</div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Agenci / skille</div>
-            <div class="flow-col-body agents-list">
-              <div class="agent-node agent-exists">eel-researcher (DFS + recenzje + kontent)</div>
-              <div class="agent-node agent-exists">strateg (CEP gate: sytuacja vs atrybut)</div>
-              <div class="agent-node agent-exists">geo-po (format: 14 sekcji)</div>
-              <div class="agent-node agent-exists">eel-quality (bramka jakości)</div>
-            </div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Co robi</div>
-            <div class="flow-col-body">DFS → recenzje → kontent bohatera → CEP-y (metodologia CS) → 20 Discovery Questions → pole pytań → ścieżki percepcji → analiza konkurencji CEP×rywale</div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Rezultat</div>
-            <div class="flow-col-body"><code>WPIS_CS_[kat].html</code><br><br>· 14 sekcji CS<br>· pole pytań (20+)<br>· matryca CEP×konkurencja<br>· trigger WF-06</div>
-          </div>
-        </div>
-        <p class="wf-desc">To jest moat. Wszyscy robią content — nikt nie robi go z pola pytań i CEP-ów. WF-05 to przewaga która po pół roku jest nie do skopiowania.</p>
-      </div>
-    </div>
-
-    <!-- WF-06 -->
-    <div class="wf-card">
-      <div class="wf-header" onclick="toggle(this)">
-        <div>
-          <div class="wf-id">WF-06</div>
-          <div class="wf-name">Reko + Taktyki</div>
-        </div>
-        <div><span class="trigger-pill trigger-auto">↳ AUTO po WF-04 + WF-05</span></div>
-        <div class="output-tag">Output<strong>CRO_REKO.html</strong></div>
-      </div>
-      <div class="wf-body">
-        <div class="flow-row">
-          <div class="flow-col" style="background:var(--card)">
-            <div class="flow-col-head">Trigger</div>
-            <div class="flow-col-body">Auto gdy oba dostępne:<br>VISUAL_[url].html<br>+ WPIS_CS.html<br><br>lub manual: <code>/cro-reko</code></div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Agenci / skille</div>
-            <div class="flow-col-body agents-list">
-              <div class="agent-node agent-exists">strateg (synteza: visual + CS + konkurencja)</div>
-              <div class="agent-node agent-new">cro-reko-writer (formatuje reko)</div>
-              <div class="agent-node agent-exists">eel-quality (bramka przed oddaniem)</div>
-            </div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Co robi</div>
-            <div class="flow-col-body">Łączy: pęknięcia visual + CEP-y + białe plamy konkurencji → priorytetyzuje reko (Impact × Effort) → formatuje taktyki: Element → Problem → Akcja → Taktyka kontentu</div>
-          </div>
-          <div class="flow-col">
-            <div class="flow-col-head">Rezultat</div>
-            <div class="flow-col-body"><code>CRO_REKO_[url].html</code><br><br>· reko P0/P1/P2<br>· taktyki z konkretem<br>· matryca CEP×luka<br>· gotowe do klienta</div>
-          </div>
-        </div>
-        <p class="wf-desc">Wyjście systemu. Wszystko co zebrały WF-01–05 schodzi tutaj do listy działań. Klient dostaje co, dlaczego i jak konkretnie.</p>
-      </div>
-    </div>
-
+    <div class="wf-body"><div class="rows">
+      <div class="row"><div class="row-lab">Po co</div><div class="row-body">Zbudować punkt zero: co jest, gdzie boli, od czego zaczynamy. Bez tego kolejne workflowy nie mają do czego porównywać.</div></div>
+      <div class="row"><div class="row-lab">Agenci</div><div class="row-body"><div class="tags"><span class="tag tg-agent">Pan Dobrze</span><span class="tag tg-agent napraw">Pan Napraw</span></div><div class="why">Dobrze zbiera i porządkuje, Napraw robi pierwszą diagnozę.</div></div></div>
+      <div class="row"><div class="row-lab">Skille</div><div class="row-body"><div class="tags"><span class="tag tg-skill">Audyt CRO: UX/UI obszaru</span><span class="tag tg-skill">Analiza Ścieżki GA4</span><span class="tag tg-skill">Audyt Konkurencji</span></div></div></div>
+      <div class="row"><div class="row-lab">Skrypty</div><div class="row-body"><div class="tags"><span class="tag tg-script">capture.py</span><span class="tag tg-script">ga4_pull.py</span><span class="tag tg-script">elements_map.py</span></div><div class="why">Zrzut ekranów, pobranie danych i mapowanie elementów robi kod — powtarzalnie i bez kosztu modelu.</div></div></div>
+      <div class="row"><div class="row-lab">Bazy i silniki</div><div class="row-body"><div class="tags"><span class="tag tg-base">Baza Elementów Ecommerce</span><span class="tag tg-engine">Silnik Oceny Elementów</span></div></div></div>
+      <div class="row"><div class="row-lab">Wynik</div><div class="row-body"><b>Baseline</b> — metryki startowe, priorytety URL-i, pierwsza lista napraw z rankingiem. Zasila <b>Bazę Benchmarków Własnych</b>.</div></div>
+    </div></div>
   </div>
-</section>
 
-<!-- BACKLOG -->
-<section>
-  <div class="section-label">Co budować — backlog infrastruktury</div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Priorytet</th>
-          <th>Artefakt</th>
-          <th>Typ</th>
-          <th>Opis</th>
-          <th>Reuse / base</th>
-        </tr>
-      </thead>
+  <!-- WF-02 -->
+  <div class="wf">
+    <div class="wf-head" onclick="this.parentElement.classList.toggle('open')">
+      <div><div class="wf-id">WF-02 · wynik: raport tygodniowy</div><div class="wf-name">Weekly Pulse</div></div>
+      <div class="wf-meta"><span class="trig t-cron">CRON · pon. 8:00</span></div>
+      <span class="chev">›</span>
+    </div>
+    <div class="wf-body"><div class="rows">
+      <div class="row"><div class="row-lab">Po co</div><div class="row-body">Rytm systemu. Co poniedziałek gotowy obraz tygodnia — bez zamawiania, bez czekania.</div></div>
+      <div class="row"><div class="row-lab">Agenci</div><div class="row-body"><div class="tags"><span class="tag tg-agent">Pan Dobrze</span></div><div class="why">Operacyjny — zbiera, liczy, komentuje. To jego podstawowy scenariusz.</div></div></div>
+      <div class="row"><div class="row-lab">Skille</div><div class="row-body"><div class="tags"><span class="tag tg-skill">Analiza Ścieżki GA4</span></div></div></div>
+      <div class="row"><div class="row-lab">Skrypty</div><div class="row-body"><div class="tags"><span class="tag tg-script">ga4_pull.py</span><span class="tag tg-script">delta_calc.py</span><span class="tag tg-script">bench_compare.py</span><span class="tag tg-script">report_render.py</span></div><div class="why">Cały raport składa kod: pobranie, delty, porównanie z benchmarkiem, render. Model dopisuje tylko komentarz — dlatego cotygodniowy raport prawie nic nie kosztuje.</div></div></div>
+      <div class="row"><div class="row-lab">Bazy</div><div class="row-body"><div class="tags"><span class="tag tg-base">Baza Benchmarków Własnych</span><span class="tag tg-base">Baza Benchmarków Kategorii</span></div></div></div>
+      <div class="row"><div class="row-lab">Wynik</div><div class="row-body">Raport z KPI, deltą i benchmarkiem + top 3 problemy tygodnia. Odpala <b>WF-03</b>, jeśli wykryje anomalię.</div></div>
+    </div></div>
+  </div>
+
+  <!-- WF-03 -->
+  <div class="wf">
+    <div class="wf-head" onclick="this.parentElement.classList.toggle('open')">
+      <div><div class="wf-id">WF-03 · wynik: diagnoza + komunikat</div><div class="wf-name">Alert anomalii</div></div>
+      <div class="wf-meta"><span class="trig t-event">EVENT · odchylenie &gt;15%</span></div>
+      <span class="chev">›</span>
+    </div>
+    <div class="wf-body"><div class="rows">
+      <div class="row"><div class="row-lab">Po co</div><div class="row-body">Gdy coś się sypie, nie czekacie do poniedziałku — system reaguje w godzinę od wykrycia.</div></div>
+      <div class="row"><div class="row-lab">Agenci</div><div class="row-body"><div class="tags"><span class="tag tg-agent napraw">Pan Napraw</span></div><div class="why">Diagnosta — jego scenariusz to kopanie w anomalię i szukanie przyczyny, nie objawu.</div></div></div>
+      <div class="row"><div class="row-lab">Skille</div><div class="row-body"><div class="tags"><span class="tag tg-skill">Analiza Ścieżki GA4</span><span class="tag tg-skill">Analiza Click Map</span></div></div></div>
+      <div class="row"><div class="row-lab">Skrypty</div><div class="row-body"><div class="tags"><span class="tag tg-script">anomaly_detect.py</span><span class="tag tg-script">segment_split.py</span></div><div class="why">Wykrycie odchylenia i rozbicie na segmenty (urządzenie / kanał / strona) to czysta matematyka — kod, nie model.</div></div></div>
+      <div class="row"><div class="row-lab">Wynik</div><div class="row-body">Krótki brief: co się stało, gdzie dokładnie, hipoteza przyczyny. Trafia do <b>Komunikatów</b> w kokpicie i odpala <b>WF-04</b> na wskazanym obszarze.</div></div>
+    </div></div>
+  </div>
+
+  <!-- WF-04 -->
+  <div class="wf">
+    <div class="wf-head" onclick="this.parentElement.classList.toggle('open')">
+      <div><div class="wf-id">WF-04 · wynik: raport obszaru z oceną</div><div class="wf-name">Audyt CRO obszaru</div></div>
+      <div class="wf-meta"><span class="trig t-auto">AUTO po WF-02/03</span><span class="trig t-manual">lub MANUAL</span></div>
+      <span class="chev">›</span>
+    </div>
+    <div class="wf-body"><div class="rows">
+      <div class="row"><div class="row-lab">Po co</div><div class="row-body">Zejść z poziomu „liczba spadła" na „oto co konkretnie widzi kupujący i gdzie się gubi" — dla jednego obszaru (np. PDP, koszyk, kategoria).</div></div>
+      <div class="row"><div class="row-lab">Agenci</div><div class="row-body"><div class="tags"><span class="tag tg-agent napraw">Pan Napraw</span><span class="tag tg-agent lepiej">Pan Lepiej</span></div><div class="why">Napraw diagnozuje, Lepiej od razu podpowiada, co z tym zrobić.</div></div></div>
+      <div class="row"><div class="row-lab">Skille</div><div class="row-body"><div class="tags"><span class="tag tg-skill">Audyt CRO: UX/UI obszaru</span><span class="tag tg-skill">Analiza Heat Map</span><span class="tag tg-skill">Analiza Click Map</span><span class="tag tg-tbd">do weryfikacji</span></div><div class="why">Heat Map i Click Map wymagają narzędzia zbierającego zachowania (Hotjar / Clarity). <b>Do weryfikacji na starcie: czy takie narzędzie jest wdrożone i czy daje dostęp do danych.</b> Bez niego workflow działa w węższym zakresie — na danych z GA4 i audycie wizualnym.</div></div></div>
+      <div class="row"><div class="row-lab">Skrypty</div><div class="row-body"><div class="tags"><span class="tag tg-script">capture.py</span><span class="tag tg-script">elements_map.py</span><span class="tag tg-script">score_elements.py</span></div><div class="why">Rozpoznanie elementów i scoring wg reguł liczy kod — ten sam URL zawsze da tę samą ocenę. Model interpretuje wynik, nie liczy go.</div></div></div>
+      <div class="row"><div class="row-lab">Bazy i silniki</div><div class="row-body"><div class="tags"><span class="tag tg-base">Baza Elementów Ecommerce</span><span class="tag tg-base">Baza Benchmarków Kategorii</span><span class="tag tg-engine">Silnik Oceny Elementów</span></div></div></div>
+      <div class="row"><div class="row-lab">Wynik</div><div class="row-body">Raport obszaru: co jest, czego brak wobec normy rynku, gdzie pęka ścieżka. Zasila <b>Listę napraw</b> i odpala <b>WF-06</b>.</div></div>
+    </div>
+    <div class="warn"><b>Do weryfikacji przed startem:</b> dostępność heatmap i nagrań sesji (Hotjar / Clarity) — czy narzędzie jest wdrożone, czy zbiera dane i czy mamy do nich dostęp. To przesądza o zakresie WF-04.</div>
+    </div>
+  </div>
+
+  <!-- WF-05 -->
+  <div class="wf">
+    <div class="wf-head" onclick="this.parentElement.classList.toggle('open')">
+      <div><div class="wf-id">WF-05 · wynik: standard rynku + luki</div><div class="wf-name">Benchmark kategorii</div></div>
+      <div class="wf-meta"><span class="trig t-manual">MANUAL</span><span class="trig t-cron">odświeżenie cyklicznie</span></div>
+      <span class="chev">›</span>
+    </div>
+    <div class="wf-body"><div class="rows">
+      <div class="row"><div class="row-lab">Po co</div><div class="row-body">Zbudować punkt odniesienia: co robi 50–100 sklepów kategorii. Element obecny u ≥50% konkurencji = norma, której brak jest luką.</div></div>
+      <div class="row"><div class="row-lab">Agenci</div><div class="row-body"><div class="tags"><span class="tag tg-agent">Pan Dobrze</span></div></div></div>
+      <div class="row"><div class="row-lab">Skille</div><div class="row-body"><div class="tags"><span class="tag tg-skill">Buduj Benchmark elementu</span><span class="tag tg-skill">Audyt Konkurencji</span></div></div></div>
+      <div class="row"><div class="row-lab">Skrypty</div><div class="row-body"><div class="tags"><span class="tag tg-script">batch_capture.py</span><span class="tag tg-script">elements_map.py</span><span class="tag tg-script">norm_calc.py</span></div><div class="why">Zrzut i analiza kilkudziesięciu sklepów to robota masowa — gdyby robił ją model, koszt byłby absurdalny. Kod robi to za grosze.</div></div></div>
+      <div class="row"><div class="row-lab">Bazy</div><div class="row-body"><div class="tags"><span class="tag tg-base">Baza Benchmarków Kategorii</span><span class="tag tg-base">Baza Elementów Ecommerce</span></div></div></div>
+      <div class="row"><div class="row-lab">Wynik</div><div class="row-body">Standard kategorii + gap analysis: czego brakuje do normy i co jest szybkim zyskiem.</div></div>
+    </div></div>
+  </div>
+
+  <!-- WF-06 -->
+  <div class="wf">
+    <div class="wf-head" onclick="this.parentElement.classList.toggle('open')">
+      <div><div class="wf-id">WF-06 · wynik: lista taktyk do testów lub testów A/B</div><div class="wf-name">Taktyki do testów lub testy A/B</div></div>
+      <div class="wf-meta"><span class="trig t-auto">AUTO po WF-04 / WF-05</span></div>
+      <span class="chev">›</span>
+    </div>
+    <div class="wf-body"><div class="rows">
+      <div class="row"><div class="row-lab">Po co</div><div class="row-body">Zamienić diagnozę w konkretne działanie. To wyjście systemu — moment, w którym „wiemy, co źle" staje się „oto co zrobić w tym tygodniu".</div></div>
+      <div class="row"><div class="row-lab">Agenci</div><div class="row-body"><div class="tags"><span class="tag tg-agent lepiej">Pan Lepiej</span></div><div class="why">Eksperymentator — jego scenariusz to proponować, co przetestować i dlaczego akurat to.</div></div></div>
+      <div class="row"><div class="row-lab">Skille</div><div class="row-body"><div class="tags"><span class="tag tg-skill">Znajdź taktykę</span></div></div></div>
+      <div class="row"><div class="row-lab">Skrypty</div><div class="row-body"><div class="tags"><span class="tag tg-script">rank_impact_effort.py</span><span class="tag tg-script">dedupe_tactics.py</span></div><div class="why">Ranking i odsiew powtórek liczy kod. Model dobiera uzasadnienie i dopasowanie do sytuacji.</div></div></div>
+      <div class="row"><div class="row-lab">Bazy i silniki</div><div class="row-body"><div class="tags"><span class="tag tg-base">Baza Taktyk</span><span class="tag tg-base">Baza Mechanizmów Zakupowych</span><span class="tag tg-engine">Silnik Taktyk</span><span class="tag tg-engine">Silnik Mechanizmów Zakupowych</span></div></div></div>
+      <div class="row"><div class="row-lab">Wynik</div><div class="row-body">Uszeregowana <b>Lista taktyk do testów</b> w kokpicie — każda z uzasadnieniem, mechanizmem i oczekiwanym efektem.</div></div>
+    </div>
+    <div class="note"><b>Domknięcie pętli:</b> efekt wdrożonej taktyki mierzy WF-02 i zapisuje w Bazie Benchmarków Własnych. To zamyka cykl uczenia — system wie, co zadziałało.</div>
+    </div>
+  </div>
+
+  <!-- WYJŚCIE SYSTEMU -->
+  <div class="sec-lab"><span>Wyjście systemu — taktyki do testów</span><span class="ln"></span></div>
+  <p style="color:var(--muted);font-size:15px;max-width:820px;margin-bottom:16px">To trafia do kokpitu po każdym cyklu. Każda taktyka ma mechanizm (dlaczego ma zadziałać), oczekiwany efekt i sposób pomiaru — nie „popraw zdjęcia", tylko konkret z uzasadnieniem.</p>
+
+  <div class="ab">
+    <div class="abx">
+      <div class="abt">Tryb pomiaru — dobierany do wolumenu</div>
+      <div class="abrow">
+        <div class="abcard">
+          <div class="abname">Test A/B</div>
+          <div class="abdesc">Dwie wersje równolegle, ruch dzielony. Wymaga dużego wolumenu — inaczej wynik jest przypadkiem, nie wnioskiem.</div>
+          <div class="abwhen">gdy: dużo sesji i konwersji na danym widoku</div>
+        </div>
+        <div class="abcard rec">
+          <div class="abname">Before / after <span class="pill">domyślnie</span></div>
+          <div class="abdesc">Wdrażamy zmianę i porównujemy okres przed z okresem po, na tle benchmarku (żeby odsiać sezonowość i ruch).</div>
+          <div class="abwhen">gdy: wolumen nie wystarcza na istotność statystyczną</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tw">
+    <table class="tt">
+      <thead><tr><th>Taktyka</th><th>Obszar</th><th>Mechanizm</th><th>Efekt</th><th>Pomiar</th><th>Status</th></tr></thead>
       <tbody>
         <tr>
-          <td><span class="priority p0">P0</span></td>
-          <td><code>cro-po.md</code></td>
-          <td><span class="tag tag-agent">agent</span></td>
-          <td>PO systemu CRO — trzymacz porządku, brama przed "od zera". Wie gdzie leży każdy raport, baseline, CS. Wzorzec: geo-po.md</td>
-          <td><span class="tag tag-reuse">geo-po.md</span></td>
+          <td><b>Zmień główne zdjęcie na produkt na człowieku</b><span class="sub">lifestyle primary zamiast packshotu</span></td>
+          <td><span class="ar">PDP</span></td>
+          <td>Picture Superiority Effect<span class="sub">obraz zapamiętywany lepiej niż opis</span></td>
+          <td class="num">CR +5–15%</td>
+          <td>before / after</td>
+          <td><span class="st st-go">do testu</span></td>
         </tr>
         <tr>
-          <td><span class="priority p0">P0</span></td>
-          <td><code>cro-analyst.md</code></td>
-          <td><span class="tag tag-agent">agent</span></td>
-          <td>Analityk GA4 + Clarity. Czyta dane, liczy delta, flaguje anomalie. Zna hierarchię Strona→Shopper→Akcje→Dane.</td>
-          <td><span class="tag tag-reuse">ga4_pull.py (EEL)</span></td>
+          <td><b>Dodaj wideo do kart produktów na listingu</b><span class="sub">3–6 s, bez dźwięku, TOP 5 bestsellerów</span></td>
+          <td><span class="ar">Listing</span></td>
+          <td>Ruch przyciąga uwagę w siatce<span class="sub">przewaga nad statycznymi sąsiadami</span></td>
+          <td class="num">CTR +15–30%</td>
+          <td>A/B (jeśli wolumen)</td>
+          <td><span class="st st-wait">czeka</span></td>
         </tr>
         <tr>
-          <td><span class="priority p0">P0</span></td>
-          <td><code>/cro-onboarding</code></td>
-          <td><span class="tag tag-skill">skill</span></td>
-          <td>Setup klienta: zbiera URL-e, łączy GA4, Clarity, dane transakcyjne. Buduje baseline i listę kategorii do CS.</td>
-          <td>—</td>
+          <td><b>Przenieś sygnały zaufania nad linię zgięcia</b><span class="sub">opinie i zwroty widoczne bez scrolla</span></td>
+          <td><span class="ar">PDP</span></td>
+          <td>Redukcja niepewności przed decyzją</td>
+          <td class="num">ATC +8–12%</td>
+          <td>before / after</td>
+          <td><span class="st st-run">w teście</span></td>
         </tr>
         <tr>
-          <td><span class="priority p0">P0</span></td>
-          <td><code>/cro-pulse</code></td>
-          <td><span class="tag tag-skill">skill</span></td>
-          <td>Tygodniowy pull danych. Odpala ga4-puller + clarity-reader, generuje WEEKLY_PULSE.html.</td>
-          <td><span class="tag tag-reuse">ga4_pull.py (EEL)</span></td>
-        </tr>
-        <tr>
-          <td><span class="priority p1">P1</span></td>
-          <td><code>visual-capture.md</code></td>
-          <td><span class="tag tag-agent">agent</span></td>
-          <td>Capture agent: screenshot desktop+mobile przez zalogowany profil Chrome. Kompresja PNG. Per URL.</td>
-          <td><span class="tag tag-reuse">capture.py (EEL)</span></td>
-        </tr>
-        <tr>
-          <td><span class="priority p1">P1</span></td>
-          <td><code>vision-analyst.md</code></td>
-          <td><span class="tag tag-agent">agent</span></td>
-          <td>Analizuje screenshot okiem: what shopper sees in 3s, fold inventory, pęknięcia UX. Vision LLM slot (Sonnet).</td>
-          <td><span class="tag tag-reuse">vision_report.py (EEL)</span></td>
-        </tr>
-        <tr>
-          <td><span class="priority p1">P1</span></td>
-          <td><code>cro-weekly.js</code></td>
-          <td><span class="tag tag-workflow">workflow</span></td>
-          <td>Orchestruje WF-02: ga4-puller → clarity-reader → cro-analyst → raport. Równolegle GA4 i Clarity.</td>
-          <td>—</td>
-        </tr>
-        <tr>
-          <td><span class="priority p1">P1</span></td>
-          <td><code>/cro-visual</code></td>
-          <td><span class="tag tag-skill">skill</span></td>
-          <td>Visual audit per URL. Odpala capture → elements → vision → strateg bramka → output.</td>
-          <td><span class="tag tag-reuse">eel-audit-visual skill</span></td>
-        </tr>
-        <tr>
-          <td><span class="priority p1">P1</span></td>
-          <td><code>ga4_cro_pull.py</code></td>
-          <td><span class="tag tag-script">script</span></td>
-          <td>Python: GA4 Data API → CR, sessions, revenue, funnel steps, device/channel breakdown. 7d + 30d okno.</td>
-          <td><span class="tag tag-reuse">ga4_pull.py (EEL)</span></td>
-        </tr>
-        <tr>
-          <td><span class="priority p1">P1</span></td>
-          <td><code>clarity_pull.py</code></td>
-          <td><span class="tag tag-script">script</span></td>
-          <td>Clarity API: rage clicks, dead clicks, scroll depth per URL. Output JSON → do cro-analyst.</td>
-          <td>—</td>
-        </tr>
-        <tr>
-          <td><span class="priority p2">P2</span></td>
-          <td><code>/cro-cs</code></td>
-          <td><span class="tag tag-skill">skill</span></td>
-          <td>CS per kategoria w kontekście CRO. Wrapper na eel-researcher + strateg + geo-po + eel-quality.</td>
-          <td><span class="tag tag-reuse">eel-audit-content skill</span></td>
-        </tr>
-        <tr>
-          <td><span class="priority p2">P2</span></td>
-          <td><code>cro-reko-writer.md</code></td>
-          <td><span class="tag tag-agent">agent</span></td>
-          <td>Formatuje syntezę (visual+CS+konkurencja) do reko: priorytet Impact×Effort, format Element→Problem→Akcja→Taktyka.</td>
-          <td><span class="tag tag-reuse">strateg.md (bramki)</span></td>
-        </tr>
-        <tr>
-          <td><span class="priority p2">P2</span></td>
-          <td><code>cro-anomaly.js</code></td>
-          <td><span class="tag tag-workflow">workflow</span></td>
-          <td>Workflow WF-03: wykrycie anomalii (delta>15%) → cro-analyst segmentuje → brief → powiadomienie Discord.</td>
-          <td><span class="tag tag-reuse">discord_notify.py</span></td>
+          <td><b>Uprość krok dostawy w koszyku</b><span class="sub">domyślna opcja + koszt widoczny wcześniej</span></td>
+          <td><span class="ar">Koszyk</span></td>
+          <td>Koszt-niespodzianka to główna przyczyna porzuceń</td>
+          <td class="num">porzucenia −5–10%</td>
+          <td>before / after</td>
+          <td><span class="st st-done">zrobione</span></td>
         </tr>
       </tbody>
     </table>
   </div>
-</section>
+  <p style="font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:10px">przykładowe wpisy — realna lista powstaje po pierwszym cyklu (WF-04 → WF-06)</p>
 
-<!-- TRUTH CHECKER -->
-<section>
-  <div class="section-label">Truth Checker</div>
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;font-size:13px;line-height:1.8">
-    <p><strong style="color:var(--muted);font-family:var(--mono);font-size:11px">CO WIEM</strong><br>
-    Klient ma Cowork Team + GA4. Clarity i dane transakcyjne to założenie. Masz działające EEL pipeline (capture, vision, CS), strateg + agentów. Claude Code obsługuje agents/skills/workflows.</p>
-    <p style="margin-top:12px"><strong style="color:var(--muted);font-family:var(--mono);font-size:11px">CO ZAKŁADAM</strong><br>
-    Clarity API jest dostępne i klient da token. GA4 MCP działa lub masz oauth. Dane transakcyjne = Shopify/inny silnik ma API. Klient jest na Claude Team (nie solo).</p>
-    <p style="margin-top:12px"><strong style="color:var(--muted);font-family:var(--mono);font-size:11px">CO MOŻE BYĆ BŁĘDNE</strong><br>
-    Clarity może nie mieć publicznego API (Clarity eksportuje tylko przez dashboard). Cowork Team może nie obsługiwać custom agentów (tylko skille przez plugin). Klient może mieć inny silnik niż Shopify.</p>
-    <p style="margin-top:12px"><strong style="color:var(--muted);font-family:var(--mono);font-size:11px">CO ZWERYFIKOWAĆ</strong><br>
-    Clarity API dostępność · format danych transakcyjnych klienta · czy Cowork Team pozwala na custom agents czy tylko skille · jakie URL-e są priorytetem dla klienta.</p>
-    <p style="margin-top:12px"><strong style="color:var(--muted);font-family:var(--mono);font-size:11px">CO POPRAWIĘ Z JEDNYM INPUTEM</strong><br>
-    Gdy wiem czy Clarity ma API — zmienię WF-02/03 albo wytnę tę gałąź. Gdy wiem jak Cowork distribuuje narzędzia — zmienię typy artefaktów (agent→plugin).</p>
-  </div>
-</section>
-
-<script>
-function toggle(header) {
-  const body = header.nextElementSibling;
-  body.classList.toggle('open');
-}
-// open first by default
-document.querySelector('.wf-header').click();
-</script>
+  <div class="foot">AIcommerce · obszar CRO · workflowy · wersja robocza</div>
+</div>
+</body>
+</html>
