@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Setup AIcommerce: edycja CRO — Ania Kruk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --ink:#0a0a0a; --muted:#5b6472; --faint:#8b93a2; --line:#e6e6e9;
+    --green:#16a34a; --green-d:#15803d; --green-soft:#e7f6ec; --green-line:#b7e3c4;
+    --orange:#f5751a; --orange-d:#dd5e0a; --orange-soft:#fff2e8; --orange-line:#f8c39a;
+    --blue:#0f7ae5; --blue-d:#0a63bd; --blue-soft:#e9f3fd; --blue-line:#a9d2f6;
+    --violet:#7c5cff; --violet-d:#5a3ff0; --violet-soft:#efeaff; --violet-line:#d4c9ff;
+    --amber:#b8862b; --amber-soft:#fdf5e6; --amber-line:#e9d3a3;
+    --dark:#1a1f2b;
+    --grotesk:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--grotesk);background:var(--bg);color:var(--ink);line-height:1.65;font-size:16.5px;-webkit-font-smoothing:antialiased}
+
+  /* topbar */
+  .top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top-in{max-width:1180px;margin:0 auto;padding:13px 28px;display:flex;align-items:center;gap:18px}
+  .back{font-family:var(--mono);font-size:12px;color:var(--muted);text-decoration:none;padding:6px 12px;border:1px solid var(--line);border-radius:8px;transition:.15s;white-space:nowrap}
+  .back:hover{border-color:var(--violet);color:var(--violet-d)}
+  .top-t{font-size:14px;font-weight:600}
+  .top-t span{color:var(--faint);font-weight:400}
+  .top-nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+  .top-nav a{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;padding:5px 10px;border-radius:7px;transition:.15s}
+  .top-nav a:hover{background:var(--violet-soft);color:var(--violet-d)}
+  @media(max-width:760px){.top-nav{display:none}}
+
+  .wrap{max-width:860px;margin:0 auto;padding:44px 28px 90px}
+
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);font-weight:600;margin-bottom:14px}
+  h1{font-size:clamp(30px,4.4vw,44px);font-weight:700;letter-spacing:-.03em;line-height:1.05;margin-bottom:14px}
+  .sub{color:var(--muted);font-size:19px;margin-bottom:44px}
+
+  section{margin-bottom:46px;scroll-margin-top:70px}
+  h2{font-size:26px;font-weight:700;letter-spacing:-.02em;margin-bottom:16px;display:flex;align-items:baseline;gap:12px}
+  h2 .n{font-family:var(--mono);font-size:14px;color:var(--violet);font-weight:600}
+  h3{font-size:17.5px;font-weight:700;margin:22px 0 9px}
+  p{margin-bottom:13px;color:var(--muted)}
+  p strong,li strong{color:var(--ink);font-weight:650}
+  em{color:var(--violet-d);font-style:italic}
+
+  ul{list-style:none;margin:12px 0}
+  li{position:relative;padding-left:21px;margin-bottom:9px;color:var(--muted)}
+  li::before{content:'';position:absolute;left:3px;top:11px;width:5px;height:5px;background:var(--violet);border-radius:50%}
+  ol{list-style:none;counter-reset:o;margin:12px 0}
+  ol li{counter-increment:o;padding-left:30px}
+  ol li::before{content:counter(o);position:absolute;left:0;top:1px;width:20px;height:20px;background:var(--violet-soft);color:var(--violet-d);border-radius:50%;font-family:var(--mono);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+  table{width:100%;border-collapse:collapse;font-size:15px;margin:14px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  thead{background:#fafbfd}
+  th{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600;text-align:left;padding:11px 14px;border-bottom:1px solid var(--line)}
+  td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  td strong{color:var(--ink)}
+  .tw{overflow-x:auto}
+
+  blockquote{border-left:3px solid var(--violet);background:var(--violet-soft);border-radius:0 12px 12px 0;padding:15px 20px;margin:16px 0;color:var(--muted);font-size:15.5px}
+  blockquote strong{color:var(--violet-d)}
+  .quote-demo{border-left:3px solid var(--orange);background:var(--orange-soft);border-radius:0 12px 12px 0;padding:15px 20px;margin:16px 0;font-style:italic;color:var(--muted)}
+
+  .box{border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;background:#fafbfd}
+  .box.green{background:var(--green-soft);border-color:var(--green-line)}
+  .box.green h3{color:var(--green-d);margin-top:0}
+  .box.amber{background:var(--amber-soft);border-color:var(--amber-line)}
+
+  pre{font-family:var(--mono);font-size:13px;background:var(--dark);color:#e8eaed;padding:16px 20px;border-radius:12px;overflow-x:auto;margin:16px 0;line-height:1.8}
+
+  .price{display:inline-block;font-family:var(--mono);font-size:17px;font-weight:700;color:var(--green-d);background:var(--green-soft);border:1.5px solid var(--green-line);padding:8px 16px;border-radius:10px;margin-top:6px}
+
+  .steps{display:grid;gap:11px;margin:16px 0}
+  .step{border:1px solid var(--line);border-radius:13px;padding:15px 18px;background:#fff}
+  .step .st{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--violet);font-weight:700;margin-bottom:4px}
+  .step .sn{font-size:17px;font-weight:700;margin-bottom:4px}
+  .step p{margin:0;font-size:14.5px}
+
+  .cta{background:var(--dark);color:#fff;border-radius:16px;padding:28px 30px;margin-top:10px}
+  .cta h2{color:#fff;margin-bottom:10px}
+  .cta p{color:#b8bfcc}
+  .foot{max-width:860px;margin:0 auto;padding:0 28px 44px;font-family:var(--mono);font-size:11.5px;color:var(--faint);text-align:center}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="top-in">
+  <a class="back" href="ANIAKRUK_START.html">← start</a>
+  <div class="top-t">Oferta <span>· Setup AIcommerce: edycja CRO</span></div>
+  <div class="top-nav">
+    <a href="#s2">Wizja</a><a href="#s4">Etapy</a><a href="#s5">Jak działa</a><a href="#s8">Wycena</a><a href="#s9">Następny krok</a>
+  </div>
+</div></div>
+
+<div class="wrap">
+  <div class="kicker">AIcommerce · odpowiedź na brief</div>
+  <h1>Setup AIcommerce<br><span style="color:var(--violet)">edycja CRO</span></h1>
+  <p class="sub">Dla marki i sklepu Ani Kruk. Wdrożenie dedykowanego systemu bazującego na możliwościach AI dla e-commerce.</p>
+
+  <section id="s1">
+    <h2><span class="n">01</span>Przedmiot oferty</h2>
+    <h3>Brief — czego oczekujecie</h3>
+    <p>Budowy automatyzacji i agentów pomagających w codziennej pracy nad e-commerce — na początek przede wszystkim nad CRO i funkcjonalnością sklepu.</p>
+    <h3>Debrief — jak to rozumiem</h3>
+    <p>Zgadzam się z kierunkiem: pojedynczy bot nie pomoże w codziennej pracy, potrzebny jest <strong>zespół agentów i automatyzacji</strong> — jeden bada stronę, drugi liczby, trzeci konkurencję.</p>
+    <p>Dokładam do tego jedno: żeby to realnie odciążało zespół, agenci muszą działać w <strong>ustalonym rytmie</strong>, a nie na wezwanie. Dlatego nie buduję pojedynczych agentów, tylko system, który zapewnia <strong>ciągłą opiekę nad konwersją</strong>: mierzyć → rozumieć dlaczego → poprawiać → szukać lepszych wersji → sprawdzać czy działa → skalować to, co zadziałało.</p>
+    <h3>Zadania — co konkretnie robię</h3>
+    <ul>
+      <li>Audyt sklepu (ścieżka zakupowa, karty produktu, punkty odejścia) — co widzi kupujący i gdzie się gubi</li>
+      <li>Benchmark: wasze liczby vs kategoria biżuterii vs konkretna konkurencja</li>
+      <li>Baza taktyk z rankingiem — co naprawić najpierw, co poczekać</li>
+      <li>Regularny skan konkurencji — białe plamy, których rywale nie pokrywają</li>
+      <li>Mission Control — jeden pulpit, na którym to wszystko widać na żywo</li>
+    </ul>
+  </section>
+
+  <section id="s2">
+    <h2><span class="n">02</span>Wizja — fajna przyszłość</h2>
+    <p>Docelowo to nie jest „narzędzie CRO". To <strong>samodoskonalący się kręgosłup AI dla e-commerce</strong> — system, który:</p>
+    <ul>
+      <li>uczy się z waszych danych,</li>
+      <li>sam się optymalizuje,</li>
+      <li>szuka i testuje lepsze rozwiązania — nie czeka, aż powiecie, tylko proponuje,</li>
+      <li>jest <strong>partnerem decyzyjnym</strong>: pokazuje dane, odkrycia, wnioski i propozycje, i otwarcie je z wami dyskutuje.</li>
+    </ul>
+
+    <h3>Obszary — po kolei, na tym samym kręgosłupie</h3>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>Obszar</th><th>Co obejmuje</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>CRO</strong> ← <em>tu zaczynam</em></td><td>UX/UI ścieżki zakupowej, funkcjonalność sklepu</td></tr>
+        <tr><td>2</td><td>Kontent</td><td>kontent produktowy: opisy kart produktu, kategorie, FAQ</td></tr>
+        <tr><td>3</td><td>Asortyment i ceny</td><td>polityka cenowa, promocje, bundling</td></tr>
+        <tr><td>4</td><td>Cross-sell / Up-sell</td><td>rekomendacje, większy koszyk</td></tr>
+        <tr><td>5</td><td>Traffic &amp; Visibility</td><td>atrybucja kanałów, SEO/GEO, łączenie danych</td></tr>
+      </tbody>
+    </table></div>
+    <p>Zaczynam od CRO, bo to najszybszy mierzalny zwrot. Każdy kolejny obszar dokłada się na tym samym fundamencie — nie budujecie za każdym razem od zera.</p>
+
+    <h3>Architektura — z czego to się składa</h3>
+    <p>System stoi na <strong>Mission Control</strong> — jednym centrum, gdzie macie w jednym miejscu dane, podgląd analiz, bazy wiedzy oraz <strong>aktywnego asystenta</strong>, który pomaga z tych zasobów korzystać.</p>
+    <p>Zbudowany z: <strong>workflowów · skilli · skryptów · agentów · automatyzacji</strong> (czasowych, odpalanych zegarem, i triggerowanych — odpalanych wydarzeniem).</p>
+    <p>Uczy się dwutorowo: z <strong>cyklu danych</strong> (co zadziałało w liczbach) oraz z <strong>rozmów z waszym zespołem</strong> (kontekst, którego nie ma w żadnym raporcie). Pamięta ustalenia między sesjami — nie zaczynacie od zera przy każdej rozmowie.</p>
+    <blockquote>Pełna mapa systemu — warstwy, agenci, bazy i pętla uczenia — jest w osobnym widoku: <a href="ARCHITEKTURA_SCHEMAT.html" style="color:var(--violet-d);font-weight:600">Architektura →</a></blockquote>
+
+    <h3>Jak to wygląda, gdy stoi</h3>
+    <p>Poniedziałek, 6:45. Mateusz dostaje na Discordzie powiadomienie od bota — zanim jeszcze usiądzie do biurka. Jeden mały problem i masa sukcesów. Szczegóły czekają na mailu.</p>
+    <div class="quote-demo">🤖 <strong>CRO Bot</strong> · poniedziałek 6:45<br><br>Tydzień 29 — <strong>4 rzeczy poszły w górę</strong>, 1 wymaga uwagi.<br><br>▲ Konwersja +12% · ▲ Koszyk +8% · ▲ Kolczyki: rekord tygodnia · ▲ Taktyka „zdjęcie lifestyle" działa (+9% ATC)<br>▼ Mniej ludzi klikało w zeszłym tygodniu w oferty above the fold na listingu bestsellerów. Warto sprawdzić, co się dzieje.<br><br><em>Pełny raport → mail.</em></div>
+    <p>Nie trzeba zamawiać analizy. Nie trzeba czekać na agencję. Gotowa obserwacja, konkretna taktyka, punkt porównania z rynkiem.</p>
+    <p><strong>Za pół roku:</strong> wiecie co naprawić w przyszłym tygodniu, wiecie dlaczego, macie mierzalny efekt ostatniej zmiany. Bez analityka danych na etacie.</p>
+
+    <h3>Słownik — żeby nie było magii</h3>
+    <ul>
+      <li><strong>Skill</strong> — jedna umiejętność systemu, przepis na konkretne zadanie (np. „zbadaj tę stronę oczami kupującego")</li>
+      <li><strong>Agent</strong> — wyspecjalizowany „pracownik" AI. <strong>Agent to rola, nie wiedza</strong> — działa wg scenariusza, który realizuje, i korzysta ze skilli oraz baz przypisanych do obszaru. Dlatego ci sami agenci obsługują wszystkie obszary</li>
+      <li><strong>Agent autonomiczny</strong> — działa sam z siebie: nie czeka na polecenie, pilnuje swojego obszaru i reaguje, gdy trzeba</li>
+      <li><strong>Workflow</strong> — ustalona kolejność: który agent co robi, kiedy. Jak procedura w firmie, tylko wykonuje się sama</li>
+      <li><strong>Skrypt</strong> — deterministyczny kod robiący powtarzalną robotę zamiast AI. Tańszy i zawsze daje ten sam wynik z tych samych danych</li>
+      <li><strong>Task powtarzalny</strong> — zadanie odpalane przez <strong>zegar</strong>: co poniedziałek raport</li>
+      <li><strong>Automatyzacja</strong> — akcja odpalana przez <strong>wydarzenie</strong>: konwersja spadła o 15% → natychmiast alert</li>
+      <li><strong>Setup</strong> — cały poskładany system: agenci + workflowy + analityka + pulpit, działające jako jedno</li>
+      <li><strong>Mission Control</strong> — jeden ekran ze stanem całości</li>
+      <li><strong>Moduł briefingu</strong> — miejsce, w którym ustalacie, co system ma monitorować: które ścieżki, elementy strony i KPI. System nie zgaduje priorytetów, dostaje je od was</li>
+      <li><strong>Moduł rejestrowania eventów</strong> — rejestr zdarzeń mierzonych w sklepie: co jest śledzone, czy działa poprawnie i czego brakuje. Bez tego analiza stoi na dziurawych danych</li>
+      <li><strong>Bot</strong> — powiadomienia tam, gdzie i tak jesteście: Discord, Slack lub mail. Krótkie podsumowanie i alert, gdy coś wymaga uwagi — bez logowania się do pulpitu</li>
+      <li><strong>Benchmark</strong> — punkt odniesienia. „Konwersja 1,8%" — dużo czy mało? Dopiero porównanie do kategorii, konkurencji i własnej historii mówi, gdzie boli i o ile</li>
+    </ul>
+
+    <div class="box">
+      <h3 style="margin-top:0">Czym to fizycznie jest — żeby nie brzmiało jak magia</h3>
+      <p>Agenci i skille to nie tajemnicze byty, tylko <strong>zwykłe pliki tekstowe</strong>, które można otworzyć i przeczytać:</p>
+      <ul style="margin-bottom:0">
+        <li><strong>Agent</strong> — jeden plik z opisem roli: kim jest, jakie ma uprawnienia, jak ma pracować. Kilkadziesiąt linii tekstu</li>
+        <li><strong>Skill</strong> — folder z instrukcją wykonania zadania, a przy bardziej złożonych — także ze skryptami, które robią powtarzalną część roboty</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="s3">
+    <h2><span class="n">03</span>Co ten setup ma robić?</h2>
+    <p>Ma działać jak dobry konsultant — bez urlopu i bez mailowania o dostępy. Pięć rzeczy bez waszego udziału:</p>
+    <ul>
+      <li><strong>Mierzy rzeczywistość</strong> — łączy kilka źródeł danych z wiedzą o e-commerce z baz. Nie patrzy na jedną liczbę w oderwaniu, tylko składa obraz z tego, co realnie się dzieje w sklepie</li>
+      <li><strong>Mówi o tym, co widzi i rozumie</strong> — i to dosłownie: system odzywa się do człowieka komunikatami. Patrzy na stronę oczami kupującego (co przyciąga uwagę, co jest niewidoczne mimo że istnieje, gdzie ścieżka się rwie), a potem sam mówi o tym normalnym językiem — na Discordzie, w raporcie albo w rozmowie z asystentem. Nie musicie pytać ani szukać w tabelkach</li>
+      <li><strong>Reaguje na anomalie</strong> — alertuje i szuka przyczyn. Jak coś odstaje od normy, nie czeka na poniedziałek</li>
+      <li><strong>Rekomenduje taktyki i mierzy, czy działają</strong> — konkretne, z uzasadnieniem. Nie „popraw zdjęcia", tylko „przesuń zdjęcie aranżacyjne na pozycję 2, bo kupujący szuka kontekstu noszenia przed dodaniem do koszyka". Potem sprawdza efekt przed/po na waszych własnych liczbach</li>
+      <li><strong>Liczy kodem, nie zgaduje</strong> — powtarzalne wyliczenia robią skrypty, nie AI. Ten sam adres zawsze dostanie tę samą ocenę. AI wchodzi tam, gdzie trzeba zinterpretować wynik — nie tam, gdzie trzeba go policzyć</li>
+    </ul>
+    <blockquote>Jak dokładnie pracuje system — sześć workflowów z agentami, skillami i skryptami: <a href="CRO_WORKFLOWS.html" style="color:var(--violet-d);font-weight:600">Workflowy →</a></blockquote>
+  </section>
+
+  <section id="s4">
+    <h2><span class="n">04</span>Jak do niego dojść</h2>
+    <p>Docelowy setup buduję krok po kroku. Każdy etap to samodzielna wartość, nie tylko przygotowanie do następnego.</p>
+    <div class="steps">
+      <div class="step"><div class="st">Etap 1</div><div class="sn">Ustalenie stanu wyjściowego</div><p>Jednorazowa analiza: ścieżka, karty produktu, punkty odejścia, benchmark. Gotowa baza taktyk z rankingiem. <em>Precyzyjne, ale zamrożone w czasie.</em></p></div>
+      <div class="step"><div class="st">Etap 2</div><div class="sn">Żywy rytm</div><p>System działa regularnie: co tydzień raport, benchmark na żywo, skan konkurencji, baza taktyk aktualizowana. Widzi wasz sklep, nie tylko kategorię. <em>Kamera, która nie śpi.</em></p></div>
+      <div class="step"><div class="st">Etap 3</div><div class="sn">Pełny setup</div><p>Infrastruktura zintegrowana, system widzi pełny obraz, proponuje zmiany zanim je zamówicie. Po udowodnionej wartości Etapu 2.</p></div>
+    </div>
+  </section>
+
+  <section id="s5">
+    <h2><span class="n">05</span>Jak to działa u was</h2>
+    <div class="box green">
+      <h3>Buduję rozwiązanie, które będzie wasze</h3>
+      <p style="margin:0">Stoi u was, działa dla was i jest kontrolowane przez was — to wasza infrastruktura, nie wynajęty czarny box. Widzicie, co się dzieje, macie dostęp do konfiguracji i do wyników.</p>
+    </div>
+
+    <h3>Jedyny element, który zostaje mój — bazy wiedzy</h3>
+    <p>W całym systemie jest dokładnie jedna rzecz, której nie przekazuję na własność: <strong>bazy danych</strong>, które budowałem latami i które rosną na doświadczeniu wielu wdrożeń.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Baza</th><th>Co zawiera</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Baza elementów</strong></td><td>słownik wszystkich elementów sklepu, po których system rozpoznaje, co jest na stronie</td></tr>
+        <tr><td><strong>Baza kryteriów</strong></td><td>reguły oceny każdego elementu — co jest dobrze, co źle i dlaczego</td></tr>
+        <tr><td><strong>Baza taktyk</strong></td><td>sprawdzone taktyki z rankingiem skuteczności</td></tr>
+        <tr><td><strong>Baza biasów zakupowych</strong></td><td>udowodnione mechanizmy psychologii zakupu, na których opierają się rekomendacje</td></tr>
+      </tbody>
+    </table></div>
+    <p><strong>Te cztery bazy działają w modelu leasingu.</strong> Korzystacie z nich przez cały czas trwania współpracy — i korzystacie z ich rozwoju, bo rosną niezależnie od was, na doświadczeniu wszystkich wdrożeń.</p>
+
+    <h3>Co jest wasze na stałe</h3>
+    <p><strong>Wszystko, co powstanie z analizy waszej kategorii — zostaje wasze, na własność, bezterminowo.</strong> To wy płacicie za tę analizę, więc wynik należy do was:</p>
+    <ul>
+      <li><strong>benchmarki kategorii</strong> — standard rynku zbudowany z audytu 50–100 sklepów biżuterii</li>
+      <li><strong>benchmarki własne</strong> — historia waszych wyników i efektów wdrożonych zmian</li>
+      <li><strong>wszystkie raporty, audyty i listy taktyk</strong> wygenerowane dla waszego sklepu</li>
+    </ul>
+    <p>Do tego cała reszta systemu: silnik, workflowy, agenci, skrypty, pulpit, konfiguracja i wasze dane.</p>
+
+    <h3>Dane</h3>
+<pre>Wasze dane:      GA4 · Segmentify · platforma sklepowa
+     ↓ (tylko odczyt)
+System:          analiza · porównanie · generowanie taktyk
+     ↓
+Mission Control: raport co poniedziałek · pulpit · asystent</pre>
+    <p><strong>Dane nie wychodzą poza wasze środowisko</strong> poza tym, co niezbędne do pojedynczej analizy. Konektory działają przez protokół MCP (standard Anthropic) — szyfrowane, tylko odczyt. Nie potrzebuję dostępu do zaplecza sklepu, CMS-a ani danych osobowych klientów.</p>
+    <p><strong>Nie instaluję u was</strong> dodatkowych narzędzi ani nowych subskrypcji — system czyta to, co już zbieracie.</p>
+    <blockquote><strong>Nie każę nic dokupować.</strong> Macie Segmentify (zdarzenia o tym, co klient wybiera) i GA4 (co się dzieje w lejku). Inni powiedzą „zainstalujcie kolejne narzędzie" — ja czytam to, co już płacicie i czego nikt nie ma czasu przełożyć na decyzje.</blockquote>
+  </section>
+
+  <section id="s6">
+    <h2><span class="n">06</span>Model współpracy</h2>
+    <p>System jest wasz — leasingujecie tylko bazy wiedzy. Stąd dwa warianty:</p>
+    <div class="tw"><table>
+      <thead><tr><th></th><th>Jednorazowo</th><th>Ciągła współpraca</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Co dostajecie</strong></td><td>Stan wyjściowy: audyt, lista taktyk, diagnoza</td><td>Działający system + leasing baz</td></tr>
+        <tr><td><strong>Bazy wiedzy</strong></td><td>użyte raz, do wykonania audytu</td><td>dostępne stale, rosną w czasie</td></tr>
+        <tr><td><strong>Wartość w czasie</strong></td><td>zamrożona w dniu dostawy</td><td>rośnie z każdym miesiącem</td></tr>
+        <tr><td><strong>System się uczy</strong></td><td>nie</td><td>tak — na waszych wynikach i rozmowach</td></tr>
+        <tr><td><strong>Dla kogo</strong></td><td>sprawdzić wartość przed decyzją</td><td>kto rozumie, że CRO to proces, nie projekt</td></tr>
+      </tbody>
+    </table></div>
+    <div class="box">
+      <p style="margin:0"><strong>Co zostaje przy zakończeniu współpracy:</strong> cała infrastruktura, konfiguracja, wasze dane, wszystkie raporty i taktyki — oraz <strong>benchmarki kategorii i benchmarki własne, zbudowane z analizy waszego rynku</strong>. Wygasa wyłącznie dostęp do czterech baz leasingowanych i do ich dalszego rozwoju.</p>
+    </div>
+  </section>
+
+  <section id="s7">
+    <h2><span class="n">07</span>Czego potrzebuję od was</h2>
+    <h3>Krytyczne</h3>
+    <ol>
+      <li><strong>Plan Claude</strong> — do działania konektorów potrzebny jest plan Claude Pro lub wyższy. Bez tego pracuję w trybie Etapu 1</li>
+      <li><strong>Dostęp do GA4</strong> (tylko odczyt) — bez tego system jest ślepy na wasze liczby</li>
+    </ol>
+    <h3>Do weryfikacji na starcie</h3>
+    <ul>
+      <li><strong>Dostępność heatmap i nagrań sesji</strong> (Hotjar / Clarity) — sprawdzam, czy narzędzie jest wdrożone, czy zbiera dane i czy jest do nich dostęp. To warunkowa warstwa: bez niej pracuję na danych, które już macie</li>
+      <li><strong>Dane transakcyjne</strong> — nieobowiązkowe na start, przyspieszają pełen obraz</li>
+      <li><strong>Polityka IT wobec chmury</strong> — jeśli są restrykcje, dobiorę wariant wdrożenia</li>
+    </ul>
+    <p>Nic poza tym. Bez dostępu do zaplecza sklepu, CMS-a ani danych osobowych klientów.</p>
+  </section>
+
+  <section id="s8">
+    <h2><span class="n">08</span>Wycena</h2>
+    <div class="box amber"><p style="margin:0">Ceny netto. Oś: <strong>jednorazowe</strong> (rozpoznanie, build, szkolenia) vs <strong>miesięczne</strong> (serwis i leasing baz).</p></div>
+
+    <h3>8.1 · Rozpoznanie i audyt — jednorazowo</h3>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>Pozycja</th><th>Co obejmuje</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Warsztat (4h)</strong></td><td>z waszym zespołem: mapowanie procesów zakupowych + analiza techniczna (stack, dane, integracje)</td></tr>
+        <tr><td>2</td><td><strong>Audyty wstępne</strong></td><td>4 audyty strony: wizualny · kontentowy · techniczny · SEO</td></tr>
+        <tr><td>3</td><td><strong>Analiza danych historycznych</strong></td><td>wasze dane i wnioski; jeśli potrzebne — GA4 i dane transakcyjne</td></tr>
+        <tr><td>4</td><td><strong>Budowa bazy benchmarków</strong></td><td>audyt wizualny 50–100 sklepów kategorii → standard rynku (element u ≥50% konkurencji = norma) + analiza luk</td></tr>
+        <tr><td>→</td><td><strong>Rezultat</strong></td><td>baza taktyk z rankingiem Impact × Effort <strong>+ baza benchmarków własnych</strong> (punkt odniesienia, od którego liczymy każdą kolejną zmianę)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="price">Etap 1 — 2 500 zł</div>
+
+    <h3>8.2 · Build — jednorazowo</h3>
+    <p><strong>Strategia budowy rozwiązania</strong> — projekt systemu przed budową: architektura, dobór agentów i workflowów, plan wdrożenia, mapa danych.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Warstwa</th><th>Co powstaje</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Setup techniczny</strong></td><td>serwer, orkiestrator, podpięcie modeli, konektory do danych</td></tr>
+        <tr><td><strong>Mission Control</strong></td><td>pulpit: <strong>moduł briefingu</strong> · <strong>rejestr eventów</strong> · dane live · analizy obszarowe · lista napraw · lista taktyk · komunikaty · asystent</td></tr>
+        <tr><td><strong>Silnik wykonawczy</strong></td><td>agenci · workflowy · automatyzacje · <strong>skrypty</strong> · 7 skilli obszaru CRO</td></tr>
+        <tr><td><strong>Bazy i silniki wiedzy</strong></td><td>podpięcie baz leasingowanych + zbudowanie benchmarków kategorii i własnych</td></tr>
+        <tr><td><strong>Model uczenia</strong></td><td>pętla samodoskonalenia · uczenie z rozmów · pamięć między sesjami</td></tr>
+        <tr><td><strong>Bot powiadomień</strong></td><td>bot na Discordzie / Slacku: raport tygodniowy w skrócie, alerty o anomaliach, szybkie pytania do systemu bez wchodzenia na pulpit</td></tr>
+      </tbody>
+    </table></div>
+    <div class="price">Build systemu — 6 000–7 000 zł</div>
+    <p style="font-size:14px;margin-top:10px"><em>Bot powiadomień w cenie — nie doliczam osobno.</em></p>
+    
+
+    <h3>8.3 · Szkolenia</h3>
+    <ul>
+      <li>Onboarding zespołu — jak czytać raporty i działać na taktykach</li>
+      <li>Warsztat Mission Control — dla szefa e-commerce</li>
+      <li><em>(opcja)</em> sesja techniczna dla IT — architektura, bezpieczeństwo danych</li>
+    </ul>
+    <div class="price">Pakiet szkoleniowy (opcja) — 1 000 zł</div>
+
+    <h3>8.4 · Serwis i leasing baz wiedzy — miesięcznie</h3>
+    <p><strong>Serwis — 4 godziny miesięcznie</strong> do dowolnego wykorzystania rozwojowego: nowe taktyki, zmiany w workflowach, dodatkowe analizy, konsultacje. Wy decydujecie, na co je przeznaczyć.</p>
+    <p><strong>Leasing baz wiedzy (4):</strong> baza elementów · kryteriów oceny · taktyk · biasów zakupowych.</p>
+    <p><strong>Wasze na stałe:</strong> benchmarki kategorii i benchmarki własne — powstają z analizy waszego rynku, więc zostają waszą własnością.</p>
+    <blockquote>Bazy to jedyny element, który zostaje mój — <strong>leasingujecie do nich dostęp, a one rosną</strong> na doświadczeniu wszystkich wdrożeń. Płacicie za dostęp do coraz mądrzejszej wiedzy, nie za zamrożony plik.</blockquote>
+    <div class="price">Serwis (4h) — 1 200 zł / mies.</div>
+    <div class="price" style="background:var(--blue-soft);border-color:var(--blue-line);color:var(--blue-d);margin-left:8px">Subskrypcja baz — 499 zł / mies.</div>
+    <p style="font-size:15px;margin-top:12px"><strong>Razem: 1 699 zł miesięcznie.</strong></p>
+    <p style="font-size:14px;margin-top:12px"><em>Punkt odniesienia: analityk danych na etacie to kilkanaście tysięcy miesięcznie; agencja CRO w Polsce — od 3 tys. zł miesięcznie wzwyż.</em></p>
+
+    <h3>8.5 · Rozbudowa o kolejny obszar</h3>
+    <p><strong>Co już jest — nie płacicie drugi raz:</strong> setup techniczny, Mission Control, agenci, workflowy, automatyzacje, skrypty, model uczenia. Fundament stoi u was, zbudowany raz.</p>
+    <p><strong>Co dochodzi przy nowym obszarze:</strong> skille obszaru · bazy wiedzy obszaru · silniki obszaru · podpięcie źródeł · nowy widok w kokpicie · strategia wsadu.</p>
+    <blockquote><strong>Pierwszy obszar płaci za fundament. Każdy następny korzysta z niego za darmo</strong> — dokładacie bieg, nie budujecie samochodu od nowa. Im więcej obszarów, tym niższy koszt krańcowy.</blockquote>
+    <div class="price">Kolejny obszar — 3 000 zł</div>
+    <p style="font-size:14px;margin-top:10px"><em>Miesięczny serwis i subskrypcja baz bez zmian — obsługa drugiego obszaru nie podwaja kosztu.</em></p>
+  </section>
+
+  <section id="s9">
+    <div class="cta">
+      <h2 style="display:block"><span class="n" style="color:#a89bff">09</span> Następny krok</h2>
+      <p>Spotkanie i omówienie oferty w siedzibie Ania Kruk — najlepiej z szefem e-commerce i szefem IT razem, żeby wszystkie pytania wybrzmiały przy jednym stole.</p>
+      <p>Pokażę Mission Control na realnym przykładzie, odpowiem na pytania o dane i bezpieczeństwo, ustalimy zakres i wariant wejścia.</p>
+      <p style="margin:0"><strong style="color:#fff">Bez prezentacji. Rozmowa i demo.</strong></p>
+    </div>
+  </section>
+</div>
+<div class="foot">AIcommerce · oferta dla Ania Kruk · wersja robocza</div>
+
+<!-- ===== WARSTWA CZYTANIA ===== -->
+<style>
+  mark.hl{background:#fff3cd;border-bottom:2px solid var(--amber);border-radius:2px;padding:0 1px}
+  #cbtn{position:absolute;z-index:80;display:none;background:var(--violet);color:#fff;border:none;
+    font-family:var(--grotesk);font-size:13px;font-weight:600;padding:8px 15px;border-radius:9px;
+    cursor:pointer;box-shadow:0 6px 18px rgba(124,92,255,.35);gap:7px;align-items:center}
+  #cbtn.show{display:inline-flex}
+  #cpop{position:absolute;z-index:81;display:none;background:#fff;border:1px solid var(--violet-line);
+    border-radius:13px;box-shadow:0 14px 40px rgba(20,26,45,.2);padding:14px;width:320px}
+  #cpop.show{display:block}
+  #cpop .q{font-size:12px;color:var(--muted);font-style:italic;border-left:2px solid var(--violet);padding-left:9px;margin-bottom:9px;max-height:56px;overflow:auto}
+  #cpop textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px;font-family:var(--grotesk);font-size:14px;resize:vertical;min-height:70px;color:var(--ink)}
+  #cpop textarea:focus{outline:none;border-color:var(--violet)}
+  #cpop .b{display:flex;gap:8px;margin-top:9px}
+  #cpop button{flex:1;font-family:var(--grotesk);font-size:13px;font-weight:600;padding:8px;border-radius:8px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--muted)}
+  #cpop button.s{background:var(--violet);border-color:var(--violet);color:#fff}
+
+  #cpanel{position:fixed;right:0;top:0;bottom:0;width:340px;background:#fff;border-left:1px solid var(--line);
+    z-index:70;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s cubic-bezier(.2,.7,.3,1);box-shadow:-8px 0 30px rgba(20,26,45,.08)}
+  #cpanel.open{transform:none}
+  #cpanel .ph{background:var(--dark);color:#fff;padding:15px 18px;display:flex;align-items:center;gap:10px}
+  #cpanel .ph .t{font-size:15px;font-weight:700}
+  #cpanel .ph .c{font-family:var(--mono);font-size:11px;color:#a89bff;margin-top:2px}
+  #cpanel .ph .x{margin-left:auto;background:none;border:none;color:#8b93a2;font-size:20px;cursor:pointer;line-height:1}
+  #cpanel .pa{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
+  #cpanel .pa button{flex:1;font-family:var(--grotesk);font-size:12.5px;font-weight:600;padding:8px;border-radius:8px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink)}
+  #cpanel .pa button.pr{background:var(--violet);border-color:var(--violet);color:#fff}
+  #cpanel .pl{flex:1;overflow-y:auto;padding:14px 16px}
+  .cm{border:1px solid var(--line);border-radius:11px;padding:12px 13px;margin-bottom:10px;background:#fafbfd}
+  .cm .cs{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--violet-d);font-weight:700;margin-bottom:5px}
+  .cm .cq{font-size:12px;color:var(--muted);font-style:italic;border-left:2px solid var(--amber);padding-left:8px;margin-bottom:6px;line-height:1.4}
+  .cm .ct{font-size:14px;color:var(--ink)}
+  .cm .cd{font-family:var(--mono);font-size:10px;color:var(--faint);cursor:pointer;margin-top:6px;display:inline-block}
+  .cm .cd:hover{color:#c0392b}
+  .pe{text-align:center;color:var(--faint);font-size:13.5px;padding:34px 12px;line-height:1.6}
+  #ctoggle{position:fixed;right:18px;bottom:18px;z-index:69;background:var(--violet);color:#fff;border:none;
+    font-family:var(--grotesk);font-size:14px;font-weight:600;padding:12px 20px;border-radius:30px;cursor:pointer;
+    box-shadow:0 8px 26px rgba(124,92,255,.4);display:flex;align-items:center;gap:9px}
+  #ctoggle .badge{background:#fff;color:var(--violet-d);font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+  @media print{#ctoggle,#cpanel,#cbtn,#cpop{display:none!important}}
+</style>
+
+<button id="cbtn">💬 Skomentuj</button>
+<div id="cpop"><div class="q" id="cq"></div><textarea id="ct" placeholder="Twoja uwaga do tego fragmentu…"></textarea><div class="b"><button onclick="cCancel()">Anuluj</button><button class="s" onclick="cSave()">Zapisz</button></div></div>
+<button id="ctoggle" onclick="document.getElementById('cpanel').classList.toggle('open')">💬 Uwagi <span class="badge" id="cbadge">0</span></button>
+<aside id="cpanel">
+  <div class="ph"><div><div class="t">Twoje uwagi</div><div class="c" id="cinfo">zaznacz tekst i skomentuj</div></div><button class="x" onclick="document.getElementById('cpanel').classList.remove('open')">×</button></div>
+  <div class="pa"><button class="pr" onclick="cExport()">Kopiuj wszystkie</button><button onclick="cClear()">Wyczyść</button></div>
+  <div class="pl" id="cplist"></div>
+</aside>
+
+<script>
+const CK='aniakruk-oferta-uwagi';
+let C=[]; try{C=JSON.parse(localStorage.getItem(CK))||[]}catch(e){}
+const cb=document.getElementById('cbtn'),cp=document.getElementById('cpop');
+let pR=null,pQ='',pS='';
+
+document.addEventListener('mouseup',e=>{
+  if(cp.classList.contains('show'))return;
+  if(e.target&&e.target.closest&&(e.target.closest('#cpanel')||e.target.closest('#cpop')))return;
+  setTimeout(()=>{
+    const sel=window.getSelection(),t=sel.toString().trim();
+    if(t.length<4||!sel.rangeCount){cb.classList.remove('show');return}
+    const r=sel.getRangeAt(0);let n=r.commonAncestorContainer;
+    while(n&&n.nodeType===3)n=n.parentElement;
+    const sec=n&&n.closest?n.closest('section'):null;
+    pR=r.cloneRange();pQ=t;
+    pS=sec?(sec.querySelector('h2')?sec.querySelector('h2').textContent.replace(/^\d+/,'').trim():sec.id):'—';
+    const b=r.getBoundingClientRect();
+    cb.style.top=(window.scrollY+b.top-44)+'px';
+    cb.style.left=(window.scrollX+b.left+b.width/2-62)+'px';
+    cb.classList.add('show');
+  },10);
+});
+cb.onclick=()=>{
+  cb.classList.remove('show');
+  document.getElementById('cq').textContent='„'+pQ.slice(0,150)+(pQ.length>150?'…':'')+'"';
+  document.getElementById('ct').value='';
+  const b=pR.getBoundingClientRect();
+  let l=window.scrollX+b.left; if(l+330>window.innerWidth)l=window.innerWidth-340;
+  cp.style.top=(window.scrollY+b.bottom+9)+'px'; cp.style.left=Math.max(12,l)+'px';
+  cp.classList.add('show'); document.getElementById('ct').focus();
+};
+function cCancel(){cp.classList.remove('show');window.getSelection().removeAllRanges()}
+function cSave(){
+  const v=document.getElementById('ct').value.trim(); if(!v){document.getElementById('ct').focus();return}
+  C.push({id:'c'+C.length+'_'+pQ.length,sec:pS,q:pQ,t:v});
+  try{const m=document.createElement('mark');m.className='hl';pR.surroundContents(m)}catch(e){}
+  save();render();cp.classList.remove('show');window.getSelection().removeAllRanges();
+  document.getElementById('cpanel').classList.add('open');
+}
+function render(){
+  const l=document.getElementById('cplist');
+  l.innerHTML=C.length?C.map((c,i)=>`<div class="cm"><div class="cs">${esc(c.sec)}</div><div class="cq">„${esc(c.q.slice(0,120))}${c.q.length>120?'…':''}"</div><div class="ct">${esc(c.t)}</div><span class="cd" onclick="cDel(${i})">usuń</span></div>`).join(''):'<div class="pe">Brak uwag.<br>Zaznacz fragment tekstu i kliknij <b>💬 Skomentuj</b>.</div>';
+  document.getElementById('cbadge').textContent=C.length;
+  document.getElementById('cinfo').textContent=C.length?C.length+' '+(C.length===1?'uwaga':C.length<5?'uwagi':'uwag'):'zaznacz tekst i skomentuj';
+}
+function cDel(i){C.splice(i,1);save();render()}
+function cClear(){if(!confirm('Skasować wszystkie uwagi?'))return;C=[];document.querySelectorAll('mark.hl').forEach(m=>{const p=m.parentNode;while(m.firstChild)p.insertBefore(m.firstChild,m);p.removeChild(m);p.normalize()});save();render()}
+function cExport(){
+  let o='# UWAGI — Setup AIcommerce: edycja CRO (Ania Kruk)\n\n';
+  if(!C.length)o+='(brak uwag)\n';
+  C.forEach(c=>{o+=`## ${c.sec}\n  „${c.q.slice(0,140)}${c.q.length>140?'…':''}"\n  → ${c.t}\n\n`});
+  navigator.clipboard.writeText(o).then(()=>{const b=event.target,x=b.textContent;b.textContent='✓ Skopiowane';setTimeout(()=>b.textContent=x,1600)}).catch(()=>prompt('Skopiuj:',o));
+}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function save(){localStorage.setItem(CK,JSON.stringify(C))}
+document.addEventListener('scroll',()=>cb.classList.remove('show'),{passive:true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){cp.classList.remove('show');cb.classList.remove('show')}});
+render();
+</script>
+</body>
+</html>
