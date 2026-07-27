@@ -573,6 +573,7 @@ function render(){
   updateStats(total);
 }
 
+function visNoPath(a){if(filt.prio!=='all'&&a.pr!==filt.prio)return false;if(filt.typ!=='all'&&a.y!==filt.typ)return false;if(filt.status!=='all'&&a.st!==filt.status)return false;if(q){const ql=q.toLowerCase();if(!a.t.toLowerCase().includes(ql)&&!a.k.toLowerCase().includes(ql))return false;}return true;}
 function updateStats(total){
   const vA=A.filter(vis);
   document.getElementById('stat-total').textContent=total!==undefined?total:vA.length;
@@ -581,7 +582,7 @@ function updateStats(total){
   document.getElementById('stat-exist').textContent=vA.filter(a=>a.st==='ISTNIEJE'||a.st==='ROZBUDOWAĆ').length;
   ['all','A','B','C','D','E','F','G','H','I','J','K'].forEach(p=>{
     const el=document.getElementById('cnt-'+p);
-    if(el)el.textContent=p==='all'?vA.length:vA.filter(a=>a.p===p).length;
+    if(el)el.textContent=p==='all'?A.filter(visNoPath).length:A.filter(a=>a.p===p&&visNoPath(a)).length;
   });
 }
 
