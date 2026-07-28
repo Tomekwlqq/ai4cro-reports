@@ -208,35 +208,12 @@ pre code { background: transparent; padding: 0; }
 
 <aside class="sidebar">
   <h1>📚 Knowledge Base</h1>
-  <p class="subtitle">Setup Tomka 2026 · v0.1 · 30.05.2026 · sprawdzone 2026-07-28</p>
+  <p class="subtitle">Setup Tomka 2026 · v0.1 · 30.05.2026 · sprawdzone 2026-07-05</p>
 
   <div class="update-protocol">
     <strong>📅 Aktualizacja: codziennie (auto)</strong><br>
-    Ostatnio sprawdzone: <span id="lastChecked">2026-07-28</span><br>
+    Ostatnio sprawdzone: <span id="lastChecked">2026-07-05</span><br>
     Automat (kb_daily_update) dopina swieza wiedze, stempluje date, archiwizuje martwe linki.
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
   
@@ -287,11 +264,11 @@ pre code { background: transparent; padding: 0; }
     <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#e8a33a;font-weight:800;margin-bottom:4px">👑 Klaudiusz Opus poleca</div>
     <div style="font-size:13px;color:#9aa3b2;margin-bottom:14px">Podręczniki warsztatowe — zakres pracy + gotowe procedury (recipes) na realnym stacku Tomka. Seria utrzymywana aktualna.</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <a href="https://tomekwlqq.github.io/eel-reports/claude-seo-geo-warsztat.html" target="_blank" style="display:block;text-decoration:none;background:rgba(58,160,232,.08);border:1px solid #3aa0e8;border-radius:10px;padding:14px 16px;color:#e6e9ef">
+      <a href="claude-seo-geo-warsztat.html" style="display:block;text-decoration:none;background:rgba(58,160,232,.08);border:1px solid #3aa0e8;border-radius:10px;padding:14px 16px;color:#e6e9ef">
         <div style="font-weight:700;color:#fff;margin-bottom:4px">📈 Claude SEO + GEO-wiec</div>
         <div style="font-size:13px;color:#9aa3b2">Pipeline zlecenia, Senuto, GEO 13-pillar, <b>6 procedur</b>, propozycja usługi. Bez Ahrefs.</div>
       </a>
-      <a href="https://tomekwlqq.github.io/eel-reports/claude-ads-meta-google-warsztat.html" target="_blank" style="display:block;text-decoration:none;background:rgba(124,92,255,.08);border:1px solid #7c5cff;border-radius:10px;padding:14px 16px;color:#e6e9ef">
+      <a href="claude-ads-meta-google-warsztat.html" style="display:block;text-decoration:none;background:rgba(124,92,255,.08);border:1px solid #7c5cff;border-radius:10px;padding:14px 16px;color:#e6e9ef">
         <div style="font-weight:700;color:#fff;margin-bottom:4px">🎯 Claude Ads-owiec (Meta + Google)</div>
         <div style="font-size:13px;color:#9aa3b2">Reklama przez Claude + MCP — audyt, launch, optymalizacja regułowa, <b>6 procedur</b>.</div>
       </a>
@@ -1360,22 +1337,6 @@ SPRAWDZENIE PRAWDY
 <p>To NIE marketing. To <strong>empiryczny fakt</strong>. Dane do pitchu Plichta + Setup Boy Pro+.</p>` },
 
 // =========== DECISIONS & TODOS ===========
-{ id: "d-eel-samouczenie", category: "decision", title: "⭐ EEL — Samouczenie (self-learning loop reguł)", tags: ["eel", "samouczenie", "rules-loop", "05.07.2026"], status: "research-preview", hot: true,
-  relevance: ["Tomek", "EEL"],
-  summary: "Pętla która karmi bazę reguł z każdego audytu, nie z teorii. 6 kroków: SKAN → OBSERWACJA → LUKA → CHWYTANIE → COMMIT → WZROST. Reguła ma dom, jest czytana, rośnie z pracy — nie gnije.",
-  source: "Projects/Ecomms_Activation_Agency/ALGORYTM_REKO.md",
-  body: `<h4>6 kroków pętli</h4>
-<ol><li><strong>SKAN</strong> — audyt klienta jak zwykle</li><li><strong>OBSERWACJA</strong> — pole = werdykty wg reguł, nie puste</li><li><strong>LUKA</strong> — obserwacja-sierota (nie pasuje do żadnej reguły)</li><li><strong>CHWYTANIE</strong> — <code>@reg</code> hook, w locie</li><li><strong>COMMIT</strong> — do rejestru z polem <code>krok</code></li><li><strong>WZROST</strong> — następny skan już używa + zwrotka nudge do eel-po</li></ol>
-<h4>4 filary</h4>
-<ul><li><strong>Rejestr reguł</strong> <code>rules.json</code> — klucz zarządzania = KROK/funkcja algorytmu który regułę czyta</li><li><strong>Konsumpcja</strong> — reguły wpięte w krok 2 jako checklista obserwacji + mapa wsadów per krok (nie leżą martwe)</li><li><strong>Chwytanie luk</strong> — <code>@reg</code> hook → kolejka</li><li><strong>Zwrotka</strong> — nudge do eel-po żeby nie gniło (jak preference_signals)</li></ul>
-<h4>Różnica od stanu sprzed</h4>
-<p>Reguła ma dom → jest czytana → rośnie z pracy → nie gnije. Samouczenie = pętla, nie jednorazowa naprawa.</p>
-<h4>Stan (05.07.2026)</h4>
-<p><strong>Zbudowane:</strong> <code>rules.json</code> + <code>rules_loop.py</code> + testy 4/4, <code>@reg</code> hook w <code>promote-knowledge.js</code> (e2e OK), research 5× <code>EXTERNAL_*.md</code>, <code>DEMO_OBSERWACJE.html</code>.</p>
-<p><strong>Zaprojektowane (koncepcja w algorytmie):</strong> mechanizm obserwacje=ocena, konsolidacja ~600 reguł, skala 0-100+próg+waga, dwa widoki (klient/Tomek).</p>
-<h4>Linki</h4>
-<ul><li><code>Projects/Ecomms_Activation_Agency/ALGORYTM_REKO.md</code></li><li><code>Projects/Ecomms_Activation_Agency/NOTKA_SP_ROZWIAZANE_ALGORYTMEM.md</code></li><li><code>Projects/Ecomms_Activation_Agency/scripts/rules_loop.py</code></li></ul>` },
-
 { id: "d-cortex-arch", category: "decision", title: "Cortex v2 architektura — Lab vs Production", tags: ["cortex", "architecture", "decision"], status: "live",
   relevance: ["Tomek", "Cortex"],
   summary: "Decyzja v6: Lab w Agent Teams CLI (debugowalne) + Production w Agent SDK Python (deployment).",
@@ -1601,17 +1562,6 @@ SPRAWDZENIE PRAWDY
   relevance: ["Tomek"],
   summary: "Newsletter Digest — Gmail label 'Newslettery' → bloki treści → JSON na Drive. CCR 7:00.",
   source: "~/.claude/skills/gmail-digest/" },
-
-{ id: "sk-dpw", category: "skill", title: "/dpw (Dark Psychology Writer)", tags: ["copywriting", "sales", "dark-psychology", "b2b", "saas", "humanization"], status: "skill",
-  relevance: ["Tomek", "EEL"],
-  summary: "Adam Erhart framework — brief z serwisem → 10 technik × 10 wariantów narracji (100 copy options). Humanizacja wbudowana.",
-  source: "~/.claude/skills/dark-psychology-writer.md",
-  body: `<h4>10 technik</h4>
-<ol><li>Latent→Realized→Extreme Pain</li><li>Perceived Control</li><li>Pit of Darkness</li><li>Adventurer Frame</li><li>Throw Rocks at the Enemy</li><li>Objection Inversion</li><li>Future Pacing</li><li>Status Shift Framing</li><li>Identity Activation</li><li>Dangerous Simplicity</li></ol>
-<h4>Stack recipes</h4>
-<ul><li><strong>Landing:</strong> Simplicity→Pain→Future Pacing→Pit→Status→Objection→Control</li><li><strong>Email:</strong> Pain→Future→Identity</li><li><strong>Call:</strong> Control→Pain→Status→Objection</li></ul>
-<p><strong>Input:</strong> serwis, ICP, ból, dowody, ton → <strong>Output:</strong> tabela 10×10 wariantów (hook|narracja|CTA)<br>
-<strong>Reference:</strong> <a href="https://tomekwlqq.github.io/eel-reports/DARK_PSYCHOLOGY_WRITER.html" target="_blank">DARK_PSYCHOLOGY_WRITER.html</a></p>` },
 
 // =========== LINKI ===========
 { id: "l-eel-hub", category: "link", title: "EEL Central Hub (LIVE)", tags: ["live", "hub", "eel"], status: "published",
@@ -2527,71 +2477,6 @@ SPRAWDZENIE PRAWDY
   summary: "GEO Rekomendacje — SejfZone.pl (44–61→72–84/100), 8 DQ, szafy S1, 2026-05-22",
   source: "https://tomekwlqq.github.io/eel-reports/GEO-rekomendacje-sejfzone-2026-05-22.html",
   body: `<p>Auto-dopiete przez kb_daily_update 2026-06-17. Zrodlo: LINKI.md.</p>` },
-
-// === Tactics Intake Register — 2026-07-14 ===
-{ id: "eel-tactics-intake", category: "doc", title: "Tactics Intake Register — rejestr taktyk zewnętrznych", tags: ["eel", "cro", "taktyki", "eksperymenty", "shopify", "intake"], status: "live", hot: true,
-  relevance: ["Tomek", "EEL"],
-  summary: "Rejestr taktyk z video/artykułów/case studies. T001–T011. Claude opiekuje się — każde nowe źródło = nowy blok. Status per taktyka: backlog → do testu → OK/odrzucone.",
-  source: "https://tomekwlqq.github.io/eel-reports/TACTICS_INTAKE_REGISTER.html",
-  body: `<h4>Co to jest</h4>
-<p>Centralny rejestr zewnętrznych taktyk CRO / UX / marketing — z video, artykułów, case studies. Każda taktyka: opis · status · mapowanie EEL · seed artykułu.</p>
-<h4>Jak działa</h4>
-<ul><li>Tomek przynosi link → Claude ściąga transkrypt/treść → wyciąga taktyki → nowy blok w rejestrze</li><li>Status pipeline: <strong>backlog → do testu → testuje → OK / odrzucone</strong></li><li>Kolumna "EEL →" = gdzie wchodzi do kryteriów / vision reportu</li><li>Kolumna "Artykuł seed" = temat do własnego contentu</li></ul>
-<h4>Źródła</h4>
-<table><tr><th>#</th><th>Źródło</th><th>Taktyki</th></tr>
-<tr><td>001</td><td>Arsh Sanwarwala — Shopify CRO 2026 (YT 15 min)</td><td>T001–T011</td></tr></table>
-<h4>Pełny breakdown #001</h4>
-<p><a href="https://tomekwlqq.github.io/eel-reports/CONTENT_BREAKDOWN_001_shopify_cro_2026.html">CONTENT_BREAKDOWN_001</a> — Shopify CRO 2026, pełny spisek po kolei + tabela EEL (P0/P1/P2).</p>` },
-
-// === auto-dopiete 2026-07-15 (kb_daily_update) ===
-{ id: "kbauto-glov-live", category: "link", title: "📊 GLOV Live Dashboard — GA4 PL daily", tags: ["auto-dopiete", "2026-07-15"], status: "live", hot: false,
-  relevance: ["Tomek"],
-  summary: "📊 GLOV Live Dashboard — GA4 PL daily (country=Poland), R01–R10+PLAN, date picker, comparison mode, collapse/expand per sekcja, R02 sort 5 buttonów, DeepSeek chat. ETL: glov_etl_pl_daily.py, builder: build_glov_live.py. (2026-07-14)",
-  source: "https://tomekwlqq.github.io/eel-reports/GLOV_Live.html",
-  body: `<p>Auto-dopiete przez kb_daily_update 2026-07-15. Zrodlo: LINKI.md.</p>` },
-
-// === auto-dopiete 2026-07-15 (kb_daily_update) ===
-{ id: "kbauto-content-breakdown-001-shopify-cro-2026", category: "link", title: "📋 Content Breakdown #001 — Shopify CRO 2026", tags: ["auto-dopiete", "2026-07-15"], status: "live", hot: false,
-  relevance: ["Tomek"],
-  summary: "📋 Content Breakdown #001 — Shopify CRO 2026 (Arsh Sanwarwala, 15 min), pełny spisek po kolei: 6 wzorców, każdy z danymi + tabelą mapowania EEL P0/P1/P2. (2026-07-14)",
-  source: "https://tomekwlqq.github.io/eel-reports/CONTENT_BREAKDOWN_001_shopify_cro_2026.html",
-  body: `<p>Auto-dopiete przez kb_daily_update 2026-07-15. Zrodlo: LINKI.md.</p>` },
-
-// === auto-dopiete 2026-07-15 (kb_daily_update) ===
-{ id: "kbauto-agency-build", category: "link", title: "🏗️ Agency Build — rdzeń działania: 10 kafli", tags: ["auto-dopiete", "2026-07-15"], status: "live", hot: false,
-  relevance: ["Tomek"],
-  summary: "🏗️ Agency Build — rdzeń działania: 10 kafli (Mapa Imperium / Mapa agencyjna / Produkty egzekucyjne / Marka osobista / Plan napraw / Serce reko / Baza kryteriów / Builder kryteriów / Biasy+taktyki / Algorytm / Tactics Intake). (2026-07-14)",
-  source: "https://tomekwlqq.github.io/eel-reports/Agency_Build.html",
-  body: `<p>Auto-dopiete przez kb_daily_update 2026-07-15. Zrodlo: LINKI.md.</p>` },
-
-// === auto-dopiete 2026-07-16 (kb_daily_update) ===
-{ id: "kbauto-sejfzone-cs-bot-vs-rag-experiment", category: "link", title: "🛰️ CS-bot vs Generyk RAG — 10 scenariuszy porównawczych, DEEPSEEK, met", tags: ["auto-dopiete", "2026-07-16"], status: "live", hot: false,
-  relevance: ["Tomek"],
-  summary: "🛰️ CS-bot vs Generyk RAG — 10 scenariuszy porównawczych, DEEPSEEK, metryki TTFT/TGT, SejfZone katalog produktów. (2026-07-16)",
-  source: "https://tomekwlqq.github.io/eel-reports/sejfzone-cs-bot-vs-rag-experiment.html",
-  body: `<p>Auto-dopiete przez kb_daily_update 2026-07-16. Zrodlo: LINKI.md.</p>` },
-
-// === auto-dopiete 2026-07-20 (kb_daily_update) ===
-{ id: "kbauto-dark-psychology-writer", category: "link", title: "🧠 Dark Psychology Writer — 10 technik perswazji sprzedażowej", tags: ["auto-dopiete", "2026-07-20"], status: "live", hot: false,
-  relevance: ["Tomek"],
-  summary: "🧠 Dark Psychology Writer — 10 technik perswazji sprzedażowej (Adam Erhart) ze SaaS/B2B przykładami + stack recipes + generator briefu pod skill /dpw. (2026-07-19)",
-  source: "https://tomekwlqq.github.io/eel-reports/DARK_PSYCHOLOGY_WRITER.html",
-  body: `<p>Auto-dopiete przez kb_daily_update 2026-07-20. Zrodlo: LINKI.md.</p>` },
-
-// === auto-dopiete 2026-07-21 (kb_daily_update) ===
-{ id: "kbauto-glov-lista-napraw", category: "link", title: "🛠️ GLOV Master Lista Napraw — tracker napraw z priorytetami, statusami", tags: ["auto-dopiete", "2026-07-21"], status: "live", hot: false,
-  relevance: ["Tomek"],
-  summary: "🛠️ GLOV Master Lista Napraw — tracker napraw z priorytetami, statusami i filtrowaniem. Linkowany z GLOV_HUB. (2026-07-20)",
-  source: "https://tomekwlqq.github.io/eel-reports/GLOV_Lista_Napraw.html",
-  body: `<p>Auto-dopiete przez kb_daily_update 2026-07-21. Zrodlo: LINKI.md.</p>` },
-
-// === auto-dopiete 2026-07-23 (kb_daily_update) ===
-{ id: "kbauto-hub-maska-led-na-twarz", category: "link", title: "💡 HUB Maska LED / GLOV Luna Eye — CS 5.7", tags: ["auto-dopiete", "2026-07-23"], status: "live", hot: false,
-  relevance: ["Tomek"],
-  summary: "💡 HUB Maska LED / GLOV Luna Eye — CS 5.7 (14 sekcji) + Strategia+Luki GLOV vs konkurencja + Mapa percepcji (168 pyt/9 ścieżek) + Analiza Konkurencji (SERP+mapa kontentu) + Vision Reporty (CurrentBody/Omnilux/SolaWave/DDG). (2026-07-22)",
-  source: "https://tomekwlqq.github.io/eel-reports/HUB_maska_led_na_twarz.html",
-  body: `<p>Auto-dopiete przez kb_daily_update 2026-07-23. Zrodlo: LINKI.md.</p>` },
-
 ]; // END DATA
 
 // ============================================

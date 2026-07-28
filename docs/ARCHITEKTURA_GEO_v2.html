@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Architektura GEO v2 — kierunek prawdy</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,Segoe UI,sans-serif;background:#fafbfc;color:#1f2328;padding:32px;max-width:1080px;margin:0 auto;font-size:13px;line-height:1.5}
+h1{font-size:22px;font-weight:800;margin-bottom:4px;letter-spacing:-.3px}
+.sub{color:#57606a;font-size:13px;margin-bottom:6px}
+.correction{background:#fff8e1;border:1px solid #ffd54f;border-radius:8px;padding:10px 14px;font-size:12px;margin:14px 0 24px;color:#7c5700}
+.correction b{color:#5c4200}
+
+.layer{border-radius:14px;padding:18px;margin-bottom:14px;border:2px solid}
+.layer-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.layer-head h2{font-size:15px;font-weight:800}
+.tag{display:inline-block;padding:3px 11px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.3px;text-transform:uppercase}
+
+/* warstwy kolory */
+.l-src{background:#fff3e0;border-color:#ffb74d}
+.l-src h2{color:#e65100}
+.tag-src{background:#ff9800;color:#fff}
+.l-gate{background:#fce4ec;border-color:#f06292}
+.l-gate h2{color:#ad1457}
+.tag-gate{background:#e91e63;color:#fff}
+.l-db{background:#e8f5e9;border-color:#66bb6a}
+.l-db h2{color:#2e7d32}
+.tag-db{background:#43a047;color:#fff}
+.l-prod{background:#e3f2fd;border-color:#64b5f6}
+.l-prod h2{color:#1565c0}
+.tag-prod{background:#2196f3;color:#fff}
+.l-ext{background:#f5f3ef;border-color:#bdb5a8}
+.l-ext h2{color:#6d5f4a}
+.tag-ext{background:#8d6e63;color:#fff}
+
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.col{flex:1;min-width:210px}
+.box{background:#fff;border:1px solid #d7dde3;border-radius:9px;padding:11px 13px;margin-bottom:10px;height:calc(100% - 10px)}
+.box h3{font-size:12px;font-weight:800;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.box .mini{font-size:10px;font-weight:700;padding:1px 7px;border-radius:8px;background:#eef1f4;color:#57606a}
+ul.list{list-style:none}
+ul.list li{font-size:11px;color:#4a5158;padding:2px 0 2px 12px;position:relative}
+ul.list li:before{content:"›";position:absolute;left:0;color:#0969da;font-weight:700}
+.wsad{margin-top:7px;padding-top:6px;border-top:1px dashed #d7dde3;font-size:10.5px;color:#57606a}
+.wsad b{color:#1565c0}
+.truth{margin-top:7px;font-size:10.5px;font-weight:700}
+.truth.master{color:#e65100}
+.truth.proj{color:#2e7d32}
+
+.arrow{text-align:center;font-size:22px;color:#9aa4ad;line-height:.6;margin:2px 0 10px}
+.note{background:#fff;border-left:4px solid #43a047;border-radius:0 8px 8px 0;padding:8px 12px;font-size:11px;margin-top:8px;color:#333}
+.note.warn{border-left-color:#e91e63}
+.note b{color:#111}
+
+.flowbox{background:#0d1117;color:#c9d1d9;border-radius:10px;padding:16px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;line-height:1.9;white-space:pre;overflow-x:auto}
+.flowbox .g{color:#7ee787}.flowbox .o{color:#ffa657}.flowbox .b{color:#79c0ff}.flowbox .p{color:#d2a8ff}.flowbox .d{color:#8b949e}
+
+table{width:100%;border-collapse:collapse;font-size:11px;background:#fff;border-radius:9px;overflow:hidden;margin-top:4px}
+th{background:#eef1f4;padding:7px 9px;text-align:left;font-weight:800;font-size:10.5px}
+td{padding:6px 9px;border-bottom:1px solid #eef1f4;vertical-align:top}
+td b{color:#111}
+.pill{font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:7px}
+.pill-db{background:#e8f5e9;color:#2e7d32}
+.pill-src{background:#fff3e0;color:#e65100}
+.pill-web{background:#e3f2fd;color:#1565c0}
+.foot{margin-top:24px;padding-top:14px;border-top:1px solid #d7dde3;color:#8c959f;font-size:11px;text-align:center}
+</style>
+</head>
+<body>
+
+<h1>🏗️ Architektura GEO — v2</h1>
+<div class="sub">Ta sama mapa, poprawiony kierunek prawdy. Po bramce <b>geo-po</b> (porządek) + <b>strateg</b> (P0: kierunek).</div>
+
+<div class="correction">
+⚠️ <b>Korekta hasła:</b> „DB source of truth" → <b>DB = warstwa zapytań (projekcja)</b>. Prawda mieszka w JSON/MD.
+Do DB wchodzi się <b>tylko przez skrypt</b> i <b>tylko to, co przeszło bramkę admisji</b>. Ręczna edycja w Studio = zakaz.
+Wyjątek: <b>dane rodzące się w procesie</b> (pytania + weryfikacja + scraped PDP) = write-first, patrz Warstwa 1.
+</div>
+
+<!-- WARSTWA -1: PROCES BUDOWY CS -->
+<div class="layer" style="background:#eef2ff;border-color:#818cf8">
+<div class="layer-head"><span class="tag" style="background:#6366f1;color:#fff">jeden proces</span><h2 style="color:#4338ca">Warstwa −1 — jak CS powstaje (cs_pipeline · zero freestyle)</h2></div>
+<div class="row">
+<div class="col"><div class="box">
+<h3>🔧 cs_pipeline.py {slug} <span class="mini">jedyne wejście</span></h3>
+<ul class="list">
+<li>Prowadzi kategorię przez kanoniczny łańcuch, idempotentnie</li>
+<li>Deterministyczne etapy odpala sam; generatywne bramkuje</li>
+<li><code>--status</code> = gdzie kategoria stoi w procesie</li>
+<li>Koniec z „który z ośmiu skryptów"</li>
+</ul>
+<div class="truth" style="color:#4338ca">JEDNA metodologia · JEDEN proces · ten sam wynik za każdym razem</div>
+</div></div>
+<div class="col"><div class="box">
+<h3>🔒 cs_guard.py <span class="mini">bramka freestyle</span></h3>
+<ul class="list">
+<li>Skanuje CS HTML, exit 1 gdy freestyle</li>
+<li>Brak backing WPIS_CS lub brak podpisu build_html = 🛑</li>
+<li>Freestyle → <code>_freestyle_quarantine/</code>, nie do hubu</li>
+<li>Reguła w CLAUDE.md (góra) + pamięć — każda sesja wali w nią</li>
+</ul>
+<div class="truth" style="color:#4338ca">CS z ręki / z głowy / z competitor contentu = ZAKAZANE</div>
+</div></div>
+</div>
+<div class="flowbox" style="margin-top:8px"><span class="p">cs_pipeline {slug}:</span>
+  <span class="o">FUND</span> ─▶ <span class="o">cs_v2.json</span> ─▶ <span class="o">WPIS_CS.md</span> ─▶ <span class="g">pytania</span> ─▶ <span class="b">render (build_html)</span> ─▶ <span class="p">cs_guard</span>
+  <span class="d">└ generatywne (research/LLM) — BRAMKUJE, nie fabrykuje ─┘   └─ deterministyczne — odpala sam ─┘</span></div>
+<div class="note">✅ Wynik: <code>cs_{slug}.html</code> (kanon build_html) + mapa + wrapper. Brak WPIS_CS = kategoria NIE MA CS → proces stopuje na FUND, zmusza do metodologii od zera. <b>Freestyle fizycznie nie przejdzie bramki.</b></div>
+</div>
+
+<div class="arrow">↓ <span style="font-size:11px;color:#9aa4ad">produkuje ↓</span></div>
+
+<!-- WARSTWA 0 -->
+<div class="layer l-src">
+<div class="layer-head"><span class="tag tag-src">źródło prawdy</span><h2>Warstwa 0 — CS jako master (JSON + Markdown)</h2></div>
+<div class="row">
+<div class="col"><div class="box">
+<h3>📄 cs_v2/{slug}_v2.json <span class="mini">wsad</span></h3>
+<ul class="list">
+<li>CEV (10 cech + Schwartz) → fizyka ścieżki</li>
+<li>CEP → 7W, trigger, typ (syt/toż/eko)</li>
+<li>KCF → T1/T2/T3</li>
+<li>paths, forbidden, ToV, ceny</li>
+</ul>
+<div class="truth master">MASTER · edytowalny · w git · 115 plików</div>
+</div></div>
+<div class="col"><div class="box">
+<h3>📝 WPIS_CS_{slug}_V2.md <span class="mini">czysty</span></h3>
+<ul class="list">
+<li>16 sekcji wg wzorca (sejfy)</li>
+<li>§13 Pole pytań = widok z DB</li>
+<li>Referencja „06.md" = czysta treść sekcji 2-9</li>
+</ul>
+<div class="truth master">MASTER treści · NIE cs_v2 gdy skażony retinolem</div>
+</div></div>
+</div>
+<div class="note warn">🚫 <b>118 cs_v2 (v3.0/v4) = stara metodologia.</b> Mapa remediacji wg <code>_meta.quality_flag</code> (już w plikach, data-driven):
+<b>ok</b> (11) → keep, light-regen do v5.7 gdy dotknięte · <b>brand_heavy</b> (24) + <b>thin_axes</b> (9) + <b>spot_check_fail/false_positive</b> (3) → <b>REGEN</b> (skażone) · <b>? nieznane</b> (66) → triage (odpal quality-check, sklasyfikuj) · <b>no-kcf</b> (2) → niekompletne, REGEN/kasuj.
+Do DB tylko po regeneracji v5.7 + gate. Żaden nie migruje as-is.</div>
+</div>
+
+<div class="arrow">↓</div>
+
+<!-- BRAMKA -->
+<div class="layer l-gate">
+<div class="layer-head"><span class="tag tag-gate">checkpoint</span><h2>Bramka admisji — co ma prawo wejść do DB</h2></div>
+<div class="row">
+<div class="col"><div class="box">
+<h3>⚙️ Engine v5</h3>
+<ul class="list">
+<li>path_questions ①+② per CEP×stan</li>
+<li>Per-CEP liczba stanów (impuls 2-3, zdrowotny 5-6)</li>
+<li>EDS — search-before-generate</li>
+<li>Coverage check + Schwartz</li>
+</ul>
+</div></div>
+<div class="col"><div class="box">
+<h3>🔬 Gate sytuacja-vs-atrybut</h3>
+<ul class="list">
+<li>CEP musi być SYTUACJĄ, nie atrybutem</li>
+<li>Pytanie = głos klienta, nie generator</li>
+<li>Dry-run <b>także na 3 „świeżych"</b> — engine v5 był debugowany na żywo</li>
+</ul>
+</div></div>
+</div>
+<div class="note warn"><b>Reguła admisji (krok 0):</b> do DB wchodzi wyłącznie output engine v5, który przeszedł ten gate. Kropka.</div>
+</div>
+
+<div class="arrow">↓</div>
+
+<!-- WARSTWA 1: DB -->
+<div class="layer l-db">
+<div class="layer-head"><span class="tag tag-db">warstwa zapytań</span><h2>Warstwa 1 — DB (Supabase): projekcja + klasa write-first</h2></div>
+<div class="row">
+<div class="col"><div class="box" style="border-color:#66bb6a">
+<h3>❓ write-first — rodzą się w procesie <span class="mini">DB = prawda</span></h3>
+<ul class="list">
+<li><b>path_questions</b> — engine (CEP×stan→pytania). 3 kat: 264/264/153</li>
+<li><b>question_verification</b> — dowody per pytanie (PAA/Q&A/review), confidence 1-5</li>
+<li><b>scraped_pdp_content</b> — surowy PDP ze sklepów (źródło EDS: search-before-generate)</li>
+<li>Wszystkich NIE ma w JSON/MD → DB authoritative (migracje 017+018)</li>
+</ul>
+<div class="truth proj">write-first · z procesu, nie ze źródła · klasa, nie wyjątek</div>
+</div></div>
+<div class="col"><div class="box">
+<h3>🗂️ ceps · kcf · paths · keywords <span class="mini">projekcja</span></h3>
+<ul class="list">
+<li>Pisze <code>migrate_json_to_db.py --slugs</code></li>
+<li>Queryowalne cross-category (WHERE cep_typ=…)</li>
+<li>JSON zostaje master — to kopia do zapytań</li>
+<li>Re-import nadpisuje (ON CONFLICT UPDATE)</li>
+</ul>
+<div class="truth proj">JSON master · DB = index do READ</div>
+</div></div>
+</div>
+<div class="note">✅ Schemat gotowy (18 migracji, 15 tabel). Skrypt gotowy (9 tabel). <b>Przed importem:</b> fix parsera <code>tier_specs</code> (lista vs dict) + <code>status='legacy'</code> dla sejfy/szafy v3.0, żeby stare nie udawały prawdy.</div>
+</div>
+
+<div class="arrow">↓</div>
+
+<!-- WARSTWA 2: PRODUKTY -->
+<div class="layer l-prod">
+<div class="layer-head"><span class="tag tag-prod">downstream</span><h2>Warstwa 2 — 5 produktów z CS</h2></div>
+<div class="row">
+<div class="col"><div class="box">
+<h3>🗺️ Mapa percepcji</h3>
+<ul class="list"><li>Kanban: ścieżki × stany × pytania</li><li>Filtry: priorytet, typ, status, search</li><li>3 widoki: Mapa / Lista / Info</li></ul>
+<div class="wsad"><b>WSAD:</b> path_questions (DB) + etykiety CEP (JSON)</div>
+</div></div>
+<div class="col"><div class="box">
+<h3>🤖 Asystent zakupowy <span class="mini">LLM</span></h3>
+<ul class="list"><li>8-etapowa ścieżka (Schwartz)</li><li>Query tylko potrzebne pola z DB</li><li>CS first, potem web (ceny/rankingi)</li></ul>
+<div class="wsad"><b>WSAD:</b> ceps+kcf (DB) + path_questions + web</div>
+</div></div>
+</div>
+<div class="row" style="margin-top:2px">
+<div class="col"><div class="box">
+<h3>✍️ Content Writer</h3>
+<ul class="list"><li>Brief z CEP×stan×Schwartz</li><li>S2 — cytowalne fakty</li><li>path_questions → pytania klienta w treści</li></ul>
+<div class="wsad"><b>WSAD:</b> KCF + Schwartz + path_questions (DB)</div>
+</div></div>
+<div class="col"><div class="box">
+<h3>🔍 Competitive Intel</h3>
+<ul class="list"><li>Analiza konkurencji per CEP</li><li>Gap + KCF benchmark + cytowalność S2</li><li>⚠️ tylko na jednej metodologii (v5)</li></ul>
+<div class="wsad"><b>WSAD:</b> ceps+kcf (DB) + scraped PDP + reviews</div>
+</div></div>
+</div>
+<div class="row" style="margin-top:2px">
+<div class="col"><div class="box">
+<h3>📡 Plan komunikacji</h3>
+<ul class="list"><li>CEP → kanał (SEO/social/ads)</li><li>Kalendarz: sezonowość × CEP × stan</li><li>KPI per ścieżka</li></ul>
+<div class="wsad"><b>WSAD:</b> CEV + CEP + sezonowość</div>
+</div></div>
+<div class="col"><div class="box">
+<h3>🎬 Brief kreatywny</h3>
+<ul class="list"><li>Per CEP × stan × Schwartz</li><li><b>Pytania klienta → głos i intencja</b></li><li>Forbidden → czego unikać</li></ul>
+<div class="wsad"><b>WSAD:</b> CEV + Schwartz + <b>path_questions</b> (nie KCF)</div>
+</div></div>
+</div>
+</div>
+
+<!-- MAPA WEB ŹRÓDEŁ (asystent) -->
+<div class="note" style="margin-bottom:8px">🌐 <b>Web źródła per etap asystenta</b> (z <a href="PROCESS_ASYSTENT.md">PROCESS_ASYSTENT.md</a> — „CS first, potem web" nie jest jedno): etapy <b>1-3</b> (świadomość/potrzeba/CEP) = <b>zero web, czysty CS</b> · <b>4 Nauka</b> = rankingi typów (benchmark.pl) + opinie (ceneo) · <b>5 Preselekcja</b> = porównania typów + rankingi · <b>6 Porównywanie</b> = rankingi (rankomat/ranking.pl) + reviews + <b>ceny</b> + promocje · <b>7 Wybór sklepu</b> = ceny (allegro/media_markt/x-kom) + promocje (pepper) + dostępność. Rankingi ≠ ceny — inne etapy.</div>
+
+<!-- SCENARIUSZ PORAŻKI -->
+<div class="note warn" style="margin-bottom:14px">💥 <b>Czego pilnujemy (strateg P3):</b> competitive intel na <b>mieszanej</b> bazie (v2+v5) psuje się CICHO. Benchmark <code>WHERE cep_typ='zakupowy'</code>: ekspresy(v5)=8 vs kawy(v2-atrybuty)=2 → fałszywy insight „ekspresy 4× bogatsze". Zero erroru, przekonujący PDF, błędny wniosek. Dlatego: <b>jedna metodologia w DB</b>.</div>
+
+<!-- FLOW -->
+<div class="flowbox"><span class="o">┌─ Warstwa 0: MASTER (git) ──────────────────────────────┐</span>
+<span class="o">│</span>  cs_v2.json  +  WPIS_CS.md      <span class="d">(edytujesz TU)</span>        <span class="o">│</span>
+<span class="o">└──────────────────────┬─────────────────────────────────┘</span>
+                       <span class="d">│</span>
+              <span class="p">╔═══════▼═══════╗  BRAMKA ADMISJI</span>
+              <span class="p">║ engine v5 +   ║  tylko czyste</span>
+              <span class="p">║ gate syt/atr  ║  przechodzi</span>
+              <span class="p">╚═══════┬═══════╝</span>
+                       <span class="d">│</span>
+<span class="g">┌──────────────────────▼─────────────────────────────────┐</span>
+<span class="g">│  Warstwa 1: DB = warstwa zapytań (READ dla produktów)   │</span>
+<span class="g">│  path_questions</span> <span class="d">(write-first)</span> <span class="g">· ceps·kcf·paths</span> <span class="d">(projekcja)</span> <span class="g">│</span>
+<span class="g">└──┬────────┬────────┬────────┬────────┬──────────────────┘</span>
+   <span class="d">│</span>        <span class="d">│</span>        <span class="d">│</span>        <span class="d">│</span>        <span class="d">│</span>
+ <span class="b">┌─▼─┐    ┌─▼──┐   ┌─▼──┐   ┌─▼──┐   ┌─▼──┐</span>
+ <span class="b">│MAP│    │ASST│   │WRIT│   │COMP│   │PLAN│</span>
+ <span class="b">└───┘    └────┘   └────┘   └────┘   └────┘</span>
+                       <span class="d">+ web (ceny · rankingi · reviews)</span></div>
+
+<!-- TABELA WSADÓW -->
+<div class="layer l-prod" style="margin-top:14px">
+<div class="layer-head"><span class="tag tag-prod">wsady</span><h2>Co każdy produkt bierze i skąd</h2></div>
+<table>
+<tr><th>Produkt</th><th>Z DB (query)</th><th>Z JSON/MD (master)</th><th>Z web</th></tr>
+<tr><td><b>🗺️ Mapa percepcji</b></td><td><span class="pill pill-db">path_questions</span></td><td><span class="pill pill-src">etykiety CEP</span></td><td>—</td></tr>
+<tr><td><b>🤖 Asystent zakupowy</b></td><td><span class="pill pill-db">ceps · kcf · path_questions</span></td><td><span class="pill pill-src">DT · trigger</span></td><td><span class="pill pill-web">ceny · rankingi</span></td></tr>
+<tr><td><b>✍️ Content Writer</b></td><td><span class="pill pill-db">kcf · path_questions</span></td><td><span class="pill pill-src">Schwartz · Forbidden · ToV</span></td><td><span class="pill pill-web">scraped PDP</span></td></tr>
+<tr><td><b>🔍 Competitive Intel</b></td><td><span class="pill pill-db">ceps · kcf</span></td><td><span class="pill pill-src">CEP gaps</span></td><td><span class="pill pill-web">rankingi · reviews</span></td></tr>
+<tr><td><b>📡 Plan komunikacji</b></td><td>—</td><td><span class="pill pill-src">CEV · stan · sezonowość</span></td><td><span class="pill pill-web">trendy · social</span></td></tr>
+<tr><td><b>🎬 Brief kreatywny</b></td><td><span class="pill pill-db">path_questions</span></td><td><span class="pill pill-src">CEV · Schwartz · Forbidden</span></td><td>—</td></tr>
+</table>
+</div>
+
+<!-- METODOLOGIE KANONICZNE -->
+<div class="layer" style="background:#f5f3ff;border-color:#a78bfa">
+<div class="layer-head"><span class="tag" style="background:#7c3aed;color:#fff">kanon wiedzy</span><h2 style="color:#5b21b6">📚 Metodologie — jedno źródło per temat (link + etap)</h2></div>
+<p style="font-size:12px;color:#5b21b6;font-weight:700;margin-bottom:6px">RDZEŃ — CS + pytania (kanon, nic poza tym):</p>
+<table>
+<tr><th>Kanon</th><th>Co</th><th>Typ</th></tr>
+<tr><td><a href="METODOLOGIA_CS.md"><b>METODOLOGIA_CS.md</b></a> <span class="mini">v5.7</span></td><td>budowa CS — 16 sekcji, CEP + gate sytuacja-vs-atrybut, CEV, §13 pole pytań</td><td>metodologia</td></tr>
+<tr><td><a href="METODOLOGIA_CS_TO_CQF.md"><b>METODOLOGIA_CS_TO_CQF.md</b></a> <span class="mini">v5.7 · NADRZĘDNA</span></td><td>CS → CQF (perception map) — spina CS z polem pytań, kolejność/gate/CEV. Gdzie rozjazd — wygrywa</td><td>metodologia</td></tr>
+<tr><td><a href="ENGINE_PYTAN_MATRYCA.md"><b>ENGINE_PYTAN_MATRYCA.md</b></a> <span class="mini">v4</span></td><td><b>ZASADY BUDOWY PYTAŃ</b> — matryca po ludzku: 8 stanów × atrybuty (format, EQA, DT, przykład), wzorce krótkich ścieżek (IMPULS/NAGŁOŚĆ), 10 sekwencji do decyzji, EQA × Schwartz</td><td>zasady</td></tr>
+<tr><td><a href="perception_paths_v5.py"><b>perception_paths_v5.py</b></a></td><td><b>ENGINE PYTAŃ (kod)</b> — wykonuje matrycę: CEP-typ → per-CEP stany → pytania. EDS (search-before-generate), coverage, cechy modyfikujące. DeepSeek</td><td>engine</td></tr>
+</table>
+<div class="note">▸ <b>Powiązane pod-elementy</b> (nie rdzeń): <a href="METODOLOGIA_FUNDAMENT.md">FUNDAMENT</a> (krok 0) · <a href="METODOLOGIA_CEV.md">CEV</a> (model 10 cech) · <a href="METODOLOGIA_CATEGORY_QUESTION_FIELD.md">CQF</a> (pole pytań jako produkt bulk) · <a href="FILOZOFIA_GEO_SERWIS.md">FILOZOFIA</a> (po co). Serwis/audyt = inna domena: <a href="GEO_CANON.md">GEO_CANON</a>.</div>
+<div class="note warn">🧹 <b>Dług:</b> METODOLOGIA_CS w 8 wersjach (v3.1/v4/v4.2/v4.3/v5.1/v5.2 + v5.7 + CS_TO_CQF). Kanon = <b>v5.7 + CS_TO_CQF</b>; sześć starych → archiwum. To samo skażenie „który żyje" co przy skryptach.</div>
+<div class="note">📏 <b>STANDARD DOKUMENTACJI (żądanie Tomka, geo-po egzekwuje):</b> każdy proces spisany w metodologii <b>klasy CS</b> — z opisem: <b>skrypty · kolejność · inputy · outputy · warunki (bramki)</b>. Brak takiej metodologii = proces nie istnieje formalnie. geo-po pilnuje jak cs_guard pilnuje freestyle.</div>
+</div>
+
+<div class="foot">
+Kierunek prawdy: <b>JSON/MD → bramka → DB (READ) → produkty</b> · DB nie jest prawdą, jest jej queryowalnym cieniem · write-first (path_questions + question_verification + scraped_pdp) = klasa danych z procesu, nie ze źródła
+</div>
+
+</body>
+</html>

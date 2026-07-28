@@ -1,0 +1,586 @@
+<!DOCTYPE html><html lang="pl" data-theme="light"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLOV HUB — centrum analiz</title>
+<style>
+/* ===== STYL SKILLTA: jasny minimalizm + toggle dark ===== */
+[data-theme="light"]{
+  --bg:#ffffff; --bg2:#f7f7f8; --card:#ffffff; --line:#e6e6e9; --line2:#ededf0;
+  --txt:#0a0a0a; --txt2:#6b6b76; --muted:#9a9aa5;
+  --accent:#7c5cff; --black:#0a0a0a; --green:#16a34a; --star:#f5a623;
+  --shadow:0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-h:0 8px 24px rgba(0,0,0,.10);
+}
+[data-theme="dark"]{
+  --bg:#0f1115; --bg2:#181b22; --card:#181b22; --line:#2a2f3a; --line2:#23272f;
+  --txt:#e8eaed; --txt2:#9aa0aa; --muted:#6b7280;
+  --accent:#7c5cff; --black:#e8eaed; --green:#3ecf8e; --star:#f5a623;
+  --shadow:0 1px 3px rgba(0,0,0,.3); --shadow-h:0 8px 24px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,sans-serif;line-height:1.5;transition:background .3s,color .3s}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px 70px}
+
+/* top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:20}
+.logo{font-size:21px;font-weight:800;letter-spacing:-.5px}
+.logo span{color:var(--accent)}
+.topnav{display:flex;align-items:center;gap:20px;font-size:13.5px;color:var(--txt2)}
+.topnav a{color:var(--txt2);text-decoration:none}.topnav a:hover{color:var(--txt)}
+.theme-btn{background:var(--bg2);border:1px solid var(--line);border-radius:10px;width:38px;height:38px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:.15s}
+.theme-btn:hover{border-color:var(--accent)}
+
+/* hero */
+.hero{text-align:center;padding:56px 0 30px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--txt2);background:var(--bg2);border:1px solid var(--line);padding:5px 13px;border-radius:30px;margin-bottom:22px}
+.badge .dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
+@media(max-width:640px){h1{font-size:36px}}
+.hero p{font-size:15px;color:var(--txt2);max-width:680px;margin:16px auto 0;line-height:1.5}
+.hero .meta{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.pill{font-size:12px;padding:5px 13px;border-radius:30px;background:var(--bg2);color:var(--txt2);border:1px solid var(--line)}
+
+/* sekcje */
+.sechead{display:flex;align-items:baseline;gap:10px;margin:42px 0 18px}
+.sechead h2{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.sechead .cnt{font-size:13px;color:var(--muted)}
+
+/* karty grid */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;text-decoration:none;color:var(--txt);display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.18s;position:relative}
+.card:hover{border-color:var(--accent);box-shadow:var(--shadow-h);transform:translateY(-3px)}
+.card .ico{width:42px;height:42px;border-radius:11px;background:var(--bg2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+.card h3{font-size:15.5px;font-weight:700;margin-bottom:7px;letter-spacing:-.2px}
+.card p{font-size:13px;color:var(--txt2);line-height:1.55;flex:1}
+.card .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;padding-top:13px;border-top:1px solid var(--line2)}
+.t{font-size:10.5px;padding:3px 9px;border-radius:6px;font-weight:600;background:var(--bg2);color:var(--txt2);border:1px solid var(--line2)}
+.t.acc{background:rgba(124,92,255,.1);color:var(--accent);border-color:transparent}
+.t.grn{background:rgba(22,163,74,.1);color:var(--green);border-color:transparent}
+
+/* big featured */
+.big{grid-column:1/-1;background:linear-gradient(110deg,var(--bg2),var(--card));border:1px solid var(--line);border-radius:18px;padding:26px;display:flex;gap:22px;align-items:center;text-decoration:none;color:var(--txt);box-shadow:var(--shadow);transition:.18s}
+.big:hover{border-color:var(--accent);box-shadow:var(--shadow-h);transform:translateY(-2px)}
+.big .ico{width:56px;height:56px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.big h3{font-size:19px;font-weight:800;margin-bottom:6px;letter-spacing:-.4px}
+.big p{font-size:13.5px;color:var(--txt2);line-height:1.5}
+.big .go{margin-left:auto;font-size:22px;color:var(--accent);flex-shrink:0}
+
+/* wyróżnione kafle operacyjne (Live + Lista napraw + Tech SEO) — 3 w rzędzie, kolorowe */
+.hero-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:8px}
+@media(max-width:1000px){.hero-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.hero-row{grid-template-columns:1fr}}
+.feat{border-radius:18px;padding:22px;text-decoration:none;display:flex;flex-direction:column;gap:4px;position:relative;overflow:hidden;color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.12);transition:.18s;min-height:150px}
+.feat:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.2)}
+.feat.live{background:linear-gradient(135deg,#16a34a,#0d8a3e)}
+.feat.fix{background:linear-gradient(135deg,#f5751a,#e0560a)}
+.feat.seo{background:linear-gradient(135deg,#7c5cff,#5b2ee0)}
+.feat.ads{background:linear-gradient(135deg,#0f7ae5,#0050b3)}
+.feat.nail{background:linear-gradient(135deg,#c2185b,#880e4f)}
+.feat.data{background:linear-gradient(135deg,#0f7ae5 0%,#16a34a 100%);grid-column:span 2}
+.feat.data h3{font-size:22px}
+.feat.data p{font-size:13.5px}
+@media(max-width:1000px){.feat.data{grid-column:span 2}}
+@media(max-width:720px){.feat.data{grid-column:span 1}}
+.feat .ico{width:46px;height:46px;border-radius:13px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:8px}
+.feat h3{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.feat p{font-size:12.5px;color:#fff;line-height:1.5;flex:1}
+.feat .badge2{position:absolute;top:16px;right:16px;font-size:10.5px;font-weight:700;background:rgba(255,255,255,.22);padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+.feat .go{font-size:20px;align-self:flex-end}
+
+/* sekcja Instrukcje napraw — wyraźnie odcięta na dole */
+.instr-section{margin-top:48px;padding:28px 24px;background:linear-gradient(135deg,rgba(124,92,255,.08),rgba(245,117,26,.06));border:1px solid var(--line);border-radius:20px;border-top:3px solid var(--accent)}
+.instr-section .ih{font-size:19px;font-weight:800;letter-spacing:-.4px;margin-bottom:4px;display:flex;align-items:center;gap:9px}
+.instr-section .isub{font-size:13px;color:var(--txt2);margin-bottom:18px}
+.instr-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.instr-grid{grid-template-columns:1fr}}
+.instr-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-decoration:none;color:var(--txt);transition:.16s;box-shadow:var(--shadow);display:flex;gap:14px;align-items:flex-start}
+.instr-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-h)}
+.instr-card .ico{width:42px;height:42px;border-radius:11px;background:var(--bg2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.instr-card h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.instr-card p{font-size:12.5px;color:var(--txt2);line-height:1.5}
+.instr-card .tags{margin-top:8px;display:flex;gap:5px;flex-wrap:wrap}
+
+/* małe karty (instrukcje/mapy/archiwum) */
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:860px){.sgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.sgrid{grid-template-columns:1fr}}
+.scard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px;text-decoration:none;color:var(--txt);transition:.15s;box-shadow:var(--shadow)}
+.scard:hover{border-color:var(--accent);transform:translateY(-2px)}
+.scard h4{font-size:13.5px;font-weight:600;margin-bottom:4px}
+.scard p{font-size:11.5px;color:var(--txt2);line-height:1.45}
+
+.foot{margin-top:48px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);text-align:center;line-height:1.8}
+
+/* ── SPRZEDAŻ STRIP ─────────────────────────────────────── */
+.sales-strip{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:20px 24px;margin-bottom:28px}
+.sales-strip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.sales-strip-head h2{font-size:16px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
+.sales-pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ef4444;animation:lpulse 1.4s infinite;vertical-align:middle}
+@keyframes lpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.sales-strip-actions{display:flex;gap:8px;align-items:center}
+.btn-live{background:#16a34a;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.btn-refresh{background:var(--card);color:var(--txt2);border:1px solid var(--line);border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.btn-refresh:hover{border-color:var(--accent);color:var(--txt)}
+.sales-loading{color:var(--muted);font-size:13px;text-align:center;padding:20px 0}
+
+/* macierz sprzedaży */
+.bl-matrix{width:100%;border-collapse:collapse;font-size:13px}
+.bl-matrix thead th{padding:0 0 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;text-align:right;border-bottom:2px solid currentColor;vertical-align:bottom}
+.bl-matrix thead th.bl-lbl-h{text-align:left;color:var(--muted);border-bottom-color:var(--line);width:80px}
+.bl-matrix tbody td{padding:11px 0;vertical-align:top;border-bottom:1px solid var(--line2)}
+.bl-matrix tbody tr:last-child td{border-bottom:none}
+.bl-matrix td.bl-lbl{padding-right:12px;vertical-align:middle}
+.bl-period{font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.3px}
+.bl-psub{font-size:10.5px;color:var(--muted);margin-top:1px}
+.bl-matrix td.bl-val{text-align:right;padding-left:10px}
+.bl-qty{font-size:17px;font-weight:800;letter-spacing:-.4px;line-height:1.1;font-variant-numeric:tabular-nums}
+.bl-rev{font-size:11.5px;color:var(--txt2);margin-top:2px;font-variant-numeric:tabular-nums}
+.bl-zero .bl-qty{color:var(--muted)}
+.bl-zero .bl-rev{color:var(--line)}
+.row-dzis td{background:rgba(22,163,74,.04);border-bottom:none!important}
+.row-dzis .bl-period{color:var(--green)}
+.bl-foot{margin-top:14px;padding-top:12px;border-top:1px solid var(--line2);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bl-foot-txt{font-size:11.5px;color:var(--muted);flex:1}
+.bl-foot-txt strong{color:var(--txt2)}
+</style></head>
+<body>
+<div class="topbar wrap" style="max-width:none;padding-left:max(22px,calc((100vw - 1080px)/2));padding-right:max(22px,calc((100vw - 1080px)/2))">
+  <div class="logo">glov<span>.</span>hub</div>
+  <div class="topnav">
+    <a href="GLOV_Mega_Audit_4zakladki.html">Mega Audit</a>
+    <a href="https://tomekwlqq.github.io/eel-reports/GLOV_Live.html" target="_blank">Live</a>
+    <a href="GLOV_Sciezki_Miesieczny.html">Ścieżki</a>
+    <a href="GLOV_Clarity_Analiza.html">Clarity</a>
+    <button class="theme-btn" id="themeBtn" title="Przełącz tryb jasny/ciemny">🌙</button>
+  </div>
+</div>
+
+<div class="wrap">
+<div class="hero">
+  <div class="badge"><span class="dot"></span> Centrum analiz glov.co</div>
+  <h1>Wszystko o GLOV<br>w jednym miejscu.</h1>
+  <p>GA4, Shopify i Clarity — segmenty, ścieżki, ruch płatny i behawior, w spójnych raportach. Klikaj kafelki, wracaj tutaj.</p>
+  <div class="meta">
+    <span class="pill">property 342844459</span>
+    <span class="pill">GA4 + Shopify + Clarity</span>
+    <span class="pill">11.06.2026</span>
+    <span class="pill">INTERNAL</span>
+  </div>
+</div>
+
+<!-- SPRZEDAŻ LIVE STRIP -->
+<div class="sales-strip">
+  <div class="sales-strip-head">
+    <h2><span class="sales-pulse"></span> Sprzedaż <span id="sales-updated" style="font-size:11px;font-weight:400;color:var(--muted)"></span></h2>
+    <div class="sales-strip-actions">
+      <button class="btn-refresh" onclick="loadBLSales(true)">🔄 Odśwież</button>
+      <a class="btn-live" href="https://tomekwlqq.github.io/eel-reports/GLOV_Live.html" target="_blank">🔴 Live</a>
+    </div>
+  </div>
+  <div id="sales-content"><div class="sales-loading">Ładowanie danych…</div></div>
+</div>
+
+<!-- WYRÓŻNIONE OPERACYJNE — PIERWSZY RZĄD pod tytułem -->
+<div class="hero-row">
+  <a class="feat seo" href="GLOV_Audyt_360_2026-07-17.html">
+    <span class="badge2">👑 AUDYT 360 · 17.07</span>
+    <div class="ico">📊</div>
+    <h3>Audyt 360 SEO & GEO (12 modułów)</h3>
+    <p>Metodologia V5.2 na żywych danych GSC+CrUX+crawl 2155 URL. Każda liczba z repro. Werdykt: ruch <b>rośnie +15,6% Y/Y</b> (nie spadek), ale PDP pumeks CWV czerwony (CLS 0,66), 8,5% ruchu to szukanie „jak anulować subskrypcję", sufit = autorytet domeny (20× za liderem). Zastępuje fikcyjny „10 modułów".</p>
+    <div class="go">→</div>
+  </a>
+  <a class="feat data" href="https://tomekwlqq.github.io/eel-reports/GLOV_Live.html" target="_blank">
+    <span class="badge2">🔴 live · Shopify + GA4</span>
+    <div class="ico">📊</div>
+    <h3>GLOV Live Dashboard</h3>
+    <p>Dziś & Wczoraj + 195 dni historii. Shopify = source of truth (zamówienia, przychód, produkty). GA4 = sesje, lejek, kanały. Kanały Meta → Shopify UTM, Google → GA4. AI asystent wbudowany.</p>
+    <div class="go">→</div>
+  </a>
+  <a class="feat ads" href="GLOV_Meta_3Poziomy.html" target="_blank">
+    <span class="badge2">📣 Ads Traffic</span>
+    <div class="ico">📣</div>
+    <h3>Ads Traffic</h3>
+    <p>Meta Ads × GA4 × Baselinker. 3 poziomy: kampanie / zestawy / reklamy. Attribution chain — BL Rev per reklama. Snapshot 20–26.07.</p>
+    <div class="go">→</div>
+  </a>
+  <a class="feat seo" href="beauty_vision/INDEX.html">
+    <span class="badge2">💄 benchmark 48</span>
+    <div class="ico">💄</div>
+    <h3>Beauty Vision — porównanie 48 stron</h3>
+    <p>Analiza porównawcza 48 sklepów beauty (DTC) zmapowanych vision-first, element-po-elemencie. Benchmark kontentu i struktury PDP — referencja dla GLOV. Zdublowane z shop-mapping (ważna analiza).</p>
+    <div class="go">→</div>
+  </a>
+  <a class="feat seo" href="GLOV_Konkurencja_LED_Content.html">
+    <span class="badge2">🆕 GEO</span>
+    <div class="ico">🔬</div>
+    <h3>Analiza konkurencji LED</h3>
+    <p>Porównanie kontentu kart 6 konkurentów Luna Eye (CurrentBody · Omnilux · Solawave · Dr Dennis Gross · Foreo) — screeny PDP + jak piszą + recenzje + 7 wymiarów cytowalności. Luki GLOV: zero dowodu/FDA, mało faktów, słabość konkurencji = trwałość.</p>
+    <div class="go">→</div>
+  </a>
+  <a class="feat fix" href="GLOV_Lista_Napraw.html">
+    <span class="badge2">70 problemów</span>
+    <div class="ico">🔧</div>
+    <h3>Master lista napraw</h3>
+    <p>Wszystkie audyty + 22 z listy agencji (🤝), zdeduplikowane. Checkbox ✓ + komentarz, filtry, eksport. Twoje narzędzie do działania.</p>
+    <div class="go">→</div>
+  </a>
+  <a class="feat ads" href="GLOV_kampanie_cross_source.html">
+    <span class="badge2">📊 Cross-source</span>
+    <div class="ico">🔗</div>
+    <h3>Kampanie Meta × GA4 × Shopify</h3>
+    <p>5 aktywnych kampanii w jednej tabeli — pixel vs last-click vs sprzedaż. Blended ROAS, ATC, przychód per kampania. Match po UTM.</p>
+    <div class="go">→</div>
+  </a>
+  <a class="feat nail" href="https://tomekwlqq.github.io/eel-reports/glov/HUB_lakiery.html" target="_blank">
+    <span class="badge2">💅 CoolNails</span>
+    <div class="ico">💅</div>
+    <h3>HUB Lakiery</h3>
+    <p>Analiza kategorii CoolNails — ruch, konwersja, produkty, zachowanie użytkowników. Raport opublikowany.</p>
+    <div class="go">→</div>
+  </a>
+  <a class="feat nail" href="https://tomekwlqq.github.io/eel-reports/HUB_pumeksy_do_stop.html" target="_blank">
+    <span class="badge2">🪨 GLOV</span>
+    <div class="ico">🪨</div>
+    <h3>HUB Pumeksy do stóp</h3>
+    <p>CS 5.7 (13 sekcji) + Strategia+Luki + Mapa percepcji (153 pyt / 10 ścieżek) + Analiza Konkurencji.</p>
+    <div class="go">→</div>
+  </a>
+  <a class="feat nail" href="https://tomekwlqq.github.io/eel-reports/HUB_maska_led_na_twarz.html" target="_blank">
+    <span class="badge2">💡 GLOV Luna Eye</span>
+    <div class="ico">💡</div>
+    <h3>HUB Maska LED / Luna Eye</h3>
+    <p>CS 5.7 (14 sekcji) + Strategia+Luki vs CurrentBody/Omnilux + Mapa percepcji (168 pyt / 9 ścieżek) + Konkurencja + Vision.</p>
+    <div class="go">→</div>
+  </a>
+</div>
+
+<!-- PROJEKT WYKONAWCZY -->
+<div class="sechead"><h2>🧭 Projekt wykonawczy</h2></div>
+<a class="big" href="GLOV_Serwis_6_Obszarow_PROJEKT.html">
+  <div class="ico">🧭</div>
+  <div>
+    <h3>Serwis 6 obszarów — projekt wykonawczy</h3>
+    <p>Brief klienta (UX · Ads · Content · SEO · Retencja · Ruch) + 2 wątki Tomka, przełożony na execution layer EEL. Per obszar: co realnie mamy, wykonalność (probe MCP 2026-06-14), roadmapa ROI, kandydaci na skille. Proxy of Truth — weryfikacja ruchu reklamowego. INTERNAL.</p>
+  </div>
+  <div class="go">→</div>
+</a>
+
+<!-- REFERENCE -->
+<div class="sechead"><h2>⭐ Master / Reference</h2></div>
+<a class="big" href="GLOV_Mega_Audit_4zakladki.html">
+  <div class="ico">🏆</div>
+  <div>
+    <h3>Mega Audit — 4 kluczowe zakładki</h3>
+    <p>Najważniejsze analizy. Kliknij kafelek poniżej, by wejść wprost na konkretną zakładkę.</p>
+  </div>
+  <div class="go">→</div>
+</a>
+<div class="grid" style="margin-top:14px">
+  <a class="card" href="GLOV_Mega_Audit_4zakladki.html#ga4">
+    <div class="ico">📈</div><h3>GA4 Analiza Startowa</h3>
+    <p>Złoty standard — pełna analiza startowa GA4. Wejście wprost na tę zakładkę.</p>
+    <div class="tags"><span class="t acc">złoty standard</span></div>
+  </a>
+  <a class="card" href="GLOV_Mega_Audit_4zakladki.html#live">
+    <div class="ico">⚡</div><h3>Live Daily</h3>
+    <p>Dzienne dane na żywo — bieżący stan sklepu.</p>
+    <div class="tags"><span class="t">live</span></div>
+  </a>
+  <a class="card" href="GLOV_Mega_Audit_4zakladki.html#wizualny">
+    <div class="ico">📸</div><h3>Wizualny × GA4</h3>
+    <p>Połączenie warstwy wizualnej (screenshoty) z danymi GA4.</p>
+    <div class="tags"><span class="t">wizualny + dane</span></div>
+  </a>
+  <a class="card" href="GLOV_Mega_Audit_4zakladki.html#suma">
+    <div class="ico">💰</div><h3>SUMA STRAT</h3>
+    <p>Ile sklep traci na każdym ślepym/słabym punkcie — wycena strat.</p>
+    <div class="tags"><span class="t acc">straty w zł</span></div>
+  </a>
+</div>
+
+<!-- META INTELLIGENCE -->
+<div class="sechead"><h2>🔗 Meta Intelligence — Meta × Shopify × GA4</h2><span class="cnt">NOWE · 3 zakładki w jednym</span></div>
+<div class="grid" style="margin-top:14px">
+  <a class="card" href="GLOV_Meta_Intelligence.html">
+    <div class="ico">⚖️</div>
+    <h3>Meta Intelligence — triangulacja 3 źródeł</h3>
+    <p><b>Dual ROAS:</b> Meta pixel (2,42×) vs GA4 last-click (1,39×) per kampania — Meta zawyża o 43% (17k zł). Trust score per kampania, ROAS per typ strony (paginacja = 0 zł!), kreacje 0,19–7,37, reconciliation 89%. Meta deklaruje, GA4 weryfikuje, Shopify rozstrzyga.</p>
+    <div class="tags"><span class="t acc">dual ROAS</span><span class="t">attribution gap</span><span class="t">typy stron</span></div>
+  </a>
+</div>
+
+<!-- POLSKA TYLKO -->
+<div class="sechead"><h2>🇵🇱 Polska tylko</h2><span class="cnt">czysty obraz — boty/zagranica odfiltrowane</span></div>
+<div class="grid">
+  <a class="card" href="GLOV_PL_R01-R10_Miesieczny.html">
+    <div class="ico">🇵🇱</div>
+    <h3>R01–R10 — Polska (miesięczny)</h3>
+    <p>Pełny raport GA4 tylko dla ruchu z Polski: KPI, kanały, urządzenia, produkty, lejek, nowi/wracający, miasta (R09), godziny (R10). Boty z Indii/Rumunii/Chin wykluczone. PL = ~81% sesji, ~99% przychodu.</p>
+    <div class="tags"><span class="t grn">PL only</span><span class="t acc">R01–R10</span></div>
+  </a>
+  <a class="card" href="GLOV_PL_Ruch_Platny.html">
+    <div class="ico">🎯</div>
+    <h3>Ruch płatny — Polska</h3>
+    <p>Kontrola ruchu płatnego TYLKO dla Polski: gdzie ląduje ruch reklamowy per landing × typ × miesiąc, filtr Wszystko/Płatny/PaidSearch/PaidSocial/Bezpłatny. Bez zaniżania botami.</p>
+    <div class="tags"><span class="t grn">PL only</span><span class="t acc">ruch płatny</span></div>
+  </a>
+</div>
+
+<!-- ANALIZY -->
+<div class="sechead"><h2>📊 Analizy GA4 (cały ruch)</h2><span class="cnt">5 raportów · miesięczne</span></div>
+<div class="grid">
+  <a class="card" href="GLOV_GA4_R01-R09_Miesieczny.html">
+    <div class="ico">📈</div>
+    <h3>R01–R09 miesięczny</h3>
+    <p>9 raportów GA4 (KPI, urządzenia, kanały, landing, produkty, nowi/wracający, lejek, dni tygodnia) z przełącznikiem Sty–Cze + Σ90 dni.</p>
+    <div class="tags"><span class="t grn">przełącznik miesięcy</span><span class="t acc">twarde GA4</span></div>
+  </a>
+  <a class="card" href="GLOV_Sciezki_Miesieczny.html">
+    <div class="ico">🛤️</div>
+    <h3>Ścieżki zakupowe</h3>
+    <p>Typy ścieżek (Listing / PDP / Homepage / Search / Landing) wg wejścia → zakup, stała kolejność, przełącznik miesięcy.</p>
+    <div class="tags"><span class="t grn">przełącznik miesięcy</span><span class="t acc">twarde GA4</span></div>
+  </a>
+  <a class="card" href="GLOV_Ruch_Zrodla_LP.html">
+    <div class="ico">🌐</div>
+    <h3>Ruch / Źródła LP</h3>
+    <p>Pełne odtworzenie zakładki Audi: kanały pozyskania + CR MoM, trend sesji/CR, dystrybucja typ-strony × miesiąc (heatmapa CR), head-to-head miesiąc-do-miesiąca z URL. Filtr ruchu. Dane GA4 sty–cze 2026.</p>
+    <div class="tags"><span class="t grn">filtr ruchu</span><span class="t acc">wzór Audi 1:1</span><span class="t">head-to-head</span></div>
+  </a>
+  <a class="card" href="GLOV_Ekstrakcja_Ruchu_LP.html">
+    <div class="ico">🎯</div>
+    <h3>Ekstrakcja ruchu płatnego</h3>
+    <p>Gdzie ląduje ruch reklamowy per landing × typ × miesiąc. Filtr: Wszystko / Płatny / Paid Search / Paid Social / Bezpłatny. 3 widoki.</p>
+    <div class="tags"><span class="t grn">filtr ruchu płatnego</span><span class="t acc">wzór Audi</span></div>
+  </a>
+  <a class="card" href="GLOV_Clarity_Analiza.html">
+    <div class="ico">🎬</div>
+    <h3>Analiza Clarity</h3>
+    <p>1000 nagrań + agregaty. Bug „▫" na cenach (832 kliki), drop PDP→koszyk 9:1, 78% instant-bounce z Meta, CLS 18%, Luna Eye = król PDP.</p>
+    <div class="tags"><span class="t acc">nagrania</span><span class="t">behawior</span></div>
+  </a>
+  <a class="card" href="GLOV_Segmenty_Sciezki_Maj_Marzec.html">
+    <div class="ico">🧩</div>
+    <h3>10 segmentów (maj vs marzec)</h3>
+    <p>Behawioralne, zakupowe, kanałowe + ścieżki wejścia. Walidacja GA4 × Shopify. Średnie interakcji per kanał i produkt.</p>
+    <div class="tags"><span class="t acc">10 segmentów</span><span class="t">maj vs marzec</span></div>
+  </a>
+</div>
+
+<!-- INSTRUKCJE -->
+<div class="sechead"><h2>🛠️ Instrukcje i dokumenty</h2></div>
+<div class="sgrid">
+  <a class="scard" href="GLOV_Instrukcja_GTM_Eventy.md"><h4>📋 Instrukcja GTM</h4><p>Naprawa eventów: ATC-source, gubiony landing, filtry. GTM-PQ9JFT2.</p></a>
+  <a class="scard" href="scenariusze.md"><h4>📝 Scenariusze → standardy</h4><p>Markery @ga4/@event/@ski. Standard „Architektura + Eventy".</p></a>
+  <a class="scard" href="ga4_findings.md"><h4>🔍 GA4 findings</h4><p>Audyt oeventowania, ślepe pola, custom dimensions.</p></a>
+  <a class="scard" href="sciezki_szkielet.md"><h4>🗂️ Szkielet ścieżek</h4><p>Definicje: segmenty, wejścia, modelowe ścieżki.</p></a>
+</div>
+
+<!-- MAPY -->
+<div class="sechead"><h2>🗺️ Mapping sklepu</h2><span class="cnt">właściwy mapping HP i sekcji</span></div>
+<div class="grid">
+  <a class="card" href="GLOV_Vision_Scan_HP.html">
+    <div class="ico">✨</div>
+    <h3>Vision Scan — HP <span class="t grn" style="vertical-align:middle">NOWA METODA</span></h3>
+    <p>Najnowsza wersja mappingu strony głównej — nowa metoda (Vision Scan), tą idziemy. Self-contained ze screenshotami.</p>
+    <div class="tags"><span class="t acc">najnowsze</span><span class="t">mapping HP</span></div>
+  </a>
+  <a class="card" href="GLOV_Reference_Audit_Mapping.html">
+    <div class="ico">🗺️</div>
+    <h3>Reference Audit — mapping v2</h3>
+    <p>Właściwy mapping sklepu: HP + sekcje (nawigacja, listing, PDP, koszyk, checkout, blog) ze screenshotami desktop+mobile. 17.05.2026.</p>
+    <div class="tags"><span class="t acc">mapping pełny</span><span class="t">20 screenshotów</span></div>
+  </a>
+  <a class="card" href="GLOV_HP_Developer_View.html#techstack">
+    <div class="ico">⚙️</div>
+    <h3>HP Dev — Tech Stack</h3>
+    <p>Co siedzi pod spodem HP: technologie, skrypty, biblioteki. Wejście wprost na zakładkę.</p>
+    <div class="tags"><span class="t acc">tech stack</span></div>
+  </a>
+  <a class="card" href="GLOV_HP_Developer_View.html#dom">
+    <div class="ico">🧬</div>
+    <h3>HP Dev — Struktura DOM</h3>
+    <p>Struktura DOM strony głównej — jak zbudowany jest kod HP.</p>
+    <div class="tags"><span class="t acc">DOM</span></div>
+  </a>
+  <a class="card" href="GLOV_HP_Developer_View.html#nav">
+    <div class="ico">🧭</div>
+    <h3>HP Dev — Nawigacja</h3>
+    <p>Analiza nawigacji strony głównej — menu, linki, struktura.</p>
+    <div class="tags"><span class="t acc">nawigacja</span></div>
+  </a>
+  <a class="card" href="glov-full-store-mapping.html">
+    <div class="ico">🏬</div>
+    <h3>Full store mapping</h3>
+    <p>Architektura sklepu: HP, kolekcje, PDP, koszyk, blog — tekstowa mapa struktury.</p>
+    <div class="tags"><span class="t">struktura</span></div>
+  </a>
+</div>
+<div class="sgrid" style="margin-top:14px">
+  <a class="scard" href="glov-homepage-mapping.html"><h4>🏠 Homepage mapping (stary)</h4><p>Wcześniejsza mapa HP — zastąpiona przez Vision Scan.</p></a>
+  <a class="scard" href="GLOV_Connections_Matrix.html"><h4>🔌 Connections matrix</h4><p>Integracje: GA4, Clarity, Meta, Shopify.</p></a>
+</div>
+
+<!-- CHECKOUT & UX (maj) -->
+<div class="sechead"><h2>🛒 Checkout, UX i frictions</h2><span class="cnt">analizy z maja</span></div>
+<div class="sgrid">
+  <a class="scard" href="GLOV_Checkout_Diagnoza_Kompletna.html"><h4>🛒 Diagnoza checkout (pełna)</h4><p>Kompletna diagnoza checkout i frictions koszyka.</p></a>
+  <a class="scard" href="GLOV_Diagnoza_Checkout_2026-05-27.html"><h4>🛒 Diagnoza checkout 27.05</h4><p>Wcześniejsza wersja diagnozy.</p></a>
+  <a class="scard" href="GLOV_Checkout_Trend_2025.html"><h4>📉 Checkout trend 2025</h4><p>Trend checkout w czasie.</p></a>
+  <a class="scard" href="GLOV_Checkout_Audit.md"><h4>📋 Checkout audit</h4><p>One-page checkout, płatności, wysyłka, frictions.</p></a>
+  <a class="scard" href="GLOV_UX_Audit_2026-05-06.html"><h4>🎨 UX Audit</h4><p>Audyt UX/UI 06.05.2026.</p></a>
+  <a class="scard" href="GLOV_Mobile_UX_Analiza.md"><h4>📱 Mobile UX</h4><p>Listing, PDP, koszyk na 390×844.</p></a>
+  <a class="scard" href="GLOV_20_Frictions.md"><h4>⚠️ 20 frictions</h4><p>Lista friction points (zaktualizowana 13.05).</p></a>
+  <a class="scard" href="GLOV_Core_Web_Vitals.md"><h4>⚡ Core Web Vitals</h4><p>Lighthouse: LCP 1,7s, INP 127ms, CLS 0,02.</p></a>
+  <a class="scard" href="GLOV_Referral_Analiza.md"><h4>🔗 Referral</h4><p>Boty, AI assistants, brak partnerów contentowych.</p></a>
+</div>
+
+<!-- WIEDZA BAZOWA -->
+<div class="sechead"><h2>📚 Wiedza bazowa i konfiguracja</h2></div>
+<div class="sgrid">
+  <a class="scard" href="GLOV_GA4_Analizy_Maj2026.md"><h4>📊 GA4 analizy maj</h4><p>KPI maja, lejki per kanał, ranking produktów.</p></a>
+  <a class="scard" href="GLOV_Zakres_Analiz_GA4.md"><h4>🗂️ Zakres analiz GA4</h4><p>Framework 32 analiz GA4 z priorytetami.</p></a>
+  <a class="scard" href="ecommerce-ai-blueprint.md"><h4>🧭 E-commerce AI blueprint</h4><p>Mapa możliwości Claude+Shopify, 10 błędów, workflow.</p></a>
+  <a class="scard" href="claude-marketing-integrations-blueprint.md"><h4>📈 Marketing integrations</h4><p>GA4 / Meta / Google Ads setup + ryzyka.</p></a>
+  <a class="scard" href="Claude_Shopify_Zagrozenia_i_Dobre_Praktyki.md"><h4>⚠️ Zagrożenia i praktyki</h4><p>Ryzyka, złote zasady, co bezpieczne na żywym sklepie.</p></a>
+  <a class="scard" href="GLOV_MCP_Connections_Guide.md"><h4>🔌 MCP connections guide</h4><p>Jak podłączać konektory (Meta, Google Ads, Clarity, GSC).</p></a>
+  <a class="scard" href="GLOV_Connections_Agencja.md"><h4>🤝 Connections agencja</h4><p>Stan integracji agencyjnych.</p></a>
+  <a class="scard" href="GLOV_UXUI_MVP_PROJECT.md"><h4>🎯 UX/UI MVP project</h4><p>Projekt MVP redesign.</p></a>
+</div>
+
+<!-- ARCHIWUM -->
+<div class="sechead"><h2>📦 Archiwum</h2><span class="cnt">wcześniejsze analizy</span></div>
+<div class="sgrid">
+  <a class="scard" href="Glov_ga4_referencja_r1-r9.html"><h4>📊 GA4 referencja (maj)</h4><p>Pierwsza pełna R01–R09, 90 dni lut–maj.</p></a>
+  <a class="scard" href="glov-reference-master-11-06-2026.html"><h4>🏆 Reference master (pełny)</h4><p>Pełny mega-audyt 6 zakładek (4 ważne wycięte osobno).</p></a>
+  <a class="scard" href="GLOV_Raport_Analityczny.html"><h4>📑 Raport scalony</h4><p>GA4 + frictions + mobile + checkout + CWV.</p></a>
+  <a class="scard" href="GLOV_LTV_Retencja_2024_2026.html"><h4>💰 LTV i retencja</h4><p>LTV, retencja, AOV, top klienci.</p></a>
+  <a class="scard" href="GLOV_Kohorty_2024_2026.html"><h4>📅 Kohorty</h4><p>24 kohorty, heatmap, decay.</p></a>
+  <a class="scard" href="GLOV_Sciezki_Interaktywny.html"><h4>⚠️ Eksplorator (stary)</h4><p>Zawiera estymacje — zastąpiony.</p></a>
+</div>
+
+<!-- INSTRUKCJE NAPRAW — wyraźnie odcięta sekcja na dole -->
+<div class="instr-section">
+  <div class="ih">🛠️ Instrukcje napraw — do wdrożenia</div>
+  <div class="isub">Konkretne instrukcje krok-po-kroku dla agencji / developera. Jak naprawić ślepe pola pomiaru w Google Tag Manager (GTM-PQ9JFT2).</div>
+  <div class="instr-grid">
+    <a class="instr-card" href="GLOV_Instrukcja_GTM_Eventy.md#część-b--kejs-glov-1-atc-bez-źródła-pdp-vs-listing--ślepe-pole">
+      <div class="ico">🏷️</div>
+      <div>
+        <h4>1. Eventy GA4 w GTM — ATC ze źródłem</h4>
+        <p>Jak dodać/poprawić eventy w GTM + rozwiązanie ślepego pola „add_to_cart bez ścieżki strony" (rozróżnienie PDP vs quick-add z listingu). Część A + B.</p>
+        <div class="tags"><span class="t acc">GTM</span><span class="t">ATC source</span></div>
+      </div>
+    </a>
+    <a class="instr-card" href="GLOV_Instrukcja_GTM_Eventy.md#część-c--kejs-glov-2-gubiony-landing-page-worek-not-set-23k90dni">
+      <div class="ico">🧭</div>
+      <div>
+        <h4>2. Naprawa gubionego landing page</h4>
+        <p>Jak ograniczyć worek „(not set)" (~23k sesji/90 dni z in-app browsera Meta): wymuszenie page_location, diagnoza triggera GA4, Consent Mode, fix w Meta Ads. Część C.</p>
+        <div class="tags"><span class="t acc">GTM</span><span class="t">landing fix</span></div>
+      </div>
+    </a>
+  </div>
+  <a class="instr-card" href="GLOV_Instrukcja_GTM_Eventy.md" style="margin-top:14px">
+    <div class="ico">📄</div>
+    <div>
+      <h4>Pełna instrukcja GTM (całość)</h4>
+      <p>Wszystkie cztery części razem: A podstawy · B ATC source · C gubiony landing · D filtry nieoeventowane + checklist wdrożenia priorytetowej.</p>
+    </div>
+  </a>
+</div>
+
+<div class="foot">
+  <b>glov.hub</b> — jeden punkt wejścia do analiz glov.co · wszystkie raporty INTERNAL<br>
+  GA4 342844459 (proton.me) · Shopify ShopifyQL · Microsoft Clarity · GTM-PQ9JFT2 · Phenicoptere Sp. z o.o.
+</div>
+</div>
+
+<!-- @BL_SALES -->
+<script id="bl-sales-data">window.BL_SALES={"updated": "2026-07-28 16:17", "today": "2026-07-28", "month": "2026-07", "year": "2026", "range": "2026-07-01 – 2026-07-28", "sources": ["shop", "allegro", "tiktokeu", "hebe"], "labels": {"shop": "Shopify", "allegro": "Allegro", "tiktokeu": "TikTok", "hebe": "Hebe"}, "today_d": {"shop": {"orders": 21, "items": 40, "revenue": 1368.94}, "allegro": {"orders": 13, "items": 26, "revenue": 972.5599999999998}, "hebe": {"orders": 3, "items": 3, "revenue": 109.75}}, "month_d": {"allegro": {"orders": 717, "items": 1345, "revenue": 50102.14000000038}, "shop": {"orders": 1031, "items": 1882, "revenue": 81703.83999999886}, "hebe": {"orders": 302, "items": 332, "revenue": 15726.29999999993}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}, "year_d": {"allegro": {"orders": 717, "items": 1345, "revenue": 50102.14000000038}, "shop": {"orders": 1031, "items": 1882, "revenue": 81703.83999999886}, "hebe": {"orders": 302, "items": 332, "revenue": 15726.29999999993}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}, "all_d": {"allegro": {"orders": 717, "items": 1345, "revenue": 50102.14000000038}, "shop": {"orders": 1031, "items": 1882, "revenue": 81703.83999999886}, "hebe": {"orders": 302, "items": 332, "revenue": 15726.29999999993}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}};</script>
+
+<script>
+const root=document.documentElement, btn=document.getElementById('themeBtn');
+const saved=localStorage.getItem('glov-theme')||'light';
+root.setAttribute('data-theme',saved);
+btn.textContent = saved==='light'?'🌙':'☀️';
+btn.onclick=()=>{
+  const next=root.getAttribute('data-theme')==='light'?'dark':'light';
+  root.setAttribute('data-theme',next);
+  localStorage.setItem('glov-theme',next);
+  btn.textContent = next==='light'?'🌙':'☀️';
+};
+
+// ── SPRZEDAŻ BL MATRIX ───────────────────────────────────────────────────
+const BL_API='http://localhost:9871/api';
+function n(v,d=0){return(+v||0).toLocaleString('pl-PL',{minimumFractionDigits:d,maximumFractionDigits:d});}
+function zl(v){return n(v,2)+' zł';}
+const SRC_COLORS={'shop':'#7c5cff','allegro':'#f5751a','tiktokeu':'#16a34a','hebe':'#e91e8c'};
+const MONTHS_PL=['','Sty','Lut','Mar','Kwi','Maj','Cze','Lip','Sie','Wrz','Paź','Lis','Gru'];
+
+function blCell(period_d, src){
+  const v=(period_d||{})[src]||{orders:0,items:0,revenue:0};
+  const z=!v.orders;
+  return `<td class="bl-val${z?' bl-zero':''}"><div class="bl-qty">${n(v.orders)}</div><div class="bl-rev">${n(v.items||0)} szt.</div><div class="bl-rev">${zl(v.revenue)}</div></td>`;
+}
+
+function renderBLSales(){
+  const el=document.getElementById('sales-content');
+  const d=window.BL_SALES;
+  if(!d){el.innerHTML='<div class="sales-loading">Brak danych — uruchom: <code>python3 update_hub_sales.py</code></div>';return;}
+
+  const src=d.sources||['shop','allegro','tiktokeu','hebe'];
+  const lbl=d.labels||{};
+  const mNum=parseInt((d.month||'').split('-')[1]||0);
+  const mName=MONTHS_PL[mNum]||d.month;
+  const yr=d.year||'';
+  const todayShort=d.today?(d.today.substring(5).replace('-','.')+''):'-';
+
+  // Nagłówek kolumn
+  const thCh=src.map(s=>{
+    const c=SRC_COLORS[s]||'#9a9aa5';
+    return `<th style="color:${c};border-bottom-color:${c}">${lbl[s]||s}</th>`;
+  }).join('');
+
+  // Wiersze
+  const rowRok=`<tr class="row-rok">
+    <td class="bl-lbl"><div class="bl-period">ROK ${yr}</div></td>
+    ${src.map(s=>blCell(d.year_d,s)).join('')}
+  </tr>`;
+  const rowMies=`<tr class="row-mies">
+    <td class="bl-lbl"><div class="bl-period">${mName}</div><div class="bl-psub">${mName} ${yr}</div></td>
+    ${src.map(s=>blCell(d.month_d,s)).join('')}
+  </tr>`;
+  const rowDzis=`<tr class="row-dzis">
+    <td class="bl-lbl"><div class="bl-period">Dziś</div><div class="bl-psub">${todayShort}</div></td>
+    ${src.map(s=>blCell(d.today_d,s)).join('')}
+  </tr>`;
+
+  const foot=`<div class="bl-foot">
+    <span class="bl-foot-txt">Dane z Baselinker · zakres <strong>${d.range}</strong> · aktualizacja: <strong>${d.updated}</strong></span>
+    <button class="btn-refresh" onclick="loadBLSales(true)">🔄 Pobierz świeże</button>
+  </div>`;
+
+  el.innerHTML=`<table class="bl-matrix">
+  <thead><tr><th class="bl-lbl-h"></th>${thCh}</tr></thead>
+  <tbody>${rowRok}${rowMies}${rowDzis}</tbody>
+  </table>${foot}`;
+}
+
+async function loadBLSales(force=false){
+  const el=document.getElementById('sales-content');
+  if(force) el.innerHTML='<div class="sales-loading">Pobieram świeże dane z Baselinker…</div>';
+  try{
+    const url=force?BL_API+'/refresh':BL_API+'/bl-sales';
+    const r=await fetch(url,{method:force?'POST':'GET',signal:AbortSignal.timeout(25000)});
+    if(!r.ok) throw new Error(r.status);
+    window.BL_SALES=await r.json();
+    renderBLSales();
+  }catch(e){
+    if(window.BL_SALES) renderBLSales();
+    else el.innerHTML='<div class="sales-loading">Serwer offline — uruchom <code>python3 glov_server.py</code></div>';
+  }
+}
+loadBLSales();
+</script></body></html>

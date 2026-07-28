@@ -1,0 +1,281 @@
+<!DOCTYPE html><html lang="pl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>❤️ Plan serca reko EEL — naprawa + rozwój</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f4f6fb;color:#1a1d2e;padding:26px;line-height:1.55}
+.w{max-width:1180px;margin:0 auto}
+h1{font-size:27px;letter-spacing:-.4px} h1 .a{color:#dc2626}
+.sub{color:#5a6080;font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin:5px 0 20px}
+.lead{background:#fff;border:1px solid #dfe3f0;border-left:4px solid #4c5ef7;border-radius:10px;padding:14px 18px;margin-bottom:22px;font-size:14px;color:#2a2f45}
+.lead b{color:#1a1d2e}
+.kpis{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+.kpi{background:#fff;border:1px solid #dfe3f0;border-radius:10px;padding:11px 17px;text-align:center;min-width:120px}
+.kpi .n{font-size:23px;font-weight:800} .kpi .l{font-size:10px;color:#5a6080;text-transform:uppercase;letter-spacing:.3px;margin-top:2px}
+.kpi.dead .n{color:#dc2626} .kpi.half .n{color:#d97706} .kpi.live .n{color:#16a34a} .kpi.know .n{color:#4c5ef7}
+.part{background:linear-gradient(135deg,#eef1fb,#f8f9ff);border:1px solid #d5dbf0;border-radius:12px;padding:8px 18px;margin:30px 0 14px;display:flex;align-items:center;gap:12px}
+.part .pn{font-size:11px;font-weight:800;color:#4c5ef7;letter-spacing:1px;background:#e3e8fc;padding:3px 9px;border-radius:6px}
+.part h2{font-size:19px;border:none;margin:8px 0}
+h2{font-size:18px;margin:26px 0 12px;padding-bottom:6px;border-bottom:2px solid #e6e9f5}
+h3{font-size:15px;margin:18px 0 8px;color:#2a2f45}
+p{font-size:13.5px;margin:8px 0;color:#333a52}
+.block{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0}
+@media(max-width:820px){.block{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid #dfe3f0;border-radius:11px;padding:15px 17px;position:relative}
+.card.k1{border-top:3px solid #4c5ef7} .card.k2{border-top:3px solid #7c3aed}
+.card.k3{border-top:3px solid #0891b2} .card.k4{border-top:3px solid #d97706}
+.card h4{font-size:15px;margin:0 0 4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card .ord{background:#1a1d2e;color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.card .who{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding:2px 8px;border-radius:6px;margin-left:auto}
+.who.haiku{background:#dcfce7;color:#15803d} .who.sonnet{background:#dbeafe;color:#1d4ed8} .who.arch{background:#fae8ff;color:#a21caf}
+.card .role{font-size:12px;color:#64748b;font-style:italic;margin-bottom:8px}
+.io{background:#f7f9fd;border-radius:8px;padding:8px 11px;font-size:12px;margin:8px 0}
+.io .r{display:flex;gap:8px;margin:3px 0} .io .r b{color:#4c5ef7;min-width:52px;flex-shrink:0;font-size:11px;text-transform:uppercase}
+.dep{font-size:11.5px;color:#64748b;margin-top:8px;padding-top:8px;border-top:1px dashed #e6e9f5}
+.dep b{color:#dc2626}
+.bombs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:820px){.bombs{grid-template-columns:1fr}}
+.bomb{background:linear-gradient(135deg,#fef2f2,#fff);border:1.5px solid #f0a8a8;border-radius:10px;padding:12px 14px}
+.bomb.dec{background:linear-gradient(135deg,#fffbeb,#fff);border-color:#f0d0a0}
+.bh{font-weight:800;font-size:11px;color:#dc2626;text-transform:uppercase;letter-spacing:.3px} .bomb.dec .bh{color:#d97706}
+.bp{font-size:12.5px;margin:6px 0;color:#333a52} .bf{font-size:11px;color:#64748b}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #dfe3f0;border-radius:10px;overflow:hidden;font-size:12.5px;margin:12px 0}
+th{background:#f1f5f9;text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;color:#5a6080;letter-spacing:.3px}
+td{padding:8px 10px;border-top:1px solid #f1f5f9;vertical-align:top}
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:5px;white-space:nowrap}
+.t-dom{background:#f3e8ff;color:#7e22ce} .t-oko{background:#ffedd5;color:#c2410c} .t-llm{background:#cffafe;color:#0e7490}
+.t-p0{background:#fee2e2;color:#b91c1c} .t-p1{background:#ffedd5;color:#c2410c} .t-p2{background:#fef9c3;color:#a16207} .t-p3{background:#e0e7ff;color:#4338ca}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px}
+.p-live{background:#dcfce7;color:#15803d} .p-half{background:#fef9c3;color:#a16207} .p-dead{background:#fee2e2;color:#b91c1c}
+ul.clean{margin:8px 0 8px 4px;padding:0;list-style:none} ul.clean li{font-size:13px;margin:6px 0;padding-left:18px;position:relative;color:#333a52}
+ul.clean li:before{content:"▸";position:absolute;left:0;color:#4c5ef7;font-weight:800}
+.note{background:#f7f9fd;border-left:3px solid #cbd5e1;border-radius:4px;padding:9px 13px;font-size:12.5px;color:#475569;margin:10px 0}
+.stars{color:#d97706;letter-spacing:1px;font-size:11px}
+.tc{background:#1a1d2e;color:#e6e9f5;border-radius:12px;padding:18px 22px;margin:26px 0 10px;font-size:13px}
+.tc h3{color:#fff;margin:0 0 10px;font-size:15px} .tc .row{margin:7px 0;display:flex;gap:10px}
+.tc .row b{color:#8fa2ff;min-width:150px;flex-shrink:0;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+.foot{color:#8b93ad;font-size:11px;text-align:center;margin-top:24px;padding-top:14px;border-top:1px solid #e6e9f5}
+</style></head><body><div class="w">
+
+<h1>❤️ Plan serca reko EEL <span class="a">— naprawa + rozwój</span></h1>
+<div class="sub">Z weryfikacji serca 2026-07-11 · wiedza → kryteria → werdykty · jeden dokument, dwie części</div>
+
+<div class="lead">
+<b>Diagnoza w jednym zdaniu:</b> serce = DEMO-koncept z <b>niespodziewanie dobrą biblioteką kryteriów</b>, ale bez <b>wykonawcy werdyktu</b> — kryteria są mądrzejsze niż silnik, który ich nie czyta.
+Żywy w kodzie jest tylko krok 6 (gap-by-absence). Werdykty istnieją wyłącznie ręcznie wpisane w DEMO — i tam 2 z 9 przeczą własnemu wsadowi.
+Ten plan: <b>Część 1</b> — 4 klocki żeby serce zabiło. <b>Część 2</b> — jak zbierać kryteria, jak prześwietlać sklep, dokąd rozwijać algorytm.
+</div>
+
+<div class="kpis">
+  <div class="kpi live"><div class="n">1 / 13</div><div class="l">kroków żywych w kodzie</div></div>
+  <div class="kpi half"><div class="n">1 / 4</div><div class="l">silniki normy podpięte</div></div>
+  <div class="kpi know"><div class="n">~180</div><div class="l">mikro-kryteriów w bazie</div></div>
+  <div class="kpi dead"><div class="n">0 / 834</div><div class="l">obserwacji strukturalnych</div></div>
+  <div class="kpi dead"><div class="n">2 / 9</div><div class="l">werdyktów DEMO błędnych</div></div>
+</div>
+
+<div class="part"><span class="pn">CZĘŚĆ 1</span><h2>Plan naprawczy — żeby serce ZABIŁO</h2></div>
+
+<p>Diagnoza z weryfikacji: istnieje <b>renderer</b> (DEMO HTML, build_eval HTML) i istnieje <b>wiedza</b> (~180 mikro-kryteriów + 137 biasów), ale nie istnieje <b>wykonawca werdyktu</b>.
+Cztery klocki poniżej to właśnie ten brakujący łańcuch. Kolejność wynika z zależności: bez pola w schemacie (klocek 4) nie ma gdzie zapisać wyniku klocków 2–3; bez kompilatora (klocek 1) klocki 2–3 nie wiedzą JAKIE reguły przyłożyć do danego elementu.</p>
+
+<div class="block">
+  <div class="card k1">
+    <h4><span class="ord">1</span> Kompilator checklisty <code>element→reguły</code> <span class="who sonnet">Sonnet 4.6</span></h4>
+    <div class="role">Serce mechanizmu „obserwacja=ocena". Dla każdego zmapowanego elementu buduje jego checklistę z rejestru.</div>
+    <div class="io">
+      <div class="r"><b>Wsad</b><span>zmapowany <code>key</code> elementu (z vision) + <code>element_criteria.json</code> (mandatory+good_to_have per key) + <code>principles_map.json</code> (element→bias)</span></div>
+      <div class="r"><b>Wynik</b><span>lista reguł do przyłożenia: <code>[{rule_id, tekst, klasa: DOM/OKO/LLM, prog}]</code> — gotowa checklista per element</span></div>
+    </div>
+    <p style="font-size:12.5px">Skrót kluczowy: <code>element_criteria.json</code> JUŻ JEST rejestrem per-element na kluczach kanonu (8 mandatory + 31 good_to_have). Nie trzeba budować nowego rejestru ani ruszać <code>rules.json</code> — wystarczy CZYTAĆ istniejący plik przy skanie. To odblokowuje SP13 najkrótszą drogą.</p>
+    <div class="dep">Zależy od: <b>nic</b> (dane już są). Odblokowuje: klocki 2, 3, 13. <b>Punkt startu.</b></div>
+  </div>
+
+  <div class="card k2">
+    <h4><span class="ord">2</span> DOM-runner (werdykt automatem) <span class="who sonnet">Sonnet 4.6</span></h4>
+    <div class="role">Liczy werdykt PASS/WEAK/FAIL dla reguł klasy DOM — deterministycznie, za darmo przy każdym capture.</div>
+    <div class="io">
+      <div class="r"><b>Wsad</b><span>DOM strony (Playwright, już w kroku 1/3) + checklista DOM-owa z klocka 1</span></div>
+      <div class="r"><b>Wynik</b><span>werdykty: obecność, liczba (menu ≤7, ≥6 produktów, ≤4 slajdy), próg, kontrast, timing popupu, wygasłe daty</span></div>
+    </div>
+    <p style="font-size:12.5px"><b>Najtańsza wygrana:</b> ~połowa ze 180 mikro-kryteriów jest DOM-owalna. Start: 20–30 najtwardszych checków. Uwaga na klasę <b>DOM-interaktywny</b> (autocomplete wymaga wpisania frazy Playwrightem — nie statyczny DOM).</p>
+    <div class="dep">Zależy od: <b>klocek 1</b> + capture (krok 1/3). Odblokowuje: automatyczny werdykt bez człowieka.</div>
+  </div>
+
+  <div class="card k3">
+    <h4><span class="ord">3</span> LLM-slot (osąd treści) <span class="who sonnet">Sonnet 4.6</span></h4>
+    <div class="role">Werdykt dla reguł treściowych, których DOM nie zmierzy: CEP vs brand, dowód vs ogólnik, ton.</div>
+    <div class="io">
+      <div class="r"><b>Wsad</b><span>opis/tekst elementu (z vision) + checklista LLM-owa z klocka 1 (zakazy ogólników, korzyść vs brand, autentyczność)</span></div>
+      <div class="r"><b>Wynik</b><span>werdykt + <code>note</code> uzasadniające, np. „Award-Winning = prestiż nie korzyść → WEAK"</span></div>
+    </div>
+    <p style="font-size:12.5px">Kryteria treściowe są dobrze castowalne na LLM (zakaz „lider rynku", wymóg konkretnego faktu). Slot myślący — szkielet składa determinizm, LLM ocenia tylko treść. Gwiazda północna jak CS.</p>
+    <div class="dep">Zależy od: <b>klocek 1</b>. Można budować równolegle z klockiem 2.</div>
+  </div>
+
+  <div class="card k4">
+    <h4><span class="ord">4</span> Pole <code>obserwacje</code> w schemacie vision <span class="who haiku">Haiku 4.5</span></h4>
+    <div class="role">Miejsce zapisu werdyktu. Dziś 0/834 elementów ma strukturę — schemat jej nawet nie przewiduje.</div>
+    <div class="io">
+      <div class="r"><b>Wsad</b><span>obecny schemat elementu <code>[el, etyk, opis, komentarz, top, zone]</code></span></div>
+      <div class="r"><b>Wynik</b><span>+ pole <code>obserwacje: [{rule_id, werdykt, how, note}]</code> + wymuszenie w skille skanującym</span></div>
+    </div>
+    <p style="font-size:12.5px">Wbrew ocenie „strateg 3.07" (struktura wpięta, niewypełniona) — struktura NIE jest wpięta w dane produkcyjne, istnieje tylko w DEMO HTML. To zmiana schematu + kontrakt skilla, nie logika. Robota plikowa/schematowa → Haiku.</p>
+    <div class="dep">Zależy od: <b>nic</b> (można równolegle z 1). Bez tego klocki 2–3 nie mają gdzie zapisać wyniku.</div>
+  </div>
+</div>
+
+<h3>Kolejność i zależności — jak to spiąć</h3>
+<table>
+  <tr><th>Krok</th><th>Klocek</th><th>Kto</th><th>Warunek wejścia</th><th>Efekt</th></tr>
+  <tr><td><b>A</b></td><td>4 — pole w schemacie</td><td><span class="tag t-p3">Haiku</span></td><td>—</td><td>jest gdzie zapisać werdykt</td></tr>
+  <tr><td><b>A</b></td><td>1 — kompilator checklisty</td><td><span class="tag t-p1">Sonnet 4.6</span></td><td>—</td><td>wiadomo JAKIE reguły na element</td></tr>
+  <tr><td><b>B</b></td><td>2 — DOM-runner</td><td><span class="tag t-p1">Sonnet 4.6</span></td><td>klocek 1 + capture</td><td>werdykty DOM automatem</td></tr>
+  <tr><td><b>B</b></td><td>3 — LLM-slot</td><td><span class="tag t-p1">Sonnet 4.6</span></td><td>klocek 1</td><td>werdykty treści</td></tr>
+  <tr><td><b>C</b></td><td>13 — pętla uczenia (istnieje)</td><td><span class="tag t-p2">Sonnet 4.6</span></td><td>klocki 1–4 dają wsad</td><td>obserwacja bez reguły → <code>@reg</code></td></tr>
+</table>
+<div class="note"><b>Architektura (Opus/Tomek) potrzebna tylko dla jednej decyzji:</b> gdzie żyje rejestr per-element — <code>element_criteria.json</code> (szybko, zero migracji) czy dobudowa <code>scope=element</code> w <code>rules.json</code> (czysto, ale etap migracji). Reszta to robota Sonnet 4.6 + Haiku.</div>
+
+<h3>Krytyczne luki do domknięcia</h3>
+<div class="bombs">
+  <div class="bomb">
+    <div class="bh">🔴 rules.json bez element_key</div>
+    <div class="bp">17 reguł, scope {view/category/geo/area/process} — <b>brak pola element_key</b>. Mechanizm „reguła zaczepiona o element" nie ma o co się zaczepić w tym pliku.</div>
+    <div class="bf">Fix: nie naprawiaj rules.json — użyj element_criteria (już jest per-key). rules.json zostaje dla scope widoku/kategorii.</div>
+  </div>
+  <div class="bomb">
+    <div class="bh">🔴 rules_loop scope bez „element"</div>
+    <div class="bp"><code>rules_loop.py:38</code> ALLOWED_SCOPES = {area,view,category,geo,process}. Schemat rejestru <b>nie umie</b> przyjąć reguły per-element.</div>
+    <div class="bf">Fix: dodać scope=element (mała zmiana) LUB zostawić — jeśli decyzja = element_criteria jako rejestr, blocker znika.</div>
+  </div>
+  <div class="bomb dec">
+    <div class="bh">🟡 evidence=[] przy 137 upliftach — dług czy decyzja?</div>
+    <div class="bp">137/137 biasów ma uplift wypełniony, ale evidence=[] wszędzie; rules 17/17 status=theory. „DLACZEGO=liczba" to dziś liczba z literatury udająca pomiar.</div>
+    <div class="bf">Decyzja: to ŚWIADOMY cold-start (recommend.py:6 „na razie pusty → cold-start na pryncypiach"). Dług = brak OZNACZENIA źródła wobec klienta. Fix tani: tagować „literatura vs pomiar".</div>
+  </div>
+  <div class="bomb dec">
+    <div class="bh">🟡 DEMO 2/9 werdyktów błędnych</div>
+    <div class="bp">#7 cena „SPRAWDŹ" gdy vision miał „€120/€185/€345" (→PASS); #9 karuzela „PASS" przy 3 produktach wbrew progowi ≥6. Werdykty wpisane ręcznie, nie liczone.</div>
+    <div class="bf">Dowód że bez automatu (klocki 2–3) werdykt jest PRZYPADKOWY względem reguł. To nie bug DEMO — to argument za całą Częścią 1.</div>
+  </div>
+</div>
+<div class="note"><b>Piąta luka (capture):</b> hero augustinusbader dostał FAIL za brak CTA, który był „zakryty popupem newslettera" — skan skażony. Cała warstwa OKO produkuje false-positives bez dismissu popup/cookie przed screenshotem (reguła jest w kanonie EEL capture, nie zastosowana). Priorytet równy klockom, bo psuje wejście do klocka 3.</div>
+
+
+<div class="part"><span class="pn">CZĘŚĆ 2</span><h2>Plan rozwojowy — jak baza i skan mają rosnąć mądrze</h2></div>
+
+<h2>(a) Jak ZBIERAĆ i BUDOWAĆ kryteria</h2>
+<p>Weryfikacja pokazała rzecz nieoczywistą: <b>warstwa good_to_have jest zaskakująco dobra</b> — konkretne progi, anty-ogólniki, wykrywanie dark patterns, wymóg dowodu. To jest wzorzec, wg którego dobudowywać resztę. Metodyka rozbudowy:</p>
+
+<h3>Źródła wiedzy — skąd bierzemy kryterium</h3>
+<table>
+  <tr><th>Źródło</th><th>Co daje</th><th>Waga dowodu</th></tr>
+  <tr><td><b>Baymard / NN-g</b></td><td>zwalidowane heurystyki UX (principles_hp: 34 zasady)</td><td>badanie zewn. — mocne, ale nie „nasz pomiar"</td></tr>
+  <tr><td><b>Biasy z uplift</b></td><td>DLACZEGO działa + eval_signal (99/137) — na co patrzeć</td><td><span class="tag t-p2">theory</span> — literatura, evidence=[]</td></tr>
+  <tr><td><b>Analiza konkurencji</b></td><td>norma kategorii — częstość elementu u najlepszych (learned_stats)</td><td>obserwacja rynku — realna, ale nie kauzalna</td></tr>
+  <tr><td><b>500 mikro-analiz</b></td><td>emergencje, content = 7× w z≥9 (najpłodniejsza warstwa)</td><td>wewnętrzna synteza — do promocji na reguły</td></tr>
+  <tr><td><b>Wdrożenia klientów</b></td><td><code>effect_evidence.json</code> (SP15, NIE ISTNIEJE) — uplift zmierzony</td><td><span class="tag t-p0">pomiar</span> — złoty standard, brakuje</td></tr>
+</table>
+
+<div class="bombs">
+  <div class="bomb dec">
+    <div class="bh">⭐ Twarda zasada: DOWÓD, nie literatura</div>
+    <div class="bp">Każde kryterium niesie <b>źródło i jego klasę</b>. Liczba z Baymard ≠ liczba z naszego wdrożenia. Dziś 137 upliftów wygląda jak pomiar, a jest literaturą — wobec klienta to <b>pozór precyzji</b>.</div>
+    <div class="bf">Reguła: pole <code>evidence_class</code> = {pomiar / rynek / literatura / theory}. Reko cytuje klasę. effect_evidence z wdrożeń stopniowo podmienia theory na pomiar.</div>
+  </div>
+  <div class="bomb dec">
+    <div class="bh">⭐ Pętla @reg — baza rośnie ze skanu</div>
+    <div class="bp">Obserwacja przy skanie, która <b>nie ma pokrywającej reguły</b> → kandydat <code>@reg</code> do rules_queue. Skan przestaje tylko konsumować — zaczyna produkować wiedzę.</div>
+    <div class="bf">Mechanizm istnieje (rules_loop.py: queue→commit + testy), brakuje mu wsadu z klocków 1–4. To domyka krok 13.</div>
+  </div>
+</div>
+
+<h3>Wielopoziomowość — kiedy który poziom kryterium</h3>
+<table>
+  <tr><th>Poziom</th><th>Pytanie</th><th>Brak = </th><th>Przykład</th></tr>
+  <tr><td><b>mandatory</b></td><td>czy element JEST?</td><td>🔴 ALARM (strona zepsuta)</td><td>hero, koszyk, nawigacja</td></tr>
+  <tr><td><b>good_to_have</b></td><td>jak DOBRZE zrobiony?</td><td>🟡 gap (rekomendacja)</td><td>bestsellery z ceną+ratingiem</td></tr>
+  <tr><td><b>bias-uplift</b></td><td>DLACZEGO to konwertuje?</td><td>uzasadnienie reko</td><td>social proof +8–20%</td></tr>
+  <tr><td><b>eval_signal</b></td><td>na co konkretnie patrzeć?</td><td>checklista jakości</td><td>„liczba żywa czy sucha 1000+"</td></tr>
+</table>
+<div class="note"><b>Diagnoza z weryfikacji:</b> mandatory jest częściowo wodą (header_logo „widoczne" przejdzie 99% sklepów — zero mocy diagnostycznej). <b>Kierunek rozwoju:</b> mniej trywialnego mandatory, więcej good_to_have z progami. Wyjątki dobre już dziś: nav_main_menu („promocje NIE wymieszane z kategoriami"), hero_banner („nie 100vh bez sygnału że jest dalej").</div>
+
+<h3>Różne kąty — który kąt dla jakiego kryterium</h3>
+<div class="block">
+  <div class="card"><h4><span class="tag t-dom">DOM</span> techniczny</h4><ul class="clean">
+    <li>obecność, liczba, próg (menu ≤7, ≤4 slajdy)</li>
+    <li>kontrast, timing popupu, wygasłe daty</li>
+    <li><b>determinizm</b> — werdykt automatem, za darmo</li>
+    <li>uwaga: DOM-interaktywny (autocomplete) ≠ statyczny</li>
+  </ul></div>
+  <div class="card"><h4><span class="tag t-oko">OKO</span> wizualny</h4><ul class="clean">
+    <li>pozycja (above-fold), hierarchia, gęstość</li>
+    <li>styl kategorii (beauty: twarze/lifestyle)</li>
+    <li>render — wymaga vision/subagenta</li>
+    <li>wrażliwy na skażenie capture (popup!)</li>
+  </ul></div>
+  <div class="card"><h4><span class="tag t-llm">LLM</span> treściowy</h4><ul class="clean">
+    <li>CEP vs brand, korzyść vs ogólnik</li>
+    <li>autentyczność (założyciel vs stock)</li>
+    <li>ton, obiekcja zakupowa w cytacie</li>
+    <li>najtańsza noga do wdrożenia produkcyjnego</li>
+  </ul></div>
+</div>
+
+<h3>Scope — zasięg reguły</h3>
+<p style="font-size:13px"><span class="tag t-dom">element</span> pojedynczy klucz (hero_banner) · <span class="tag t-oko">area</span> obszar (checkout, 23 friction) · <span class="tag t-llm">view</span> widok (HP: ≥6 produktów) · <span class="tag t-p2">category</span> typ sklepu (beauty→social proof MUST) · <span class="tag t-p3">geo</span> rynek (EU→Klarna/PayPal). <b>Brakuje scope=element</b> w rules_loop — to on niesie mechanizm „obserwacja=ocena".</p>
+
+<h2>(b) Jak PRZEŚWIETLAĆ sklep</h2>
+<p>Metodyka skanu = trzy osie mnożące się. Dziś realny jest fragment (HP, warstwa OKO ręcznie). Docelowo:</p>
+<div class="block">
+  <div class="card k1"><h4>Tryptyk × urządzenie</h4>
+    <p style="font-size:12.5px">HP + PDP + Product Tile — trzy zoomy na ten sam kontent („kontent od ręki"). Każdy × Desktop/Mobile (67% ruchu). Dziś: tylko HP realnie (SP18 — PDP+Tile bez capture).</p></div>
+  <div class="card k2"><h4>Trzy warstwy per element</h4>
+    <p style="font-size:12.5px">wizual (OKO) + tech (DOM) + treść (LLM) na tym samym elemencie. Każda warstwa ma swoje kryteria I swoją drogę do werdyktu (klocki 2–3). Dziś tylko OKO, ręcznie.</p></div>
+  <div class="card k3"><h4>Obserwacja = ocena</h4>
+    <p style="font-size:12.5px">pole <code>obserwacje</code> przestaje być wolnym tekstem → <code>[{rule_id, werdykt, how, note}]</code>. Rejestr reguł KONSUMOWANY przy skanie (checklista per element), nie leży martwy. Krok 7 częściowo wykonany już tu.</p></div>
+  <div class="card k4"><h4>SPV — 4. silnik normy</h4>
+    <p style="font-size:12.5px">profil TYPU sklepu (D2C beauty ≠ Marketplace ≠ Q-commerce) deformuje normę: „w D2C beauty social proof = MUST". Bez niego norma płaska. NIE duplikuje CEV (GEO) — inny obiekt, wspólny wzorzec implementacji.</p></div>
+</div>
+<div class="note"><b>SPV vs CEV — rozstrzygnięte:</b> to NIE duplikacja. CEV = 10 cech emocjonalnych kategorii PRODUKTU (zwalidowany w GEO). SPV = 6 osi funkcjonalnych modelu SKLEPU + vertical. Norma = SPV-funkcje × SPV-vertical × CEV. Rekomendacja: <b>skopiować wzorzec cev_scorer</b> (LLM-scorer osi + config-driven), nie budować nowego silnika; wyciąć z SPV osie emocjonalne (3–4) bo pokrywają się z CEV.</div>
+
+<h2>(c) Werdykt + roadmapa dla ALGORYTM_REKO</h2>
+<h3>Ocena 13-krokowego pipeline</h3>
+<table>
+  <tr><th>Krok</th><th>Stan</th><th>Ocena</th></tr>
+  <tr><td>1 Capture</td><td><span class="pill p-half">skażony</span></td><td>działa, ale bez dismiss popup → false-positives OKO</td></tr>
+  <tr><td>2 Visual mapping (obserwacja=ocena)</td><td><span class="pill p-dead">martwy</span></td><td>0/834 strukturalnych — rdzeń SP13 niedowieziony</td></tr>
+  <tr><td>4 Co sklep ma</td><td><span class="pill p-live">żywy</span></td><td>czysty, present_keys OK</td></tr>
+  <tr><td>5 Norma (4 silniki)</td><td><span class="pill p-half">1 z 4</span></td><td>tylko częstość+pryncypia; learned_stats/mandatory/SPV martwe</td></tr>
+  <tr><td>6 Wykryj brak</td><td><span class="pill p-live">żywy</span></td><td>jedyny w pełni działający — gap-by-absence solidny</td></tr>
+  <tr><td>7 Wykryj jakość (B)</td><td><span class="pill p-dead">martwy</span></td><td>zero kodu — połowa metody (A∪B) nieobecna</td></tr>
+  <tr><td>8–10 Filtr / Złóż / Priorytet</td><td><span class="pill p-dead">martwe</span></td><td>brak kodu; format 5-pól status=theory</td></tr>
+  <tr><td>11–12 Render / Walidacja</td><td><span class="pill p-live">żywe</span></td><td>renderer i bramka jakości OK</td></tr>
+  <tr><td>13 Pętla uczenia</td><td><span class="pill p-dead">martwy</span></td><td>0 obserwacji → nie ma czym karmić</td></tr>
+</table>
+<p><b>Mocne:</b> szkielet metody jest przemyślany (13 kroków, 24 SP zmapowane pod kroki, semantyka werdyktów PASS/WEAK/FAIL/SPRAWDŹ/NA dojrzała), a biblioteka kryteriów wyprzedza silnik. <b>Do rozwinięcia:</b> cała środkowa część łańcucha (2→5→7→9) to koncept bez kodu — wiedza czeka na wykonawcę.</p>
+
+<h3>24 słabe punkty — kolejność ROZWOJU wg dźwigni</h3>
+<p>Nie kolejność naprawy (ta jest w ALGORYTM_REKO), lecz <b>od czego zacząć, żeby algorytm skanu rósł mądrze</b> — każdy próg odblokowuje maksimum następnych.</p>
+<table>
+  <tr><th>Fala</th><th>SP</th><th>Dlaczego TERAZ — dźwignia</th></tr>
+  <tr><td><span class="tag t-p0">I · fundament egzekucji</span></td><td>SP13 · SP02 · SP06</td><td>obserwacja=ocena + silnik jakości B + wzorzec kryteriów. Bez tego skan nie produkuje werdyktu — wszystko inne wisi. <b>Najwyższa dźwignia: odblokowuje kroki 2 i 7.</b></td></tr>
+  <tr><td><span class="tag t-p1">II · norma kontekstowa</span></td><td>SP01 (SPV) · SP21 · SP15</td><td>4. silnik normy + zsync źródeł częstości + effect_evidence. Zamienia normę płaską w kontekstową; podmienia literaturę na pomiar. Karmi krok 5→9.</td></tr>
+  <tr><td><span class="tag t-p1">III · spięcie A∪B</span></td><td>SP03 · SP04 · SP05</td><td>ga4_event w bazie → Element→Akcja→Event → jeden werdykt zamiast 2 dokumentów. Zamienia diagnozę w reko wykonalną przez klienta.</td></tr>
+  <tr><td><span class="tag t-p2">IV · dane klienta</span></td><td>SP07 · SP08</td><td>GA4/Clarity + CS jako WSAD (nie tylko walidacja) → wykrywanie z lejka, emergencje. Rozszerza źródła sygnału.</td></tr>
+  <tr><td><span class="tag t-p2">V · zasięg skanu</span></td><td>SP18 · SP19 · SP16 · SP09</td><td>tryptyk PDP+Tile + checkout (23 friction) + normy strukturalne + kryteria widoku. Rozszerza POWIERZCHNIĘ po dopięciu rdzenia.</td></tr>
+  <tr><td><span class="tag t-p3">VI · pętla + szlif</span></td><td>SP14 · SP10 · SP11 · SP12 · SP17 · SP20 · SP22–24</td><td>pętla uczenia (ma wsad dopiero po fali I), subelementy, filtr, format, impact×effort, mobile, drobne. Domyka i poleruje.</td></tr>
+</table>
+<div class="note"><b>Zasada dźwigni:</b> zacznij od fali I nie dlatego że SP13 jest „najważniejszy filozoficznie", lecz dlatego że <b>bez wykonawcy werdyktu wszystkie pozostałe SP produkują wiedzę, której nikt nie konsumuje</b>. SPV (fala II) jest kuszący (efektowny), ale bez fali I deformowałby normę, której i tak nikt nie przykłada. Rdzeń przed powierzchnią.</div>
+
+<div class="tc">
+  <h3>🔍 TRUTH CHECKER</h3>
+  <div class="row"><b>Co wiem</b><span>0/834 obserwacji strukturalnych (python3 na 75 plikach); recommend.py czyta 3 z ~7 wsadów; DEMO werdykty hardcoded (linie 18–55), 2/9 sprzeczne z wsadem; element_criteria = gotowy rejestr per-key; cev_scorer=kategoria vs SPV=sklep; store_profile_config.json nie istnieje.</span></div>
+  <div class="row"><b>Co zakładam</b><span>że eval_glov.json powstał ręcznie (brak skryptu-producenta — wniosek z grep); że „strateg 3.07" oceniał DEMO HTML, nie vision.json; że werdykt #9 odnosi się do 1. ekranu (fold nie podany w vision).</span></div>
+  <div class="row"><b>Co może być błędne</b><span>ocena „dobre kryteria" to osąd CRO (zgodność z Baymard/mierzalność), nie pomiar konwersji — te same evidence=[] dotyczą i mojej oceny; nie skanowałem beauty_vision/ (potwierdzone: 0 plików tam) — inne katalogi mogą mieć nowszy schemat.</span></div>
+  <div class="row"><b>Co zweryfikować</b><span>1 pytanie do Tomka: reguły miały iść do rules.json (wtedy scope=element = blocker #1) czy do element_criteria (wtedy blocker znika, brak tylko konsumenta)?</span></div>
+  <div class="row"><b>Jeden input</b><span>decyzja „rejestr per-element = element_criteria.json" (zamiast dobudowy scope w rules.json) skraca drogę do żywego serca o cały etap migracji.</span></div>
+</div>
+
+
+<div class="foot">Źródło: verify/findings_serce_kryteria.json · dowody ścieżka:linia + python3 na danych · 2026-07-11</div>
+
+</div></body></html>

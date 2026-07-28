@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Samochody osobowe — nabywca prywatny v5.7 — Mapa Percepcji · 152 Pytań</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; display: flex; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+#sidebar {
+  width: 220px; min-width: 220px; background: #fff; border-right: 1px solid #e2e8f0;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.brand {
+  padding: 14px 16px 10px;
+  font-weight: 700; font-size: 13px; color: #1e293b;
+  border-bottom: 1px solid #e2e8f0; line-height: 1.3;
+}
+.brand small { display: block; font-weight: 400; font-size: 11px; color: #64748b; margin-top: 2px; }
+.total-badge {
+  margin: 8px 12px; background: #f1f5f9; border-radius: 6px;
+  padding: 5px 10px; font-size: 11px; color: #475569; font-weight: 500;
+}
+.paths-header { padding: 10px 16px 4px; font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .6px; }
+.paths-list { overflow-y: auto; flex: 1; }
+.path-all {
+  display: flex; align-items: center; gap: 8px; padding: 7px 12px;
+  cursor: pointer; border-radius: 6px; margin: 2px 8px;
+  font-size: 12px; font-weight: 600; color: #334155;
+}
+.path-all.active, .path-all:hover { background: #f1f5f9; }
+.path-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+  cursor: pointer; border-radius: 6px; margin: 1px 8px;
+  font-size: 12px; color: #475569; transition: background .1s;
+}
+.path-item:hover, .path-item.active { background: #f1f5f9; color: #1e293b; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.plabel { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pcount { font-size: 11px; font-weight: 600; color: #94a3b8; min-width: 20px; text-align: right; }
+
+.legend { padding: 10px 12px; border-top: 1px solid #e2e8f0; }
+.legend-title { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+.legend-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #475569; margin: 2px 0; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* MAIN */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* TOPBAR */
+#topbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  padding: 8px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 4px; }
+.filter-label { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-right: 2px; }
+.fbtn {
+  font-size: 11px; padding: 3px 8px; border: 1px solid #e2e8f0; border-radius: 4px;
+  background: #fff; cursor: pointer; color: #475569; transition: all .1s;
+}
+.fbtn:hover { border-color: #94a3b8; }
+.fbtn.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+.search-wrap { margin-left: auto; }
+#search { border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 10px; font-size: 12px; width: 180px; outline: none; }
+#search:focus { border-color: #3b82f6; }
+.counter { font-size: 12px; color: #64748b; white-space: nowrap; }
+
+/* STATS BAR */
+#statsbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  display: flex; gap: 0; overflow-x: auto;
+}
+.stat { flex: 1; padding: 10px 16px; border-right: 1px solid #e2e8f0; min-width: 120px; }
+.stat:last-child { border-right: none; }
+.stat .val { font-size: 24px; font-weight: 700; color: #1e293b; }
+.stat .val.green { color: #10b981; }
+.stat .val.red { color: #ef4444; }
+.stat-lbl { font-size: 11px; color: #64748b; margin-top: 1px; }
+
+/* BOARD */
+#board { flex: 1; overflow-x: auto; overflow-y: auto; padding: 12px; }
+.state-block { margin-bottom: 16px; }
+.state-header {
+  font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase;
+  letter-spacing: .5px; padding: 6px 0 8px; display: flex; align-items: center; gap: 8px;
+}
+.state-code { background: #e2e8f0; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: #64748b; }
+.state-cnt { color: #94a3b8; font-weight: 400; font-size: 11px; }
+.cards-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.card {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 10px 12px; width: 280px; flex-shrink: 0;
+  cursor: default; transition: box-shadow .15s;
+}
+.card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.card .nr { font-size: 10px; color: #94a3b8; margin-bottom: 4px; }
+.card .qt { font-size: 13px; line-height: 1.45; color: #1e293b; margin-bottom: 8px; }
+.card .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600;
+  border: 1px solid; letter-spacing: .2px;
+}
+.tag-p1 { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-p2 { color: #f97316; border-color: #fdba74; background: #fff7ed; }
+.tag-p3 { color: #d97706; border-color: #fcd34d; background: #fffbeb; }
+.tag-p4 { color: #94a3b8; border-color: #cbd5e1; background: #f8fafc; }
+.tag-info  { color: #3b82f6; border-color: #93c5fd; background: #eff6ff; }
+.tag-komerc { color: #8b5cf6; border-color: #c4b5fd; background: #f5f3ff; }
+.tag-trans { color: #14b8a6; border-color: #5eead4; background: #f0fdfa; }
+.tag-brak { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-istnieje { color: #10b981; border-color: #6ee7b7; background: #ecfdf5; }
+.card.hidden { display: none; }
+
+/* TABS */
+#tabs { display: flex; border-bottom: 2px solid #e2e8f0; background: #fff; }
+.tab { padding: 8px 20px; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.tab.active { color: #1e293b; border-bottom-color: #3b82f6; }
+.tab-panel { display: none; }
+.tab-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+/* LIST VIEW */
+#list-panel { overflow-y: auto; padding: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 8px 12px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; position: sticky; top: 0; }
+td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; }
+tr:hover td { background: #f8fafc; }
+tr.hidden { display: none; }
+
+/* INFO */
+#info-panel { overflow: hidden; display: flex; flex-direction: column; font-size: 13px; line-height: 1.6; }
+.info-section { margin-bottom: 16px; }
+.info-section h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #64748b; margin-bottom: 8px; }
+.info-section ul { padding-left: 16px; color: #475569; }
+.info-section li { margin: 3px 0; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin: 2px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="brand">
+    Samochody osobowe — nabywca prywatny
+    <small>v5.7 · Analiza CEP i Pytań</small>
+  </div>
+  <div class="total-badge" id="total-badge">152 pytań · 8 ścieżek</div>
+  <div class="paths-header">Ścieżki zakupowe</div>
+  <div class="paths-list">
+    <div class="path-all active" onclick="filterPath(this)" data-path="ALL">
+      <span class="dot" style="background:#64748b"></span>
+      <span class="plabel">Wszystkie ścieżki</span>
+      <span class="pcount" id="cnt-all">0</span>
+    </div>
+    
+        <div class="path-item" data-path="A" onclick="filterPath(this)" title="Stary auto się psuje">
+          <span class="dot" style="background:#3b82f6"></span>
+          <span class="plabel">A · Stary auto się psuje</span>
+          <span class="pcount" id="cnt-A">0</span>
+        </div>
+        <div class="path-item" data-path="B" onclick="filterPath(this)" title="Zmiana sytuacji życiowej">
+          <span class="dot" style="background:#8b5cf6"></span>
+          <span class="plabel">B · Zmiana sytuacji życiowej</span>
+          <span class="pcount" id="cnt-B">0</span>
+        </div>
+        <div class="path-item" data-path="C" onclick="filterPath(this)" title="Odkrycie leasingu prywatnego">
+          <span class="dot" style="background:#ec4899"></span>
+          <span class="plabel">C · Odkrycie leasingu prywatnego</span>
+          <span class="pcount" id="cnt-C">0</span>
+        </div>
+        <div class="path-item" data-path="D" onclick="filterPath(this)" title="Rosnące koszty eksploatacji">
+          <span class="dot" style="background:#14b8a6"></span>
+          <span class="plabel">D · Rosnące koszty eksploatacji</span>
+          <span class="pcount" id="cnt-D">0</span>
+        </div>
+        <div class="path-item" data-path="E" onclick="filterPath(this)" title="Nagroda dla siebie / awans">
+          <span class="dot" style="background:#f59e0b"></span>
+          <span class="plabel">E · Nagroda dla siebie / awans</span>
+          <span class="pcount" id="cnt-E">0</span>
+        </div>
+        <div class="path-item" data-path="F" onclick="filterPath(this)" title="Ciekawość elektryka / chińskie EV">
+          <span class="dot" style="background:#10b981"></span>
+          <span class="plabel">F · Ciekawość elektryka / chińskie EV</span>
+          <span class="pcount" id="cnt-F">0</span>
+        </div>
+        <div class="path-item" data-path="G" onclick="filterPath(this)" title="Koniec umowy leasingowej">
+          <span class="dot" style="background:#f43f5e"></span>
+          <span class="plabel">G · Koniec umowy leasingowej</span>
+          <span class="pcount" id="cnt-G">0</span>
+        </div>
+        <div class="path-item" data-path="H" onclick="filterPath(this)" title="Pierwsze auto po prawie jazdy">
+          <span class="dot" style="background:#eab308"></span>
+          <span class="plabel">H · Pierwsze auto po prawie jazdy</span>
+          <span class="pcount" id="cnt-H">0</span>
+        </div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Statusy</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>BRAK — do stworzenia</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#10b981"></span>ISTNIEJE — opublikowany</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>ROZBUDOWAĆ — wymaga rozbudowy</div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Priorytety</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>P1 — krytyczne (blokery)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>P2 — ważne (decyzja)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#eab308"></span>P3 — standardowe</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#94a3b8"></span>P4 — niski priorytet</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <span class="filter-label">Priorytet</span>
+    <div class="filter-group" id="fg-pr">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="P1">P1</button>
+      <button class="fbtn" data-val="P2">P2</button>
+      <button class="fbtn" data-val="P3">P3</button>
+      <button class="fbtn" data-val="P4">P4</button>
+    </div>
+    <span class="filter-label" style="margin-left:8px">Typ</span>
+    <div class="filter-group" id="fg-typ">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="INFO">INFO</button>
+      <button class="fbtn" data-val="KOMERC">KOMERC</button>
+      <button class="fbtn" data-val="TRANS">TRANS</button>
+    </div>
+    <div class="search-wrap">
+      <input id="search" type="text" placeholder="Szukaj artykułu..." oninput="applyFilters()">
+    </div>
+    <div class="counter">Widoczne: <strong id="visibleCount">0</strong> / 152</div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div id="statsbar">
+    <div class="stat"><div class="val" id="stat-total">0</div><div class="stat-lbl">Widocznych pytań</div></div>
+    <div class="stat"><div class="val red" id="stat-p1">0</div><div class="stat-lbl">Priorytet P1 (blokery)</div></div>
+    <div class="stat"><div class="val" id="stat-brak">0</div><div class="stat-lbl">Status BRAK (do stworzenia)</div></div>
+    <div class="stat"><div class="val green" id="stat-istnieje">0</div><div class="stat-lbl">ISTNIEJE + ROZBUDOWAĆ</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div id="tabs">
+    <button class="tab active" onclick="switchTab('mapa')">🗺️ Mapa</button>
+    <button class="tab" onclick="switchTab('lista')">📋 Lista</button>
+    <button class="tab" onclick="switchTab('info')">ℹ️ Info</button>
+  </div>
+
+  <!-- MAPA PANEL -->
+  <div id="mapa-panel" class="tab-panel active">
+    <div id="board"></div>
+  </div>
+
+  <!-- LISTA PANEL -->
+  <div id="lista-panel" class="tab-panel">
+    <div id="list-panel">
+      <table id="list-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Pytanie</th><th>Ścieżka</th><th>Stan</th><th>Priorytet</th><th>Typ</th>
+          </tr>
+        </thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INFO PANEL -->
+  <div id="info-panel" class="tab-panel">
+    <div style="overflow-y:auto;padding:16px;flex:1">
+    <div class="info-section">
+      <h3>Kategoria</h3>
+      <p style="font-size:14px"><strong>Samochody osobowe — nabywca prywatny</strong></p>
+      <p style="font-size:12px;color:#64748b;margin-top:4px">v5.7 · 152 pytań · 8 ścieżek zakupowych (CEP)</p>
+    </div>
+    <div class="info-section">
+      <h3>Struktura pytań wg stanu</h3>
+      <div id="info-states" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
+    </div>
+    <div class="info-section">
+      <h3>Ścieżki zakupowe — pełne profile CEP</h3>
+      <div id="info-paths" style="margin-top:8px"></div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DANE ──────────────────────────────────────────────────────────────────────
+const A = [
+{nr:1,t:"Kiedy opłaca się kupić nowe auto zamiast naprawiać stare?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:2,t:"Mój samochód ciągle się psuje — nowy czy remont?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:3,t:"Nowy czy używany samochód — co wybrać w 2026?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:4,t:"Czy opłaca się naprawiać stary samochód czy lepiej zmienić?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:5,t:"Ile kosztuje naprawa vs zakup nowego — kalkulacja opłacalności?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:6,t:"Nowy samochód gwarancja — ile lat i co obejmuje?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:7,t:"Nowe auto vs CPO/używane — który zapewnia więcej spokoju?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:8,t:"Jak sprawdzić czy stary samochód jest jeszcze wart naprawy?",p:"A",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:9,t:"Koszty napraw a wartość samochodu — kiedy granica się opłaca?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:10,t:"Jaki samochód kupić zamiast starzejącego się [marka]?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:11,t:"Stare auto na gaz — czy warto naprawiać instalację LPG?",p:"A",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:12,t:"Co to jest CPO (Certified Pre-Owned) i czy warto?",p:"A",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:13,t:"Koszty utrzymania nowego vs używanego w pierwszych 4 latach?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:14,t:"Co sprawdzić przed zakupem używanego samochodu? Lista kontrolna.",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:15,t:"Jak sprawdzić historię samochodu używanego (CARFAX, AutoDNA)?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:16,t:"Gwarancja na używany samochód z salonu — co obejmuje, ile kosztuje?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:17,t:"Jak długo czeka się na nowy samochód z salonu 2026?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:18,t:"Samochód demonstracyjny w salonie — czy warto? Zalety i wady.",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:19,t:"Trade-in w salonie — ile dostanę za stare auto?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:20,t:"Test drive przed zakupem — jak umówić w salonie?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:21,t:"Jak negocjować cenę samochodu w salonie? Ile można wynegocjować?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:22,t:"Co sprawdzić przy odbiorze nowego samochodu z salonu?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:23,t:"Czy warto kupować samochód na koniec roku / rocznik 2026?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:24,t:"🛡️ Nowy czy używany — co lepsze dla mnie?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:25,t:"🛡️ Jak sprawdzić czy używane auto nie jest powypadkowe?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:26,t:"🛡️ Ile faktycznie czekam na nowe auto z salonu 2026?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:27,t:"Jakie auto dla rodziny z dziećmi — co jest najważniejsze?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:28,t:"Jakie auto dla rodziny z dziećmi — ranking 2026?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:29,t:"Zmieniam pracę — potrzebuję auta do codziennych dojazdów, co wybrać?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:30,t:"Przeprowadziłem się na przedmieścia — jakie auto do codziennego dojazdu?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:31,t:"SUV czy kombi dla rodziny — różnice praktyczne?",p:"B",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:32,t:"Samochód z dużym bagażnikiem — ranking 2026?",p:"B",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:33,t:"Minivan vs SUV — co wybrać dla dużej rodziny?",p:"B",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:34,t:"Jakie auto dla singla po 40 — wygoda czy sport?",p:"B",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:35,t:"Jakie auto jeśli dużo jeżdżę w trasy / na szkolenia?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:36,t:"Bezpieczeństwo NCAP — jak porównywać wyniki?",p:"B",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:37,t:"Asystenty bezpieczeństwa — co jest w standardzie nowych aut?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:38,t:"Foteliki samochodowe — które auto ma najlepsze zakotwiczenia ISOFIX?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:39,t:"Ile osób mieści się w samochodzie — jaka klasa?",p:"B",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:40,t:"Czy stać mnie na nowe z gwarancją czy lepiej używane?",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:41,t:"Konfiguracja samochodu online — jak zamówić przez salon?",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:42,t:"Jakie ubezpieczenie do rodzinnego samochodu?",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:43,t:"Leasing prywatny na samochód — jak działa?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:44,t:"Czy osoba prywatna może wziąć leasing na auto?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:45,t:"Leasing czy kredyt samochodowy — co wybrać?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:46,t:"Ile wynosi rata leasingowa na nowe auto 2026?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:47,t:"Ile kosztuje rata leasingowa na nowe auto 2026? Kalkulator.",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:48,t:"Samochód na leasing a kredyt bankowy — różnice, co się opłaca?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:49,t:"Samochód do 100 000 / 150 000 / 200 000 PLN — co najlepszego?",p:"C",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:50,t:"Jaka zdolność leasingowa dla osoby prywatnej?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:51,t:"Leasing konsumencki vs operacyjny — różnica dla prywatnej osoby?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:52,t:"Wynajem długoterminowy samochodu vs leasing — co lepsze?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:53,t:"Co to jest wartość rezydualna leasingu?",p:"C",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:54,t:"Czy po leasingu mogę odkupić auto? Jak to działa?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:55,t:"Co to jest wpłata własna w leasingu? Ile powinienem wpłacić?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:56,t:"RRSO w leasingu — jak sprawdzić czy oferta jest dobra?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:57,t:"Co się dzieje gdy uszkodzę auto na leasingu?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:58,t:"Leasing a ubezpieczenie — kto ubezpiecza auto w leasingu?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:59,t:"Jaka rata leasingowa na nowe auto [segment]?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:60,t:"Jakie dokumenty do leasingu prywatnego?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:61,t:"Kalkulator leasingu prywatnego — jak liczyć total cost?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:62,t:"🛡️ Leasing — czy to nie pułapka? Czy na końcu nic nie mam?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:63,t:"🛡️ Co mi się bardziej opłaci — gotówka czy leasing?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:64,t:"🛡️ Czy mogę zrezygnować z leasingu wcześniej? Jakie koszty?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:65,t:"🛡️ Limit km w leasingu — co jeśli przekroczę?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:66,t:"Ile kosztuje utrzymanie samochodu miesięcznie (paliwo + ubezpieczenie + serwis)?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:67,t:"Czy hybryda jest tańsza w utrzymaniu niż diesel?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:68,t:"Ile pali nowy samochód hybryda vs diesel w mieście?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:69,t:"Jak dużo kosztuje przegląd nowego samochodu co rok?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:70,t:"Kiedy opłaca się zmienić stare auto na nowe (kalkulacja TCO)?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:71,t:"Kalkulator kosztów: leasing vs gotówka — co się opłaca?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:72,t:"Porównanie kosztów: benzyna / diesel / hybryda / PHEV / BEV 100 km?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:73,t:"Nowe auto vs stare po naprawie — kalkulacja 4 lata?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:74,t:"Hybryda vs diesel — kiedy hybryda się opłaca?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:75,t:"Ile prądu zużywa elektryk vs litrów benzyny na 100 km?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:76,t:"Czy warto kupować samochód na koniec roku / rocznik?",p:"D",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:77,t:"Jak długo służy nowy samochód? Ile lat opłaca się trzymać?",p:"D",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:78,t:"Serwis nowego auta po gwarancji — czy musi być ASO?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:79,t:"Opony zimowe vs całoroczne — ile to kosztuje rocznie?",p:"D",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:80,t:"Samochód hybrydowy — ranking ekonomiczny 2026?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:81,t:"PHEV czy hybryda pełna — co wybrać przy 30 km dziennie?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:82,t:"Diesel czy hybryda przy 30 000 km/rok — co tańsze?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:83,t:"Na jakie auto mogę sobie pozwolić po awansie?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:84,t:"Jakie auto kupić mając 200 000 / 250 000 / 300 000 PLN?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:85,t:"Czy warto kupić samochód premium z salonu vs używany z prywatnej ręki?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:86,t:"Różnica między Audi A4 a BMW Seria 3 — co wybrać?",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:87,t:"Co daje wyższy segment — czy warto dopłacać do premium?",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:88,t:"Audi Q5 vs BMW X3 vs Volvo XC60 — porównanie 2026?",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:89,t:"Czy Audi jest warte swojej ceny — co daję więcej niż masowe marki?",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:90,t:"Wartość rezydualna auta premium — czy traci mniej niż mid-range?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:91,t:"Jakie opcje w samochodzie warto dokupić a za jakie przepłacać?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:92,t:"Kolorystyka premium — które lakiery metaliczne trzymają wartość?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:93,t:"Gwarancja przedłużona w premium — czy warto dokupić?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:94,t:"Test drive premium — jak zarezerwować + co sprawdzić?",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:95,t:"Test drive — na co zwrócić uwagę? Jak go zorganizować?",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:96,t:"Jak skonfigurować nowe Audi / BMW — jakie opcje wybrać?",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:97,t:"🛡️ Konfiguracja vs auto dostępne — ile czekam na zamówienie?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:98,t:"🛡️ Ile faktycznie można wynegocjować w salonie premium?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:99,t:"🛡️ Czy warto iść do dealera autoryzowanego czy szukać tańszej opcji?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:100,t:"Czy warto kupić elektryka w Polsce 2026?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:101,t:"Samochód elektryczny czy spalinowy — co wybrać w Polsce 2026?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:102,t:"Kiedy elektryk się opłaca w Polsce — przelicznik kosztu?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:103,t:"Chińskie auta elektryczne w Polsce 2026 — czy warto?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:104,t:"BYD vs Audi / BMW elektryczne — co wybrać? Porównanie.",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:105,t:"Czy chińskie samochody elektryczne są bezpieczne / godne zaufania?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:106,t:"Samochód hybryda czy pełny elektryk — co wybrać?",p:"F",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:107,t:"BYD Seal vs Audi e-tron — co wybrać 2026?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:108,t:"MG4 vs VW ID.3 — porównanie cena/zasięg/wyposażenie?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:109,t:"Tesla vs chińskie EV — co się opłaca w 2026?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:110,t:"Zasięg elektryczny w Polsce — czy to problem zimą?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:111,t:"Gdzie ładować elektryk w Polsce — infrastruktura 2026?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:112,t:"TCO elektryk vs benzyna — kiedy elektryk się opłaca?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:113,t:"Serwis chińskiego auta elektrycznego w Polsce — gdzie naprawię?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:114,t:"Gwarancja na baterię elektryczną — ile lat i co obejmuje?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:115,t:"Ile kosztuje ładowanie elektryka w domu vs na publicznej ładowarce?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:116,t:"Wallbox do ładowania elektryka w domu — koszt instalacji?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:117,t:"Degradacja baterii elektrycznej — ile traci po 5 latach?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:118,t:"Elektryk na autostradzie — ile realnie zasięgu przy 140 km/h?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:119,t:"Który elektryk do 150 000 PLN — porównanie BYD/MG/Audi/BMW?",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:120,t:"Test drive elektryka — na co zwrócić uwagę vs spalinowy?",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:121,t:"Leasing na elektryka 2026 — czy są specjalne warunki?",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:122,t:"🛡️ Chiński elektryk — czy warto mu zaufać?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:123,t:"🛡️ Zasięg elektryka zimą — czy mnie nie zostawi na drodze?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:124,t:"🛡️ Co z elektrycznym autem po 8 latach — czy będzie bezwartościowe?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:125,t:"🛡️ Ubezpieczenie elektryka — ile kosztuje OC/AC vs spalinowy?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:126,t:"Kończy mi się leasing — co robię z autem?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:127,t:"Leasing kończy się za 8 miesięcy — kiedy zacząć szukać nowego auta?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:128,t:"Co zrobić z autem po leasingu — odkupić, zwrócić czy zmienić?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:129,t:"Wykup leasingowy — czy to się opłaca vs wartość rynkowa?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:130,t:"Nowy leasing po zakończeniu obecnego — jak negocjować lepsze warunki?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:131,t:"Wartość rezydualna a cena rynkowa po leasingu — co się opłaca?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:132,t:"Co sprawdzić przy zwrocie auta po leasingu — kiedy naliczą opłaty?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:133,t:"Jak wycenić auto po leasingu — gdzie sprawdzić wartość rynkową?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:134,t:"Nowy leasing prywatny po zakończeniu obecnego — jak negocjować warunki?",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:135,t:"Czy odkupić auto z leasingu i sprzedać czy oddać i wziąć nowe?",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:136,t:"🛡️ Czy warto odkupić auto po leasingu jeśli wartość rezydualna jest wysoka?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:137,t:"Jakie pierwsze auto dla nowego kierowcy?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:138,t:"Nowe czy używane jako pierwsze auto?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:139,t:"Ile kosztuje pierwsze auto — co realnie można kupić za 30 000 / 50 000 PLN?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:140,t:"Małe auto do miasta — ranking bezpiecznych dla początkujących?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:141,t:"Jakie auto dla 18-latka / 20-latka — co tanie w ubezpieczeniu?",p:"H",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:142,t:"Jakie pierwsze auto żeby ubezpieczenie OC nie było horrendalne?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:143,t:"Ubezpieczenie nowego auta — ile kosztuje OC/AC dla nowego?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:144,t:"Ubezpieczenie pierwszego auta — ile kosztuje OC/AC dla młodego kierowcy?",p:"H",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:145,t:"Czy można wziąć leasing jako młody kierowca / student?",p:"H",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:146,t:"Co sprawdzić przy odbiorze nowego auta z salonu?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:147,t:"Jaka skrzynia biegów dla nowego kierowcy — manualna czy automat?",p:"H",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:148,t:"Ile wynosi OC/AC dla 18-latka z nowym prawem jazdy?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:149,t:"Konfiguracja pierwszego auta + kalkulator OC/AC online",p:"H",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:150,t:"Jakie auto do 60 000 PLN dla nowego kierowcy — top 5 2026?",p:"H",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:151,t:"🛡️ Nowe czy używane jako pierwsze auto — co bezpieczniejsze?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:152,t:"🛡️ Czy nowy kierowca może kupić silniejsze auto od razu?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"}
+];
+
+const PATHS = [{"letter": "A", "label": "Stary auto się psuje", "cep_id": "cep_awaria_frustracja", "typ": "POTRZEBA", "color": "#3b82f6", "count": 26, "verbatim": "„ten samochód miał po prostu 17 lat. Zaczął się mocno psuć i stwierdziłem, że za chwilę wartość napraw przekroczy wartość samochodu\" / „nie chcę mieć niespodzianek jak w Nubirze\"", "kontekst": "stary samochód 10–20 lat, rosnące koszty napraw, coraz mniej zaufania do auta", "concern": "spokój, niezawodność, koniec stresu z naprawami", "bloker": "bariera wejścia nowy vs używany (używany = znowu ryzyko niespodzianek)"}, {"letter": "B", "label": "Zmiana sytuacji życiowej", "cep_id": "cep_zmiana_zyciowa", "typ": "POTRZEBA", "color": "#8b5cf6", "count": 16, "verbatim": "„żeby właśnie było wygodniej przy dziecku\" / „mam szkolenia, często wyjazdowe — samochód bardzo pomoże\"", "kontekst": "narodziny dziecka, zmiana pracy, wyprowadzka dzieci, rozwód, nowa praca z dojazdami", "concern": "dopasowanie auta do nowej sytuacji życiowej", "bloker": "czy przy nowej sytuacji życiowej stać mnie na nowe z gwarancją, czy CPO — i jak szybko muszę decydować?"}, {"letter": "C", "label": "Odkrycie leasingu prywatnego", "cep_id": "cep_leasing_odkrycie", "typ": "EMOCJA", "color": "#ec4899", "count": 23, "verbatim": "„a można mieć nowe auto za 1200 zł miesięcznie?\" / „nie wiedziałem, że leasing jest dostępny dla osób prywatnych\"", "kontekst": "osoba wcześniej niekupująca nowego, odkrywa że rata leasingowa = dostępna finansowo", "concern": "czy mnie stać na nowe? czy leasing to nie kredyt pułapka?", "bloker": "brak wiedzy o leasingu prywatnym (warunki, koszty całkowite, wartość rezydualna)"}, {"letter": "D", "label": "Rosnące koszty eksploatacji", "cep_id": "cep_koszty_eksploatacji", "typ": "POTRZEBA", "color": "#14b8a6", "count": 17, "verbatim": "„benzyna po 7,50 PLN/L, miesięcznie wychodzi mi 900 zł — zaczynam liczyć czy cokolwiek nowszego nie wyszłoby taniej\" / „dołożyłem 3000 PLN w przegląd, to może jednak nowe\"", "kontekst": "rosnące koszty paliwa / serwisu, kalkulacja TCO bez emocji awarii", "concern": "kiedy opłaca się zmienić auto z powodów ekonomicznych", "bloker": "payback i TCO (kiedy nowe jest tańsze niż utrzymanie starego)"}, {"letter": "E", "label": "Nagroda dla siebie / awans", "cep_id": "cep_self_gift_awans", "typ": "EMOCJA", "color": "#f59e0b", "count": 17, "verbatim": "„no z takiej właśnie próżności — chcę trochę pójść do przodu\" / „jak córki skończyły studia i nie miałem już takich obciążeń — czas pomyśleć o sobie\"", "kontekst": "awans zawodowy, spłacony kredyt, dzieci usamodzielnione, spadek, jubileusz", "concern": "nagroda dla siebie, upgrade stylu życia, status", "bloker": "czy wydanie 280k na auto to nie rozrzutność / czy zasługuję na to (permission-to-splurge) + co konkretnie daje droższy model"}, {"letter": "F", "label": "Ciekawość elektryka / chińskie EV", "cep_id": "cep_elektryk_ciekawostka", "typ": "EMOCJA", "color": "#10b981", "count": 26, "verbatim": "„kolega kupił BYD Seal za 130k, policzył koszty vs diesel — zaczynam brać to na poważnie\" / „mam PV w domu, ładuję za 0 — zacząłem patrzeć na elektryki. Ale serwis gdzie?\"", "kontekst": "prywatny nabywca który do tej pory uważał EV za „za drogi / za mały zasięg\", i odkrywa że chiński elektryk przekroczył jego próg cenowy (130–140k PLN) LUB że PV/ładowarka domowa zmienia rachunek koszt", "concern": "czy EV to sensowny wybór dla mnie TERAZ? Czy chiński elektryk nie zostawi mnie bez serwisu?", "bloker": "chińskie EV vs europejskie (zasięg, serwis, gwarancja, wstydu test) + infrastruktura ładowania PL"}, {"letter": "G", "label": "Koniec umowy leasingowej", "cep_id": "cep_koniec_leasingu", "typ": "POTRZEBA", "color": "#f43f5e", "count": 11, "verbatim": "„kończy mi się leasing za 8 miesięcy, zaczynam się rozglądać\" / „co robię z autem po leasingu — odkupuję czy zmieniam?\"", "kontekst": "koniec umowy leasingowej (prywatnej lub firmowej), zaplanowana zmiana", "concern": "optymalny scenariusz po leasingu: odkup / zwrot / nowy leasing", "bloker": "wartość rezydualna vs cena rynkowa + nowe warunki"}, {"letter": "H", "label": "Pierwsze auto po prawie jazdy", "cep_id": "cep_pierwsze_auto", "typ": "POTRZEBA", "color": "#eab308", "count": 16, "verbatim": "„zrobiłam prawo jazdy na Aygo i przyzwyczaiłam się — chcę kupić takie samo\" / „świeży kierowca — używane żeby nie stresować, czy nowe z gwarancją?\"", "kontekst": "niedawno zdobyte prawo jazdy, pierwsza samodzielna decyzja zakupowa", "concern": "niezawodność + niski stres prowadzenia + niewielkie rozmiary", "bloker": "nowe i bać się każdego zarysowania vs używane i nie boleć (nowe zbyt cenne = stres zamiast radości)"}];
+const STATE_ORDER = ["swiadomosc", "orientacja", "nauka", "decyzja", "bloker"];
+const STATE_LABELS = {"swiadomosc": "Świadomość", "orientacja": "Orientacja", "nauka": "Nauka", "decyzja": "Decyzja", "bloker": "Bloker"};
+
+// ── STAN FILTRÓW ──────────────────────────────────────────────────────────────
+let activePath = 'ALL';
+let activePr   = 'ALL';
+let activeTyp  = 'ALL';
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildBoard();
+  buildList();
+  buildInfoPaths();
+  buildInfoStates();
+  applyFilters();
+});
+
+function buildBoard() {
+  const board = document.getElementById('board');
+  // Zbierz stany wg kolejności
+  const stateGroups = {};
+  for (const a of A) {
+    if (!stateGroups[a.s]) stateGroups[a.s] = [];
+    stateGroups[a.s].push(a);
+  }
+  const orderedStates = STATE_ORDER.filter(s => stateGroups[s]);
+  for (const sid of orderedStates) {
+    const label = STATE_LABELS[sid] || sid;
+    const arts = stateGroups[sid];
+    const block = document.createElement('div');
+    block.className = 'state-block';
+    block.dataset.state = sid;
+    block.innerHTML = `<div class="state-header">
+      <span class="state-code">${sid.toUpperCase()}</span>
+      <span>${label}</span>
+      <span class="state-cnt" id="scnt-${sid}"></span>
+    </div><div class="cards-row" id="cards-${sid}"></div>`;
+    board.appendChild(block);
+    const row = document.getElementById('cards-' + sid);
+    for (const a of arts) {
+      const tagPr  = `<span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span>`;
+      const tagTyp = `<span class="tag tag-${a.y.toLowerCase()}">${a.y}</span>`;
+      const tagSt  = `<span class="tag tag-${a.st.toLowerCase()}">${a.st}</span>`;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.nr = a.nr;
+      card.dataset.p  = a.p;
+      card.dataset.s  = a.s;
+      card.dataset.pr = a.pr;
+      card.dataset.y  = a.y;
+      card.dataset.st = a.st;
+      card.dataset.t  = a.t.toLowerCase();
+      card.innerHTML = `<div class="nr">#${a.nr} · ${a.p}</div>
+        <div class="qt">${a.t}</div>
+        <div class="tags">${tagPr}${tagTyp}${tagSt}</div>`;
+      row.appendChild(card);
+    }
+  }
+}
+
+function buildList() {
+  const tbody = document.getElementById('list-body');
+  for (const a of A) {
+    const tr = document.createElement('tr');
+    tr.dataset.nr = a.nr;
+    tr.dataset.p  = a.p;
+    tr.dataset.s  = a.s;
+    tr.dataset.pr = a.pr;
+    tr.dataset.y  = a.y;
+    tr.dataset.st = a.st;
+    tr.dataset.t  = a.t.toLowerCase();
+    tr.innerHTML = `<td>${a.nr}</td>
+      <td>${a.t}</td>
+      <td>${a.p}</td>
+      <td>${STATE_LABELS[a.s] || a.s}</td>
+      <td><span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span></td>
+      <td><span class="tag tag-${a.y.toLowerCase()}">${a.y}</span></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function buildInfoPaths() {
+  const wrap = document.getElementById('info-paths');
+  for (const p of PATHS) {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:12px;border-left:4px solid '+p.color;
+    // Składowe HTML karty CEP
+    const typBadge = p.typ
+      ? `<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-left:6px">${p.typ}</span>`
+      : '';
+    const verbHTML = p.verbatim
+      ? `<div style="margin-top:8px;font-size:12px;color:#374151;background:#f8fafc;border-radius:6px;padding:8px 10px;border-left:3px solid ${p.color};line-height:1.5;font-style:italic">${p.verbatim}</div>`
+      : '';
+    const detailRows = [];
+    if (p.kontekst) detailRows.push(['Kontekst', p.kontekst]);
+    if (p.concern)  detailRows.push(['Główna troska', p.concern]);
+    if (p.bloker)   detailRows.push(['Bloker decyzji', p.bloker]);
+    const detailHTML = detailRows.length
+      ? `<table style="margin-top:8px;width:100%;border-collapse:collapse;font-size:12px">` +
+        detailRows.map(([k,v]) =>
+          `<tr><td style="width:120px;color:#94a3b8;font-weight:600;padding:3px 8px 3px 0;vertical-align:top;white-space:nowrap">${k}</td>` +
+          `<td style="color:#334155;padding:3px 0;line-height:1.5">${v}</td></tr>`
+        ).join('') + `</table>`
+      : '';
+    // Rozkład pytań per stan
+    const statCnts = {};
+    for (const a of A) if (a.p === p.letter) statCnts[a.s] = (statCnts[a.s]||0)+1;
+    const stateBar = STATE_ORDER.filter(s=>statCnts[s]).map(s=>
+      `<span style="font-size:10px;padding:1px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-right:4px">${STATE_LABELS[s]||s} ${statCnts[s]}</span>`
+    ).join('');
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="width:26px;height:26px;border-radius:50%;background:${p.color};color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${p.letter}</span>
+        <strong style="font-size:14px;color:#1e293b">${p.label}</strong>
+        ${typBadge}
+        <span style="margin-left:auto;font-size:11px;color:#94a3b8">${p.count} pytań</span>
+      </div>
+      <div style="font-size:10px;color:#64748b;margin-top:4px;font-family:monospace">${p.cep_id||''}</div>
+      ${verbHTML}
+      ${detailHTML}
+      <div style="margin-top:8px">${stateBar}</div>`;
+    wrap.appendChild(card);
+  }
+}
+
+function buildInfoStates() {
+  const wrap = document.getElementById('info-states');
+  const counts = {};
+  for (const a of A) counts[a.s] = (counts[a.s]||0)+1;
+  for (const s of STATE_ORDER) {
+    if (!counts[s]) continue;
+    const el = document.createElement('div');
+    el.style.cssText = 'background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 14px;text-align:center;min-width:100px';
+    el.innerHTML = `<div style="font-size:20px;font-weight:700;color:#1e293b">${counts[s]}</div><div style="font-size:11px;color:#64748b;margin-top:2px">${STATE_LABELS[s]||s}</div>`;
+    wrap.appendChild(el);
+  }
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+function filterPath(el) {
+  document.querySelectorAll('.path-item, .path-all').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  activePath = el.dataset.path;
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  let vis = 0, p1 = 0, brak = 0, istnieje = 0;
+  const pathCounts = {};
+
+  const allEls = [...document.querySelectorAll('.card, #list-body tr')];
+  for (const el of allEls) {
+    const match =
+      (activePath === 'ALL' || el.dataset.p === activePath) &&
+      (activePr   === 'ALL' || el.dataset.pr === activePr) &&
+      (activeTyp  === 'ALL' || el.dataset.y  === activeTyp) &&
+      (!q || el.dataset.t.includes(q));
+    el.classList.toggle('hidden', !match);
+    if (match) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pathCounts[el.dataset.p] = (pathCounts[el.dataset.p] || 0) + 1;
+    }
+  }
+  // Odejmij duplikaty (card + tr)
+  vis = Math.round(vis / (document.querySelector('#list-body tr') ? 2 : 1));
+  if (document.querySelector('#list-body tr')) vis = Math.round(vis / 2);
+  // Policz raz — cards only
+  vis = 0; p1 = 0; brak = 0; istnieje = 0;
+  const pcounts2 = {};
+  document.querySelectorAll('.card').forEach(el => {
+    if (!el.classList.contains('hidden')) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pcounts2[el.dataset.p] = (pcounts2[el.dataset.p] || 0) + 1;
+    }
+  });
+
+  document.getElementById('stat-total').textContent   = vis;
+  document.getElementById('stat-p1').textContent      = p1;
+  document.getElementById('stat-brak').textContent    = brak;
+  document.getElementById('stat-istnieje').textContent = istnieje;
+  document.getElementById('visibleCount').textContent  = vis;
+
+  // Aktualizuj liczniki ścieżek
+  let allCnt = 0;
+  for (const p of PATHS) {
+    const cnt = pcounts2[p.letter] || 0;
+    const el = document.getElementById('cnt-' + p.letter);
+    if (el) el.textContent = cnt;
+    allCnt += cnt;
+  }
+  const cntAll = document.getElementById('cnt-all');
+  if (cntAll) cntAll.textContent = allCnt;
+
+  // State block counts (tylko mapa)
+  for (const sid of STATE_ORDER) {
+    const el = document.getElementById('scnt-' + sid);
+    if (el) {
+      const cnt = document.querySelectorAll(`#cards-${sid} .card:not(.hidden)`).length;
+      el.textContent = cnt ? cnt + ' art.' : '';
+    }
+  }
+}
+
+// Filtry przyciski
+document.getElementById('fg-pr').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-pr .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activePr = e.target.dataset.val;
+  applyFilters();
+});
+document.getElementById('fg-typ').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-typ .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeTyp = e.target.dataset.val;
+  applyFilters();
+});
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['mapa','lista','info'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(name + '-panel').classList.add('active');
+  applyFilters();
+}
+</script>
+</body>
+</html>

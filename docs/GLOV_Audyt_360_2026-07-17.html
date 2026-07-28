@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GLOV — Audyt 360 SEO &amp; GEO · 2026-07-17</title>
+<style>
+:root{
+ --bg:#f6f7f9; --card:#fff; --ink:#0d1117; --mut:#57606a; --lite:#8b949e; --line:#e4e7eb;
+ --acc:#4f46e5; --acc-l:#eef2ff;
+ --red:#b42318; --red-bg:#fef3f2; --red-l:#fda29b;
+ --amb:#b54708; --amb-bg:#fffaeb; --amb-l:#fec84b;
+ --grn:#027a48; --grn-bg:#ecfdf3; --grn-l:#6ce9a6;
+ --gry:#475467; --gry-bg:#f2f4f7;
+ --mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);
+ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;
+ line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px 120px}
+[id]{scroll-margin-top:76px}
+html{scroll-behavior:smooth}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
+ border-bottom:1px solid var(--line);padding:14px 0;margin-bottom:0}
+.nav-in{max-width:1080px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.nav-b{font-weight:800;font-size:17px;letter-spacing:-.3px}
+.nav-b span{color:var(--acc)}
+.nav-links{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.nav-links a{font-size:12px;color:var(--mut);text-decoration:none;padding:5px 9px;border-radius:6px;font-weight:600}
+.nav-links a:hover{background:var(--acc-l);color:var(--acc)}
+
+/* HERO */
+.hero{padding:56px 0 32px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--acc);margin-bottom:14px}
+h1{font-size:44px;font-weight:800;letter-spacing:-1.4px;line-height:1.08;margin-bottom:18px}
+.lead{font-size:18px;color:var(--mut);max-width:760px;margin-bottom:12px}
+.lead b{color:var(--ink)}
+
+/* VERDICT */
+.verdict{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--grn);
+ border-radius:14px;padding:28px;margin:28px 0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.verdict h2{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.verdict p{color:var(--mut);font-size:15.5px}
+.verdict p+p{margin-top:10px}
+.verdict b{color:var(--ink)}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:26px 0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.kpi-l{font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--lite);margin-bottom:7px}
+.kpi-v{font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1}
+.kpi-v.g{color:var(--grn)} .kpi-v.r{color:var(--red)} .kpi-v.a{color:var(--amb)}
+.kpi-s{font-size:12px;color:var(--mut);margin-top:6px}
+.kpi-src{font-size:10px;color:var(--lite);margin-top:8px;font-family:var(--mono)}
+
+/* SECTION */
+h2.sec{font-size:13px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--lite);
+ margin:52px 0 16px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+
+/* MODULE */
+.mod{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:30px;margin-bottom:22px;
+ box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.mod-h{display:flex;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+.mod-n{background:var(--acc-l);color:var(--acc);font-size:11px;font-weight:800;padding:4px 9px;border-radius:6px;
+ letter-spacing:.5px;font-family:var(--mono)}
+.mod-t{font-size:20px;font-weight:700;letter-spacing:-.4px}
+.mod-sc{margin-left:auto;font-size:12.5px;font-weight:800;padding:5px 12px;border-radius:7px;font-family:var(--mono)}
+.sc-bad{background:var(--red-bg);color:var(--red)} .sc-warn{background:var(--amb-bg);color:var(--amb)}
+.sc-good{background:var(--grn-bg);color:var(--grn)} .sc-na{background:var(--gry-bg);color:var(--gry)}
+.mod-src{font-size:11.5px;color:var(--lite);font-family:var(--mono);margin-bottom:18px}
+
+/* METODOLOGIA */
+.meth{background:#fafbfc;border-left:3px solid var(--acc);padding:16px 18px;border-radius:0 10px 10px 0;margin-bottom:22px}
+.meth-t{font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.meth p{font-size:14px;color:var(--mut)}
+
+/* FINDING */
+.f{border-left:3px solid var(--line);padding-left:20px;margin-bottom:32px}
+.f:last-child{margin-bottom:0}
+.f.crit{border-left-color:var(--red-l)} .f.warn{border-left-color:var(--amb-l)}
+.f.ok{border-left-color:var(--grn-l)} .f.info{border-left-color:var(--lite)}
+.f-h{display:flex;align-items:center;gap:9px;margin-bottom:9px;flex-wrap:wrap}
+.b{font-size:10px;font-weight:800;padding:3px 8px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase}
+.b.crit{background:var(--red-bg);color:var(--red)} .b.warn{background:var(--amb-bg);color:var(--amb)}
+.b.ok{background:var(--grn-bg);color:var(--grn)} .b.info{background:var(--gry-bg);color:var(--gry)}
+.b.pew{background:#f0f9ff;color:#026aa2;border:1px solid #b9e6fe}
+.f-t{font-size:16.5px;font-weight:700;letter-spacing:-.2px}
+.f-d{font-size:14.5px;color:var(--mut);margin-bottom:16px}
+.f-d b{color:var(--ink)} .f-d code,code{font-family:var(--mono);background:#f2f4f7;padding:2px 5px;border-radius:4px;font-size:12.5px;color:#344054}
+
+/* FIX BOX */
+.fix{background:#fafbfc;border:1px solid var(--line);border-radius:9px;padding:16px 18px;font-size:13.5px}
+.fix-r{display:flex;gap:12px;padding:5px 0}
+.fix-l{color:var(--acc);font-weight:800;min-width:74px;font-size:11px;letter-spacing:.5px;text-transform:uppercase;
+ padding-top:2px}
+.fix-v{color:var(--mut);flex:1}
+.fix-v b{color:var(--ink)}
+
+/* PRZYKŁAD WIZUALNY */
+.viz{margin:18px 0;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--card)}
+.viz-h{background:#fafbfc;border-bottom:1px solid var(--line);padding:9px 15px;font-size:10.5px;font-weight:800;
+ letter-spacing:.8px;text-transform:uppercase;color:var(--lite);display:flex;align-items:center;gap:8px}
+.viz-b{padding:20px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+@media(max-width:820px){.split{grid-template-columns:1fr}}
+.pane{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.pane-h{padding:8px 14px;font-size:10.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+ border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px}
+.pane-h.bad{background:var(--red-bg);color:var(--red)} .pane-h.good{background:var(--grn-bg);color:var(--grn)}
+.pane-b{padding:15px;font-family:var(--mono);font-size:12.5px;color:var(--mut);line-height:1.7;overflow-x:auto}
+
+/* SERP MOCKUP */
+.serp{font-family:arial,sans-serif;background:#fff;padding:18px;border-radius:8px;border:1px solid var(--line)}
+.serp-u{font-size:12px;color:#202124;display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.serp-fav{width:16px;height:16px;border-radius:50%;background:var(--acc);display:inline-block;flex-shrink:0}
+.serp-path{color:#4d5156;font-size:12px}
+.serp-t{font-size:20px;color:#1a0dab;line-height:1.3;margin:2px 0 3px;font-weight:400}
+.serp-t .cut{background:#fee4e2;color:#b42318;text-decoration:line-through;text-decoration-color:#f97066}
+.serp-d{font-size:14px;color:#4d5156;line-height:1.58}
+.serp-note{font-size:11.5px;color:var(--lite);margin-top:10px;font-family:var(--mono)}
+.ruler{position:relative;height:22px;margin:10px 0 4px;border-top:1px dashed var(--line)}
+.ruler-m{position:absolute;top:0;height:22px;border-left:2px solid var(--red);padding-left:6px;
+ font-size:10px;color:var(--red);font-weight:700;font-family:var(--mono);white-space:nowrap}
+
+/* CLS DEMO */
+.cls-demo{display:flex;gap:14px;align-items:flex-start}
+@media(max-width:820px){.cls-demo{flex-direction:column}}
+.phone{width:190px;flex-shrink:0;border:9px solid #1d2939;border-radius:24px;overflow:hidden;background:#fff;
+ position:relative;height:330px}
+.ph-s{position:absolute;inset:0;padding:8px;display:flex;flex-direction:column;gap:6px}
+.blk{border-radius:4px;background:#e4e7eb}
+.blk.img{height:120px;background:linear-gradient(135deg,#c7d2fe,#a5b4fc)}
+.blk.txt{height:9px} .blk.txt.w70{width:70%} .blk.txt.w50{width:50%}
+.blk.cta{height:30px;background:var(--acc);border-radius:6px}
+.blk.banner{height:52px;background:repeating-linear-gradient(45deg,#fee4e2,#fee4e2 8px,#fecdca 8px,#fecdca 16px);
+ border:2px dashed var(--red);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--red);
+ font-weight:800;font-family:var(--mono)}
+.ph-lbl{position:absolute;bottom:0;left:0;right:0;background:rgba(13,17,23,.86);color:#fff;font-size:9.5px;
+ padding:5px;text-align:center;font-family:var(--mono);font-weight:700}
+.arrow{align-self:center;font-size:26px;color:var(--red);font-weight:800;padding:0 4px}
+@media(max-width:820px){.arrow{transform:rotate(90deg)}}
+
+/* TABELA */
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);border:1px solid var(--line);
+ border-radius:11px;overflow:hidden;margin:16px 0}
+th{background:#fafbfc;font-size:10.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--lite);
+ padding:11px 13px;text-align:left;border-bottom:1px solid var(--line)}
+td{padding:11px 13px;border-bottom:1px solid var(--line);color:var(--mut)}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#fafbfc}
+td b,td strong{color:var(--ink)}
+.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+.tag{font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;font-family:var(--mono)}
+.tag.p0{background:var(--red-bg);color:var(--red)} .tag.p1{background:var(--amb-bg);color:var(--amb)}
+.tag.p2{background:var(--gry-bg);color:var(--gry)}
+
+/* BAR */
+.bars{display:flex;flex-direction:column;gap:9px;margin:16px 0}
+.bar-r{display:flex;align-items:center;gap:11px;font-size:12.5px}
+.bar-lb{min-width:118px;color:var(--mut);font-family:var(--mono);font-size:11.5px;text-align:right}
+.bar-tr{flex:1;height:24px;background:#f2f4f7;border-radius:5px;overflow:hidden;position:relative}
+.bar-f{height:100%;border-radius:5px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:800;
+ color:#fff;font-family:var(--mono);min-width:fit-content;white-space:nowrap}
+.bar-f.glov{background:var(--red)} .bar-f.bench{background:var(--grn)} .bar-f.n{background:var(--acc)}
+.bar-f.g{background:#98a2b3}
+
+/* CHART */
+.chart{display:flex;align-items:flex-end;gap:3px;height:150px;padding:14px;background:#fafbfc;border-radius:9px;
+ border:1px solid var(--line);margin:14px 0}
+.col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;height:100%}
+.col-b{width:100%;border-radius:3px 3px 0 0;min-height:2px;position:relative}
+.col-b.c{background:var(--acc)} .col-b.i{background:#cbd5e1}
+.col-l{font-size:8.5px;color:var(--lite);font-family:var(--mono);white-space:nowrap;transform:rotate(-45deg);
+ transform-origin:center;margin-top:6px;height:22px}
+.legend{display:flex;gap:16px;font-size:11.5px;color:var(--mut);margin:8px 0 0;font-family:var(--mono)}
+.dot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:5px}
+
+/* CALLOUT */
+.call{border-radius:11px;padding:18px 20px;margin:18px 0;font-size:14px}
+.call.r{background:var(--red-bg);border:1px solid var(--red-l);color:#7a271a}
+.call.a{background:var(--amb-bg);border:1px solid var(--amb-l);color:#7a2e0e}
+.call.g{background:var(--grn-bg);border:1px solid var(--grn-l);color:#054f31}
+.call.i{background:#f0f9ff;border:1px solid #b9e6fe;color:#065986}
+.call b{font-weight:800}
+.call-t{font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:7px;font-size:14.5px}
+
+/* REPRO */
+details.repro{margin-top:14px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fafbfc}
+details.repro summary{padding:9px 14px;font-size:11px;font-weight:800;color:var(--acc);cursor:pointer;
+ font-family:var(--mono);letter-spacing:.4px;list-style:none;display:flex;justify-content:space-between}
+details.repro summary::-webkit-details-marker{display:none}
+details.repro summary::after{content:'▾';font-size:10px}
+details.repro[open] summary::after{content:'▴'}
+.repro-b{padding:12px 14px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11.5px;
+ color:var(--mut);line-height:1.75;word-break:break-all}
+.repro-b code{background:#eef2ff;color:var(--acc)}
+
+/* FOOT */
+.foot{margin-top:56px;padding-top:26px;border-top:1px solid var(--line);font-size:12.5px;color:var(--lite);
+ font-family:var(--mono);line-height:1.9}
+.foot b{color:var(--mut)}
+
+details.scg,details.mth{margin:12px 0 0;border-radius:9px;overflow:hidden;border:1px solid var(--line)}
+details.scg{background:#f5f3ff;border-color:#ddd6fe}
+details.mth{background:#f0fdf4;border-color:#bbf7d0}
+details.scg>summary,details.mth>summary{padding:11px 15px;font-size:11.5px;font-weight:800;cursor:pointer;
+ letter-spacing:.3px;list-style:none;display:flex;justify-content:space-between;align-items:center;user-select:none}
+details.scg>summary{color:#6d28d9}
+details.mth>summary{color:#047857}
+details.scg>summary::-webkit-details-marker,details.mth>summary::-webkit-details-marker{display:none}
+details.scg>summary::after,details.mth>summary::after{content:'▾';font-size:10px;opacity:.7}
+details.scg[open]>summary::after,details.mth[open]>summary::after{content:'▴'}
+.scg-b{padding:4px 15px 12px;border-top:1px solid #ddd6fe}
+.scg-row{display:flex;gap:12px;padding:5px 0;font-size:12.5px;line-height:1.5;border-bottom:1px solid #ece9fe;color:#4b4670}
+.scg-row:last-child{border:0}
+.scg-n{flex:0 0 26px;font-weight:800;font-family:var(--mono);color:#a78bfa;text-align:right}
+.scg-row.hit{background:#ede9fe;margin:0 -15px;padding:7px 15px;border-radius:6px;border-bottom:0}
+.scg-row.hit .scg-n{color:#6d28d9}
+.scg-row.hit .scg-x{font-weight:700;color:#4c1d95}
+.scg-row.hit .scg-x::after{content:' ← GLOV';font-family:var(--mono);font-size:10px;font-weight:800;color:#7c3aed}
+.mth-b{padding:12px 15px;border-top:1px solid #bbf7d0;font-size:13px;line-height:1.7;color:#0b5f43}
+.mth-b b{color:#064e3b}
+.mth-b code{background:#dcfce7;color:#047857;font-size:11.5px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-in">
+  <div class="nav-b">glov<span>.</span>audyt360</div>
+  <div class="nav-links">
+    <a href="#werdykt">Werdykt</a><a href="#m0">Dane</a><a href="#m2">On-page</a><a href="#m4">CWV</a>
+    <a href="#m5">Zachowanie</a><a href="#m7">Kanibalizacja</a><a href="#m10">AI</a><a href="#matryca">Matryca</a>
+  </div>
+</div></nav>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Audyt 360 · Metodologia V5.2 · 2026-07-17</div>
+  <h1>Sklep rośnie.<br>Problem jest gdzie indziej,<br>niż wszyscy myśleli.</h1>
+  <p class="lead">Pełny audyt <b>glov.co</b> na realnych danych: Search Console, CrUX, crawl DOM, test botów AI.
+  Każda liczba ma repro — możesz odpalić i dostać to samo. <b>10 z 13 modułów</b> ma twarde dane;
+  moduły bez danych są oznaczone i <b>nie wchodzą do oceny</b>.</p>
+</header>
+
+<div class="verdict" id="werdykt">
+  <h2>Werdykt w trzech zdaniach</h2>
+  <p><b>GLOV nie ma kryzysu SEO — ma problem z dopasowaniem.</b> Ruch organiczny wzrósł
+  <b>15.6% rok do roku</b> (9 967 → 11 526 kliknięć), technika domeny jest zdrowa,
+  a pod AI search sklep jest dojrzalszy niż 90% rynku.</p>
+  <p>Prawdziwy problem: <b>sklep jest wszędzie widoczny i prawie nigdzie klikany</b>. Przy
+  589 743 wyświetleniach CTR wynosi <b>1.95%</b>. Jedna strona produktowa zjada
+  <b>24% wszystkich wyświetleń domeny</b> i ma CTR <b>0.83%</b> — przy jednocześnie najgorszej
+  stabilności layoutu na mobile w całym sklepie.</p>
+  <p>Najbardziej klikany content GLOV to <b>instrukcje anulowania subskrypcji</b> — 35.8% CTR,
+  976 kliknięć, 8.5% całego ruchu organicznego. To nie są klienci.</p>
+</div>
+
+<div class="kpis">
+  <div class="kpi">
+    <div class="kpi-l">Ruch organiczny Y/Y</div>
+    <div class="kpi-v g">+15.6%</div>
+    <div class="kpi-s">9 967 → 11 526 kliknięć</div>
+    <div class="kpi-src">GSC · 90 dni · 2026-04-16…2026-07-14</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-l">CTR domeny</div>
+    <div class="kpi-v r">1.95%</div>
+    <div class="kpi-s">przy średniej pozycji 7.3</div>
+    <div class="kpi-src">GSC · realne, nie benchmark</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-l">Ocena (moduły zbadane)</div>
+    <div class="kpi-v a">48<span style="font-size:19px;color:var(--lite)">/100</span></div>
+    <div class="kpi-s">10 z 13 modułów · reszta bez oceny</div>
+    <div class="kpi-src">V5.2: brak danych = brak score</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-l">Gotowość na AI</div>
+    <div class="kpi-v g">7/7</div>
+    <div class="kpi-s">botów AI dostaje 200 · llms.txt żyje</div>
+    <div class="kpi-src">curl per user-agent · 2026-07-17</div>
+  </div>
+</div>
+
+<div class="call i">
+  <div class="call-t">📐 Jak czytać ten audyt</div>
+  Każdy moduł ma <b>źródło danych</b> i rozwijane <b>repro</b> — komendę, którą odtworzysz liczbę.
+  Ocena liczona <b>wyłącznie z modułów, które udało się zmierzyć</b> (48/100), a nie z wszystkich 13 —
+  bo audyt, który wystawia ocenę czemuś, czego nie zmierzył, kłamie.
+  Etykiety <span class="b pew">udowodnione</span> / <span class="b pew">prawdopodobne</span> mówią,
+  na ile pewna jest podstawa rekomendacji.
+</div>
+
+<h2 class="sec">Fundament — czy dane w ogóle mówią prawdę</h2>
+
+<section class="mod" id="m0">
+  <div class="mod-h">
+    <span class="mod-n">MODUŁ 0</span>
+    <span class="mod-t">Triangulacja i bramka wiarygodności</span>
+    <span class="mod-sc sc-good">8/10</span>
+  </div>
+  <div class="mod-src">Źródło: Google Search Console (sc-domain:glov.co) · 90 dni vs ten sam okres rok temu</div>
+  <details class="scg"><summary>📊 ZASADY PUNKTACJI (skala 0–10) · GLOV = 8/10</summary><div class="scg-b"><div class="scg-row"><span class="scg-n">0</span><span class="scg-x">Brak dostępu do jakiegokolwiek źródła — diagnoza niemożliwa.</span></div><div class="scg-row"><span class="scg-n">1</span><span class="scg-x">Jedno źródło, zero triangulacji, wniosek z jednej liczby.</span></div><div class="scg-row"><span class="scg-n">2</span><span class="scg-x">Dwa źródła, brak bramki wiarygodności — bug narzędzia brany za fakt.</span></div><div class="scg-row"><span class="scg-n">3</span><span class="scg-x">Trend liczony miesiąc do miesiąca (sezonowość myli się z karą).</span></div><div class="scg-row"><span class="scg-n">4</span><span class="scg-x">Y/Y jest, ale bez gate na bug impresji GSC — ryzyko fałszywego alarmu.</span></div><div class="scg-row"><span class="scg-n">5</span><span class="scg-x">Trzy źródła, gate podstawowy, brak rozbicia kliki vs impresje.</span></div><div class="scg-row"><span class="scg-n">6</span><span class="scg-x">Gate 0.1 aktywny, rozjazd kliki↔impresje wykryty i opisany.</span></div><div class="scg-row"><span class="scg-n">7</span><span class="scg-x">+ uskoki narzędzi weryfikowane krzyżowo (Senuto vs GA4 vs DFS).</span></div><div class="scg-row hit"><span class="scg-n">8</span><span class="scg-x">Pełna triangulacja, wszystkie 4 bramki, werdykt tylko na czystych metrykach.</span></div><div class="scg-row"><span class="scg-n">9</span><span class="scg-x">+ trend 13-miesięczny i segmentacja per rynek.</span></div><div class="scg-row"><span class="scg-n">10</span><span class="scg-x">Hegemonia danych: każdy sygnał potwierdzony 3 źródłami, zero martwych pól.</span></div></div></details>
+  <details class="mth"><summary>🔬 METODOLOGIA — jak badamy ten moduł</summary><div class="mth-b">Triangulujemy trzy niezależne źródła (GSC — kliki, Senuto — widoczność, DataForSEO — wolumen), by odciąć sezonowość i artefakty narzędzi od realnych zmian. <b>Bramki wiarygodności PRZED diagnozą:</b> (1) czy okres przecina bug impresji GSC 13.05.2025–27.04.2026 → jeśli tak, impresje/CTR/pozycja z bazy odrzucone, werdykt liczony na klikach; (2) rozjazd kliki↔impresje → nie diagnozuj, najpierw wyjaśnij; (3) uskok w narzędziu potwierdzony innymi źródłami?; (4) rozjazd GSC↔Senuto &gt;30% = błąd trackingu, nie kara. <b>Źródło:</b> <code>scratchpad/gsc_audit.py</code>. <b>Uwaga:</b> nie szukamy „HCU” — wchłonięty do core 03.2024.</div></details>
+
+  <div class="meth">
+    <div class="meth-t">Dlaczego to jest pierwszy moduł</div>
+    <p>Zanim postawimy jakąkolwiek diagnozę, sprawdzamy czy narzędzie nie kłamie. Google potwierdził,
+    że <b>Search Console zawyżał wyświetlenia od 13.05.2025 do 27.04.2026</b> i nie poprawił danych historycznych.
+    Kliknięcia bug nie dotknął. Okres bazowy tego audytu wpada w to okno — więc wyświetlenia, CTR i pozycja
+    sprzed roku są skażone i zostają odrzucone.</p>
+  </div>
+
+  <div class="f crit">
+    <div class="f-h">
+      <span class="b crit">Bramka</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Jedno narzędzie, dwie sprzeczne historie</span>
+    </div>
+    <div class="f-d">
+      Te same dane, ten sam okres. Wybierz wyświetlenia — masz katastrofę. Wybierz kliknięcia — masz wzrost.
+      <b>Tylko jedna z tych liczb jest prawdziwa.</b>
+    </div>
+    <div class="split">
+      <div class="pane">
+        <div class="pane-h bad">❌ Wyświetlenia — ODRZUCONE</div>
+        <div class="pane-b">
+          727 551 → 589 743<br>
+          <span style="color:var(--red);font-weight:800">-18.9%</span><br><br>
+          Baza z okna buga GSC.<br>Napompowana. Nie liczy się.
+        </div>
+      </div>
+      <div class="pane">
+        <div class="pane-h good">✅ Kliknięcia — WERDYKT</div>
+        <div class="pane-b">
+          9 967 → 11 526<br>
+          <span style="color:var(--grn);font-weight:800">+15.6%</span><br><br>
+          Bug nie dotyczył kliknięć.<br>To jest prawda o sklepie.
+        </div>
+      </div>
+    </div>
+    <div class="call a">
+      <div class="call-t">⚠️ Co to znaczy dla poprzednich raportów</div>
+      Audyt z 12.07.2026 podał „<b>−18,4% kliknięć rok do roku</b>" i wystawił ocenę „54/120 — natychmiastowa
+      interwencja". Realna wartość to <b>+15.6%</b>. Nie tylko liczba była zła — <b>zły był znak</b>.
+      Ta sama pułapka działa w drugą stronę: „poprawa pozycji 12.6 → 7.3"
+      też <b>nie jest sukcesem</b>, tylko efektem oczyszczenia bazy z buga.
+    </div>
+  </div>
+
+  <div class="f info">
+    <div class="f-h"><span class="b info">Kontekst</span><span class="f-t">13 miesięcy — kliknięcia stabilne, wyświetlenia wracają do prawdy</span></div>
+    <div class="f-d">Szary słupek (wyświetlenia) opada, bo bug przestał je zawyżać 27.04.2026.
+    Fioletowy (kliknięcia) trzyma poziom — sklep pracuje normalnie.</div>
+    <div class="viz"><div class="viz-h">📊 Trend miesięczny · GSC</div><div class="viz-b"><div class="chart"><div class="col" title="2025-07: 3 514 klik / 293 761 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:100%;flex:1"></div>
+        <div class="col-b c" style="height:79%;flex:1"></div>
+      </div></div><div class="col" title="2025-08: 2 900 klik / 238 867 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:81%;flex:1"></div>
+        <div class="col-b c" style="height:66%;flex:1"></div>
+      </div></div><div class="col" title="2025-09: 3 163 klik / 207 997 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:71%;flex:1"></div>
+        <div class="col-b c" style="height:71%;flex:1"></div>
+      </div></div><div class="col" title="2025-10: 3 102 klik / 192 938 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:66%;flex:1"></div>
+        <div class="col-b c" style="height:70%;flex:1"></div>
+      </div></div><div class="col" title="2025-11: 4 426 klik / 244 617 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:83%;flex:1"></div>
+        <div class="col-b c" style="height:100%;flex:1"></div>
+      </div></div><div class="col" title="2025-12: 4 103 klik / 257 395 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:88%;flex:1"></div>
+        <div class="col-b c" style="height:93%;flex:1"></div>
+      </div></div><div class="col" title="2026-01: 3 964 klik / 240 537 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:82%;flex:1"></div>
+        <div class="col-b c" style="height:90%;flex:1"></div>
+      </div></div><div class="col" title="2026-02: 3 356 klik / 213 383 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:73%;flex:1"></div>
+        <div class="col-b c" style="height:76%;flex:1"></div>
+      </div></div><div class="col" title="2026-03: 3 267 klik / 223 151 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:76%;flex:1"></div>
+        <div class="col-b c" style="height:74%;flex:1"></div>
+      </div></div><div class="col" title="2026-04: 3 432 klik / 190 851 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:65%;flex:1"></div>
+        <div class="col-b c" style="height:78%;flex:1"></div>
+      </div></div><div class="col" title="2026-05: 3 677 klik / 200 205 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:68%;flex:1"></div>
+        <div class="col-b c" style="height:83%;flex:1"></div>
+      </div></div><div class="col" title="2026-06: 3 672 klik / 199 176 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:68%;flex:1"></div>
+        <div class="col-b c" style="height:83%;flex:1"></div>
+      </div></div><div class="col" title="2026-07: 2 466 klik / 93 239 wyśw.">
+      <div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:100%">
+        <div class="col-b i" style="height:32%;flex:1"></div>
+        <div class="col-b c" style="height:56%;flex:1"></div>
+      </div></div></div><div style="display:flex;gap:3px;padding:0 14px"><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">25-07</div><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">25-08</div><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">25-09</div><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">25-10</div><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">25-11</div><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">25-12</div><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">26-01</div><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">26-02</div><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">26-03</div><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">26-04</div><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">26-05</div><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">26-06</div><div style="flex:1;font-size:8px;color:var(--lite);font-family:var(--mono);text-align:center">26-07</div></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--acc)"></span>kliknięcia (prawda)</span>
+        <span><span class="dot" style="background:#cbd5e1"></span>wyświetlenia (skażone do 27.04.2026)</span>
+      </div>
+    </div></div>
+    <details class="repro"><summary>REPRO — odtwórz tę liczbę</summary>
+      <div class="repro-b">
+        <code>python3 scratchpad/gsc_audit.py</code><br>
+        → <code>gsc_audit.json</code> · klucz <code>m0_yoy</code>, <code>m0_gate</code>, <code>m0_monthly</code><br>
+        API: <code>searchanalytics().query(siteUrl="sc-domain:glov.co", startDate=..., endDate=...)</code><br>
+        Token: <code>~/.config/ciekawski/gsc_token.json</code> · okno buga: <code>2025-05-13..2026-04-27</code>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="mod" id="m0b">
+  <div class="mod-h">
+    <span class="mod-n">MODUŁ 0b</span><span class="mod-t">Profil witryny</span>
+    <span class="mod-sc sc-na">bez oceny</span>
+  </div>
+  <div class="mod-src">Źródło: sitemap.xml + crawl · decyduje które moduły w ogóle wchodzą</div>
+  <div class="meth">
+    <div class="meth-t">Po co profil przed audytem</div>
+    <p>Ten krok decyduje, czego <b>nie</b> audytować. Bez niego mierzy się problemy, które przy tej skali
+    nie mogą istnieć — i wystawia za nie oceny.</p>
+  </div>
+  <div class="f crit">
+    <div class="f-h"><span class="b crit">Korekta</span><span class="f-t">Sklep jest 10× większy, niż zakładały poprzednie audyty</span></div>
+    <div class="f-d">
+      Poprzedni crawl (16.06) widział <b>202 URL</b> i na tej podstawie budowano wnioski.
+      Sitemapa zwraca <b>2 155 URL</b> i <b>6 rynków</b>. To zmienia wszystko:
+      hreflang przestaje być formalnością, a kanibalizacja wymaga rozróżnienia rynków.
+    </div>
+    <table>
+      <thead><tr><th>Segment</th><th class="num">URL</th><th>Znaczenie dla audytu</th></tr></thead>
+      <tbody><tr><td><b>de-de</b></td><td class="num">358</td><td>rynek <code>de-de</code></td></tr><tr><td><b>en-eu</b></td><td class="num">358</td><td>rynek <code>en-eu</code></td></tr><tr><td><b>en-gb</b></td><td class="num">358</td><td>rynek <code>en-gb</code></td></tr><tr><td><b>en-global</b></td><td class="num">358</td><td>rynek <code>en-global</code></td></tr><tr><td><b>fr-fr</b></td><td class="num">358</td><td>rynek <code>fr-fr</code></td></tr><tr><td><b>products</b></td><td class="num">160</td><td>karty produktowe</td></tr><tr><td><b>collections</b></td><td class="num">83</td><td>listingi</td></tr><tr><td><b>blogs</b></td><td class="num">71</td><td>content</td></tr><tr><td><b>pages</b></td><td class="num">44</td><td>strony statyczne</td></tr></tbody></table>
+    <div class="call i">
+      <div class="call-t">✅ Wniosek: Moduł 9 (crawl budget) NIE DOTYCZY</div>
+      Google mówi wprost: crawl budget to temat dla witryn <b>powyżej kilku tysięcy URL</b>.
+      GLOV ma 2 155 — poniżej progu. <b>Moduł zostaje wyłączony i nie dostaje oceny.</b>
+      Audyt z 12.07 wystawił mu 3/10 i „krytyczne" znalezisko — za problem, którego przy tej skali nie ma.
+    </div>
+    <details class="repro"><summary>REPRO</summary>
+      <div class="repro-b"><code>python3 scratchpad/crawl_glov.py</code> → <code>glov_crawl.json</code> · klucz <code>sitemap_count</code><br>
+      Źródło: <code>curl https://glov.co/sitemap.xml</code> (rekurencyjnie po sitemapach potomnych)</div>
+    </details>
+  </div>
+</section>
+
+<h2 class="sec">Co widzi Google, a czego nie widzi klient</h2>
+
+<section class="mod" id="m2">
+  <div class="mod-h">
+    <span class="mod-n">MODUŁ 2</span><span class="mod-t">On-page i czystość DOM</span>
+    <span class="mod-sc sc-bad">3/10</span>
+  </div>
+  <div class="mod-src">Źródło: crawl DOM 46 stron z ruchem (priorytet: strony z wyświetleniami w GSC)</div>
+  <details class="scg"><summary>📊 ZASADY PUNKTACJI (skala 0–10) · GLOV = 3/10</summary><div class="scg-b"><div class="scg-row"><span class="scg-n">0</span><span class="scg-x">Brak title/description, hierarchia H1–H6 to śmietnik.</span></div><div class="scg-row"><span class="scg-n">1</span><span class="scg-x">Title generowany z URL, zero hierarchii nagłówków.</span></div><div class="scg-row"><span class="scg-n">2</span><span class="scg-x">H2/H3 stylizują interfejs (koszyk, waluta) — sygnał dla NLP zakłócony.</span></div><div class="scg-row hit"><span class="scg-n">3</span><span class="scg-x">Title jest, ale globalny sufiks tnie go na 100% stron; H na nawigacji.</span></div><div class="scg-row"><span class="scg-n">4</span><span class="scg-x">Sufiks skrócony, DOM przerośnięty, część meta pusta.</span></div><div class="scg-row"><span class="scg-n">5</span><span class="scg-x">Semantyka poprawna, title w budżecie pikseli, canonical self-referencing.</span></div><div class="scg-row"><span class="scg-n">6</span><span class="scg-x">H1–H3 niosą intencję, zero pustych węzłów.</span></div><div class="scg-row"><span class="scg-n">7</span><span class="scg-x">Unikalne meta pisane pod CTR, sufiks minimalny.</span></div><div class="scg-row"><span class="scg-n">8</span><span class="scg-x">DOM czysty, nagłówki wyłącznie merytoryczne.</span></div><div class="scg-row"><span class="scg-n">9</span><span class="scg-x">HTML5 wzorcowy, zagnieżdżenie idealne, zero divitis.</span></div><div class="scg-row"><span class="scg-n">10</span><span class="scg-x">Sterylny kod, 100% semantyki, zero marnotrawstwa budżetu title.</span></div></div></details>
+  <details class="mth"><summary>🔬 METODOLOGIA — jak badamy ten moduł</summary><div class="mth-b">Crawlujemy strony, które <b>realnie mają ruch</b> (nie losową próbkę). Title mierzymy <b>w pikselach, nie znakach</b> (~600px ≈ 50–60 zn.). Sprawdzamy, czy znaczniki H nie stylizują nawigacji — Google czyta hierarchię nagłówków jako temat strony. Meta description wpływa na CTR, nie na ranking (brak = nie kara). <b>Źródło:</b> crawl DOM, <code>crawl3.py</code>. <b>Uwaga:</b> dekodujemy encje HTML — inaczej <code>&amp;ndash;</code> liczy się jako 7 znaków.</div></details>
+
+  <div class="meth">
+    <div class="meth-t">Metodologia</div>
+    <p>Nie mierzymy losowej próbki — crawlujemy strony, które <b>realnie mają ruch</b>.
+    Title mierzymy <b>w pikselach, nie znakach</b> (Google obcina po szerokości ~600px ≈ 50–60 znaków).
+    Sprawdzamy też, czy znaczniki nagłówków nie są użyte do stylowania nawigacji — to zakłóca sygnał dla NLP.</p>
+  </div>
+
+  <div class="f crit">
+    <div class="f-h">
+      <span class="b crit">Krytyczne</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Każdy tytuł w sklepie jest ucięty w Google — bez wyjątku</span>
+    </div>
+    <div class="f-d">
+      <b>46 z 46 stron (100%)</b> ma title dłuższy niż 60 znaków.
+      Średnia: <b>105 znaków</b>. Powód jest jeden: Shopify dokleja globalny sufiks
+      <code>– GLOV - Innowacja w oczyszczaniu twarzy i pielęgnacji ciała</code> (<b>60 znaków</b>) do <b>100%</b> stron.
+      Sufiks sam zjada cały budżet wyświetlania — to, co unikalne, wypada poza krawędź.
+    </div>
+
+    <div class="viz">
+      <div class="viz-h">👁️ Przykład wizualny — tak ten wynik wygląda w Google</div>
+      <div class="viz-b">
+        <div class="serp">
+          <div class="serp-u"><span class="serp-fav"></span><span><b style="color:#202124">GLOV</b>
+            <span class="serp-path">glov.co/products/rekawica-do-mycia-twarzy-i-demakijaz</span></span></div>
+          <div class="serp-t">Rękawiczka do demakijażu i oczyszczania twarzy tylko przy uż<span class="cut">yciu wody 
+– GLOV - Innowacja w oczyszczaniu twarzy i pielęgnacji ciała</span></div>
+          <div class="serp-d">Bestsellerowa rękawiczka działa tylko z użyciem wody! Usuń skutecznie każdy, nawet wodoodporny makijaż! 1 sztuka wystarczy na 3 miesiące.</div>
+        </div>
+        <div class="ruler"><div class="ruler-m" style="left:57%">← tu Google tnie (~600px / 60 zn.)</div></div>
+        <div class="serp-note">
+          title ma 131 znaków · widocznych ~60 · <b style="color:var(--red)">przepada 71</b><br>
+          URL: /products/rekawica-do-mycia-twarzy-i-demakijazu-cery-mieszanej-glov-on
+        </div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Skrócić globalny sufiks title z 60 do ~7 znaków.</b> Z <code>– GLOV - Innowacja w oczyszczaniu twarzy i pielęgnacji ciała</code> na <code>| GLOV</code>.</div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>Dev (Shopify)</b></div></div>
+      <div class="fix-r"><div class="fix-l">Gdzie</div><div class="fix-v"><code>layout/theme.liquid</code> → tag <code>&lt;title&gt;</code></div></div>
+      <div class="fix-r"><div class="fix-l">Wymaga</div><div class="fix-v">Zamiany stringa na <code>&#123;&#123; page_title &#125;&#125; | GLOV</code>. Odzyskuje ~53 znaków na <b>100% stron sklepu</b> — jedna zmiana, cała domena.</div></div>
+      <div class="fix-r"><div class="fix-l">Czas</div><div class="fix-v"><b>20 minut</b> · efekt widoczny po reindeksacji (1–3 tyg.)</div></div>
+    </div>
+    <details class="repro"><summary>REPRO</summary>
+      <div class="repro-b"><code>python3 scratchpad/crawl3.py</code> → <code>glov_dom.json</code><br>
+      Liczenie: <code>[p for p in pages if p["status"]==200 and p["title_len"]&gt;60]</code> → 46/46<br>
+      Najdłuższy: 131 zn. · <code>https://glov.co/products/rekawica-do-mycia-twarzy-i-demakijazu-cery-mieszanej-</code></div>
+    </details>
+  </div>
+
+  <div class="f crit">
+    <div class="f-h">
+      <span class="b crit">Krytyczne</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Nagłówki opisują przełącznik waluty, nie produkt</span>
+    </div>
+    <div class="f-d">
+      Na <b>46 z 46 stron (100%)</b> znacznik <code>&lt;h2&gt;</code> owija
+      elementy interfejsu. Google czyta hierarchię nagłówków, żeby zrozumieć, o czym jest strona —
+      i dostaje informację, że jednym z głównych tematów jest <b>„Waluta"</b>.
+    </div>
+    <div class="split">
+      <div class="pane">
+        <div class="pane-h bad">❌ Obecnie — H2 na interfejsie</div>
+        <div class="pane-b">&lt;h2&gt; Waluta &nbsp;<span style="color:var(--red);font-weight:700">×35</span><br>&lt;h2&gt; Currency &nbsp;<span style="color:var(--red);font-weight:700">×11</span><br>&lt;h2&gt; Patenty &nbsp;<span style="color:var(--red);font-weight:700">×1</span><br>&lt;h2&gt; Wzory użytkowe &nbsp;<span style="color:var(--red);font-weight:700">×1</span><br></div>
+      </div>
+      <div class="pane">
+        <div class="pane-h good">✅ Optymalnie — UI to nie nagłówek</div>
+        <div class="pane-b">
+          &lt;div class="currency"&gt;Waluta&lt;/div&gt; &nbsp;<span style="color:var(--mut)">← było &lt;h2&gt;</span><br>
+          &lt;div class="footer-legal"&gt;Patenty&lt;/div&gt; &nbsp;<span style="color:var(--mut)">← było &lt;h2&gt;</span><br>
+          <br>
+          <span style="color:var(--mut)">&lt;h1&gt; = nazwa strony (produkt / kategoria)<br>
+          &lt;h2&gt; = tytuły realnych sekcji treści strony</span>
+        </div>
+      </div>
+    </div>
+    <div class="call i">
+      <div class="call-t">📌 A co ma być w H2? To nie jest zadanie tego audytu</div>
+      Ten moduł jest techniczny — mówi tylko: <b>przełącznik waluty i stopka mają przestać udawać nagłówek</b>.
+      <b>Czym wypełnić H2</b> — jakie sekcje treści opisać na karcie produktu czy kolekcji (np. „jak używać", „skład", „opinie") —
+      to decyzja <b>treściowa, per typ strony</b> i należy do <b>Category Standards</b>, nie do audytu technicznego.
+      Tu chodzi wyłącznie o to, żeby hierarchia nagłówków opisywała treść, a nie przyciski interfejsu.
+    </div>
+    <div class="call g">
+      <div class="call-t">✅ Co jest w porządku (wbrew poprzedniemu audytowi)</div>
+      Audyt z 12.07 pisał o „całkowitym śmietniku H1-H6" i wystawił 2/10.
+      Realnie: <b>tylko 1 z 46 stron nie ma H1</b> (2%), reszta ma poprawny.
+      Problem jest węższy i konkretniejszy — dotyczy <code>&lt;h2&gt;</code> na nawigacji, nie całej hierarchii.
+    </div>
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Zamienić <code>&lt;h2&gt;</code> na <code>&lt;div&gt;</code> w przełączniku waluty i stopce.</b></div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>Dev (Shopify)</b></div></div>
+      <div class="fix-r"><div class="fix-l">Gdzie</div><div class="fix-v"><code>sections/footer.liquid</code>, snippet przełącznika waluty</div></div>
+      <div class="fix-r"><div class="fix-l">Wymaga</div><div class="fix-v">Podmiany tagu + przeniesienia stylu do klasy CSS. Wygląd bez zmian — zmienia się tylko sygnał semantyczny.</div></div>
+      <div class="fix-r"><div class="fix-l">Czas</div><div class="fix-v"><b>1 godzina</b></div></div>
+    </div>
+  </div>
+
+  <div class="f info">
+    <div class="f-h"><span class="b info">Brief</span><span class="f-t">🔧 Brief wykonawcy — skeleton H2 per kategoria</span></div>
+    <div class="f-d">
+      Poprzedni finding zostawił pytanie „czym wypełnić H2" przy Category Standards. Oto pierwsza wersja:
+      <b>30 nagłówków H2</b> rozpisanych na <b>8 kategorii</b> produktowych GLOV — każdy wywiedziony
+      z realnego zapytania w Google Search Console (wyświetlenia = dowód popytu), nie wymyślony.
+    </div>
+    <table>
+      <thead><tr><th>Kategoria</th><th>H2</th><th>Zapytanie źródłowe (GSC)</th><th class="num">Wyśw.</th></tr></thead>
+      <tbody>
+      <tr><td><b>Nano szkło (pumeks / depilator / tarka)</b></td><td>Nano szkło do pięt — tarka czy pumeks?</td><td><code>tarka z nano szkła</code></td><td class="num">12 597</td></tr>
+      <tr><td></td><td>Jak używać tarki/pumeksu z nano szkła na pięty</td><td><code>nano szkło do pięt jak używać</code></td><td class="num">685</td></tr>
+      <tr><td></td><td>Co to jest nano szkło</td><td><code>nano szkło</code></td><td class="num">9 181</td></tr>
+      <tr><td></td><td>Skład i parametry nano szkła</td><td><span style="color:var(--mut)">strukturalny — bez zapytania</span></td><td class="num">—</td></tr>
+      <tr><td></td><td>Opinie o depilatorze z nano szkła</td><td><code>depilator z nano szkła opinie</code></td><td class="num">401</td></tr>
+      <tr><td><b>Czepki i turbany satynowe</b></td><td>Satynowy czepek do spania — jak wybrać rozmiar i materiał</td><td><code>satynowy czepek do spania</code></td><td class="num">2 085</td></tr>
+      <tr><td></td><td>Czepek satynowy do spania — dla kogo i po co</td><td><code>czepek satynowy do spania</code></td><td class="num">1 655</td></tr>
+      <tr><td></td><td>Turban do włosów po myciu — jak używać</td><td><code>turban do włosów</code></td><td class="num">606</td></tr>
+      <tr><td></td><td>Czepek czy bonnet satynowy — czym się różnią</td><td><code>bonnet satynowy</code></td><td class="num">164</td></tr>
+      <tr><td></td><td>Opinie: satynowy czepek do spania</td><td><code>satynowy czepek do spania opinie</code></td><td class="num">144</td></tr>
+      <tr><td><b>CoolCurl / loki bez ciepła</b></td><td>Overnight Blowout — jak zrobić loki bez ciepła na noc</td><td><code>overnight blowout</code></td><td class="num">1 199</td></tr>
+      <tr><td></td><td>Wałki do włosów na noc — jak zakładać</td><td><code>walki do wlosow na noc</code></td><td class="num">342</td></tr>
+      <tr><td></td><td>Zestaw Overnight Blowout — co zawiera</td><td><code>overnight blowout wałki</code></td><td class="num">234</td></tr>
+      <tr><td></td><td>GLOV CoolCurl — co to za produkt</td><td><code>glov coolcurl</code></td><td class="num">201</td></tr>
+      <tr><td><b>Rękawice (demakijaż / peeling / ciało)</b></td><td>Rękawica do demakijażu — co to i jak działa</td><td><code>rękawica do demakijażu</code></td><td class="num">462</td></tr>
+      <tr><td></td><td>Rękawica do peelingu ciała — jak używać</td><td><code>rękawica do peelingu</code></td><td class="num">274</td></tr>
+      <tr><td></td><td>Rękawica do mycia ciała — dla jakiej cery</td><td><code>rekawica do mycia ciala</code></td><td class="num">258</td></tr>
+      <tr><td></td><td>Rękawice GLOV do ciała — przegląd wariantów</td><td><code>rękawice do ciała</code></td><td class="num">126</td></tr>
+      <tr><td><b>Coolnails (lakiery do paznokci)</b></td><td>Co to jest Coolnails</td><td><code>coolnails</code></td><td class="num">177</td></tr>
+      <tr><td></td><td>Coolnails Glov — jak działa lakier w piórniku (click pen)</td><td><code>coolnails glov</code></td><td class="num">332</td></tr>
+      <tr><td></td><td>Nagellackstift — lakier do paznokci w formie pisaka (rynek DE)</td><td><code>nagellackstift</code></td><td class="num">256</td></tr>
+      <tr><td></td><td>Cool Nails by Glov — opinie</td><td><code>cool nails by glov</code></td><td class="num">245</td></tr>
+      <tr><td><b>Gąbki do makijażu</b></td><td>Gąbka do makijażu — do czego służy</td><td><code>gąbka do makijażu</code></td><td class="num">688</td></tr>
+      <tr><td></td><td>Gąbka do twarzy — jak myć i dezynfekować</td><td><code>gąbka do twarzy</code></td><td class="num">183</td></tr>
+      <tr><td></td><td>Czym zmywać makijaż — gąbka, płatek czy rękawica</td><td><code>czym zmywać makijaż</code></td><td class="num">141</td></tr>
+      <tr><td><b>Płatki kosmetyczne (wielorazowe)</b></td><td>Wielorazowe płatki kosmetyczne — jak działają</td><td><code>wielorazowe płatki kosmetyczne</code></td><td class="num">301</td></tr>
+      <tr><td></td><td>Płatki wielorazowe do demakijażu — jak prać</td><td><code>płatki wielorazowe do demakijażu</code></td><td class="num">290</td></tr>
+      <tr><td></td><td>Waciki wielorazowe vs jednorazowe</td><td><code>waciki wielorazowe</code></td><td class="num">238</td></tr>
+      <tr><td></td><td>GLOV Moon Pads — zastosowanie i opinie</td><td><code>glov moon pads</code></td><td class="num">131</td></tr>
+      <tr><td><b>Ręczniki do twarzy</b></td><td>Ręczniczki do twarzy GLOV — do czego służą</td><td><code>ręczniczki do twarzy</code></td><td class="num">254</td></tr>
+      </tbody>
+    </table>
+    <div class="call a">
+      <div class="call-t">⚠️ Dane niepełne dla części kategorii</div>
+      Próbka GSC dostępna do repro to <b>100 zapytań</b> (<code>m6_top</code>+<code>m6_striking</code> —
+      <code>m7_raw_rows</code> to tylko licznik 17987, bez surowych wierszy). Dla <b>Ręczniki do twarzy · Gąbki do makijażu</b>
+      próbka dała za mało dopasowań na pełny skeleton 3-5 H2 — skeleton jest niekompletny i wymaga
+      świeżego exportu GSC filtrowanego per kategoria, zanim pójdzie do produkcji.
+      Kategoria „szczotki do włosów" (typowana wstępnie z HP) <b>nie ma w tej próbce ani jednego trafienia</b> —
+      pominięta zamiast wymyślona; zastąpiona kategoriami, które dane faktycznie potwierdzają
+      (CoolCurl, Coolnails, płatki kosmetyczne).
+    </div>
+    <div class="call g">
+      <div class="call-t">⚙️ Mechanizm skalowania — to NIE jest 361 ręcznych decyzji</div>
+      H2 nie robi się ręcznie per produkt. Robi się raz: <b>(1)</b> jedna edycja szablonu
+      <code>sections/product-*.liquid</code> (skeleton H2) → wchodzi na wszystkie karty danego typu naraz;
+      <b>(2)</b> nagłówki definiowane <b>per kategoria</b> (cała kategoria dzieli te same pytania klientów) —
+      to jest Category Standards; <b>(3)</b> treść w H2 = pola/metafields produktu (skład, sposób użycia),
+      uzupełniane raz per produkt albo współdzielone w całej kategorii. Koszt: <b>8 kategorii × szablon</b>,
+      nie 361 osobnych decyzji.
+    </div>
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Wdrożyć skeleton H2 (tabela wyżej) do szablonu karty produktu, per kategoria.</b> Kategorie oznaczone jako niepełne (patrz wyżej) — dociągnąć zapytania przed wdrożeniem.</div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>Dev + Copy</b> — Dev: struktura sekcji w szablonie; Copy: treść w H2 wg zapytań i metafields</div></div>
+      <div class="fix-r"><div class="fix-l">Gdzie</div><div class="fix-v"><code>sections/product-*.liquid</code> + metafields produktu (skład, sposób użycia)</div></div>
+      <div class="fix-r"><div class="fix-l">Czas</div><div class="fix-v"><b>~1 dzień na kategorię</b> (szablon + wypełnienie metafields) × 8 kategorii</div></div>
+    </div>
+    <details class="repro"><summary>REPRO</summary>
+      <div class="repro-b">
+        <code>cat _audyt_360_2026-07/h2_blueprint.json | python3 -c "import json,sys; d=json.load(sys.stdin); print(sum(len(v) for k,v in d.items() if k!='_meta'))"</code>
+        → 30 H2 na 8 kategorii<br>
+        Źródło zapytań: <code>gsc_audit.json</code> klucze <code>m6_top</code> (40) + <code>m6_striking</code> (60) = 100 zapytań, jedyna dostępna próbka.
+      </div>
+    </details>
+  </div>
+
+  <div class="f warn">
+    <div class="f-h"><span class="b warn">Ważne</span><span class="f-t">28% stron z ruchem nie ma meta description</span></div>
+    <div class="f-d">
+      <b>13 z 46</b> stron zostawia Google wolną rękę — snippet zostanie sklejony z losowego
+      fragmentu. Meta description <b>nie jest czynnikiem rankingowym</b>, ale przy CTR domeny <b>1.95%</b>
+      to jedyna dźwignia, która działa od razu i nie wymaga dewelopera.
+    </div>
+    <div class="call i">
+      <div class="call-t">📏 Mit, który tu nie obowiązuje</div>
+      „155–160 znaków" to wymysł narzędzi SEO, nie limit Google — John Mueller odrzucił to wprost.
+      Google obcina po <b>szerokości w pikselach</b>. Piszemy pod czytelność i kliknięcie, nie pod licznik.
+    </div>
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Uzupełnić opisy dla 13 stron z ruchem</b> — zaczynając od tych z największą liczbą wyświetleń.</div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>Copy / SEO</b> (bez dewelopera)</div></div>
+      <div class="fix-r"><div class="fix-l">Gdzie</div><div class="fix-v">Shopify Admin → Bulk Editor</div></div>
+      <div class="fix-r"><div class="fix-l">Czas</div><div class="fix-v"><b>2 godziny</b></div></div>
+    </div>
+  </div>
+
+  <div class="f warn">
+    <div class="f-h"><span class="b warn">Ważne</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Strona główna nie ma H1 — 18 nagłówków H2 i zero H1</span></div>
+    <div class="f-d">Najważniejsza strona domeny nie ma głównego nagłówka. Google czyta hierarchię H, żeby zrozumieć temat strony — dostaje 18× <code>&lt;h2&gt;</code> i żadnego <code>&lt;h1&gt;</code>. Sygnał tematyczny strony głównej jest rozmyty.</div>
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Dodać jeden <code>&lt;h1&gt;</code> na stronie głównej</b> (marka + kategoria), resztę sekcji zejść do H2.</div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>Dev (Shopify)</b></div></div>
+      <div class="fix-r"><div class="fix-l">Gdzie</div><div class="fix-v">szablon strony głównej (sekcja hero)</div></div>
+      <div class="fix-r"><div class="fix-l">Czas</div><div class="fix-v"><b>15 minut</b></div></div>
+    </div>
+    <details class="repro"><summary>REPRO</summary><div class="repro-b">curl -A Chrome https://glov.co/ → licznik &lt;h1&gt;=0, &lt;h2&gt;=18 (2026-07-21)</div></details>
+  </div>
+
+  <div class="f warn">
+    <div class="f-h"><span class="b warn">Ważne</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Strony konta są w indeksie — bez noindex, bez H1</span></div>
+    <div class="f-d">Trzy strony funkcjonalne — <code>/pages/profile</code>, <code>/pages/profile-edit</code>, <code>/pages/set-password</code> — zwracają status 200, nie mają <code>noindex</code> i nie mają H1. To thin-content, który marnuje budżet indeksowania i może trafić do wyników wyszukiwania zamiast kart produktu.</div>
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Dodać <code>&lt;meta name="robots" content="noindex,follow"&gt;</code> na szablonach stron konta.</b> Sprawdzić w GSC, czy nie są już zaindeksowane.</div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>Dev (Shopify)</b></div></div>
+      <div class="fix-r"><div class="fix-l">Gdzie</div><div class="fix-v">szablony <code>pages/profile*</code>, <code>set-password</code></div></div>
+      <div class="fix-r"><div class="fix-l">Czas</div><div class="fix-v"><b>30 minut</b></div></div>
+    </div>
+    <details class="repro"><summary>REPRO</summary><div class="repro-b">curl -A Chrome /pages/profile · /pages/profile-edit · /pages/set-password → status=200, meta robots=brak, h1=0 (2026-07-21)</div></details>
+  </div>
+</section>
+
+<h2 class="sec">Wydajność — domena zdrowa, flagowy produkt chory</h2>
+
+<section class="mod" id="m4">
+  <div class="mod-h">
+    <span class="mod-n">MODUŁ 4</span><span class="mod-t">Core Web Vitals</span>
+    <span class="mod-sc sc-warn">5/10</span>
+  </div>
+  <div class="mod-src">Źródło: CrUX API (dane realnych użytkowników Chrome, okno 28 dni) · werdykt = field, nie Lighthouse</div>
+  <details class="scg"><summary>📊 ZASADY PUNKTACJI (skala 0–10) · GLOV = 5/10</summary><div class="scg-b"><div class="scg-row"><span class="scg-n">0</span><span class="scg-x">LCP&gt;4s, wątek zablokowany, strona ledwo się renderuje.</span></div><div class="scg-row"><span class="scg-n">1</span><span class="scg-x">LCP ~3,5s, INP wysoki, UX frustrujący.</span></div><div class="scg-row"><span class="scg-n">2</span><span class="scg-x">Origin przechodzi, ale kluczowe szablony (PDP) czerwone i nikt tego nie rozbił.</span></div><div class="scg-row"><span class="scg-n">3</span><span class="scg-x">Wszystko mierzone tylko labem (Lighthouse) — a Cloudflare go blokuje.</span></div><div class="scg-row"><span class="scg-n">4</span><span class="scg-x">Field jest, ale bez rozbicia per szablon — czerwony PDP schowany w zielonej średniej.</span></div><div class="scg-row hit"><span class="scg-n">5</span><span class="scg-x">Origin zielony, PDP-bestseller rozbity osobno i czerwony — problem zlokalizowany.</span></div><div class="scg-row"><span class="scg-n">6</span><span class="scg-x">Krytyczny PDP naprawiony do żółtego, CLS&lt;0,25.</span></div><div class="scg-row"><span class="scg-n">7</span><span class="scg-x">LCP&lt;2,5s na PDP, obrazy z jawnymi wymiarami.</span></div><div class="scg-row"><span class="scg-n">8</span><span class="scg-x">Wszystkie szablony zielone w polu (CrUX), INP&lt;150ms.</span></div><div class="scg-row"><span class="scg-n">9</span><span class="scg-x">Cache na Edge, prefetch zasobów, LCP&lt;1,5s.</span></div><div class="scg-row"><span class="scg-n">10</span><span class="scg-x">100% URL zielone w CrUX, CLS≈0 wszędzie.</span></div></div></details>
+  <details class="mth"><summary>🔬 METODOLOGIA — jak badamy ten moduł</summary><div class="mth-b">Werdykt = <b>CrUX field</b> (realni użytkownicy Chrome, okno 28 dni) — to na tym opiera się Google. Lighthouse (lab) służy <b>tylko do diagnozy przyczyn</b>, nigdy do werdyktu (Cloudflare go blokuje — mierzyłby stronę błędu). Rozbijamy per szablon: czerwony PDP schowany w zielonej średniej origin to najczęstszy błąd audytów. <b>Progi:</b> LCP&lt;2,5s · INP&lt;200ms · CLS&lt;0,1. <b>Źródło:</b> <code>crux.py</code>, <code>psi.py</code>.</div></details>
+
+  <div class="meth">
+    <div class="meth-t">Dlaczego nie Lighthouse</div>
+    <p>Lighthouse dla tej samej strony pokazał <b>LCP 30,6 s</b>, a realni użytkownicy mają
+    <b>3292 ms</b>. Lighthouse symuluje wolne łącze — to narzędzie do <b>diagnozy przyczyn</b>,
+    nie do werdyktu. Werdykt zawsze z danych terenowych (CrUX). Raportowanie liczb z Lighthouse jako stanu strony
+    to najczęstszy sposób, w jaki audyt SEO kłamie bez złej woli.</p>
+  </div>
+
+  <div class="f ok">
+    <div class="f-h"><span class="b ok">Zdrowe</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Cała domena przechodzi wszystkie progi</span></div>
+    <div class="f-d">Origin glov.co — dane realnych użytkowników:</div>
+    <table>
+      <thead><tr><th>Metryka</th><th class="num">GLOV</th><th class="num">Próg Google</th><th>Status</th><th>Co mierzy</th></tr></thead>
+      <tbody><tr><td><b>LCP</b></td><td class="num"><b>2024ms</b></td>
+      <td class="num" style="color:var(--lite)">2500ms</td>
+      <td><span class="b ok">zaliczone</span></td>
+      <td style="font-size:12.5px">Czas do największego elementu</td></tr><tr><td><b>INP</b></td><td class="num"><b>145ms</b></td>
+      <td class="num" style="color:var(--lite)">200ms</td>
+      <td><span class="b ok">zaliczone</span></td>
+      <td style="font-size:12.5px">Reakcja na kliknięcie</td></tr><tr><td><b>CLS</b></td><td class="num"><b>0.06</b></td>
+      <td class="num" style="color:var(--lite)">0.1</td>
+      <td><span class="b ok">zaliczone</span></td>
+      <td style="font-size:12.5px">Stabilność layoutu</td></tr><tr><td><b>FCP</b></td><td class="num"><b>1126ms</b></td>
+      <td class="num" style="color:var(--lite)">1800ms</td>
+      <td><span class="b ok">zaliczone</span></td>
+      <td style="font-size:12.5px">Pierwszy render</td></tr><tr><td><b>TTFB</b></td><td class="num"><b>413ms</b></td>
+      <td class="num" style="color:var(--lite)">800ms</td>
+      <td><span class="b ok">zaliczone</span></td>
+      <td style="font-size:12.5px">Odpowiedź serwera</td></tr></tbody></table>
+  </div>
+
+  <div class="f crit">
+    <div class="f-h">
+      <span class="b crit">Krytyczne</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Najważniejsza strona sklepu jest jednocześnie najgorszą</span>
+    </div>
+    <div class="f-d">
+      Karta <code>/products/pumeks-glov-z-nano-szkla…</code> odpowiada za <b>24% wszystkich wyświetleń
+      domeny</b> (142 998). I to właśnie ona nie przechodzi ani jednego progu na mobile —
+      gdzie GLOV ma ~80% ruchu. <b>Poprzednie audyty tego nie zobaczyły, bo mierzyły origin i stronę główną.</b>
+    </div>
+    <table>
+      <thead><tr><th>Metryka</th><th class="num">Ta strona (mobile)</th><th class="num">Próg</th><th class="num">Przekroczenie</th><th>Status</th></tr></thead>
+      <tbody><tr><td><b>LCP</b></td><td class="num"><b style="color:var(--red)">3292ms</b></td>
+      <td class="num" style="color:var(--lite)">2500ms</td>
+      <td class="num"><b style="color:var(--red)">1.3×</b></td>
+      <td><span class="b crit">nie zdane</span></td></tr><tr><td><b>INP</b></td><td class="num"><b style="color:var(--red)">204ms</b></td>
+      <td class="num" style="color:var(--lite)">200ms</td>
+      <td class="num"><b style="color:var(--red)">1.0×</b></td>
+      <td><span class="b crit">nie zdane</span></td></tr><tr><td><b>CLS</b></td><td class="num"><b style="color:var(--red)">0.66</b></td>
+      <td class="num" style="color:var(--lite)">0.1</td>
+      <td class="num"><b style="color:var(--red)">6.6×</b></td>
+      <td><span class="b crit">nie zdane</span></td></tr></tbody></table>
+
+    <div class="viz">
+      <div class="viz-h">👁️ Przykład wizualny — co klient widzi przy CLS 0.66</div>
+      <div class="viz-b">
+        <div class="cls-demo">
+          <div class="phone">
+            <div class="ph-s">
+              <div class="blk img"></div>
+              <div class="blk txt"></div><div class="blk txt w70"></div>
+              <div class="blk cta"></div>
+              <div class="blk txt w50"></div>
+            </div>
+            <div class="ph-lbl">1. Klient celuje w „Dodaj do koszyka"</div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="phone">
+            <div class="ph-s">
+              <div class="blk banner">baner / widget doładował się</div>
+              <div class="blk img"></div>
+              <div class="blk txt"></div><div class="blk txt w70"></div>
+              <div class="blk cta"></div>
+            </div>
+            <div class="ph-lbl">2. Treść zjeżdża — klik ląduje gdzie indziej</div>
+          </div>
+          <div style="flex:1;padding-left:6px;min-width:200px">
+            <p style="font-size:14px;color:var(--mut);margin-bottom:12px">
+            <b>CLS 0.66</b> oznacza, że znaczna część
+            widocznego ekranu przeskakuje po załadowaniu. Próg Google to <b>0.1</b>.</p>
+            <p style="font-size:14px;color:var(--mut);margin-bottom:12px">
+            Klient celuje w przycisk, strona podskakuje, klik trafia w nic — albo w coś innego.
+            Wraca do Google. <b>Google to widzi</b> i traktuje jako sygnał, że strona nie odpowiada na zapytanie.</p>
+            <p style="font-size:13px;color:var(--lite);font-family:var(--mono)">
+            Desktop: CLS 0.22 — problem dotyczy <b>tylko mobile</b>,
+            czyli ~80% ruchu GLOV.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Zarezerwować miejsce dla elementów doładowywanych na karcie produktu</b> — banner promocyjny, widget opinii, galeria.</div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>Dev (Shopify)</b></div></div>
+      <div class="fix-r"><div class="fix-l">Gdzie</div><div class="fix-v"><code>sections/product-template.liquid</code> + snippety aplikacji wstrzykujących treść nad foldem</div></div>
+      <div class="fix-r"><div class="fix-l">Wymaga</div><div class="fix-v">Nadania <code>min-height</code> / <code>aspect-ratio</code> kontenerom oraz <code>width</code>+<code>height</code> obrazom. Zacząć od bannera z kodem rabatowym — wstrzykuje się nad treścią i spycha całą stronę w dół.</div></div>
+      <div class="fix-r"><div class="fix-l">Czas</div><div class="fix-v"><b>3–4 godziny</b> · <b>to jest priorytet #1 techniczny</b></div></div>
+    </div>
+    <details class="repro"><summary>REPRO</summary>
+      <div class="repro-b">
+        <code>python3 scratchpad/crux.py</code> → <code>crux.json</code> (field, werdykt)<br>
+        <code>python3 scratchpad/psi.py</code> → <code>psi.json</code> (lab, diagnoza)<br>
+        API: <code>chromeuxreport.googleapis.com/v1/records:queryRecord</code> · klucz: <code>~/.config/crux_key</code><br>
+        Lab dla porównania: LCP <b>30.6 s</b>,
+        CLS <b>1.044</b> — <b>nie używać jako werdyktu</b>
+      </div>
+    </details>
+  </div>
+</section>
+
+<h2 class="sec">Sedno — ekspozycja bez dopasowania</h2>
+
+<section class="mod" id="m5">
+  <div class="mod-h">
+    <span class="mod-n">MODUŁ 5</span><span class="mod-t">Sygnały behawioralne</span>
+    <span class="mod-sc sc-bad">3/10</span>
+  </div>
+  <div class="mod-src">Źródło: GSC (CTR vs pozycja, własna krzywa) · proxy, nie NavBoost</div>
+  <details class="scg"><summary>📊 ZASADY PUNKTACJI (skala 0–10) · GLOV = 3/10</summary><div class="scg-b"><div class="scg-row"><span class="scg-n">0</span><span class="scg-x">Skrajny pogo-sticking, zero adresacji intencji.</span></div><div class="scg-row"><span class="scg-n">1</span><span class="scg-x">Zero danych proxy, diagnoza z powietrza.</span></div><div class="scg-row"><span class="scg-n">2</span><span class="scg-x">CTR liczony, ale bez odniesienia do średniej z pozycji.</span></div><div class="scg-row hit"><span class="scg-n">3</span><span class="scg-x">Anomalie CTR wykryte, ale brak sprzężenia z GA4/Clarity.</span></div><div class="scg-row"><span class="scg-n">4</span><span class="scg-x">+ engagement GA4 podpięty do stron-anomalii.</span></div><div class="scg-row"><span class="scg-n">5</span><span class="scg-x">Krzywa CTR własna, strony poniżej niej wskazane imiennie.</span></div><div class="scg-row"><span class="scg-n">6</span><span class="scg-x">+ nagrania Clarity dla top anomalii (rage-click, wczesny exit).</span></div><div class="scg-row"><span class="scg-n">7</span><span class="scg-x">Intencja strony dopasowana do typu wyniku (seo-sxo).</span></div><div class="scg-row"><span class="scg-n">8</span><span class="scg-x">Above-the-fold przebudowane pod frazy o niskim CTR.</span></div><div class="scg-row"><span class="scg-n">9</span><span class="scg-x">Pełna pętla: CTR → zmiana Title/Meta → pomiar efektu.</span></div><div class="scg-row"><span class="scg-n">10</span><span class="scg-x">Każda kluczowa strona pod średnią CTR zaadresowana i zweryfikowana.</span></div></div></details>
+  <details class="mth"><summary>🔬 METODOLOGIA — jak badamy ten moduł</summary><div class="mth-b">NavBoost operuje na sygnałach (goodClicks, badClicks, dwell time), których <b>Google nie udostępnia nikomu</b> — mierzymy proxy i nazywamy je proxy. Szukamy stron o wysokich wyświetleniach i <b>nienaturalnie niskim CTR</b> względem średniej z pozycji, krzyżujemy z engagement GA4 i nagraniami Clarity. <b>Źródło:</b> GSC (własna krzywa CTR). <b>Uwaga:</b> engagement GA4 ≠ dwell time.</div></details>
+
+  <div class="meth">
+    <div class="meth-t">Granica poznania — czego tu NIE ma</div>
+    <p>Google mierzy jakość kliknięć wewnętrznie (goodClicks, badClicks, lastLongestClicks — wyciek 2024).
+    <b>Żadna z tych metryk nie jest dostępna właścicielowi strony.</b> „Dwell time" nie istnieje w GSC,
+    GA4 ani nigdzie indziej — kto twierdzi, że go mierzy, sprzedaje wróżenie.
+    Mierzymy proxy: <b>CTR względem pozycji</b>. I to wystarcza, żeby zobaczyć problem.</p>
+  </div>
+
+  <div class="f crit">
+    <div class="f-h">
+      <span class="b crit">Krytyczne</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Na pierwszym miejscu w Google klika 9.09% ludzi zamiast ~28%</span>
+    </div>
+    <div class="f-d">
+      To jest własna krzywa CTR GLOV, policzona z 17 987 wierszy GSC — nie benchmark z bloga.
+      Porównanie z typowym rozkładem rynkowym pokazuje skalę: <b>GLOV zbiera ułamek kliknięć należnych
+      do zajmowanych pozycji.</b>
+    </div>
+    <div class="viz">
+      <div class="viz-h">📊 CTR wg pozycji — GLOV vs typowy rozkład</div>
+      <div class="viz-b"><div class="bars"><div class="bar-r"><div class="bar-lb">pozycja 1</div>
+      <div class="bar-tr"><div class="bar-f glov" style="width:30.3%">9.09%</div></div></div>
+      <div class="bar-r"><div class="bar-lb" style="color:var(--lite)">↳ typowo</div>
+      <div class="bar-tr"><div class="bar-f g" style="width:93.33333333333333%">28.0%</div></div></div><div class="bar-r"><div class="bar-lb">pozycja 2</div>
+      <div class="bar-tr"><div class="bar-f glov" style="width:7.033333333333333%">2.11%</div></div></div>
+      <div class="bar-r"><div class="bar-lb" style="color:var(--lite)">↳ typowo</div>
+      <div class="bar-tr"><div class="bar-f g" style="width:50.0%">15.0%</div></div></div><div class="bar-r"><div class="bar-lb">pozycja 3</div>
+      <div class="bar-tr"><div class="bar-f glov" style="width:7%">1.92%</div></div></div>
+      <div class="bar-r"><div class="bar-lb" style="color:var(--lite)">↳ typowo</div>
+      <div class="bar-tr"><div class="bar-f g" style="width:36.666666666666664%">11.0%</div></div></div><div class="bar-r"><div class="bar-lb">pozycja 4</div>
+      <div class="bar-tr"><div class="bar-f glov" style="width:7%">1.06%</div></div></div>
+      <div class="bar-r"><div class="bar-lb" style="color:var(--lite)">↳ typowo</div>
+      <div class="bar-tr"><div class="bar-f g" style="width:26.666666666666668%">8.0%</div></div></div><div class="bar-r"><div class="bar-lb">pozycja 5</div>
+      <div class="bar-tr"><div class="bar-f glov" style="width:7%">0.76%</div></div></div>
+      <div class="bar-r"><div class="bar-lb" style="color:var(--lite)">↳ typowo</div>
+      <div class="bar-tr"><div class="bar-f g" style="width:23.333333333333332%">7.0%</div></div></div></div>
+      <div class="serp-note" style="margin-top:12px">
+        GLOV = mediana CTR z GSC (wiersze z ≥50 wyświetleń) · „typowo" = orientacyjny rozkład rynkowy
+        <span class="b pew" style="margin-left:6px">prawdopodobne</span><br>
+        Od pozycji 6 w dół mediana CTR GLOV wynosi <b>0%</b> — połowa fraz nie zbiera ani jednego kliknięcia.
+      </div>
+    </div></div>
+  </div>
+
+  <div class="f crit">
+    <div class="f-h"><span class="b crit">Krytyczne</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Jedna strona zjada 24% widoczności i oddaje 0.83% kliknięć</span></div>
+    <div class="f-d">
+      Strony z największą ekspozycją, posortowane po wyświetleniach. Zwróć uwagę na kolumnę CTR —
+      to nie jest ranking sukcesu, to <b>ranking zmarnowanej ekspozycji</b>.
+    </div>
+    <table>
+      <thead><tr><th>Strona</th><th class="num">Wyświetl.</th><th class="num">Klik.</th><th class="num">CTR</th><th class="num">Poz.</th></tr></thead>
+      <tbody><tr><td style="font-family:var(--mono);font-size:11.5px">/products/pumeks-glov-z-nano-szkla-do-zrogowacialego</td>
+      <td class="num"><b>142 998</b></td><td class="num">1 184</td>
+      <td class="num"><b style="color:var(--red)">0.83%</b></td>
+      <td class="num">4.6</td></tr><tr><td style="font-family:var(--mono);font-size:11.5px">/en-eu</td>
+      <td class="num"><b>51 884</b></td><td class="num">653</td>
+      <td class="num"><b style="color:var(--amb)">1.26%</b></td>
+      <td class="num">5.3</td></tr><tr><td style="font-family:var(--mono);font-size:11.5px">/blogs/pl/makeup-removal-with-the-coconut-oil-pros-a</td>
+      <td class="num"><b>34 354</b></td><td class="num">115</td>
+      <td class="num"><b style="color:var(--red)">0.33%</b></td>
+      <td class="num">7.1</td></tr><tr><td style="font-family:var(--mono);font-size:11.5px">/blogs/pl/pielegnacja-wlosow-a-fazy-ksiezyca</td>
+      <td class="num"><b>19 654</b></td><td class="num">195</td>
+      <td class="num"><b style="color:var(--red)">0.99%</b></td>
+      <td class="num">4.6</td></tr><tr><td style="font-family:var(--mono);font-size:11.5px">/</td>
+      <td class="num"><b>17 693</b></td><td class="num">630</td>
+      <td class="num"><b style="color:var(--amb)">3.56%</b></td>
+      <td class="num">7.8</td></tr><tr><td style="font-family:var(--mono);font-size:11.5px">/products/depilator-z-nano-szkla-glov</td>
+      <td class="num"><b>14 769</b></td><td class="num">387</td>
+      <td class="num"><b style="color:var(--amb)">2.62%</b></td>
+      <td class="num">6.5</td></tr><tr><td style="font-family:var(--mono);font-size:11.5px">/en-eu/pages/about-us</td>
+      <td class="num"><b>13 774</b></td><td class="num">81</td>
+      <td class="num"><b style="color:var(--red)">0.59%</b></td>
+      <td class="num">5.2</td></tr><tr><td style="font-family:var(--mono);font-size:11.5px">/blogs/pl/naturalne-sposoby-na-rozjasnianie-wlosow</td>
+      <td class="num"><b>10 353</b></td><td class="num">35</td>
+      <td class="num"><b style="color:var(--red)">0.34%</b></td>
+      <td class="num">15.6</td></tr></tbody></table>
+    <div class="call r">
+      <div class="call-t">🎯 To jest prawdziwy problem GLOV</div>
+      Sklep <b>nie ma problemu z widocznością</b> — ma 589 743 wyświetleń i rośnie.
+      Ma problem z tym, że <b>ludzie, którym się pokazuje, nie są ludźmi, którzy chcą to kupić</b>
+      — albo tytuł nie mówi im, że to jest to, czego szukają. Cała robota techniczna nie ruszy tej liczby.
+      Ruszy ją <b>title + snippet + dopasowanie treści do intencji</b>.
+    </div>
+  </div>
+
+  <div class="f warn">
+    <div class="f-h"><span class="b warn">Odkrycie</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Najlepiej konwertujący content GLOV to instrukcja, jak odejść od GLOV</span></div>
+    <div class="f-d">
+      Frazy o anulowaniu subskrypcji i logowaniu mają CTR <b>35.8%</b> — <b>18× więcej
+      niż średnia domeny</b> (1.95%). To <b>976 kliknięć = 8.5% całego ruchu
+      organicznego</b> z zaledwie 0% wyświetleń.
+    </div>
+    <table>
+      <thead><tr><th>Zapytanie</th><th class="num">Klik.</th><th class="num">Wyświetl.</th><th class="num">CTR</th><th class="num">Poz.</th></tr></thead>
+      <tbody><tr><td><b>glov beauty cancel subscription</b></td><td class="num">242</td>
+      <td class="num">542</td>
+      <td class="num"><b style="color:var(--grn)">44.65%</b></td><td class="num">1.4</td></tr><tr><td><b>how to cancel glov beauty subscription online</b></td><td class="num">199</td>
+      <td class="num">462</td>
+      <td class="num"><b style="color:var(--grn)">43.07%</b></td><td class="num">1.3</td></tr><tr><td><b>glov beauty login</b></td><td class="num">127</td>
+      <td class="num">888</td>
+      <td class="num"><b style="color:var(--grn)">14.3%</b></td><td class="num">2.2</td></tr><tr><td><b>how to cancel glov beauty subscription</b></td><td class="num">123</td>
+      <td class="num">259</td>
+      <td class="num"><b style="color:var(--grn)">47.49%</b></td><td class="num">1.4</td></tr><tr><td><b>glov beauty subscription cancel</b></td><td class="num">86</td>
+      <td class="num">148</td>
+      <td class="num"><b style="color:var(--grn)">58.11%</b></td><td class="num">1.4</td></tr><tr><td><b>cancel glov beauty subscription</b></td><td class="num">84</td>
+      <td class="num">174</td>
+      <td class="num"><b style="color:var(--grn)">48.28%</b></td><td class="num">1.3</td></tr></tbody></table>
+    <div class="call a">
+      <div class="call-t">⚠️ Do wyjaśnienia z klientem — nie zgaduję</div>
+      Te kliknięcia są <b>realne i liczą się do statystyk</b>, ale to nie są ludzie chcący kupić.
+      Trzy możliwe wyjaśnienia i każde znaczy co innego: <b>(1)</b> GLOV ma subskrypcję z problemem retencji,
+      <b>(2)</b> „GLOV Beauty" to inny podmiot, a glov.co przechwytuje jego ruch,
+      <b>(3)</b> to pozostałość po wycofanej usłudze. <b>Nie mam danych, żeby rozstrzygnąć</b> —
+      i nie będę zgadywał. To pytanie do klienta, nie znalezisko audytu.
+    </div>
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Ustalić z klientem, czym jest „GLOV Beauty subscription”</b> i czy ten ruch ma jakąkolwiek wartość.</div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>Klient + Tomek</b> — 10 minut rozmowy</div></div>
+      <div class="fix-r"><div class="fix-l">Dlaczego</div><div class="fix-v">Bo 8.5% ruchu organicznego to zbyt dużo, żeby nie wiedzieć, co to jest. Jeśli to obcy ruch — zniekształca wszystkie statystyki CTR i trzeba go wyciąć z analiz.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="mod" id="m6">
+  <div class="mod-h"><span class="mod-n">MODUŁ 6</span><span class="mod-t">Mapowanie fraz — najbliższe wygrane</span>
+    <span class="mod-sc sc-warn">5/10</span></div>
+  <div class="mod-src">Źródło: GSC (pozycje 11–20, ≥30 wyświetleń) · 60 fraz w zasięgu</div>
+  <details class="scg"><summary>📊 ZASADY PUNKTACJI (skala 0–10) · GLOV = 5/10</summary><div class="scg-b"><div class="scg-row"><span class="scg-n">0</span><span class="scg-x">Strona rankuje na frazy bez wolumenu, zero intencji.</span></div><div class="scg-row"><span class="scg-n">1</span><span class="scg-x">Skupienie na jednym generyku.</span></div><div class="scg-row"><span class="scg-n">2</span><span class="scg-x">Brak rozróżnienia intencji zakup vs informacja.</span></div><div class="scg-row"><span class="scg-n">3</span><span class="scg-x">Frazy 11–20 nieznane, brak listy quick-win.</span></div><div class="scg-row"><span class="scg-n">4</span><span class="scg-x">Lista jest, ale bez wolumenu — nie wiadomo co priorytetem.</span></div><div class="scg-row hit"><span class="scg-n">5</span><span class="scg-x">Frazy 11–20 z wyświetleniami + wolumen, sortowane po dźwigni.</span></div><div class="scg-row"><span class="scg-n">6</span><span class="scg-x">+ dopasowany dominujący format SERP per fraza.</span></div><div class="scg-row"><span class="scg-n">7</span><span class="scg-x">Intencja transakcyjna wydzielona i priorytetyzowana.</span></div><div class="scg-row"><span class="scg-n">8</span><span class="scg-x">Każda fraza przypisana do konkretnego URL + akcja.</span></div><div class="scg-row"><span class="scg-n">9</span><span class="scg-x">Klastry tematyczne pod hub-and-spoke.</span></div><div class="scg-row"><span class="scg-n">10</span><span class="scg-x">Pełne pokrycie long-tail, zero zmarnowanego wolumenu.</span></div></div></details>
+  <details class="mth"><summary>🔬 METODOLOGIA — jak badamy ten moduł</summary><div class="mth-b">Izolujemy frazy na pozycjach <b>11–20</b> (strefa jednego ciosu), sortujemy po wyświetleniach (dźwignia), krzyżujemy z wolumenem, priorytetyzujemy intencję transakcyjną. Sprawdzamy, czy SERP frazy nie jest zdominowany przez AI Overview — wtedy awans nie przełoży się 1:1 na klik. <b>Akcja:</b> fraza jako H2 + gęsty akapit + linkowanie wewnętrzne. <b>Źródło:</b> GSC.</div></details>
+  <div class="meth"><div class="meth-t">Metodologia</div>
+    <p>Frazy na pozycjach 11–20 to druga strona Google — praktycznie zero kliknięć, ale wystarczy
+    jeden precyzyjny ruch, żeby weszły na pierwszą. Sortujemy po wyświetleniach: największa ekspozycja = największa dźwignia.</p>
+  </div>
+  <div class="f warn">
+    <div class="f-h"><span class="b warn">Szansa</span><span class="b pew">prawdopodobne</span>
+      <span class="f-t">60 fraz o krok od pierwszej strony</span></div>
+    <div class="f-d">Każda z tych fraz ma realną ekspozycję i prawie zero kliknięć — bo jest na drugiej stronie.</div>
+    <table>
+      <thead><tr><th>Fraza</th><th class="num">Poz.</th><th class="num">Wyświetl.</th><th class="num">Klik.</th><th>Ruch</th></tr></thead>
+      <tbody><tr><td><b>coconut oil makeup remover</b></td><td class="num">11.0</td>
+      <td class="num"><b>5 242</b></td><td class="num">2</td>
+      <td style="font-size:12px">frazę do <code>&lt;h2&gt;</code> + akapit</td></tr><tr><td><b>satynowy czepek do spania</b></td><td class="num">11.5</td>
+      <td class="num"><b>2 085</b></td><td class="num">6</td>
+      <td style="font-size:12px">frazę do <code>&lt;h2&gt;</code> + akapit</td></tr><tr><td><b>czepek satynowy do spania</b></td><td class="num">12.3</td>
+      <td class="num"><b>1 655</b></td><td class="num">5</td>
+      <td style="font-size:12px">frazę do <code>&lt;h2&gt;</code> + akapit</td></tr><tr><td><b>rozjaśnianie włosów</b></td><td class="num">20.4</td>
+      <td class="num"><b>1 636</b></td><td class="num">0</td>
+      <td style="font-size:12px">frazę do <code>&lt;h2&gt;</code> + akapit</td></tr><tr><td><b>czepek do spania</b></td><td class="num">11.9</td>
+      <td class="num"><b>730</b></td><td class="num">2</td>
+      <td style="font-size:12px">frazę do <code>&lt;h2&gt;</code> + akapit</td></tr><tr><td><b>blowout</b></td><td class="num">10.6</td>
+      <td class="num"><b>703</b></td><td class="num">1</td>
+      <td style="font-size:12px">frazę do <code>&lt;h2&gt;</code> + akapit</td></tr><tr><td><b>gąbka do makijażu</b></td><td class="num">13.9</td>
+      <td class="num"><b>688</b></td><td class="num">0</td>
+      <td style="font-size:12px">frazę do <code>&lt;h2&gt;</code> + akapit</td></tr><tr><td><b>hair turban</b></td><td class="num">14.6</td>
+      <td class="num"><b>651</b></td><td class="num">0</td>
+      <td style="font-size:12px">frazę do <code>&lt;h2&gt;</code> + akapit</td></tr><tr><td><b>turban do włosów</b></td><td class="num">13.4</td>
+      <td class="num"><b>606</b></td><td class="num">4</td>
+      <td style="font-size:12px">frazę do <code>&lt;h2&gt;</code> + akapit</td></tr><tr><td><b>schlafmaske</b></td><td class="num">13.9</td>
+      <td class="num"><b>532</b></td><td class="num">1</td>
+      <td style="font-size:12px">frazę do <code>&lt;h2&gt;</code> + akapit</td></tr></tbody></table>
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Dla top 5 fraz: dodać frazę dosłownie do <code>&lt;h2&gt;</code> na właściwej stronie + 300–500 znaków treści.</b></div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>Copy / SEO</b></div></div>
+      <div class="fix-r"><div class="fix-l">Gdzie</div><div class="fix-v">Opisy kolekcji i produktów w Shopify Admin</div></div>
+      <div class="fix-r"><div class="fix-l">Wymaga</div><div class="fix-v">Sprawdzenia, czy dla frazy nie dominuje AI Overview — wtedy awans 11→5 nie przełoży się 1:1 na kliknięcia.</div></div>
+      <div class="fix-r"><div class="fix-l">Czas</div><div class="fix-v"><b>4 godziny</b> na 5 fraz</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="mod" id="m7">
+  <div class="mod-h"><span class="mod-n">MODUŁ 7</span><span class="mod-t">Kanibalizacja treści</span>
+    <span class="mod-sc sc-warn">4/10</span></div>
+  <div class="mod-src">Źródło: GSC (query+page) · próg: różnica pozycji &lt;3 ORAZ stosunek wyświetleń &gt;0,5 · w obrębie jednego rynku</div>
+  <details class="scg"><summary>📊 ZASADY PUNKTACJI (skala 0–10) · GLOV = 4/10</summary><div class="scg-b"><div class="scg-row"><span class="scg-n">0</span><span class="scg-x">Blog i produkt walczą o to samo H1 masowo.</span></div><div class="scg-row"><span class="scg-n">1</span><span class="scg-x">Wiele URL na tę samą intencję, pozycje skaczą.</span></div><div class="scg-row"><span class="scg-n">2</span><span class="scg-x">Brak progu — każde współdzielone słowo liczone jako konflikt (szum).</span></div><div class="scg-row"><span class="scg-n">3</span><span class="scg-x">Próg jest, ale bez filtra rynku (en-eu vs de-eu jako rzekomy konflikt).</span></div><div class="scg-row hit"><span class="scg-n">4</span><span class="scg-x">Próg ilościowy (poz.&lt;3 i imp&gt;0,5), top2 wg wyświetleń, per rynek — realne konflikty wyizolowane.</span></div><div class="scg-row"><span class="scg-n">5</span><span class="scg-x">Sporadyczne konflikty, żaden nie dotyka kluczowego przychodu.</span></div><div class="scg-row"><span class="scg-n">6</span><span class="scg-x">Intencje komercyjne oddzielone od informacyjnych.</span></div><div class="scg-row"><span class="scg-n">7</span><span class="scg-x">Silosowanie + canonical rozwiązują duplikaty.</span></div><div class="scg-row"><span class="scg-n">8</span><span class="scg-x">Rygorystyczny dobór canonical na parametrach.</span></div><div class="scg-row"><span class="scg-n">9</span><span class="scg-x">Blog wyłącznie napędza kategorię (anchor), zero rywalizacji.</span></div><div class="scg-row"><span class="scg-n">10</span><span class="scg-x">Zero kanibalizacji, każdy URL ma unikalny mikro-cel.</span></div></div></details>
+  <details class="mth"><summary>🔬 METODOLOGIA — jak badamy ten moduł</summary><div class="mth-b">Z GSC bierzemy pary {fraza, URL}. Konflikt liczymy <b>tylko z top2 wg wyświetleń, w obrębie jednego rynku</b> (en-eu vs de-eu to nie kanibalizacja) i tylko gdy <b>różnica pozycji &lt;3 ORAZ stosunek wyświetleń &gt;0,5</b> — obie strony muszą realnie walczyć o ruch, reszta to szum. <b>Źródło:</b> GSC (query+page). Próg to heurystyka — kalibrować per witryna.</div></details>
+  <div class="meth"><div class="meth-t">Metodologia — i dlaczego liczba jest inna niż w poprzednim audycie</div>
+    <p>Kanibalizacja to nie „dwa URL-e na jedną frazę" — to dwa URL-e, które <b>realnie walczą</b>:
+    zbliżone pozycje i porównywalna ekspozycja. Stąd twardy próg zamiast oceny na oko.
+    <b>Konflikt liczymy tylko w obrębie jednego rynku</b> — polska i niemiecka wersja tej samej strony
+    nie kanibalizują się, to zupełnie inny problem (hreflang).</p>
+  </div>
+  <div class="f warn">
+    <div class="f-h"><span class="b warn">Ważne</span><span class="b pew">prawdopodobne</span>
+      <span class="f-t">60 realnych konfliktów — nie 253</span></div>
+    <div class="f-d">
+      Fraz z wieloma URL-ami jest <b>253</b> z 1418.
+      Ale po odfiltrowaniu szumu (jeden URL dominuje) i różnych rynków zostaje
+      <b>60</b> prawdziwych konfliktów.
+      Wzorzec jest powtarzalny: <b>kolekcja bije się z produktem</b>.
+    </div>
+    <table>
+      <thead><tr><th>Fraza</th><th class="num">Wyświetl.<br>w grze</th><th>Konkurujące strony</th></tr></thead>
+      <tbody><tr><td><b>szczotka glov</b></td><td class="num">928</td><td><span style="font-family:var(--mono);font-size:11px">poz 3.1 · 469 wyśw. → <b>/products/biodegradowalna-szczotka-do-wlos</b></span><br><span style="font-family:var(--mono);font-size:11px">poz 1.0 · 459 wyśw. → <b>/collections/szczotki-do-wlosow</b></span></td></tr><tr><td><b>co to jest nano szkło</b></td><td class="num">505</td><td><span style="font-family:var(--mono);font-size:11px">poz 4.0 · 261 wyśw. → <b>/products/pumeks-glov-z-nano-szkla-do-zrog</b></span><br><span style="font-family:var(--mono);font-size:11px">poz 3.5 · 244 wyśw. → <b>/collections/nano-glass-collection</b></span></td></tr><tr><td><b>glov nano glass</b></td><td class="num">409</td><td><span style="font-family:var(--mono);font-size:11px">poz 2.6 · 208 wyśw. → <b>/collections/nano-glass-collection</b></span><br><span style="font-family:var(--mono);font-size:11px">poz 2.5 · 201 wyśw. → <b>/products/pumeks-glov-z-nano-szkla-do-zrog</b></span></td></tr><tr><td><b>glov beauty uk</b></td><td class="num">383</td><td><span style="font-family:var(--mono);font-size:11px">poz 8.1 · 208 wyśw. → <b>/en-eu</b></span><br><span style="font-family:var(--mono);font-size:11px">poz 6.3 · 175 wyśw. → <b>/en-gb</b></span></td></tr><tr><td><b>nano szkło co to</b></td><td class="num">340</td><td><span style="font-family:var(--mono);font-size:11px">poz 4.2 · 217 wyśw. → <b>/collections/nano-glass-collection</b></span><br><span style="font-family:var(--mono);font-size:11px">poz 2.4 · 123 wyśw. → <b>/products/pumeks-glov-z-nano-szkla-do-zrog</b></span></td></tr><tr><td><b>glov szczotka do włosów</b></td><td class="num">328</td><td><span style="font-family:var(--mono);font-size:11px">poz 1.0 · 164 wyśw. → <b>/collections/szczotki-do-wlosow</b></span><br><span style="font-family:var(--mono);font-size:11px">poz 2.4 · 164 wyśw. → <b>/products/biodegradowalna-szczotka-do-wlos</b></span></td></tr></tbody></table>
+    <div class="call i">
+      <div class="call-t">💡 Wzorzec: informacyjne pytanie trafia na dwie komercyjne strony</div>
+      Fraza <b>„co to jest nano szkło"</b> to pytanie, nie zamiar zakupu. A odpowiadają na nie
+      <b>kolekcja i karta produktu</b> — obie sprzedażowe, obie na podobnej pozycji, żadna nie wygrywa.
+      Ktoś, kto pyta „co to jest", nie chce koszyka — chce odpowiedzi. To jest zarazem
+      <b>przyczyna niskiego CTR</b> z Modułu 5.
+    </div>
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Rozdzielić intencje: pytania → jedna strona edukacyjna, zakup → karta produktu.</b> Dla „nano szkło" wyznaczyć kolekcję jako stronę-odpowiedź i podlinkować z niej produkt.</div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>SEO / Copy</b></div></div>
+      <div class="fix-r"><div class="fix-l">Gdzie</div><div class="fix-v">Opis kolekcji <code>/collections/nano-glass-collection</code> + linkowanie wewnętrzne</div></div>
+      <div class="fix-r"><div class="fix-l">Czas</div><div class="fix-v"><b>3 godziny</b> na 6 konfliktów</div></div>
+    </div>
+    <details class="repro"><summary>REPRO</summary>
+      <div class="repro-b"><code>python3 scratchpad/gsc_audit.py</code> → klucz <code>m7_cannibalization</code><br>
+      Próg: <code>top2 wg impresji, pos_diff<3 AND imp_ratio>0.5, w obrebie 1 rynku</code><br>
+      Wymiary GSC: <code>["query","page"]</code>, filtr <code>impressions&gt;=20</code></div>
+    </details>
+  </div>
+</section>
+
+<section class="mod" id="m3">
+  <div class="mod-h"><span class="mod-n">MODUŁ 3</span><span class="mod-t">Hreflang / wielorynkowość</span>
+    <span class="mod-sc sc-bad">4/10</span></div>
+  <div class="mod-src">Źródło: crawl DOM (46 stron) + GSC (mieszanie rynków)</div>
+  <details class="scg"><summary>📊 ZASADY PUNKTACJI (skala 0–10) · GLOV = 4/10</summary><div class="scg-b"><div class="scg-row"><span class="scg-n">0</span><span class="scg-x">Tagi hreflang zepsute, błędy return-link masowo.</span></div><div class="scg-row"><span class="scg-n">1</span><span class="scg-x">Brak x-default, kody języków błędne.</span></div><div class="scg-row"><span class="scg-n">2</span><span class="scg-x">Wersje rynkowe w ogóle się nie widzą (brak return-linków).</span></div><div class="scg-row"><span class="scg-n">3</span><span class="scg-x">Return-linki częściowe, x-default brak — Google ignoruje deklarację.</span></div><div class="scg-row hit"><span class="scg-n">4</span><span class="scg-x">Hreflang jest, ale Google miesza rynki na części fraz (błąd return-link).</span></div><div class="scg-row"><span class="scg-n">5</span><span class="scg-x">Return-linki poprawne, x-default obecny, sporadyczne mieszanie.</span></div><div class="scg-row"><span class="scg-n">6</span><span class="scg-x">Mapa rynków spójna, mieszanie tylko na frazach brandowych.</span></div><div class="scg-row"><span class="scg-n">7</span><span class="scg-x">Architektura językowa działa, drobne spowolnienia renderu.</span></div><div class="scg-row"><span class="scg-n">8</span><span class="scg-x">Pełne linkowanie zwrotne, x-default poprawny, zero konfliktów rynkowych.</span></div><div class="scg-row"><span class="scg-n">9</span><span class="scg-x">+ canonical i sitemapy per rynek zsynchronizowane.</span></div><div class="scg-row"><span class="scg-n">10</span><span class="scg-x">Wzorcowy hreflang, zero mieszania rynków w SERP.</span></div></div></details>
+  <details class="mth"><summary>🔬 METODOLOGIA — jak badamy ten moduł</summary><div class="mth-b">Sprawdzamy, czy każdy tag hreflang ma fizyczny <b>return-link</b> ze strony docelowej i czy istnieje <code>x-default</code>. Sygnał mieszania rynków bierzemy z GSC (te same frazy prowadzące do wielu wersji językowych) — to inny problem niż kanibalizacja (M7). <b>Źródło:</b> crawl DOM + GSC (query+page, grupowane po prefiksie rynku).</div></details>
+  <div class="meth"><div class="meth-t">Metodologia</div>
+    <p>Sprawdzamy: czy każda wersja językowa ma link zwrotny, czy jest <code>x-default</code>,
+    i — najważniejsze — czy Google <b>faktycznie pokazuje właściwą wersję</b> właściwym ludziom.
+    Poprawny kod nie znaczy, że działa.</p>
+  </div>
+  <div class="f crit">
+    <div class="f-h"><span class="b crit">Krytyczne</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Kod jest poprawny, a mimo to Google miesza rynki</span></div>
+    <div class="f-d">
+      Formalnie bez zarzutu: <b>46/46</b> stron ma hreflang,
+      <b>wszystkie</b> mają <code>x-default</code>. Ale każda strona deklaruje
+      <b>203 wersji językowych</b> — i Google, mając 203 kandydatów, wybiera źle.
+      Na <b>20 fraz</b> pokazuje użytkownikom niewłaściwy rynek.
+    </div>
+    <table>
+      <thead><tr><th>Fraza</th><th class="num">Wyświetl.</th><th class="num">URL-i</th><th>Rynki, które Google miesza</th></tr></thead>
+      <tbody><tr><td><b>glov</b></td><td class="num">157 828</td><td class="num"><b style="color:var(--red)">168</b></td><td style="font-size:11.5px"><code>de-de</code> · <code>de-eu</code> · <code>de-global</code> · <code>en-eu</code> · <code>en-gb</code> · <code>en-global</code></td></tr><tr><td><b>glov beauty</b></td><td class="num">3 664</td><td class="num"><b style="color:var(--red)">21</b></td><td style="font-size:11.5px"><code>de-eu</code> · <code>en-eu</code> · <code>en-gb</code> · <code>pl</code> · <code>pl-global</code></td></tr><tr><td><b>szczotka glov</b></td><td class="num">1 926</td><td class="num"><b style="color:var(--red)">16</b></td><td style="font-size:11.5px"><code>de-global</code> · <code>en-eu</code> · <code>fr-global</code> · <code>pl</code></td></tr><tr><td><b>pookie</b></td><td class="num">1 675</td><td class="num"><b style="color:var(--red)">2</b></td><td style="font-size:11.5px"><code>de-global</code> · <code>pl</code></td></tr><tr><td><b>glov kod promocyjny</b></td><td class="num">1 474</td><td class="num"><b style="color:var(--red)">22</b></td><td style="font-size:11.5px"><code>en-eu</code> · <code>pl</code></td></tr></tbody></table>
+    <div class="call r">
+      <div class="call-t">🔴 Fraza „glov" — 157 828 wyświetleń, 168 konkurujących URL-i, 11 rynków</div>
+      To <b>własna marka</b> sklepu — najcenniejsza fraza, jaką GLOV ma.
+      Google dostaje 203 deklaracji językowych i 168 kandydatów,
+      po czym pokazuje przypadkową wersję. Efekt: średnia pozycja <b>6.0</b>
+      i CTR <b>1.94%</b> na zapytanie o własną nazwę.
+    </div>
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Ograniczyć liczbę deklarowanych wersji do rynków realnie obsługiwanych</b> i zweryfikować mapowanie język→region.</div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>Dev + SEO</b></div></div>
+      <div class="fix-r"><div class="fix-l">Gdzie</div><div class="fix-v"><code>layout/theme.liquid</code> (blok hreflang) lub aplikacja wielojęzyczna</div></div>
+      <div class="fix-r"><div class="fix-l">Wymaga</div><div class="fix-v">Decyzji biznesowej: które z 6 rynków są realne. 203 wersji na stronę to ok. 30 KB nadmiarowego kodu w każdym <code>&lt;head&gt;</code> — i 203 okazji, żeby Google wybrał źle.</div></div>
+      <div class="fix-r"><div class="fix-l">Czas</div><div class="fix-v"><b>2 godziny</b> po decyzji biznesowej</div></div>
+    </div>
+  </div>
+
+  <div class="f info">
+    <div class="f-h"><span class="b info">Do sprawdzenia</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Warianty en-XX bloga wskazują ścieżkę z „pl"</span></div>
+    <div class="f-d">Na <code>/blogs/pl</code> jest 203 deklaracji hreflang, z czego <b>198 wariantów <code>en-XX</code></b> wskazuje na <code>/en-global/blogs/pl</code> — ścieżkę zawierającą <code>pl</code> mimo wersji angielskiej. Formalnie hreflang jest poprawny (x-default obecny, self-reference jest), ale warto zweryfikować, czy treść pod tym URL jest faktycznie po angielsku. Jeśli to polski tekst renderowany w EN sklepie — mamy duplikat językowy.</div>
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Otworzyć kilka <code>/en-global/blogs/pl</code> i sprawdzić język treści</b> + raport „International Targeting" w GSC.</div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>SEO</b></div></div>
+      <div class="fix-r"><div class="fix-l">Gdzie</div><div class="fix-v">weryfikacja ręczna + GSC</div></div>
+      <div class="fix-r"><div class="fix-l">Czas</div><div class="fix-v"><b>30 minut</b></div></div>
+    </div>
+    <details class="repro"><summary>REPRO</summary><div class="repro-b">curl -A Chrome https://glov.co/blogs/pl → 203 alternates, 198× en-XX → /en-global/blogs/pl (2026-07-21)</div></details>
+  </div>
+</section>
+
+<h2 class="sec">Gotowość na AI — tu GLOV wygrywa</h2>
+
+<section class="mod" id="m10">
+  <div class="mod-h"><span class="mod-n">MODUŁ 10</span><span class="mod-t">Infrastruktura pod AI search</span>
+    <span class="mod-sc sc-good">8/10</span></div>
+  <div class="mod-src">Źródło: realny test curl per user-agent (2026-07-17) + crawl JSON-LD · nie odczyt robots.txt</div>
+  <details class="scg"><summary>📊 ZASADY PUNKTACJI (skala 0–10) · GLOV = 8/10</summary><div class="scg-b"><div class="scg-row"><span class="scg-n">0</span><span class="scg-x">Boty AI zablokowane w robots/WAF, brak schema.</span></div><div class="scg-row"><span class="scg-n">1</span><span class="scg-x">Część botów przepuszczona, reszta 403, nikt nie testował curlem.</span></div><div class="scg-row"><span class="scg-n">2</span><span class="scg-x">robots pozwala, ale WAF blokuje — i nikt tego nie rozbił.</span></div><div class="scg-row"><span class="scg-n">3</span><span class="scg-x">Boty wpuszczone, ale fakty tylko w JSON-LD, nie w renderowanym tekście.</span></div><div class="scg-row"><span class="scg-n">4</span><span class="scg-x">Podstawowa schema Product, fakt w tekście częściowo.</span></div><div class="scg-row"><span class="scg-n">5</span><span class="scg-x">Wszystkie boty AI = 200 (test curl), schema kompletna.</span></div><div class="scg-row"><span class="scg-n">6</span><span class="scg-x">Fakt (cena/skład) w renderowanym HTML + JSON-LD jako backup.</span></div><div class="scg-row"><span class="scg-n">7</span><span class="scg-x">+ dateModified na kluczowych stronach, świeżość pilnowana.</span></div><div class="scg-row hit"><span class="scg-n">8</span><span class="scg-x">AI-ready: 7/7 botów 200, Storefront MCP aktywny, obecność w AI Overviews.</span></div><div class="scg-row"><span class="scg-n">9</span><span class="scg-x">Cytowany przez AI w niszy, dane produktowe kompletne pod UCP.</span></div><div class="scg-row"><span class="scg-n">10</span><span class="scg-x">Marka = domyślne źródło modeli AI w kategorii.</span></div></div></details>
+  <details class="mth"><summary>🔬 METODOLOGIA — jak badamy ten moduł</summary><div class="mth-b">Wyłącznie infrastruktura (merytoryka → Category Standards). (1) <b>Test dostępu botów realnym curlem per user-agent</b> — nie odczyt robots.txt, bo WAF blokuje mimo Allow; 7 botów osobno; Google-Extended ≠ blokada AI Overviews (AIO idzie z indeksu Googlebota). (2) <b>Fakt w renderowanym tekście</b> — LLM czytają JSON-LD jak zwykły tekst i nie walidują go (test „duck t-shirt”), więc cena/skład muszą być w HTML, JSON-LD to backup. (3) Content freshness — dateModified, bez progu i bez „penalty” (taka kara nie istnieje). <b>llms.txt = folklor</b>, nie punktowany. <b>Źródło:</b> curl per UA + crawl JSON-LD.</div></details>
+  <div class="meth"><div class="meth-t">Metodologia — dlaczego test, a nie lektura robots.txt</div>
+    <p>robots.txt może przepuszczać bota, a zapora i tak go blokuje. Jedyny sposób, żeby wiedzieć —
+    <b>uderzyć w serwer jako ten bot</b> i zobaczyć kod odpowiedzi. Każdy dostawca ma osobne boty do trenowania,
+    wyszukiwania i pobierania na żądanie — zgoda dla jednego nie jest zgodą dla pozostałych.</p>
+  </div>
+  <div class="f ok">
+    <div class="f-h"><span class="b ok">Atut</span><span class="b pew">udowodnione</span>
+      <span class="f-t">Wszystkie 7 botów AI wchodzi bez przeszkód</span></div>
+    <div class="f-d">Realny test HTTP wykonany 2026-07-17:</div>
+    <table>
+      <thead><tr><th>Bot</th><th>Dostawca</th><th>Rola</th><th class="num">Odpowiedź</th></tr></thead>
+      <tbody><tr><td><code>GPTBot</code></td><td>OpenAI</td><td style="font-size:12.5px">trenowanie modeli</td><td class="num"><span class="b ok">200 OK</span></td></tr><tr><td><code>OAI-SearchBot</code></td><td>OpenAI</td><td style="font-size:12.5px">wyszukiwarka ChatGPT</td><td class="num"><span class="b ok">200 OK</span></td></tr><tr><td><code>ClaudeBot</code></td><td>Anthropic</td><td style="font-size:12.5px">pobieranie na żądanie</td><td class="num"><span class="b ok">200 OK</span></td></tr><tr><td><code>Claude-User</code></td><td>Anthropic</td><td style="font-size:12.5px">działanie użytkownika</td><td class="num"><span class="b ok">200 OK</span></td></tr><tr><td><code>PerplexityBot</code></td><td>Perplexity</td><td style="font-size:12.5px">indeks wyszukiwarki</td><td class="num"><span class="b ok">200 OK</span></td></tr><tr><td><code>Perplexity-User</code></td><td>Perplexity</td><td style="font-size:12.5px">pobieranie na żądanie</td><td class="num"><span class="b ok">200 OK</span></td></tr><tr><td><code>Google-Extended</code></td><td>Google</td><td style="font-size:12.5px">trenowanie Gemini</td><td class="num"><span class="b ok">200 OK</span></td></tr></tbody></table>
+    <div class="call g">
+      <div class="call-t">✅ GLOV jest dojrzalszy pod AI niż większość rynku</div>
+      Wszystkie boty przechodzą, <code>llms.txt</code> istnieje (HTTP 200), a Shopify daje
+      <b>Storefront MCP i UCP out-of-the-box</b> — sklep jest gotowy na zakupy przez agentów AI
+      bez żadnej dodatkowej pracy. <b>To jest przewaga, nie luka.</b>
+      Audyt z 12.07 wystawił temu obszarowi <b>2/10</b> i zalecił „wdrożyć llms.txt" (istnieje)
+      oraz „odblokować boty AI" (są odblokowane).
+    </div>
+  </div>
+
+  <div class="f info">
+    <div class="f-h"><span class="b info">Uczciwie</span><span class="b pew">folklor</span>
+      <span class="f-t">llms.txt nie jest zasługą — i nie punktujemy go</span></div>
+    <div class="f-d">
+      GLOV ma <code>llms.txt</code> i to <b>nie ma znaczenia</b>: Google oficjalnie nie używa tego pliku,
+      a pomiary ruchu botów pokazują, że sięga po niego <b>0,1% zapytań</b>.
+      Zostawiamy, bo nic nie kosztuje. <b>Nie liczymy jako atutu, nie liczylibyśmy braku jako wady.</b>
+      Poprzedni audyt (16.06) chwalił za to GLOV — to była nadinterpretacja.
+    </div>
+  </div>
+
+  <div class="f ok">
+    <div class="f-h"><span class="b ok">Zdrowe</span><span class="f-t">Dane strukturalne kompletne</span></div>
+    <div class="f-d">
+      Pokrycie JSON-LD na 46 stronach z ruchem:
+      <code>Organization</code> 46× · <code>Product</code> 36× · <code>BreadcrumbList</code> 22× · <code>CollectionPage</code> 17× · <code>Article</code> 12×.
+    </div>
+    <div class="call i">
+      <div class="call-t">🧠 Jak modele AI naprawdę czytają stronę</div>
+      Wbrew temu, co pisze większość poradników: <b>modele nie parsują JSON-LD jako danych strukturalnych</b> —
+      czytają go jak zwykły tekst i nie sprawdzają poprawności (dowiedziono to, podsuwając im zmyślony schemat
+      — uznały go za fakt). Wniosek praktyczny: <b>cena, skład i parametry muszą być w widocznej treści strony</b>.
+      JSON-LD to kopia zapasowa, nie osobny kanał „dla AI".
+    </div>
+  </div>
+</section>
+
+<h2 class="sec">Sufit — dlaczego reszta i tak nie wystarczy</h2>
+
+<section class="mod" id="m8">
+  <div class="mod-h"><span class="mod-n">MODUŁ 8</span><span class="mod-t">Konkurencja i autorytet domeny</span>
+    <span class="mod-sc sc-bad">2/10</span></div>
+  <div class="mod-src">⚠️ Źródło: <code>_seo_audit_data/modul6789.json</code> z <b>16.06.2026</b> — dane sprzed miesiąca, nieodświeżone w tym audycie</div>
+  <details class="scg"><summary>📊 ZASADY PUNKTACJI (skala 0–10) · GLOV = 2/10</summary><div class="scg-b"><div class="scg-row"><span class="scg-n">0</span><span class="scg-x">Kopia opisów producenta, zero linków, domena-widmo.</span></div><div class="scg-row"><span class="scg-n">1</span><span class="scg-x">Nasycenie frazą gorsze niż TOP20, brak profilu linków.</span></div><div class="scg-row hit"><span class="scg-n">2</span><span class="scg-x">Widoczność wielokrotnie niższa od lidera, domain rank gorszy niż prawie wszyscy.</span></div><div class="scg-row"><span class="scg-n">3</span><span class="scg-x">Konkurencja odpowiada na 5 pytań tematycznych, my na 1.</span></div><div class="scg-row"><span class="scg-n">4</span><span class="scg-x">Podstawowy benchmark, profil linków zmapowany.</span></div><div class="scg-row"><span class="scg-n">5</span><span class="scg-x">Średnia rynkowa, brak wyróżnika, gap-analysis zrobiona.</span></div><div class="scg-row"><span class="scg-n">6</span><span class="scg-x">Nasycenie wyżej niż TOP5, pierwsze zdobyte linki tematyczne.</span></div><div class="scg-row"><span class="scg-n">7</span><span class="scg-x">Klastrowanie wiedzy lepsze niż lider w niszy.</span></div><div class="scg-row"><span class="scg-n">8</span><span class="scg-x">Unikalne dane i tabele, których konkurencja nie ma.</span></div><div class="scg-row"><span class="scg-n">9</span><span class="scg-x">Silny profil linków, domain rank w czołówce niszy.</span></div><div class="scg-row"><span class="scg-n">10</span><span class="scg-x">Wyznaczamy trend — konkurencja linkuje i kopiuje od nas.</span></div></div></details>
+  <details class="mth"><summary>🔬 METODOLOGIA — jak badamy ten moduł</summary><div class="mth-b">Dwie osie: (a) reverse-engineering struktury — ile sekcji tematycznych mają rywale z TOP10 vs my (bez wchodzenia w treść — to Category Standards); (b) <b>autorytet domeny</b> — referring domains, domain rank, widoczność vs lider. Badanie na 129K domen: siła domeny bije świeżość treści jako predyktor cytowań. To zwykle prawdziwy sufit witryny. <b>Źródło:</b> <code>seo-backlinks</code> (Common Crawl — darmowe) + DataForSEO SERP. <b>Uwaga:</b> w tym przebiegu dane z 16.06 — do odświeżenia.</div></details>
+  <div class="meth"><div class="meth-t">Dlaczego autorytet jest osobnym modułem</div>
+    <p>Badania nad cytowalnością w AI pokazują, że <b>liczba domen linkujących i zaufanie do domeny biją
+    świeżość treści i optymalizację on-page</b>. Autorytet jest sufitem — można mieć idealną technikę
+    i nie przebić się, bo domena jest za słaba. Metodologia bez tego modułu leczy objawy.</p>
+  </div>
+  <div class="f crit">
+    <div class="f-h"><span class="b crit">Sufit</span><span class="b pew">prawdopodobne</span>
+      <span class="f-t">Lider kategorii jest 19× bardziej widoczny</span></div>
+    <div class="f-d">
+      Widoczność GLOV: <b>2 242</b>. Lider: <b>43 678</b>.
+      Domain rank GLOV <b>65 956</b> —
+      gorszy niż prawie wszyscy konkurenci w kategorii.
+    </div>
+    <div class="viz"><div class="viz-h">📊 Widoczność w kategorii</div><div class="viz-b"><div class="bars"><div class="bar-r"><div class="bar-lb"><b style="color:var(--red)">glov.co</b></div>
+      <div class="bar-tr"><div class="bar-f glov" style="width:6%">2 242</div></div></div><div class="bar-r"><div class="bar-lb">rytmnatury.pl</div>
+          <div class="bar-tr"><div class="bar-f bench" style="width:100.0%">43 678</div></div></div><div class="bar-r"><div class="bar-lb">lullalove.com</div>
+          <div class="bar-tr"><div class="bar-f n" style="width:80.34250652502404%">35 092</div></div></div><div class="bar-r"><div class="bar-lb">almania.pl</div>
+          <div class="bar-tr"><div class="bar-f n" style="width:64.38481615458583%">28 122</div></div></div><div class="bar-r"><div class="bar-lb">jogapiekna.com</div>
+          <div class="bar-tr"><div class="bar-f n" style="width:50.558633637071296%">22 083</div></div></div><div class="bar-r"><div class="bar-lb">miyacosmetics.com</div>
+          <div class="bar-tr"><div class="bar-f n" style="width:40.0728055313888%">17 503</div></div></div><div class="bar-r"><div class="bar-lb">keratinmoment.pl</div>
+          <div class="bar-tr"><div class="bar-f n" style="width:36.3913182838042%">15 895</div></div></div></div></div></div>
+    <div class="call a">
+      <div class="call-t">⚠️ Uczciwie o tym module</div>
+      Te dane mają <b>miesiąc</b> i nie odświeżyłem ich w tym audycie — dlatego moduł jest oznaczony jako
+      <b>STARE DANE</b>. Kierunek jest pewny (różnica 20× nie znika w miesiąc), ale konkretne liczby
+      wymagają ponownego pomiaru przed użyciem w rozmowie z klientem.
+    </div>
+    <div class="fix">
+      <div class="fix-r"><div class="fix-l">Zadanie</div><div class="fix-v"><b>Odświeżyć profil linków i domain rank</b> (<code>seo-backlinks</code> — Common Crawl + Moz, darmowe), potem zbudować strategię pozyskiwania linków.</div></div>
+      <div class="fix-r"><div class="fix-l">Kto robi</div><div class="fix-v"><b>SEO / Tomek</b></div></div>
+      <div class="fix-r"><div class="fix-l">Dlaczego</div><div class="fix-v">Bo to jedyny obszar, w którym GLOV odstaje <b>rzędem wielkości</b>, a nie o kilka procent. Wszystkie pozostałe naprawy razem nie przebiją tej różnicy.</div></div>
+    </div>
+  </div>
+</section>
+
+<h2 class="sec">Co robimy — w tej kolejności</h2>
+
+<section class="mod" id="matryca">
+  <div class="mod-h"><span class="mod-n">MODUŁ 12</span><span class="mod-t">Matryca wdrożeniowa</span></div>
+  <div class="mod-src">Kolejność: najpierw to, co blokuje kliknięcia · potem technika · na końcu autorytet</div>
+
+  <div class="call i">
+    <div class="call-t">🧭 Zasada priorytetu</div>
+    GLOV <b>nie potrzebuje więcej widoczności</b> — ma 589 743 wyświetleń i rośnie.
+    Potrzebuje, żeby ta widoczność zamieniała się w kliknięcia. Dlatego na górze są rzeczy,
+    które ruszą <b>CTR 1.95%</b>, a nie te, które wyglądają najbardziej technicznie.
+  </div>
+
+  <table>
+    <thead><tr><th>Zadanie</th><th>Moduł</th><th>Gdzie</th><th>Kto</th><th class="num">Czas</th><th>Priorytet</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Skrócić sufiks title</b> — odzyskać ~53 znaków na 100% stron</td>
+        <td><span class="tag p0">M2</span></td><td><code>layout/theme.liquid</code></td><td>Dev</td>
+        <td class="num">20 min</td><td><span class="tag p0">P0</span></td>
+      </tr>
+      <tr>
+        <td><b>Naprawić skakanie layoutu na karcie produktu</b> — CLS 0.66 → &lt;0.1 na stronie z 24% wyświetleń</td>
+        <td><span class="tag p0">M4</span></td><td><code>sections/product-template.liquid</code></td><td>Dev</td>
+        <td class="num">3–4 h</td><td><span class="tag p0">P0</span></td>
+      </tr>
+      <tr>
+        <td><b>Wyjaśnić z klientem „GLOV Beauty subscription"</b> — 8.5% ruchu niewiadomego pochodzenia</td>
+        <td><span class="tag p0">M5</span></td><td>rozmowa</td><td>Tomek</td>
+        <td class="num">10 min</td><td><span class="tag p0">P0</span></td>
+      </tr>
+      <tr>
+        <td><b>Uzupełnić meta description</b> — 13 stron z ruchem bez opisu</td>
+        <td><span class="tag p1">M2</span></td><td>Bulk Editor</td><td>Copy</td>
+        <td class="num">2 h</td><td><span class="tag p1">P1</span></td>
+      </tr>
+      <tr>
+        <td><b>Ograniczyć hreflang</b> z 203 wersji do realnych rynków</td>
+        <td><span class="tag p1">M3</span></td><td><code>layout/theme.liquid</code></td><td>Dev + biznes</td>
+        <td class="num">2 h</td><td><span class="tag p1">P1</span></td>
+      </tr>
+      <tr>
+        <td><b>Rozdzielić intencje</b> — pytania na kolekcję, zakup na produkt (6 konfliktów)</td>
+        <td><span class="tag p1">M7</span></td><td>opisy kolekcji</td><td>SEO/Copy</td>
+        <td class="num">3 h</td><td><span class="tag p1">P1</span></td>
+      </tr>
+      <tr>
+        <td><b>Top 5 fraz z drugiej strony</b> — fraza do <code>&lt;h2&gt;</code> + akapit</td>
+        <td><span class="tag p1">M6</span></td><td>Shopify Admin</td><td>Copy</td>
+        <td class="num">4 h</td><td><span class="tag p1">P1</span></td>
+      </tr>
+      <tr>
+        <td><b>H2 na <code>&lt;div&gt;</code></b> w przełączniku waluty i stopce (100% stron)</td>
+        <td><span class="tag p2">M2</span></td><td><code>sections/footer.liquid</code></td><td>Dev</td>
+        <td class="num">1 h</td><td><span class="tag p2">P2</span></td>
+      </tr>
+      <tr>
+        <td><b>Odświeżyć profil linków</b> i zbudować strategię autorytetu</td>
+        <td><span class="tag p1">M8</span></td><td><code>seo-backlinks</code></td><td>SEO</td>
+        <td class="num">kwartał</td><td><span class="tag p1">P1</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="serp-note">Łącznie P0: <b>~4 godziny dewelopera + 10 minut rozmowy</b>. To jest cały koszt zaadresowania rzeczy krytycznych.</div>
+</section>
+
+<h2 class="sec">Czego nie zbadano — i dlaczego to jest w raporcie</h2>
+<section class="mod">
+  <div class="meth"><div class="meth-t">Zasada</div>
+    <p>Moduł bez danych <b>nie dostaje oceny</b> i nie wchodzi do mianownika. Audyt, który wystawia
+    ocenę czemuś, czego nie zmierzył, kłamie — a klient nie ma jak tego sprawdzić.</p>
+  </div>
+  <table>
+    <thead><tr><th>Moduł</th><th>Status</th><th>Dlaczego</th><th>Czego trzeba, żeby domknąć</th></tr></thead>
+    <tbody>
+      <tr><td><b>M1</b> Technika on-site</td><td><span class="b warn">częściowo</span></td>
+        <td>Sitemapa i przekierowania sprawdzone (0 łańcuchów 301). Pełny crawl 2 155 URL nie przeszedł — Cloudflare ograniczał tempo.</td>
+        <td>Crawl z limitem tempa, w nocy — albo Screaming Frog z profilem uwierzytelnionym</td></tr>
+      <tr><td><b>M8</b> Autorytet</td><td><span class="b warn">stare dane</span></td>
+        <td>Dane z 16.06.2026, nieodświeżone w tym przebiegu</td>
+        <td><code>seo-backlinks</code> (Common Crawl — darmowe) + Senuto</td></tr>
+      <tr><td><b>M9</b> Crawl budget</td><td><span class="b info">nie dotyczy</span></td>
+        <td>2 155 URL — poniżej progu istotności wg Google</td>
+        <td>Nic. Wróci, gdy sklep przekroczy ~5 000 URL</td></tr>
+      <tr><td><b>M11</b> ROI</td><td><span class="b warn">niepełne</span></td>
+        <td>Mam własną krzywą CTR GLOV, brakuje aktualnego CR i AOV z GA4/Shopify za ten sam okres</td>
+        <td>GA4: konwersje z organic · Shopify: średnia wartość zamówienia</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="foot">
+  <b>Audyt wykonany:</b> 2026-07-17 · metodologia <b>V5.2</b> (<code>_shared/METODOLOGIA_AUDYTU_360_SEO_GEO.md</code>)<br>
+  <b>Źródła:</b> Google Search Console (sc-domain:glov.co) · CrUX API · PageSpeed Insights v5 · crawl DOM 46 stron · test botów AI (curl) · <code>_seo_audit_data/</code> (16.06)<br>
+  <b>Repro:</b> <code>scratchpad/gsc_audit.py</code> · <code>crux.py</code> · <code>psi.py</code> · <code>crawl3.py</code> · <code>build_audit.py</code><br>
+  <b>Ocena 48/100</b> liczona wyłącznie z 10 modułów, które mają twarde dane. Moduły bez danych są wymienione powyżej.<br>
+  <b>Zasada:</b> każda liczba w tym dokumencie ma repro. Jeśli którejś nie potrafisz odtworzyć — to błąd audytu, zgłoś go.
+</div>
+
+</div></body></html>
