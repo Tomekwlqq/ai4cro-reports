@@ -111,6 +111,38 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
 .scard p{font-size:11.5px;color:var(--txt2);line-height:1.45}
 
 .foot{margin-top:48px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);text-align:center;line-height:1.8}
+
+/* ── SPRZEDAŻ STRIP ─────────────────────────────────────── */
+.sales-strip{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:20px 24px;margin-bottom:28px}
+.sales-strip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.sales-strip-head h2{font-size:16px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
+.sales-pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ef4444;animation:lpulse 1.4s infinite;vertical-align:middle}
+@keyframes lpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.sales-strip-actions{display:flex;gap:8px;align-items:center}
+.btn-live{background:#16a34a;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.btn-refresh{background:var(--card);color:var(--txt2);border:1px solid var(--line);border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.btn-refresh:hover{border-color:var(--accent);color:var(--txt)}
+.sales-loading{color:var(--muted);font-size:13px;text-align:center;padding:20px 0}
+
+/* macierz sprzedaży */
+.bl-matrix{width:100%;border-collapse:collapse;font-size:13px}
+.bl-matrix thead th{padding:0 0 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;text-align:right;border-bottom:2px solid currentColor;vertical-align:bottom}
+.bl-matrix thead th.bl-lbl-h{text-align:left;color:var(--muted);border-bottom-color:var(--line);width:80px}
+.bl-matrix tbody td{padding:11px 0;vertical-align:top;border-bottom:1px solid var(--line2)}
+.bl-matrix tbody tr:last-child td{border-bottom:none}
+.bl-matrix td.bl-lbl{padding-right:12px;vertical-align:middle}
+.bl-period{font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.3px}
+.bl-psub{font-size:10.5px;color:var(--muted);margin-top:1px}
+.bl-matrix td.bl-val{text-align:right;padding-left:10px}
+.bl-qty{font-size:17px;font-weight:800;letter-spacing:-.4px;line-height:1.1;font-variant-numeric:tabular-nums}
+.bl-rev{font-size:11.5px;color:var(--txt2);margin-top:2px;font-variant-numeric:tabular-nums}
+.bl-zero .bl-qty{color:var(--muted)}
+.bl-zero .bl-rev{color:var(--line)}
+.row-dzis td{background:rgba(22,163,74,.04);border-bottom:none!important}
+.row-dzis .bl-period{color:var(--green)}
+.bl-foot{margin-top:14px;padding-top:12px;border-top:1px solid var(--line2);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bl-foot-txt{font-size:11.5px;color:var(--muted);flex:1}
+.bl-foot-txt strong{color:var(--txt2)}
 </style></head>
 <body>
 <div class="topbar wrap" style="max-width:none;padding-left:max(22px,calc((100vw - 1080px)/2));padding-right:max(22px,calc((100vw - 1080px)/2))">
@@ -137,6 +169,18 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
   </div>
 </div>
 
+<!-- SPRZEDAŻ LIVE STRIP -->
+<div class="sales-strip">
+  <div class="sales-strip-head">
+    <h2><span class="sales-pulse"></span> Sprzedaż <span id="sales-updated" style="font-size:11px;font-weight:400;color:var(--muted)"></span></h2>
+    <div class="sales-strip-actions">
+      <button class="btn-refresh" onclick="loadBLSales(true)">🔄 Odśwież</button>
+      <a class="btn-live" href="https://tomekwlqq.github.io/eel-reports/GLOV_Live.html" target="_blank">🔴 Live</a>
+    </div>
+  </div>
+  <div id="sales-content"><div class="sales-loading">Ładowanie danych…</div></div>
+</div>
+
 <!-- WYRÓŻNIONE OPERACYJNE — PIERWSZY RZĄD pod tytułem -->
 <div class="hero-row">
   <a class="feat seo" href="GLOV_Audyt_360_2026-07-17.html">
@@ -151,6 +195,13 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
     <div class="ico">📊</div>
     <h3>GLOV Live Dashboard</h3>
     <p>Dziś & Wczoraj + 195 dni historii. Shopify = source of truth (zamówienia, przychód, produkty). GA4 = sesje, lejek, kanały. Kanały Meta → Shopify UTM, Google → GA4. AI asystent wbudowany.</p>
+    <div class="go">→</div>
+  </a>
+  <a class="feat ads" href="GLOV_Meta_3Poziomy.html" target="_blank">
+    <span class="badge2">📣 Ads Traffic</span>
+    <div class="ico">📣</div>
+    <h3>Ads Traffic</h3>
+    <p>Meta Ads × GA4 × Baselinker. 3 poziomy: kampanie / zestawy / reklamy. Attribution chain — BL Rev per reklama. Snapshot 20–26.07.</p>
     <div class="go">→</div>
   </a>
   <a class="feat seo" href="beauty_vision/INDEX.html">
@@ -446,6 +497,9 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
 </div>
 </div>
 
+<!-- @BL_SALES -->
+<script id="bl-sales-data">window.BL_SALES={"updated": "2026-07-28 16:17", "today": "2026-07-28", "month": "2026-07", "year": "2026", "range": "2026-07-01 – 2026-07-28", "sources": ["shop", "allegro", "tiktokeu", "hebe"], "labels": {"shop": "Shopify", "allegro": "Allegro", "tiktokeu": "TikTok", "hebe": "Hebe"}, "today_d": {"shop": {"orders": 21, "items": 40, "revenue": 1368.94}, "allegro": {"orders": 13, "items": 26, "revenue": 972.5599999999998}, "hebe": {"orders": 3, "items": 3, "revenue": 109.75}}, "month_d": {"allegro": {"orders": 717, "items": 1345, "revenue": 50102.14000000038}, "shop": {"orders": 1031, "items": 1882, "revenue": 81703.83999999886}, "hebe": {"orders": 302, "items": 332, "revenue": 15726.29999999993}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}, "year_d": {"allegro": {"orders": 717, "items": 1345, "revenue": 50102.14000000038}, "shop": {"orders": 1031, "items": 1882, "revenue": 81703.83999999886}, "hebe": {"orders": 302, "items": 332, "revenue": 15726.29999999993}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}, "all_d": {"allegro": {"orders": 717, "items": 1345, "revenue": 50102.14000000038}, "shop": {"orders": 1031, "items": 1882, "revenue": 81703.83999999886}, "hebe": {"orders": 302, "items": 332, "revenue": 15726.29999999993}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}};</script>
+
 <script>
 const root=document.documentElement, btn=document.getElementById('themeBtn');
 const saved=localStorage.getItem('glov-theme')||'light';
@@ -457,5 +511,76 @@ btn.onclick=()=>{
   localStorage.setItem('glov-theme',next);
   btn.textContent = next==='light'?'🌙':'☀️';
 };
-</script>
-</body></html>
+
+// ── SPRZEDAŻ BL MATRIX ───────────────────────────────────────────────────
+const BL_API='http://localhost:9871/api';
+function n(v,d=0){return(+v||0).toLocaleString('pl-PL',{minimumFractionDigits:d,maximumFractionDigits:d});}
+function zl(v){return n(v,2)+' zł';}
+const SRC_COLORS={'shop':'#7c5cff','allegro':'#f5751a','tiktokeu':'#16a34a','hebe':'#e91e8c'};
+const MONTHS_PL=['','Sty','Lut','Mar','Kwi','Maj','Cze','Lip','Sie','Wrz','Paź','Lis','Gru'];
+
+function blCell(period_d, src){
+  const v=(period_d||{})[src]||{orders:0,items:0,revenue:0};
+  const z=!v.orders;
+  return `<td class="bl-val${z?' bl-zero':''}"><div class="bl-qty">${n(v.orders)}</div><div class="bl-rev">${n(v.items||0)} szt.</div><div class="bl-rev">${zl(v.revenue)}</div></td>`;
+}
+
+function renderBLSales(){
+  const el=document.getElementById('sales-content');
+  const d=window.BL_SALES;
+  if(!d){el.innerHTML='<div class="sales-loading">Brak danych — uruchom: <code>python3 update_hub_sales.py</code></div>';return;}
+
+  const src=d.sources||['shop','allegro','tiktokeu','hebe'];
+  const lbl=d.labels||{};
+  const mNum=parseInt((d.month||'').split('-')[1]||0);
+  const mName=MONTHS_PL[mNum]||d.month;
+  const yr=d.year||'';
+  const todayShort=d.today?(d.today.substring(5).replace('-','.')+''):'-';
+
+  // Nagłówek kolumn
+  const thCh=src.map(s=>{
+    const c=SRC_COLORS[s]||'#9a9aa5';
+    return `<th style="color:${c};border-bottom-color:${c}">${lbl[s]||s}</th>`;
+  }).join('');
+
+  // Wiersze
+  const rowRok=`<tr class="row-rok">
+    <td class="bl-lbl"><div class="bl-period">ROK ${yr}</div></td>
+    ${src.map(s=>blCell(d.year_d,s)).join('')}
+  </tr>`;
+  const rowMies=`<tr class="row-mies">
+    <td class="bl-lbl"><div class="bl-period">${mName}</div><div class="bl-psub">${mName} ${yr}</div></td>
+    ${src.map(s=>blCell(d.month_d,s)).join('')}
+  </tr>`;
+  const rowDzis=`<tr class="row-dzis">
+    <td class="bl-lbl"><div class="bl-period">Dziś</div><div class="bl-psub">${todayShort}</div></td>
+    ${src.map(s=>blCell(d.today_d,s)).join('')}
+  </tr>`;
+
+  const foot=`<div class="bl-foot">
+    <span class="bl-foot-txt">Dane z Baselinker · zakres <strong>${d.range}</strong> · aktualizacja: <strong>${d.updated}</strong></span>
+    <button class="btn-refresh" onclick="loadBLSales(true)">🔄 Pobierz świeże</button>
+  </div>`;
+
+  el.innerHTML=`<table class="bl-matrix">
+  <thead><tr><th class="bl-lbl-h"></th>${thCh}</tr></thead>
+  <tbody>${rowRok}${rowMies}${rowDzis}</tbody>
+  </table>${foot}`;
+}
+
+async function loadBLSales(force=false){
+  const el=document.getElementById('sales-content');
+  if(force) el.innerHTML='<div class="sales-loading">Pobieram świeże dane z Baselinker…</div>';
+  try{
+    const url=force?BL_API+'/refresh':BL_API+'/bl-sales';
+    const r=await fetch(url,{method:force?'POST':'GET',signal:AbortSignal.timeout(25000)});
+    if(!r.ok) throw new Error(r.status);
+    window.BL_SALES=await r.json();
+    renderBLSales();
+  }catch(e){
+    if(window.BL_SALES) renderBLSales();
+    else el.innerHTML='<div class="sales-loading">Serwer offline — uruchom <code>python3 glov_server.py</code></div>';
+  }
+}
+loadBLSales();
+</script></body></html>
