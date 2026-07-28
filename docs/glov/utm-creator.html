@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UTM Creator — reguła nazewnictwa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1800ad;
+    --navy-deep: #321bd2;
+    --blush: #f7e1fc;
+    --burgundy: #8d0a31;
+    --ink: #15121d;
+    --muted: #6f697a;
+    --white: #ffffff;
+    --line: rgba(24, 0, 173, 0.14);
+    --serif: "DM Serif Display", "Iowan Old Style", "Baskerville", Georgia, serif;
+    --sans: "DM Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--white);
+    line-height: 1.6;
+  }
+
+  a { color: var(--navy); }
+
+  header.hero {
+    background: linear-gradient(145deg, var(--navy), var(--navy-deep));
+    color: var(--white);
+    padding: 64px 24px 56px;
+    text-align: center;
+  }
+
+  header.hero .eyebrow {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blush);
+    font-weight: 700;
+    margin-bottom: 18px;
+  }
+
+  header.hero h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(32px, 5vw, 52px);
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+  }
+
+  header.hero p.sub {
+    max-width: 620px;
+    margin: 0 auto;
+    color: rgba(255,255,255,0.86);
+    font-size: 16px;
+  }
+
+  header.hero .meta {
+    margin-top: 28px;
+    font-size: 13px;
+    color: var(--blush);
+  }
+
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px 100px;
+  }
+
+  nav.toc {
+    margin: -28px auto 56px;
+    max-width: 832px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 28px;
+    box-shadow: 0 18px 40px rgba(24,0,173,0.08);
+  }
+
+  nav.toc h2 {
+    font-family: var(--sans);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--burgundy);
+    margin: 0 0 12px;
+  }
+
+  nav.toc ol {
+    columns: 2;
+    -webkit-columns: 2;
+    padding-left: 18px;
+    margin: 0;
+    font-size: 14px;
+  }
+
+  nav.toc li { margin-bottom: 6px; break-inside: avoid; }
+  nav.toc a { text-decoration: none; color: var(--ink); }
+  nav.toc a:hover { color: var(--navy); }
+
+  section { margin-bottom: 56px; scroll-margin-top: 24px; }
+
+  section .kicker {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 30px;
+    color: var(--navy);
+    margin: 0 0 18px;
+  }
+
+  h3 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--ink);
+    margin: 28px 0 10px;
+  }
+
+  p { margin: 0 0 14px; }
+
+  .lead {
+    font-size: 17px;
+    color: var(--ink);
+  }
+
+  .muted { color: var(--muted); font-size: 14px; }
+
+  code, .code {
+    font-family: "SF Mono", "Menlo", "Consolas", monospace;
+    background: var(--blush);
+    color: var(--burgundy);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.88em;
+    white-space: nowrap;
+  }
+
+  pre.formula {
+    font-family: "SF Mono", "Menlo", "Consolas", monospace;
+    background: var(--navy);
+    color: var(--blush);
+    padding: 18px 22px;
+    border-radius: 12px;
+    font-size: 15px;
+    overflow-x: auto;
+    margin: 0 0 16px;
+  }
+
+  ol.rules, ul.plain { padding-left: 22px; margin: 0 0 14px; }
+  ol.rules li, ul.plain li { margin-bottom: 10px; }
+
+  .callout {
+    border-left: 3px solid var(--burgundy);
+    background: var(--blush);
+    padding: 16px 20px;
+    border-radius: 0 12px 12px 0;
+    font-size: 14.5px;
+    margin: 18px 0;
+  }
+
+  .callout strong { color: var(--burgundy); }
+
+  .example {
+    border: 1px dashed var(--navy);
+    border-radius: 12px;
+    padding: 16px 20px;
+    background: rgba(24,0,173,0.03);
+    font-size: 14.5px;
+    margin: 14px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 8px;
+    font-size: 14px;
+  }
+
+  th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--burgundy);
+    border-bottom: 2px solid var(--navy);
+    padding: 10px 12px;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  tr:hover td { background: rgba(247,225,252,0.35); }
+
+  .status-list { list-style: none; padding: 0; margin: 0; }
+  .status-list li {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 14.5px;
+  }
+  .status-list li:last-child { border-bottom: none; }
+  .status-list .n {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--navy);
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+
+  .badge.alt { background: var(--burgundy); }
+
+  footer {
+    text-align: center;
+    padding: 40px 24px 60px;
+    color: var(--muted);
+    font-size: 13px;
+    border-top: 1px solid var(--line);
+    margin-top: 40px;
+  }
+
+  @media (max-width: 640px) {
+    nav.toc ol { columns: 1; }
+    header.hero { padding: 48px 20px 44px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">Collabo Ewa + Tomek</div>
+  <h1>UTM Creator</h1>
+  <p class="sub">Reguła nazewnictwa, żeby raportowanie skuteczności ruchu dało się w pełni zautomatyzować — od pliku graficznego, przez UTM, po wniosek w GA4.</p>
+  <div class="meta">Wersja z 21 lipca 2026 · Pilot: GLOV</div>
+</header>
+
+<main>
+
+<nav class="toc">
+  <h2>Spis treści</h2>
+  <ol>
+    <li><a href="#cel">1. Cel</a></li>
+    <li><a href="#zasady">2. Zasady ogólne</a></li>
+    <li><a href="#struktura">3. Struktura 4 parametrów UTM</a></li>
+    <li><a href="#pliki">4. Nazewnictwo plików kreatywnych</a></li>
+    <li><a href="#formaty">5. Słownik formatów kreacji</a></li>
+    <li><a href="#kategorie">6. Kategorie GLOV</a></li>
+    <li><a href="#uwagi">7. Uwagi z audytu strony</a></li>
+    <li><a href="#produkt">8. Poziom pojedynczego produktu</a></li>
+    <li><a href="#kroki">9. Następne kroki</a></li>
+  </ol>
+</nav>
+
+<section id="cel">
+  <div class="kicker">01</div>
+  <h2>Cel</h2>
+  <p class="lead">Struktura UTM ma odpowiadać na trzy pytania automatycznie, bez ręcznego mapowania w Excelu:</p>
+  <ol class="rules">
+    <li><strong>Jaki format/typ kreacji działał najlepiej</strong> — baner vs wideo vs karuzela, jaki konkretny hook.</li>
+    <li><strong>Na jaki typ strony kierował ruch i czy to było spójne z komunikatem</strong> — product page vs kategoria vs landing promocyjny. To dokładnie to, co Tomek nazwał „Ścieżkomatem”.</li>
+    <li><strong>Czy to prospecting czy remarketing</strong>, per produkt/kategoria — żeby dało się to skalować i iterować kreacja po kreacji: wstrzymujemy / iterujemy / skalujemy.</li>
+  </ol>
+  <div class="callout">
+    <strong>Sedno tego, o co prosił Tomek:</strong> właścicielem konwencji jest klient, nie agencja. Nazewnictwo musi przetrwać zmianę specjalisty — dlatego zero dowolności. Każda wartość pochodzi ze stałego słownika kodów, nie z bieżącego pomysłu osoby wdrażającej kampanię.
+  </div>
+</section>
+
+<section id="zasady">
+  <div class="kicker">02</div>
+  <h2>Zasady ogólne</h2>
+  <p class="muted">Żeby dało się to skryptować i automatyzować raport.</p>
+  <ol class="rules">
+    <li><strong>Zawsze małe litery.</strong> GA4/Meta traktują <code>Meta</code> i <code>meta</code> jako różne wartości — rozjeżdża to dane bez ostrzeżenia.</li>
+    <li><strong>Jeden separator wewnątrz segmentu, jeden między segmentami — nigdy ich nie mieszamy.</strong> <code>-</code> łączy dwuczłonowe kody (np. <code>w-fib</code>), <code>_</code> rozdziela segmenty w jednym parametrze (np. <code>coolnails_p_promo</code>).</li>
+    <li><strong>Zero spacji, zero polskich znaków, zero wolnego tekstu.</strong> Każda wartość to kod ze słownika, nie opis.</li>
+    <li><strong>Stała, przewidywalna kolejność segmentów</strong> w <code>utm_campaign</code> i <code>utm_content</code> — nigdy nie zmieniamy kolejności, nawet gdy segment jest pusty (wtedy kod „brak”, nie pomijamy pozycji).</li>
+    <li><strong>Jeden słownik kodów na klienta</strong>, wersjonowany, z datą aktualizacji — kategorie i produkty różnią się między klientami.</li>
+    <li><strong>Data w formacie <code>rrmm</code></strong>, zawsze na końcu segmentu, do wersjonowania kreacji w czasie.</li>
+  </ol>
+</section>
+
+<section id="struktura">
+  <div class="kicker">03</div>
+  <h2>Struktura 4 parametrów</h2>
+
+  <h3>utm_source</h3>
+  <p>Platforma, jedno słowo: <code>meta</code> <code>google</code> <code>tiktok</code> <code>criteo</code> <code>getresponse</code> <code>klaviyo</code></p>
+
+  <h3>utm_medium</h3>
+  <p>Typ ruchu, zgodny ze standardowym GA4 channel grouping — żeby GA4 sam poprawnie klasyfikował kanał, bez własnych reguł: <code>cpc</code> <code>paid_social</code> <code>paid_search</code> <code>email</code> <code>affiliate</code> <code>organic_social</code></p>
+
+  <h3>utm_campaign</h3>
+  <pre class="formula">{typ-ruchu}_{zakres}_{cel}</pre>
+  <ul class="plain">
+    <li><code>typ-ruchu</code> — <code>p</code> (prospecting) / <code>r</code> (remarketing)</li>
+    <li><code>zakres</code> — kod kategorii albo produktu ze słownika klienta (sekcja 6)</li>
+    <li><code>cel</code> — <code>ongoing</code> / <code>promo</code> / <code>launch</code></li>
+  </ul>
+  <p class="muted">Bez segmentu rynku — rynki zagraniczne mają osobny ekosystem, więc nie kodujemy go tutaj.</p>
+  <div class="example">Przykład: <code>p_coolnails_promo</code></div>
+
+  <h3>utm_content — najważniejszy poziom, tu żyje analiza kreacji</h3>
+  <pre class="formula">{format-kreacji}_{typ-landingu}_{wariant}_{data}</pre>
+  <ul class="plain">
+    <li><code>format-kreacji</code> — kod ze słownika w sekcji 5</li>
+    <li><code>typ-landingu</code> — kod strony docelowej, inspirowany podejściem do URL-i Amazona (stały, krótki kod per typ): <code>h</code> homepage · <code>c</code> kategoria/kolekcja · <code>p</code> strona produktu · <code>lp</code> dedykowany landing · <code>pr</code> listing promocyjny · <code>bs</code> bestsellery</li>
+    <li><code>wariant</code> — numer wersji kreacji, <code>v1</code> <code>v2</code> — do testów iteracyjnych</li>
+    <li><code>data</code> — <code>rrmm</code></li>
+  </ul>
+  <div class="example">Przykład pełny: <code>w-fib_p_v2_2607</code> — wideo z hookiem FIB, kierujące na stronę produktu, wersja 2, lipiec 2026.</div>
+</section>
+
+<section id="pliki">
+  <div class="kicker">04</div>
+  <h2>Nazewnictwo plików kreatywnych</h2>
+  <p class="lead">Brakujący element, który spina proces z graficzką: <strong>nazwa pliku graficznego/wideo jest identyczna z wartością <code>utm_content</code></strong>, do której trafi. Zero tłumaczenia między „jak nazwała plik graficzka” a „jak nazywa się UTM” — to jedna i ta sama wartość.</p>
+  <div class="example">Plik <code>w-fib_p_v2_2607.mp4</code> trafia do reklamy z <code>utm_content=w-fib_p_v2_2607</code>.</div>
+  <p>Efekt: raport automatyczny łączy wydajność wprost z plikiem źródłowym, bez ręcznego mapowania — dokładnie to, czego potrzebuje dynamiczny raport Meta.</p>
+</section>
+
+<section id="formaty">
+  <div class="kicker">05</div>
+  <h2>Słownik formatów kreacji</h2>
+  <span class="badge">Potwierdzone przez Ewę</span>
+  <table>
+    <tr><th>Kod</th><th>Znaczenie</th></tr>
+    <tr><td><code>k</code></td><td>karuzela (budowana ręcznie, nie z katalogu)</td></tr>
+    <tr><td><code>b</code></td><td>baner (pojedynczy statyczny obraz)</td></tr>
+    <tr><td><code>v</code></td><td>video wgrywane</td></tr>
+    <tr><td><code>ugc</code></td><td>video od partnera/twórczyni (UGC)</td></tr>
+    <tr><td><code>f</code></td><td>reklama z feedem produktowym (dynamiczna, z katalogu — odpowiednik DPA/Advantage+ catalog)</td></tr>
+    <tr><td><code>fib</code></td><td>reklama z feedem produktowym, z intro banerem</td></tr>
+    <tr><td><code>fiv</code></td><td>reklama z feedem produktowym, z intro video</td></tr>
+    <tr><td><code>fk</code></td><td>reklama z feedem produktowym jako kolekcja (Collection)</td></tr>
+    <tr><td><code>be</code></td><td>reklama elastyczna (Advantage+/dynamic creative) z banerami</td></tr>
+    <tr><td><code>ve</code></td><td>reklama elastyczna (Advantage+/dynamic creative) z video</td></tr>
+    <tr><td><code>a</code></td><td>animacja</td></tr>
+  </table>
+  <div class="callout">
+    Pominięte świadomie: slideshow, ankiety w Stories/Reels (poll), playable ads (poza zakresem — tylko instalacje aplikacji), DPA jako osobny kod (pokrywa go już <code>f</code>).
+  </div>
+  <p class="muted">Do ustalenia: czy <code>ugc</code> powinno być osobnym wymiarem (źródło kreacji) niezależnym od formatu, jeśli materiały UGC bywają wrapowane w karuzelę/kolekcję, a nie tylko puszczane jako czyste <code>v</code>.</p>
+</section>
+
+<section id="kategorie">
+  <div class="kicker">06</div>
+  <h2>Kategorie GLOV</h2>
+  <span class="badge alt">Zweryfikowane na glov.co, 21.07.2026</span>
+  <p>Metoda: pełne drzewko 88 kolekcji Shopify na glov.co, sprawdzone produkty w kluczowych kolekcjach. Poniżej <strong>11 trwałych linii produktowych</strong> — oś do raportowania skuteczności ruchu. Reszta 88 kolekcji to merchandising (sezonówki, progi cenowe, typy cery), nie kategorie do UTM — patrz sekcja 7.</p>
+  <table>
+    <tr><th>Kod</th><th>Linia</th><th>Przykładowe produkty</th><th>Źródłowa kolekcja</th></tr>
+    <tr><td><code>rekawiczka</code></td><td>Rękawiczka GLOV / Iconic Mitt</td><td>Iconic Mitt, wielopaki 2/3/5/8 szt., Magnet Cleanser, ręcznik do oczyszczania</td><td class="muted">/rekawice-do-demakijazu</td></tr>
+    <tr><td><code>pumeks</code></td><td>Nano Glass (pumeksy, depilatory)</td><td>Tarka-pumeks, Depilator nano szkło, Nano Twist Duo, Cheetah Edition, Velvet Nano Touch</td><td class="muted">/nano-glass-collection</td></tr>
+    <tr><td><code>coolnails</code></td><td>CoolNails (lakiery + akcesoria)</td><td>lakiery Classic/Active, Nail Rehab Set, Everyday Icons, Dry Cuticle Oil Pen, Top Coat</td><td class="muted">/coolnails</td></tr>
+    <tr><td><code>led</code></td><td>GLOV LED Therapy</td><td>Luna Eye, Supernova, naklejki do urządzeń</td><td class="muted">/glov-led-therapy</td></tr>
+    <tr><td><code>wlosy-szczotki</code></td><td>Szczotki do włosów</td><td>Biobased Brush, Scalp Massage, Smooth Glide</td><td class="muted">/szczotki-do-wlosow</td></tr>
+    <tr><td><code>coolcurl</code></td><td>CoolCurl™ (stylizacja na zimno)</td><td>Pillow Rollers, Ribbon Rollers, Spider, Dream Curl, Overnight Blowout</td><td class="muted">/coolcurl™-collection</td></tr>
+    <tr><td><code>turbany</code></td><td>Turbany i czepki do włosów</td><td>turbany HydroWeave, czepki satynowe, ręcznik 2in1</td><td class="muted">/turbany-do-wlosow</td></tr>
+    <tr><td><code>cialo-silikon</code></td><td>Silicone Bath &amp; Shower</td><td>rękawice do peelingu, Quantum Clean, Bubble Burst, Shower Chameleon, szczotka sucha</td><td class="muted">/bath-collection</td></tr>
+    <tr><td><code>maski-do-spania</code></td><td>Maski do spania</td><td>satynowa, cekinowa</td><td class="muted">/maski-do-spania</td></tr>
+    <tr><td><code>zestawy</code></td><td>Zestawy prezentowe / łączone</td><td>Face Architecture Set, Lazy Luxe Duo, Run Wild Ritual, Perfect Lips, Kiss&amp;Kiss</td><td class="muted">/zestawy</td></tr>
+    <tr><td><code>masaz-twarzy</code></td><td>Akcesoria do masażu twarzy</td><td>Gua Sha, roller kamienny</td><td class="muted">/akcesoria-do-masazu-twarzy</td></tr>
+  </table>
+</section>
+
+<section id="uwagi">
+  <div class="kicker">07</div>
+  <h2>Uwagi z audytu strony</h2>
+  <ul class="status-list">
+    <li><span class="n">1</span><span><strong>Duplikaty kolekcji w Shopify</strong> — <code>zestawy</code>/<code>zestawy-1</code>, <code>dla-mamy</code>/<code>dla-mamy-1</code>, <code>walentynki</code>/<code>walentynki-1</code> istnieją jako osobne, równoległe kolekcje o tej samej nazwie. To dług techniczny, nie kategoria do kodowania — warto zgłosić Joli do konsolidacji, bo inaczej ruch/dane rozjadą się między dwoma adresami tej samej rzeczy.</span></li>
+    <li><span class="n">2</span><span><strong>Sezonówki i eventy nie wchodzą do stałego słownika kategorii</strong>: Black Week, Walentynki, Dzień Mamy, Dzień Dziecka, Back to School, Ukraina, PROMO/PROMO50. Jeśli kampania dotyczy jednego z tych wydarzeń, kategoria produktowa zostaje bez zmian, a informację o evencie niesie segment <code>cel</code> (np. zamiast <code>promo</code> wpisujesz <code>blackweek</code>).</span></li>
+    <li><span class="n">3</span><span><strong>Typy cery</strong> (normalna/mieszana, sucha/wrażliwa, tłusta) — bardziej filtr nawigacyjny na stronie niż odrębna oś kampanii. Poza słownikiem, chyba że faktycznie prowadzicie reklamy targetowane per typ cery.</span></li>
+    <li><span class="n">4</span><span><strong>Bambooleo set jest cross-category</strong> — występuje zarówno w kolekcji rękawiczki/oczyszczanie, jak i w kampanii Rossmann „Bawełna”. To pokazuje, że „Bawełna_Rossmann” nie jest linią produktową, tylko nazwą kampanii detalicznej łączącą <code>rekawiczka</code> + <code>cialo-silikon</code>. Rekomendacja: w polu <code>zakres</code> wpisuj dominującą linię produktową danego banera, a „Bawełna” trzymaj jako informację poboczną w briefie, nie jako kod kategorii.</span></li>
+  </ul>
+</section>
+
+<section id="produkt">
+  <div class="kicker">08</div>
+  <h2>Poziom pojedynczego produktu</h2>
+  <p>Gdy kampania celuje w konkretny produkt (remarketing koszykowy, cross-sell), dodaj krótki slug produktu jako osobny człon w <code>utm_content</code> — nie w <code>utm_campaign</code>, żeby nie mnożyć kombinacji na poziomie kampanii. Wzór: skrócona, rozpoznawalna nazwa produktu, małe litery, myślnik zamiast spacji, bez „GLOV”.</p>
+  <div class="example">
+    <code>iconicmitt</code> · <code>nanotwist-duo</code> · <code>lunaeye</code> · <code>biobased-brush</code> · <code>naileveryday</code> · <code>quantumclean</code> · <code>satynowa-maska</code>
+  </div>
+  <p class="muted">Nie kodujemy z góry wszystkich ok. 80 SKU — słownik produktowy rośnie na bieżąco, w miarę jak dany produkt trafia do kampanii.</p>
+</section>
+
+<section id="kroki">
+  <div class="kicker">09</div>
+  <h2>Następne kroki</h2>
+  <ul class="status-list">
+    <li><span class="n">1</span><span>Ewa: zatwierdza słownik formatów kreacji i kategorii jako finalny dla pilota.</span></li>
+    <li><span class="n">2</span><span>Ewa + Jola: zatwierdzają słownik kategorii/produktów GLOV jako pilota.</span></li>
+    <li><span class="n">3</span><span>Tomek: audyt obecnej UTMizacji kont → upgrade do tej struktury → ustawienie odczytu w GA4.</span></li>
+    <li><span class="n">4</span><span>Po pilocie na GLOV: ta sama struktura, nowy słownik kategorii, dla kolejnych klientów — to jest produktyzacja.</span></li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  Collabo Ewa + Tomek · UTM Creator · wersja robocza z 21 lipca 2026
+</footer>
+
+</body>
+</html>

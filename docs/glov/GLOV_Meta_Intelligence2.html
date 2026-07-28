@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GLOV Meta Intelligence 2.0</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<style>
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+       background: #f8f9fa; color: #1a1a1a; font-size: 14px; }
+.header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 16px 32px; }
+.header h1 { font-size: 20px; font-weight: 700; }
+.header .meta-row { font-size: 12px; color: #666; margin-top: 4px; }
+.tabs { display: flex; background: #fff; border-bottom: 2px solid #e0e0e0;
+        padding: 0 32px; gap: 4px; }
+.tab-btn { padding: 12px 20px; border: none; background: transparent; cursor: pointer;
+           font-size: 13px; font-weight: 500; color: #555; border-bottom: 3px solid transparent;
+           margin-bottom: -2px; transition: all .15s; }
+.tab-btn.active { color: #1976d2; border-bottom-color: #1976d2; }
+.tab-btn:hover { color: #1976d2; }
+.tab-content { display: none; padding: 28px 32px; }
+.tab-content.active { display: block; }
+.data-table { width: 100%; border-collapse: collapse; background: #fff;
+              border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.data-table th { background: #f5f5f5; padding: 10px 12px; text-align: left;
+                 font-size: 12px; font-weight: 600; color: #555; border-bottom: 1px solid #e0e0e0; }
+.data-table td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #fafafa; }
+.num { text-align: right; }
+.thumb { width: 52px; height: 52px; object-fit: cover; border-radius: 6px; }
+.thumb-placeholder { width: 52px; height: 52px; border-radius: 6px; background: #e3e8f0;
+                     display: flex; align-items: center; justify-content: center;
+                     font-size: 11px; font-weight: 700; color: #5c6bc0; }
+.thumb-cell { width: 64px; }
+.ad-name { font-size: 13px; font-weight: 500; display: block; }
+.name-cell { max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dim { color: #888; font-size: 12px; }
+.badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px;
+         margin-left: 6px; vertical-align: middle; }
+.badge.active  { background: #e8f5e9; color: #2e7d32; }
+.badge.paused  { background: #fff3e0; color: #e65100; }
+.badge.other   { background: #f3e5f5; color: #6a1b9a; }
+.gap { font-size: 12px; padding: 2px 5px; border-radius: 3px;
+       background: #ffebee; color: #c62828; }
+.gap.neg { background: #e8f5e9; color: #2e7d32; }
+.metric-success { color: #2e7d32; }
+.metric-warn    { color: #e65100; }
+.metric-error   { color: #c62828; }
+.sev-success { color: #2e7d32; }
+.sev-warn    { color: #e65100; }
+.sev-error   { color: #c62828; }
+.finding-sev { white-space: nowrap; }
+.alert-warn { background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px;
+              padding: 14px 18px; margin-bottom: 20px; font-size: 13px; }
+.reco-box { background: #e3f2fd; border: 1px solid #90caf9; border-radius: 8px;
+            padding: 18px 22px; margin-top: 24px; }
+.reco-box h3 { margin-bottom: 8px; font-size: 15px; color: #0d47a1; }
+.reco-box p { margin-top: 10px; line-height: 1.6; }
+.reco-box code { background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px; }
+.filter-bar { margin-bottom: 14px; display: flex; gap: 8px; }
+.btn-filter { padding: 7px 14px; border: 1px solid #ccc; border-radius: 20px; background: #fff;
+              cursor: pointer; font-size: 12px; font-weight: 500; color: #555; }
+.btn-filter.active { background: #1976d2; color: #fff; border-color: #1976d2; }
+.footnote { margin-top: 12px; font-size: 11px; color: #888; }
+h2 { font-size: 17px; margin-bottom: 16px; }
+h3 { font-size: 15px; margin-bottom: 12px; }
+
+.kpi-box { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:14px 20px; min-width:140px; }
+.kpi-val { font-size:22px; font-weight:700; color:#1a1a1a; }
+.kpi-lbl { font-size:11px; color:#888; margin-top:3px; }
+.kpi-warn { border-color:#ffcc02; }
+.kpi-warn .kpi-val { color:#e65100; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>GLOV Meta Intelligence 2.0</h1>
+  <div class="meta-row">
+    Konto: act_414505328896049 (Phenicoptere PL) ·
+    Zakres: maximum (12 mies.) → 2026-07-17 ·
+    Wygenerowano: 2026-07-17 ·
+    Źródło: entities (aggregated — brak daily, brak GA4/Shopify)
+  </div>
+  
+    <div style="display:flex;gap:16px;margin-top:16px;flex-wrap:wrap">
+        <div class="kpi-box"><div class="kpi-val">64,646 zł</div><div class="kpi-lbl">Total Spend 12M</div></div>
+        <div class="kpi-box"><div class="kpi-val">200</div><div class="kpi-lbl">Kreacji (z budżetem)</div></div>
+        <div class="kpi-box"><div class="kpi-val">2,42×</div><div class="kpi-lbl">ROAS pixel (Meta)</div></div>
+        <div class="kpi-box"><div class="kpi-val">1,39×</div><div class="kpi-lbl">ROAS GA4 (last-click)</div></div>
+        <div class="kpi-box kpi-warn"><div class="kpi-val">+43%</div><div class="kpi-lbl">Gap pixel vs GA4</div></div>
+    </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('utm')">Audyt UTM</button>
+  <button class="tab-btn" onclick="showTab('creatives')">Kreacje</button>
+  <button class="tab-btn" onclick="showTab('adsets')">Ad Sety</button>
+  <button class="tab-btn" onclick="showTab('campaigns')">Kampanie</button>
+  <button class="tab-btn" onclick="showTab('daily')">Dzienne</button>
+</div>
+
+<div class="tab-content active" id="tab-utm">
+    
+    <div class="alert-warn" style="margin-bottom:20px">
+        ⚠️ Dane częściowe — źródło: <code>entities (aggregated — brak daily, brak GA4/Shopify)</code><br>
+        UTM tracking_specs nie zostały jeszcze zaciągnięte z Graph API.
+        Po podaniu <code>META_ACCESS_TOKEN</code> w <code>.env</code> uruchom
+        <code>python3 meta_etl.py --backfill</code> + <code>python3 build_cross_source.py</code>
+        żeby uzyskać pełny join.
+    </div>
+    <h2>Audyt UTM — wyniki F0</h2>
+    <p>Zakres: 12 miesięcy (07.2025–07.2026) · 185,038 sesji Meta z ShopifyQL · 200 kreacji z Meta API.</p>
+    <table class="data-table">
+        <thead><tr><th>Wartość</th><th>Opis</th><th>Status</th><th>Szczegóły</th></tr></thead>
+        <tbody>
+    <tr>
+        <td><strong class="metric-success">94.3%</strong></td>
+        <td>sesji Meta z czystym utm_content</td>
+        <td class="finding-sev sev-success">🟢 OK</td>
+        <td>Drill-down do poziomu kreacji możliwy. Dane GA4 per kreacja są wiarygodne.</td>
+    </tr>
+
+    <tr>
+        <td><strong class="metric-warn">5.5%</strong></td>
+        <td>sesji z Advantage+ (utm_content='advantage')</td>
+        <td class="finding-sev sev-warn">🟡 Uwaga</td>
+        <td>Nierozróżnialne kreacje z kampanii Advantage+. W raporcie traktowane jako agregat.</td>
+    </tr>
+
+    <tr>
+        <td><strong class="metric-error">27</strong></td>
+        <td>grup gdzie utm_campaign == utm_content</td>
+        <td class="finding-sev sev-error">🔴 Błąd</td>
+        <td>Media buyer kopiuje nazwę kampanii do utm_content zamiast nazwy kreacji. Join niemożliwy.</td>
+    </tr>
+
+    <tr>
+        <td><strong class="metric-error">15</strong></td>
+        <td>zduplikowanych nazw kreacji (40+ kreacji)</td>
+        <td class="finding-sev sev-error">🔴 Błąd</td>
+        <td>konwersje_k_luna-eye pojawia się 5 razy z różnymi IDs. Przy utm_content=name — nieodróżnialne w GA4.</td>
+    </tr>
+
+    <tr>
+        <td><strong class="metric-warn">1</strong></td>
+        <td>kreacja z numeryczną nazwą (boosted post)</td>
+        <td class="finding-sev sev-warn">🟡 Uwaga</td>
+        <td>ID: 17885618262283554 · ACTIVE · 1,660 PLN spend · brak nazwy marketingowej.</td>
+    </tr></tbody>
+    </table>
+    
+    <div class="reco-box">
+        <h3>Rekomendacja: utm_content = {{ad.id}}</h3>
+        <p>Aktualne UTM używają nazw kreacji. Nazwy się zmieniają i duplikują — join historyczny rozjeżdża się.
+        ID kreacji jest niezmienne i unikalnie identyfikuje reklamę.
+        Zmiana działa od dnia wdrożenia — historia (12 miesięcy wstecz) pozostaje w stanie obecnym.</p>
+        <p><strong>Wdrożenie:</strong> Meta Ads Manager → Kampania → Ustawienia URL → URL Parameters →
+        <code>utm_content={{ad.id}}&utm_term={{adset.id}}</code></p>
+        <p><strong>Cezura:</strong> raport będzie pokazywał zakładkę <em>„przed standardem / po standardzie"</em>
+        od dnia zmiany.</p>
+    </div>
+    </div>
+<div class="tab-content" id="tab-creatives">
+    <div class="filter-bar">
+        <button class="btn-filter active" onclick="filterCreatives(false, this)">Wszystkie (200)</button>
+        <button class="btn-filter" onclick="filterCreatives(true, this)">Tylko ACTIVE (200)</button>
+    </div>
+    <table class="data-table sortable" id="tbl-creatives">
+        <thead><tr>
+            <th></th>
+            <th>Kreacja</th>
+            <th class="num sortable-col" data-col="spend">Spend</th>
+            <th class="num">ROAS pixel</th>
+            <th class="num">ROAS GA4</th>
+            <th class="num">Gap</th>
+            <th class="num">Sesje GA4</th>
+            <th class="num">Sesje Shopify</th>
+            <th class="num">CTR</th>
+        </tr></thead>
+        <tbody id="tbody-creatives"><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239356224850495">konwersje_f_darmowa-dostawa</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">10,622 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.43%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239033348250495">ad_b_sb_2</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">3,666 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.88%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120245122254840495">ugc_zerogravity</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">3,650 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">3.04%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243026223740495">ad_vugc_rekawica-peeling_skin-smooting_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">2,717 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.96%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238740209790495">konwersje_k_luna-eye</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">2,641 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.87%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239157945450495">konwersje_v-ugc_lunaeye</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">2,174 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.01%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120234110827240495">zasieg_b_coolnails_lifestyle_03</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">2,156 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">8.00%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120237011400710495">konwersje_k_luna-eye</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">1,566 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.44%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120234107551410495">zasieg_b_coolnails_lifestyle_03</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">1,477 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.33%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120237009582860495">konwersje_k_luna-eye</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">1,446 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.43%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120237011440680495">konwersje_k_luna-eye</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">1,432 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.25%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120241487089670495">konwersje_b_pumeks_nowe_1</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">1,409 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.27%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120242542281970495">ugc_depilator_2</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">1,399 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.18%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120248239923180495">b_summer25_foam1_10.07.</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">1,344 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">3.22%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120236766536450495">konwersje_b_luna-eye_3</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">1,241 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">3.35%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120237011411360495">konwersje_k_luna-eye</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">1,210 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.36%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120235512721630495">zasieg_monika</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">1,207 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.09%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120237012813880495">konwersje_k_supernova</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">1,012 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.27%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120236248789050495">Nowa reklama z celem Ruch</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">1,001 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">7.43%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120240408584850495">ad2_b_rossmann</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">988 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">4.36%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238015828470495">konwersje_v_luna-eye_ugc</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">973 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.39%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243028970410495">ad_vugc_szczotka-wlosy_Biobased-Hairbrush_02</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">902 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.38%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120242543183860495">ugc_depilator_3</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">856 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.27%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120242538709370495">ugc_pumeks_1</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">851 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.34%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239033571750495">ad_v_sb_4</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">756 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.84%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238815393130495">ad_v_walentynki_1</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">686 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.45%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238628643690495">zakup_b_porzucony_ogolne_3a</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">665 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.08%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238820780330495">zakup_b_porzucony_kod_4</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">661 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.03%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243032650360495">ad_vugc_platki-silikonowe_infinity-patches_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">617 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.37%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120237277041120495">konwersje_v-ugc_supernova</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">587 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.37%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239032796450495">ad_b_sb_1</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">579 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.97%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239156730530495">konwersje_v_luna-eye_ugc_2</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">539 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.42%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243032252640495">ad_b_poduszka-przeciwzmarszczkowa_sleeping-beauty_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">495 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.50%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120236766536460495">konwersje_b_luna-eye_1</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">474 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.18%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238628888990495">zakup_b_porzucony_ogolne_3b</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">426 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.69%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120235511245780495">zakup_v_skinsmooth</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">403 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.61%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243026059180495">ad_b_rekawica-peeling_skin-smooting_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">342 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.02%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120242871243880495">ugc_turban</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">341 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.31%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120246083649550495">ad_b_poduszka-przeciwzmarszczkowa_sleeping-beauty_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">337 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.80%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238470416850495">konwersje_v-ugc_supernova_2</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">329 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.81%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120247533136060495">ad_vugc_rekawica-peeling_skin-smooting_02 – kopia</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">313 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">3.12%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239157779270495">konwersje_v-ugc_lunaeye</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">310 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.67%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120234106726380495">zasieg_b_coolnails_lifestyle_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">310 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.11%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238470416860495">konwersje_v-ugc_supernova</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">304 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">3.05%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243026760710495">ad_b_myjka-3w1_bubble-burst_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">284 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.83%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238015645290495">konwersje_v-ugc_supernova_2</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">251 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.96%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120234107443740495">zasieg_b_coolnails_lifestyle_02</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">249 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.13%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120237012216290495">konwersje_k_supernova</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">246 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">3.10%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239157957250495">konwersje_v-ugc_lunaeye</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">242 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.60%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120242545958340495">ugc_nano_3</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">239 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.12%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243032443200495">ad_b_poduszka-przeciwzmarszczkowa_sleeping-beauty_02</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">234 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.75%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120248239980430495">v_summer25_szczotkaciało1_10.07.</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">229 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.54%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243032464710495">ad_b_poduszka-przeciwzmarszczkowa_sleeping-beauty_03</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">219 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.39%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243028599210495">ad_b_szczotka-wlosy_Biobased-Hairbrush_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">218 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.91%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120236766536470495">konwersje_b_luna-eye_2</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">205 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.14%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120242541573570495">ugc_pumeks_2</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">195 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.31%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120248273807700495">b_magnet_1_do22.07</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">193 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">5.21%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239033462750495">ad_b_sb_3</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">189 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.45%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239157641910495">konwersje_v_luna-eye_ugc_2</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">186 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.15%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120234105959510495">zasieg_k_coolnails_korzyści_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">176 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.13%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243030829020495">ad_vugc_rekawica_iconic-mitt_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">157 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.52%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120242544020310495">ugc_nano_2</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">151 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.28%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120235506602890495">zakup_v_monika</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">149 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">5.84%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239075814340495">zakup_v_ugc_szczotka-do-wlosow_10.24 – kopia</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">143 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.70%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120235506109210495">zasieg_v_coolnails_11.25-3</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">142 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.09%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238016119620495">konwersje_v_luna-eye_ugc – kopia</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">135 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">3.12%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243026415670495">ad_vugc_rekawica-peeling_skin-smooting_02</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">132 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.77%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120237276984030495">konwersje_v-ugc_supernova</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">130 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.74%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120235505325220495">zasieg_v_coolnails_11.25-1</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">129 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.20%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243031636950495">ad_vugc_platki-ledowe_luna-eye_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">124 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.78%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120240408584880495">ad3_v_rossmann</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">120 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">6.23%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238816361580495">ad_v_walentynki_2</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">116 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.54%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120235505909580495">zasieg_v_coolnails_11.25-3</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">98 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.43%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120248346800220495">v_quantumclean_1</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">98 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.31%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120248239639310495">b_summer25_rękawicapeeling2_10.07.</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">88 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.98%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238821018440495">zakup_b_porzucony_kod_5</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">86 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.93%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243027248270495">ad_v_myjka-3w1_bubble-burst_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">83 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.05%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120235508910150495">zakup_v_hydroweave</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">81 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.26%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243028678460495">ad_vugc_szczotka-wlosy_Biobased-Hairbrush_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">76 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.99%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243031785400495">ad_vugc_platki-ledowe_luna-eye_02</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">71 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.12%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243031370670495">ad_vugc_rekawica_iconic-mitt_02</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">68 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.40%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239157698980495">konwersje_v_luna-eye_ugc_2 – kopia</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">66 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.75%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239157688460495">konwersje_v_luna-eye_ugc_2 – kopia</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">66 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.57%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120248345955540495">v_quantumclean_1</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">64 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">5.06%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120239157691470495">konwersje_v_luna-eye_ugc_2 – kopia</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">56 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">3.30%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120238013845250495">konwersje_v-ugc_supernova_2</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">49 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.33%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120248240093350495">v_summer25_szczotkaciało2_10.07.</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">47 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.97%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120235506109230495">zasieg_v_coolnails_11.25-2</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">42 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.82%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243025508800495">ad_b_szczotka_ionic-brush_02</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">38 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.00%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120248239793950495">b_summer25_szczotkaciało2_10.07.</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">37 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.75%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120248239870130495">b_summer25_pumeks1_10.07.</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">37 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.91%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120246083649570495">ad_vugc_rekawica_iconic-mitt_02</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">32 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.73%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120234110806850495">zasieg_b_coolnails_lifestyle_02</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">31 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">3.62%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120237012822190495">konwersje_k_supernova</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">31 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.83%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120235511245640495">zakup_v_towelturban</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">30 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1.15%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120235506563190495">zakup_v_monika</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">29 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">3.97%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120235511245630495">zakup_v_skinsmooth</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">28 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.21%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120246083649480495">ad_vugc_rekawica_iconic-mitt_01</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">27 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.77%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120235390167840495">zakup_v_pumeks_1 – kopia</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">26 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.28%</td>
+        </tr><tr data-status="ACTIVE">
+            <td class="thumb-cell"><div class="thumb-placeholder">12</div></td>
+            <td class="name-cell"><span class="ad-name" title="120243032754660495">ad_vugc_platki-silikonowe_infinity-patches_02</span><span class="badge active">ACTIVE</span></td>
+            <td class="num">25 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">2.95%</td>
+        </tr></tbody>
+    </table>
+    <p class="footnote">ROAS pixel = Meta pixel (post-view + post-click, 7d) · ROAS GA4 = last-click attribution · Gap = (pixel/GA4 - 1)×100%</p>
+    </div>
+<div class="tab-content" id="tab-adsets">
+    <table class="data-table">
+        <thead><tr>
+            <th>Ad Set</th><th>Kampania</th><th>Kreacji</th>
+            <th class="num">Spend</th><th class="num">ROAS pixel</th>
+            <th class="num">ROAS GA4</th><th class="num">Sesje GA4</th>
+        </tr></thead>
+        <tbody><tr>
+            <td class="name-cell">120212533717770495</td>
+            <td class="name-cell dim">120212533717780495</td>
+            <td class="num">1</td>
+            <td class="num">10,622 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120239032796470495</td>
+            <td class="name-cell dim">120239032796460495</td>
+            <td class="num">4</td>
+            <td class="num">5,190 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120242871243910495</td>
+            <td class="name-cell dim">120242871243870495</td>
+            <td class="num">5</td>
+            <td class="num">5,189 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120243025047180495</td>
+            <td class="name-cell dim">120243025047190495</td>
+            <td class="num">9</td>
+            <td class="num">3,945 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120242538709380495</td>
+            <td class="name-cell dim">120242538709560495</td>
+            <td class="num">6</td>
+            <td class="num">3,691 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120236766536480495</td>
+            <td class="name-cell dim">120236764947190495</td>
+            <td class="num">6</td>
+            <td class="num">3,321 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120238740209810495</td>
+            <td class="name-cell dim">120236764947190495</td>
+            <td class="num">3</td>
+            <td class="num">3,196 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120236767039710495</td>
+            <td class="name-cell dim">120236764947190495</td>
+            <td class="num">3</td>
+            <td class="num">2,605 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120234105959600495</td>
+            <td class="name-cell dim">120234105959540495</td>
+            <td class="num">4</td>
+            <td class="num">2,211 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120234110716490495</td>
+            <td class="name-cell dim">120234110716500495</td>
+            <td class="num">4</td>
+            <td class="num">2,207 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120237277060870495</td>
+            <td class="name-cell dim">120237277060810495</td>
+            <td class="num">1</td>
+            <td class="num">2,174 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120243030829040495</td>
+            <td class="name-cell dim">120243030828990495</td>
+            <td class="num">10</td>
+            <td class="num">2,020 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120237995645150495</td>
+            <td class="name-cell dim">120237995645130495</td>
+            <td class="num">12</td>
+            <td class="num">1,815 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120236766887810495</td>
+            <td class="name-cell dim">120236764947190495</td>
+            <td class="num">2</td>
+            <td class="num">1,632 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120239074230370495</td>
+            <td class="name-cell dim">120239074230380495</td>
+            <td class="num">3</td>
+            <td class="num">1,569 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120236764947180495</td>
+            <td class="name-cell dim">120236764947190495</td>
+            <td class="num">2</td>
+            <td class="num">1,498 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120235512721640495</td>
+            <td class="name-cell dim">120235512721650495</td>
+            <td class="num">1</td>
+            <td class="num">1,207 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120237012216410495</td>
+            <td class="name-cell dim">120237012216550495</td>
+            <td class="num">3</td>
+            <td class="num">1,191 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120240408584870495</td>
+            <td class="name-cell dim">120240408013960495</td>
+            <td class="num">3</td>
+            <td class="num">1,108 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120224324962120495</td>
+            <td class="name-cell dim">120224324092310495</td>
+            <td class="num">2</td>
+            <td class="num">1,091 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120236248789040495</td>
+            <td class="name-cell dim">120236248789060495</td>
+            <td class="num">1</td>
+            <td class="num">1,001 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120237012216390495</td>
+            <td class="name-cell dim">120237012216550495</td>
+            <td class="num">2</td>
+            <td class="num">838 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120238815393140495</td>
+            <td class="name-cell dim">120238815393120495</td>
+            <td class="num">2</td>
+            <td class="num">801 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120224324092320495</td>
+            <td class="name-cell dim">120224324092310495</td>
+            <td class="num">2</td>
+            <td class="num">748 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120238470416840495</td>
+            <td class="name-cell dim">120237012216550495</td>
+            <td class="num">2</td>
+            <td class="num">634 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120246083649490495</td>
+            <td class="name-cell dim">120243030828990495</td>
+            <td class="num">10</td>
+            <td class="num">490 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120235387497120495</td>
+            <td class="name-cell dim">120235387496810495</td>
+            <td class="num">4</td>
+            <td class="num">420 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120237277060910495</td>
+            <td class="name-cell dim">120237277060810495</td>
+            <td class="num">1</td>
+            <td class="num">310 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120235388898570495</td>
+            <td class="name-cell dim">120235388898240495</td>
+            <td class="num">7</td>
+            <td class="num">289 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120248273807400495</td>
+            <td class="name-cell dim">120248273807500495</td>
+            <td class="num">11</td>
+            <td class="num">288 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120237012216400495</td>
+            <td class="name-cell dim">120237012216550495</td>
+            <td class="num">1</td>
+            <td class="num">246 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120237277060840495</td>
+            <td class="name-cell dim">120237277060810495</td>
+            <td class="num">1</td>
+            <td class="num">242 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120234387625090495</td>
+            <td class="name-cell dim">120234247983640495</td>
+            <td class="num">3</td>
+            <td class="num">238 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120234247983790495</td>
+            <td class="name-cell dim">120234247983640495</td>
+            <td class="num">3</td>
+            <td class="num">196 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120248346800280495</td>
+            <td class="name-cell dim">120248346800190495</td>
+            <td class="num">4</td>
+            <td class="num">121 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120235387497150495</td>
+            <td class="name-cell dim">120235387496810495</td>
+            <td class="num">5</td>
+            <td class="num">97 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120235387496800495</td>
+            <td class="name-cell dim">120235387496810495</td>
+            <td class="num">3</td>
+            <td class="num">58 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120237012216380495</td>
+            <td class="name-cell dim">120237012216550495</td>
+            <td class="num">1</td>
+            <td class="num">31 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120247980284240495</td>
+            <td class="name-cell dim">120247980284220495</td>
+            <td class="num">3</td>
+            <td class="num">17 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120247600817660495</td>
+            <td class="name-cell dim">120247597472350495</td>
+            <td class="num">3</td>
+            <td class="num">16 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120247601411410495</td>
+            <td class="name-cell dim">120247597472350495</td>
+            <td class="num">3</td>
+            <td class="num">15 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120247597472320495</td>
+            <td class="name-cell dim">120247597472350495</td>
+            <td class="num">3</td>
+            <td class="num">9 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120247601144110495</td>
+            <td class="name-cell dim">120247597472350495</td>
+            <td class="num">3</td>
+            <td class="num">9 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120247600550750495</td>
+            <td class="name-cell dim">120247597472350495</td>
+            <td class="num">3</td>
+            <td class="num">7 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120247601569690495</td>
+            <td class="name-cell dim">120247597472350495</td>
+            <td class="num">3</td>
+            <td class="num">7 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120247985738750495</td>
+            <td class="name-cell dim">120247980284220495</td>
+            <td class="num">3</td>
+            <td class="num">5 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120247985680970495</td>
+            <td class="name-cell dim">120247980284220495</td>
+            <td class="num">3</td>
+            <td class="num">5 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120240408013950495</td>
+            <td class="name-cell dim">120240408013960495</td>
+            <td class="num">3</td>
+            <td class="num">4 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120247985719080495</td>
+            <td class="name-cell dim">120247980284220495</td>
+            <td class="num">3</td>
+            <td class="num">4 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120235388898560495</td>
+            <td class="name-cell dim">120235388898240495</td>
+            <td class="num">5</td>
+            <td class="num">4 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+        </tr></tbody>
+    </table></div>
+<div class="tab-content" id="tab-campaigns">
+    <table class="data-table">
+        <thead><tr>
+            <th>Kampania</th><th>Kreacji</th><th>Ad Setów</th>
+            <th class="num">Spend</th><th class="num">ROAS pixel</th>
+            <th class="num">ROAS GA4</th>
+            <th class="num">Sesje GA4</th><th class="num">Zakupy GA4</th>
+        </tr></thead>
+        <tbody><tr>
+            <td class="name-cell">120236764947190495</td>
+            <td class="num">20</td>
+            <td class="num">7</td>
+            <td class="num">12,252 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120212533717780495</td>
+            <td class="num">1</td>
+            <td class="num">1</td>
+            <td class="num">10,622 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120239032796460495</td>
+            <td class="num">4</td>
+            <td class="num">1</td>
+            <td class="num">5,190 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120242871243870495</td>
+            <td class="num">5</td>
+            <td class="num">1</td>
+            <td class="num">5,189 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120243025047190495</td>
+            <td class="num">9</td>
+            <td class="num">1</td>
+            <td class="num">3,945 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120242538709560495</td>
+            <td class="num">6</td>
+            <td class="num">1</td>
+            <td class="num">3,691 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120237012216550495</td>
+            <td class="num">9</td>
+            <td class="num">5</td>
+            <td class="num">2,940 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120237277060810495</td>
+            <td class="num">3</td>
+            <td class="num">3</td>
+            <td class="num">2,727 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120243030828990495</td>
+            <td class="num">20</td>
+            <td class="num">2</td>
+            <td class="num">2,510 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120234105959540495</td>
+            <td class="num">4</td>
+            <td class="num">1</td>
+            <td class="num">2,211 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120234110716500495</td>
+            <td class="num">4</td>
+            <td class="num">1</td>
+            <td class="num">2,207 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120224324092310495</td>
+            <td class="num">4</td>
+            <td class="num">2</td>
+            <td class="num">1,838 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120237995645130495</td>
+            <td class="num">12</td>
+            <td class="num">1</td>
+            <td class="num">1,815 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120239074230380495</td>
+            <td class="num">3</td>
+            <td class="num">1</td>
+            <td class="num">1,569 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120235512721650495</td>
+            <td class="num">1</td>
+            <td class="num">1</td>
+            <td class="num">1,207 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120240408013960495</td>
+            <td class="num">6</td>
+            <td class="num">2</td>
+            <td class="num">1,113 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120236248789060495</td>
+            <td class="num">1</td>
+            <td class="num">1</td>
+            <td class="num">1,001 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120238815393120495</td>
+            <td class="num">2</td>
+            <td class="num">1</td>
+            <td class="num">801 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120235387496810495</td>
+            <td class="num">17</td>
+            <td class="num">4</td>
+            <td class="num">577 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120234247983640495</td>
+            <td class="num">6</td>
+            <td class="num">2</td>
+            <td class="num">435 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120235388898240495</td>
+            <td class="num">12</td>
+            <td class="num">2</td>
+            <td class="num">293 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120248273807500495</td>
+            <td class="num">11</td>
+            <td class="num">1</td>
+            <td class="num">288 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120248346800190495</td>
+            <td class="num">4</td>
+            <td class="num">1</td>
+            <td class="num">121 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120247597472350495</td>
+            <td class="num">18</td>
+            <td class="num">6</td>
+            <td class="num">64 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr><tr>
+            <td class="name-cell">120247980284220495</td>
+            <td class="num">18</td>
+            <td class="num">6</td>
+            <td class="num">38 zł</td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num"><span style="color:#999">—</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+        </tr></tbody>
+    </table></div>
+<div class="tab-content" id="tab-daily"><div class="alert-warn">
+            Brak danych dziennych. Uruchom <code>python3 meta_etl.py --backfill</code>
+            (wymaga <code>META_ACCESS_TOKEN</code> w <code>.env</code>).
+        </div></div>
+
+<script>
+function showTab(id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.target.classList.add('active');
+}
+function filterCreatives(activeOnly, btn) {
+    document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#tbody-creatives tr').forEach(tr => {
+        if (activeOnly && tr.dataset.status !== 'ACTIVE') {
+            tr.style.display = 'none';
+        } else {
+            tr.style.display = '';
+        }
+    });
+}
+</script>
+</body>
+</html>

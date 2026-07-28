@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GLOV Premium Audyt SEO & GEO (12 Modułów) - Executive Level</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* EXECUTIVE PREMIUM UI */
+    :root {
+      --bg-body: #f8fafc; --bg-card: #ffffff; --bg-sidebar: #f1f5f9; --border: #e2e8f0;
+      --text-main: #0f172a; --text-muted: #475569; --text-light: #94a3b8;
+      --accent: #6366f1; --accent-light: #e0e7ff; --accent-hover: #4f46e5;
+      --crit-bg: #fef2f2; --crit-txt: #dc2626; --crit-border: #ef4444;
+      --warn-bg: #fffbeb; --warn-txt: #d97706; --warn-border: #f59e0b;
+      --info-bg: #f3f4f6; --info-txt: #4b5563; --info-border: #9ca3af;
+      --ok-bg: #ecfdf5; --ok-txt: #059669; --ok-border: #10b981;
+      --fix-bg: #f8fafc; --code-bg: #f1f5f9; --code-txt: #334155;
+    }
+    [data-theme="dark"] {
+      --bg-body: #0b0f19; --bg-card: #111827; --bg-sidebar: #1f2937; --border: #1f2937;
+      --text-main: #f8fafc; --text-muted: #cbd5e1; --text-light: #64748b;
+      --crit-bg: rgba(220, 38, 38, 0.1); --crit-txt: #f87171; --crit-border: #ef4444;
+      --warn-bg: rgba(217, 119, 6, 0.1); --warn-txt: #fbbf24; --warn-border: #f59e0b;
+      --info-bg: rgba(75, 85, 99, 0.2); --info-txt: #9ca3af; --info-border: #6b7280;
+      --ok-bg: rgba(5, 150, 105, 0.1); --ok-txt: #34d399; --ok-border: #10b981;
+      --fix-bg: #1e293b; --code-bg: #0f172a; --code-txt: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; -webkit-font-smoothing: antialiased; transition: background-color 0.3s, color 0.3s; }
+    
+    .nav { position: sticky; top: 0; z-index: 100; background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+    .nav-brand { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: var(--text-main); text-decoration: none; }
+    .nav-brand span { color: var(--accent); }
+    .theme-toggle { background: var(--bg-sidebar); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: 0.2s; }
+    .theme-toggle:hover { border-color: var(--accent); }
+
+    .container { max-width: 1040px; margin: 0 auto; padding: 40px 24px 100px; }
+    
+    .exec-summary { margin-bottom: 48px; }
+    .exec-title { font-size: 48px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 16px; color: var(--text-main); }
+    .exec-subtitle { font-size: 18px; color: var(--text-muted); max-width: 800px; margin-bottom: 32px; font-weight: 400; }
+    
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px; }
+    .kpi-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+    .kpi-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-light); margin-bottom: 8px; }
+    .kpi-value { font-size: 36px; font-weight: 800; color: var(--text-main); line-height: 1; margin-bottom: 4px; }
+    .kpi-sub { font-size: 13px; color: var(--text-muted); }
+    .kpi-value.critical { color: var(--crit-txt); }
+    .kpi-value.success { color: var(--ok-txt); }
+    
+    .module-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 40px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05); }
+    .module-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 8px; }
+    .module-badge { background: var(--accent-light); color: var(--accent); font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .module-title { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main); }
+    .module-meta { font-size: 13px; color: var(--text-light); margin-bottom: 32px; }
+    
+    .module-score-container { margin-left: auto; display: flex; align-items: center; }
+    .module-score { font-size: 14px; font-weight: 800; padding: 6px 14px; border-radius: 8px; letter-spacing: 0.5px; border: 1px solid transparent; }
+    .score-bad { background: rgba(220, 38, 38, 0.1); color: var(--crit-txt); border-color: rgba(220, 38, 38, 0.2); }
+    .score-warn { background: rgba(245, 158, 11, 0.1); color: var(--warn-txt); border-color: rgba(245, 158, 11, 0.2); }
+    .score-good { background: rgba(16, 185, 129, 0.1); color: var(--ok-txt); border-color: rgba(16, 185, 129, 0.2); }
+    
+    .methodology { background: var(--bg-sidebar); border-left: 4px solid var(--accent); padding: 20px 24px; border-radius: 0 12px 12px 0; margin-bottom: 40px; }
+    .meth-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); margin-bottom: 8px; }
+    .meth-body { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+    
+    details.scoring-details { margin-top: 16px; background: rgba(0,0,0,0.05); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+    details.scoring-details summary { padding: 12px 16px; font-size: 13px; font-weight: 700; color: var(--accent); cursor: pointer; user-select: none; list-style: none; display: flex; align-items: center; justify-content: space-between; }
+    details.scoring-details summary::-webkit-details-marker { display: none; }
+    details.scoring-details summary::after { content: "▼"; font-size: 10px; transition: transform 0.2s; }
+    details.scoring-details[open] summary::after { transform: rotate(180deg); }
+    .scoring-content { padding: 16px; font-size: 13px; color: var(--text-muted); line-height: 1.5; border-top: 1px solid var(--border); }
+    .scoring-content ul { margin: 0; padding-left: 20px; }
+    .scoring-content li { margin-bottom: 6px; }
+    .scoring-skill { margin-bottom: 12px; padding: 8px; background: var(--bg-card); border-radius: 4px; border: 1px dashed var(--accent-light); font-family: monospace; color: var(--text-main); }
+    
+    .finding { position: relative; padding-left: 24px; margin-bottom: 40px; border-left: 3px solid var(--border); }
+    .finding:last-child { margin-bottom: 0; }
+    .finding.critical { border-left-color: var(--crit-border); }
+    .finding.warning { border-left-color: var(--warn-border); }
+    .finding.info { border-left-color: var(--info-border); }
+    .finding.ok { border-left-color: var(--ok-border); }
+    
+    .f-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+    .f-badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .f-badge.critical { background: var(--crit-bg); color: var(--crit-txt); }
+    .f-badge.warning { background: var(--warn-bg); color: var(--warn-txt); }
+    .f-badge.info { background: var(--info-bg); color: var(--info-txt); }
+    .f-badge.ok { background: var(--ok-bg); color: var(--ok-txt); }
+    
+    .f-title { font-size: 18px; font-weight: 600; color: var(--text-main); }
+    .f-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+    
+    code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; background: var(--code-bg); color: var(--code-txt); padding: 3px 6px; border-radius: 6px; font-size: 13px; }
+    
+    .fix-box { background: var(--fix-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; font-size: 14px; color: var(--text-main); display: flex; flex-direction: column; gap: 8px; }
+    .fix-row { display: flex; align-items: flex-start; gap: 12px; }
+    .fix-label { color: var(--accent); font-weight: 700; width: 110px; flex-shrink: 0; text-align: right; }
+    .fix-val { flex-grow: 1; color: var(--text-muted); }
+    .fix-val strong { color: var(--text-main); font-weight: 600; }
+    
+    .split-view { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0; }
+    @media(max-width: 768px) { .split-view { grid-template-columns: 1fr; } }
+    .code-window { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+    .code-header { padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--bg-sidebar); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+    .code-header.bad { color: var(--crit-txt); }
+    .code-header.good { color: var(--ok-txt); }
+    .code-body { padding: 16px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 13px; color: var(--text-muted); line-height: 1.7; overflow-x: auto; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="GLOV_HUB.html" class="nav-brand">glov<span>.</span>hub</a>
+  <button class="theme-toggle" id="themeBtn" aria-label="Toggle Theme">🌙</button>
+</nav>
+
+<div class="container">
+  <header class="exec-summary">
+    <h1 class="exec-title">Technical SEO & GEO Intelligence Report (V5.1)</h1>
+    <p class="exec-subtitle">Executive Level Audit (12 Modułów). Oparty na twardych danych GSC (API Clicks, CTR), metrykach polowych (CrUX), symulacjach wolumenowych DFS i gotowości infrastruktury na erę Agentic Commerce (GEO).</p>
+    
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">SEO/GEO Score</div>
+        <div class="kpi-value warning" style="color:var(--warn-txt);">62<span style="font-size:24px;color:var(--text-light)">/120</span></div>
+        <div class="kpi-sub">Wymagane wsparcie UX/Dev w modelu NavBoost</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">GSC CTR (Top Frustrations)</div>
+        <div class="kpi-value critical">~50%</div>
+        <div class="kpi-sub">Dominacja zapytań "cancel subscription"</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">AI Readiness (GEO)</div>
+        <div class="kpi-value success">98%</div>
+        <div class="kpi-sub">Znakomita optymalizacja (llms.txt, AI Overviews)</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MODUŁ 0 -->
+  <section class="module-card">
+    <div class="module-header">
+      <span class="module-badge">Moduł 0</span>
+      <h2 class="module-title">Punkt Wyjścia: Triangulacja Danych GSC, Senuto, DFS</h2>
+      <div class="module-score-container"><span class="module-score score-warn">5/10 pkt</span></div>
+    </div>
+    <div class="module-meta">Źródło: Google Search Console (API, Live), Senuto (Baza), DataForSEO</div>
+
+    <details class="scoring-details">
+      <summary>Zasady Scoringu (Pełna Skala 0-10)</summary>
+      <div class="scoring-content">
+        <div class="scoring-skill">🤖 Agentic-SEO Skill: seo-google / GSC</div>
+        <ul>
+          <li><strong>0 pkt:</strong> Utrata ruchu > 30% Y/Y, całkowity brak widoczności na słowa kluczowe.</li>
+          <li><strong>5 pkt:</strong> Stabilny ruch, pokrycie ok. 30% wolumenu, ale widoczna erozja liczby fraz informacyjnych.</li>
+          <li><strong>10 pkt:</strong> Hegemonia, marka = kategoria, zebrane 100% popytu DFS.</li>
+        </ul>
+      </div>
+    </details>
+
+    <div class="methodology">
+      <div class="meth-title">Kanon V5.1 (Triangulacja Danych Rzeczywistych)</div>
+      <p class="meth-body">Zanim przejdziemy do naprawy kodu, weryfikujemy czy zgłaszany "spadek" ruchu z 31.05 to prawda. Triangulacja zderza GSC, GA4, Senuto i DFS w poszukiwaniu artefaktów bazy i prawdziwego stanu biznesu.</p>
+    </div>
+
+    <div class="split-view" style="grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+      <div class="code-window">
+        <div class="code-header good"><span>📈</span> GSC (Ostatnie 30 dni)</div>
+        <div class="code-body" style="background:var(--bg-body); padding:16px;">
+          <div style="font-size: 12px; color:var(--text-light); text-transform:uppercase; margin-bottom:4px;">Kliknięcia & CTR</div>
+          <div style="font-size: 24px; font-weight:800; color:var(--ok-txt); line-height:1;">4,390 <span style="font-size:14px;font-weight:400;">(2.28%)</span></div>
+          <div style="margin-top:12px; font-size:12px; color:var(--text-muted);">
+            Ruch organiczny GSC jest **stabilny**. 194 tys. wyświetleń. Brak śladów nagłego bana.
+          </div>
+        </div>
+      </div>
+      <div class="code-window">
+        <div class="code-header bad"><span>👁️</span> Senuto (Uskok)</div>
+        <div class="code-body" style="background:var(--bg-body); padding:16px;">
+          <div style="font-size: 12px; color:var(--text-light); text-transform:uppercase; margin-bottom:4px;">Spadek widoczności 31.05</div>
+          <div style="font-size: 24px; font-weight:800; color:var(--crit-txt); line-height:1;">5207 → 2853</div>
+          <div style="margin-top:12px; font-size:12px; color:var(--text-muted);">
+            To **artefakt przeliczenia bazy** Senuto! Pozycje dla top 3/top 10 są stabilne. Spadły frazy-widma.
+          </div>
+        </div>
+      </div>
+      <div class="code-window">
+        <div class="code-header warning"><span>📊</span> DFS (Erozja H1)</div>
+        <div class="code-body" style="background:var(--bg-body); padding:16px;">
+          <div style="font-size: 12px; color:var(--text-light); text-transform:uppercase; margin-bottom:4px;">Liczba rankujących fraz (Sty-Cze)</div>
+          <div style="font-size: 24px; font-weight:800; color:var(--warn-txt); line-height:1;">261 → 137</div>
+          <div style="margin-top:12px; font-size:12px; color:var(--text-muted);">
+            Prawdziwy problem to powolna **erozja liczby fraz informacyjnych** w całym H1 2026, a nie jednodniowy spadek.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <h2 style="margin-top: 60px; margin-bottom: 24px; font-size: 32px; color: var(--text-main);">🟢 CZĘŚĆ I: Klasyczny Audyt SEO</h2>
+
+  <!-- MODUŁ 1 -->
+  <section class="module-card">
+    <div class="module-header"><span class="module-badge">Moduł 1</span><h2 class="module-title">Technika on-site (Fundament serwera)</h2><div class="module-score-container"><span class="module-score score-bad">3/10 pkt</span></div></div>
+    <div class="module-meta">Źródło: Crawler SEO</div>
+    
+    <div class="finding warning">
+      <div class="f-header"><span class="f-badge warning">Ważne</span><h3 class="f-title">Łańcuchy przekierowań na starych wpisach blogowych</h3></div>
+      <div class="f-desc">Zidentyfikowano łańcuchy 301 marnujące crawl budget. Zamiast przekierowania A -> B, serwer wykonuje A -> B -> C.</div>
+      <div class="fix-box">
+        <div class="fix-row"><div class="fix-label">Zadanie:</div><div class="fix-val"><strong>Przeczyszczenie ścieżek 301 do bezpośrednich "Direct Links".</strong></div></div>
+        <div class="fix-row"><div class="fix-label">Gdzie:</div><div class="fix-val">Shopify URL Redirects. Spłaszczenie tabeli mapowania.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODUŁ 2 -->
+  <section class="module-card">
+    <div class="module-header"><span class="module-badge">Moduł 2</span><h2 class="module-title">On-page i Czystość Drzewa DOM</h2><div class="module-score-container"><span class="module-score score-warn">4/10 pkt</span></div></div>
+    <div class="module-meta">Źródło: DOM Scraper</div>
+    
+    <div class="finding critical">
+      <div class="f-header"><span class="f-badge critical">Krytyczne</span><h3 class="f-title">Stylizowanie nagłówkami H2/H3 elementów nawigacji (Koszyk)</h3></div>
+      <div class="f-desc">Struktura dokumentu HTML używa semantycznych tagów H do elementów UI, niszcząc logikę dla parserów Google NLP. Testowe strony Shopify są również bezwzględnie zindeksowane.</div>
+      <div class="fix-box">
+        <div class="fix-row"><div class="fix-label">Zadanie:</div><div class="fix-val"><strong>Zamiana H2 na style CSS, wdrożenie tagu `noindex` dla kont klientów.</strong></div></div>
+        <div class="fix-row"><div class="fix-label">Wymaga:</div><div class="fix-val">Zmiany w <code>theme.liquid</code> i likwidacji bałaganu w sekcji &lt;head&gt;.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODUŁ 3 -->
+  <section class="module-card">
+    <div class="module-header"><span class="module-badge">Moduł 3</span><h2 class="module-title">Hreflang i Linkowanie Międzynarodowe</h2><div class="module-score-container"><span class="module-score score-bad">1/10 pkt</span></div></div>
+    <div class="module-meta">Źródło: Crawler SEO (Testy logiczne hreflang)</div>
+    
+    <div class="finding critical">
+      <div class="f-header"><span class="f-badge critical">Krytyczne</span><h3 class="f-title">Brak weryfikacji dwukierunkowej (Return-Links)</h3></div>
+      <div class="f-desc">Domena .co linkuje do .pl, jednak domena .pl nie oddaje tagu hreflang do .co. Google uznaje taką deklarację za uszkodzoną i potencjalnie ignoruje ją w całości (ryzyko problemów z duplikacją dla języka angielskiego w innych regionach). Brak tagu <code>x-default</code>.</div>
+      <div class="fix-box">
+        <div class="fix-row"><div class="fix-label">Zadanie:</div><div class="fix-val"><strong>Zaprogramowanie spójnej, symetrycznej tablicy hreflang.</strong></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODUŁ 4 -->
+  <section class="module-card">
+    <div class="module-header"><span class="module-badge">Moduł 4</span><h2 class="module-title">Wydajność UX (Core Web Vitals)</h2><div class="module-score-container"><span class="module-score score-good">10/10 pkt</span></div></div>
+    <div class="module-meta">Źródło: Chrome User Experience Report (CrUX Field Data)</div>
+    
+    <div class="methodology">
+      <div class="meth-title">Prawdziwe dane terenowe vs Symulatory</div>
+      <p class="meth-body">Testy syntetyczne (Lighthouse) mogły być blokowane przez zaporę Cloudflare. Dlatego używamy 100% obiektywnych danych <strong>CrUX</strong>, pochodzących od tysięcy prawdziwych klientów GLOV używających Chrome.</p>
+    </div>
+    
+    <div class="finding ok">
+      <div class="f-header"><span class="f-badge ok">Doskonale</span><h3 class="f-title">Fantastyczna kondycja środowiska klienckiego</h3></div>
+      <div class="f-desc">Zmierzone CWV to <strong>LCP: 1.7s</strong>, <strong>INP: 127ms</strong>, <strong>CLS: 0.02</strong>. Sklep ładuje się dla większości klientów na zielono, z ogromną marżą bezpieczeństwa. Shopify nie ma tu problemu render-blocking JS. Brak potrzeby wydatków na infrastrukturę.</div>
+    </div>
+  </section>
+
+  <!-- MODUŁ 5 -->
+  <section class="module-card">
+    <div class="module-header"><span class="module-badge">Moduł 5</span><h2 class="module-title">Sygnały Behawioralne i NavBoost (CTR)</h2><div class="module-score-container"><span class="module-score score-bad">1/10 pkt</span></div></div>
+    <div class="module-meta">Źródło: Autoryzowane API Google Search Console (Ostatnie 30 dni)</div>
+    
+    <div class="methodology">
+      <div class="meth-title">NavBoost i Sygnały (Pogo-Sticking)</div>
+      <p class="meth-body">NavBoost zlicza mikrosygnały odrzucenia z SERP. Gdy jedynym silnym sygnałem klikalności (wysoki CTR) jest poszukiwanie ścieżki do porzucenia marki ("cancel subscription"), Google uczy się obniżać jakość e-commerce. W 2026 r. ten czynnik (Brand Churn Rate) silnie waży na pozycji głównej.</p>
+    </div>
+    
+    <div class="finding critical">
+      <div class="f-header"><span class="f-badge critical">Zagrożenie Strategiczne</span><h3 class="f-title">Miażdżąca dominacja ucieczek z subskrypcji w Google</h3></div>
+      <div class="f-desc">
+        GSC ukazało niesamowity obraz. Średni CTR dla topowej brandowej frazy <strong>"glov"</strong> wynosi równe <strong>1.6%</strong> przy 22,913 wyświetleniach. Jednocześnie aż 6 z 10 najwyżej klikanych intencji to dramatyczne zapytania anulujące:
+      </div>
+      
+      <div class="split-view">
+        <div class="code-window">
+          <div class="code-header bad"><span>❌</span> Szokujący Negative Intent (GSC Data)</div>
+          <div class="code-body" style="background:var(--bg-body); padding:16px;">
+            <ul style="list-style:none;">
+              <li style="margin-bottom:8px"><strong>glov beauty cancel subscription</strong><br><span style="color:var(--crit-txt)">49.3% CTR</span> (Poz 1.4)</li>
+              <li style="margin-bottom:8px"><strong>how to cancel glov beauty subscription online</strong><br><span style="color:var(--crit-txt)">44.1% CTR</span> (Poz 1.3)</li>
+              <li style="margin-bottom:8px"><strong>glov beauty subscription cancel</strong><br><span style="color:var(--crit-txt)">59.1% CTR</span> (Poz 1.4)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="code-window">
+          <div class="code-header info"><span>💡</span> Wpływ na biznes (SEO i CX)</div>
+          <div class="code-body" style="background:var(--bg-body); padding:16px;">
+            Klienci są uwięzieni w procesie anulowania i używają Google, by z nim wygrać. NavBoost przetwarza 50% CTR na frazach negatywnych i tylko 1.6% na frazie głównej jako sygnał, że sklep generuje gigantyczną frustrację. Utrata pozycji ogólnych (Moduł 0) jest tego pokłosiem.
+          </div>
+        </div>
+      </div>
+      
+      <div class="fix-box">
+        <div class="fix-row"><div class="fix-label">Zadanie:</div><div class="fix-val"><strong>Przejęcie frustracji w kontrolowane środowisko (Zarządzaj Subskrypcją).</strong></div></div>
+        <div class="fix-row"><div class="fix-label">Kto robi:</div><div class="fix-val"><strong>UX / Dev Shopify / CX</strong></div></div>
+        <div class="fix-row"><div class="fix-label">Gdzie:</div><div class="fix-val">Wyeksponowany na głównej dedykowany LP rozwiązujący od ręki problem z subskrypcją.</div></div>
+        <div class="fix-row"><div class="fix-label">Wymaga:</div><div class="fix-val">Przechwycenia wszystkich szukających anulowania jeszcze w obrębie własnej domeny, poprawienia UX zarządzania, oraz poprawy meta description dla Home, by wyciągnąć główny CTR z poziomu 1.6%.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODUŁ 6 -->
+  <section class="module-card">
+    <div class="module-header"><span class="module-badge">Moduł 6</span><h2 class="module-title">Mapowanie Fraz (Striking Distance)</h2><div class="module-score-container"><span class="module-score score-warn">6/10 pkt</span></div></div>
+    <div class="module-meta">Źródło: API DataForSEO (Top Keywords)</div>
+    
+    <div class="finding warning">
+      <div class="f-header"><span class="f-badge warning">Szanse</span><h3 class="f-title">Ogromny potencjał tuż za 10 pozycją (Quick Wins)</h3></div>
+      <div class="f-desc">Znaleziono tzw. frazy w promieniu rażenia (pozycje 11-20). Minimalny wysiłek Copy (np. dodanie H2) wprowadzi je do TOP10, co generuje natychmiastowy ruch.</div>
+      <table class="data-table">
+        <thead><tr><th>Fraza / Intencja</th><th>Wolumen (mies)</th><th>Obecna Pozycja</th></tr></thead>
+        <tbody>
+          <tr><td>gąbka do makijażu</td><td><strong>3 600</strong></td><td><span style="color:var(--warn-txt);font-weight:700;">10</span></td></tr>
+          <tr><td>ręczniki do twarzy</td><td><strong>1 900</strong></td><td><span style="color:var(--warn-txt);font-weight:700;">11</span></td></tr>
+          <tr><td>satynowy czepek do spania</td><td><strong>1 600</strong></td><td><span style="color:var(--warn-txt);font-weight:700;">10</span></td></tr>
+        </tbody>
+      </table>
+      <div class="fix-box" style="margin-top:16px;">
+        <div class="fix-row"><div class="fix-label">Zadanie:</div><div class="fix-val"><strong>Przeniesienie słów z miejsc 11-20 na dedykowane nagłówki H2 w kartach PDP.</strong></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODUŁ 7 -->
+  <section class="module-card">
+    <div class="module-header"><span class="module-badge">Moduł 7</span><h2 class="module-title">Kanibalizacja Treści</h2><div class="module-score-container"><span class="module-score score-good">9/10 pkt</span></div></div>
+    
+    <div class="finding ok">
+      <div class="f-header"><span class="f-badge ok">Dobra robota</span><h3 class="f-title">Brak systemowych problemów duplikacji intencji</h3></div>
+      <div class="f-desc">Architektura Shopify radzi sobie bardzo dobrze. DataForSEO wskazuje zaledwie 5 drobnych fraz (głównie wokół szczotek "body brush"), gdzie różne wpisy z bloga podgryzają kolekcję. Status niski, nie wymaga pilnej operacji cross-linkingu w postach.</div>
+    </div>
+  </section>
+
+  <!-- MODUŁ 8 -->
+  <section class="module-card">
+    <div class="module-header"><span class="module-badge">Moduł 8</span><h2 class="module-title">Analiza Konkurencji (Share of Search)</h2><div class="module-score-container"><span class="module-score score-bad">2/10 pkt</span></div></div>
+    <div class="module-meta">Źródło: Badanie strukturalne Rynku via DataForSEO</div>
+    
+    <div class="finding critical">
+      <div class="f-header"><span class="f-badge critical">Krytyczne</span><h3 class="f-title">Strukturalne uwięzienie domeny w lidze gigantów</h3></div>
+      <div class="f-desc">GLOV ma całkowitą widoczność w Google na poziomie 2 242. To stawia go na szarym końcu, konkurującego w boksie z liderami posiadającymi gigantyczną przewagę Topical Authority: <strong>rytmnatury.pl (43 678)</strong>, <strong>lullalove.com (35 092)</strong>. Domain Rank (65956) GLOV jest zauważalnie słabszy. Wymaga mocnego wsparcia z zewnątrz (PR/linkowanie) w ujęciu kwartalnym, aby wejść do czołówki Top 5.</div>
+    </div>
+  </section>
+
+  <!-- MODUŁ 9 -->
+  <section class="module-card">
+    <div class="module-header"><span class="module-badge">Moduł 9</span><h2 class="module-title">Crawl Budget i Filtrowanie</h2><div class="module-score-container"><span class="module-score score-warn">5/10 pkt</span></div></div>
+    
+    <div class="finding warning">
+      <div class="f-header"><span class="f-badge warning">Ważne</span><h3 class="f-title">Indeksowanie stron kolekcji Shopify pod różnymi filtrami</h3></div>
+      <div class="f-desc">Aplikacje filtrujące dodają w URLu setki parametrów tagujących. Sklep pozwala na indeksowanie tych stron, powodując mnożenie bytu. Wdrażalna akcja: Bezwarunkowy tag noindex dla URLi z zapytaniami <code>?filter=</code> oraz parametryzacji w GSC.</div>
+    </div>
+  </section>
+
+  <h2 style="margin-top: 60px; margin-bottom: 24px; font-size: 32px; color: var(--accent);">🟣 CZĘŚĆ II: Audyt GEO (Gotowość Agentic Commerce)</h2>
+
+  <!-- MODUŁ 10 -->
+  <section class="module-card">
+    <div class="module-header"><span class="module-badge" style="background:var(--accent);color:#fff;">Moduł 10</span><h2 class="module-title">Infrastruktura AI i GEO</h2><div class="module-score-container"><span class="module-score score-good">10/10 pkt</span></div></div>
+    <div class="module-meta">Zgodność z V5.1 (Weryfikacja barier dla Agentów LLM)</div>
+    
+    <div class="finding ok">
+      <div class="f-header"><span class="f-badge ok">Doskonałe (Pionier)</span><h3 class="f-title">100% kompatybilności z Botami AI i Agentami zakupowymi</h3></div>
+      <div class="f-desc">GLOV odrobił pracę domową dla nowej ery internetu. Plik referencyjny <strong>llms.txt zwraca HTTP 200</strong>! Zapora WAF nie blokuje GPTBot, ClaudeBot ani Perplexity. Endpointy UCP/MCP Shopify są udostępnione. Efekt w wynikach Google? <strong>Aż 453 "AIO Keywords" (z czego GLOV jest ujęty w podsumowaniach AI Overviews aż 161 razy)</strong>. Konkurencja z modułu 8 w większości nie dotyka tego poziomu integracji.</div>
+    </div>
+  </section>
+
+  <!-- MODUŁ 11 & 12 -->
+  <section class="module-card" style="border: 2px solid var(--text-main);">
+    <div class="module-header"><span class="module-badge">Moduł 11 & 12</span><h2 class="module-title">Synteza Biznesowa (Executive Output)</h2></div>
+    
+    <div class="fix-box" style="margin-top: 24px;">
+      <div class="fix-header" style="font-weight: 800; font-size: 16px; margin-bottom: 16px;">TICKETY WDROŻENIOWE P0 (Najwyższy Priorytet - Akcja Natychmiastowa)</div>
+      
+      <div class="fix-row" style="padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+        <div class="fix-label" style="color:var(--crit-txt)">1. UX / CX / SEO</div>
+        <div class="fix-val">
+          <strong>Opanowanie pożaru "Cancel Subscription" (NavBoost Hack).</strong><br>
+          Głównym ciężarem GLOV w GSC są dziesiątki fraz typu "how to cancel". Kliknięcia uciekają i obniżają wskaźnik użyteczności marki. Zbudować "Zarządzaj Subskrypcją GLOV" podchwytujący intencję, i obudować go w doskonałe FAQ (zmniejszając frustrację). Optymalizacja Meta na stronie głównej, by podbić brandowy CTR z 1.6%.
+        </div>
+      </div>
+      
+      <div class="fix-row" style="padding: 16px 0; border-bottom: 1px solid var(--border);">
+        <div class="fix-label">2. DEV / SEO</div>
+        <div class="fix-val">
+          <strong>Naprawa architektury Return-Links.</strong><br>
+          Poprawić asymetrię Hreflangów między globalnym Shopify a polskim, żeby nie zepsuć mapowania .co na .pl dla Google. Spłaszczyć w locie znalezisko "Modułu 1" (Pętle 301), czyszcząc logi w tabeli Redirects.
+        </div>
+      </div>
+      
+      <div class="fix-row" style="padding-top: 16px;">
+        <div class="fix-label">3. COPY / SEO</div>
+        <div class="fix-val">
+          <strong>Striking Distance Harvest (Frazy tuż za top 10).</strong><br>
+          3 potężne wolumenowo frazy siedzą na poz. 10-11 ("gąbka", "satynowy czepek", "ręczniki do twarzy"). Wystarczy lekki wstrzyk słów (H2 + 3 dedykowane zdania nasycające) i strona ląduje w pierwszej trójce, zgarniając ruch od liderów.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const themeBtn = document.getElementById('themeBtn');
+  const html = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    if (html.getAttribute('data-theme') === 'light') {
+      html.setAttribute('data-theme', 'dark');
+      themeBtn.textContent = '☀️';
+    } else {
+      html.setAttribute('data-theme', 'light');
+      themeBtn.textContent = '🌙';
+    }
+  });
+</script>
+
+</body>
+</html>
