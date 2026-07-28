@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Percepcji — Ekspresy do kawy</title>
+<style>
+:root {
+  --bg: #fdfcfb;
+  --bg-card: #ffffff;
+  --bg-hover: #f7f4f0;
+  --ink: #1a1a1a;
+  --ink2: #555;
+  --muted: #8c8c8c;
+  --line: #e8e4dc;
+  --line2: #f0ede6;
+  --accent: #8B4513;
+  --accent2: #C8753B;
+  --info: #2E7D32;
+  --komerc: #E65100;
+  --transakc: #1565C0;
+  --shadow: 0 1px 3px rgba(0,0,0,.06);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,.08);
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg); color: var(--ink);
+  line-height: 1.5; font-size: 15px;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── TOPBAR ── */
+.topbar{
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(253,252,251,.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  padding: 10px 14px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.topbar-row1{
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.topbar h1{font-size:16px;font-weight:700;white-space:nowrap;letter-spacing:-.3px}
+.topbar h1 span{color:var(--accent2)}
+
+.search-wrap{flex:1;min-width:140px;max-width:100%;position:relative}
+.search-wrap input{
+  width:100%;padding:8px 10px 8px 34px;
+  border:1.5px solid var(--line);border-radius:8px;font-size:14px;
+  background:var(--bg-card);color:var(--ink);
+  outline:none;transition:border .15s;
+  -webkit-appearance:none;
+}
+.search-wrap input:focus{
+  border-color:var(--accent2);
+  box-shadow:0 0 0 3px rgba(200,117,59,.12);
+}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;color:var(--muted)}
+
+.filter-toggle{
+  display:flex;align-items:center;gap:5px;
+  padding:7px 12px;border-radius:8px;
+  border:1.5px solid var(--line);
+  background:var(--bg-card);color:var(--ink2);
+  font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;
+  transition:all .15s;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.filter-toggle:hover{background:var(--bg-hover)}
+.filter-toggle.open{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.filter-panel{display:none;flex-direction:column;gap:8px;padding-top:4px}
+.filter-panel.visible{display:flex}
+
+.filter-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.filter-label{
+  font-size:11px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.5px;
+  margin-right:4px;white-space:nowrap;
+}
+
+/* ── CHIPS ── */
+.chip{
+  padding:5px 10px;border-radius:20px;
+  font-size:12px;font-weight:600;cursor:pointer;
+  border:1.5px solid var(--line);
+  background:var(--bg-card);color:var(--ink2);
+  transition:all .15s;user-select:none;white-space:nowrap;
+  min-height:32px;display:inline-flex;align-items:center;
+  -webkit-tap-highlight-color:transparent;
+}
+.chip:active{transform:scale(.96)}
+.chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.chip-all.active{background:var(--ink2);border-color:var(--ink2)}
+
+/* ── STATS BAR ── */
+.statsbar{
+  display:flex;gap:10px;flex-wrap:wrap;
+  padding:6px 14px;font-size:12px;color:var(--muted);
+  background:var(--bg);border-bottom:1px solid var(--line2);
+  align-items:center;
+}
+.statsbar .stat{font-weight:600;color:var(--ink2)}
+.statsbar .dot{width:6px;height:6px;border-radius:50%;display:inline-block;vertical-align:middle;margin-right:3px}
+.statsbar .sep{color:var(--line);margin:0 4px}
+
+/* ── MAIN ── */
+.main{padding:12px;max-width:900px;margin:0 auto}
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+
+/* ── CARDS ── */
+.cards-grid{display:flex;flex-direction:column;gap:12px}
+
+.card{
+  background:var(--bg-card);border:1px solid var(--line);
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow);transition:box-shadow .2s;
+}
+.card:hover{box-shadow:var(--shadow-lg)}
+
+.card-header{
+  padding:12px 14px;cursor:pointer;user-select:none;
+  display:flex;align-items:flex-start;gap:10px;
+  transition:background .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.card-header:hover{background:var(--bg-hover)}
+
+.card-icon{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:15px;color:#fff;flex-shrink:0;
+}
+.card-body-hdr{flex:1;min-width:0}
+.card-path{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.card-title{font-size:15px;font-weight:700;line-height:1.35}
+.card-tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;color:#fff;margin-top:3px}
+.card-chevron{font-size:18px;color:var(--muted);transition:transform .25s;flex-shrink:0;margin-top:4px}
+.card.open .card-chevron{transform:rotate(180deg)}
+.card-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.card-body{display:none}
+.card.open .card-body{display:block}
+
+/* ── STATES ── */
+.states-list{padding:0 14px 12px}
+.state-block{border:1px solid var(--line2);border-radius:var(--radius-sm);margin-bottom:8px;overflow:hidden}
+.state-header{
+  padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;
+  background:#faf9f7;transition:background .15s;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.state-header:hover{background:#f3f0ec}
+.state-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.state-name{font-size:13px;font-weight:600;flex:1}
+.state-count{font-size:11px;color:var(--muted);margin-right:4px}
+.state-chevron{font-size:14px;color:var(--muted);transition:transform .2s}
+.state-block.open .state-chevron{transform:rotate(180deg)}
+.state-questions{display:none;padding:6px 12px 10px}
+.state-block.open .state-questions{display:block}
+
+/* ── QUESTIONS ── */
+.q-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--line2);font-size:13px;line-height:1.45}
+.q-item:last-child{border-bottom:none}
+.q-dot{width:10px;height:10px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.q-dot.info{background:var(--info)}
+.q-dot.komerc{background:var(--komerc)}
+.q-dot.transakc{background:var(--transakc)}
+.q-text{flex:1}
+.q-type{font-size:10px;font-weight:600;color:var(--muted);margin-left:4px;white-space:nowrap}
+
+/* ── LEGEND ── */
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:10px 14px;font-size:12px;align-items:center;border-top:1px solid var(--line2);margin:0 14px 10px}
+.legend-item{display:flex;align-items:center;gap:5px;color:var(--ink2)}
+
+/* ── RESPONSIVE ── */
+@media(min-width:640px){
+  .topbar{padding:12px 20px}
+  .topbar-row1{flex-wrap:nowrap}
+  .topbar h1{font-size:18px}
+  .filter-toggle{display:none}
+  .filter-panel{display:flex!important;flex-direction:row;flex-wrap:wrap;gap:12px;padding-top:0;align-items:center}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:14px}
+  .main{padding:16px 20px}
+}
+@media(min-width:900px){
+  .cards-grid{grid-template-columns:1fr 1fr}
+}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(4px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.card{animation:fadeIn .3s ease-out}
+</style>
+</head>
+<body>
+
+<div class="topbar" id="topbar">
+  <div class="topbar-row1">
+    <h1>☕ Mapa Percepcji <span>Ekspresy</span></h1>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="search" id="search" placeholder="Szukaj pytań…" oninput="render()" autocomplete="off">
+    </div>
+    <button class="filter-toggle" id="filterToggle" onclick="toggleFilters()" aria-label="Filtry">⚙ Filtry</button>
+  </div>
+  <div class="filter-panel" id="filterPanel">
+    <span class="filter-label">Ścieżki:</span>
+    <div class="filter-row" id="pathChips"></div>
+    <span class="filter-label" style="margin-left:8px">Typ pytania:</span>
+    <div class="filter-row" id="typeChips"></div>
+  </div>
+</div>
+
+<div class="statsbar" id="statsbar">Ładowanie…</div>
+<div class="main" id="main"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA — 13 paths × 5 states × 5 questions = 325 questions
+// ═══════════════════════════════════════════════════════════════
+
+const STATE_NAMES = [
+  'Nieświadomy problemu',
+  'Świadomy symptomu',
+  'Szuka rozwiązania',
+  'Porównuje produkty',
+  'Gotowy do zakupu'
+];
+
+const PATHS = [
+  {
+    letter:'A', tag:'forwhom',
+    title:'Jaki ekspres na pierwszą prawdziwą kawę?',
+    color:'#8B4513',
+    states:[[
+      ['Nigdy nie miałem ekspresu do kawy — od czego zacząć?','info'],
+      ['Jakie są rodzaje ekspresów do kawy i czym się różnią?','info'],
+      ['Czy kawa z ekspresu smakuje lepiej niż Nescafé rozpuszczalna?','info'],
+      ['Czy warto kupić ekspres do kawy zamiast chodzić do kawiarni?','komerc'],
+      ['Ile kosztuje najtańszy ekspres do kawy na start?','komerc']
+    ],[
+      ['Kapsułkowy czy automatyczny — który łatwiejszy na początek?','komerc'],
+      ['Czy ekspres kapsułkowy wystarczy na start czy od razu brać automat?','komerc'],
+      ['Jaki ekspres do kawy dla kogoś kto nigdy nie miał ekspresu?','komerc'],
+      ['Czy obsługa ekspresu do kawy jest trudna dla początkującego?','info'],
+      ['Ile kosztuje ekspres do kawy dla początkujących?','komerc']
+    ],[
+      ['Ekspres do kawy do 700 zł — co wybrać na pierwszy raz?','komerc'],
+      ['Czy muszę kupić coś jeszcze oprócz ekspresu żeby zrobić kawę?','info'],
+      ['Ile miesięcznie wydaje się na kapsułki Nespresso przy 2 kawach dziennie?','komerc'],
+      ['Jaki ekspres do kawy kupić do domu dla 2 osób?','komerc'],
+      ['Czy kawa z ekspresu kapsułkowego smakuje lepiej niż rozpuszczalna Nescafé?','info']
+    ],[
+      ['Jaki ekspres kapsułkowy ma najtańsze kapsułki?','komerc'],
+      ['Który ekspres jest najprostszy w obsłudze na początek?','komerc'],
+      ['Jaki ekspres do kawy polecacie na pierwszy raz?','komerc'],
+      ['Ile litrów zbiornika wystarczy na 2 osoby?','info'],
+      ['Czy tani ekspres za 300 zł ma sens czy lepiej dołożyć?','komerc']
+    ],[
+      ['Gdzie kupić ekspres do kawy z dostawą do domu?','transakc'],
+      ['Jaka gwarancja na ekspres do kawy — ile lat minimum?','transakc'],
+      ['Czy do ekspresu na start dostanę zestaw kapsułek lub ziaren?','transakc'],
+      ['Jak długo czeka się na dostawę ekspresu do domu?','transakc'],
+      ['Czy ekspres można zwrócić jeśli kawa nie będzie mi smakować?','transakc']
+    ]]
+  },
+  {
+    letter:'B', tag:'feeling',
+    title:'Jaki ekspres jak barista — espresso z cremą?',
+    color:'#6D4C41',
+    states:[[
+      ['Czym jest espresso i dlaczego ciśnienie ma znaczenie?','info'],
+      ['Co to jest portafilter i jak działa ekspres kolbowy?','info'],
+      ['Czy można zrobić kawę jak w kawiarni w domu?','info'],
+      ['Ile kosztuje ekspres który robi espresso z cremą?','komerc'],
+      ['Jakie są rodzaje ekspresów do espresso?','info']
+    ],[
+      ['Ekspres kolbowy — czy amator da radę się nauczyć?','info'],
+      ['Ile czasu zajmuje nauka robienia espresso w domu?','info'],
+      ['Co jeśli źle ustawię mielenie i kawa wyjdzie gorzka?','info'],
+      ['Czy ekspres kapsułkowy robi prawdziwe espresso?','info'],
+      ['Czy ekspres za 1000 zł zrobi espresso porównywalne z kawiarnią?','komerc']
+    ],[
+      ['Ekspres kolbowy czy automatyczny — który robi lepsze espresso?','komerc'],
+      ['Czy do ekspresu kolbowego potrzebny jest osobny młynek?','info'],
+      ['Co to jest pre-infusion i czy ma znaczenie dla smaku?','info'],
+      ['Jaki młynek do ekspresu kolbowego dla początkującego?','komerc'],
+      ['Single boiler czy dual boiler — co wybrać do domowego espresso?','komerc']
+    ],[
+      ['Jaki ekspres kolbowy do 2500 zł dla amatora espresso?','komerc'],
+      ['Dual boiler czy single boiler — czy warto dopłacać?','komerc'],
+      ['Jaki ekspres kolbowy polecacie na start?','komerc'],
+      ['Co lepsze — termoblock czy bojler w ekspresie kolbowym?','info'],
+      ['Jaki ekspres kolbowy robi najlepszą cremę?','komerc']
+    ],[
+      ['Jakie ziarna na start do ekspresu kolbowego?','transakc'],
+      ['Jak ustawić mielenie żeby kawa nie była gorzka ani kwaśna?','info'],
+      ['Gdzie kupić ekspres kolbowy z akcesoriami baristy?','transakc'],
+      ['Jaka gwarancja na ekspres kolbowy — czy dłuższa niż 2 lata?','transakc'],
+      ['Ile kosztuje serwis ekspresu kolbowego po gwarancji?','transakc']
+    ]]
+  },
+  {
+    letter:'C', tag:'feeling',
+    title:'Jaki ekspres do cappuccino i latte?',
+    color:'#BF6F4A',
+    states:[[
+      ['Jak zrobić cappuccino w domu — jaki sprzęt jest potrzebny?','info'],
+      ['Czy ekspres kapsułkowy robi piankę do latte?','info'],
+      ['Jak działa spieniacz mleka w ekspresie?','info'],
+      ['Ile kosztuje ekspres który robi cappuccino?','komerc'],
+      ['Czy kawa z mlekiem z ekspresu smakuje jak z kawiarni?','info']
+    ],[
+      ['Czy muszę dokupić osobny spieniacz za 200 zł?','komerc'],
+      ['Spieniacz ręczny czy automatyczny — czym się różnią?','info'],
+      ['Czy każdy ekspres potrafi spienić mleko?','info'],
+      ['Jakie mleko najlepiej się spienia w ekspresie?','info'],
+      ['Dlaczego pianka z mojego ekspresu jest wodnista a nie gęsta?','info']
+    ],[
+      ['Jaki ekspres ma najlepszy automatyczny spieniacz mleka?','komerc'],
+      ['LatteGo vs carafe vs różdżka parowa — który spieniacz lepszy?','komerc'],
+      ['Czy ekspres automatyczny z spieniaczem robi prawdziwe cappuccino?','info'],
+      ['Czy ekspres z spieniaczem sam się czyści po mleku?','info'],
+      ['Jaki ekspres do kawy z spieniaczem do 2500 zł?','komerc']
+    ],[
+      ['Który spieniacz robi najgęstszą piankę — carafe czy LatteGo?','komerc'],
+      ['Ekspres z automatycznym spieniaczem — co polecacie?','komerc'],
+      ['Czy spieniacz ręczny może być lepszy od automatycznego?','info'],
+      ['Jaki ekspres z spieniaczem jest najcichszy?','komerc'],
+      ['Jaki ekspres do cappuccino ma najmniej awarii?','komerc']
+    ],[
+      ['Gdzie kupić ekspres z automatycznym spieniaczem?','transakc'],
+      ['Czy spieniacz jest objęty gwarancją?','transakc'],
+      ['Ile kosztuje serwis spieniacza mleka?','transakc'],
+      ['Czy dostanę zestaw startowy do mleka z ekspresem?','transakc'],
+      ['Jak długo trwa dostawa ekspresu z spieniaczem?','transakc']
+    ]]
+  },
+  {
+    letter:'D', tag:'constraint',
+    title:'Jaki ekspres bez fatygi — jeden przycisk?',
+    color:'#8D6E63',
+    states:[[
+      ['Czy są ekspresy które robią kawę jednym przyciskiem?','info'],
+      ['Czym różni się ekspres automatyczny od kapsułkowego?','info'],
+      ['Ile kosztuje ekspres który sam miele i parzy kawę?','komerc'],
+      ['Czy ekspres automatyczny potrzebuje dużo miejsca na blacie?','info'],
+      ['Jak długo trwa zrobienie kawy w ekspresie automatycznym?','info']
+    ],[
+      ['Jaki ekspres automatyczny jest najłatwiejszy w obsłudze i czyszczeniu?','komerc'],
+      ['Czy ekspres automatyczny naprawdę potrzebuje tylko jednego przycisku?','info'],
+      ['Jak często trzeba czyścić ekspres automatyczny z młynkiem?','info'],
+      ['Kto będzie to czyścił — czy ekspres automatyczny myje się sam?','info'],
+      ['Czy ekspres automatyczny jest głośny rano?','info']
+    ],[
+      ['Ile kosztuje dobry ekspres automatyczny — 1500 zł wystarczy?','komerc'],
+      ['Ekspres automatyczny do 2000 zł — co wybrać żeby nie żałować?','komerc'],
+      ['Czy ekspres automatyczny z spieniaczem robi prawdziwe cappuccino?','info'],
+      ['Czy muszę dopłacać za spieniacz — czy automatyczny carafe jest dobry?','komerc'],
+      ['Czy ekspres automatyczny poradzi sobie z kawą bezkofeinową?','info']
+    ],[
+      ['Który ekspres automatyczny jest najcichszy?','komerc'],
+      ['Jaki ekspres automatyczny ma największy zbiornik na wodę?','komerc'],
+      ['Który ekspres automatyczny najłatwiej się czyści?','komerc'],
+      ['Jaki ekspres automatyczny polecacie do 2500 zł?','komerc'],
+      ['Ile kosztuje serwis ekspresu automatycznego rocznie?','komerc']
+    ],[
+      ['Gdzie kupić ekspres automatyczny z instalacją?','transakc'],
+      ['Jaka gwarancja na ekspres automatyczny — 2 czy 3 lata?','transakc'],
+      ['Czy dostarczą i podłączą ekspres automatyczny?','transakc'],
+      ['Ile kosztuje dostawa dużego ekspresu automatycznego?','transakc'],
+      ['Czy mogę zapłacić za ekspres automatyczny w ratach?','transakc']
+    ]]
+  },
+  {
+    letter:'E', tag:'where',
+    title:'Jaki ekspres do biura?',
+    color:'#5D4037',
+    states:[[
+      ['Jaki ekspres do biura dla 10–20 osób?','komerc'],
+      ['Czym różni się ekspres biurowy od domowego?','info'],
+      ['Ile kosztuje ekspres który wytrzyma kilkanaście kaw dziennie?','komerc'],
+      ['Ile kaw dziennie może zrobić ekspres bez awarii?','info'],
+      ['Czy ekspres do biura wymaga specjalnej instalacji?','info']
+    ],[
+      ['Ekspres biurowy — kapsułki czy ziarno, co tańsze miesięcznie?','komerc'],
+      ['Kto będzie czyścił ekspres w biurze?','info'],
+      ['Ile kosztuje jedna kawa z automatu vs kapsułek vs Nescafé?','komerc'],
+      ['Ekspres do biura — jak często serwis i co z przestojem?','info'],
+      ['Czy pracownicy ustawią się w kolejce do ekspresu?','info']
+    ],[
+      ['Jaki ekspres automatyczny ma największy zbiornik na wodę?','komerc'],
+      ['Czy można wziąć ekspres do biura w leasing z serwisem?','komerc'],
+      ['Jaki jest roczny koszt eksploatacji ekspresu biurowego?','komerc'],
+      ['Ile kaw na godzinę robi ekspres automatyczny biurowy?','info'],
+      ['Ekspres filtrowy czy automatyczny — co lepsze do open space?','komerc']
+    ],[
+      ['Który ekspres biurowy ma najniższy koszt jednej kawy?','komerc'],
+      ['Jaki ekspres biurowy polecacie do firmy 15-osobowej?','komerc'],
+      ['Który ekspres biurowy najrzadziej wymaga serwisu?','komerc'],
+      ['Ekspres biurowy z młynkiem czy na kapsułki — co wybrać?','komerc'],
+      ['Jaki ekspres biurowy zmieści się w małej kuchni biurowej?','komerc']
+    ],[
+      ['Czy firma oferuje serwis i dostawę kawy do biura?','transakc'],
+      ['Gdzie kupić ekspres do biura z umową serwisową?','transakc'],
+      ['Czy mogę dostać ekspres biurowy na okres próbny?','transakc'],
+      ['Jaka gwarancja na ekspres biurowy przy intensywnym użytkowaniu?','transakc'],
+      ['Ile kosztuje dostawa i instalacja ekspresu biurowego?','transakc']
+    ]]
+  },
+  {
+    letter:'F', tag:'where',
+    title:'Jaki ekspres na wymianę po awarii?',
+    color:'#4E342E',
+    states:[[
+      ['Po ilu latach ekspres do kawy się psuje?','info'],
+      ['Jakie są oznaki że ekspres do kawy zaraz padnie?','info'],
+      ['Ile kosztuje naprawa ekspresu do kawy?','komerc'],
+      ['Czy stary ekspres do kawy lepiej naprawić czy wymienić?','komerc'],
+      ['Jak długo żyje ekspres do kawy przy normalnym użytkowaniu?','info']
+    ],[
+      ['Zepsuł mi się ekspres — naprawiać czy kupić nowy?','komerc'],
+      ['Koszt naprawy ekspresu vs nowy — kiedy się opłaca?','komerc'],
+      ['Czy mój system kapsułek jeszcze istnieje? Czy muszę wszystko wymieniać?','info'],
+      ['Mój ekspres przestał działać po 5 latach — czy to normalne?','info'],
+      ['Gdzie naprawić ekspres do kawy — serwis autoryzowany czy prywatny?','transakc']
+    ],[
+      ['Co wybrać zamiast starego ekspresu — co jest lepsze w podobnej cenie?','komerc'],
+      ['Czy nowszy model ekspresu to duży skok jakości?','info'],
+      ['Ekspres automatyczny do 3000 zł — ranking 2026','komerc'],
+      ['Przejście z kapsułek na ziarno przy okazji wymiany — czy warto?','komerc'],
+      ['Czy mogę zachować stare kapsułki przy zmianie ekspresu na nowy?','info']
+    ],[
+      ['Jaki ekspres automatyczny będzie następcą mojego starego?','komerc'],
+      ['Który ekspres ma najdłuższą żywotność — ceramiczny młynek vs stalowy?','komerc'],
+      ['Jaki ekspres automatyczny ma gwarancję minimum 3 lata?','komerc'],
+      ['Która marka ekspresów najmniej się psuje?','komerc'],
+      ['Jaki ekspres automatyczny do 2500 zł zastąpi stary model?','komerc']
+    ],[
+      ['Gdzie kupię ekspres z dostawą jutro?','transakc'],
+      ['Czy mogę oddać stary ekspres przy zakupie nowego?','transakc'],
+      ['Jaka gwarancja na nowy ekspres — minimum 3 lata?','transakc'],
+      ['Czy dostanę rabat przy wymianie starego ekspresu na nowy?','transakc'],
+      ['Ile kosztuje ekspresowa dostawa — kawa potrzebna od zaraz?','transakc']
+    ]]
+  },
+  {
+    letter:'G', tag:'forwhom',
+    title:'Jaki ekspres na prezent?',
+    color:'#C8753B',
+    states:[[
+      ['Jaki ekspres do kawy kupić na prezent?','komerc'],
+      ['Czy ekspres do kawy to dobry prezent?','info'],
+      ['Ile kosztuje dobry ekspres na prezent?','komerc'],
+      ['Od jakiej kwoty zaczyna się poważny ekspres na prezent?','komerc'],
+      ['Jaki ekspres do kawy robi wrażenie jako prezent?','komerc']
+    ],[
+      ['Jaki ekspres do kawy jako prezent dla kogoś kto zna się na kawie?','komerc'],
+      ['Czy ekspres kapsułkowy to dobry prezent dla pasjonata kawy?','info'],
+      ['Boję się że kupię źle — jak nie wyjść na laika przy zakupie ekspresu?','info'],
+      ['Czy osoba obdarowana może nie polubić ekspresu który wybrałem?','info'],
+      ['Ile wydać na ekspres żeby prezent był poważny?','komerc']
+    ],[
+      ['Jaki ekspres kolbowy jako prezent do 2000 zł?','komerc'],
+      ['Co dokupić do ekspresu na prezent — akcesoria, ziarna?','komerc'],
+      ['Czy kupić sam ekspres czy zestaw baristy na prezent?','komerc'],
+      ['Jaki ekspres na prezent dla kogoś kto pije głównie cappuccino?','komerc'],
+      ['Ekspres na prezent — lepiej automatyczny czy kolbowy?','komerc']
+    ],[
+      ['Który ekspres ma największy efekt WOW na prezent?','komerc'],
+      ['Jaki ekspres kolbowy polecacie na prezent dla faceta?','komerc'],
+      ['Który ekspres kapsułkowy jest najbardziej elegancki na prezent?','komerc'],
+      ['Jaki ekspres do kawy na prezent się nie psuje?','komerc'],
+      ['Ekspres z aplikacją czy bez — co lepsze na prezent?','komerc']
+    ],[
+      ['Ekspres na prezent — czy da się zwrócić jeśli nie trafi?','transakc'],
+      ['Czy jest opakowanie prezentowe do ekspresu?','transakc'],
+      ['Gdzie kupić ekspres na prezent z możliwością wymiany?','transakc'],
+      ['Czy mogę zamówić ekspres z wygrawerowaną dedykacją?','transakc'],
+      ['Ile przed świętami trzeba zamówić ekspres żeby doszedł na czas?','transakc']
+    ]]
+  },
+  {
+    letter:'H', tag:'constraint',
+    title:'Jaki ekspres oszczędza na kawiarni?',
+    color:'#A0522D',
+    states:[[
+      ['Ile miesięcznie wydaję na kawę w kawiarni?','komerc'],
+      ['Czy ekspres do kawy naprawdę oszczędza pieniądze?','komerc'],
+      ['Po jakim czasie ekspres do kawy się zwraca?','komerc'],
+      ['Ile kosztuje kawa z ekspresu vs kawiarnia?','komerc'],
+      ['Czy warto kupić ekspres do kawy zamiast chodzić do kawiarni?','komerc']
+    ],[
+      ['Wydaję 500 zł miesięcznie w kawiarniach — jaki ekspres wybrać?','komerc'],
+      ['Czy ekspres naprawdę zaoszczędzi pieniądze, czy to chwyt marketingowy?','info'],
+      ['A co z kosztami eksploatacji — kapsułki też kosztują?','komerc'],
+      ['Ile realnie kosztuje jedna kawa z ekspresu domowego?','komerc'],
+      ['Czy kawa z ekspresu za 1500 zł smakuje tak samo jak z kawiarni?','info']
+    ],[
+      ['Jaki ekspres ma najniższy koszt jednej kawy?','komerc'],
+      ['Ekspres automatyczny na ziarno — ile kosztuje kawa dziennie?','komerc'],
+      ['Jaki jest roczny koszt kapsułek vs ziarna przy 2 kawach dziennie?','komerc'],
+      ['Ekspres za 700 zł vs za 2000 zł — różnica w koszcie kawy?','komerc'],
+      ['Czy warto dopłacić do automatu na ziarno zamiast kapsułek?','komerc']
+    ],[
+      ['Ekspres do 1500 zł — który zwróci się najszybciej?','komerc'],
+      ['Czy tani ekspres kapsułkowy to pułapka cenowa?','komerc'],
+      ['Który ekspres ma najtańsze kapsułki na rynku?','komerc'],
+      ['Jaki ekspres automatyczny ma najniższy koszt eksploatacji?','komerc'],
+      ['Porównanie rocznego kosztu: kapsułki vs ziarno vs kawiarnia','komerc']
+    ],[
+      ['Gdzie kupić ekspres z kalkulatorem oszczędności?','transakc'],
+      ['Czy są promocje na zestawy ekspres + ziarna na start?','transakc'],
+      ['Ile kosztuje ekspres z darmową dostawą ziaren na rok?','transakc'],
+      ['Czy mogę rozłożyć zakup ekspresu na raty 0%?','transakc'],
+      ['Gdzie znajdę porównanie TCO ekspresu?','transakc']
+    ]]
+  },
+  {
+    letter:'I', tag:'feeling',
+    title:'Jaki ekspres do odkrywania kraftowych kaw?',
+    color:'#7B4B3A',
+    states:[[
+      ['Tyle palarni kraftowych — jak spróbować różnych kaw w domu?','info'],
+      ['Jaki ekspres pozwoli mi eksperymentować z różnymi ziarnami?','komerc'],
+      ['Czy jeden ekspres obsłuży różne rodzaje kawy — od Etiopii po espresso?','info'],
+      ['Ile kosztuje ekspres do kawy specialty?','komerc'],
+      ['Jak działa regulacja mielenia w ekspresie?','info']
+    ],[
+      ['Czy ekspres automatyczny wydobędzie smak kraftowej kawy?','info'],
+      ['Czy ekspres automatyczny nie zabije smaku dobrej kawy specialty?','info'],
+      ['Czy do odkrywania kaw lepszy automat czy kolbowy?','komerc'],
+      ['Ile stopni mielenia potrzebuję do różnych gatunków kawy?','info'],
+      ['Czy zwykły ekspres poradzi sobie z jasno paloną kawą specialty?','info']
+    ],[
+      ['Czy bypass na mieloną kawę jest potrzebny przy testowaniu ziaren?','info'],
+      ['Jaki ekspres ma najszerszy zakres regulacji — mielenie, temperatura, pre-infusion?','komerc'],
+      ['Ekspres z regulacją mielenia 12+ stopni — który dla pasjonata?','komerc'],
+      ['Czy ekspres z ceramicznym młynkiem lepiej wydobywa smak?','info'],
+      ['Jak ustawić temperaturę parzenia pod różne gatunki kawy?','info']
+    ],[
+      ['Który ekspres ma najwięcej poziomów mielenia?','komerc'],
+      ['Jaki ekspres polecacie do eksperymentowania z kawą?','komerc'],
+      ['Ekspres automatyczny vs kolbowy — który daje więcej kontroli nad smakiem?','komerc'],
+      ['Który ekspres ma regulację pre-infusion?','komerc'],
+      ['Jaki ekspres do kawy specialty ma najlepsze opinie?','komerc']
+    ],[
+      ['Ekspres dla kawosza — gdzie kupić z zestawem ziaren?','transakc'],
+      ['Jakie akcesoria do eksperymentowania z kawą?','transakc'],
+      ['Gdzie kupić ziarna specialty kompatybilne z ekspresem?','transakc'],
+      ['Czy do ekspresu dostanę próbki różnych ziaren na start?','transakc'],
+      ['Jaka gwarancja na ekspres przy częstej zmianie ziaren?','transakc']
+    ]]
+  },
+  {
+    letter:'J', tag:'where',
+    title:'Jaki ekspres do nowej kuchni?',
+    color:'#9C6B4E',
+    states:[[
+      ['Jaki ekspres będzie pasować do nowej kuchni?','komerc'],
+      ['Jak dopasować ekspres do kuchni przy remoncie?','info'],
+      ['Czy ekspres może być elementem wystroju kuchni?','info'],
+      ['Ile kosztuje ekspres który wygląda jak mebel?','komerc'],
+      ['Jakie są style ekspresów do kawy — retro, scandi, industrial?','info']
+    ],[
+      ['Większość ekspresów wygląda jak plastikowe pudełka — który wygląda jak mebel?','komerc'],
+      ['Czy ładny ekspres potrafi też robić dobrą kawę?','info'],
+      ['Stal szczotkowana czy biały — jaki kolor ekspresu do kuchni?','komerc'],
+      ['Czy ekspres zmieści się pod standardową szafką kuchenną?','info'],
+      ['Jaki jest najwęższy ekspres do kawy który dobrze wygląda?','komerc']
+    ],[
+      ['Ekspres w stylu retro czy scandi — jakie są opcje?','komerc'],
+      ['Ekspres do kuchni w stylu industrialnym — jakie marki?','komerc'],
+      ['Jaki ekspres kolbowy wygląda najładniej na blacie?','komerc'],
+      ['Ekspres do zabudowy czy wolnostojący — co do nowej kuchni?','komerc'],
+      ['Czy ekspres w kolorze miedzi pasuje do białej kuchni?','info']
+    ],[
+      ['Który ekspres ma najładniejszy design do nowoczesnej kuchni?','komerc'],
+      ['Jaki ekspres designerski polecacie do 3000 zł?','komerc'],
+      ['Ekspres retro z przełącznikami — który model wybrać?','komerc'],
+      ['Który ekspres ma najmniejszy rozmiar przy zachowaniu funkcji?','komerc'],
+      ['Jaki ekspres do kuchni w stylu loftowym?','komerc']
+    ],[
+      ['Gdzie kupić ekspres który pasuje do projektu kuchni?','transakc'],
+      ['Czy ekspresy design mają dłuższy czas dostawy?','transakc'],
+      ['Czy mogę zamówić próbki kolorów ekspresu przed zakupem?','transakc'],
+      ['Czy są ekspresy na wymiar do zabudowy kuchennej?','transakc'],
+      ['Jaka gwarancja na ekspres z wykończeniem premium?','transakc']
+    ]]
+  },
+  {
+    letter:'K', tag:'feeling',
+    title:'Jaki ekspres na gości i wrażenie?',
+    color:'#8B5E3C',
+    states:[[
+      ['Jaki ekspres robi wrażenie na gościach?','komerc'],
+      ['Czy ekspres automatyczny wygląda profesjonalnie przy gościach?','info'],
+      ['Jaki ekspres ma funkcję robienia kilku kaw naraz dla gości?','komerc'],
+      ['Ile kosztuje ekspres który pokazuje że dbam o szczegóły?','komerc'],
+      ['Czy ekspres do kawy może być ozdobą salonu?','info']
+    ],[
+      ['A co jak ekspres będzie trudny w obsłudze dla gości?','info'],
+      ['Czy gość sam sobie zrobi kawę, czy ja muszę obsługiwać?','info'],
+      ['Jaka marka ekspresu mówi o właścicielu że dba o szczegóły?','komerc'],
+      ['Czy ekspres robi hałas który przeszkadza przy gościach?','info'],
+      ['Czy ekspres zrobi kilka cappuccino pod rząd bez czekania?','info']
+    ],[
+      ['Ekspres premium do 5000 zł — który ma największy efekt WOW?','komerc'],
+      ['Czy ekspres kolbowy lepiej wygląda przy gościach niż automat?','komerc'],
+      ['Ekspres z kolorowym ekranem dotykowym — czy robi wrażenie?','komerc'],
+      ['Jaki ekspres ma profil gościa z uproszczoną obsługą?','komerc'],
+      ['Czy ekspres z aplikacją pozwala gościom zamówić kawę z telefonu?','info']
+    ],[
+      ['Który ekspres premium robi najlepsze wrażenie wizualne?','komerc'],
+      ['Jaki ekspres do kawy na gości polecacie — automat czy kolbowy?','komerc'],
+      ['Który ekspres zrobi najwięcej kaw bez uzupełniania?','komerc'],
+      ['Ekspres z podwójnym bojlerem — czy przyda się przy gościach?','komerc'],
+      ['Jaki ekspres ma najcichszy młynek żeby nie przeszkadzać gościom?','komerc']
+    ],[
+      ['Gdzie kupić ekspres premium z personalizacją?','transakc'],
+      ['Czy ekspres z wyższej półki ma dłuższą gwarancję?','transakc'],
+      ['Czy mogę zamówić ekspres z dostawą i pokazem działania?','transakc'],
+      ['Czy do ekspresu premium dostanę szkolenie baristy?','transakc'],
+      ['Ile kosztuje serwis premium ekspresu po gwarancji?','transakc']
+    ]]
+  },
+  {
+    letter:'L', tag:'constraint',
+    title:'Jaki ekspres ekologiczny?',
+    color:'#6B8E23',
+    states:[[
+      ['Ile śmieci rocznie generują kapsułki do ekspresu?','info'],
+      ['Jaka jest alternatywa dla kapsułek jednorazowych?','info'],
+      ['Czy ekspres na ziarno jest bardziej ekologiczny niż kapsułki?','info'],
+      ['Czy kapsułki Nespresso są naprawdę recyklingowane?','info'],
+      ['Ile plastiku rocznie zużywają kapsułki przy 2 kawach dziennie?','info']
+    ],[
+      ['Nie chcę generować kapsułkowych śmieci — jaki ekspres wybrać?','komerc'],
+      ['Czy ekspres na ziarno jest naprawdę bardziej ekologiczny niż kapsułki?','info'],
+      ['A co z odpadami po kawie ziarnistej — fusy, filtry?','info'],
+      ['Czy filtry wielorazowe do ekspresu to dobra alternatywa?','info'],
+      ['Czy ekspres z recyclowanych materiałów istnieje?','info']
+    ],[
+      ['Jaki ekspres do kawy jest najbardziej ekologiczny?','komerc'],
+      ['Ekspres automatyczny czy kolbowy — który ma mniejszy ślad węglowy?','info'],
+      ['Jak utylizować fusy z ekspresu — kompost czy śmieci?','info'],
+      ['Czy ekspres z młynkiem ceramicznym jest bardziej eko?','info'],
+      ['Filtry papierowe czy wielorazowe — co bardziej ekologiczne?','komerc']
+    ],[
+      ['Który ekspres na ziarno generuje najmniej odpadów?','komerc'],
+      ['Czy ekspres automatyczny zużywa więcej prądu niż kolbowy?','info'],
+      ['Jaki ekspres ma certyfikat ekologiczny?','komerc'],
+      ['Ekspres z trybem eko i auto-wyłączaniem — które modele?','komerc'],
+      ['Czy ekspresy z drugiej ręki to dobra ekologiczna opcja?','komerc']
+    ],[
+      ['Gdzie kupić ekspres z certyfikatem ekologicznym?','transakc'],
+      ['Czy są dopłaty lub ulgi na eko-ekspresy?','transakc'],
+      ['Czy producent oferuje program zwrotu starych ekspresów?','transakc'],
+      ['Gdzie oddać stary ekspres do recyklingu?','transakc'],
+      ['Czy ziarna do ekspresu też można kupić w ekologicznym opakowaniu?','transakc']
+    ]]
+  },
+  {
+    letter:'M', tag:'constraint',
+    title:'Jaki ekspres dla zdrowia i kontroli składu?',
+    color:'#4A7C59',
+    states:[[
+      ['Czy kawa z ekspresu jest zdrowsza niż z kawiarni?','info'],
+      ['Co tak naprawdę zawiera kawa z kawiarni?','info'],
+      ['Jaką filtrację wody ma ekspres — czy usuwa chlor?','info'],
+      ['Czy ekspres pozwala kontrolować poziom kofeiny?','info'],
+      ['Czy kawa z ekspresu domowego ma mniej chemii?','info']
+    ],[
+      ['Czy kawa z automatu jest tak samo higieniczna jak z kawiarni?','info'],
+      ['Czy w ekspresie nie rozwijają się bakterie i pleśń?','info'],
+      ['Nie wiem co wsypują do kawy w kawiarni — jak przejąć kontrolę?','info'],
+      ['Czy ekspres może parzyć kawę na mleku roślinnym?','info'],
+      ['Czy kofeina z ekspresu jest inna niż z kawiarni?','info']
+    ],[
+      ['Jaki ekspres ma najlepszą filtrację wody?','komerc'],
+      ['Czy ekspres pozwala używać organicznych ziaren i mleka roślinnego?','info'],
+      ['Ekspres z filtrem wody i programem czyszczenia — który?','komerc'],
+      ['Czy ekspres automatyczny może parzyć kawę bezkofeinową obok zwykłej?','info'],
+      ['Jak często trzeba odkamieniać ekspres żeby był higieniczny?','info']
+    ],[
+      ['Który ekspres ma najlepszy system filtracji wody?','komerc'],
+      ['Jaki ekspres ma certyfikat higieniczny?','komerc'],
+      ['Ekspres z wymiennym filtrem wody — który model?','komerc'],
+      ['Który ekspres najłatwiej utrzymać w czystości?','komerc'],
+      ['Jaki ekspres ma automatyczny program czyszczenia parą?','komerc']
+    ],[
+      ['Gdzie kupić ekspres z certyfikatem higienicznym?','transakc'],
+      ['Jakie filtry wody do ekspresu są najskuteczniejsze?','transakc'],
+      ['Ile kosztują filtry wody do ekspresu rocznie?','transakc'],
+      ['Czy w zestawie są tabletki czyszczące do ekspresu?','transakc'],
+      ['Gdzie kupić organiczne ziarna do ekspresu?','transakc']
+    ]]
+  }
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE & FILTERS
+// ═══════════════════════════════════════════════════════════════
+
+let selPaths = new Set(PATHS.map(p => p.letter));
+let selTypes = new Set(['info', 'komerc', 'transakc']);
+let searchQuery = '';
+
+const TYPE_LABELS = {info:'Informacyjne', komerc:'Komercyjne', transakc:'Transakcyjne'};
+const TYPE_ICONS = {info:'🟢', komerc:'🟠', transakc:'🔵'};
+
+function togglePath(letter) {
+  if (selPaths.has(letter)) {
+    if (selPaths.size > 1) selPaths.delete(letter);
+  } else {
+    selPaths.add(letter);
+  }
+  updateChips(); render();
+}
+function selectAllPaths() {
+  selPaths = new Set(PATHS.map(p => p.letter));
+  updateChips(); render();
+}
+function toggleType(type) {
+  if (selTypes.has(type)) {
+    if (selTypes.size > 1) selTypes.delete(type);
+  } else {
+    selTypes.add(type);
+  }
+  updateChips(); render();
+}
+function toggleFilters() {
+  const panel = document.getElementById('filterPanel');
+  const btn = document.getElementById('filterToggle');
+  panel.classList.toggle('visible');
+  btn.classList.toggle('open');
+  btn.innerHTML = panel.classList.contains('visible') ? '✕ Zamknij' : '⚙ Filtry';
+}
+
+function updateChips() {
+  const allActive = selPaths.size === PATHS.length;
+  let html = '<span class="chip chip-all '+(allActive?'active':'')+'" onclick="selectAllPaths()">Wszystkie</span>';
+  PATHS.forEach(p => {
+    html += '<span class="chip '+(selPaths.has(p.letter)?'active':'')+'" style="'+(selPaths.has(p.letter)?'background:'+p.color+';border-color:'+p.color:'')+'" onclick="togglePath(\''+p.letter+'\')">'+p.letter+'</span>';
+  });
+  document.getElementById('pathChips').innerHTML = html;
+
+  let thtml = '';
+  ['info','komerc','transakc'].forEach(t => {
+    thtml += '<span class="chip '+(selTypes.has(t)?'active':'')+'" onclick="toggleType(\''+t+'\')">'+TYPE_ICONS[t]+' '+TYPE_LABELS[t]+'</span>';
+  });
+  document.getElementById('typeChips').innerHTML = thtml;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════
+
+function render() {
+  const q = (document.getElementById('search').value || '').toLowerCase().trim();
+  searchQuery = q;
+
+  const filtered = PATHS.filter(p => selPaths.has(p.letter));
+
+  const pathsWithMatch = filtered.map(p => {
+    const matchStates = p.states.map((questions, si) => {
+      const matchQs = questions.filter(function(_a) {
+        var text = _a[0], type = _a[1];
+        if (!selTypes.has(type)) return false;
+        if (q && !text.toLowerCase().includes(q)) return false;
+        return true;
+      });
+      return {questions: matchQs, stateIdx: si};
+    }).filter(function(s) { return s.questions.length > 0; });
+    return Object.assign({}, p, {matchStates: matchStates});
+  }).filter(function(p) { return p.matchStates.length > 0; });
+
+  var totalQs = 0, totalAll = 0;
+  PATHS.forEach(function(p) { p.states.forEach(function(s) { totalAll += s.length; }); });
+  pathsWithMatch.forEach(function(p) { p.matchStates.forEach(function(s) { totalQs += s.questions.length; }); });
+
+  document.getElementById('statsbar').innerHTML =
+    '<span><span class="dot" style="background:var(--info)"></span> <span class="stat">'+countByType('info')+'</span> inform.</span>' +
+    '<span class="sep">|</span>' +
+    '<span><span class="dot" style="background:var(--komerc)"></span> <span class="stat">'+countByType('komerc')+'</span> komerc.</span>' +
+    '<span class="sep">|</span>' +
+    '<span><span class="dot" style="background:var(--transakc)"></span> <span class="stat">'+countByType('transakc')+'</span> transakc.</span>' +
+    '<span class="sep">|</span>' +
+    '<span><span class="stat">'+pathsWithMatch.length+'</span> z '+PATHS.length+' ścieżek</span>' +
+    '<span class="sep">|</span>' +
+    '<span><span class="stat">'+totalQs+'</span> z '+totalAll+' pytań</span>';
+
+  var main = document.getElementById('main');
+  if (!pathsWithMatch.length) {
+    main.innerHTML = '<div class="empty"><div style="font-size:48px">🔍</div><p>Brak wyników. Zmień filtry lub wyszukiwanie.</p></div>';
+    return;
+  }
+  main.innerHTML = '<div class="cards-grid">'+pathsWithMatch.map(buildCard).join('')+'</div>';
+}
+
+function countByType(type) {
+  var c = 0;
+  PATHS.forEach(function(p) { p.states.forEach(function(s) { s.forEach(function(_a) { if (_a[1] === type) c++; }); }); });
+  return c;
+}
+
+function buildCard(p) {
+  var totalMatch = p.matchStates.reduce(function(sum, s) { return sum + s.questions.length; }, 0);
+  var totalInPath = p.states.reduce(function(sum, s) { return sum + s.length; }, 0);
+  return '<div class="card" id="card-'+p.letter+'">' +
+    '<div class="card-header" onclick="toggleCard(\''+p.letter+'\')">' +
+      '<div class="card-icon" style="background:'+p.color+'">'+p.letter+'</div>' +
+      '<div class="card-body-hdr">' +
+        '<div class="card-path">Ścieżka '+p.letter+' · <span style="color:'+p.color+'">['+p.tag+']</span></div>' +
+        '<div class="card-title">'+p.title+'</div>' +
+        '<div class="card-meta">' +
+          '<span class="card-tag" style="background:'+p.color+'">'+p.tag.toUpperCase()+'</span>' +
+          '<span style="font-size:11px;color:var(--muted)">'+totalMatch+'/'+totalInPath+' pytań</span>' +
+          (totalMatch===totalInPath?'':' <span style="font-size:10px;color:var(--muted)">(filtrowane)</span>') +
+        '</div>' +
+      '</div>' +
+      '<div class="card-chevron">▾</div>' +
+    '</div>' +
+    '<div class="card-body">' +
+      '<div class="legend">' +
+        '<div class="legend-item"><span class="q-dot info"></span> informacyjne</div>' +
+        '<div class="legend-item"><span class="q-dot komerc"></span> komercyjne</div>' +
+        '<div class="legend-item"><span class="q-dot transakc"></span> transakcyjne</div>' +
+      '</div>' +
+      '<div class="states-list">'+p.matchStates.map(function(s) { return buildStateBlock(p, s); }).join('')+'</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function buildStateBlock(p, s) {
+  var allQsInState = p.states[s.stateIdx].length;
+  return '<div class="state-block" id="state-'+p.letter+'-'+s.stateIdx+'">' +
+    '<div class="state-header" onclick="event.stopPropagation();toggleState(\''+p.letter+'\','+s.stateIdx+')">' +
+      '<div class="state-num">'+(s.stateIdx+1)+'</div>' +
+      '<div class="state-name">'+STATE_NAMES[s.stateIdx]+'</div>' +
+      '<div class="state-count">'+s.questions.length+'/'+allQsInState+'</div>' +
+      '<div class="state-chevron">▾</div>' +
+    '</div>' +
+    '<div class="state-questions">'+s.questions.map(function(_a) {
+      var text = _a[0], type = _a[1];
+      return '<div class="q-item">' +
+        '<div class="q-dot '+type+'"></div>' +
+        '<div class="q-text">'+highlightMatch(text)+'<span class="q-type">'+TYPE_LABELS[type]+'</span></div>' +
+      '</div>';
+    }).join('')+'</div>' +
+  '</div>';
+}
+
+function highlightMatch(text) {
+  if (!searchQuery) return text;
+  var escaped = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp('('+escaped+')', 'gi'), '<mark style="background:#FFF3CD;padding:1px 3px;border-radius:2px">$1</mark>');
+}
+
+function toggleCard(letter) {
+  document.getElementById('card-'+letter).classList.toggle('open');
+}
+function toggleState(letter, idx) {
+  document.getElementById('state-'+letter+'-'+idx).classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+updateChips();
+render();
+if (window.innerWidth >= 640) {
+  setTimeout(function() { toggleCard('A'); }, 100);
+}
+</script>
+</body>
+</html>

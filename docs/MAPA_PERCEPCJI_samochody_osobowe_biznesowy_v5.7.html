@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Samochody osobowe — nabywca biznesowy v5.7 — Mapa Percepcji · 138 Pytań</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; display: flex; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+#sidebar {
+  width: 220px; min-width: 220px; background: #fff; border-right: 1px solid #e2e8f0;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.brand {
+  padding: 14px 16px 10px;
+  font-weight: 700; font-size: 13px; color: #1e293b;
+  border-bottom: 1px solid #e2e8f0; line-height: 1.3;
+}
+.brand small { display: block; font-weight: 400; font-size: 11px; color: #64748b; margin-top: 2px; }
+.total-badge {
+  margin: 8px 12px; background: #f1f5f9; border-radius: 6px;
+  padding: 5px 10px; font-size: 11px; color: #475569; font-weight: 500;
+}
+.paths-header { padding: 10px 16px 4px; font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .6px; }
+.paths-list { overflow-y: auto; flex: 1; }
+.path-all {
+  display: flex; align-items: center; gap: 8px; padding: 7px 12px;
+  cursor: pointer; border-radius: 6px; margin: 2px 8px;
+  font-size: 12px; font-weight: 600; color: #334155;
+}
+.path-all.active, .path-all:hover { background: #f1f5f9; }
+.path-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+  cursor: pointer; border-radius: 6px; margin: 1px 8px;
+  font-size: 12px; color: #475569; transition: background .1s;
+}
+.path-item:hover, .path-item.active { background: #f1f5f9; color: #1e293b; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.plabel { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pcount { font-size: 11px; font-weight: 600; color: #94a3b8; min-width: 20px; text-align: right; }
+
+.legend { padding: 10px 12px; border-top: 1px solid #e2e8f0; }
+.legend-title { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+.legend-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #475569; margin: 2px 0; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* MAIN */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* TOPBAR */
+#topbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  padding: 8px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 4px; }
+.filter-label { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-right: 2px; }
+.fbtn {
+  font-size: 11px; padding: 3px 8px; border: 1px solid #e2e8f0; border-radius: 4px;
+  background: #fff; cursor: pointer; color: #475569; transition: all .1s;
+}
+.fbtn:hover { border-color: #94a3b8; }
+.fbtn.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+.search-wrap { margin-left: auto; }
+#search { border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 10px; font-size: 12px; width: 180px; outline: none; }
+#search:focus { border-color: #3b82f6; }
+.counter { font-size: 12px; color: #64748b; white-space: nowrap; }
+
+/* STATS BAR */
+#statsbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  display: flex; gap: 0; overflow-x: auto;
+}
+.stat { flex: 1; padding: 10px 16px; border-right: 1px solid #e2e8f0; min-width: 120px; }
+.stat:last-child { border-right: none; }
+.stat .val { font-size: 24px; font-weight: 700; color: #1e293b; }
+.stat .val.green { color: #10b981; }
+.stat .val.red { color: #ef4444; }
+.stat-lbl { font-size: 11px; color: #64748b; margin-top: 1px; }
+
+/* BOARD */
+#board { flex: 1; overflow-x: auto; overflow-y: auto; padding: 12px; }
+.state-block { margin-bottom: 16px; }
+.state-header {
+  font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase;
+  letter-spacing: .5px; padding: 6px 0 8px; display: flex; align-items: center; gap: 8px;
+}
+.state-code { background: #e2e8f0; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: #64748b; }
+.state-cnt { color: #94a3b8; font-weight: 400; font-size: 11px; }
+.cards-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.card {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 10px 12px; width: 280px; flex-shrink: 0;
+  cursor: default; transition: box-shadow .15s;
+}
+.card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.card .nr { font-size: 10px; color: #94a3b8; margin-bottom: 4px; }
+.card .qt { font-size: 13px; line-height: 1.45; color: #1e293b; margin-bottom: 8px; }
+.card .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600;
+  border: 1px solid; letter-spacing: .2px;
+}
+.tag-p1 { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-p2 { color: #f97316; border-color: #fdba74; background: #fff7ed; }
+.tag-p3 { color: #d97706; border-color: #fcd34d; background: #fffbeb; }
+.tag-p4 { color: #94a3b8; border-color: #cbd5e1; background: #f8fafc; }
+.tag-info  { color: #3b82f6; border-color: #93c5fd; background: #eff6ff; }
+.tag-komerc { color: #8b5cf6; border-color: #c4b5fd; background: #f5f3ff; }
+.tag-trans { color: #14b8a6; border-color: #5eead4; background: #f0fdfa; }
+.tag-brak { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-istnieje { color: #10b981; border-color: #6ee7b7; background: #ecfdf5; }
+.card.hidden { display: none; }
+
+/* TABS */
+#tabs { display: flex; border-bottom: 2px solid #e2e8f0; background: #fff; }
+.tab { padding: 8px 20px; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.tab.active { color: #1e293b; border-bottom-color: #3b82f6; }
+.tab-panel { display: none; }
+.tab-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+/* LIST VIEW */
+#list-panel { overflow-y: auto; padding: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 8px 12px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; position: sticky; top: 0; }
+td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; }
+tr:hover td { background: #f8fafc; }
+tr.hidden { display: none; }
+
+/* INFO */
+#info-panel { overflow: hidden; display: flex; flex-direction: column; font-size: 13px; line-height: 1.6; }
+.info-section { margin-bottom: 16px; }
+.info-section h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #64748b; margin-bottom: 8px; }
+.info-section ul { padding-left: 16px; color: #475569; }
+.info-section li { margin: 3px 0; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin: 2px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="brand">
+    Samochody osobowe — nabywca biznesowy
+    <small>v5.7 · Analiza CEP i Pytań</small>
+  </div>
+  <div class="total-badge" id="total-badge">138 pytań · 8 ścieżek</div>
+  <div class="paths-header">Ścieżki zakupowe</div>
+  <div class="paths-list">
+    <div class="path-all active" onclick="filterPath(this)" data-path="ALL">
+      <span class="dot" style="background:#64748b"></span>
+      <span class="plabel">Wszystkie ścieżki</span>
+      <span class="pcount" id="cnt-all">0</span>
+    </div>
+    
+        <div class="path-item" data-path="A" onclick="filterPath(this)" title="Pierwsze auto na JDG">
+          <span class="dot" style="background:#3b82f6"></span>
+          <span class="plabel">A · Pierwsze auto na JDG</span>
+          <span class="pcount" id="cnt-A">0</span>
+        </div>
+        <div class="path-item" data-path="B" onclick="filterPath(this)" title="Zmiana auta firmowego / koniec leasingu">
+          <span class="dot" style="background:#8b5cf6"></span>
+          <span class="plabel">B · Zmiana auta firmowego / koniec leasingu</span>
+          <span class="pcount" id="cnt-B">0</span>
+        </div>
+        <div class="path-item" data-path="C" onclick="filterPath(this)" title="Odkrycie odliczenia VAT na auto">
+          <span class="dot" style="background:#ec4899"></span>
+          <span class="plabel">C · Odkrycie odliczenia VAT na auto</span>
+          <span class="pcount" id="cnt-C">0</span>
+        </div>
+        <div class="path-item" data-path="D" onclick="filterPath(this)" title="Problem limitu amortyzacji 150k">
+          <span class="dot" style="background:#14b8a6"></span>
+          <span class="plabel">D · Problem limitu amortyzacji 150k</span>
+          <span class="pcount" id="cnt-D">0</span>
+        </div>
+        <div class="path-item" data-path="E" onclick="filterPath(this)" title="Pierwsza flota firmowa">
+          <span class="dot" style="background:#f59e0b"></span>
+          <span class="plabel">E · Pierwsza flota firmowa</span>
+          <span class="pcount" id="cnt-E">0</span>
+        </div>
+        <div class="path-item" data-path="F" onclick="filterPath(this)" title="Leasing vs zakup firmowy">
+          <span class="dot" style="background:#10b981"></span>
+          <span class="plabel">F · Leasing vs zakup firmowy</span>
+          <span class="pcount" id="cnt-F">0</span>
+        </div>
+        <div class="path-item" data-path="G" onclick="filterPath(this)" title="Samochód do reprezentacji firmy">
+          <span class="dot" style="background:#f43f5e"></span>
+          <span class="plabel">G · Samochód do reprezentacji firmy</span>
+          <span class="pcount" id="cnt-G">0</span>
+        </div>
+        <div class="path-item" data-path="H" onclick="filterPath(this)" title="Elektryk firmowy — ulgi i VAT 100%">
+          <span class="dot" style="background:#eab308"></span>
+          <span class="plabel">H · Elektryk firmowy — ulgi i VAT 100%</span>
+          <span class="pcount" id="cnt-H">0</span>
+        </div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Statusy</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>BRAK — do stworzenia</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#10b981"></span>ISTNIEJE — opublikowany</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>ROZBUDOWAĆ — wymaga rozbudowy</div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Priorytety</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>P1 — krytyczne (blokery)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>P2 — ważne (decyzja)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#eab308"></span>P3 — standardowe</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#94a3b8"></span>P4 — niski priorytet</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <span class="filter-label">Priorytet</span>
+    <div class="filter-group" id="fg-pr">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="P1">P1</button>
+      <button class="fbtn" data-val="P2">P2</button>
+      <button class="fbtn" data-val="P3">P3</button>
+      <button class="fbtn" data-val="P4">P4</button>
+    </div>
+    <span class="filter-label" style="margin-left:8px">Typ</span>
+    <div class="filter-group" id="fg-typ">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="INFO">INFO</button>
+      <button class="fbtn" data-val="KOMERC">KOMERC</button>
+      <button class="fbtn" data-val="TRANS">TRANS</button>
+    </div>
+    <div class="search-wrap">
+      <input id="search" type="text" placeholder="Szukaj artykułu..." oninput="applyFilters()">
+    </div>
+    <div class="counter">Widoczne: <strong id="visibleCount">0</strong> / 138</div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div id="statsbar">
+    <div class="stat"><div class="val" id="stat-total">0</div><div class="stat-lbl">Widocznych pytań</div></div>
+    <div class="stat"><div class="val red" id="stat-p1">0</div><div class="stat-lbl">Priorytet P1 (blokery)</div></div>
+    <div class="stat"><div class="val" id="stat-brak">0</div><div class="stat-lbl">Status BRAK (do stworzenia)</div></div>
+    <div class="stat"><div class="val green" id="stat-istnieje">0</div><div class="stat-lbl">ISTNIEJE + ROZBUDOWAĆ</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div id="tabs">
+    <button class="tab active" onclick="switchTab('mapa')">🗺️ Mapa</button>
+    <button class="tab" onclick="switchTab('lista')">📋 Lista</button>
+    <button class="tab" onclick="switchTab('info')">ℹ️ Info</button>
+  </div>
+
+  <!-- MAPA PANEL -->
+  <div id="mapa-panel" class="tab-panel active">
+    <div id="board"></div>
+  </div>
+
+  <!-- LISTA PANEL -->
+  <div id="lista-panel" class="tab-panel">
+    <div id="list-panel">
+      <table id="list-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Pytanie</th><th>Ścieżka</th><th>Stan</th><th>Priorytet</th><th>Typ</th>
+          </tr>
+        </thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INFO PANEL -->
+  <div id="info-panel" class="tab-panel">
+    <div style="overflow-y:auto;padding:16px;flex:1">
+    <div class="info-section">
+      <h3>Kategoria</h3>
+      <p style="font-size:14px"><strong>Samochody osobowe — nabywca biznesowy</strong></p>
+      <p style="font-size:12px;color:#64748b;margin-top:4px">v5.7 · 138 pytań · 8 ścieżek zakupowych (CEP)</p>
+    </div>
+    <div class="info-section">
+      <h3>Struktura pytań wg stanu</h3>
+      <div id="info-states" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
+    </div>
+    <div class="info-section">
+      <h3>Ścieżki zakupowe — pełne profile CEP</h3>
+      <div id="info-paths" style="margin-top:8px"></div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DANE ──────────────────────────────────────────────────────────────────────
+const A = [
+{nr:1,t:"Auto na firmę czy na siebie — co bardziej się opłaca podatkowo w 2026?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:2,t:"Zakładam JDG — czy od razu brać auto na firmę?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:3,t:"Samochód na JDG — VAT, KUP, leasing — jak to działa krok po kroku?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:4,t:"Mam działalność od 3 miesięcy — czy mogę wziąć leasing na auto?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:5,t:"Leasing operacyjny na pierwszą działalność — czy wymagana historia firmy?",p:"A",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:6,t:"Prywatne auto w kosztach firmy — czy to możliwe bez leasingu?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:7,t:"Samochód firmowy dla JDG — jak to działa z KUP i VAT?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:8,t:"Ile VAT odliczę od auta na JDG w 2026?",p:"A",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:9,t:"Ewidencja przebiegu pojazdu — kiedy wymagana i jak prowadzić?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:10,t:"Co to jest KUP i jak auto wchodzi w koszty uzyskania przychodu?",p:"A",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:11,t:"Jak wprowadzić prywatne auto do firmy — procedura krok po kroku?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:12,t:"Amortyzacja samochodu na JDG — stawka i zasady 2026?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:13,t:"Jaki samochód wziąć na leasing przy nowej działalności — C lub D segment?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:14,t:"Kalkulator: leasing operacyjny na Audi A4 dla nowej JDG — rata i koszty?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:15,t:"🛡️ Czy skarbówka sprawdzi moje auto firmowe przy pierwszym roku JDG?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:16,t:"🛡️ Czy leasingodawca da mi leasing bez historii firmy — co zrobić?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:17,t:"Koniec leasingu firmowego za 6 miesięcy — co dalej: odkup czy nowe?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:18,t:"Auto firmowe zamortyzowane — kiedy opłaca się kupić nowe?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:19,t:"Kiedy zacząć szukać nowego auta firmowego przed końcem leasingu?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:20,t:"Wartość rezydualna po leasingu firmowym — ile wynosi i czy warto odkupić?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:21,t:"Nowy leasing operacyjny 2026 — warunki, oprocentowanie, wymagania?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:22,t:"Zmiana segmentu auta przy odnowieniu leasingu — co zmienia się podatkowo?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:23,t:"Auto po leasingu firmowym — odkup, wartość rezydualna, jaki podatek?",p:"B",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:24,t:"Jak porównać oferty leasingowe różnych firm — co realnie porównywać?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:25,t:"RRSO w leasingu firmowym — jak sprawdzić czy oferta jest dobra?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:26,t:"Kalkulator nowego leasingu firmowego — Audi Q5 / BMW X3 2026?",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:27,t:"Umów spotkanie z doradcą leasingowym przed końcem leasingu — jak zaplanować?",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:28,t:"🛡️ Koniec leasingu za 6 mies. — czas dostawy nowego auta 10–16 tyg. — jak nie mieć przestoju?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:29,t:"🛡️ Auto po leasingu — VAT od odkupu po wartości rezydualnej — jak to rozliczyć?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:30,t:"Ile VAT-u mogę odliczyć od samochodu firmowego?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:31,t:"Czy mogę odliczyć 100% VAT od samochodu firmowego 2026?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:32,t:"Kolega odlicza 100% VAT od firmowego auta — czy ja też mam prawo?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:33,t:"Co to jest użytek mieszany samochodu — kiedy mam 50% a kiedy 100% VAT?",p:"C",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:34,t:"Jak udowodnić 100% użytek firmowy samochodu — co wymaga Urząd Skarbowy?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:35,t:"VAT od leasingu samochodowego 2026 — kiedy 50% a kiedy 100%?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:36,t:"Ewidencja przebiegu pojazdu — co musi zawierać, żeby US ją uznał?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:37,t:"VAT-26 — co to jest i jak złożyć zawiadomienie o 100% użytku firmowym?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:38,t:"Ryzyko kontroli KAS przy 100% VAT na auto — jak się zabezpieczyć?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:39,t:"Aplikacja do ewidencji przebiegu pojazdu — jaka jest najlepsza?",p:"C",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:40,t:"Zawiadomienie naczelnika US o 100% użytku — jak złożyć i kiedy?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:41,t:"🛡️ Czy muszę prowadzić ewidencję jeśli mam tylko jedno auto w firmie?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:42,t:"🛡️ Kiedy skarbówka może zakwestionować 100% VAT na auto firmowe?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:43,t:"🛡️ Co się stanie jeśli skarbówka odrzuci moje 100% VAT od auta — jakie konsekwencje?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:44,t:"Limit amortyzacji samochodu osobowego w firmie 2026 — 150 000 PLN nadal?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:45,t:"Chcę kupić Audi Q5 za 200k PLN — ile faktycznie odliczę w kosztach firmy?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:46,t:"Jak rozliczyć samochód firmowy droższy niż 150 000 PLN?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:47,t:"Leasing operacyjny a limit 150k amortyzacji — czy leasing go obchodzi?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:48,t:"Amortyzacja auta za 250k PLN — ile faktycznie odliczę rocznie?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:49,t:"Jaki jest limit amortyzacji elektryka firmowego — 225k czy inne?",p:"D",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:50,t:"Jak liczyć amortyzację samochodu osobowego w firmie krok po kroku?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:51,t:"Dlaczego leasing operacyjny jest korzystniejszy niż zakup przy aucie >150k PLN?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:52,t:"Limit 150 000 PLN a VAT — czy limit dotyczy wartości brutto czy netto?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:53,t:"Audi Q5 za 220k netto — leasing operacyjny vs zakup — kalkulacja podatkowa?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:54,t:"Elektryk firmowy za 250k netto — jak rozliczyć z limitem 225k BEV?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:55,t:"🛡️ Skoro nie odliczę wszystkiego od drogiego auta — czy nie lepiej wziąć leasing?",p:"D",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:56,t:"🛡️ Jak sprawdzić czy moje auto przekracza limit 150k — brutto czy netto?",p:"D",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:57,t:"Firma rośnie — jak zorganizować flotę samochodową dla pracowników?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:58,t:"Samochód służbowy dla pracownika — jak to rozliczyć z ZUS i PIT 2026?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:59,t:"4 handlowców jeżdżą prywatnymi autami — czy powinienem dać im firmowe?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:60,t:"Leasing flotowy dla 3–5 aut naraz — warunki i procedura?",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:61,t:"Pracownik używa auta firmowego prywatnie — co muszę wiedzieć o ZUS i PIT?",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:62,t:"Ubezpieczenie flotowe samochodów firmowych — kiedy się opłaca?",p:"E",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:63,t:"Regulamin użytkowania pojazdu służbowego — co musi zawierać?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:64,t:"Samochód służbowy a ryczałt pracownika — ile wynosi 2026?",p:"E",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:65,t:"Ubezpieczenie flotowe vs indywidualne — ile oszczędzam przy 3 autach?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:66,t:"Jak zarządzać flotą firmową 4–10 pojazdów — co muszę wiedzieć?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:67,t:"Oferta flotowa na 4 auta — Skoda Octavia / VW Passat — wycena leasingu?",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:68,t:"Jak wdrożyć regulamin samochodów służbowych — wzór i procedura?",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:69,t:"🛡️ Czy mogę odmówić pracownikowi użytku prywatnego auta służbowego?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:70,t:"🛡️ Pracownik rozbije auto służbowe — kto płaci, jakie ubezpieczenie?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:71,t:"Leasing operacyjny vs zakup auta na firmę gotówką — co lepsze?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:72,t:"Leasing finansowy vs operacyjny — jaka różnica podatkowa?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:73,t:"Mam gotówkę w firmie — leasing czy kupić auto od razu?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:74,t:"Kiedy zakup auta gotówką jest korzystniejszy niż leasing operacyjny?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:75,t:"Kredyt firmowy na auto vs leasing operacyjny — porównanie kosztów?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:76,t:"Leasing operacyjny a bilans firmy — czy wpływa na zdolność kredytową?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:77,t:"Rata leasingowa w całości w kosztach firmy — kiedy to działa?",p:"F",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:78,t:"Wcześniejsze zakończenie leasingu firmowego — jakie koszty i warunki?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:79,t:"Jak leasing operacyjny obchodzi limit amortyzacji 150 000 PLN?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:80,t:"Efektywna rata leasingowa po tarczy podatkowej CIT 19% — jak liczyć?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:81,t:"Kalkulator: leasing operacyjny vs zakup gotówką — Audi A4 200k PLN netto 2026?",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:82,t:"🛡️ Leasing vs zakup — co mi faktycznie wychodzi taniej po uwzględnieniu podatku?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:83,t:"🛡️ Jak porównać oferty leasingowe — co jest pułapką w warunkach?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:84,t:"Jakie auto dla prezesa firmy — co wypada w mojej branży?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:85,t:"Samochód reprezentacyjny dla firmy — co wybrać do 250k PLN netto?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:86,t:"Przyjeżdżam do klientów — jakim autem robię dobre pierwsze wrażenie?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:87,t:"Audi A6 vs BMW 5 vs MB E-klasa — co wybrać dla firmy?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:88,t:"Jaki segment auta wypada w branży prawniczej / konsultingowej / budowlanej?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:89,t:"Audi Q5 vs BMW X3 — który lepszy jako auto firmowe do reprezentacji?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:90,t:"Czy auto reprezentacyjne może być w 100% kosztem firmy?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:91,t:"Co to jest samochód reprezentacyjny w rozumieniu przepisów podatkowych?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:92,t:"Audi A6 na leasing firmowy — ile kosztuje miesięcznie po optymalizacji podatkowej?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:93,t:"Wartość rezydualna aut premium (Audi, BMW) — czy tracą mniej niż masowe?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:94,t:"Audi Q5 / A6 na leasing firmowy — konfiguracja i wycena 2026?",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:95,t:"Test drive Audi A6 / BMW 5 — jak umówić w salonie firmowym?",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:96,t:"🛡️ Czy auto za 250k PLN w firmie nie wzbudzi podejrzeń urzędu skarbowego?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:97,t:"🛡️ Limit 150k amortyzacji a auto za 300k — ile realnie odliczę?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:98,t:"Elektryk na firmę — jakie ulgi w 2026?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:99,t:"Czy elektryk firmowy = 100% VAT zawsze?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:100,t:"Słyszałem o limicie 225k dla elektryków firmowych — co to zmienia?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:101,t:"Czy warto wziąć elektryka na firmę w Polsce 2026?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:102,t:"Limit amortyzacji elektryka firmowego 225 000 PLN — jak działa vs 150k ICE?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:103,t:"Warunki 100% VAT na elektryk firmowy — co muszę spełnić?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:104,t:"Jaki elektryk wybrać dla firmy do 300k PLN netto — ranking 2026?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:105,t:"Ładowarka w firmie / domu — czy można odliczyć koszt instalacji jako KUP?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:106,t:"Elektryk firmowy TCO vs diesel w firmie — kiedy BEV się opłaca?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:107,t:"Leasing operacyjny na elektryk firmowy — jakie dodatkowe korzyści?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:108,t:"Audi Q4 e-tron vs BMW iX3 jako auto firmowe — porównanie kosztów i ulg?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:109,t:"Czy BYD na firmę to dobry wybór — VAT, amortyzacja, serwis?",p:"H",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:110,t:"Audi Q4 e-tron / BMW iX3 na leasing firmowy — kalkulator 2026?",p:"H",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:111,t:"Jak skonfigurować Audi Q4 e-tron dla firmy — opcje i konfiguracja?",p:"H",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:112,t:"🛡️ Elektryk w firmie — czy brak ładowarki mnie blokuje? Koszt infrastruktury?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:113,t:"🛡️ Co jeśli pracownik ładuje elektryk służbowy w domu — kto płaci rachunek?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:114,t:"🛡️ Zasięg elektryka do klientów w terenie — czy elektryk firmowy mnie nie zostawi?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:115,t:"GAP w leasingu firmowym — co to jest i czy warto?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:116,t:"Jaki samochód dla handlowca — jaki segment auta jest optymalny?",p:"E",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:117,t:"Czy GPS w aucie firmowym pomaga przy ewidencji przebiegu — jak działa?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:118,t:"Co to jest jednorazowa amortyzacja i czy auto firmowe z niej korzysta?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:119,t:"Jak sprawdzić historię własnego auta firmowego przed jego sprzedażą?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:120,t:"Samochód na JDG a ryczałt ewidencjonowany — czy koszty auto wchodzą?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:121,t:"Jakie opcje wyposażenia Audi A6 / Q5 są standardem biznesowym w 2026?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:122,t:"Estoński CIT a samochód elektryczny — jakie dodatkowe korzyści?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:123,t:"Flota 5 aut — jak negocjować warunki leasingu flotowego z dostawcą?",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:124,t:"Jak przełączyć się z 50% na 100% VAT od auta firmowego — procedura?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:125,t:"Auto firmowe za 180k PLN netto — leasing operacyjny czy zakup? Kalkulacja 2026?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:126,t:"Volvo XC60 vs Audi Q5 vs BMW X3 dla firmy — co wybrać w 2026?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:127,t:"Leasing operacyjny a VAT — jak odlicza się VAT od raty leasingowej?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:128,t:"Czy mogę zwiększyć limit km w leasingu firmowym — jakie koszty?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:129,t:"Samochód ciężarowy vs osobowy na firmę — różnice podatkowe?",p:"A",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:130,t:"Tesla Model 3 / Y na firmę — VAT, amortyzacja, leasing — czy się opłaca?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:131,t:"🛡️ Jak kontrolować zużycie paliwa floty — GPS i systemy telematyczne?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:132,t:"🛡️ Czy sprzedaż auta z pełną amortyzacją generuje podatek dochodowy?",p:"D",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:133,t:"🛡️ Błąd w ewidencji przebiegu — czy skarbówka od razu cofa cały VAT?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:134,t:"🛡️ Czy drogi samochód (350k PLN) to problem przy ewentualnej kontroli firmy?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:135,t:"🛡️ Co jeśli nie stać mnie na ratę leasingową w słabym miesiącu — opcje wyjścia?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:136,t:"🛡️ Koniec leasingu a nowe auto — czy leasingodawca utrudni mi przejście do innej firmy?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:137,t:"🛡️ JDG i pełna amortyzacja auta a zamknięcie firmy — co z amortyzowanym autem?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:138,t:"🛡️ Co jeśli rząd zmieni przepisy o ulgach na elektryk firmowy — ryzyko?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"}
+];
+
+const PATHS = [{"letter": "A", "label": "Pierwsze auto na JDG", "cep_id": "cep_jdg_pierwszy_samochod_firmowy", "typ": "POTRZEBA", "color": "#3b82f6", "count": 19, "verbatim": "„zakładam JDG — czy opłaca się wziąć auto na firmę od razu?\" / „mam działalność od 3 miesięcy, chcę auto — jak to ugryźć podatkowo?\"", "kontekst": "pierwsze miesiące JDG, brak doświadczenia z „autem na firmę\", często samochód prywatny przekształcany", "concern": "czy to się opłaca podatkowo? jak to wogóle działa z VAT i KUP?", "bloker": "brak wiedzy o zasadach firmowego auta (co wolno odliczyć, co trzeba udowodnić, co z prywatnym autem)"}, {"letter": "B", "label": "Zmiana auta firmowego / koniec leasingu", "cep_id": "cep_zmiana_auta_firmowego", "typ": "POTRZEBA", "color": "#8b5cf6", "count": 16, "verbatim": "„moje leasing kończy się za 6 miesięcy, czas się rozglądać\" / „auto jest zamortyzowane — mogę teraz wziąć nowe i wrzucić w koszty?\"", "kontekst": "koniec leasingu lub pełna amortyzacja, firma już doświadczona z autem firmowym", "concern": "co teraz: nowy leasing, odkup po wartości rezydualnej, nowe auto? jakie warunki leasingu w 2026?", "bloker": "wartość rezydualna vs rynek + nowe warunki leasingu + decyzja czy segment up"}, {"letter": "C", "label": "Odkrycie odliczenia VAT na auto", "cep_id": "cep_vat_odliczenie_odkrycie", "typ": "EMOCJA", "color": "#ec4899", "count": 17, "verbatim": "„kolega mi powiedział że od auta firmowego odlicza 50% VAT — czy ja też mogę?\" / „właśnie dowiedziałem się o VAT na auto służbowe — co mogę odliczyć?\"", "kontekst": "właściciel firmy który wcześniej nie korzystał z odliczenia VAT lub dopiero zaczyna", "concern": "ile dokładnie VAT mogę odliczyć? co muszę spełnić żeby odliczyć 100%?", "bloker": "50% vs 100% VAT — warunki i ryzyko (ewidencja przebiegu, weryfikacja KAS)"}, {"letter": "D", "label": "Problem limitu amortyzacji 150k", "cep_id": "cep_limit_150k_problem", "typ": "POTRZEBA", "color": "#14b8a6", "count": 16, "verbatim": "„chcę Audi Q5 za 200k — jak to wpisać w koszty firmy?\" / „słyszałem o limicie 150 000 PLN na amortyzację — co to znaczy dla mojego auta?\"", "kontekst": "przedsiębiorca który chce auto powyżej limitu, nie wie jak rozliczyć nadwyżkę", "concern": "co mogę odliczyć od auta za 200k / 250k PLN? jak działa limit amortyzacyjny?", "bloker": "limit amortyzacyjny 150 000 PLN — niepełny odpis, co z nadwyżką, opcja leasing jako alternatywa"}, {"letter": "E", "label": "Pierwsza flota firmowa", "cep_id": "cep_flota_pierwsze_rozszerzenie", "typ": "POTRZEBA", "color": "#f59e0b", "count": 17, "verbatim": "„mam 4 handlowców, wszyscy jeżdżą prywatnymi — muszę coś z tym zrobić\" / „firma rośnie, potrzebuję 3 auta służbowe dla pracowników — jak to ogarnąć?\"", "kontekst": "firma w fazie wzrostu, pierwsze skalowanie floty, brak doświadczenia z fleet management", "concern": "jak kupić/leasingować kilka aut naraz? ubezpieczenie flotowe? pracownik z autem służbowym — ZUS i podatek?", "bloker": "złożoność flotowa (umowy, ubezpieczenie fleet, samochód służbowy dla pracownika = przychód? ZUS?)"}, {"letter": "F", "label": "Leasing vs zakup firmowy", "cep_id": "cep_leasing_vs_zakup_firmowy", "typ": "POTRZEBA", "color": "#10b981", "count": 16, "verbatim": "„mam kasę w firmie — czy wziąć leasing operacyjny czy kupić za gotówkę?\" / „leasing operacyjny vs finansowy — co się bardziej opłaca podatkowo?\"", "kontekst": "firma z płynnością, stoi przed wyborem formy finansowania", "concern": "co jest tańsze podatkowo i cashflowowo? kiedy zakup się opłaci bardziej niż leasing?", "bloker": "leasing operacyjny vs finansowy vs zakup gotówką — różne skutki podatkowe, płynność, własność"}, {"letter": "G", "label": "Samochód do reprezentacji firmy", "cep_id": "cep_samochod_reprezentacyjny", "typ": "EMOCJA", "color": "#f43f5e", "count": 17, "verbatim": "„spotykam się z klientami, jeżdżę do Warszawy — potrzebuję auta które robi wrażenie, nie żeby się wstydzić\" / „moi klienci to prezesi — muszę przyjechać czymś, co buduje zaufanie\"", "kontekst": "firma B2B, spotkania z klientami premium, kontekst reprezentacyjny", "concern": "jakie auto „pasuje\" do mojej branży/pozycji bez przepłacania? jak to odliczyć?", "bloker": "co jest „odpowiednim\" autem do reprezentacji (branżowe normy: prawnik vs budowlaniec) + limit 150k"}, {"letter": "H", "label": "Elektryk firmowy — ulgi i VAT 100%", "cep_id": "cep_elektryk_firmowy_ulgi", "typ": "EMOCJA", "color": "#eab308", "count": 20, "verbatim": "„słyszałem że elektryk na firmie = 100% VAT i wyższy limit amortyzacji — czy to prawda?\" / „chcę BEV na firmę — jakie ulgi mi przysługują w 2026?\"", "kontekst": "przedsiębiorca zainteresowany elektrykiem, słyszał o ulgach, chce zweryfikować", "concern": "co konkretnie zyskuję na elektryku firmowym vs spalinowy? jaki elektryk wziąć?", "bloker": "warunki 100% VAT i limit 225k (musi być wyłącznie firmowy) + sieć ładowania + koszt infrastruktury w firmie"}];
+const STATE_ORDER = ["swiadomosc", "orientacja", "nauka", "decyzja", "bloker"];
+const STATE_LABELS = {"swiadomosc": "Świadomość", "orientacja": "Orientacja", "nauka": "Nauka", "decyzja": "Decyzja", "bloker": "Bloker"};
+
+// ── STAN FILTRÓW ──────────────────────────────────────────────────────────────
+let activePath = 'ALL';
+let activePr   = 'ALL';
+let activeTyp  = 'ALL';
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildBoard();
+  buildList();
+  buildInfoPaths();
+  buildInfoStates();
+  applyFilters();
+});
+
+function buildBoard() {
+  const board = document.getElementById('board');
+  // Zbierz stany wg kolejności
+  const stateGroups = {};
+  for (const a of A) {
+    if (!stateGroups[a.s]) stateGroups[a.s] = [];
+    stateGroups[a.s].push(a);
+  }
+  const orderedStates = STATE_ORDER.filter(s => stateGroups[s]);
+  for (const sid of orderedStates) {
+    const label = STATE_LABELS[sid] || sid;
+    const arts = stateGroups[sid];
+    const block = document.createElement('div');
+    block.className = 'state-block';
+    block.dataset.state = sid;
+    block.innerHTML = `<div class="state-header">
+      <span class="state-code">${sid.toUpperCase()}</span>
+      <span>${label}</span>
+      <span class="state-cnt" id="scnt-${sid}"></span>
+    </div><div class="cards-row" id="cards-${sid}"></div>`;
+    board.appendChild(block);
+    const row = document.getElementById('cards-' + sid);
+    for (const a of arts) {
+      const tagPr  = `<span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span>`;
+      const tagTyp = `<span class="tag tag-${a.y.toLowerCase()}">${a.y}</span>`;
+      const tagSt  = `<span class="tag tag-${a.st.toLowerCase()}">${a.st}</span>`;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.nr = a.nr;
+      card.dataset.p  = a.p;
+      card.dataset.s  = a.s;
+      card.dataset.pr = a.pr;
+      card.dataset.y  = a.y;
+      card.dataset.st = a.st;
+      card.dataset.t  = a.t.toLowerCase();
+      card.innerHTML = `<div class="nr">#${a.nr} · ${a.p}</div>
+        <div class="qt">${a.t}</div>
+        <div class="tags">${tagPr}${tagTyp}${tagSt}</div>`;
+      row.appendChild(card);
+    }
+  }
+}
+
+function buildList() {
+  const tbody = document.getElementById('list-body');
+  for (const a of A) {
+    const tr = document.createElement('tr');
+    tr.dataset.nr = a.nr;
+    tr.dataset.p  = a.p;
+    tr.dataset.s  = a.s;
+    tr.dataset.pr = a.pr;
+    tr.dataset.y  = a.y;
+    tr.dataset.st = a.st;
+    tr.dataset.t  = a.t.toLowerCase();
+    tr.innerHTML = `<td>${a.nr}</td>
+      <td>${a.t}</td>
+      <td>${a.p}</td>
+      <td>${STATE_LABELS[a.s] || a.s}</td>
+      <td><span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span></td>
+      <td><span class="tag tag-${a.y.toLowerCase()}">${a.y}</span></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function buildInfoPaths() {
+  const wrap = document.getElementById('info-paths');
+  for (const p of PATHS) {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:12px;border-left:4px solid '+p.color;
+    // Składowe HTML karty CEP
+    const typBadge = p.typ
+      ? `<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-left:6px">${p.typ}</span>`
+      : '';
+    const verbHTML = p.verbatim
+      ? `<div style="margin-top:8px;font-size:12px;color:#374151;background:#f8fafc;border-radius:6px;padding:8px 10px;border-left:3px solid ${p.color};line-height:1.5;font-style:italic">${p.verbatim}</div>`
+      : '';
+    const detailRows = [];
+    if (p.kontekst) detailRows.push(['Kontekst', p.kontekst]);
+    if (p.concern)  detailRows.push(['Główna troska', p.concern]);
+    if (p.bloker)   detailRows.push(['Bloker decyzji', p.bloker]);
+    const detailHTML = detailRows.length
+      ? `<table style="margin-top:8px;width:100%;border-collapse:collapse;font-size:12px">` +
+        detailRows.map(([k,v]) =>
+          `<tr><td style="width:120px;color:#94a3b8;font-weight:600;padding:3px 8px 3px 0;vertical-align:top;white-space:nowrap">${k}</td>` +
+          `<td style="color:#334155;padding:3px 0;line-height:1.5">${v}</td></tr>`
+        ).join('') + `</table>`
+      : '';
+    // Rozkład pytań per stan
+    const statCnts = {};
+    for (const a of A) if (a.p === p.letter) statCnts[a.s] = (statCnts[a.s]||0)+1;
+    const stateBar = STATE_ORDER.filter(s=>statCnts[s]).map(s=>
+      `<span style="font-size:10px;padding:1px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-right:4px">${STATE_LABELS[s]||s} ${statCnts[s]}</span>`
+    ).join('');
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="width:26px;height:26px;border-radius:50%;background:${p.color};color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${p.letter}</span>
+        <strong style="font-size:14px;color:#1e293b">${p.label}</strong>
+        ${typBadge}
+        <span style="margin-left:auto;font-size:11px;color:#94a3b8">${p.count} pytań</span>
+      </div>
+      <div style="font-size:10px;color:#64748b;margin-top:4px;font-family:monospace">${p.cep_id||''}</div>
+      ${verbHTML}
+      ${detailHTML}
+      <div style="margin-top:8px">${stateBar}</div>`;
+    wrap.appendChild(card);
+  }
+}
+
+function buildInfoStates() {
+  const wrap = document.getElementById('info-states');
+  const counts = {};
+  for (const a of A) counts[a.s] = (counts[a.s]||0)+1;
+  for (const s of STATE_ORDER) {
+    if (!counts[s]) continue;
+    const el = document.createElement('div');
+    el.style.cssText = 'background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 14px;text-align:center;min-width:100px';
+    el.innerHTML = `<div style="font-size:20px;font-weight:700;color:#1e293b">${counts[s]}</div><div style="font-size:11px;color:#64748b;margin-top:2px">${STATE_LABELS[s]||s}</div>`;
+    wrap.appendChild(el);
+  }
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+function filterPath(el) {
+  document.querySelectorAll('.path-item, .path-all').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  activePath = el.dataset.path;
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  let vis = 0, p1 = 0, brak = 0, istnieje = 0;
+  const pathCounts = {};
+
+  const allEls = [...document.querySelectorAll('.card, #list-body tr')];
+  for (const el of allEls) {
+    const match =
+      (activePath === 'ALL' || el.dataset.p === activePath) &&
+      (activePr   === 'ALL' || el.dataset.pr === activePr) &&
+      (activeTyp  === 'ALL' || el.dataset.y  === activeTyp) &&
+      (!q || el.dataset.t.includes(q));
+    el.classList.toggle('hidden', !match);
+    if (match) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pathCounts[el.dataset.p] = (pathCounts[el.dataset.p] || 0) + 1;
+    }
+  }
+  // Odejmij duplikaty (card + tr)
+  vis = Math.round(vis / (document.querySelector('#list-body tr') ? 2 : 1));
+  if (document.querySelector('#list-body tr')) vis = Math.round(vis / 2);
+  // Policz raz — cards only
+  vis = 0; p1 = 0; brak = 0; istnieje = 0;
+  const pcounts2 = {};
+  document.querySelectorAll('.card').forEach(el => {
+    if (!el.classList.contains('hidden')) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pcounts2[el.dataset.p] = (pcounts2[el.dataset.p] || 0) + 1;
+    }
+  });
+
+  document.getElementById('stat-total').textContent   = vis;
+  document.getElementById('stat-p1').textContent      = p1;
+  document.getElementById('stat-brak').textContent    = brak;
+  document.getElementById('stat-istnieje').textContent = istnieje;
+  document.getElementById('visibleCount').textContent  = vis;
+
+  // Aktualizuj liczniki ścieżek
+  let allCnt = 0;
+  for (const p of PATHS) {
+    const cnt = pcounts2[p.letter] || 0;
+    const el = document.getElementById('cnt-' + p.letter);
+    if (el) el.textContent = cnt;
+    allCnt += cnt;
+  }
+  const cntAll = document.getElementById('cnt-all');
+  if (cntAll) cntAll.textContent = allCnt;
+
+  // State block counts (tylko mapa)
+  for (const sid of STATE_ORDER) {
+    const el = document.getElementById('scnt-' + sid);
+    if (el) {
+      const cnt = document.querySelectorAll(`#cards-${sid} .card:not(.hidden)`).length;
+      el.textContent = cnt ? cnt + ' art.' : '';
+    }
+  }
+}
+
+// Filtry przyciski
+document.getElementById('fg-pr').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-pr .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activePr = e.target.dataset.val;
+  applyFilters();
+});
+document.getElementById('fg-typ').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-typ .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeTyp = e.target.dataset.val;
+  applyFilters();
+});
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['mapa','lista','info'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(name + '-panel').classList.add('active');
+  applyFilters();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Samochody elektryczne — nabywca prywatny v5.7 — Mapa Percepcji · 130 Pytań</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; display: flex; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+#sidebar {
+  width: 220px; min-width: 220px; background: #fff; border-right: 1px solid #e2e8f0;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.brand {
+  padding: 14px 16px 10px;
+  font-weight: 700; font-size: 13px; color: #1e293b;
+  border-bottom: 1px solid #e2e8f0; line-height: 1.3;
+}
+.brand small { display: block; font-weight: 400; font-size: 11px; color: #64748b; margin-top: 2px; }
+.total-badge {
+  margin: 8px 12px; background: #f1f5f9; border-radius: 6px;
+  padding: 5px 10px; font-size: 11px; color: #475569; font-weight: 500;
+}
+.paths-header { padding: 10px 16px 4px; font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .6px; }
+.paths-list { overflow-y: auto; flex: 1; }
+.path-all {
+  display: flex; align-items: center; gap: 8px; padding: 7px 12px;
+  cursor: pointer; border-radius: 6px; margin: 2px 8px;
+  font-size: 12px; font-weight: 600; color: #334155;
+}
+.path-all.active, .path-all:hover { background: #f1f5f9; }
+.path-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+  cursor: pointer; border-radius: 6px; margin: 1px 8px;
+  font-size: 12px; color: #475569; transition: background .1s;
+}
+.path-item:hover, .path-item.active { background: #f1f5f9; color: #1e293b; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.plabel { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pcount { font-size: 11px; font-weight: 600; color: #94a3b8; min-width: 20px; text-align: right; }
+
+.legend { padding: 10px 12px; border-top: 1px solid #e2e8f0; }
+.legend-title { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+.legend-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #475569; margin: 2px 0; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* MAIN */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* TOPBAR */
+#topbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  padding: 8px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 4px; }
+.filter-label { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-right: 2px; }
+.fbtn {
+  font-size: 11px; padding: 3px 8px; border: 1px solid #e2e8f0; border-radius: 4px;
+  background: #fff; cursor: pointer; color: #475569; transition: all .1s;
+}
+.fbtn:hover { border-color: #94a3b8; }
+.fbtn.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+.search-wrap { margin-left: auto; }
+#search { border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 10px; font-size: 12px; width: 180px; outline: none; }
+#search:focus { border-color: #3b82f6; }
+.counter { font-size: 12px; color: #64748b; white-space: nowrap; }
+
+/* STATS BAR */
+#statsbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  display: flex; gap: 0; overflow-x: auto;
+}
+.stat { flex: 1; padding: 10px 16px; border-right: 1px solid #e2e8f0; min-width: 120px; }
+.stat:last-child { border-right: none; }
+.stat .val { font-size: 24px; font-weight: 700; color: #1e293b; }
+.stat .val.green { color: #10b981; }
+.stat .val.red { color: #ef4444; }
+.stat-lbl { font-size: 11px; color: #64748b; margin-top: 1px; }
+
+/* BOARD */
+#board { flex: 1; overflow-x: auto; overflow-y: auto; padding: 12px; }
+.state-block { margin-bottom: 16px; }
+.state-header {
+  font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase;
+  letter-spacing: .5px; padding: 6px 0 8px; display: flex; align-items: center; gap: 8px;
+}
+.state-code { background: #e2e8f0; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: #64748b; }
+.state-cnt { color: #94a3b8; font-weight: 400; font-size: 11px; }
+.cards-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.card {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 10px 12px; width: 280px; flex-shrink: 0;
+  cursor: default; transition: box-shadow .15s;
+}
+.card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.card .nr { font-size: 10px; color: #94a3b8; margin-bottom: 4px; }
+.card .qt { font-size: 13px; line-height: 1.45; color: #1e293b; margin-bottom: 8px; }
+.card .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600;
+  border: 1px solid; letter-spacing: .2px;
+}
+.tag-p1 { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-p2 { color: #f97316; border-color: #fdba74; background: #fff7ed; }
+.tag-p3 { color: #d97706; border-color: #fcd34d; background: #fffbeb; }
+.tag-p4 { color: #94a3b8; border-color: #cbd5e1; background: #f8fafc; }
+.tag-info  { color: #3b82f6; border-color: #93c5fd; background: #eff6ff; }
+.tag-komerc { color: #8b5cf6; border-color: #c4b5fd; background: #f5f3ff; }
+.tag-trans { color: #14b8a6; border-color: #5eead4; background: #f0fdfa; }
+.tag-brak { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-istnieje { color: #10b981; border-color: #6ee7b7; background: #ecfdf5; }
+.card.hidden { display: none; }
+
+/* TABS */
+#tabs { display: flex; border-bottom: 2px solid #e2e8f0; background: #fff; }
+.tab { padding: 8px 20px; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.tab.active { color: #1e293b; border-bottom-color: #3b82f6; }
+.tab-panel { display: none; }
+.tab-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+/* LIST VIEW */
+#list-panel { overflow-y: auto; padding: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 8px 12px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; position: sticky; top: 0; }
+td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; }
+tr:hover td { background: #f8fafc; }
+tr.hidden { display: none; }
+
+/* INFO */
+#info-panel { overflow: hidden; display: flex; flex-direction: column; font-size: 13px; line-height: 1.6; }
+.info-section { margin-bottom: 16px; }
+.info-section h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #64748b; margin-bottom: 8px; }
+.info-section ul { padding-left: 16px; color: #475569; }
+.info-section li { margin: 3px 0; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin: 2px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="brand">
+    Samochody elektryczne — nabywca prywatny
+    <small>v5.7 · Analiza CEP i Pytań</small>
+  </div>
+  <div class="total-badge" id="total-badge">130 pytań · 8 ścieżek</div>
+  <div class="paths-header">Ścieżki zakupowe</div>
+  <div class="paths-list">
+    <div class="path-all active" onclick="filterPath(this)" data-path="ALL">
+      <span class="dot" style="background:#64748b"></span>
+      <span class="plabel">Wszystkie ścieżki</span>
+      <span class="pcount" id="cnt-all">0</span>
+    </div>
+    
+        <div class="path-item" data-path="A" onclick="filterPath(this)" title="Fotowoltaika + EV synergia">
+          <span class="dot" style="background:#3b82f6"></span>
+          <span class="plabel">A · Fotowoltaika + EV synergia</span>
+          <span class="pcount" id="cnt-A">0</span>
+        </div>
+        <div class="path-item" data-path="B" onclick="filterPath(this)" title="Kolega kupił BYD — sprawdzam">
+          <span class="dot" style="background:#8b5cf6"></span>
+          <span class="plabel">B · Kolega kupił BYD — sprawdzam</span>
+          <span class="pcount" id="cnt-B">0</span>
+        </div>
+        <div class="path-item" data-path="C" onclick="filterPath(this)" title="Kalkulator TCO — elektryczny taniej?">
+          <span class="dot" style="background:#ec4899"></span>
+          <span class="plabel">C · Kalkulator TCO — elektryczny taniej?</span>
+          <span class="pcount" id="cnt-C">0</span>
+        </div>
+        <div class="path-item" data-path="D" onclick="filterPath(this)" title="Leasing EV odkrycie">
+          <span class="dot" style="background:#14b8a6"></span>
+          <span class="plabel">D · Leasing EV odkrycie</span>
+          <span class="pcount" id="cnt-D">0</span>
+        </div>
+        <div class="path-item" data-path="E" onclick="filterPath(this)" title="Zakaz spalin EU 2035 — strach">
+          <span class="dot" style="background:#f59e0b"></span>
+          <span class="plabel">E · Zakaz spalin EU 2035 — strach</span>
+          <span class="pcount" id="cnt-E">0</span>
+        </div>
+        <div class="path-item" data-path="F" onclick="filterPath(this)" title="Range anxiety zima">
+          <span class="dot" style="background:#10b981"></span>
+          <span class="plabel">F · Range anxiety zima</span>
+          <span class="pcount" id="cnt-F">0</span>
+        </div>
+        <div class="path-item" data-path="G" onclick="filterPath(this)" title="Premium EV — wymiana Audi/BMW">
+          <span class="dot" style="background:#f43f5e"></span>
+          <span class="plabel">G · Premium EV — wymiana Audi/BMW</span>
+          <span class="pcount" id="cnt-G">0</span>
+        </div>
+        <div class="path-item" data-path="H" onclick="filterPath(this)" title="PHEV jako kompromis">
+          <span class="dot" style="background:#eab308"></span>
+          <span class="plabel">H · PHEV jako kompromis</span>
+          <span class="pcount" id="cnt-H">0</span>
+        </div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Statusy</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>BRAK — do stworzenia</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#10b981"></span>ISTNIEJE — opublikowany</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>ROZBUDOWAĆ — wymaga rozbudowy</div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Priorytety</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>P1 — krytyczne (blokery)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>P2 — ważne (decyzja)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#eab308"></span>P3 — standardowe</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#94a3b8"></span>P4 — niski priorytet</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <span class="filter-label">Priorytet</span>
+    <div class="filter-group" id="fg-pr">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="P1">P1</button>
+      <button class="fbtn" data-val="P2">P2</button>
+      <button class="fbtn" data-val="P3">P3</button>
+      <button class="fbtn" data-val="P4">P4</button>
+    </div>
+    <span class="filter-label" style="margin-left:8px">Typ</span>
+    <div class="filter-group" id="fg-typ">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="INFO">INFO</button>
+      <button class="fbtn" data-val="KOMERC">KOMERC</button>
+      <button class="fbtn" data-val="TRANS">TRANS</button>
+    </div>
+    <div class="search-wrap">
+      <input id="search" type="text" placeholder="Szukaj artykułu..." oninput="applyFilters()">
+    </div>
+    <div class="counter">Widoczne: <strong id="visibleCount">0</strong> / 130</div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div id="statsbar">
+    <div class="stat"><div class="val" id="stat-total">0</div><div class="stat-lbl">Widocznych pytań</div></div>
+    <div class="stat"><div class="val red" id="stat-p1">0</div><div class="stat-lbl">Priorytet P1 (blokery)</div></div>
+    <div class="stat"><div class="val" id="stat-brak">0</div><div class="stat-lbl">Status BRAK (do stworzenia)</div></div>
+    <div class="stat"><div class="val green" id="stat-istnieje">0</div><div class="stat-lbl">ISTNIEJE + ROZBUDOWAĆ</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div id="tabs">
+    <button class="tab active" onclick="switchTab('mapa')">🗺️ Mapa</button>
+    <button class="tab" onclick="switchTab('lista')">📋 Lista</button>
+    <button class="tab" onclick="switchTab('info')">ℹ️ Info</button>
+  </div>
+
+  <!-- MAPA PANEL -->
+  <div id="mapa-panel" class="tab-panel active">
+    <div id="board"></div>
+  </div>
+
+  <!-- LISTA PANEL -->
+  <div id="lista-panel" class="tab-panel">
+    <div id="list-panel">
+      <table id="list-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Pytanie</th><th>Ścieżka</th><th>Stan</th><th>Priorytet</th><th>Typ</th>
+          </tr>
+        </thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INFO PANEL -->
+  <div id="info-panel" class="tab-panel">
+    <div style="overflow-y:auto;padding:16px;flex:1">
+    <div class="info-section">
+      <h3>Kategoria</h3>
+      <p style="font-size:14px"><strong>Samochody elektryczne — nabywca prywatny</strong></p>
+      <p style="font-size:12px;color:#64748b;margin-top:4px">v5.7 · 130 pytań · 8 ścieżek zakupowych (CEP)</p>
+    </div>
+    <div class="info-section">
+      <h3>Struktura pytań wg stanu</h3>
+      <div id="info-states" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
+    </div>
+    <div class="info-section">
+      <h3>Ścieżki zakupowe — pełne profile CEP</h3>
+      <div id="info-paths" style="margin-top:8px"></div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DANE ──────────────────────────────────────────────────────────────────────
+const A = [
+{nr:1,t:"Czy opłaca się kupić elektryka jeśli mam fotowoltaikę?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:2,t:"Fotowoltaika i samochód elektryczny — synergia czy mit?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:3,t:"Ile zaoszczędzę na prądzie ładując elektryka z PV 8 kW?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:4,t:"Jaki elektryczny samochód najlepiej pasuje do fotowoltaiki?",p:"A",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:5,t:"Ile kWh zużywa elektryczny na 100 km — ile to pochłonie z PV?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:6,t:"Wallbox jednofazowy vs trójfazowy z fotowoltaiką — co wybrać?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:7,t:"Jak zsynchronizować ładowanie EV z nadwyżką PV? Systemy zarządzania HEMS.",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:8,t:"Inteligentne ładowanie EV z PV — jak to działa (smart charging)?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:9,t:"Ile kosztuje wallbox 11 kW z integracją PV? Instalacja, dofinansowanie 2026.",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:10,t:"V2H / V2G — czy elektryczny może zasilać dom z powrotem? Które modele?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:11,t:"Elektryczny z V2L/V2G w Polsce 2026 — który model ma tę funkcję?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:12,t:"Kalkulator: PV 8 kW + elektryczny vs benzyna — zwrot inwestycji w latach.",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:13,t:"Elektryczny samochód z V2L — ranking modeli dostępnych w Polsce 2026.",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:14,t:"🛡️ Czy mogę ładować elektryka z PV w bloku/na osiedlu? Co mówi spółdzielnia?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:15,t:"🛡️ Co jeśli latem mam nadwyżkę PV a zimą brakuje prądu — czy elektryczny się opłaca przez cały rok?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:16,t:"🛡️ Spółdzielnia nie zgadza się na wallbox — co mogę zrobić?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:17,t:"🛡️ Czy fotowoltaika 3 kW wystarczy do ładowania elektryka, czy potrzebuję większej instalacji?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:18,t:"Chińskie samochody elektryczne 2026 — czy warto kupić?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:19,t:"BYD vs europejskie samochody elektryczne — uczciwe porównanie",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:20,t:"Czy BYD jest bezpieczny? Wyniki NCAP i testy zderzeniowe",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:21,t:"BYD Seal vs BYD Atto3 — który wybrać 2026?",p:"B",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:22,t:"BYD Seal vs Audi Q4 e-tron — porównanie cena/wartość",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:23,t:"MG4 vs BYD Atto3 — który lepszy dla polskiego kierowcy?",p:"B",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:24,t:"OMODA 5 EV vs BYD Atto3 — nowość vs sprawdzony model",p:"B",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:25,t:"Xpeng G6 — opinie polskich właścicieli 2026",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:26,t:"Gdzie serwisować BYD w Polsce? Lista autoryzowanych ASO 2026",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:27,t:"Gwarancja baterii BYD — 8 lat to standard czy marketing?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:28,t:"Dostępność części BYD w Polsce — czas oczekiwania na naprawę",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:29,t:"Chińskie elektryki a bezpieczeństwo danych — czy BYD zbiera dane o kierowcy?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:30,t:"Wartość rezydualna BYD po 2–3 latach — pierwsze dane rynkowe PL",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:31,t:"BYD Seal — test w polskiej zimie, realne wyniki zasięgu",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:32,t:"Jak kupić BYD w Polsce — dealer, czas dostawy, konfiguracja online",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:33,t:"BYD vs Tesla — porównanie dla klienta prywatnego w Polsce",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:34,t:"🛡️ Co jeśli serwis BYD będzie za daleko — kto obsłuży moje auto?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:35,t:"🛡️ Czy chińska marka elektryczna zostanie w Polsce czy zniknie za 3 lata?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:36,t:"🛡️ Czy wstyd jeździć chińskim autem elektrycznym w Polsce 2026?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:37,t:"🛡️ Leasing BYD prywatny — czy banki w Polsce dają? Jakie RRSO i warunki?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:38,t:"Elektryczny czy spalinowy — co tańsze przez 5 lat? Kalkulator TCO",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:39,t:"Ile kosztuje utrzymanie elektrycznego samochodu miesięcznie w 2026?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:40,t:"Koszty ładowania elektryka vs benzyna — porównanie na 100 km w PLN",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:41,t:"Elektryczny samochód przy 20 000 km/rok — czy się opłaca?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:42,t:"Diesel vs elektryczny przy dużych przebiegach — kiedy EV zaczyna wygrywać?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:43,t:"Ubezpieczenie OC/AC elektrycznego — ile więcej niż spalinowego?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:44,t:"Serwis elektrycznego samochodu — ile rocznie? Co nie istnieje (olej, rozrząd, sprzęgło)",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:45,t:"Jak działa TCO elektryka? Co wchodzi do pełnego rachunku kosztów?",p:"C",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:46,t:"Podatek od środków transportu — elektryki w Polsce 2026 (zwolnienie?)",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:47,t:"Opony do elektrycznego samochodu — czym różnią się i ile kosztują?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:48,t:"Ładowanie publiczne vs domowe — różnica kosztu na 100 km (dane 2026)",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:49,t:"Elektryczny samochód do 150 000 PLN — ranking TCO 2026",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:50,t:"Który elektryczny ma najniższy koszt na km w Polsce 2026?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:51,t:"🛡️ Czy elektryczny naprawdę się opłaca gdy prąd z sieci kosztuje 0.90 PLN/kWh?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:52,t:"🛡️ Co jeśli cena prądu wzrośnie — czy rachunek TCO się odwróci?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:53,t:"🛡️ Naprawa baterii po gwarancji — ile to kosztuje i czy w ogóle warto naprawiać?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:54,t:"Leasing elektrycznego samochodu dla osoby prywatnej — jak to działa?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:55,t:"Czy można wziąć elektryka w leasing prywatny bez wkładu własnego?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:56,t:"Ile wynosi rata leasingowa elektrycznego samochodu w 2026? Porównanie modeli",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:57,t:"Leasing EV + prąd z domu vs leasing benzyna + stacja — który miesięczny koszt niższy?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:58,t:"Jakie elektryki mają najniższe raty leasingowe? Ranking 2026",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:59,t:"Leasing EV — co z wallboxem? Kto go instaluje i kto płaci?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:60,t:"Wartość rezydualna EV w leasingu — dlaczego ma znaczenie dla wysokości raty?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:61,t:"Co po leasingu elektrycznym — zwrot, odkup po wartości rezydualnej, zamiana?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:62,t:"Leasing EV a limit km — co jeśli dojeżdżam więcej niż zakładałem?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:63,t:"Audi Q4 e-tron leasing prywatny — aktualne oferty Plichta / dealer 2026",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:64,t:"BYD Seal leasing prywatny — warunki i dostępność w Polsce 2026",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:65,t:"🛡️ Leasing EV i nie mam gdzie ładować — czy warto brać elektrycznego?",p:"D",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:66,t:"🛡️ Czy mogę zmienić elektryka w leasingu przed końcem umowy? Jakie koszty?",p:"D",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:67,t:"🛡️ Czy ubezpieczenie w leasingu EV jest droższe niż spalinowego?",p:"D",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:68,t:"Zakaz sprzedaży aut spalinowych EU 2035 — co to dla mnie znaczy?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:69,t:"Czy warto kupić auto spalinowe w 2026 jeśli za 9 lat zakaz?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:70,t:"Wartość rezydualna spalinowego vs elektrycznego — co traci więcej po 2030?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:71,t:"Strefa czystego transportu Polska — gdzie wjeżdżam elektrykiem bez ograniczeń?",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:72,t:"Kraków i Warszawa SCT — które auta mogą wjechać do centrum po 2030?",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:73,t:"Elektryczny samochód a podatki przyszłości — prognozy na 2030–2035",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:74,t:"Jak EU 2035 wpłynie na rynek używanych spalinowych? Prognozy cen",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:75,t:"Elektryczny zakupiony w 2026 — czy będzie wart coś w 2033?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:76,t:"Które elektryki zachowają wartość po 5 latach — dane rynkowe Polska/Europa",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:77,t:"Elektryczny samochód a strefy emisji w Europie — gdzie bez opłat wjadę w 2030?",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:78,t:"🛡️ Co jeśli EU cofnie zakaz spalin 2035 — czy mój elektryczny straci na wartości?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:79,t:"🛡️ Czy spalinowe auta będą zakazane na polskich drogach po 2035 czy tylko sprzedaż nowych?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:80,t:"🛡️ Elektryczny na wsi bez sieci ładowania — czy to w ogóle ma sens?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:81,t:"Zasięg elektryka zimą — ile naprawdę traci przy -10°C?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:82,t:"Elektryczny samochód a mróz — co się dzieje z baterią przy -15°C?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:83,t:"Czy elektryczny dojedzie z Warszawy do Gdańska zimą bez ładowania?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:84,t:"Elektryczny na trasę Warszawa–Kraków — zasięg, ładowarki, ile czasu?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:85,t:"Mapa szybkich ładowarek DC w Polsce 2026 — IONITY, Orlen Charge, Greenway",p:"F",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:86,t:"Które elektryki mają najwyższy zasięg zimowy? Ranking 2026 z cenami PLN",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:87,t:"Elektryczny a góry — co z zasięgiem przy podjeździe w Tatry?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:88,t:"Jak pompa ciepła w EV poprawia zasięg zimowy? Ile procent różnica?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:89,t:"Jak planować trasę elektrykiem na wakacje? ABRP i inne aplikacje",p:"F",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:90,t:"Preconditioning baterii EV — czym jest i jak oszczędza zasięg zimą?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:91,t:"Ładowanie na mrozie — czy DC szybkie ładuje tak samo przy -15°C?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:92,t:"Który elektryczny najlepiej jeździ w polskim klimacie (zima, lato, trasy)?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:93,t:"Elektryczny z zasięgiem powyżej 400 km WLTP — ranking 2026 z ceną PLN",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:94,t:"Audi Q4 e-tron vs BMW i4 vs IONIQ 6 — porównanie zasięgu zimowego",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:95,t:"Elektryczny do dojazdów 60 km dziennie — jaką pojemność baterii wybrać?",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:96,t:"🛡️ Co jeśli utknę w korku w zimie bez ładowania — kiedy bateria się wyczerpie?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:97,t:"🛡️ Elektryczny na Sylwestra na działce 250 km od domu — jak zaplanować ładowanie?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:98,t:"🛡️ Gdzie ładować na A1 Warszawa–Katowice w godzinach szczytu — kolejka?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:99,t:"🛡️ Co jeśli zimą wolne ładowanie AC 7 kW na trasie — ile godzin czekam?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:100,t:"Audi elektryczne 2026 — pełna oferta i ceny PLN",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:101,t:"BMW elektryczne dla prywatnego właściciela — i4, iX, iX1 — różnice",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:102,t:"Elektryczny Volvo vs Audi — porównanie jakości wnętrza i wyposażenia",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:103,t:"Audi Q4 e-tron vs Audi e-tron GT — co wybrać i jaka różnica?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:104,t:"BMW i4 vs Mercedes EQC — porównanie premium elektrycznych dla prywatnego",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:105,t:"Czy elektryczny Audi jeździ jak 'prawdziwe Audi'? Test jazdy wrażenia Q4 e-tron",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:106,t:"Audi Q4 e-tron vs Volkswagen ID.5 — czy Audi jest warte dopłaty?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:107,t:"Serwis elektrycznego Audi w ASO — co się serwisuje, co znika bez silnika spalinowego",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:108,t:"Gwarancja Audi na baterię — szczegółowe warunki 2026 (lata, km, próg %)",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:109,t:"Konfiguracja elektrycznego Audi — które pakiety warto dokupić a za jakie przepłacasz?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:110,t:"Wartość rezydualna Audi elektrycznego vs BMW elektrycznego — dane PL",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:111,t:"Leasing prywatny Audi Q4 e-tron — aktualna oferta dealer / Plichta 07.2026",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:112,t:"Test drive elektrycznego Audi — jak umówić i co sprawdzić?",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:113,t:"Audi e-tron GT vs Porsche Taycan — oba z grupy VW, jaka realna różnica?",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:114,t:"🛡️ Elektryczny Audi vs BYD za 100 tys. mniej — czy różnica w marce ma sens finansowy?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:115,t:"🛡️ Czy Audi elektryczne (MEB) jest tak samo dobrze zrobione jak Audi spalinowe?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:116,t:"🛡️ Jak długo czekam na zamówione Audi Q4 e-tron z salonu — czas dostawy 2026?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:117,t:"PHEV czy BEV — jak wybrać hybryda plug-in vs pełny elektryczny?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:118,t:"Hybryda plug-in — jak to działa? Kiedy jedzie na prądzie a kiedy benzyna?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:119,t:"Audi Q5 PHEV vs Audi Q4 e-tron — co wybrać? Porównanie dla prywatnego",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:120,t:"PHEV przy 40 km dziennie — ile procent czasu jedzie na prądzie?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:121,t:"Audi A3 TFSI e vs BYD Atto3 — inny segment, inne podejście — co wybrać?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:122,t:"Ładowanie PHEV — ile kWh, ile godzin, jaki wallbox wystarczy?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:123,t:"Czy PHEV wjeżdża do strefy czystego transportu Kraków/Warszawa?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:124,t:"TCO PHEV vs BEV vs spalinowy — który najtańszy przez 4 lata eksploatacji?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:125,t:"PHEV 2026 — ranking zasięgu elektrycznego i TCO",p:"H",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:126,t:"Leasing PHEV prywatny — ile wynosi rata vs pełny elektryczny?",p:"H",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:127,t:"🛡️ PHEV — czy w praktyce jeżdżę na prądzie czy na benzynie? Realne dane użytkowników",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:128,t:"🛡️ Czy PHEV to kompromis który zadowoli mnie przez 4 lata leasingu?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:129,t:"🛡️ Co jeśli PHEV bez ładowania domowego — czy to ma sens finansowy?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:130,t:"🛡️ Czy PHEV po zakończeniu leasingu ma lepszą wartość rezydualną niż BEV?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"}
+];
+
+const PATHS = [{"letter": "A", "label": "Fotowoltaika + EV synergia", "cep_id": "cep_pv_dom_odkrycie_ev", "typ": "EMOCJA", "color": "#3b82f6", "count": 17, "verbatim": "„Mam fotowoltaikę, płacę za ładowanie prawie nic — może elektryczny?\"", "kontekst": "Dom z instalacją PV 6–10 kW, nadwyżka prądu w lecie", "concern": "Koszty ładowania vs benzyna. Zwrot z PV+EV", "bloker": "Wallbox domowy + EV kalkulacja"}, {"letter": "B", "label": "Kolega kupił BYD — sprawdzam", "cep_id": "cep_kolega_byd_seed", "typ": "EMOCJA", "color": "#8b5cf6", "count": 20, "verbatim": "„Kolega kupił BYD Seal, mówi że zarabia na jeździe po kosztach — sprawdzam\"", "kontekst": "Seed informacyjny od znajomego-EV-usera, BYD jako primer", "concern": "Czy chiński EV jest godny zaufania — serwis, jakość, bezpieczeństwo", "bloker": "Node B: BYD/MG/OMODA"}, {"letter": "C", "label": "Kalkulator TCO — elektryczny taniej?", "cep_id": "cep_koszty_paliwa_skok", "typ": "POTRZEBA", "color": "#ec4899", "count": 16, "verbatim": "„Benzyna droga, policzyłem miesięczne koszty — może elektryczny taniej?\"", "kontekst": "Kalkulator TCO, wysokie rachunki paliwowe", "concern": "Break-even rok (zwrot różnicy ceny). Rzeczywisty koszt/km", "bloker": "TCO comparison 5 lat"}, {"letter": "D", "label": "Leasing EV odkrycie", "cep_id": "cep_leasing_ev_odkrycie", "typ": "EMOCJA", "color": "#14b8a6", "count": 14, "verbatim": "„Leasing elektryka + domowe ładowanie = tańsze niż rata + benzynę?\"", "kontekst": "Odkrycie oferty leasingowej EV w social media / bannerach", "concern": "Miesięczne cashflow: rata+prąd vs rata+benzyna", "bloker": "Oferta leasingu EV + wallbox"}, {"letter": "E", "label": "Zakaz spalin EU 2035 — strach", "cep_id": "cep_zakaz_spalin_strach", "typ": "EMOCJA", "color": "#f59e0b", "count": 13, "verbatim": "„Słyszałem o zakazie spalin EU 2035 — czy moje nowe spalinowe auto będzie warte coś za 5 lat?\"", "kontekst": "Planuje zakup spalinowego, słyszy o zakazie EU", "concern": "Wartość rezydualna spalinowych po 2030. Ryzyko inwestycji", "bloker": "EV jako zabezpieczenie wartości"}, {"letter": "F", "label": "Range anxiety zima", "cep_id": "cep_range_anxiety_zima", "typ": "EMOCJA", "color": "#10b981", "count": 19, "verbatim": "„Chcę elektryka ale boję się że zimą nie dojedzie z Warszawy do Krakowa\"", "kontekst": "Poznał elektryki, zatrzymuje się na barierze range — trasa ~300 km", "concern": "Zasięg zimowy na A1/A2, czas ładowania, gdzie ładowarki", "bloker": "EV z zasięgiem ≥400 km WLTP + mapa ładowarek"}, {"letter": "G", "label": "Premium EV — wymiana Audi/BMW", "cep_id": "cep_premium_ev_prestige", "typ": "EMOCJA", "color": "#f43f5e", "count": 17, "verbatim": "„Chcę wymienić Audi A6 na elektryczne — ale nie chiński, tylko europejski\"", "kontekst": "Obecny właściciel premium spalinowego, aspiracja EV bez rezygnacji z marki", "concern": "Jakość wnętrza, serwis ASO, prestiż, zasięg. Czy elektryczny Audi to „prawdziwe Audi\"?", "bloker": "Node A: Audi e-tron / Q4 e-tron"}, {"letter": "H", "label": "PHEV jako kompromis", "cep_id": "cep_phev_kompromis", "typ": "POTRZEBA", "color": "#eab308", "count": 14, "verbatim": "„Nie jestem gotowy na pełny elektryczny — hybryda plug-in mogę rozważyć\"", "kontekst": "Rozważał EV, wraca do PHEV jako bezpieczna pół-droga", "concern": "Range anxiety rozwiązany przez silnik spalinowy. TCO vs BEV", "bloker": "PHEV (Audi A3/Q5 TFSI e)"}];
+const STATE_ORDER = ["swiadomosc", "orientacja", "nauka", "decyzja", "bloker"];
+const STATE_LABELS = {"swiadomosc": "Świadomość", "orientacja": "Orientacja", "nauka": "Nauka", "decyzja": "Decyzja", "bloker": "Bloker"};
+
+// ── STAN FILTRÓW ──────────────────────────────────────────────────────────────
+let activePath = 'ALL';
+let activePr   = 'ALL';
+let activeTyp  = 'ALL';
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildBoard();
+  buildList();
+  buildInfoPaths();
+  buildInfoStates();
+  applyFilters();
+});
+
+function buildBoard() {
+  const board = document.getElementById('board');
+  // Zbierz stany wg kolejności
+  const stateGroups = {};
+  for (const a of A) {
+    if (!stateGroups[a.s]) stateGroups[a.s] = [];
+    stateGroups[a.s].push(a);
+  }
+  const orderedStates = STATE_ORDER.filter(s => stateGroups[s]);
+  for (const sid of orderedStates) {
+    const label = STATE_LABELS[sid] || sid;
+    const arts = stateGroups[sid];
+    const block = document.createElement('div');
+    block.className = 'state-block';
+    block.dataset.state = sid;
+    block.innerHTML = `<div class="state-header">
+      <span class="state-code">${sid.toUpperCase()}</span>
+      <span>${label}</span>
+      <span class="state-cnt" id="scnt-${sid}"></span>
+    </div><div class="cards-row" id="cards-${sid}"></div>`;
+    board.appendChild(block);
+    const row = document.getElementById('cards-' + sid);
+    for (const a of arts) {
+      const tagPr  = `<span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span>`;
+      const tagTyp = `<span class="tag tag-${a.y.toLowerCase()}">${a.y}</span>`;
+      const tagSt  = `<span class="tag tag-${a.st.toLowerCase()}">${a.st}</span>`;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.nr = a.nr;
+      card.dataset.p  = a.p;
+      card.dataset.s  = a.s;
+      card.dataset.pr = a.pr;
+      card.dataset.y  = a.y;
+      card.dataset.st = a.st;
+      card.dataset.t  = a.t.toLowerCase();
+      card.innerHTML = `<div class="nr">#${a.nr} · ${a.p}</div>
+        <div class="qt">${a.t}</div>
+        <div class="tags">${tagPr}${tagTyp}${tagSt}</div>`;
+      row.appendChild(card);
+    }
+  }
+}
+
+function buildList() {
+  const tbody = document.getElementById('list-body');
+  for (const a of A) {
+    const tr = document.createElement('tr');
+    tr.dataset.nr = a.nr;
+    tr.dataset.p  = a.p;
+    tr.dataset.s  = a.s;
+    tr.dataset.pr = a.pr;
+    tr.dataset.y  = a.y;
+    tr.dataset.st = a.st;
+    tr.dataset.t  = a.t.toLowerCase();
+    tr.innerHTML = `<td>${a.nr}</td>
+      <td>${a.t}</td>
+      <td>${a.p}</td>
+      <td>${STATE_LABELS[a.s] || a.s}</td>
+      <td><span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span></td>
+      <td><span class="tag tag-${a.y.toLowerCase()}">${a.y}</span></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function buildInfoPaths() {
+  const wrap = document.getElementById('info-paths');
+  for (const p of PATHS) {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:12px;border-left:4px solid '+p.color;
+    // Składowe HTML karty CEP
+    const typBadge = p.typ
+      ? `<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-left:6px">${p.typ}</span>`
+      : '';
+    const verbHTML = p.verbatim
+      ? `<div style="margin-top:8px;font-size:12px;color:#374151;background:#f8fafc;border-radius:6px;padding:8px 10px;border-left:3px solid ${p.color};line-height:1.5;font-style:italic">${p.verbatim}</div>`
+      : '';
+    const detailRows = [];
+    if (p.kontekst) detailRows.push(['Kontekst', p.kontekst]);
+    if (p.concern)  detailRows.push(['Główna troska', p.concern]);
+    if (p.bloker)   detailRows.push(['Bloker decyzji', p.bloker]);
+    const detailHTML = detailRows.length
+      ? `<table style="margin-top:8px;width:100%;border-collapse:collapse;font-size:12px">` +
+        detailRows.map(([k,v]) =>
+          `<tr><td style="width:120px;color:#94a3b8;font-weight:600;padding:3px 8px 3px 0;vertical-align:top;white-space:nowrap">${k}</td>` +
+          `<td style="color:#334155;padding:3px 0;line-height:1.5">${v}</td></tr>`
+        ).join('') + `</table>`
+      : '';
+    // Rozkład pytań per stan
+    const statCnts = {};
+    for (const a of A) if (a.p === p.letter) statCnts[a.s] = (statCnts[a.s]||0)+1;
+    const stateBar = STATE_ORDER.filter(s=>statCnts[s]).map(s=>
+      `<span style="font-size:10px;padding:1px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-right:4px">${STATE_LABELS[s]||s} ${statCnts[s]}</span>`
+    ).join('');
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="width:26px;height:26px;border-radius:50%;background:${p.color};color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${p.letter}</span>
+        <strong style="font-size:14px;color:#1e293b">${p.label}</strong>
+        ${typBadge}
+        <span style="margin-left:auto;font-size:11px;color:#94a3b8">${p.count} pytań</span>
+      </div>
+      <div style="font-size:10px;color:#64748b;margin-top:4px;font-family:monospace">${p.cep_id||''}</div>
+      ${verbHTML}
+      ${detailHTML}
+      <div style="margin-top:8px">${stateBar}</div>`;
+    wrap.appendChild(card);
+  }
+}
+
+function buildInfoStates() {
+  const wrap = document.getElementById('info-states');
+  const counts = {};
+  for (const a of A) counts[a.s] = (counts[a.s]||0)+1;
+  for (const s of STATE_ORDER) {
+    if (!counts[s]) continue;
+    const el = document.createElement('div');
+    el.style.cssText = 'background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 14px;text-align:center;min-width:100px';
+    el.innerHTML = `<div style="font-size:20px;font-weight:700;color:#1e293b">${counts[s]}</div><div style="font-size:11px;color:#64748b;margin-top:2px">${STATE_LABELS[s]||s}</div>`;
+    wrap.appendChild(el);
+  }
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+function filterPath(el) {
+  document.querySelectorAll('.path-item, .path-all').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  activePath = el.dataset.path;
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  let vis = 0, p1 = 0, brak = 0, istnieje = 0;
+  const pathCounts = {};
+
+  const allEls = [...document.querySelectorAll('.card, #list-body tr')];
+  for (const el of allEls) {
+    const match =
+      (activePath === 'ALL' || el.dataset.p === activePath) &&
+      (activePr   === 'ALL' || el.dataset.pr === activePr) &&
+      (activeTyp  === 'ALL' || el.dataset.y  === activeTyp) &&
+      (!q || el.dataset.t.includes(q));
+    el.classList.toggle('hidden', !match);
+    if (match) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pathCounts[el.dataset.p] = (pathCounts[el.dataset.p] || 0) + 1;
+    }
+  }
+  // Odejmij duplikaty (card + tr)
+  vis = Math.round(vis / (document.querySelector('#list-body tr') ? 2 : 1));
+  if (document.querySelector('#list-body tr')) vis = Math.round(vis / 2);
+  // Policz raz — cards only
+  vis = 0; p1 = 0; brak = 0; istnieje = 0;
+  const pcounts2 = {};
+  document.querySelectorAll('.card').forEach(el => {
+    if (!el.classList.contains('hidden')) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pcounts2[el.dataset.p] = (pcounts2[el.dataset.p] || 0) + 1;
+    }
+  });
+
+  document.getElementById('stat-total').textContent   = vis;
+  document.getElementById('stat-p1').textContent      = p1;
+  document.getElementById('stat-brak').textContent    = brak;
+  document.getElementById('stat-istnieje').textContent = istnieje;
+  document.getElementById('visibleCount').textContent  = vis;
+
+  // Aktualizuj liczniki ścieżek
+  let allCnt = 0;
+  for (const p of PATHS) {
+    const cnt = pcounts2[p.letter] || 0;
+    const el = document.getElementById('cnt-' + p.letter);
+    if (el) el.textContent = cnt;
+    allCnt += cnt;
+  }
+  const cntAll = document.getElementById('cnt-all');
+  if (cntAll) cntAll.textContent = allCnt;
+
+  // State block counts (tylko mapa)
+  for (const sid of STATE_ORDER) {
+    const el = document.getElementById('scnt-' + sid);
+    if (el) {
+      const cnt = document.querySelectorAll(`#cards-${sid} .card:not(.hidden)`).length;
+      el.textContent = cnt ? cnt + ' art.' : '';
+    }
+  }
+}
+
+// Filtry przyciski
+document.getElementById('fg-pr').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-pr .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activePr = e.target.dataset.val;
+  applyFilters();
+});
+document.getElementById('fg-typ').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-typ .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeTyp = e.target.dataset.val;
+  applyFilters();
+});
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['mapa','lista','info'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(name + '-panel').classList.add('active');
+  applyFilters();
+}
+</script>
+</body>
+</html>
