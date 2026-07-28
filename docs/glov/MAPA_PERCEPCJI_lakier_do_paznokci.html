@@ -298,13 +298,14 @@ function render(){
   document.getElementById('visibleCount').textContent=total;
   updateStats();
 }
+function visNoPath(a){if(filt.sila!=='all'&&a.sila!==filt.sila)return false;if(filt.typ!=='all'&&a.y!==filt.typ)return false;if(q){const ql=q.toLowerCase();if(!a.t.toLowerCase().includes(ql)&&!(a.angle||''). toLowerCase().includes(ql))return false;}return true;}
 function updateStats(){
   const v=ART.filter(vis);
   document.getElementById('stat-total').textContent=v.length;
   document.getElementById('stat-g').textContent=v.filter(a=>a.sila==='green').length;
   document.getElementById('stat-y').textContent=v.filter(a=>a.sila==='yellow').length;
   document.getElementById('stat-r').textContent=v.filter(a=>a.sila==='red').length;
-  ['all',...Object.keys(PN)].forEach(p=>{const el=document.getElementById('cnt-'+p);if(el)el.textContent=p==='all'?ART.filter(vis).length:ART.filter(a=>a.p===p&&vis(a)).length;});
+  ['all',...Object.keys(PN)].forEach(p=>{const el=document.getElementById('cnt-'+p);if(el)el.textContent=p==='all'?ART.filter(visNoPath).length:ART.filter(a=>a.p===p&&visNoPath(a)).length;});
 }
 function filterPath(btn,path){activePath=path;document.querySelectorAll('.path-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render();}
 function setF(type,val,btn){filt[type]=val;document.querySelectorAll(`.filter-pill[data-f="${type}"]`).forEach(p=>p.classList.remove('active'));btn.classList.add('active');render();}
