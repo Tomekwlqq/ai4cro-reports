@@ -1,0 +1,2698 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowledge Base — Setup Tomka 2026</title>
+<style>
+:root {
+  --bg: #fafafa;
+  --bg-card: #ffffff;
+  --bg-sidebar: #f3f4f6;
+  --bg-input: #ffffff;
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --text-light: #9ca3af;
+  --accent: #1e3a8a;
+  --accent-light: #3b82f6;
+  --accent-bg: #dbeafe;
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+  --shadow-lg: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+  --status-live: #10b981;
+  --status-research: #f59e0b;
+  --status-beta: #3b82f6;
+  --status-planned: #9ca3af;
+  --status-deprecated: #ef4444;
+  --hot: #fde047;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px; line-height: 1.5; color: var(--text); background: var(--bg);
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, kbd { font-family: ui-monospace, "SF Mono", Menlo, Monaco, monospace; font-size: 12px; background: var(--bg-sidebar); padding: 2px 6px; border-radius: 4px; }
+pre { background: #fafafa; padding: 10px; border-radius: 6px; overflow-x: auto; font-size: 12px; border: 1px solid var(--border); }
+pre code { background: transparent; padding: 0; }
+
+.app { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+
+.sidebar {
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  padding: 20px 18px;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.sidebar h1 { font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 2px; }
+.sidebar .subtitle { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; }
+
+.update-protocol {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 18px;
+  font-size: 11px;
+  color: #9a3412;
+}
+.update-protocol strong { color: #7c2d12; }
+
+.section-label {
+  font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--text-muted); margin: 16px 0 6px;
+}
+
+.cat-list { display: flex; flex-direction: column; gap: 3px; }
+.cat-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;
+  font-size: 12px; font-weight: 500; color: var(--text);
+  cursor: pointer; text-align: left; transition: all 0.15s;
+  width: 100%;
+}
+.cat-btn:hover { border-color: var(--accent-light); }
+.cat-btn.active { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.cat-btn .cat-icon { font-size: 14px; }
+.cat-btn .cat-count { margin-left: auto; font-size: 10px; color: var(--text-muted); background: var(--bg-sidebar); padding: 1px 6px; border-radius: 8px; }
+
+.tag-filters { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag-chip {
+  font-size: 10px; padding: 3px 8px; border-radius: 10px;
+  background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s;
+}
+.tag-chip:hover { border-color: var(--accent-light); color: var(--accent); }
+.tag-chip.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+.main { padding: 24px 32px; max-width: 1400px; }
+.main-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.search-input {
+  flex: 1; max-width: 600px;
+  padding: 10px 14px;
+  font-size: 14px;
+  background: var(--bg-input); border: 1px solid var(--border-strong); border-radius: 8px;
+  color: var(--text);
+}
+.search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+.results-count { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 14px;
+}
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  transition: all 0.15s;
+}
+.card:hover { box-shadow: var(--shadow-lg); border-color: var(--accent-light); }
+.card.hot { border-color: var(--status-research); background: linear-gradient(135deg, #fffbeb 0%, var(--bg-card) 60%); }
+
+.card-header {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
+  margin-bottom: 6px;
+}
+.card-title {
+  font-size: 14px; font-weight: 700; color: var(--text);
+  flex: 1;
+}
+.card-title .hot-marker { font-size: 12px; margin-left: 4px; }
+
+.status-badge {
+  font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 10px;
+  text-transform: uppercase; letter-spacing: 0.05em; color: white;
+  flex-shrink: 0;
+}
+.status-badge.live { background: var(--status-live); }
+.status-badge.research-preview { background: var(--status-research); }
+.status-badge.beta { background: var(--status-beta); }
+.status-badge.planned { background: var(--status-planned); }
+.status-badge.deprecated { background: var(--status-deprecated); }
+.status-badge.ref { background: #6366f1; }
+.status-badge.skill { background: #0891b2; }
+.status-badge.published { background: var(--status-live); }
+
+.card-summary {
+  font-size: 12px; color: var(--text); margin-bottom: 8px; line-height: 1.5;
+}
+.card-meta {
+  display: flex; flex-wrap: wrap; gap: 4px;
+  margin-bottom: 8px;
+}
+.meta-tag {
+  font-size: 10px; padding: 2px 6px; border-radius: 4px;
+  background: var(--bg-sidebar); color: var(--text-muted);
+}
+.meta-tag.relevance {
+  background: #ecfdf5; color: #065f46;
+}
+.card-source {
+  font-size: 11px; color: var(--text-muted); margin-top: 6px;
+}
+.card-source a { color: var(--accent); }
+
+.card-body {
+  display: none;
+  font-size: 12px; color: var(--text); line-height: 1.6;
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.card.expanded .card-body { display: block; }
+.card-body p { margin: 6px 0; }
+.card-body ul, .card-body ol { padding-left: 20px; margin: 6px 0; }
+.card-body li { margin-bottom: 2px; }
+.card-body strong { color: var(--text); font-weight: 600; }
+.card-body h4 { font-size: 12px; font-weight: 700; margin: 10px 0 4px; color: var(--text); }
+.card-body table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 6px 0; }
+.card-body th, .card-body td { padding: 4px 8px; border: 1px solid var(--border); text-align: left; }
+.card-body th { background: var(--bg-sidebar); font-weight: 600; }
+
+.card-expand-hint {
+  font-size: 10px; color: var(--accent); cursor: pointer; font-weight: 500;
+  margin-top: 4px;
+}
+.card-expand-hint::before { content: "▸ Rozwiń"; }
+.card.expanded .card-expand-hint::before { content: "▾ Zwiń"; }
+
+.section-divider {
+  margin: 30px 0 16px;
+  font-size: 18px; font-weight: 700; color: var(--accent);
+  padding-bottom: 8px; border-bottom: 2px solid var(--accent-bg);
+}
+
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+.empty-state h3 { color: var(--text); margin-bottom: 6px; }
+
+@media (max-width: 768px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; max-height: 50vh; }
+  .main { padding: 16px; }
+  .cards-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar">
+  <h1>📚 Knowledge Base</h1>
+  <p class="subtitle">Setup Tomka 2026 · v0.1 · 30.05.2026 · sprawdzone 2026-07-05</p>
+
+  <div class="update-protocol">
+    <strong>📅 Aktualizacja: codziennie (auto)</strong><br>
+    Ostatnio sprawdzone: <span id="lastChecked">2026-07-05</span><br>
+    Automat (kb_daily_update) dopina swieza wiedze, stempluje date, archiwizuje martwe linki.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </div>
+
+  <div class="section-label">Kategorie</div>
+  <div class="cat-list" id="catList"></div>
+
+  <div class="section-label">Quick filters</div>
+  <div class="cat-list">
+    <button class="cat-btn" data-quick="hot">🔥 Hot ⭐⭐</button>
+    <button class="cat-btn" data-quick="research-preview">🧪 Research preview</button>
+    <button class="cat-btn" data-quick="live">✅ Live (gotowe)</button>
+    <button class="cat-btn" data-quick="macos">🍎 macOS only</button>
+    <button class="cat-btn" data-quick="plichta">🏎️ Plichta</button>
+    <button class="cat-btn" data-quick="setup-boy">🎯 Setup Boy</button>
+    <button class="cat-btn" data-quick="eel">📊 EEL</button>
+    <button class="cat-btn" data-quick="archived">📦 Archiwum</button>
+  </div>
+
+  <div class="section-label">Tagi</div>
+  <div class="tag-filters" id="tagFilters"></div>
+</aside>
+
+<main class="main">
+
+  <div style="background:linear-gradient(135deg,#1c1208,#241a2e);border:1px solid #e8a33a;border-radius:14px;padding:18px 22px;margin:0 0 18px;box-shadow:0 4px 18px rgba(0,0,0,.3)">
+    <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#e8a33a;font-weight:800;margin-bottom:4px">👑 Klaudiusz Opus poleca</div>
+    <div style="font-size:13px;color:#9aa3b2;margin-bottom:14px">Podręczniki warsztatowe — zakres pracy + gotowe procedury (recipes) na realnym stacku Tomka. Seria utrzymywana aktualna.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <a href="claude-seo-geo-warsztat.html" style="display:block;text-decoration:none;background:rgba(58,160,232,.08);border:1px solid #3aa0e8;border-radius:10px;padding:14px 16px;color:#e6e9ef">
+        <div style="font-weight:700;color:#fff;margin-bottom:4px">📈 Claude SEO + GEO-wiec</div>
+        <div style="font-size:13px;color:#9aa3b2">Pipeline zlecenia, Senuto, GEO 13-pillar, <b>6 procedur</b>, propozycja usługi. Bez Ahrefs.</div>
+      </a>
+      <a href="claude-ads-meta-google-warsztat.html" style="display:block;text-decoration:none;background:rgba(124,92,255,.08);border:1px solid #7c5cff;border-radius:10px;padding:14px 16px;color:#e6e9ef">
+        <div style="font-weight:700;color:#fff;margin-bottom:4px">🎯 Claude Ads-owiec (Meta + Google)</div>
+        <div style="font-size:13px;color:#9aa3b2">Reklama przez Claude + MCP — audyt, launch, optymalizacja regułowa, <b>6 procedur</b>.</div>
+      </a>
+    </div>
+    <div style="font-size:11px;color:#6b7585;margin-top:10px">Dodane 01.06.2026 · Opus 4.8</div>
+  </div>
+
+  <div class="main-header">
+    <input type="text" class="search-input" id="searchInput" placeholder="🔍 Szukaj w bazie (title, opis, tagi, body)...">
+    <span class="results-count" id="resultsCount"></span>
+  </div>
+
+  <div id="content"></div>
+</main>
+
+</div>
+
+<script>
+// ============================================
+// DATA — łatwo dodawaj nowe wpisy
+// ============================================
+
+const DATA = [
+
+// =========== ANTHROPIC FEATURES (Q1-Q2 2026) ===========
+{ id: "f-opus48", category: "anthropic", title: "Claude Opus 4.8", tags: ["model", "opus", "28.05.2026", "fast-mode"], status: "live", hot: true,
+  relevance: ["Tomek", "Plichta", "Setup Boy", "EEL"],
+  summary: "Najnowszy Opus (28.05.2026). Model ID claude-opus-4-8. Effort Control + Dynamic Workflows native. Fast mode 2.5x szybciej, 3x taniej.",
+  source: "anthropic.com/news/claude-opus-4-8",
+  body: `<h4>Benchmark deltas vs 4.7</h4>
+<ul><li>Agentic coding: 64.3% → 69.2% (+4.9)</li><li>Multidisciplinary reasoning + tools: 54.7% → 57.9% (+3.2)</li><li>Agentic computer use: 82.8% → 83.4% (+0.6)</li><li>Knowledge work score: 1753 → 1890 (+137)</li></ul>
+<h4>Pricing (bez zmian vs 4.7)</h4>
+<ul><li>Standard: $5/M input, $25/M output</li><li>Fast mode: $10/M in, $50/M out — 2.5x szybciej, <strong>3x taniej</strong> niż previous fast mode</li></ul>
+<h4>What's new</h4>
+<ul><li><strong>Dynamic Workflows</strong> — orchestruje setki paralelnych subagents w jednej sesji</li><li><strong>Effort control panel</strong> — gearbox dla reasoning depth (low/med/high/xhigh/ultracode)</li><li>4× mniej skłonny ignorować błędy w kodzie</li></ul>` },
+
+{ id: "f-dynamic-workflows", category: "anthropic", title: "Dynamic Workflows", tags: ["workflows", "subagents", "28.05.2026", "max", "team", "enterprise"], status: "research-preview", hot: true,
+  relevance: ["Tomek", "Plichta", "EEL"],
+  summary: "Claude orchestruje setki paralelnych subagents w jednej sesji. Aktywuj przez ultracode mode lub 'create a workflow'.",
+  source: "claude.com/blog/introducing-dynamic-workflows-in-claude-code",
+  body: `<h4>Aktywacja</h4>
+<ul><li>Bezpośrednio: "Create a workflow"</li><li>Auto: <code>ultracode</code> mode (effort=xhigh + Claude sam decyduje)</li></ul>
+<h4>Dostępność</h4><p>Max/Team default on, Enterprise admin enable. Dostępne CLI/Desktop/VS Code.</p>
+<h4>Use cases</h4>
+<ul><li>Bug hunts paralel</li><li>Migracje (frameworks, deprecated API, language ports)</li><li>Security audits</li><li>Case: Bun Zig→Rust port 750K linii, 99.8% test pass, 11 dni, setki agentów</li></ul>
+<p><strong>Dla Cortex v2:</strong> overnight full-sieci Plichta audit jako jeden run.</p>` },
+
+{ id: "f-routines", category: "anthropic", title: "Routines", tags: ["cloud", "scheduled", "pro+", "research-preview"], status: "research-preview", hot: true,
+  relevance: ["Tomek", "Plichta", "Setup Boy"],
+  summary: "Anthropic cloud-hosted scheduled tasks z 3 trigger types (Schedule/API/GitHub). Komputer MOŻE być wyłączony.",
+  source: "code.claude.com/docs/en/routines",
+  body: `<h4>3 typy triggerów (kombinowalne)</h4>
+<ul><li><strong>Schedule</strong> — preset (hourly/daily/weekdays/weekly) + custom cron (min 1h) + one-off</li><li><strong>API</strong> — HTTP POST endpoint per routine + bearer token + optional text</li><li><strong>GitHub events</strong> — PR opened/closed/labeled + Release events</li></ul>
+<h4>Setup</h4>
+<ul><li>Web: <code>claude.ai/code/routines</code></li><li>CLI: <code>/schedule [natural language]</code></li><li>Desktop: Routines sidebar</li></ul>
+<h4>Runtime</h4><p>Full cloud session, autonomous (NO permission prompts). Shell + skille committed + MCPs. Push do claude/* branches default.</p>
+<h4>API trigger</h4>
+<pre><code>curl -X POST https://api.anthropic.com/v1/claude_code/routines/trig_XXX/fire \\
+  -H "Authorization: Bearer sk-ant-oat01-xxx" \\
+  -H "anthropic-beta: experimental-cc-routine-2026-04-01" \\
+  -d '{"text": "context"}'</code></pre>` },
+
+{ id: "f-channels-imessage", category: "anthropic", title: "Channels — iMessage", tags: ["channels", "macos-only", "imessage", "research-preview"], status: "research-preview", hot: true,
+  relevance: ["Tomek", "Setup Boy"],
+  summary: "Push messages do running session przez iMessage. NIE wymaga bota/token. macOS ONLY. Native dla Apple ecosystem.",
+  source: "code.claude.com/docs/en/channels",
+  body: `<h4>Wymagania</h4>
+<ul><li><strong>macOS ONLY</strong> (Linux/Windows brak)</li><li>Claude Code v2.1.80+</li><li>Full Disk Access dla Terminal/iTerm</li><li>Automation permission dla Messages (auto-prompt przy 1. reply)</li></ul>
+<h4>Setup</h4>
+<pre><code>claude /plugin install imessage@claude-plugins-official
+claude --channels plugin:imessage@claude-plugins-official
+# Send iMessage do siebie = bypasses access control</code></pre>
+<h4>Allowlist innych senderów</h4>
+<pre><code>/imessage:access allow +48XXXXXX
+/imessage:access allow user@example.com</code></pre>
+<p><strong>Dla Setup Boy Sympatyk 50+:</strong> natywny iPhone, klient nie instaluje nic nowego. ALE wymaga Mac.</p>` },
+
+{ id: "f-channels-telegram", category: "anthropic", title: "Channels — Telegram", tags: ["channels", "cross-platform", "encrypted", "research-preview"], status: "research-preview",
+  relevance: ["Setup Boy", "Tomek"],
+  summary: "Cross-platform channel z BotFather. Wymaga bot tokena. Fallback dla Sympatyk 50+ z Windows/Linux.",
+  source: "code.claude.com/docs/en/channels",
+  body: `<h4>Setup</h4>
+<ol><li>Otwórz <a href="https://t.me/BotFather">BotFather</a> w Telegramie → <code>/newbot</code></li><li>Skopiuj token</li><li><code>claude /plugin install telegram@claude-plugins-official</code></li><li><code>/telegram:configure &lt;token&gt;</code></li><li><code>claude --channels plugin:telegram@claude-plugins-official</code></li><li>Send message → bot replies code → <code>/telegram:access pair &lt;code&gt;</code></li><li><code>/telegram:access policy allowlist</code></li></ol>
+<p><strong>Dla Stratega (private banker):</strong> encrypted Telegram dla wrażliwych alertów.</p>` },
+
+{ id: "f-channels-discord", category: "anthropic", title: "Channels — Discord", tags: ["channels", "cross-platform", "research-preview"], status: "research-preview",
+  relevance: ["Tomek", "Setup Boy"],
+  summary: "Cross-platform channel przez Discord Developer Portal bot. Tomek już ma w Discord bot infrastructure.",
+  source: "code.claude.com/docs/en/channels",
+  body: `<h4>Setup</h4>
+<ol><li><a href="https://discord.com/developers/applications">Discord Developer Portal</a> → New Application → Bot</li><li>Enable Message Content Intent</li><li>OAuth2 → URL Generator → Bot scope + permissions (View, Send Messages, Read History, Attach Files, Add Reactions)</li><li>Open URL → invite bot do server</li><li><code>claude /plugin install discord@claude-plugins-official</code></li><li><code>/discord:configure &lt;token&gt;</code></li><li><code>claude --channels plugin:discord@claude-plugins-official</code></li><li>DM bot → pair code → <code>/discord:access pair &lt;code&gt;</code></li></ol>` },
+
+{ id: "f-channels-custom", category: "anthropic", title: "Custom Channels (build own)", tags: ["channels", "custom", "mcp", "advanced"], status: "research-preview",
+  relevance: ["Tomek"],
+  summary: "Build własny channel jako MCP server. WhatsApp, SMS, custom webhook. Permission relay support.",
+  source: "code.claude.com/docs/en/channels-reference",
+  body: `<h4>Architektura</h4>
+<p>MCP server z capability <code>claude/channel</code>. Stdio transport. Emit notifications/claude/channel events.</p>
+<h4>Permission relay (zdalna aprobacja)</h4>
+<ul><li>Capability <code>claude/channel/permission</code></li><li>5-letter request_id (lowercase, no 'l')</li><li>User replies "yes &lt;id&gt;" lub "no &lt;id&gt;"</li></ul>
+<h4>Dla Tomka — WhatsApp Channel idea</h4>
+<p>Bridge WhatsApp Business API → MCP → Claude Code. Permission relay = klient może aprobować Claude actions przez WhatsApp.</p>
+<h4>Sender gate (security)</h4>
+<p>Allowlist sprawdzaj <code>message.from.id</code> NIE <code>message.chat.id</code>.</p>` },
+
+{ id: "f-remote-control", category: "anthropic", title: "Remote Control", tags: ["mobile", "phone", "pro+", "research-preview"], status: "research-preview", hot: true,
+  relevance: ["Tomek", "Setup Boy"],
+  summary: "Steruj lokalną sesją z telefonu/przeglądarki. Survives sleep/network drops. Multi-device sync.",
+  source: "code.claude.com/docs/en/remote-control",
+  body: `<h4>Setup</h4>
+<pre><code>claude remote-control                # Server mode
+claude --remote-control "Name"       # Interactive z RC
+/remote-control                      # From existing session</code></pre>
+<h4>Flagi server mode</h4>
+<ul><li><code>--spawn worktree</code> — isolated git worktree per session</li><li><code>--spawn session</code> — single-session mode</li><li><code>--capacity 32</code> — max concurrent</li><li><code>--sandbox</code> — filesystem/network isolation</li></ul>
+<h4>Connect</h4><ul><li>Session URL w browser</li><li>QR code (spacebar w server mode)</li><li><code>/mobile</code> = QR do iOS/Android app download</li></ul>
+<h4>Mobile push notifications</h4><p>"notify me when tests finish" lub Claude decides. Settings → /config → "Push when Claude decides".</p>
+<h4>Limitations</h4><ul><li>Local process must keep running</li><li>~10 min network outage timeout</li><li>Ultraplan disconnects RC</li><li>Some local-only: /mcp, /plugin, /resume</li></ul>` },
+
+{ id: "f-computer-use", category: "anthropic", title: "Computer Use (CLI)", tags: ["macos-only", "pro+", "gui", "research-preview"], status: "research-preview", hot: true,
+  relevance: ["Setup Boy"],
+  summary: "Claude klikuje/typing/screenshot GUI apps. Game changer dla aplikacji bez API (LEX, Kamsoft, AutoCAD).",
+  source: "code.claude.com/docs/en/computer-use",
+  body: `<h4>Wymagania</h4>
+<ul><li>macOS only (Linux/Windows brak)</li><li>Pro lub Max plan (NIE Team/Enterprise)</li><li>Claude Code v2.1.85+</li><li>Interactive session (NIE -p flag)</li><li>claude.ai auth (NIE Bedrock/Vertex/Foundry)</li></ul>
+<h4>Enable</h4><p><code>/mcp</code> → <code>computer-use</code> → Enable. Permissions: Accessibility + Screen Recording.</p>
+<h4>Per-app approval per session</h4>
+<table><tr><th>App tier</th><th>Co</th></tr>
+<tr><td>View-only</td><td>browsers, trading platforms</td></tr>
+<tr><td>Click-only</td><td>terminals, IDEs (warning: shell access equivalent)</td></tr>
+<tr><td>Full control</td><td>apps, simulators, native tools</td></tr></table>
+<h4>Use cases dla Setup Boy</h4>
+<ul><li><strong>Mecenas:</strong> LEX/Legalis automation bez API</li><li><strong>Doktor:</strong> Kamsoft EHR entries through UI (RODO-safe, lokalne)</li><li><strong>Architekt:</strong> AutoCAD/Revit drobne edycje</li><li><strong>Twórca:</strong> Photoshop/Illustrator automation</li><li><strong>Wszyscy:</strong> banking/government portals (NFZ, ZUS, KRS, eUS)</li></ul>
+<p><code>Esc</code> abort z anywhere (prompt injection-safe).</p>` },
+
+{ id: "f-live-artifacts", category: "anthropic", title: "Live Artifacts", tags: ["cowork", "macos-or-win", "pro+", "dashboards", "ga4"], status: "live", hot: true,
+  relevance: ["Tomek", "Plichta", "Setup Boy"],
+  summary: "Persistent interactive HTML dashboards w Cowork. MCP-connected. Refresh przy otwarciu. Game changer dla GA4 live.",
+  source: "claude.com/blog/artifacts (launched 20.04.2026)",
+  body: `<h4>Wymagania</h4>
+<ul><li>Cowork <strong>Desktop</strong> (macOS lub Windows)</li><li>Pro+ plan ($20/mc)</li><li>NIE dostępne w CLI ani Web</li></ul>
+<h4>Vs klasyczne Artifacts</h4>
+<table><tr><th>Classic</th><th>Live</th></tr>
+<tr><td>Static snapshot</td><td>Persistent, MCP-connected</td></tr>
+<tr><td>One-time</td><td>Refresh przy otwarciu</td></tr>
+<tr><td>W konwersacji</td><td>W "Live artifacts" tab w sidebar</td></tr>
+<tr><td>Bez history</td><td>Version history (restore)</td></tr></table>
+<h4>Use cases</h4>
+<ul><li>KPI monitoring</li><li>Pipeline tracking</li><li>Content calendars</li><li><strong>Dla EEL-6 R10 Daily Dashboard v2:</strong> zamiast static HTML + launchd cron — Cowork Live Artifact + GA4 MCP</li><li><strong>Dla Plichty:</strong> 7 Live Artifacts × 7 properties per salon</li><li><strong>Dla Setup Boy Pro+/Premium:</strong> Live Artifact dla klienta jako element setupu (premium differentiator)</li></ul>` },
+
+{ id: "f-cowork", category: "anthropic", title: "Claude Cowork", tags: ["enterprise", "cowork", "salesforce", "bigquery"], status: "live", hot: true,
+  relevance: ["Plichta", "Setup Boy", "Tomek"],
+  summary: "Enterprise interface bridge między CLI/Code i Claude.ai. Native integrations: Salesforce/BigQuery/Calendar/Drive.",
+  source: "https://claude.com/blog/how-an-anthropic-sales-leader-uses-claude-cowork-to-run-a-4-000-account-book",
+  body: `<h4>Use cases (oficjalne)</h4>
+<ul><li>Scheduled automation (auto-run, call prep, forecasting)</li><li>Overnight processing (case: 4000 accounts scored)</li><li>Multi-source reports (web + CRM data)</li><li>Wide-scale data processing (tysiące rekordów)</li></ul>
+<h4>Native integrations</h4><ul><li>Salesforce</li><li>BigQuery</li><li>Google Calendar</li><li>Google Drive</li><li>Internal docs systems</li></ul>
+<h4>Dla Tomka</h4>
+<ul><li><strong>Setup Boy persona Decydent/Strateg/Patron:</strong> Cowork = GŁOWNA oferta, nie pomocniczy mobile</li><li><strong>Plichta:</strong> Cowork dla nightly audit całej sieci 7 properties</li><li><strong>EEL:</strong> Cowork dla scheduled refresh raportów + Live Artifacts</li></ul>` },
+
+{ id: "f-managed-agents", category: "anthropic", title: "Managed Agents", tags: ["api", "rest", "managed", "production"], status: "live",
+  relevance: ["Tomek", "Cortex"],
+  summary: "Cloud-hosted agents API. Long-running sessions hours autonomous. $0.08/session-hour + tokens.",
+  source: "claude.com/blog/claude-managed-agents",
+  body: `<h4>Architektura</h4>
+<ul><li>Production-grade (sandboxing + auth)</li><li>Long-running sessions hours + persistent state</li><li>Multi-agent coordination</li><li>Trusted governance (scoped permissions + execution tracing)</li></ul>
+<h4>Pricing</h4><p>$0.08 per session-hour + standard token rates (Opus 4.8: $5/M in + $25/M out).</p>
+<h4>Features</h4>
+<ul><li><strong>Dreaming</strong> (research preview): scheduled review sessions + memory → patterns</li><li><strong>Outcomes</strong> (public beta): osobny grader rubric → +8-10pp success rate empirycznie</li><li><strong>Multiagent orchestration</strong>: lead → specialist subagents paralel + shared filesystem</li><li><strong>Built-in memory</strong> (kwiecień 2026)</li><li><strong>Self-hosted sandboxes</strong> + MCP tunnels (maj 2026)</li></ul>
+<h4>Access</h4>
+<ul><li>Claude Console</li><li>Claude Code z built-in <code>claude-api</code> Skill (bridge!)</li><li>New CLI dla deployment</li></ul>
+<h4>Cortex v2 economics</h4>
+<table><tr><th>Skala</th><th>Sessions/mc</th><th>Koszt</th><th>Marża przy 200K przychodu</th></tr>
+<tr><td>100 klientów × 10h</td><td>1000h</td><td><strong>$80/mc</strong></td><td><strong>99%+</strong></td></tr></table>` },
+
+{ id: "f-agent-sdk", category: "anthropic", title: "Agent SDK", tags: ["python", "typescript", "library", "production"], status: "live",
+  relevance: ["Tomek", "Cortex"],
+  summary: "Library Python/TS — Claude Code jako library. Built-in tools, subagents, hooks, sessions, MCPs.",
+  source: "code.claude.com/docs/en/agent-sdk/overview",
+  body: `<h4>Languages</h4>
+<ul><li>Python: <code>pip install claude-agent-sdk</code> (lub <code>uv add</code>)</li><li>TypeScript: <code>npm install @anthropic-ai/claude-agent-sdk</code></li></ul>
+<h4>Pricing change 15.06.2026</h4><p>Agent SDK + <code>claude -p</code> → osobny monthly credit (separate od interactive).</p>
+<h4>Built-in tools</h4><p>Read, Write, Edit, Bash, Monitor, Glob, Grep, WebSearch, WebFetch, AskUserQuestion.</p>
+<h4>Permission modes</h4><p><code>acceptEdits</code> / <code>dontAsk</code> / <code>auto</code> (TS only) / <code>bypassPermissions</code> / <code>default</code></p>
+<h4>Vs Managed Agents</h4>
+<table><tr><th></th><th>Agent SDK</th><th>Managed Agents</th></tr>
+<tr><td>Runs</td><td>Your infra</td><td>Anthropic</td></tr>
+<tr><td>Interface</td><td>Library</td><td>REST API</td></tr>
+<tr><td>Files</td><td>Your filesystem</td><td>Managed sandbox</td></tr>
+<tr><td>$/h</td><td>tokens only</td><td>$0.08/h + tokens</td></tr></table>
+<p><strong>Branding wymóg:</strong> "Claude Agent" / "Powered by Claude". NIE "Claude Code".</p>` },
+
+{ id: "f-agent-teams", category: "anthropic", title: "Agent Teams (experimental)", tags: ["multi-agent", "experimental", "v2.1.32"], status: "beta",
+  relevance: ["Cortex", "Tomek"],
+  summary: "Lead + teammates każdy własna Claude session. Inter-agent messaging direct. Shared task list.",
+  source: "code.claude.com/docs/en/agent-teams",
+  body: `<h4>Enable</h4><p><code>CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: "1"</code> w settings.json env.</p>
+<h4>Vs Subagents</h4>
+<table><tr><th></th><th>Subagents</th><th>Agent Teams</th></tr>
+<tr><td>Context</td><td>Own window</td><td>Own window</td></tr>
+<tr><td>Communication</td><td>Report back only</td><td>Teammates msg each other</td></tr>
+<tr><td>Coordination</td><td>Main agent manages</td><td>Shared task list self-coord</td></tr></table>
+<h4>Display modes</h4>
+<ul><li><strong>In-process</strong> (default) — Shift+Down cycle</li><li><strong>Split panes</strong> (tmux/iTerm2) — każdy teammate w pane</li></ul>
+<h4>Best practices</h4>
+<ul><li>3-5 teammates dla większości workflow</li><li>5-6 tasks per teammate</li><li>Avoid file conflicts</li></ul>
+<h4>Limits</h4>
+<ul><li>No session resumption with in-process teammates</li><li>Task status can lag</li><li>One team at a time per lead</li><li>No nested teams</li><li>Split panes NIE w VS Code/Windows Terminal/Ghostty</li></ul>
+<p><strong>Dla Cortex v2:</strong> Lab w Agent Teams (debugowalne wizualnie), Production w Agent SDK.</p>` },
+
+{ id: "f-sub-agents", category: "anthropic", title: "Sub-agents", tags: ["subagents", "isolation", "context"], status: "live",
+  relevance: ["Tomek", "Cortex"],
+  summary: "Specialized AI per task. Own context window, custom system prompt, specific tool access. Auto-delegate gdy match z description.",
+  source: "code.claude.com/docs/en/sub-agents",
+  body: `<h4>Co umożliwia</h4>
+<ul><li><strong>Preserve context</strong> — exploration w osobnym window, main conversation czysta</li><li><strong>Enforce constraints</strong> — limit tool access</li><li><strong>Reuse</strong> — user-level subagents cross-projects</li><li><strong>Specialize behavior</strong> — focused system prompts</li><li><strong>Control costs</strong> — route tasks do tańszych modeli (Haiku)</li></ul>
+<h4>Subagent vs Agent View vs Agent Teams</h4>
+<ul><li><strong>Subagents</strong> — w jednej sesji, side task isolation</li><li><strong>Background agents (Agent View)</strong> — wiele sessions, jeden ekran, monitoring</li><li><strong>Agent Teams</strong> — wiele sessions, communicate, coordinated</li></ul>
+<h4>Persist memory per subagent</h4><p>NEW — subagents mogą maintain own auto memory.</p>` },
+
+{ id: "f-skills", category: "anthropic", title: "Skills (Claude Code)", tags: ["skills", "skill-md", "auto-load"], status: "live",
+  relevance: ["Tomek", "Setup Boy"],
+  summary: "Specialized capabilities Claude auto-uses lub /name. SKILL.md w .claude/skills/. Custom commands MERGED ze skille.",
+  source: "code.claude.com/docs/en/skills",
+  body: `<h4>Format SKILL.md</h4>
+<pre><code>---
+name: skill-name
+description: Description determining when Claude auto-invokes
+allowed-tools: ["Read", "Write"]
+---
+
+# Body markdown z instrukcjami</code></pre>
+<h4>Lokacja</h4>
+<ul><li>Project: <code>.claude/skills/&lt;name&gt;/SKILL.md</code></li><li>User: <code>~/.claude/skills/&lt;name&gt;/SKILL.md</code></li></ul>
+<h4>Invocation</h4>
+<ul><li>Auto (Claude decides) — gdy match z description</li><li>Manual: <code>/skill-name</code></li></ul>
+<h4>Specials</h4>
+<ul><li>Skill can run w subagent (isolation)</li><li>Dynamic context injection</li></ul>
+<h4>Custom commands MERGED ze skille</h4>
+<p><code>.claude/commands/deploy.md</code> i <code>.claude/skills/deploy/SKILL.md</code> oba tworzą <code>/deploy</code>. Existing commands keep working.</p>
+<h4>Bundled built-in</h4><p><code>/debug</code>, <code>/code-review</code>, <code>/init</code> itp.</p>
+<p>Open standard: <a href="https://agentskills.io">agentskills.io</a>.</p>` },
+
+{ id: "f-memory", category: "anthropic", title: "Memory — CLAUDE.md + Auto memory", tags: ["memory", "claude-md", "auto-memory"], status: "live",
+  relevance: ["Tomek"],
+  summary: "Dwa systemy: CLAUDE.md (Ty piszesz) + Auto memory (Claude pisze sam). Hierarchical scopes.",
+  source: "code.claude.com/docs/en/memory",
+  body: `<h4>CLAUDE.md hierarchia (4 scopes)</h4>
+<table><tr><th>Scope</th><th>Path</th></tr>
+<tr><td>Managed policy</td><td>/Library/Application Support/ClaudeCode/CLAUDE.md (Mac)</td></tr>
+<tr><td>User</td><td>~/.claude/CLAUDE.md</td></tr>
+<tr><td>Project</td><td>./CLAUDE.md or ./.claude/CLAUDE.md</td></tr>
+<tr><td>Local</td><td>./CLAUDE.local.md (gitignored)</td></tr></table>
+<h4>Key facts</h4>
+<ul><li>Files loaded <strong>in full</strong> przy session start</li><li>Subdirectory CLAUDE.md loadowane on-demand</li><li>HTML comments stripped (save tokens)</li><li>Target &lt;200 linii per file</li><li><code>@path/to/file</code> imports (max 4 hops)</li><li>AGENTS.md compatibility przez import</li><li><code>claudeMdExcludes</code> w settings dla monorepo</li></ul>
+<h4>Auto memory (NEW v2.1.59+)</h4>
+<ul><li>Claude pisze sam learnings: build commands, debugging insights, preferences</li><li>Lokacja: <code>~/.claude/projects/&lt;project&gt;/memory/MEMORY.md</code> + topic files</li><li>First 200 lines / 25KB loaded każdą sesję</li><li>Audit: <code>/memory</code> command</li></ul>
+<h4>.claude/rules/ path-scoped</h4>
+<pre><code>---
+paths:
+  - "src/api/**/*.ts"
+---
+# API Development Rules</code></pre>` },
+
+{ id: "f-hooks", category: "anthropic", title: "Hooks", tags: ["hooks", "automation", "events"], status: "live",
+  relevance: ["Tomek", "Cortex"],
+  summary: "Callback functions na agent events. PreToolUse/PostToolUse/Stop/SessionStart/etc. Block/allow/modify tool execution.",
+  source: "code.claude.com/docs/en/hooks-guide",
+  body: `<h4>Hook events</h4>
+<table><tr><th>Hook</th><th>Python</th><th>TS</th></tr>
+<tr><td>PreToolUse</td><td>✅</td><td>✅</td></tr>
+<tr><td>PostToolUse</td><td>✅</td><td>✅</td></tr>
+<tr><td>Stop</td><td>✅</td><td>✅</td></tr>
+<tr><td>SubagentStart/Stop</td><td>✅</td><td>✅</td></tr>
+<tr><td>SessionStart/End</td><td>❌</td><td>✅</td></tr>
+<tr><td>Notification</td><td>✅</td><td>✅</td></tr>
+<tr><td>WorktreeCreate/Remove</td><td>❌</td><td>✅</td></tr></table>
+<h4>Matchers</h4>
+<p>Regex match na tool name (NIE file paths!). For file path filtering check <code>tool_input.file_path</code> w callback. MCP tools: <code>mcp__&lt;server&gt;__&lt;action&gt;</code>.</p>
+<h4>Permission decisions</h4><p><code>allow</code> / <code>deny</code> / <code>ask</code> / <code>defer</code>. <strong>Deny WINS</strong> on conflict.</p>
+<h4>Async output</h4><p><code>{"async_": True, "asyncTimeout": 30000}</code> — fire-and-forget dla logging/metrics.</p>` },
+
+{ id: "f-ultraplan", category: "anthropic", title: "Ultraplan", tags: ["planning", "cloud", "v2.1.91", "research-preview"], status: "research-preview",
+  relevance: ["Tomek", "Plichta"],
+  summary: "Plan handoff CLI → claude.ai/code cloud z inline comments na sections → execute cloud lub teleport back to terminal.",
+  source: "code.claude.com/docs/en/ultraplan",
+  body: `<h4>Launch</h4>
+<ul><li><code>/ultraplan migrate the auth service from sessions to JWTs</code></li><li>Keyword <code>ultraplan</code> anywhere w prompt</li><li>From local plan dialog: "No, refine with Ultraplan"</li></ul>
+<h4>Wymaga</h4><ul><li>Claude Code on the web</li><li>GitHub repo</li><li>NIE Bedrock/Vertex/Foundry</li><li>Disconnects Remote Control</li></ul>
+<h4>Status indicators</h4>
+<ul><li><code>◇ ultraplan</code> — researching</li><li><code>◇ ultraplan needs your input</code> — clarifying Q</li><li><code>◆ ultraplan ready</code> — review w browser</li></ul>
+<h4>3 execution options</h4>
+<ol><li>Approve + start coding (cloud session continues, PR ready)</li><li>Approve + teleport to terminal</li><li>Cancel (save to file)</li></ol>
+<p><strong>Dla Tomka:</strong> Plichta Counter-Brief planning, EEL Cortex v2 architecture planning.</p>` },
+
+{ id: "f-worktrees", category: "anthropic", title: "Worktrees", tags: ["parallel", "git", "isolation"], status: "live", hot: true,
+  relevance: ["Tomek", "EEL"],
+  summary: "claude --worktree <name> = isolated git worktree per session. Parallel sessions bez konfliktów merge.",
+  source: "code.claude.com/docs/en/worktrees",
+  body: `<h4>Setup</h4>
+<pre><code>claude --worktree feature-auth
+# = .claude/worktrees/feature-auth/ + branch worktree-feature-auth
+
+# Per PR:
+claude --worktree "#1234"
+
+# Auto-generated name:
+claude --worktree</code></pre>
+<h4>.worktreeinclude</h4>
+<p>gitignore syntax → copy gitignored files (np. .env) do każdego worktree.</p>
+<pre><code>.env
+.env.local
+config/secrets.json</code></pre>
+<h4>Subagent isolation</h4>
+<p>Frontmatter <code>isolation: worktree</code> w SKILL.md → każdy subagent w temporary worktree.</p>
+<h4>Base branch</h4>
+<ul><li>Default: <code>origin/HEAD</code> (fresh)</li><li><code>worktree.baseRef: "head"</code> → branch z local HEAD (carry unpushed commits)</li></ul>
+<h4>Cleanup</h4>
+<ul><li>Auto cleanup gdy: no uncommitted/untracked/new commits</li><li>Manual: <code>git worktree remove ../project-feature-a</code></li><li><code>cleanupPeriodDays</code> setting dla subagent/background worktrees</li></ul>
+<h4>Dla Tomka stop blocking</h4>
+<pre><code>claude --worktree cortex-sprint1
+claude --worktree eel-6-dashboard
+claude --worktree setup-boy-v3
+# = 3 paralel sesje, isolated files</code></pre>` },
+
+{ id: "f-mcps", category: "anthropic", title: "MCPs (Model Context Protocol)", tags: ["mcp", "integrations"], status: "live",
+  relevance: ["Tomek", "Setup Boy"],
+  summary: "Open standard dla integracji external tools. 200+ servers dostępnych.",
+  source: "code.claude.com/docs/en/mcp",
+  body: `<h4>Scopes</h4>
+<ul><li><strong>User-level:</strong> <code>~/.claude.json</code></li><li><strong>Project-level:</strong> <code>.mcp.json</code></li></ul>
+<h4>Najważniejsze MCPs Tomka</h4>
+<ul><li><code>google-analytics-mcp</code> — GA4 natywny (eel-analytics OAuth ADC)</li><li><code>google-ads-mcp</code> — Google Ads (GLOV)</li><li><code>meta-ads-glov</code> — Meta Ads (Business Manager token)</li><li><code>clarity-glov</code> — Microsoft Clarity (JWT)</li><li><code>claude_ai_Shopify</code> — Shopify GraphQL</li><li><code>obsidian-vault</code> + <code>obsidian-cowork</code> — Obsidian MCPs</li><li><code>posthog</code> — Cleangang</li><li><code>playwright</code> — browser automation</li><li><code>github</code> — repo operations</li><li><code>context7</code> — fresh docs fetching</li><li><code>plugin:discord:discord</code> — Discord bot</li></ul>
+<h4>Connectors (200+, app-level)</h4>
+<p><a href="https://claude.ai/directory/connectors">claude.ai/directory/connectors</a> — Spotify, Booking, Audible, AllTrails, TurboTax, Uber, etc. Click install dla 50+ user friendly.</p>` },
+
+{ id: "f-html-over-md", category: "anthropic", title: "HTML > Markdown (oficjalnie)", tags: ["html", "outputs", "philosophy"], status: "live", hot: true,
+  relevance: ["Tomek", "EEL"],
+  summary: "Anthropic oficjalna rekomendacja (20.05.2026): HTML zamiast Markdown dla raportów/specs/code review.",
+  source: "claude.com/blog/using-claude-code-the-unreasonable-effectiveness-of-html",
+  body: `<h4>Powody</h4>
+<ul><li><strong>Information density</strong> — tables, CSS, SVG, code, interactive</li><li><strong>Readability</strong> — "nie czytam Markdown &gt;100 linii"</li><li><strong>Shareability</strong> — link vs attachment</li><li><strong>Interactivity</strong> — sliders, toggles, custom editors</li></ul>
+<h4>Use cases</h4>
+<ul><li>Specs, planning, code review (z annotations)</li><li>Design prototypes (interactive)</li><li>Reports (SVG diagrams)</li><li>Custom editors</li></ul>
+<p><strong>Dla Tomka:</strong> validacja filozofii EEL. HTML raporty od kwietnia — Anthropic publicznie potwierdza.</p>` },
+
+{ id: "f-compliance-api", category: "anthropic", title: "Compliance API + 28 partners", tags: ["enterprise", "security", "compliance"], status: "live",
+  relevance: ["Plichta", "Setup Boy"],
+  summary: "Enterprise compliance integration. Conversation content + Activity events. 28 security partners (Okta, CrowdStrike, Wiz, Relativity).",
+  source: "claude.com/blog/compliance-api-security-partners",
+  body: `<h4>2 access types</h4>
+<ol><li><strong>Conversation content</strong> (Claude Enterprise) — DLP policies</li><li><strong>Activity events</strong> — logins/admin/config → unified monitoring</li></ol>
+<h4>28 partners</h4>
+<table><tr><th>Kategoria</th><th>Partnerzy</th></tr>
+<tr><td>DLP/SASE</td><td>Cloudflare, Forcepoint, Fortinet, Zscaler</td></tr>
+<tr><td>Data Security</td><td>Cyera, Varonis, Wiz</td></tr>
+<tr><td>SIEM</td><td>CrowdStrike, Datadog, Sumo Logic</td></tr>
+<tr><td>Identity</td><td>Okta, SailPoint</td></tr>
+<tr><td>AI Security</td><td>Snyk, Tenable, Theta Lake</td></tr>
+<tr><td>eDiscovery</td><td>Relativity, Mimecast, Smarsh</td></tr></table>
+<h4>Sectors</h4><p>Legal, healthcare, financial, government.</p>
+<p><strong>Dla Plichty:</strong> Okta SSO + CrowdStrike SIEM + Wiz DLP + Relativity eDiscovery = enterprise dealmaker. Q-CMP-1..4 dodane do Discovery.</p>` },
+
+{ id: "f-legal", category: "anthropic", title: "Legal industry deployment", tags: ["legal", "mecenas", "microsoft-365"], status: "live",
+  relevance: ["Setup Boy"],
+  summary: "87% general counsel używa AI (vs 44% rok wcześniej). 12 pre-built legal plugins. Microsoft 365 add-ins.",
+  source: "claude.com/blog/deploying-claude-across-the-legal-industry",
+  body: `<h4>Stats (FTI Consulting 2026)</h4><p>87% general counsel używa AI vs 44% rok wcześniej.</p>
+<h4>Stack legal</h4>
+<ul><li>Claude Chat (research + general)</li><li><strong>Claude Cowork</strong> (matter-level collaboration across files)</li><li><strong>Microsoft 365 add-ins</strong> (Word, Excel, Outlook)</li><li>Claude Platform (custom)</li></ul>
+<h4>12 pre-built legal plugins</h4>
+<p>Commercial / Corporate / Employment / Privacy / Product / Regulatory / AI Governance / IP / Litigation (+ 3)</p>
+<h4>Use cases</h4>
+<ul><li>Contract review + redlining</li><li>M&amp;A diligence</li><li>Privacy impact assessments</li><li>Regulatory monitoring</li><li>Litigation preparation</li><li>Outside counsel oversight</li></ul>
+<h4>Compliance</h4><p>Data hosting, retention, <strong>privilege protection</strong>, SSO, audit.</p>
+<p><strong>Dla Setup Boy Mecenas:</strong> Microsoft 365 add-ins (klient nie zmienia środowiska) + 12 oficjalnych plugins zamiast custom skili.</p>` },
+
+{ id: "f-champion-kit", category: "anthropic", title: "Champion Kit", tags: ["sales", "patron", "advocacy"], status: "live", hot: true,
+  relevance: ["Setup Boy"],
+  summary: "Oficjalna Anthropic playbook dla internal advocacy. Dokładnie materiały sales dla Setup Boy Patron.",
+  source: "code.claude.com/docs/en/champion-kit",
+  body: `<h4>3 zachowania</h4>
+<ul><li>Share what you discover</li><li>Be the person people ask</li><li>Grow the circle</li></ul>
+<h4>Time budget (15-20 min/tydzień)</h4>
+<table><tr><th>Activity</th><th>Time/week</th></tr>
+<tr><td>Posting wins</td><td>15 min</td></tr>
+<tr><td>Q&amp;A channel</td><td>20 min</td></tr>
+<tr><td>Weekly show-and-tell</td><td>5 min</td></tr>
+<tr><td>Pairing</td><td>0-30 min opcjonalnie</td></tr></table>
+<h4>30-day playbook</h4>
+<ol><li><strong>Week 1: Seed channel</strong> — post 2-3 examples z prompts</li><li><strong>Week 2: Start rhythm</strong> — weekly show-and-tell, custom skill share</li><li><strong>Week 3: Pair sessions</strong> (2-3 × 15 min) + pinned FAQ</li><li><strong>Week 4: Hand off</strong> do drugiego champion + summary do lead</li></ol>
+<h4>Q&amp;A template</h4>
+<p>Typowe obiekcje: "I'm faster without it" / "Don't trust AI" / "Will make juniors weaker" / "Tried once, hallucinated" / "No time to learn".</p>
+<h4>/team-onboarding skill</h4>
+<p>Generuje setup guide z usage history klienta — instant team onboarding doc.</p>
+<p><strong>Pitch dla Patron (Setup Boy Premium):</strong> "Nie potrzebujesz rollout program. Twój CTO/lead zostaje champion — ja go ustawiam za 1.5 dnia. Anthropic materiały gotowe. 15-20 min/tydzień NIE help desk."</p>` },
+
+{ id: "f-connectors", category: "anthropic", title: "Connectors (200+)", tags: ["connectors", "everyday", "pro+"], status: "live",
+  relevance: ["Setup Boy"],
+  summary: "200+ apps click-install. Spotify/Booking/Audible/AllTrails/TurboTax/Uber etc. 50+ friendly setup.",
+  source: "claude.com/blog/connectors-for-everyday-life",
+  body: `<h4>Everyday life (nowe kwiecień)</h4>
+<p>AllTrails, Audible, Booking.com, Instacart, Credit Karma, TurboTax, Resy, Spotify, StubHub, Taskrabbit, Thumbtack, Tripadvisor, Uber, Uber Eats, Viator.</p>
+<h4>Dostępność</h4>
+<ul><li>Pro/Max/Team/Enterprise (NIE Free)</li><li>Desktop + mobile beta + claude.ai</li><li><strong>Click install</strong> — 50+ user friendly</li></ul>
+<h4>Privacy</h4><p>Claude pyta przed booking/purchase, data NOT for training, disconnect anytime.</p>
+<h4>Connectors vs MCPs</h4>
+<p>Connectors = upraszczone integracje (click, bez terminala). MCPs = power-user (config file, tokens).</p>
+<p><strong>Dla Setup Boy Sympatyk 50+:</strong> Connectors zamiast MCPs → Setup Day prostszy. 10 connectors w 60 min.</p>
+<h4>Per persona mapping</h4>
+<ul><li><strong>Sympatyk 50+:</strong> Booking, Tripadvisor, Viator, Spotify, Audible, Uber, Uber Eats</li><li><strong>Doradca podatkowy:</strong> TurboTax, Credit Karma</li><li><strong>Architekt:</strong> Booking, Tripadvisor (inspekcje)</li><li><strong>Twórca:</strong> Audible (audiobook research), Spotify</li><li><strong>Decydent:</strong> Microsoft 365 add-ins (krytyczne)</li></ul>` },
+
+{ id: "f-multiagent", category: "anthropic", title: "Multiagent orchestration + Dreaming + Outcomes (Managed)", tags: ["managed-agents", "dreaming", "outcomes"], status: "research-preview",
+  relevance: ["Cortex"],
+  summary: "Multiagent + Dreaming (auto-patterns) + Outcomes (rubric grader +8-10pp success). TYLKO w Managed Agents.",
+  source: "claude.com/blog/new-in-claude-managed-agents",
+  body: `<p><strong>UWAGA:</strong> TYLKO w Claude Managed Agents, NIE w Claude Code.</p>
+<h4>Dreaming (research preview)</h4>
+<p>Scheduled process reviews agent sessions + memory → patterns. "Surfaces patterns single agent can't see — recurring mistakes, workflows agents converge on, team preferences".</p>
+<h4>Outcomes (public beta)</h4>
+<p>Developer definiuje success criteria → osobny grader rubric w własnym context → ocenia output → revisuje jeśli fail.</p>
+<p><strong>Empirical:</strong> +8-10pp success rate. Particularly strong dla file generation (+8.4% docx, +10.1% pptx).</p>
+<h4>Multiagent orchestration</h4>
+<p>Lead → specialist subagents paralel + shared filesystem + Claude Console tracing.</p>
+<p><strong>Dla Cortex v2:</strong> Cortex Lab przez claude-api Skill w CC → Managed Agents Dreaming research; Cortex Core w CC Dynamic Workflows production.</p>` },
+
+{ id: "f-large-codebases", category: "anthropic", title: "Claude Code w large codebases (best practices)", tags: ["codebases", "claude-md", "skills", "best-practices"], status: "live",
+  relevance: ["Tomek", "EEL"],
+  summary: "5-layer harness: CLAUDE.md / Hooks / Skills / Plugins / MCP+LSP. Agentic search NIE RAG.",
+  source: "claude.com/blog/how-claude-code-works-in-large-codebases-best-practices-and-where-to-start",
+  body: `<h4>Agentic search NIE RAG</h4>
+<p>Claude nawiguje live codebase, NIE wymaga embeddings (które się starzeją).</p>
+<h4>5-layer extension harness</h4>
+<ol><li><strong>CLAUDE.md files</strong> — context auto-loaded</li><li><strong>Hooks</strong> — automated scripts, self-improvement</li><li><strong>Skills</strong> — on-demand expertise (avoid context bloat)</li><li><strong>Plugins</strong> — distributable packages</li><li><strong>MCP servers + LSP</strong> — external tools + symbol-level navigation</li></ol>
+<h4>3 critical patterns</h4>
+<ul><li><strong>Navigability</strong> — CLAUDE.md LEAN, scope commands per subdirectory, <code>.claudeignore</code></li><li><strong>Active maintenance</strong> — review configs co 3-6 mc</li><li><strong>Organizational ownership</strong> — assign DRI per area</li></ul>
+<p><strong>Implications dla EEL:</strong> <code>.claudeignore</code> w EEL (reports/, screenshots, caches, backups, large binary). <code>.claude/rules/</code> path-scoped per podkatalog (visual-mapping/ga4/geo/cortex).</p>` },
+
+{ id: "f-plugins", category: "anthropic", title: "Plugins + Plugin Marketplaces", tags: ["plugins", "marketplaces", "distribution"], status: "live", hot: true,
+  relevance: ["Tomek", "Setup Boy"],
+  summary: "Distributable packages — Skills + Commands + Hooks + MCPs w jednym. Marketplace install z /plugin install.",
+  source: "code.claude.com/docs/en/plugins",
+  body: `<h4>Co to jest</h4>
+<p>Pakiet który zawiera: jeden lub wiele Skills, custom commands, hooks, MCP servers — wszystko spakowane razem. Distribuowalny.</p>
+<h4>Setup</h4>
+<pre><code># Browse marketplace
+/plugin browse
+
+# Install
+/plugin install &lt;name&gt;@&lt;marketplace&gt;
+
+# Examples
+/plugin install imessage@claude-plugins-official
+/plugin install telegram@claude-plugins-official
+/plugin install discord@claude-plugins-official</code></pre>
+<h4>Build własny plugin</h4>
+<p>Struktura:</p>
+<pre><code>my-plugin/
+  plugin.json
+  skills/
+    skill1/SKILL.md
+  commands/
+    cmd1.md
+  hooks/
+    hook1.js
+  mcp/
+    server.js</code></pre>
+<h4>Dla Setup Boy</h4>
+<p>Plugin "setup-boy-persona-mecenas" — zawiera 3 procesiki + 12 legal plugins config + Microsoft 365 setup commands + Truth Checker hook. Klient install jednym <code>/plugin install</code>.</p>
+<h4>Dla Plichta</h4>
+<p>Plugin "audi-cortex" — Cortex agents + 12 cegiełek skills + Live Artifact templates + compliance hooks (Okta/CrowdStrike).</p>` },
+
+{ id: "f-tool-search", category: "anthropic", title: "Tool Search", tags: ["tools", "search", "deferred"], status: "live",
+  relevance: ["Tomek"],
+  summary: "Deferred tools — nie ładuje wszystkich schemas naraz, wyszukuje na żądanie. Save context na startup.",
+  source: "code.claude.com/docs/en/tool-search",
+  body: `<h4>Problem rozwiązany</h4>
+<p>Z 300+ MCP tools schemas ~50K+ tokenów. Marnotrawstwo gdy używasz 5-10.</p>
+<h4>Jak działa</h4>
+<ul><li>Tools deferred — schemas NIE ładowane na start</li><li>Tylko nazwa + 1-line description w prompt</li><li>Claude wzywa ToolSearch gdy potrzebuje schema</li><li>Query forms: <code>select:Tool1,Tool2</code> lub keyword search</li></ul>
+<h4>Use case Tomka</h4>
+<p>~200 MCP tools (16+ MCPs aktywnych) — Tool Search redukuje startup overhead. Szczególnie krytyczne dla Cowork enterprise integration.</p>` },
+
+{ id: "f-sandbox-zdr", category: "anthropic", title: "Sandbox + Zero Data Retention", tags: ["sandbox", "zdr", "security", "enterprise"], status: "live",
+  relevance: ["Plichta", "Setup Boy"],
+  summary: "Sandbox mode = filesystem/network isolation per session. Zero Data Retention = enterprise prompt non-retention.",
+  source: "code.claude.com/docs/en/sandbox + zero-data-retention",
+  body: `<h4>Sandbox mode</h4>
+<ul><li>Flag: <code>--sandbox</code></li><li>Filesystem isolation (read-only outside scoped dir)</li><li>Network isolation (whitelist domains)</li><li>Dla agentic tasks gdzie risky operations</li></ul>
+<h4>Zero Data Retention (ZDR)</h4>
+<ul><li>Enterprise tier setting</li><li>Konwersacje NIE zachowywane na serwerach Anthropic</li><li>Dla regulated industries (Plichta automotive, Doktor health, Mecenas legal)</li><li>Konfiguracja: admin panel Enterprise</li></ul>
+<h4>Dla Plichta</h4>
+<p>ZDR + Compliance API + Okta SSO = enterprise-grade deal. Q-CMP-1..4 must include ZDR.</p>` },
+
+{ id: "f-output-styles", category: "anthropic", title: "Output Styles", tags: ["output", "styles", "format"], status: "live",
+  relevance: ["Tomek"],
+  summary: "Kontrola formatowania outputu — preset styles (concise/detailed/markdown/html) + custom.",
+  source: "code.claude.com/docs/en/output-styles",
+  body: `<h4>Presety</h4>
+<ul><li><code>concise</code> — minimal, direct answers</li><li><code>detailed</code> — full reasoning + examples</li><li><code>markdown</code> — Markdown formatting</li><li><code>html</code> — HTML output (zgodnie z Anthropic recommendation)</li></ul>
+<h4>Custom output style</h4>
+<p>Plik w <code>~/.claude/output-styles/</code>:</p>
+<pre><code>---
+name: tomek-style
+---
+Polish responses. End every business decision with Truth Checker. Use HTML for reports >200 lines.</code></pre>
+<h4>Aktywacja</h4>
+<pre><code>/config → Output Style → tomek-style</code></pre>` },
+
+{ id: "f-voice-dictation", category: "anthropic", title: "Voice Dictation", tags: ["voice", "dictation", "macos"], status: "live",
+  relevance: ["Tomek"],
+  summary: "Voice-to-text input do Claude Code. Hands-free coding/prompting.",
+  source: "code.claude.com/docs/en/voice-dictation",
+  body: `<h4>Setup</h4>
+<ul><li>macOS preferred</li><li>Permissions: Microphone</li><li>Hotkey: configurable</li></ul>
+<h4>Use case</h4>
+<p>Long prompts gdy palce zajęte (jedzenie, telefon, prowadzenie samochodu — Plichta dla dilerów na sali).</p>
+<h4>Tomek angle</h4>
+<p>Plichta on-floor coaching scenario: diler nagrywa pytanie ("Jak odpowiedzieć klientowi który mówi że Audi e-tron za drogi?") → Claude Routine generuje script + objection handling → push przez iMessage Channel na iPhone.</p>` },
+
+{ id: "f-common-workflows", category: "anthropic", title: "Common Workflows + Best Practices", tags: ["workflows", "best-practices", "patterns"], status: "live", hot: true,
+  relevance: ["Tomek"],
+  summary: "Oficjalny przewodnik typowych workflow Claude Code — explore-plan-code-commit, TDD, scoped explore, parallelization.",
+  source: "code.claude.com/docs/en/common-workflows",
+  body: `<h4>Top 10 workflows</h4>
+<ol><li><strong>Explore-plan-code-commit</strong> — najpopularniejszy</li><li><strong>TDD cycle</strong> — RED → GREEN → REFACTOR</li><li><strong>Scoped explore</strong> — Glob/Grep przed Read</li><li><strong>Parallelization</strong> — multiple Bash/Read w jednym message</li><li><strong>Subagent delegation</strong> — research/exploration</li><li><strong>Worktree isolation</strong> — parallel branches</li><li><strong>Hooks-driven automation</strong></li><li><strong>Skills auto-invocation</strong></li><li><strong>MCP-augmented context</strong></li><li><strong>Plan mode → execute</strong></li></ol>
+<h4>Best practices kluczowe dla Tomka</h4>
+<ul><li>Brief subagents jak smart colleague (file paths + line numbers, NIE "based on findings")</li><li>Don't delegate understanding — synthesize yourself</li><li>Use Edit dla istniejących plików (mniej tokens)</li><li>Use Write tylko dla nowych lub complete rewrites</li><li>Parallel tool calls gdy independent</li></ul>` },
+
+{ id: "f-settings-managed", category: "anthropic", title: "Settings — managed policy deep", tags: ["settings", "managed", "enterprise"], status: "live",
+  relevance: ["Plichta", "Setup Boy"],
+  summary: "Enterprise-managed settings (admin-set, user-immutable). Hierarchical: managed > user > project > local.",
+  source: "code.claude.com/docs/en/settings",
+  body: `<h4>Hierarchia (4 levels)</h4>
+<ol><li><strong>Managed policy</strong> (admin): <code>/Library/Application Support/ClaudeCode/managed-settings.json</code> (macOS)</li><li><strong>User</strong>: <code>~/.claude/settings.json</code></li><li><strong>Project</strong>: <code>.claude/settings.json</code></li><li><strong>Local</strong>: <code>.claude/settings.local.json</code> (gitignored)</li></ol>
+<h4>Klucze enterprise (managed)</h4>
+<ul><li><code>allowedTools</code> — whitelist tools (block Bash dla shopper-facing roles)</li><li><code>requiredPermissionLevel</code> — minimum level dla wszystkich actions</li><li><code>maxSessionTokens</code> — limit per session</li><li><code>auditLogPath</code> — gdzie wszystkie sessions logowane</li><li><code>ssoProvider</code> — Okta/Azure AD config</li><li><code>dataResidency</code> — region (EU dla Plichta = compliance)</li></ul>
+<h4>Dla Plichta enterprise rollout</h4>
+<p>Managed policy dla całej sieci 7 dealerów + 200 osób. Admin Tomek + Plichta IT = jedyni edit.</p>` },
+
+{ id: "f-effort-control", category: "anthropic", title: "Effort Control (Opus 4.8)", tags: ["opus", "effort", "performance"], status: "live",
+  relevance: ["Tomek"],
+  summary: "Dial dla reasoning effort: low/medium/high/xhigh/ultracode. Treat it like gearbox.",
+  source: "claude.com/blog/introducing-dynamic-workflows-in-claude-code",
+  body: `<h4>5 levels</h4>
+<ul><li><code>low</code> — quick lookups</li><li><code>medium</code> — szybkie odpowiedzi</li><li><code>high</code> — głębsza praca</li><li><code>xhigh</code> — najwyższa głębia</li><li><code>ultracode</code> — xhigh + auto-decisions o Dynamic Workflows</li></ul>
+<h4>Setting</h4>
+<p><code>/config</code> → effort menu.</p>
+<h4>Dla Tomka praktyka</h4>
+<ul><li>EEL skille proste: medium</li><li>Strategy / decision memos: xhigh</li><li>Cortex v2 reasoner: ultracode (auto Dynamic Workflows)</li></ul>` },
+
+// =========== SETUP TOMKA ===========
+{ id: "s-tomek-overview", category: "setup", title: "Setup Tomka — overview", tags: ["overview", "infrastructure"], status: "live",
+  relevance: ["Tomek"],
+  summary: "Pełna infrastruktura: Mac M3 Pro, Claude Code + Desktop + Cowork + iOS, lokalne Ollama, vault Obsidian, projects + skille + memory.",
+  source: "self-knowledge",
+  body: `<h4>Hardware + OS</h4>
+<ul><li>MacBook M3 Pro</li><li>macOS 25.5+ (Darwin)</li><li>Shell: zsh</li><li>Homebrew package manager</li></ul>
+<h4>Główne katalogi</h4>
+<ul><li><code>/Users/Tomek_Main/Documents/Claude/</code> — projekty + memory + plans</li><li><code>/Users/Tomek_Main/Desktop/TW_vault/</code> — Obsidian vault (Wiki, Raw, Claude/, transkrypty)</li><li><code>~/.claude/</code> — Claude Code config (skills, hooks, settings, memory)</li><li><code>~/.local/bin/</code> — nblm CLI itp.</li></ul>
+<h4>Modele</h4>
+<ul><li>Cloud: Sonnet 4.6 (domyślny), Opus 4.7/4.8 (eskalacja), Haiku 4.5 (batch)</li><li>Lokalne (Ollama): Qwen2.5-VL 7b (vision), Qwen3 14b (analiza), Mistral Small 3.1 (tekst)</li></ul>
+<h4>Vaults Obsidian (MCP)</h4>
+<ul><li><code>obsidian-vault</code> → <code>~/Desktop/TW_vault</code> (główny)</li><li><code>obsidian-cowork</code> → <code>Ecomms_agency/</code></li></ul>` },
+
+{ id: "s-projects", category: "setup", title: "Projekty Tomka (13)", tags: ["projects", "menu"], status: "live",
+  relevance: ["Tomek"],
+  summary: "13 projektów + Audi Plichta. Menu pokazuje się przy starcie z ~/Documents/Claude/.",
+  source: "~/Documents/Claude/CLAUDE.md",
+  body: `<h4>Lista projektów</h4>
+<table><tr><th>#</th><th>Projekt</th><th>Status</th></tr>
+<tr><td>1</td><td>BIG — walidator pomysłów biznesowych</td><td>uśpiony</td></tr>
+<tr><td>2</td><td>Ecomms Lab (EEL) — agencja e-commerce + Cortex v2</td><td>⭐ aktywny</td></tr>
+<tr><td>3</td><td>GEO Optimizer — PDP pod AIO</td><td>aktywny</td></tr>
+<tr><td>4</td><td>Me, Myself &amp; I — personal brand + Setup Boy</td><td>⭐ aktywny</td></tr>
+<tr><td>5</td><td>Owca — aplikacja mobilna hodowców owiec</td><td>aktywny</td></tr>
+<tr><td>6</td><td>Cleangang — analytics + raporty PostHog</td><td>aktywny</td></tr>
+<tr><td>7</td><td>Shopify GLOV</td><td>aktywny</td></tr>
+<tr><td>8</td><td>Ogród — planowanie działki 91/8</td><td>czeka</td></tr>
+<tr><td>9</td><td>Content Machine</td><td>uśpiony</td></tr>
+<tr><td>10</td><td>Newsletter Digest</td><td>aktywny</td></tr>
+<tr><td>11</td><td>SejfZone — GEO audyty + content diff</td><td>aktywny</td></tr>
+<tr><td>12</td><td>Daily Standup System</td><td>aktywny</td></tr>
+<tr><td>13</td><td>Service Intelligence</td><td>aktywny</td></tr>
+<tr><td>14</td><td>⭐⭐ <strong>Audi Plichta</strong> — Fractional AI Architect</td><td>pre-discovery</td></tr></table>
+<h4>Hasła wywołujące</h4>
+<ul><li><code>plichta</code> / <code>audi</code> — Audi Plichta</li><li><code>eel</code> — Ecomms Activation Agency</li><li><code>geo</code> — GEO PDP Optimizer</li><li><code>sejf</code> / <code>sejfzone</code> — SejfZone</li><li><code>cleangang</code> / <code>cg</code> — Cleangang</li><li><code>glov</code> — Shopify GLOV</li></ul>` },
+
+{ id: "s-shared", category: "setup", title: "_shared/ — cross-project bridge", tags: ["cross-project", "shared", "rules"], status: "live",
+  relevance: ["Tomek"],
+  summary: "Cross-project katalog (Faza 1 redesign). Reguły globalne, proposals log, projekty index, standards.",
+  source: "~/Documents/Claude/_shared/",
+  body: `<h4>Pliki</h4>
+<table><tr><th>Plik</th><th>Co</th></tr>
+<tr><td><code>RULES.md</code></td><td>Globalne reguły (wyciąg z 2 CLAUDE.md)</td></tr>
+<tr><td><code>PROPOSALS_LOG.md</code></td><td>Log propozycji + feedback + status</td></tr>
+<tr><td><code>SYSTEM_GUIDE.md</code></td><td>Instrukcja jak działa Faza 1</td></tr>
+<tr><td><code>MOBILE_QUEUE.md</code></td><td>Harmonogram dla Mobile</td></tr>
+<tr><td><code>PROJECTS_INDEX.md</code></td><td>Index 10+ projektów</td></tr>
+<tr><td><code>MEMORY_DIGEST.md</code></td><td>Top 20 memories</td></tr>
+<tr><td><code>SKILLS_MAP.md</code></td><td>Symlink do Skills Map.md</td></tr>
+<tr><td><code>STANDARDS/</code></td><td>Symlinks <code>*_STANDARD.md</code> auto-zbierane</td></tr>
+<tr><td><code>DOC_INDEX.md</code></td><td>563 linie, 17 projektów, 194 Active docs</td></tr>
+<tr><td><code>COWORK_REPORTS.md</code></td><td>Kanał Cowork → Terminal</td></tr>
+<tr><td><code>AUTOMATION_HEALTH.md</code></td><td>Status launchd/hooks/skripts</td></tr></table>
+<p><strong>Trigger sync:</strong> SessionStart hook, PostToolUse hook, <code>/wrapup</code> Step 0. NIE cron (TCC blokuje na macOS).</p>` },
+
+{ id: "s-memory", category: "setup", title: "Memory Tomka (60+ entries)", tags: ["memory", "persistent"], status: "live",
+  relevance: ["Tomek"],
+  summary: "Persistent memory w ~/.claude/projects/-Users-Tomek-Main-Documents-Claude/memory/. Przeżywa restarty/kompaktowanie.",
+  source: "MEMORY.md index",
+  body: `<h4>Top tier memories (⭐⭐)</h4>
+<ul><li><code>reference_truth_checker_pattern.md</code> — Truth Checker 5-line wrapper z Opus 4.8 Workbench</li><li><code>reference_anthropic_hub.md</code> — anchor index URL bloga/news/docs + top 25 artykułów</li><li><code>feedback_anthropic_proactive_check.md</code> — protokół sprawdzania docs ZANIM odpowiem</li><li><code>tomek_philosophy_eel.md</code> — fundament filozofii EEL (3 zoomy + 12 cegiełek)</li><li><code>project_audi_plichta.md</code> — protokół startu Plichta + Opus 4.7</li><li><code>user_writing_style.md</code> — styl ironiczny X-gen (Chandler/Ali G)</li></ul>
+<h4>Pozostałe ważne</h4>
+<ul><li><code>feedback_html_verification.md</code></li><li><code>user_profile.md</code></li><li><code>feedback_model_selection.md</code></li><li><code>feedback_skills_map.md</code></li><li><code>reference_meta_ads_dashboard.md</code></li><li><code>project_eel_priority.md</code></li><li><code>project_local_llm_stack.md</code></li><li>... 50+ więcej</li></ul>
+<p><strong>Markery:</strong> <code>@mem</code> / <code>@nau</code> / <code>@idea</code> / <code>@pen</code> / <code>@log</code> / <code>@pro</code> / <code>@ski</code> / <code>@chk</code> / <code>@wiki</code> — auto-promote przez hook.</p>` },
+
+{ id: "s-mcps-list", category: "setup", title: "MCPs Tomka (16+)", tags: ["mcp", "integrations"], status: "live",
+  relevance: ["Tomek"],
+  summary: "16+ MCPs skonfigurowane. Google Analytics, Google Ads, Meta Ads, Clarity, Shopify, Obsidian, PostHog, Playwright, GitHub, Context7, Discord.",
+  source: "~/.claude.json + .mcp.json per project",
+  body: `<h4>Listing</h4>
+<table><tr><th>MCP</th><th>Status</th><th>Zakres</th></tr>
+<tr><td><code>google-analytics-mcp</code></td><td>✅ live</td><td>GA4 OAuth ADC, dla wszystkich klientów</td></tr>
+<tr><td><code>google-ads-mcp</code></td><td>✅ live</td><td>Google Ads</td></tr>
+<tr><td><code>meta-ads-glov</code></td><td>🟡 restart CC</td><td>Meta Ads GLOV (Business Manager token)</td></tr>
+<tr><td><code>clarity-glov</code></td><td>🟡 restart CC</td><td>Microsoft Clarity GLOV (JWT)</td></tr>
+<tr><td><code>claude_ai_Shopify</code></td><td>✅ live</td><td>Shopify GraphQL</td></tr>
+<tr><td><code>obsidian-vault</code></td><td>✅ live</td><td>~/Desktop/TW_vault (główny)</td></tr>
+<tr><td><code>obsidian-cowork</code></td><td>✅ live</td><td>Ecomms_agency/</td></tr>
+<tr><td><code>posthog</code></td><td>✅ live</td><td>Cleangang only</td></tr>
+<tr><td><code>playwright</code></td><td>✅ live</td><td>Browser automation</td></tr>
+<tr><td><code>github</code></td><td>✅ live</td><td>Repo operations</td></tr>
+<tr><td><code>context7</code></td><td>✅ live</td><td>Fresh docs fetching</td></tr>
+<tr><td><code>plugin:discord:discord</code></td><td>✅ live</td><td>Discord bot</td></tr>
+<tr><td><code>claudetube</code></td><td>✅ live</td><td>YouTube video analysis</td></tr>
+<tr><td><code>context-mode</code></td><td>✅ live</td><td>Context window protection</td></tr>
+<tr><td><code>supabase</code></td><td>✅ live</td><td>Owca DB</td></tr>
+<tr><td><code>ide</code></td><td>✅ live</td><td>VS Code/Windsurf</td></tr></table>` },
+
+{ id: "s-hooks", category: "setup", title: "Hooks (auto-promote markers)", tags: ["hooks", "automation"], status: "live",
+  relevance: ["Tomek"],
+  summary: "promote-knowledge.js — 8 markerów auto-promote z plików do trwałych warstw (memory/Nauki/Pending/etc.).",
+  source: "~/.claude/hooks/promote-knowledge.js",
+  body: `<h4>8 markerów</h4>
+<table><tr><th>Marker</th><th>Trafia do</th></tr>
+<tr><td><code>@mem</code></td><td>memory/MEMORY.md</td></tr>
+<tr><td><code>@nau</code></td><td>~/Desktop/TW_vault/Claude/Nauki.md</td></tr>
+<tr><td><code>@idea</code></td><td>Projects/Planning_Queue.md</td></tr>
+<tr><td><code>@pen</code></td><td>~/Desktop/TW_vault/Claude/Pending Actions.md</td></tr>
+<tr><td><code>@log</code></td><td>~/Desktop/TW_vault/Claude/Historia działań.md</td></tr>
+<tr><td><code>@pro</code></td><td>_shared/PROPOSALS_LOG.md</td></tr>
+<tr><td><code>@ski</code></td><td>SKILL_CANDIDATES.md</td></tr>
+<tr><td><code>@chk</code></td><td>BUILD_PLAN.md (flippuje [ ] → [x])</td></tr>
+<tr><td><code>@wiki</code></td><td>Raw/poczekalnia/wiki-{ts}-{hash}.md</td></tr></table>
+<h4>Inne hooks</h4>
+<ul><li><code>conversation-logger.py</code> — PostToolUse, session audit</li><li><code>build-plan-guard.js</code> — PreToolUse soft advisory (edycja bez BUILD_PLAN.md → warning)</li></ul>
+<p><strong>Idempotent:</strong> SHA-256 hash w <code>~/.claude/state/promoted.json</code>.</p>` },
+
+{ id: "s-vault", category: "setup", title: "Obsidian Vault structure", tags: ["vault", "obsidian", "wiki"], status: "live",
+  relevance: ["Tomek"],
+  summary: "TW_vault structure: Wiki, Raw, Claude, transkrypty, Skany. Plus index.md jako entry point.",
+  source: "/Users/Tomek_Main/Desktop/TW_vault/",
+  body: `<h4>Top-level folders</h4>
+<ul><li><code>Wiki/</code> — kompiled knowledge, index.md jako entry</li><li><code>Raw/</code> — surowy materiał (poczekalnia/, research/, videos/, links/)</li><li><code>Claude/</code> — Historia działań.md, Nauki.md, Pending Actions.md</li><li><code>transkrypty/</code> — YouTube transkrypty (yt-dlp + Claude synteza)</li><li><code>Skany/</code> — dokumenty zeskanowane (skill /skanuj)</li></ul>
+<h4>Wiki index na start sesji</h4>
+<p><code>ctx_index(path: "Wiki/index.md")</code> + <code>ctx_search</code> przy starcie EEL/GEO/Cleangang.</p>
+<h4>Markery do wiki</h4>
+<p><code>&lt;!-- @wiki --&gt;...&lt;!-- /@wiki --&gt;</code> w plikach → trafia do <code>Raw/poczekalnia/</code>, <code>/wiki-nightly</code> kompiluje do Wiki.</p>` },
+
+// =========== WORKFLOWS (Opus 4.8 Workbench) ===========
+{ id: "w-truth-checker", category: "workflow", title: "Truth Checker — anti-hallucination wrapper", tags: ["truth-checker", "anti-hallucination", "must-have"], status: "live", hot: true,
+  relevance: ["Tomek", "Setup Boy", "EEL", "Plichta"],
+  summary: "5-line wrapper na końcu każdego biznesowego promptu. MUST-HAVE dla wszystkich Tomka outputów.",
+  source: "OPUS_48_WORKBENCH.md sekcja 9",
+  body: `<h4>Wzorzec</h4>
+<pre><code>Now run the Truth Checker.
+
+TRUTH CHECKER
+
+— What you know from what I gave you.
+— What you are assuming.
+— What might be wrong in your analysis.
+— What you would need to verify before I act on this.
+— What you would improve if I gave you one more input.</code></pre>
+<h4>Wersja PL</h4>
+<pre><code>Teraz uruchom Sprawdzenie Prawdy.
+
+SPRAWDZENIE PRAWDY
+
+— Co wiesz z tego co Ci podałem.
+— Co zakładasz.
+— Co może być błędne w Twojej analizie.
+— Co musiałbyś zweryfikować zanim podejmę działanie.
+— Co poprawiłbyś gdybyś dostał jeszcze jeden input.</code></pre>
+<h4>Cytat oficjalny</h4>
+<p><em>"It is the single highest leverage line of text in the whole document."</em></p>
+<h4>Gdzie używać</h4>
+<ul><li>EEL System Insights — Cortex Validator subagent</li><li>Setup Boy Discovery Reports — per rekomendację</li><li>Plichta Counter-Brief — per założenie strategiczne</li><li>Decision memos Tomek osobisty</li></ul>` },
+
+{ id: "w-chain-logic", category: "workflow", title: "Chain logic — research → strategy → offer → follow-up", tags: ["chain", "workflow", "opus-48"], status: "live", hot: true,
+  relevance: ["Tomek", "Setup Boy", "Plichta"],
+  summary: "Każdy output prompta = input następnego. Truth Checker pomiędzy = empirycznie zwalidowany ostateczny output.",
+  source: "OPUS_48_WORKBENCH.md sekcja 10",
+  body: `<h4>Podstawowy chain</h4>
+<p>research → strategy → offer audit → follow up</p>
+<h4>Konkretny chain — Setup Boy LinkedIn outreach do nowego segmentu</h4>
+<ol><li><strong>4.2 Market Map Builder</strong> → mapuje segment</li><li><strong>4.3 Buyer Voice Extractor</strong> → wyciąga ich język i bóle</li><li><strong>2.3 Positioning Pressure Test</strong> → test Setup Boy positioning</li><li><strong>2.1 Pillar Content Architect</strong> → 3 pillary contentu</li><li><strong>2.2 LinkedIn Hook Generator</strong> → 30 hooków</li><li><strong>7.2 Re-Engagement Message</strong> → outreach cold leads</li><li><strong>8.1 Offer Pressure Test</strong> → walidacja ceny</li><li><strong>8.3 Guarantee Engineer</strong> → gwarancja 7 dni</li></ol>
+<h4>Plichta Counter-Brief chain</h4>
+<ol><li>Research (4.1+4.2+4.3) → kontekst Audi Polska + automotive PL + buyer voice dilerów</li><li>Strategy (1.1+1.3) → kwartalna + trade-off</li><li>Offer (8.1+8.2+8.3) → wycena + gwarancja</li><li>Final Counter-Brief z Truth Checker per sekcja</li></ol>` },
+
+{ id: "w-quarterly-audit", category: "workflow", title: "1.1 Quarterly Strategic Audit", tags: ["strategy", "founder", "quarterly"], status: "live",
+  relevance: ["Tomek"],
+  summary: "Board-level strategist review previous quarter + pressure test next. Dla founders/COOs.",
+  source: "OPUS_48_WORKBENCH.md 1.1",
+  body: `<h4>Inputs (bracketed)</h4>
+<ul><li>Business: [name + one line]</li><li>Revenue last quarter / target this quarter</li><li>Top 3 priorities last quarter / what actually happened</li><li>Top 3 priorities being considered</li><li>Market conditions</li></ul>
+<h4>5 outputs</h4>
+<ol><li>Honest read on gap between intent vs result</li><li>Pressure test priorytetów (right/wrong/right-badly-framed)</li><li>3 priorities ranked by leverage</li><li>Biggest risk you're underestimating</li><li>One-line decision na ten tydzień</li></ol>
+<h4>Pro tip</h4>
+<p>Run dwa razy — z honest numbers vs investor numbers. Delta = real strategic risk.</p>
+<p><strong>Dla Tomka osobisty:</strong> Q3 2026 (~koniec września) personal review.</p>` },
+
+{ id: "w-bottleneck", category: "workflow", title: "1.2 Bottleneck Diagnostic", tags: ["constraint", "goldratt", "diagnostic"], status: "live", hot: true,
+  relevance: ["Tomek", "Setup Boy"],
+  summary: "Eli Goldratt theory of constraints — najdroższe wąskie gardło + next move.",
+  source: "OPUS_48_WORKBENCH.md 1.2",
+  body: `<h4>Inputs</h4>
+<ul><li>Co sprzedajesz / komu</li><li>Monthly revenue / new customers / leads in</li><li>Conversion rates per stage</li><li>Team size + roles</li><li>Co myślisz że jest bottleneck</li><li>Co próbowałeś w 90 dniach</li></ul>
+<h4>5 outputs</h4>
+<ol><li>Actual bottleneck w 1 zdaniu</li><li>Constraint chain (show your work)</li><li>Single highest leverage move + cost + 60-day impact</li><li>Co stops being problem gdy bottleneck cleared</li><li>Co będzie next bottleneck</li></ol>
+<h4>Pro tip</h4>
+<p>Run co 90 dni. Bottleneck moves. Businesses that stall solve right bottleneck for wrong quarter.</p>
+<p><strong>Dla Tomka:</strong> co kwartał dla każdego aktywnego projektu (EEL, Plichta, Setup Boy).</p>` },
+
+{ id: "w-tradeoff", category: "workflow", title: "1.3 Strategic Trade-Off Forcing Function", tags: ["decision", "trade-off", "forcing"], status: "live", hot: true,
+  relevance: ["Tomek"],
+  summary: "Forces decision między 2 paths zamiast robienia oboje słabo.",
+  source: "OPUS_48_WORKBENCH.md 1.3",
+  body: `<h4>Inputs</h4>
+<ul><li>Path A: [description]</li><li>Path B: [description]</li><li>Co inwestowałeś w każdym (time/money/focus)</li><li>Co secretly hoping is true</li><li>Co team thinks should do</li></ul>
+<h4>5 outputs</h4>
+<ol><li>Co każdy path actually optimuje for</li><li>Higher expected value 12 miesięcy</li><li>Higher expected value 36 miesięcy</li><li>If different, which horizon to optimise for</li><li>Make the call. One path. Stop doing X tomorrow morning.</li></ol>
+<h4>Pro tip</h4>
+<p>Decision Claude'a less important niż reasoning underneath. Read reasoning twice. Jeśli nie matches instynkt = conversation z sobą.</p>
+<p><strong>Dla Tomka:</strong> EEL Sprint 4 priorytet vs Plichta Discovery vs Setup Boy materials.</p>` },
+
+{ id: "w-pillar-content", category: "workflow", title: "2.1 Pillar Content Architect", tags: ["content", "linkedin", "marketing"], status: "live",
+  relevance: ["Setup Boy", "Tomek"],
+  summary: "Full quarter content pillars z positioning, audience, priorities. Replaces 2-day offsite.",
+  source: "OPUS_48_WORKBENCH.md 2.1",
+  body: `<h4>Inputs</h4>
+<ul><li>Company + positioning + ICP</li><li>3 business priorities this quarter</li><li>Gdzie publishujesz (LinkedIn, newsletter, blog, podcast)</li><li>Co published w last quarter + co działa/nie</li></ul>
+<h4>5 outputs</h4>
+<ol><li>3 content pillars (każdy tied to priority + angle nikt nie bierze + defensibility)</li><li>5 flagship pieces per pillar (format + working title + single insight)</li><li>Distribution play per pillar</li><li>One piece mogło zmienić trajectory of quarter</li><li>Piece do cut jeśli only time dla 2 pillars</li></ol>
+<p><strong>Dla Setup Boy:</strong> feed do 2.2 LinkedIn Hook Generator.</p>` },
+
+{ id: "w-linkedin-hook", category: "workflow", title: "2.2 LinkedIn Hook Generator", tags: ["linkedin", "copywriting", "hooks"], status: "live",
+  relevance: ["Setup Boy"],
+  summary: "10 scroll-stopping LinkedIn hooks per idea, ranked by friction created.",
+  source: "OPUS_48_WORKBENCH.md 2.2",
+  body: `<h4>Inputs</h4>
+<ul><li>The idea (1-2 sentences)</li><li>Who should care</li><li>What post should do (educate/provoke/inbound/convert)</li><li>Your voice (direct/contrarian/warm/technical)</li></ul>
+<h4>6 patterns</h4>
+<ul><li>Contrarian statement</li><li>Specific result framed unexpectedly</li><li>Negation — what people get wrong</li><li>Pattern observation across cases</li><li>Question reader has been asking themselves</li><li>Reframe of tired industry phrase</li></ul>
+<h4>Output</h4>
+<p>10 hooks max 2 lines each, ranked by pattern interrupt strength. Top 3 dostają next 2 lines drafted.</p>
+<h4>Pro tip</h4>
+<p>Use end of week dla bank 20 hooków na next 2 tygodnie posting cadence.</p>` },
+
+{ id: "w-positioning", category: "workflow", title: "2.3 Positioning Pressure Test", tags: ["positioning", "april-dunford", "strategy"], status: "live",
+  relevance: ["Setup Boy", "Plichta", "EEL"],
+  summary: "April Dunford-style stress test positioning vs category, competition, ICP language.",
+  source: "OPUS_48_WORKBENCH.md 2.3",
+  body: `<h4>Inputs</h4>
+<ul><li>Current positioning (1-3 sentences)</li><li>Category (as you'd name it)</li><li>ICP</li><li>3 direct competitors</li><li>3 adjacent/substitute options</li></ul>
+<h4>5 outputs</h4>
+<ol><li>Co category implicitly placing yourself in + czy ta którą chcesz</li><li>Który competitor positioning sounds most like + dlaczego problem</li><li>Single most undifferentiated phrase + rewrite</li><li>3 alternative positionings ranked by defensibility</li><li>One evidence to gather in 2 weeks dla commit z confidence</li></ol>
+<p><strong>Dla EEL/Cortex v2:</strong> positioning vs SaaS Analytics / SaaS CRO / Agencje / GEO platforms.</p>
+<p><strong>Dla Setup Boy:</strong> per persona (Mecenas vs Doktor vs Decydent różne).</p>` },
+
+{ id: "w-lost-deal", category: "workflow", title: "3.1 Lost Deal Autopsy", tags: ["sales", "lost-deal", "post-mortem"], status: "live",
+  relevance: ["Setup Boy"],
+  summary: "Real reason deal was lost. Earliest point loss became likely. Single change w sales process.",
+  source: "OPUS_48_WORKBENCH.md 3.1",
+  body: `<p>5 outputs: real reason / earliest signal missed / single process change / question should have asked / door-opening message za 6 mies.</p>
+<p><strong>Dla Setup Boy:</strong> po każdym lost deal Discovery call.</p>` },
+
+{ id: "w-discovery-debrief", category: "workflow", title: "3.2 Discovery Call Debrief", tags: ["sales", "discovery", "calls"], status: "live",
+  relevance: ["Setup Boy"],
+  summary: "Po Discovery call — czy deal jest real, gdzie poszło źle, next move.",
+  source: "OPUS_48_WORKBENCH.md 3.2",
+  body: `<p>Daje line on whether deal real + signal that gave it away + next move.</p>
+<p><strong>Dla Setup Boy:</strong> per Discovery call z prospect.</p>` },
+
+{ id: "w-pre-call-brief", category: "workflow", title: "4.1 Pre-Call Account Brief", tags: ["research", "account", "pre-call"], status: "live",
+  relevance: ["Setup Boy", "Plichta"],
+  summary: "Pre-meeting account brief — historia + recent + kontekst + uwagi z prev calls.",
+  source: "OPUS_48_WORKBENCH.md 4.1",
+  body: `<p>Brief 1-page przed spotkaniem z klientem. Account intel + last interactions + key prep questions.</p>
+<p><strong>Dla Setup Boy Decydent persona:</strong> jeden z 5 procesików.</p>` },
+
+{ id: "w-market-map", category: "workflow", title: "4.2 Market Map Builder", tags: ["research", "market", "mapping"], status: "live", hot: true,
+  relevance: ["Tomek", "Setup Boy"],
+  summary: "Mapuje segment rynkowy — players, dynamics, gaps. Punkt wyjścia chain do positioning.",
+  source: "OPUS_48_WORKBENCH.md 4.2",
+  body: `<p>Pierwszy etap chain dla Setup Boy LinkedIn outreach do nowego segmentu.</p>
+<p><strong>Dla Tomka:</strong> przed wejściem w nowy segment Setup Boy (lekarze prywatni / doradcy podatkowi PL / etc.).</p>` },
+
+{ id: "w-buyer-voice", category: "workflow", title: "4.3 Buyer Voice Extractor", tags: ["research", "buyer-voice", "language"], status: "live", hot: true,
+  relevance: ["Setup Boy"],
+  summary: "Wyciąga real buying language ICP — z reviews, forums, social. Anti-jargon.",
+  source: "OPUS_48_WORKBENCH.md 4.3",
+  body: `<p>Co kupujący NAPRAWDĘ mówi (nie marketing speak). Real concerns + decision triggers.</p>
+<p><strong>Dla Setup Boy:</strong> per persona language map. Mecenas mówi inaczej niż Doktor.</p>` },
+
+{ id: "w-automation-filter", category: "workflow", title: "5.1 Automation Candidate Filter", tags: ["automation", "planning"], status: "live",
+  relevance: ["Setup Boy", "Tomek"],
+  summary: "Które procesy w organizacji są realnym automation candidate vs wishful thinking.",
+  source: "OPUS_48_WORKBENCH.md 5.1",
+  body: `<p>5-output filter — process / current cost / automation feasibility / ROI / risk.</p>
+<p><strong>Dla Setup Boy Discovery:</strong> klient daje listę "co chce zautomatyzować", filter pokazuje co realnie wartoś.</p>` },
+
+{ id: "w-five-second", category: "workflow", title: "6.1 The Five Second Test", tags: ["landing-page", "audit", "first-impression"], status: "live",
+  relevance: ["EEL", "Setup Boy", "Tomek"],
+  summary: "5-second landing page test — co user remembers po 5s. Krytyczne dla EEL audyt.",
+  source: "OPUS_48_WORKBENCH.md 6.1",
+  body: `<p>Stress test pierwszego wrażenia. <strong>Dla EEL:</strong> standardowy element audytu wizualnego.</p>` },
+
+{ id: "w-conversion-logic", category: "workflow", title: "6.2 Conversion Logic Audit", tags: ["landing-page", "conversion", "audit"], status: "live",
+  relevance: ["EEL"],
+  summary: "Stress test conversion logic landing page — gdzie friction, gdzie clarity gap.",
+  source: "OPUS_48_WORKBENCH.md 6.2",
+  body: `<p>Dla EEL audytów klienta — wbudowany template.</p>` },
+
+{ id: "w-cta-friction", category: "workflow", title: "6.3 CTA Friction Audit", tags: ["landing-page", "cta", "audit"], status: "live",
+  relevance: ["EEL"],
+  summary: "Per CTA: jakie friction, jakie clarity, expected lift if fixed.",
+  source: "OPUS_48_WORKBENCH.md 6.3",
+  body: `<p>Element 9-pillar EEL audytu landing page.</p>` },
+
+{ id: "w-followup", category: "workflow", title: "7.1 Sales Call Follow Up", tags: ["sales", "follow-up", "email"], status: "live",
+  relevance: ["Setup Boy"],
+  summary: "Po Discovery call generuje follow-up email captuting key points + next step.",
+  source: "OPUS_48_WORKBENCH.md 7.1",
+  body: `<p>Dla Setup Boy każdy Discovery call → automatyczny follow-up email.</p>` },
+
+{ id: "w-reengagement", category: "workflow", title: "7.2 Re-Engagement Message", tags: ["sales", "cold-leads", "outreach"], status: "live",
+  relevance: ["Setup Boy"],
+  summary: "Cold lead re-engagement message. Non-pushy door-opener.",
+  source: "OPUS_48_WORKBENCH.md 7.2",
+  body: `<p>Dla Setup Boy LinkedIn outreach chain (etap 6).</p>` },
+
+{ id: "w-offer-pressure", category: "workflow", title: "8.1 Offer Pressure Test", tags: ["offer", "pricing", "validation"], status: "live", hot: true,
+  relevance: ["Setup Boy", "Plichta"],
+  summary: "Pressure test current offer — value gaps, pricing, guarantee. Real-world validity.",
+  source: "OPUS_48_WORKBENCH.md 8.1",
+  body: `<p><strong>Dla Setup Boy:</strong> walidacja ceny 999/2000/4000/8000 per persona. <strong>Dla Plichta:</strong> walidacja wyceny 700K-1M rok 1.</p>` },
+
+{ id: "w-pricing-diagnostic", category: "workflow", title: "8.2 Pricing Structure Diagnostic", tags: ["pricing", "diagnostic"], status: "live",
+  relevance: ["Setup Boy", "Plichta"],
+  summary: "Stress test pricing structure — tier'y, anchor, decoy. ROI per tier.",
+  source: "OPUS_48_WORKBENCH.md 8.2",
+  body: `<p><strong>Dla Setup Boy:</strong> Lite/Standard/Pro/Premium structure validation.</p>` },
+
+{ id: "w-guarantee", category: "workflow", title: "8.3 Guarantee Engineer", tags: ["guarantee", "offer"], status: "live",
+  relevance: ["Setup Boy"],
+  summary: "Engineer powerful guarantee redukujące buyer risk. Dla Setup Boy 7-day satisfaction.",
+  source: "OPUS_48_WORKBENCH.md 8.3",
+  body: `<p>Dla Setup Boy 7-day satisfaction guarantee (50% refund). Engineering details.</p>` },
+
+// =========== PERSONY SETUP BOY ===========
+{ id: "p-mecenas", category: "persona", title: "Mecenas (Prawnik partner)", tags: ["mecenas", "standard", "pro"], status: "live", hot: true,
+  relevance: ["Setup Boy"],
+  summary: "Prawnik partner kancelarii 45-65. Standard 2K (60%) / Pro 4K (30%) / Premium 8K (10%).",
+  source: "SETUP_BOY_v2_KONKRETY.md Persona 1",
+  body: `<h4>Profil</h4>
+<ul><li>Wiek 45-65, partner kancelarii / radca prawny prowadzący własną praktykę</li><li>Specjalizacja: prawo gospodarcze / korporacyjne / sporne / podatkowe</li><li>6-8h w słowach (pisma, opinie, korespondencja)</li><li>Wynagrodzenie 30-80K netto/mc</li></ul>
+<h4>Stack dziś</h4><p>Word/Outlook, LEX/Legalis, własne szablony, brak AI.</p>
+<h4>3 procesiki</h4>
+<ol><li><code>/pismo</code> — draft pisma procesowego (60-90 min → 10 min)</li><li><code>/orzecznictwo</code> — research SN/NSA/TK (2-3h → 30 min)</li><li><code>/morning-briefing</code> — kalendarz + email priorytety + deadliny (20 min → 3 min)</li></ol>
+<h4>Pitch z social proof (z Legal industry)</h4>
+<p><em>"87% general counsel używa AI (FTI 2026). Twoja kancelaria? Setup Boy daje Ci to co inni mają."</em></p>
+<h4>Setup Day NEW (po Anthropic features)</h4>
+<ul><li>Microsoft 365 add-ins Word/Outlook native</li><li>12 oficjalnych legal plugins (Commercial/IP/Litigation)</li><li>Routine <code>daily-orzecznictwo-pull</code> — SN/NSA codziennie raport</li><li>Compliance: Okta SSO + privilege protection</li><li>iMessage Channel (Mac+iPhone) lub Computer Use dla LEX/Legalis bez API</li></ul>` },
+
+{ id: "p-doktor", category: "persona", title: "Doktor (Lekarz prywatna praktyka)", tags: ["doktor", "standard"], status: "live", hot: true,
+  relevance: ["Setup Boy"],
+  summary: "Lekarz prywatny 45-65. Standard 2K (70%) / Lite 1.2K (20%) / Pro 4K (10% jeśli rejestratorka).",
+  source: "SETUP_BOY_v2_KONKRETY.md Persona 2",
+  body: `<h4>Profil</h4>
+<ul><li>Wiek 45-65</li><li>Specjalizacje: internista, kardiolog, chirurg, ginekolog, psychiatra</li><li>5-6 wizyt × 30-60 min + dokumentacja + korespondencja NFZ/ZUS</li><li>Wynagrodzenie 25-60K netto/mc</li></ul>
+<h4>Stack dziś</h4><p>Kamsoft/Mediget/KS-SOMED, Outlook, NFZ portale.</p>
+<h4>3 procesiki</h4>
+<ol><li><code>/wpis-dokumentacji</code> — głos → ICD-10 (15-20 min → 3 min)</li><li><code>/literatura</code> — PubMed + UpToDate + NICE (1-2h → 5 min)</li><li><code>/korespondencja-nfz</code> — pisma do NFZ/ZUS/sądu (30-45 min → 5 min)</li></ol>
+<h4>Krytyczne</h4>
+<p><strong>Lokalny model OBOWIĄZKOWY</strong> — dane pacjentów NIE wychodzą do Anthropic. RODO + tajemnica zawodowa.</p>
+<h4>Setup Day NEW</h4>
+<ul><li>Lokalny stack (Ollama Mistral/Qwen) for wpisy</li><li>iMessage Channel (Mac+iPhone)</li><li>Computer Use dla Kamsoft UI automation (RODO-safe, all lokalne)</li><li>Routine <code>daily-pacjenci-brief</code> (7:00)</li></ul>` },
+
+{ id: "p-decydent", category: "persona", title: "Decydent (CEO/Partner zarząd)", tags: ["decydent", "pro", "ceo"], status: "live",
+  relevance: ["Setup Boy"],
+  summary: "CEO 40-60, firma 20-200 osób. Pro 4K (60%) / Premium 8K (30%) / Standard 2K (10%).",
+  source: "SETUP_BOY_v2_KONKRETY.md Persona 3",
+  body: `<h4>Profil</h4>
+<ul><li>CEO / partner zarząd / dyrektor zarządzający</li><li>60% spotkania + 30% decyzje + 10% pisanie</li><li>Wynagrodzenie 50-200K netto/mc</li></ul>
+<h4>Stack dziś</h4><p>Salesforce/HubSpot/własne BI, Slack/Teams, dużo PowerPoint.</p>
+<h4>5 Routines (zamiast 5 skili!)</h4>
+<table><tr><th>Routine</th><th>Trigger</th><th>Output</th></tr>
+<tr><td>morning-brief</td><td>Schedule wkdays 7:00</td><td>iMessage push (pre-coffee)</td></tr>
+<tr><td>friday-report</td><td>Schedule Fri 15:00</td><td>Email + PDF Drive</td></tr>
+<tr><td>alert-triage</td><td>API z monitoring</td><td>Discord + email</td></tr>
+<tr><td>deal-prep</td><td>API z CRM</td><td>iMessage 90 min przed meeting</td></tr>
+<tr><td>post-meeting</td><td>API z calendar</td><td>Email + Slack uczestnicy</td></tr></table>
+<h4>Setup Day NEW</h4>
+<ul><li>Slack @Claude workspace integration</li><li>Microsoft 365 add-ins</li><li>Cowork z Salesforce/BigQuery/Calendar/Drive</li><li>Live Artifact dashboard jako KPI tracker</li></ul>` },
+
+{ id: "p-strateg", category: "persona", title: "Strateg (Private banker/Family office)", tags: ["strateg", "premium", "financial"], status: "live",
+  relevance: ["Setup Boy"],
+  summary: "Private banker / family office / niezależny CFO 40-65. Premium 8K + 800/mc (80%).",
+  source: "SETUP_BOY_v2_KONKRETY.md Persona 4",
+  body: `<h4>Profil</h4>
+<ul><li>Private banker, family office, niezależny CFO, board adviser</li><li>Wynagrodzenie 50-300K netto/mc (najwyższy budżet)</li></ul>
+<h4>Stack dziś</h4><p>Bloomberg/Refinitiv, własne Excele, własne PowerPointy, secure email.</p>
+<h4>Setup Day Premium</h4>
+<ul><li><strong>API Routines z Bloomberg/Refinitiv webhooks</strong> — risk alerts → memo per portfolio</li><li>Telegram Channel encrypted</li><li>Compliance: Okta SSO + Wiz + Snyk + Tenable (financial security stack)</li><li>Cortex Lab access (Tomek pierwszy custom Pro feature)</li></ul>
+<h4>Procesiki</h4>
+<ol><li>daily-market-brief (7:00)</li><li>risk-alert (API trigger)</li><li>quarterly-review (auto z danych)</li><li>investment-memo (5-zd brief → 2-page memo)</li><li>client-onepager (przed spotkaniem)</li><li>regulatory-watch</li><li>literature</li></ol>` },
+
+{ id: "p-twórca", category: "persona", title: "Twórca Słowa (Autor/Dziennikarz/Scenarzysta)", tags: ["twórca", "lite", "standard"], status: "live",
+  relevance: ["Setup Boy"],
+  summary: "Pisarz książek / dziennikarz / scenarzysta 35-65. Lite 999/Standard 2K. Claude jako research + drafting + editor.",
+  source: "SETUP_BOY_v2_KONKRETY.md Persona 5",
+  body: `<h4>Profil</h4>
+<ul><li>Wiek 35-65</li><li>Pisarz, dziennikarz, scenarzysta, copywriter premium</li><li>4-6h pisania + 2-3h research</li><li>Wynagrodzenie 15-50K netto/mc (zmienne)</li></ul>
+<h4>3 procesiki</h4>
+<ol><li><code>/research</code> — 30 źródeł synthesis (3h → 30 min)</li><li><code>/draft</code> — szkic 1500 słów z briefu (4h → 1h)</li><li><code>/editor</code> — review Twojego tekstu</li></ol>
+<h4>Setup Day NEW</h4>
+<ul><li>Connectors: Audible (audiobook research), Tripadvisor (travel), Spotify (background)</li><li>Side chats Cmd+; masterclass — branching research bez utraty drafttu</li><li>Routine <code>daily-research-digest</code></li></ul>
+<h4>Etyka</h4>
+<p>Onboarding doc: "Claude to Twoje narzędzie, nie zastępca. Wydawca może wymagać disclosure że używasz AI — Twoja decyzja, ja Ci nie pomogę ukrywać."</p>` },
+
+{ id: "p-specjalista", category: "persona", title: "Specjalista Niezależny (Architekt/Doradca podatkowy)", tags: ["specjalista", "standard"], status: "live",
+  relevance: ["Setup Boy"],
+  summary: "Wolny zawód, projekty per klient 40-65. Standard 2K (70%).",
+  source: "SETUP_BOY_v2_KONKRETY.md Persona 6",
+  body: `<h4>Profil</h4>
+<ul><li>Wiek 40-65, wolny zawód</li><li>Architekt, doradca podatkowy, projektant, ekspert</li><li>20-60K netto/mc</li></ul>
+<h4>Per branża procesiki</h4>
+<table><tr><th>Branża</th><th>Procesiki</th></tr>
+<tr><td>Architekt</td><td>/opinia-projektowa, /oferta-klient, /research-prawo-budowlane</td></tr>
+<tr><td>Doradca podatkowy</td><td>/opinia-podatkowa, /draft-pisma-do-us, /research-interpretacje</td></tr>
+<tr><td>Projektant UX/grafik</td><td>/brief-projektu, /proposal-klient, /research-konkurencja</td></tr></table>
+<h4>Connectors per branża</h4>
+<ul><li>Architekt: Booking, Tripadvisor (inspekcje)</li><li>Doradca podatkowy: TurboTax, Credit Karma</li></ul>
+<h4>Computer Use use cases</h4>
+<ul><li>Architekt: AutoCAD/Revit drobne edycje</li><li>Doradca: portale (eUS, NFZ)</li></ul>` },
+
+{ id: "p-sympatyk", category: "persona", title: "Sympatyk 50+ (aktywny senior, hobby+drobny biznes)", tags: ["sympatyk", "lite", "spark"], status: "live", hot: true,
+  relevance: ["Setup Boy"],
+  summary: "50-75 aktywny. Spark 499 / Lite 999. iMessage Mac+iPhone OBOWIĄZKOWY check przed sprzedażą.",
+  source: "SETUP_BOY_v2_KONKRETY.md Persona 7",
+  body: `<h4>Profil</h4>
+<ul><li>Wiek 50-75, aktywny pre-emerytalny lub emerytalny</li><li>Drobny biznes (rękodzieło, lokalny sklep, B&amp;B, blog), hobby (genealogia, książki, podróże), rodzina</li><li>Budżet 8-30K netto/mc</li></ul>
+<h4>Stack</h4><p>Gmail + Word + iPad + iPhone, mało technologii.</p>
+<h4>KRYTYCZNE Discovery Q (przed sprzedażą)</h4>
+<ul><li>☐ Mac (macOS) ☐ Windows ☐ Linux</li><li>☐ iPhone ☐ Android</li></ul>
+<p><strong>Jeśli Windows lub Linux:</strong> iMessage NIE działa. Idziemy Telegram/Discord (wymaga bot setup, niełatwiej dla 50+).</p>
+<h4>Setup Day NEW upraszczony</h4>
+<ul><li><strong>Tier Spark 499 zł / 90 min zdalnie:</strong> 10 Connectors (Booking, Spotify, Audible, AllTrails, Uber, etc.) + Onboarding 2 strony</li><li><strong>Tier Lite 999 zł / 3h zdalnie:</strong> + Claude Desktop + iMessage Channel (jeśli Mac) + 1 procesik + Onboarding 4 strony</li></ul>
+<h4>Special touch</h4>
+<ul><li>Drukowany Quick Reference Card</li><li>Numer telefonu Tomka na lodówce (nie tylko WhatsApp)</li></ul>` },
+
+{ id: "p-patron", category: "persona", title: "Patron (B2B model — CEO kupuje dla zespołu)", tags: ["patron", "premium", "b2b"], status: "live", hot: true,
+  relevance: ["Setup Boy"],
+  summary: "CEO/partner zarządzający kupuje dla zespołu 10-100 osób. Premium 8K + 4K×N + 800/mc.",
+  source: "SETUP_BOY_v2_KONKRETY.md Persona 8",
+  body: `<h4>Profil</h4>
+<ul><li>CEO / partner zarządzający / dyrektor IT firmy 10-100 osób</li><li>Chce wprowadzić AI w firmie, nie wie jak ustawić zespołowi</li><li>Budżet firma płaci, 30-100K</li></ul>
+<h4>Pitch z Champion Kit (NEW)</h4>
+<p><em>"Nie potrzebujesz program rollout. Twój CTO/lead zostaje champion — ja go ustawiam za 1.5 dnia. Anthropic playbook gotowy. 15-20 min/tydzień NIE help desk."</em></p>
+<h4>Scope Premium B2B</h4>
+<ul><li>Per osoba (4-5 osób): pełen Setup Day</li><li>Wspólny CLAUDE.md firmowy</li><li>Shared knowledge base (Notion/SharePoint)</li><li>Audit firmowy AI usage</li><li>Slack workspace z Claude bot per kanał</li><li>Microsoft 365 add-ins per pracownik</li><li>Connectors firmowe (Salesforce/BigQuery/Notion)</li><li>Retainer 800/mc — call zespołowy + WhatsApp CEO + iteracje per quarter</li></ul>
+<h4>30-day Champion Kit playbook</h4>
+<ol><li>Week 1: Seed channel</li><li>Week 2: Start rhythm + custom skill share</li><li>Week 3: Pair sessions + pinned FAQ</li><li>Week 4: Hand off do 2nd champion</li></ol>
+<h4>Cross-sell</h4>
+<p>Per-quarter dodawanie nowych osób (każda 4K). Custom MCP integration z firmowym ERP/CRM. Training video library.</p>` },
+
+{ id: "p-founder", category: "persona", title: "Founder (NEW sub-persona Decydenta)", tags: ["founder", "pro", "premium", "tech"], status: "live", hot: true,
+  relevance: ["Setup Boy"],
+  summary: "30-50 founder pre-seed/seed/Series A tech startup. Pro 4K (60%) / Premium 8K + 800/mc (30%).",
+  source: "UPGRADE_PROPOSALS_v3 PACZKA 12",
+  body: `<h4>Profil</h4>
+<ul><li>Wiek 30-50</li><li>Founder pre-seed / seed / Series A startup (B2B SaaS, AI-native)</li><li>Stack: GitHub + AWS/GCP + Notion + Slack + Linear + Stripe + HubSpot</li><li>Wynagrodzenie zmienne (czasem $20K/mc, czasem lean)</li></ul>
+<h4>Stack Setup Day (Pro 4K)</h4>
+<ul><li><strong>5 Routines (GitHub events!):</strong>
+<ul><li><code>pr-review</code> — GitHub trigger pull_request.opened → Claude review + inline comments</li><li><code>alert-triage</code> — Sentry/Datadog API → analiza + draft fix PR</li><li><code>deploy-verification</code> — API z CD pipeline → smoke checks + go/no-go Discord</li><li><code>customer-discovery</code> — z briefem nowego prospect → 1-page brief</li><li><code>weekly-pmf-report</code> — PMF measurement metryki</li></ul></li><li><strong>Slack @Claude</strong> — zespół dostaje drafty zamiast czekać</li><li><strong>GitHub Actions integration</strong> — automated PR review</li><li><strong>Linear MCP</strong> (jeśli używa)</li></ul>
+<h4>Cytat sprzedażowy</h4>
+<p><em>"founders without coding experience can ship production applications and reach revenue before scaling headcount"</em> — Anthropic Founder's Playbook 14.05.2026</p>
+<h4>Pitch</h4>
+<p><em>"Spalasz się na code review, alert triage, PR backlog. Setup Boy Founder Pro: replace founder attention with agentic workflows. Wracasz do customer discovery i closing deals, nie do log analysis."</em></p>` },
+
+// =========== CEGIEŁKI CORTEX ===========
+{ id: "c-cortex-matrix-viewer", category: "cortex", title: "Cortex Matrix Viewer (HTML)", tags: ["cortex", "viewer", "html"], status: "live", hot: true,
+  relevance: ["Tomek", "Cortex"],
+  summary: "Interactive HTML viewer 12 cegiełek + 55 par + top 30 trójek + top 10 czwórek. Multi-select warstw → emergentne kombinacje.",
+  source: "Projects/Ecomms_Activation_Agency/CORTEX_MATRIX_VIEWER.html",
+  body: `<h4>Otwórz lokalnie</h4>
+<p><code>open ~/Documents/Claude/Projects/Ecomms_Activation_Agency/CORTEX_MATRIX_VIEWER.html</code></p>
+<h4>Co umie</h4>
+<ul><li>Multi-select warstw w lewej kolumnie</li><li>6 quick presets (Rdzeń 2+8 / Plichta 1+4 / Top 7 / Mistrz CS1 1+2+4+8 / Wszystkie / Wyczyść)</li><li>Main panel pokazuje single warstwy + wszystkie pary + trójki + czwórki spośród wybranych</li><li>Tier badges (V+U=10 zielony, 9 żółty, 8 niebieski)</li><li>Rdzeń marker (2 lub 8) — pomarańczowy</li><li>Empiryczna obiektywna U (4 kombinacje U=3/3 🏆)</li></ul>
+<h4>Otwarta na dodawanie</h4>
+<p>Edytuj data block <code>const PAIRS</code>, <code>const TRIPLES</code>, <code>const QUADRUPLES</code> na końcu pliku. JSON format.</p>
+<p>Pełne pokrycie 562 kombinacji planowane w Sprint 4 EEL Plan (Część 3.5).</p>` },
+
+{ id: "c-cegielka-2", category: "cortex", title: "⭐ Warstwa 2 — Visual + tech (RDZEŃ)", tags: ["cortex", "rdzen", "visual"], status: "live", hot: true,
+  relevance: ["Cortex", "EEL"],
+  summary: "RDZEŃ #1. Co shopper WIDZI. Playwright screenshoty fold-by-fold + density maps.",
+  source: "PHILOSOPHY.md + WSAD_CORTEX_REWRITE.md",
+  body: `<h4>Co widzimy</h4><p>Warstwę wizualną nałożoną na strukturę HTML. Design system, performance, fold-by-fold.</p>
+<h4>Możliwości</h4><p>Mapa atencji, hierarchia wizualna, dead zones, pseudo-CTAs, mobile vs desktop.</p>
+<h4>Narzędzia</h4>
+<ul><li><code>take_screenshots.py</code> (29K, universal auto-detect platformy)</li><li><code>/eel-audit</code> skill</li><li><code>scripts/audit_visual.py</code> (1.5K, stub)</li><li>Planowany Sprint 1: <code>visual_density.py</code> — fold-by-fold density maps</li></ul>
+<h4>Status par z 2</h4>
+<p>9 par z warstwy 2 (z 10 możliwych). 4 z nich V+U=10: <strong>2+4</strong> (popularność × CR), <strong>2+8</strong> (layout × CDT), <strong>2+11</strong> (cross-sell × cart).</p>` },
+
+{ id: "c-cegielka-8", category: "cortex", title: "⭐ Warstwa 8 — Category Knowledge (RDZEŃ)", tags: ["cortex", "rdzen", "category"], status: "live", hot: true,
+  relevance: ["Cortex", "EEL", "Plichta"],
+  summary: "RDZEŃ #2. Jak myśli shopper W TEJ KATEGORII. CEPs + CDT + Tier Specs + Forbidden Patterns.",
+  source: "PHILOSOPHY.md + GEO Consumer DT",
+  body: `<h4>Co widzimy</h4><p>CEPs (Category Entry Points), CDT (Consumer Decision Tree), Tier Specs, Forbidden Patterns, vocabulary, typowy produkt, price tiers.</p>
+<h4>Możliwości</h4><p>Per-kategoria targeting, content alignment, AI Overview readiness, ads CEP-based.</p>
+<h4>Narzędzia</h4>
+<ul><li>W11/W15/W17 GEO Decision Trees — 46+ kategorii PL+EN</li><li><code>/eel-category-mapping</code> skill</li><li>Opublikowany <a href="https://tomekwlqq.github.io/eel-reports/GEO-consumer-decision-trees.html">GEO Consumer DT live</a> (47 kategorii)</li><li>Planowany Sprint 2: <strong>CDT Builder</strong> pipeline</li></ul>
+<h4>Status par z 8</h4>
+<p><strong>8 jest w 73% top 30 trójek</strong> — KRÓL strukturalny. Z par V+U=10: 5+8 (CEP-based ads), 8+9 (CDT × AI passages), 2+8 (rdzeń × rdzeń).</p>` },
+
+{ id: "c-philosophy", category: "cortex", title: "Filozofia Tomka — 3 zoomy + 12 cegiełek", tags: ["cortex", "philosophy", "fundament"], status: "live", hot: true,
+  relevance: ["Tomek", "Cortex", "EEL", "Plichta"],
+  summary: "Jeden kąt w 3 zoomach: Shopper żyje całością, sklep żyje fragmentem. 12 cegiełek + loop konkurencji.",
+  source: "Projects/Audi_Plichta/PHILOSOPHY.md",
+  body: `<h4>Korekta Tomka (30.05.2026)</h4>
+<p>NIE trzy kąty patrzenia. JEDEN kąt w trzech zoomach. <strong>Shopper żyje całością. Sklep żyje fragmentem.</strong></p>
+<h4>3 zoomy</h4>
+<ol><li><strong>Warstwowanie emergentne</strong> — w lukach między fragmentami sklepu siedzi prawda której nie widzi specjalista warstwowy</li><li><strong>Perspektywa shopper'a</strong> — Strona → Shopper → Akcje → Dane. Dane to CIEŃ. Diagnozujemy projektowanie, nie metrykę.</li><li><strong>System</strong> — sklep musi odzyskać całość którą shopper już ma. Jedna dziura w systemie = chuj z sukcesu.</li></ol>
+<h4>Origin story Tomka (cytat)</h4>
+<p><em>"od dawna, od kiedy zajmuje się ecommerce, zawsze uważałem że to wielka wygrana ludzi. Zmieniła sposób kupowania na ludziodobry."</em></p>
+<p>Tomek = <strong>adwokat shopper'a</strong>, nie neutralny konsultant.</p>
+<h4>Pełna mapa</h4>
+<ul><li><strong>0 Wiedza</strong> (filtr, NIE tworzy par)</li><li><strong>1 HTML scan</strong></li><li><strong>2 Visual + tech</strong> ⭐ rdzeń</li><li><strong>3 Content scan</strong></li><li><strong>4 GA4</strong></li><li><strong>5 Ads</strong> (Google + TikTok + Meta)</li><li><strong>6 GSC + Senuto</strong></li><li><strong>7 Clarity</strong></li><li><strong>8 Category knowledge</strong> ⭐ rdzeń</li><li><strong>9 GEO</strong></li><li><strong>10 Tactics + biasy</strong></li><li><strong>11 Transakcja sklepu</strong></li><li><strong>12 Konkurencja</strong> (LOOP nad 1+2+3, NIE tworzy par)</li></ul>` },
+
+{ id: "c-empirical-uniq", category: "cortex", title: "Empiryczna unikalność (Google search × 3 testy)", tags: ["cortex", "empirical", "uniqueness"], status: "live",
+  relevance: ["Cortex", "Plichta"],
+  summary: "26 Google searchy → 4 kombinacje z potwierdzoną MAKSYMALNĄ unikalnością (U=3/3) na świecie.",
+  source: "Projects/Audi_Plichta/OBIEKTYWIZACJA.md",
+  body: `<h4>3 testy obiektywizujące</h4>
+<table><tr><th>Test</th><th>Co</th></tr>
+<tr><td>T1 SaaS native</td><td>Czy istnieje narzędzie SaaS robiące to natywnie?</td></tr>
+<tr><td>T2 Agency specialty</td><td>Czy agencja reklamuje to jako specjalność?</td></tr>
+<tr><td>T3 Publication</td><td>Czy istnieje publikacja/raport/case study?</td></tr></table>
+<p>Score: T1+T2+T3 (max 3 = nikt na świecie publicznie tego nie robi).</p>
+<h4>4 kombinacje z U=3/3 🏆</h4>
+<ol><li><strong>CS1 1+2+4+8</strong> (czwórka mistrz) — empirycznie potwierdzona maksymalna unikalność</li><li><strong>S1 1+4+8</strong> (trójka)</li><li><strong>S3 1+2+4</strong> (trójka)</li><li><strong>1+4</strong> (para, Plichta)</li></ol>
+<h4>Co to znaczy</h4>
+<p>Cytat z search: <em>"results don't specifically combine all these elements into a single unified audit framework"</em>.</p>
+<p>To NIE marketing. To <strong>empiryczny fakt</strong>. Dane do pitchu Plichta + Setup Boy Pro+.</p>` },
+
+// =========== DECISIONS & TODOS ===========
+{ id: "d-cortex-arch", category: "decision", title: "Cortex v2 architektura — Lab vs Production", tags: ["cortex", "architecture", "decision"], status: "live",
+  relevance: ["Tomek", "Cortex"],
+  summary: "Decyzja v6: Lab w Agent Teams CLI (debugowalne) + Production w Agent SDK Python (deployment).",
+  source: "UPGRADE_PROPOSALS_v6 + MASTER",
+  body: `<h4>3 opcje rozważane</h4>
+<table><tr><th>Opcja</th><th>Pros</th><th>Cons</th></tr>
+<tr><td>A. Skille CC</td><td>Już Tomek robi</td><td>Brak tool loop autonomy</td></tr>
+<tr><td>B. Agent SDK Python</td><td>Pełna kontrola programmatic</td><td>Brak wizualnego debug</td></tr>
+<tr><td>C. Managed Agents</td><td>Native Dreaming + Outcomes</td><td>$0.08/h + REST integration</td></tr>
+<tr><td>D. Agent Teams CLI</td><td>Debugowalne (Shift+Down per warstwa)</td><td>Experimental, limits</td></tr></table>
+<h4>FINALNA DECYZJA v6</h4>
+<ul><li><strong>Cortex Lab</strong> w Agent Teams CLI (Tomek widzi co się dzieje per warstwa)</li><li><strong>Cortex Production</strong> w Agent SDK Python (klient deployment)</li></ul>
+<h4>Implementacja</h4>
+<p>Sprint 4: Agent Teams setup z lead + 4 teammates (visual / GA4 / category / GEO) + validator (Truth Checker rubric).</p>
+<p>Sprint 4.5: Python wrapper dla Production deployment.</p>` },
+
+{ id: "d-eel-6-dashboard", category: "decision", title: "EEL-6 R10 Daily Dashboard v2 — Live Artifact (NIE static HTML)", tags: ["eel", "dashboard", "live-artifacts"], status: "live", hot: true,
+  relevance: ["Tomek", "EEL"],
+  summary: "Decyzja: Cowork Live Artifact + GA4 MCP zamiast static HTML + launchd cron. Open loop od 27.05 closed.",
+  source: "MASTER_NEW_CLAUDE_2026.md 1.12.5",
+  body: `<h4>Stara wersja (PLAN_R10_GA4_LIVE_V2.md)</h4>
+<ul><li>3 wywołania GA4 MCP</li><li>Anomaly detection ±2σ</li><li>launchd cron</li><li>Static HTML + Discord push</li><li>Wymagała FDA dla launchd</li></ul>
+<h4>NOWA wersja v6 — Live Artifact</h4>
+<ul><li>Cowork Desktop (Mac/Win Pro+)</li><li>Live Artifact "Daily KPI dashboard for {klient}"</li><li>MCP connection: <code>google-analytics-mcp</code></li><li>Skopiuj specyfikację R01-R09 z EEL_GA4_ANALYSES.md jako prompt</li><li>Otwierasz tab w Cowork → refresh przy otwarciu</li><li>Version history (snapshot per refresh)</li><li>Per klient: 1 Live Artifact (GLOV/SejfZone/FERA/Plichta × 7)</li></ul>
+<h4>Setup time</h4>
+<p>10 min Cowork install + 5 min create artifact + 15 min prompt + 5 min iterate = <strong>~35 min per klient</strong>.</p>` },
+
+{ id: "d-plichta-discovery", category: "decision", title: "Plichta Discovery — czerwiec-lipiec 2026", tags: ["plichta", "discovery", "todo"], status: "planned", hot: true,
+  relevance: ["Plichta", "Tomek"],
+  summary: "Płatna Discovery Phase 20-30K. Compliance audit + 4 sekcje pytań nowych po Anthropic deep-dive.",
+  source: "Projects/Audi_Plichta/OPEN_QUESTIONS.md",
+  body: `<h4>4 sekcje Q (po Anthropic deep-dive)</h4>
+<ol><li><strong>V1-V5 strategiczne:</strong> anchor customer, IP, success fee, framing pierwszej rozmowy</li><li><strong>Q1-Q4 podstawowe:</strong> Discovery awareness, nazwa formalna, papier (LOI/MOU/NDA), deadline</li><li><strong>Q-CMP-1..4 compliance (NEW):</strong> Okta SSO, SIEM (CrowdStrike/Datadog), DLP (Zscaler/Forcepoint), eDiscovery (Relativity/Mimecast)</li><li><strong>Discovery rozszerzona o:</strong> Mobile per rola, WhatsApp Business, Microsoft 365 add-ins</li></ol>
+<h4>Wycena Discovery</h4>
+<ul><li>Stara: 15-25K</li><li>NOWA: <strong>20-30K</strong> (rozszerzona o compliance audit)</li></ul>
+<h4>Output Discovery</h4>
+<p>Discovery Report (40-60 stron) + Roadmap + SOW draft.</p>` },
+
+{ id: "d-setup-boy-spark", category: "decision", title: "Setup Boy Spark Tier 0.5 (NEW 499 zł)", tags: ["setup-boy", "spark", "tier"], status: "planned",
+  relevance: ["Setup Boy"],
+  summary: "Micro-offer 499 zł / 90 min / 10 Connectors only. Conversion test ku Lite.",
+  source: "UPGRADE_PROPOSALS_v3 PACZKA 4",
+  body: `<h4>Co dostajesz</h4>
+<ul><li>10 Connectors z klientem (klient klika sam, Tomek tłumaczy)</li><li>Onboarding 2 strony PDF</li><li>1 follow-up call po tygodniu</li></ul>
+<h4>Dla kogo</h4>
+<p>Klient niezdecydowany, low-budget, "spróbuj zanim zainwestujesz w Lite".</p>
+<h4>Conversion hipoteza</h4>
+<p>50% Spark → Lite w ciągu 30 dni (do testowania).</p>
+<h4>Status</h4>
+<p>Planned — po pierwszych klientach Lite (walidacja Spark koncepcji).</p>` },
+
+{ id: "d-pricing-changes", category: "decision", title: "Setup Boy pricing changes (po deep-dive)", tags: ["setup-boy", "pricing"], status: "planned",
+  relevance: ["Setup Boy"],
+  summary: "Lite 1200 → 999 zł (krótszy setup dzięki Connectors). Base 149 → 299 zł/mc. Super €1000 → €1500/mc.",
+  source: "UPGRADE_PROPOSALS_v2 PACZKA 5",
+  body: `<h4>Lite zmieniony</h4>
+<table><tr><th></th><th>Stary</th><th>Nowy</th></tr>
+<tr><td>Cena</td><td>1200 zł</td><td><strong>999 zł</strong></td></tr>
+<tr><td>Czas</td><td>3-4h zdalnie</td><td>2-3h zdalnie</td></tr>
+<tr><td>Stack</td><td>Claude Desktop + 1 procesik + 6 skili</td><td>+ 10-15 Connectors as CORE</td></tr></table>
+<h4>Base / Super revised</h4>
+<ul><li>Base: 149 zł → <strong>299 zł/mc</strong> (wyższy bo Live Artifact + Routines)</li><li>Super: €1000 → <strong>€1500/mc</strong> (system insights z czwórek + predykcja)</li></ul>
+<h4>Powód</h4>
+<p>Każdy tier teraz dostaje features za które klient płaci więcej niż w starym pricingu (Live Artifact, Routines, mobile push).</p>` },
+
+{ id: "d-todo-restart-cc", category: "decision", title: "🔴 TODO Tomek: Restart Claude Code + weryfikacja MCPs", tags: ["todo", "urgent"], status: "planned",
+  relevance: ["Tomek"],
+  summary: "Meta Ads MCP + Clarity MCP czekają na restart CC od kilku dni.",
+  source: "SESSION_BRIDGE EEL 27.05",
+  body: `<h4>Co zrobić</h4>
+<ol><li>Restart Claude Code</li><li>Sprawdź czy <code>mcp__meta-ads-glov__*</code> tooly się ładują</li><li>Sprawdź czy <code>mcp__clarity-glov__query-analytics-dashboard</code> działa z <code>tomekwlq@proton.me</code></li></ol>
+<p>Bez tego Meta Ads + Clarity nie działają dla GLOV.</p>` },
+
+{ id: "d-todo-morning-tasks", category: "decision", title: "🔴 TODO Tomek: morning-tasks fix (TCC)", tags: ["todo", "automation", "macos"], status: "planned",
+  relevance: ["Tomek"],
+  summary: "com.tomek.morning-tasks exit 78 = TCC blokuje /bin/bash. Zbadaj w sesji Daily Standup.",
+  source: "_shared/AUTOMATION_HEALTH.md",
+  body: `<h4>Problem</h4>
+<p>launchd job <code>com.tomek.morning-tasks</code> exit code 78 = macOS TCC (Transparency, Consent, Control) blokuje <code>/bin/bash</code> przed dostępem do katalogu użytkownika.</p>
+<h4>Rozwiązanie</h4>
+<p>Full Disk Access dla <code>/bin/bash</code> i <code>/usr/sbin/cron</code> w System Settings → Privacy &amp; Security.</p>
+<h4>Gdzie zbadać</h4>
+<p>Sesja Daily Standup System. Szczegóły w <code>_shared/AUTOMATION_HEALTH.md</code>.</p>` },
+
+// =========== SKILLE (najważniejsze) ===========
+{ id: "sk-eel-audit", category: "skill", title: "/eel-audit", tags: ["eel", "visual", "audit"], status: "skill",
+  relevance: ["EEL"],
+  summary: "EEL Shop Visual Mapping audit. Screenshot script → HTML scan per tab → Shopper View → CLIENT_REFERENCE_AUDIT.html.",
+  source: "~/.claude/skills/eel-audit/",
+  body: `<h4>Kiedy używać</h4>
+<ul><li>"zacznij audit"</li><li>"rób audit dla X"</li><li>"nowy klient EEL"</li></ul>
+<h4>Co robi</h4>
+<p>Pełny przepływ:</p>
+<ol><li>Screenshot script (16 widoków × desktop+mobile)</li><li>HTML scan per tab</li><li>Shopper View</li><li>Output: <code>CLIENT_REFERENCE_AUDIT.html</code></li></ol>` },
+
+{ id: "sk-eel-ga4", category: "skill", title: "/eel-ga4", tags: ["eel", "ga4", "analytics"], status: "skill",
+  relevance: ["EEL"],
+  summary: "GA4 Analysis. Pobiera dane GA4 przez google-analytics-mcp, generuje R01–R09 HTML blocks.",
+  source: "~/.claude/skills/eel-ga4/",
+  body: `<h4>Kiedy używać</h4>
+<ul><li>"odpal ga4 na X"</li><li>"zrób analizę ga4 dla klienta"</li><li>"zaktualizuj tab ga4"</li></ul>
+<h4>Co robi</h4>
+<p>R01-R09 bloki w stylu GLOV audit (block bg-warm/bg-white, kpi-strip, conclusion, reco-box).</p>
+<p>R10-R20 planowane Sprint 3.</p>` },
+
+{ id: "sk-eel-build", category: "skill", title: "/eel-build", tags: ["eel", "tactics", "experiments"], status: "skill",
+  relevance: ["EEL"],
+  summary: "EEL Experiment Builder. Brief Tomka (1-3 zdania) → karta EXP-xxx + zapis do experiments_log.md.",
+  source: "~/.claude/skills/eel-build/",
+  body: `<h4>Kiedy używać</h4>
+<ul><li>"zbuduj eksperyment"</li><li>"dodaj taktykę"</li><li>"stwórz kartę dla X"</li><li>"testujemy Y"</li></ul>
+<h4>Co robi</h4>
+<p>Tomek daje brief naturalnym językiem → Claude parsuje → wzbogaca przez T1-T6 (Area Taxonomy, Goal→KPI, Element×Bias, Expected Value, Enhancement Hints) → generuje sformatowaną kartę.</p>` },
+
+{ id: "sk-eel-benchmark", category: "skill", title: "/eel-benchmark", tags: ["eel", "competitor", "elements"], status: "skill",
+  relevance: ["EEL"],
+  summary: "Element Benchmark — dodaj sklep do benchmarku. Scrape Playwright → JSON → nowa kolumna w EEL_ELEMENT_BENCHMARK_LIVE.html.",
+  source: "~/.claude/skills/eel-benchmark/",
+  body: `<h4>Kiedy używać</h4>
+<ul><li>"dodaj sklep do benchmarku"</li><li>"zbenchmarkuj X"</li><li>"porównaj sklepy elementów"</li></ul>` },
+
+{ id: "sk-eel-category", category: "skill", title: "/eel-category-mapping", tags: ["eel", "category", "geo"], status: "skill",
+  relevance: ["EEL"],
+  summary: "Mapuje strukturę kategorii sklepu → CATEGORY_MAP.json. Input dla GEO i Content.",
+  source: "~/.claude/skills/eel-category-mapping/",
+  body: `<h4>Kiedy używać</h4>
+<ul><li>"zrób mapę kategorii dla X"</li><li>"category map dla X"</li><li>"zanim GEO check"</li><li>"onboarding nowego klienta"</li></ul>` },
+
+{ id: "sk-eel-self-learn", category: "skill", title: "/eel-self-learn", tags: ["eel", "learning", "elements"], status: "skill",
+  relevance: ["EEL"],
+  summary: "Self-Learning loop — elements_dictionary.json enrichment. Discovery + commit przez Hub Tab 5.",
+  source: "~/.claude/skills/eel-self-learn/",
+  body: `<p>Hub Tab 5 verification loop. CSS selectors per platform (Shopify/IdoSell/etc.).</p>` },
+
+{ id: "sk-geo-content-diff", category: "skill", title: "/geo-content-diff", tags: ["geo", "content", "diff"], status: "skill",
+  relevance: ["EEL", "GEO"],
+  summary: "GEO content diff per produkt — porównuje obecną treść z rekomendowaną GEO. Output: markdown gotowy do wdrożenia.",
+  source: "~/.claude/skills/geo-content-diff/",
+  body: `<h4>Kiedy używać</h4>
+<ul><li>"zrób content diff dla X"</li><li>"napisz treść GEO dla X"</li><li>"content diff sejfzone/glov"</li></ul>
+<h4>Output</h4>
+<p><code>audits/&lt;klient&gt;_&lt;slug&gt;_CONTENT_DIFF_&lt;date&gt;.md</code></p>` },
+
+{ id: "sk-geo-pdp", category: "skill", title: "/geo-pdp-writer", tags: ["geo", "pdp", "writer"], status: "skill",
+  relevance: ["GEO"],
+  summary: "GEO Content Writer dla PDP — generuje treści PDP zgodnie z GEO methodology.",
+  source: "~/.claude/skills/geo-pdp-writer/" },
+
+{ id: "sk-buduj", category: "skill", title: "/buduj", tags: ["build", "tdd", "subagent"], status: "skill",
+  relevance: ["Tomek"],
+  summary: "Use when starting any implementation task. Light (1-3 files, <2h) lub Full (>3h, BUILD_PLAN + worktree + TDD + spec).",
+  source: "~/.claude/skills/buduj/",
+  body: `<h4>2 tryby</h4>
+<ul><li><strong>buduj light</strong>: 1-3 files, &lt;2h — 1 subagent + TDD + 1 review</li><li><strong>buduj</strong> full: &gt;3h, &gt;5 files, DB/auth — BUILD_PLAN + worktree + TDD + spec + code quality review</li></ul>
+<p>Default to light unless task is large.</p>` },
+
+{ id: "sk-coja", category: "skill", title: "/coja", tags: ["pending", "todo"], status: "skill",
+  relevance: ["Tomek"],
+  summary: "Co ja mam zrobić? Lista pending zadań ze wszystkich projektów z następnym krokiem.",
+  source: "~/.claude/skills/coja/",
+  body: `<p>Czyta Planning_Queue + Pending Actions + BRIDGE Open Loops (max 7 pkt).</p>` },
+
+{ id: "sk-switch", category: "skill", title: "/switch", tags: ["projects", "navigation"], status: "skill",
+  relevance: ["Tomek"],
+  summary: "Przełączanie projektu — ładuje CLAUDE.md projektu i potwierdza tryb.",
+  source: "~/.claude/skills/switch/" },
+
+{ id: "sk-wrapup", category: "skill", title: "/wrapup", tags: ["end-of-day", "audit"], status: "skill",
+  relevance: ["Tomek"],
+  summary: "End-of-day wrap-up. Audytuje co Claude vs Tomek robił, generuje HTML report + tomorrow's priority.",
+  source: "~/.claude/skills/wrapup/" },
+
+{ id: "sk-ccse", category: "skill", title: "/ccse", tags: ["research", "community"], status: "skill",
+  relevance: ["Tomek"],
+  summary: "Claude Code Intel — przeszukuje community sources (Reddit, HN, GitHub, blogi). Tryb tematyczny lub weekly digest.",
+  source: "~/.claude/skills/ccse/" },
+
+{ id: "sk-ytre", category: "skill", title: "/ytre", tags: ["youtube", "research"], status: "skill",
+  relevance: ["Tomek"],
+  summary: "YouTube Researcher — szuka video po temacie, lista z datami, opcjonalny ingest do Raw/videos/.",
+  source: "~/.claude/skills/ytre/" },
+
+{ id: "sk-llm-council", category: "skill", title: "/llm-council", tags: ["multi-llm", "review"], status: "skill",
+  relevance: ["Tomek"],
+  summary: "5 niezależnych AI doradców → peer-review → synteza. Triggery: 'council this', 'pressure-test this'.",
+  source: "~/.claude/skills/llm-council/" },
+
+{ id: "sk-cro", category: "skill", title: "/cro", tags: ["cro", "landing-page"], status: "skill",
+  relevance: ["EEL", "Setup Boy"],
+  summary: "Conversion Rate Optimization analyst. Trigger: 'CRO', 'page isn't converting', URL bez kontekstu.",
+  source: "~/.claude/skills/cro/" },
+
+{ id: "sk-frontend-design", category: "skill", title: "/frontend-design", tags: ["design", "frontend"], status: "skill",
+  relevance: ["EEL", "Tomek"],
+  summary: "Frontend design analyst.",
+  source: "~/.claude/skills/frontend-design/" },
+
+{ id: "sk-gsd-family", category: "skill", title: "GSD framework (50+ skille)", tags: ["gsd", "framework", "workflow"], status: "skill",
+  relevance: ["Tomek"],
+  summary: "Get-Shit-Done framework. /gsd-new-project, /gsd-plan-phase, /gsd-execute-phase, /gsd-verify-work itd.",
+  source: "~/.claude/skills/gsd-*/",
+  body: `<h4>Główne</h4>
+<ul><li><code>/gsd-new-project</code> — initialize z PROJECT.md</li><li><code>/gsd-plan-phase</code> — plan phase</li><li><code>/gsd-execute-phase</code> — execute</li><li><code>/gsd-verify-work</code> — UAT</li><li><code>/gsd-code-review</code> — review</li><li><code>/gsd-ship</code> — PR + merge prep</li></ul>
+<h4>Manager</h4>
+<p><code>/gsd-manager</code> — interactive command center dla multi-phase management.</p>` },
+
+{ id: "sk-ingest", category: "skill", title: "/ingest", tags: ["wiki", "ingest"], status: "skill",
+  relevance: ["Tomek"],
+  summary: "Raw → Wiki — triage, ekstrakcja konceptów/encji/źródeł, aktualizacja index.md.",
+  source: "~/.claude/skills/ingest/" },
+
+{ id: "sk-pdf-docx-xlsx-pptx", category: "skill", title: "/pdf /docx /xlsx /pptx", tags: ["documents"], status: "skill",
+  relevance: ["Tomek"],
+  summary: "Operacje na dokumentach: PDF (extract/merge/split/OCR), Word (read/write), Excel/CSV, PowerPoint.",
+  source: "~/.claude/skills/{pdf,docx,xlsx,pptx}/" },
+
+{ id: "sk-skanuj", category: "skill", title: "/skanuj", tags: ["scan", "documents"], status: "skill",
+  relevance: ["Tomek"],
+  summary: "Zdjęcie dokumentu → czarno-biały PDF ~1MB → auto-nazwa → Skany/.",
+  source: "~/.claude/skills/skanuj/" },
+
+{ id: "sk-gmail-digest", category: "skill", title: "/gmail-digest", tags: ["newsletter", "gmail"], status: "skill",
+  relevance: ["Tomek"],
+  summary: "Newsletter Digest — Gmail label 'Newslettery' → bloki treści → JSON na Drive. CCR 7:00.",
+  source: "~/.claude/skills/gmail-digest/" },
+
+// =========== LINKI ===========
+{ id: "l-eel-hub", category: "link", title: "EEL Central Hub (LIVE)", tags: ["live", "hub", "eel"], status: "published",
+  relevance: ["EEL"],
+  summary: "6 zakładek: Encyklopedia, Lista elementów, Benchmark, Audyty, Komponenty C01-C31, Wsady W1-W42.",
+  source: "https://tomekwlqq.github.io/eel-reports/EEL_HUB.html",
+  body: `<p><a href="https://tomekwlqq.github.io/eel-reports/EEL_HUB.html" target="_blank">https://tomekwlqq.github.io/eel-reports/EEL_HUB.html</a></p>` },
+
+{ id: "l-geo-dt", category: "link", title: "GEO Consumer Decision Trees (LIVE)", tags: ["live", "geo", "cdt"], status: "published",
+  relevance: ["GEO", "Plichta"],
+  summary: "47 kategorii, CDT + Discovery Questions, wyszukiwarka, filtry v1/v2.",
+  source: "https://tomekwlqq.github.io/eel-reports/GEO-consumer-decision-trees.html",
+  body: `<p><a href="https://tomekwlqq.github.io/eel-reports/GEO-consumer-decision-trees.html" target="_blank">https://tomekwlqq.github.io/eel-reports/GEO-consumer-decision-trees.html</a></p>
+<p><strong>Pokazany klientowi Plichta jako referencja</strong> — chce TO ALE DLA SAMOCHODÓW.</p>` },
+
+{ id: "l-audi-plichta", category: "link", title: "Audi Plichta raport (LIVE) ⭐⭐", tags: ["live", "plichta", "html-events"], status: "published", hot: true,
+  relevance: ["Plichta"],
+  summary: "Plichta raport — kolega się obsrał gdy zobaczył (architektura × eventy = 1+4 para empirycznie U=3/3).",
+  source: "https://tomekwlqq.github.io/audi-plichta-raport/",
+  body: `<p><a href="https://tomekwlqq.github.io/audi-plichta-raport/" target="_blank">https://tomekwlqq.github.io/audi-plichta-raport/</a></p>
+<p><strong>Para 1+4 (HTML × GA4 eventy)</strong> empirycznie zwalidowana — pokazała Plichcie czego nie trackują a powinni i czego trackują a userowi nie pokazują.</p>` },
+
+{ id: "l-glov", category: "link", title: "GLOV raporty (LIVE)", tags: ["live", "glov"], status: "published",
+  relevance: ["EEL"],
+  summary: "GLOV-raport-test-2026-05-21.html — raport EEL test 6-tab.",
+  source: "https://tomekwlqq.github.io/eel-reports/GLOV-raport-test-2026-05-21.html",
+  body: `<ul><li><a href="https://tomekwlqq.github.io/eel-reports/GLOV-raport-test-2026-05-21.html" target="_blank">GLOV-raport-test-2026-05-21.html</a></li></ul>` },
+
+{ id: "l-sejfzone", category: "link", title: "SejfZone raporty (LIVE)", tags: ["live", "sejfzone"], status: "published",
+  relevance: ["GEO", "EEL"],
+  summary: "4 raporty SejfZone live: GA4 EEL, Ranking produktów GA4, GEO Rekomendacje (44-61→72-84), Mapa Percepcji 2 zakładki.",
+  source: "https://tomekwlqq.github.io/eel-reports/",
+  body: `<ul><li><a href="https://tomekwlqq.github.io/eel-reports/SEJFZONE-raport-2026-05-21.html" target="_blank">SejfZone raport GA4 EEL</a></li><li><a href="https://tomekwlqq.github.io/eel-reports/sejfzone-r04-produkty.html" target="_blank">Ranking Produktów GA4</a></li><li><a href="https://tomekwlqq.github.io/eel-reports/mapa-percepcji.html" target="_blank">Mapa Percepcji (Szafy na broń + Sejfy domowe)</a></li></ul>` },
+
+{ id: "l-fera", category: "link", title: "FERA raporty (LIVE)", tags: ["live", "fera", "client"], status: "published",
+  relevance: ["EEL"],
+  summary: "3 raporty FERA: Content Audit (vs Sephora), GEO Check (13/100 vs 62/100), GEO Rekomendacje (13→65/100).",
+  source: "https://tomekwlqq.github.io/eel-reports/",
+  body: `<ul><li><a href="https://tomekwlqq.github.io/eel-reports/FERA-content-audit-2026-05-22.html" target="_blank">Content Audit PDP (5 produktów, benchmark Sephora)</a></li><li><a href="https://tomekwlqq.github.io/eel-reports/GEO-check-fera-sephora-2026-05-22.html" target="_blank">GEO Check Fera vs Sephora</a></li></ul>` },
+
+{ id: "l-research", category: "link", title: "Research & strategia (LIVE)", tags: ["live", "research"], status: "published",
+  relevance: ["EEL"],
+  summary: "Retail Media Hebe + EEL Tactic Card design prototype.",
+  source: "https://tomekwlqq.github.io/eel-reports/",
+  body: `<ul><li><a href="https://tomekwlqq.github.io/eel-reports/retail_media_hebe_raport.html" target="_blank">Retail Media Networks — Kompendium + Rekomendacja Hebe.pl</a></li><li><a href="https://tomekwlqq.github.io/eel-reports/EEL-tactic-card-design.html" target="_blank">EEL Tactic Card design prototype</a></li></ul>` },
+
+{ id: "l-anthropic-docs", category: "link", title: "Anthropic — oficjalne docs", tags: ["docs", "anthropic", "external"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Główne URL dla weekly check.",
+  source: "Anthropic websites",
+  body: `<h4>Hub URLs (sprawdzaj proaktywnie)</h4>
+<ul><li><a href="https://www.anthropic.com/news" target="_blank">anthropic.com/news</a> — ogłoszenia firmowe, modele</li><li><a href="https://claude.com/blog" target="_blank">claude.com/blog</a> — blog techniczny + case studies</li><li><a href="https://code.claude.com/docs/en/overview" target="_blank">code.claude.com/docs/en/overview</a> — Claude Code docs</li><li><a href="https://code.claude.com/docs/llms.txt" target="_blank">code.claude.com/docs/llms.txt</a> — pełny index docs (150+ stron)</li><li><a href="https://platform.claude.com" target="_blank">platform.claude.com</a> — Anthropic Console</li><li><a href="https://claude.ai/code" target="_blank">claude.ai/code</a> — Web platform</li><li><a href="https://claude.ai/code/routines" target="_blank">claude.ai/code/routines</a> — Routines management</li><li><a href="https://claude.ai/directory/connectors" target="_blank">claude.ai/directory/connectors</a> — 200+ connectors</li><li><a href="https://claude.ai/admin-settings/claude-code" target="_blank">claude.ai/admin-settings/claude-code</a> — Enterprise admin</li></ul>` },
+
+{ id: "l-master-doc", category: "link", title: "MASTER_NEW_CLAUDE_2026.md (lokalny)", tags: ["master", "docs"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "1450+ linii synteza wszystkich iteracji v1-v6 Anthropic deep-dive.",
+  source: "~/Documents/Claude/MASTER_NEW_CLAUDE_2026.md",
+  body: `<p>6 części: TLDR / Per kategoria features / Upgrade Tomek / Upgrade Plichta / Upgrade Setup Boy / Oduczasz się.</p>
+<p>Plus 1.12.4 Opus 4.8 Workbench, 1.12.5 Live Artifacts, 1.12.6-10 Computer Use/Champion/Ultraplan/Worktrees/Agent Teams.</p>` },
+
+{ id: "l-opus-48", category: "link", title: "OPUS_48_WORKBENCH.md (lokalny)", tags: ["opus", "workbench", "prompts"], status: "ref",
+  relevance: ["Tomek", "Setup Boy"],
+  summary: "1477 linii, 27 promptów × 9 sekcji. Truth Checker + Chain logic. Dostarczony przez Tomka 30.05.",
+  source: "~/Documents/Claude/OPUS_48_WORKBENCH.md" },
+
+{ id: "l-cortex-matrix", category: "link", title: "CORTEX_MATRIX_VIEWER.html (lokalny)", tags: ["cortex", "viewer", "matrix"], status: "ref",
+  relevance: ["Cortex"],
+  summary: "Interactive viewer 12 cegiełek + emergentne kombinacje. Multi-select warstw.",
+  source: "~/Documents/Claude/Projects/Ecomms_Activation_Agency/CORTEX_MATRIX_VIEWER.html" },
+
+{ id: "l-upgrade-proposals", category: "link", title: "UPGRADE_PROPOSALS_v1/v2/v3.md (lokalne)", tags: ["upgrade", "proposals", "iterations"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "3 iteracje synteza Anthropic blog → projekty Tomka (EEL/Plichta/Setup Boy).",
+  source: "~/Documents/Claude/UPGRADE_PROPOSALS_*.md",
+  body: `<ul><li>UPGRADE_PROPOSALS_2026_05_29.md (v1) — 4 paczki podstawowe</li><li>UPGRADE_PROPOSALS_v2_2026_05_29.md — Routines + Channels + Compliance + Founder persona</li><li>UPGRADE_PROPOSALS_v3_2026_05_30.md — szczegóły implementacyjne (iMessage MAC limit + Agent SDK code + 12 nowych)</li></ul>` },
+
+// =========== DOKUMENTY WEWNĘTRZNE — TOP LEVEL ===========
+{ id: "doc-claude-md-global", category: "doc", title: "CLAUDE.md (global ~/)", tags: ["claude-md", "global", "rules"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Globalne reguły Claude Code — Write/Edit vs MCP obsidian, ścieżki vault.",
+  source: "/Users/Tomek_Main/CLAUDE.md" },
+
+{ id: "doc-claude-md-project", category: "doc", title: "CLAUDE.md (project ~/Documents/Claude)", tags: ["claude-md", "project", "rules"], status: "ref", hot: true,
+  relevance: ["Tomek"],
+  summary: "Project-level CLAUDE.md — menu projektów, _shared/, hooks, build method, plan mode, model selection.",
+  source: "~/Documents/Claude/CLAUDE.md",
+  body: `<h4>Główne sekcje</h4>
+<ul><li>Menu projektów (13 + Audi Plichta)</li><li>Historia + Pending + Planning Queue na start</li><li>Skille → ~/.claude/skills/ + Skills Map.md</li><li>_shared/ cross-project bridge</li><li>Obsidian dual vault</li><li>Drop zone nowe+skrin/</li><li>Build Method (GSD / buduj / zwykło)</li><li>BUILD_PLAN.md per build</li><li>SESSION_BRIDGE per projekt</li><li>9 markerów promocji wiedzy</li><li>Model selection (Haiku/Sonnet/Opus 4.7/4.8)</li></ul>` },
+
+{ id: "doc-master", category: "doc", title: "MASTER_NEW_CLAUDE_2026.md", tags: ["master", "synthesis", "anthropic"], status: "ref", hot: true,
+  relevance: ["Tomek", "Plichta", "Setup Boy", "EEL"],
+  summary: "1450+ linii pełna synteza Anthropic deep-dive v1-v6.",
+  source: "~/Documents/Claude/MASTER_NEW_CLAUDE_2026.md",
+  body: `<h4>Struktura</h4>
+<ol><li>TLDR per kategoria</li><li>Per-kategoria features (~30)</li><li>Tomek Setup upgrade</li><li>Plichta upgrade</li><li>Setup Boy upgrade</li><li>Oduczasz się (jak używać)</li></ol>
+<h4>Sekcje 1.12-1.12.10</h4>
+<ul><li>Opus 4.8 Workbench / Live Artifacts / Computer Use / Champion Kit / Ultraplan / Worktrees / Agent Teams</li></ul>` },
+
+{ id: "doc-opus48-workbench", category: "doc", title: "OPUS_48_WORKBENCH.md", tags: ["opus", "workbench", "27prompts"], status: "ref", hot: true,
+  relevance: ["Tomek", "Setup Boy"],
+  summary: "1477 linii, 27 promptów + Truth Checker × 9 sekcji. Dostarczony przez Tomka 30.05.",
+  source: "~/Documents/Claude/OPUS_48_WORKBENCH.md" },
+
+{ id: "doc-upgrade-v1", category: "doc", title: "UPGRADE_PROPOSALS_2026_05_29.md (v1)", tags: ["upgrade", "v1"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "v1 — 4 paczki podstawowe.",
+  source: "~/Documents/Claude/UPGRADE_PROPOSALS_2026_05_29.md" },
+
+{ id: "doc-upgrade-v2", category: "doc", title: "UPGRADE_PROPOSALS_v2_2026_05_29.md", tags: ["upgrade", "v2"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "v2 — Routines + Channels + Compliance API + Founder sub-persona.",
+  source: "~/Documents/Claude/UPGRADE_PROPOSALS_v2_2026_05_29.md" },
+
+{ id: "doc-upgrade-v3", category: "doc", title: "UPGRADE_PROPOSALS_v3_2026_05_30.md", tags: ["upgrade", "v3", "implementation"], status: "ref", hot: true,
+  relevance: ["Tomek"],
+  summary: "v3 — szczegóły implementacyjne (iMessage MAC, Agent SDK Python, 16 paczek).",
+  source: "~/Documents/Claude/UPGRADE_PROPOSALS_v3_2026_05_30.md" },
+
+{ id: "doc-skills-map", category: "doc", title: "Skills Map.md", tags: ["skills", "map", "index"], status: "ref", hot: true,
+  relevance: ["Tomek"],
+  summary: "100+ skille w kategoriach. Synchronizowany 9:00.",
+  source: "~/Documents/Claude/Skills Map.md" },
+
+{ id: "doc-linki", category: "doc", title: "LINKI.md", tags: ["linki", "html", "published"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Index opublikowanych HTML GitHub Pages.",
+  source: "~/Documents/Claude/LINKI.md" },
+
+{ id: "doc-planning-queue", category: "doc", title: "Planning_Queue.md", tags: ["planning", "queue", "ideas"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Wszystkie pomysły i plany. Status 🟡/✅/💡.",
+  source: "~/Documents/Claude/Projects/Planning_Queue.md" },
+
+{ id: "doc-skill-candidates", category: "doc", title: "SKILL_CANDIDATES.md", tags: ["skille", "candidates"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Kandydaci na nowe skille — przez @ski marker.",
+  source: "~/Documents/Claude/SKILL_CANDIDATES.md" },
+
+{ id: "doc-automation-scenarios", category: "doc", title: "Automation Scenarios.md", tags: ["automation", "scenarios"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Tabela 8 scenariuszy + selector. MUST READ przed automatyzacją.",
+  source: "~/Documents/Claude/Automation Scenarios.md" },
+
+{ id: "doc-biasy", category: "doc", title: "Biasy_i_Mechanizmy_Ecommerce.md", tags: ["biases", "ecommerce"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Encyklopedia behawioralnych biasów dla e-commerce.",
+  source: "~/Documents/Claude/Biasy_i_Mechanizmy_Ecommerce.md" },
+
+{ id: "doc-ecommerce-2030", category: "doc", title: "Ecommerce_2030_Strategia.md", tags: ["ecommerce", "2030", "strategy"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Strategia Me, Myself & I — 'E-commerce 2030'.",
+  source: "~/Documents/Claude/Ecommerce_2030_Strategia.md" },
+
+{ id: "doc-pm-report", category: "doc", title: "PM_REPORT.md", tags: ["pm", "report", "standup"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "PM Orchestrator daily report — CCR 22:30.",
+  source: "~/Documents/Claude/PM_REPORT.md" },
+
+// =========== DOKUMENTY — _SHARED ===========
+{ id: "doc-shared-rules", category: "doc", title: "_shared/RULES.md", tags: ["rules", "shared"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Wyciąg z 2 CLAUDE.md. Czytany na starcie sesji.",
+  source: "~/Documents/Claude/_shared/RULES.md" },
+
+{ id: "doc-shared-system-guide", category: "doc", title: "_shared/SYSTEM_GUIDE.md", tags: ["system-guide", "shared"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Jak działa Faza 1 cross-project. Markery, triggery sync.",
+  source: "~/Documents/Claude/_shared/SYSTEM_GUIDE.md" },
+
+{ id: "doc-shared-proposals-log", category: "doc", title: "_shared/PROPOSALS_LOG.md", tags: ["proposals", "log"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Log propozycji + feedback. Czytaj przed nową na znany temat.",
+  source: "~/Documents/Claude/_shared/PROPOSALS_LOG.md" },
+
+{ id: "doc-shared-memory-digest", category: "doc", title: "_shared/MEMORY_DIGEST.md", tags: ["memory", "digest"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Top 20 memories overview.",
+  source: "~/Documents/Claude/_shared/MEMORY_DIGEST.md" },
+
+{ id: "doc-shared-automation-health", category: "doc", title: "_shared/AUTOMATION_HEALTH.md", tags: ["automation", "health"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Status launchd/hooks. morning-tasks exit 78 TCC issue.",
+  source: "~/Documents/Claude/_shared/AUTOMATION_HEALTH.md" },
+
+{ id: "doc-shared-session-bridge-cont", category: "doc", title: "_shared/SESSION_BRIDGE_CONTINUATION.md", tags: ["session-bridge", "continuation"], status: "ref", hot: true,
+  relevance: ["Tomek"],
+  summary: "Plan A→B→C→D autonomous continuation 30.05. Tomek poszedł z psem.",
+  source: "~/Documents/Claude/_shared/SESSION_BRIDGE_CONTINUATION.md" },
+
+// =========== DOKUMENTY — AUDI PLICHTA ===========
+{ id: "doc-plichta-claude", category: "doc", title: "Audi_Plichta/CLAUDE.md", tags: ["plichta", "claude-md"], status: "ref",
+  relevance: ["Plichta"],
+  summary: "Hasło 'plichta' wywołuje kontekst. Protokół startu sesji.",
+  source: "Projects/Audi_Plichta/CLAUDE.md" },
+
+{ id: "doc-plichta-philosophy", category: "doc", title: "Audi_Plichta/PHILOSOPHY.md", tags: ["plichta", "philosophy", "fundament"], status: "ref", hot: true,
+  relevance: ["Plichta", "Cortex"],
+  summary: "224 linii. Fundament filozofii — 1 kąt w 3 zoomach + origin story + 12 cegiełek.",
+  source: "Projects/Audi_Plichta/PHILOSOPHY.md" },
+
+{ id: "doc-plichta-wsad", category: "doc", title: "Audi_Plichta/WSAD_CORTEX_REWRITE.md", tags: ["plichta", "cortex", "12-layers"], status: "ref", hot: true,
+  relevance: ["Plichta", "Cortex"],
+  summary: "276 linii. 12 warstw + 55 par V/U + top 7 par.",
+  source: "Projects/Audi_Plichta/WSAD_CORTEX_REWRITE.md" },
+
+{ id: "doc-plichta-trojki", category: "doc", title: "Audi_Plichta/TROJKI_I_CZWORKI.md", tags: ["plichta", "triples", "quadruples"], status: "ref",
+  relevance: ["Plichta", "Cortex"],
+  summary: "497 linii. Top 30 trójek + top 20 czwórek. CS1 (1+2+4+8) MISTRZ.",
+  source: "Projects/Audi_Plichta/TROJKI_I_CZWORKI.md" },
+
+{ id: "doc-plichta-obiektywizacja", category: "doc", title: "Audi_Plichta/OBIEKTYWIZACJA.md", tags: ["plichta", "empirical"], status: "ref", hot: true,
+  relevance: ["Plichta", "Cortex"],
+  summary: "214 linii. 26 WebSearch → 4 kombinacje z empiryczną U=3/3.",
+  source: "Projects/Audi_Plichta/OBIEKTYWIZACJA.md" },
+
+{ id: "doc-plichta-vision", category: "doc", title: "Audi_Plichta/VISION_AUDI_CORTEX.md", tags: ["plichta", "vision"], status: "ref",
+  relevance: ["Plichta"],
+  summary: "Wizja produktu Audi Cortex jako anchor customer.",
+  source: "Projects/Audi_Plichta/VISION_AUDI_CORTEX.md" },
+
+{ id: "doc-plichta-scope", category: "doc", title: "Audi_Plichta/SCOPE_DRAFT.md", tags: ["plichta", "scope"], status: "ref",
+  relevance: ["Plichta"],
+  summary: "Draft scope dla pierwszego SOW.",
+  source: "Projects/Audi_Plichta/SCOPE_DRAFT.md" },
+
+{ id: "doc-plichta-open-q", category: "doc", title: "Audi_Plichta/OPEN_QUESTIONS.md", tags: ["plichta", "questions"], status: "ref",
+  relevance: ["Plichta"],
+  summary: "4 sekcje Q (V1-5 strategiczne, Q1-4 podstawowe, Q-CMP-1..4 compliance NEW).",
+  source: "Projects/Audi_Plichta/OPEN_QUESTIONS.md" },
+
+{ id: "doc-plichta-bridge", category: "doc", title: "Audi_Plichta/SESSION_BRIDGE.md", tags: ["plichta", "session-bridge"], status: "ref",
+  relevance: ["Plichta"],
+  summary: "Running journal Plichta.",
+  source: "Projects/Audi_Plichta/SESSION_BRIDGE.md" },
+
+{ id: "doc-plichta-strategic-playbook", category: "doc", title: "Audi_Plichta/STRATEGIC_PLAYBOOK.md", tags: ["plichta", "playbook"], status: "ref",
+  relevance: ["Plichta"],
+  summary: "Playbook anchor customer development.",
+  source: "Projects/Audi_Plichta/STRATEGIC_PLAYBOOK.md" },
+
+{ id: "doc-plichta-status", category: "doc", title: "Audi_Plichta/STATUS.md", tags: ["plichta", "status"], status: "ref",
+  relevance: ["Plichta"],
+  summary: "Pre-discovery. Czeka na klient brief.",
+  source: "Projects/Audi_Plichta/STATUS.md" },
+
+{ id: "doc-plichta-rozmowa", category: "doc", title: "Audi_Plichta/ROZMOWA_BRIEF.md", tags: ["plichta", "conversation"], status: "ref",
+  relevance: ["Plichta"],
+  summary: "Brief z rozmowy z kolegą szefem Audi Plichta.",
+  source: "Projects/Audi_Plichta/ROZMOWA_BRIEF.md" },
+
+{ id: "doc-plichta-index-noc", category: "doc", title: "Audi_Plichta/INDEX_NOC.md", tags: ["plichta", "night-work"], status: "ref",
+  relevance: ["Plichta"],
+  summary: "Index pracy nocnej Cortex deep-dive 30.05.",
+  source: "Projects/Audi_Plichta/INDEX_NOC.md" },
+
+// =========== DOKUMENTY — EEL ===========
+{ id: "doc-eel-claude", category: "doc", title: "EEL/CLAUDE.md", tags: ["eel", "claude-md", "filozofia"], status: "ref", hot: true,
+  relevance: ["EEL"],
+  summary: "FUNDAMENTALNA FILOZOFIA EEL: shopper kupuje oczami. 2 perspektywy + warstwa kontentu.",
+  source: "Projects/Ecomms_Activation_Agency/CLAUDE.md" },
+
+{ id: "doc-eel-cortex-v2", category: "doc", title: "EEL/EEL_CORTEX_VISION_v2.md", tags: ["eel", "cortex-v2"], status: "ref", hot: true,
+  relevance: ["EEL", "Cortex"],
+  summary: "Cortex v2 architektura na 12 cegiełkach. Lab vs Production split.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_CORTEX_VISION_v2.md" },
+
+{ id: "doc-eel-master-tracker", category: "doc", title: "EEL/EEL_MASTER_TRACKER.md", tags: ["eel", "tracker", "components"], status: "ref", hot: true,
+  relevance: ["EEL"],
+  summary: "320 linii. 31+6 komponentów (C32 cortex-reasoner). Czytaj PIERWSZY przy starcie EEL.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_MASTER_TRACKER.md" },
+
+{ id: "doc-eel-production-plan", category: "doc", title: "EEL/EEL_PRODUCTION_PLAN_V2.md", tags: ["eel", "production-plan"], status: "ref",
+  relevance: ["EEL"],
+  summary: "423 linii (z Part 3.5). Sprint plan + PRODUKTY_EGZEKUCYJNE 562 kombinacje.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_PRODUCTION_PLAN_V2.md" },
+
+{ id: "doc-eel-dev-plan", category: "doc", title: "EEL/EEL_DEV_PLAN.md", tags: ["eel", "dev-plan"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Aktualny sprint + kolejność korków.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_DEV_PLAN.md" },
+
+{ id: "doc-eel-kontekst", category: "doc", title: "EEL/KONTEKST_PROJEKTU.md", tags: ["eel", "context", "history"], status: "ref",
+  relevance: ["EEL"],
+  summary: "MUST READ. 3D Commerce + SPACE + 400 taktyk.",
+  source: "Projects/Ecomms_Activation_Agency/KONTEKST_PROJEKTU.md" },
+
+{ id: "doc-eel-tactics-all", category: "doc", title: "EEL/EEL_TACTICS_ALL_SERIES.md", tags: ["eel", "tactics"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Wszystkie taktyki serii EEL razem.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_TACTICS_ALL_SERIES.md" },
+
+{ id: "doc-eel-tactics-structural", category: "doc", title: "EEL/EEL_TACTICS_STRUCTURAL.md", tags: ["eel", "tactics", "structural"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Taktyki strukturalne UX/layout.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_TACTICS_STRUCTURAL.md" },
+
+{ id: "doc-eel-ga4-analyses", category: "doc", title: "EEL/EEL_GA4_ANALYSES.md", tags: ["eel", "ga4", "r01-r10"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Specyfikacje analiz GA4 R01-R10.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_GA4_ANALYSES.md" },
+
+{ id: "doc-eel-element-ref", category: "doc", title: "EEL/EEL_ELEMENT_REFERENCE.md", tags: ["eel", "elements"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Reference 200+ elementów e-commerce.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_ELEMENT_REFERENCE.md" },
+
+{ id: "doc-eel-designer", category: "doc", title: "EEL/EEL_EXPERIMENT_DESIGNER_DESIGN.md", tags: ["eel", "experiment"], status: "ref",
+  relevance: ["EEL"],
+  summary: "KLUCZOWY PROJEKT — audyt→eksperymenty, 9 obszarów, ADD/MODIFY/REMOVE.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_EXPERIMENT_DESIGNER_DESIGN.md" },
+
+{ id: "doc-eel-self-learn", category: "doc", title: "EEL/EEL_LEARNING_METHODOLOGY.md", tags: ["eel", "self-learning"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Self-Learning Half-Open architecture.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_LEARNING_METHODOLOGY.md" },
+
+{ id: "doc-eel-warstwy-playbook", category: "doc", title: "EEL/WARSTWY_PLAYBOOK.md", tags: ["eel", "cortex", "playbook"], status: "ref", hot: true,
+  relevance: ["EEL", "Cortex"],
+  summary: "Per-warstwa playbook W44-W47.",
+  source: "Projects/Ecomms_Activation_Agency/WARSTWY_PLAYBOOK.md" },
+
+{ id: "doc-eel-kross-matrix", category: "doc", title: "EEL/KROSS_MATRIX_12X12.md", tags: ["eel", "matrix"], status: "ref",
+  relevance: ["Cortex"],
+  summary: "Krzyż-macierz 12×12 — wsad W46 Cortex Lab.",
+  source: "Projects/Ecomms_Activation_Agency/KROSS_MATRIX_12X12.md" },
+
+{ id: "doc-eel-audit-tab-std", category: "doc", title: "EEL/AUDIT_TAB_STANDARD.md", tags: ["eel", "audit", "standard"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Standard 8 tabów audit.",
+  source: "Projects/Ecomms_Activation_Agency/AUDIT_TAB_STANDARD.md" },
+
+{ id: "doc-eel-doc-index", category: "doc", title: "EEL/EEL_DOC_INDEX.md", tags: ["eel", "index"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Index dokumentów EEL z opisem przeznaczenia.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_DOC_INDEX.md" },
+
+{ id: "doc-eel-agency-ref", category: "doc", title: "EEL/AGENCY_REFERENCE.md", tags: ["eel", "agency"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Jak EEL jest agencją — model biznesowy.",
+  source: "Projects/Ecomms_Activation_Agency/AGENCY_REFERENCE.md" },
+
+{ id: "doc-eel-catechism", category: "doc", title: "EEL/EEL_AUDIT_CATECHISM.md", tags: ["eel", "audit"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Pytania audytowe — checklist.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_AUDIT_CATECHISM.md" },
+
+{ id: "doc-eel-builder-spec", category: "doc", title: "EEL/EEL_BUILDER_SPEC.md", tags: ["eel", "builder"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Specyfikacja EEL Experiment Builder.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_BUILDER_SPEC.md" },
+
+{ id: "doc-eel-data-connectors", category: "doc", title: "EEL/DATA_CONNECTORS.md", tags: ["eel", "data"], status: "ref",
+  relevance: ["EEL"],
+  summary: "DataSource connectors (GA4, Clarity, Ads).",
+  source: "Projects/Ecomms_Activation_Agency/DATA_CONNECTORS.md" },
+
+{ id: "doc-eel-inwentarz", category: "doc", title: "EEL/EEL_INWENTARZ.md", tags: ["eel", "inventory"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Inwentarz wszystkich plików EEL + status.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_INWENTARZ.md" },
+
+{ id: "doc-eel-master-scen", category: "doc", title: "EEL/EEL_MASTER_SCENARIUSZ.md", tags: ["eel", "scenarios"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Master scenariusz typowego audytu klienta.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_MASTER_SCENARIUSZ.md" },
+
+{ id: "doc-eel-processes", category: "doc", title: "EEL/EEL_PROCESSES.md", tags: ["eel", "processes"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Procesy operacyjne — od onboardingu do delivery.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_PROCESSES.md" },
+
+{ id: "doc-eel-build-method", category: "doc", title: "EEL/BUILD_METHOD.md", tags: ["eel", "build"], status: "ref",
+  relevance: ["EEL"],
+  summary: "Standard /buduj dla EEL.",
+  source: "Projects/Ecomms_Activation_Agency/BUILD_METHOD.md" },
+
+// =========== DOKUMENTY — ME, MYSELF & I ===========
+{ id: "doc-mm-claude", category: "doc", title: "Me_Myself_and_I/CLAUDE.md", tags: ["me-myself", "claude-md"], status: "ref",
+  relevance: ["Setup Boy"],
+  summary: "CLAUDE.md Personal Brand + Setup Boy + AIcommerce.",
+  source: "Projects/Me_Myself_and_I/CLAUDE.md" },
+
+{ id: "doc-mm-setup-boy-v2", category: "doc", title: "Me_Myself_and_I/SETUP_BOY_v2_KONKRETY.md", tags: ["setup-boy", "personas"], status: "ref", hot: true,
+  relevance: ["Setup Boy"],
+  summary: "1174 linii. 8 person + 4 tiery + 3 demo hooks + mobile channels.",
+  source: "Projects/Me_Myself_and_I/SETUP_BOY_v2_KONKRETY.md" },
+
+{ id: "doc-mm-setup-boy-original", category: "doc", title: "Me_Myself_and_I/SETUP_BOY_PRODUKT.md", tags: ["setup-boy", "produkt"], status: "ref",
+  relevance: ["Setup Boy"],
+  summary: "Oryginalna wersja produktu Setup Boy.",
+  source: "Projects/Me_Myself_and_I/SETUP_BOY_PRODUKT.md" },
+
+{ id: "doc-mm-ai-eco", category: "doc", title: "Me_Myself_and_I/AI_Operating_Ecosystem.md", tags: ["ai-eco", "vision"], status: "ref", hot: true,
+  relevance: ["Setup Boy"],
+  summary: "Kopiowalny system AI dla firm. Entry point AIcommerce.",
+  source: "Projects/Me_Myself_and_I/AI_Operating_Ecosystem.md" },
+
+{ id: "doc-mm-aicommerce", category: "doc", title: "Me_Myself_and_I/AIcommerce_koncept.md", tags: ["aicommerce", "agency"], status: "ref",
+  relevance: ["Setup Boy"],
+  summary: "Koncept AIcommerce Agency.",
+  source: "Projects/Me_Myself_and_I/AIcommerce_koncept.md" },
+
+{ id: "doc-mm-aicommerce-pitch", category: "doc", title: "Me_Myself_and_I/AIcommerce_ContentPilot_Pitch.md", tags: ["aicommerce", "pitch"], status: "ref",
+  relevance: ["Setup Boy"],
+  summary: "Pitch ContentPilot.",
+  source: "Projects/Me_Myself_and_I/AIcommerce_ContentPilot_Pitch.md" },
+
+{ id: "doc-mm-personal-brand", category: "doc", title: "Me_Myself_and_I/Personal_Brand_Strategy_TW.md", tags: ["personal-brand"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Personal brand strategy Tomek Waligóra.",
+  source: "Projects/Me_Myself_and_I/Personal_Brand_Strategy_TW.md" },
+
+{ id: "doc-mm-linkedin", category: "doc", title: "Me_Myself_and_I/LinkedIn_Iteracje_TW.md", tags: ["linkedin"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "LinkedIn iteracje + strategia contentu.",
+  source: "Projects/Me_Myself_and_I/LinkedIn_Iteracje_TW.md" },
+
+{ id: "doc-mm-idealna-infra", category: "doc", title: "Me_Myself_and_I/Idealna_Infrastruktura.md", tags: ["infrastructure", "ideal"], status: "ref", hot: true,
+  relevance: ["Tomek", "Setup Boy"],
+  summary: "Idealna infrastruktura — proaktywnie wracaj autonomicznie.",
+  source: "Projects/Me_Myself_and_I/Idealna_Infrastruktura.md" },
+
+{ id: "doc-mm-kontekst", category: "doc", title: "Me_Myself_and_I/KONTEKST_PROJEKTU.md", tags: ["me-myself", "context"], status: "ref",
+  relevance: ["Setup Boy"],
+  summary: "Pełny kontekst Me, Myself & I.",
+  source: "Projects/Me_Myself_and_I/KONTEKST_PROJEKTU.md" },
+
+{ id: "doc-mm-system", category: "doc", title: "Me_Myself_and_I/System_Document.md", tags: ["me-myself", "system"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "System Document — Tomek setup overview.",
+  source: "Projects/Me_Myself_and_I/System_Document.md" },
+
+{ id: "doc-mm-kallaway", category: "doc", title: "Me_Myself_and_I/Insighty_Kallaway_Premium_Brand_2026.md", tags: ["kallaway"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Insighty Kallaway dla Premium Brand pozycjonowania.",
+  source: "Projects/Me_Myself_and_I/Insighty_Kallaway_Premium_Brand_2026.md" },
+
+{ id: "doc-mm-eel-articles", category: "doc", title: "Me_Myself_and_I/EEL_ARTYKULY_INTRO_20.md", tags: ["eel", "articles"], status: "ref",
+  relevance: ["EEL"],
+  summary: "20 intro artykułów EEL dla content marketing.",
+  source: "Projects/Me_Myself_and_I/EEL_ARTYKULY_INTRO_20.md" },
+
+{ id: "doc-mm-think-tank", category: "doc", title: "Me_Myself_and_I/think_tank.md", tags: ["think-tank"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Think tank notes.",
+  source: "Projects/Me_Myself_and_I/think_tank.md" },
+
+{ id: "doc-mm-efekty-ai", category: "doc", title: "Me_Myself_and_I/Efekty_AI_dla_Ecommerce.md", tags: ["ai", "ecommerce", "effects"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Efekty AI dla e-commerce — research dla pitchu.",
+  source: "Projects/Me_Myself_and_I/Efekty_AI_dla_Ecommerce.md" },
+
+// =========== DOKUMENTY — GEO ===========
+{ id: "doc-geo-claude", category: "doc", title: "GEO_PDP_Optimizer/CLAUDE.md", tags: ["geo", "claude-md"], status: "ref",
+  relevance: ["GEO"],
+  summary: "Project CLAUDE.md GEO Optimizer.",
+  source: "Projects/GEO_PDP_Optimizer/CLAUDE.md" },
+
+{ id: "doc-geo-analysis", category: "doc", title: "GEO_PDP_Optimizer/GEO-ANALYSIS.md", tags: ["geo", "analysis"], status: "ref",
+  relevance: ["GEO"],
+  summary: "GEO Analysis metodyka per produkt.",
+  source: "Projects/GEO_PDP_Optimizer/GEO-ANALYSIS.md" },
+
+{ id: "doc-geo-blueprint", category: "doc", title: "GEO_PDP_Optimizer/product-page-aio-geo-blueprint.md", tags: ["geo", "pdp", "blueprint"], status: "ref",
+  relevance: ["GEO"],
+  summary: "PDP AIO GEO blueprint.",
+  source: "Projects/GEO_PDP_Optimizer/product-page-aio-geo-blueprint.md" },
+
+{ id: "doc-geo-en", category: "doc", title: "GEO_PDP_Optimizer/article_geo_en.md", tags: ["geo", "article", "en"], status: "ref",
+  relevance: ["GEO"],
+  summary: "Pełny artykuł GEO methodology (EN).",
+  source: "Projects/GEO_PDP_Optimizer/article_geo_en.md" },
+
+{ id: "doc-geo-pl", category: "doc", title: "GEO_PDP_Optimizer/article_geo_pl.md", tags: ["geo", "article", "pl"], status: "ref",
+  relevance: ["GEO"],
+  summary: "Pełny artykuł GEO methodology (PL).",
+  source: "Projects/GEO_PDP_Optimizer/article_geo_pl.md" },
+
+{ id: "doc-geo-status", category: "doc", title: "GEO_PDP_Optimizer/STATUS.md", tags: ["geo", "status"], status: "ref",
+  relevance: ["GEO"],
+  summary: "Status GEO projektu.",
+  source: "Projects/GEO_PDP_Optimizer/STATUS.md" },
+
+// =========== DOKUMENTY — SEJFZONE ===========
+{ id: "doc-sejf-claude", category: "doc", title: "SejfZone/CLAUDE.md", tags: ["sejfzone", "claude-md"], status: "ref",
+  relevance: ["GEO"],
+  summary: "Project CLAUDE.md SejfZone.",
+  source: "Projects/SejfZone/CLAUDE.md" },
+
+{ id: "doc-sejf-encyclopedia", category: "doc", title: "SejfZone/ecommerce-encyclopedia.md", tags: ["encyclopedia"], status: "ref",
+  relevance: ["GEO"],
+  summary: "Encyklopedia e-commerce SejfZone.",
+  source: "Projects/SejfZone/ecommerce-encyclopedia.md" },
+
+{ id: "doc-sejf-model", category: "doc", title: "SejfZone/model-sciezek-percepcji.md", tags: ["perception"], status: "ref",
+  relevance: ["GEO"],
+  summary: "Model ścieżek percepcji shopper'a SejfZone.",
+  source: "Projects/SejfZone/model-sciezek-percepcji.md" },
+
+{ id: "doc-sejf-category-intel", category: "doc", title: "SejfZone/sejfzone_category_intel_13_14.md", tags: ["category", "intel"], status: "ref",
+  relevance: ["GEO"],
+  summary: "Category intelligence SejfZone.",
+  source: "Projects/SejfZone/sejfzone_category_intel_13_14.md" },
+
+// =========== POZOSTAŁE PROJEKTY ===========
+{ id: "doc-newsletter", category: "doc", title: "Newsletter_Digest/CLAUDE.md", tags: ["newsletter"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Newsletter Digest — Gmail → Streamlit → Wiki.",
+  source: "Projects/Newsletter_Digest/CLAUDE.md" },
+
+{ id: "doc-service-intel", category: "doc", title: "Service_Intelligence/registry/INDEX.md", tags: ["service-intel"], status: "ref",
+  relevance: ["Tomek"],
+  summary: "Rejestr serwisów — oferta + tech stack + build vs buy.",
+  source: "Projects/Service_Intelligence/registry/INDEX.md" },
+
+// =========== LINKI — POZOSTAŁE HTML LOKALNE ===========
+{ id: "l-glov-checkout-trend", category: "link", title: "GLOV Checkout Trend 2025", tags: ["glov", "checkout"], status: "ref",
+  relevance: ["EEL"], summary: "GLOV checkout trend 2025.",
+  source: "Projects/Shopify GLOV/GLOV_Checkout_Trend_2025.html" },
+
+{ id: "l-glov-ux-audit", category: "link", title: "GLOV UX Audit 2026-05-06", tags: ["glov", "ux", "audit"], status: "ref",
+  relevance: ["EEL"], summary: "GLOV UX Audit kompletny.",
+  source: "Projects/Shopify GLOV/GLOV_UX_Audit_2026-05-06.html" },
+
+{ id: "l-glov-seo", category: "link", title: "GLOV SEO Raport 2026-05", tags: ["glov", "seo"], status: "ref",
+  relevance: ["EEL"], summary: "GLOV SEO raport.",
+  source: "Projects/Shopify GLOV/GLOV_SEO_Raport_2026-05.html" },
+
+{ id: "l-glov-ltv", category: "link", title: "GLOV LTV Retencja 2024-2026", tags: ["glov", "ltv"], status: "ref",
+  relevance: ["EEL"], summary: "GLOV LTV retention 2024-2026.",
+  source: "Projects/Shopify GLOV/GLOV_LTV_Retencja_2024_2026.html" },
+
+{ id: "l-glov-checkout-diag", category: "link", title: "GLOV Diagnoza Checkout 2026-05-27", tags: ["glov", "checkout"], status: "ref",
+  relevance: ["EEL"], summary: "Diagnoza checkout GLOV — fix konwersji.",
+  source: "Projects/Shopify GLOV/GLOV_Diagnoza_Checkout_2026-05-27.html" },
+
+{ id: "l-glov-full-mapping", category: "link", title: "GLOV Full Store Mapping", tags: ["glov", "mapping"], status: "ref",
+  relevance: ["EEL"], summary: "GLOV full store Visual Mapping.",
+  source: "Projects/Shopify GLOV/glov-full-store-mapping.html" },
+
+{ id: "l-glov-checkout-complete", category: "link", title: "GLOV Checkout Diagnoza Kompletna", tags: ["glov", "checkout"], status: "ref",
+  relevance: ["EEL"], summary: "Pełna diagnoza checkout GLOV.",
+  source: "Projects/Shopify GLOV/GLOV_Checkout_Diagnoza_Kompletna.html" },
+
+{ id: "l-glov-analytical", category: "link", title: "GLOV Raport Analityczny", tags: ["glov", "analytical"], status: "ref",
+  relevance: ["EEL"], summary: "GLOV pełny raport analityczny.",
+  source: "Projects/Shopify GLOV/GLOV_Raport_Analityczny.html" },
+
+{ id: "l-glov-kohorty", category: "link", title: "GLOV Kohorty 2024-2026", tags: ["glov", "cohorts"], status: "ref",
+  relevance: ["EEL"], summary: "GLOV cohort analysis.",
+  source: "Projects/Shopify GLOV/GLOV_Kohorty_2024_2026.html" },
+
+{ id: "l-glov-homepage", category: "link", title: "GLOV Homepage Mapping", tags: ["glov", "homepage"], status: "ref",
+  relevance: ["EEL"], summary: "GLOV homepage fold-by-fold.",
+  source: "Projects/Shopify GLOV/glov-homepage-mapping.html" },
+
+{ id: "l-glov-connections", category: "link", title: "GLOV Connections Matrix", tags: ["glov", "connections"], status: "ref",
+  relevance: ["EEL"], summary: "GLOV connections matrix.",
+  source: "Projects/Shopify GLOV/GLOV_Connections_Matrix.html" },
+
+{ id: "l-sejf-analytical", category: "link", title: "SejfZone Raport Analityczny (lokalny HTML)", tags: ["sejfzone", "analytical"], status: "ref",
+  relevance: ["GEO"], summary: "Pełny raport analityczny SejfZone.",
+  source: "Projects/SejfZone/SejfZone_Raport_Analityczny.html" },
+
+{ id: "l-sejf-homepage", category: "link", title: "SejfZone Homepage Product Analysis", tags: ["sejfzone", "homepage"], status: "ref",
+  relevance: ["GEO"], summary: "Homepage product analysis SejfZone.",
+  source: "Projects/SejfZone/homepage-product-analysis.html" },
+
+{ id: "l-sejf-payment-icons", category: "link", title: "SejfZone Payment Icons Audit", tags: ["sejfzone", "payment"], status: "ref",
+  relevance: ["GEO"], summary: "Audit ikon płatności SejfZone.",
+  source: "Projects/SejfZone/payment-icons-audit.html" },
+
+{ id: "l-eel-tactic-card", category: "link", title: "EEL Tactic Card design", tags: ["eel", "tactic-card", "design"], status: "ref",
+  relevance: ["EEL"], summary: "Design prototype EEL Tactic Card.",
+  source: "Projects/Ecomms_Activation_Agency/TACTIC_CARD.html" },
+
+{ id: "l-eel-glov-ref", category: "link", title: "EEL GLOV Reference Audit (GOLD STANDARD)", tags: ["eel", "glov", "gold"], status: "ref", hot: true,
+  relevance: ["EEL"], summary: "GOLD STANDARD EEL audit — referencja dla wszystkich nowych.",
+  source: "Projects/Ecomms_Activation_Agency/GLOV_REFERENCE_AUDIT.html" },
+
+{ id: "l-eel-glov-eval", category: "link", title: "EEL GLOV Reference Audit v1 Evaluation", tags: ["eel", "glov"], status: "ref",
+  relevance: ["EEL"], summary: "Ewaluacja GLOV Reference v1.",
+  source: "Projects/Ecomms_Activation_Agency/GLOV_REFERENCE_AUDIT_v1_evaluation.html" },
+
+{ id: "l-eel-hebe-ref", category: "link", title: "EEL Hebe Reference Audit", tags: ["eel", "hebe"], status: "ref",
+  relevance: ["EEL"], summary: "Hebe Reference Audit.",
+  source: "Projects/Ecomms_Activation_Agency/HEBE_REFERENCE_AUDIT.html" },
+
+{ id: "l-eel-sejf-ref", category: "link", title: "EEL SejfZone Reference Audit", tags: ["eel", "sejfzone"], status: "ref",
+  relevance: ["EEL"], summary: "SejfZone Reference Audit.",
+  source: "Projects/Ecomms_Activation_Agency/SEJFZONE_REFERENCE_AUDIT.html" },
+
+{ id: "l-eel-johndog-ref", category: "link", title: "EEL JohnDog Reference Audit", tags: ["eel", "johndog"], status: "ref",
+  relevance: ["EEL"], summary: "JohnDog Reference Audit (zwierzaki).",
+  source: "Projects/Ecomms_Activation_Agency/JOHNDOG_REFERENCE_AUDIT.html" },
+
+{ id: "l-eel-brief-final", category: "link", title: "EEL Brief Final", tags: ["eel", "brief"], status: "ref",
+  relevance: ["EEL"], summary: "EEL Brief final klient-facing.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_BRIEF_FINAL.html" },
+
+{ id: "l-eel-bias-exp", category: "link", title: "EEL Bias Experiments", tags: ["eel", "bias"], status: "ref",
+  relevance: ["EEL"], summary: "EEL Bias Experiments viewer.",
+  source: "Projects/Ecomms_Activation_Agency/EEL_BIAS_EXPERIMENTS.html" },
+
+{ id: "l-geo-infographic", category: "link", title: "GEO Infographic Bento", tags: ["geo", "infographic"], status: "ref",
+  relevance: ["GEO"], summary: "GEO infographic Bento layout.",
+  source: "Projects/GEO_PDP_Optimizer/infographic_geo.html" },
+
+{ id: "l-geo-mapa-plyny", category: "link", title: "GEO Mapa Płyny", tags: ["geo", "mapa"], status: "ref",
+  relevance: ["GEO"], summary: "Mapa płyny GEO.",
+  source: "Projects/GEO_PDP_Optimizer/mapa-plyny.html" },
+
+{ id: "l-dzialka", category: "link", title: "Działka plan", tags: ["ogrod"], status: "ref",
+  relevance: ["Tomek"], summary: "Plan działki 91/8.",
+  source: "Projects/ogrod/plan_dzialki.html" },
+
+{ id: "l-quantum", category: "link", title: "quantum-physics.html", tags: ["physics"], status: "ref",
+  relevance: ["Tomek"], summary: "Quantum physics research note.",
+  source: "~/Documents/Claude/quantum-physics.html" },
+
+{ id: "l-wrapup-29", category: "link", title: "Wrapup 2026-05-29", tags: ["wrapup"], status: "ref",
+  relevance: ["Tomek"], summary: "Wrapup raport 29.05.",
+  source: "~/Documents/Claude/wrapup-2026-05-29.html" },
+
+// =========== POZOSTAŁE ANTHROPIC DOCS ===========
+{ id: "l-anthropic-pricing", category: "link", title: "Anthropic Pricing", tags: ["anthropic", "pricing"], status: "ref",
+  relevance: ["Tomek"], summary: "Oficjalny cennik modeli.",
+  source: "https://www.anthropic.com/pricing" },
+
+{ id: "l-anthropic-skills-spec", category: "link", title: "agentskills.io", tags: ["anthropic", "skills", "spec"], status: "ref",
+  relevance: ["Tomek"], summary: "Open standard SKILL.md format.",
+  source: "https://agentskills.io" },
+
+{ id: "l-anthropic-mcp", category: "link", title: "Model Context Protocol docs", tags: ["mcp", "protocol"], status: "ref",
+  relevance: ["Tomek"], summary: "Oficjalna dokumentacja MCP.",
+  source: "https://modelcontextprotocol.io" },
+
+{ id: "l-anthropic-claude-code-overview", category: "link", title: "Claude Code Overview", tags: ["claude-code", "docs"], status: "ref",
+  relevance: ["Tomek"], summary: "Entry-point Claude Code docs.",
+  source: "https://code.claude.com/docs/en/overview" },
+
+{ id: "l-anthropic-llms-txt", category: "link", title: "Claude Code llms.txt (full index)", tags: ["docs", "index"], status: "ref",
+  relevance: ["Tomek"], summary: "Pełny index 150+ stron Claude Code docs.",
+  source: "https://code.claude.com/docs/llms.txt" },
+
+{ id: "l-anthropic-news", category: "link", title: "Anthropic News", tags: ["anthropic", "news"], status: "ref",
+  relevance: ["Tomek"], summary: "Ogłoszenia firmowe, modele, partnership.",
+  source: "https://www.anthropic.com/news" },
+
+{ id: "l-anthropic-blog", category: "link", title: "Claude.com Blog", tags: ["anthropic", "blog"], status: "ref",
+  relevance: ["Tomek"], summary: "Blog techniczny + case studies.",
+  source: "https://claude.com/blog" },
+
+{ id: "l-platform-console", category: "link", title: "Anthropic Platform Console", tags: ["platform"], status: "ref",
+  relevance: ["Tomek"], summary: "Anthropic Console (API keys, Managed Agents).",
+  source: "https://platform.claude.com" },
+
+{ id: "l-claude-routines", category: "link", title: "Claude.ai Routines (management)", tags: ["routines"], status: "ref",
+  relevance: ["Tomek"], summary: "Web dashboard Routines.",
+  source: "https://claude.ai/code/routines" },
+
+{ id: "l-claude-connectors-dir", category: "link", title: "Connectors Directory (200+)", tags: ["connectors"], status: "ref",
+  relevance: ["Setup Boy", "Tomek"], summary: "200+ connectors directory.",
+  source: "https://claude.ai/directory/connectors" },
+
+{ id: "l-claude-admin", category: "link", title: "Claude Admin Settings (Enterprise)", tags: ["admin", "enterprise"], status: "ref",
+  relevance: ["Plichta"], summary: "Enterprise admin panel.",
+  source: "https://claude.ai/admin-settings/claude-code" },
+
+{ id: "l-claude-code-web", category: "link", title: "Claude Code Web Platform", tags: ["claude-code", "web"], status: "ref",
+  relevance: ["Tomek"], summary: "Web interface Claude Code.",
+  source: "https://claude.ai/code" },
+
+{ id: "l-blog-dynamic-workflows", category: "link", title: "Blog — Dynamic Workflows", tags: ["dynamic-workflows"], status: "ref",
+  relevance: ["Tomek"], summary: "Dynamic Workflows announcement.",
+  source: "https://claude.com/blog/introducing-dynamic-workflows-in-claude-code" },
+
+{ id: "l-blog-opus48", category: "link", title: "Blog — Opus 4.8 launch", tags: ["opus-48"], status: "ref",
+  relevance: ["Tomek"], summary: "Opus 4.8 launch (28.05).",
+  source: "https://www.anthropic.com/news/claude-opus-4-8" },
+
+{ id: "l-blog-html-md", category: "link", title: "Blog — HTML > Markdown", tags: ["html"], status: "ref",
+  relevance: ["Tomek"], summary: "Oficjalna rekomendacja HTML.",
+  source: "https://claude.com/blog/using-claude-code-the-unreasonable-effectiveness-of-html" },
+
+{ id: "l-blog-legal", category: "link", title: "Blog — Legal industry deployment", tags: ["legal"], status: "ref",
+  relevance: ["Setup Boy"], summary: "Microsoft 365 + 12 legal plugins.",
+  source: "https://claude.com/blog/deploying-claude-across-the-legal-industry" },
+
+{ id: "l-blog-champion", category: "link", title: "Docs — Champion Kit", tags: ["champion-kit"], status: "ref",
+  relevance: ["Setup Boy"], summary: "Champion Kit playbook.",
+  source: "https://code.claude.com/docs/en/champion-kit" },
+
+{ id: "l-blog-cowork", category: "link", title: "Blog — Cowork sales leader workflow", tags: ["cowork"], status: "ref",
+  relevance: ["Setup Boy"], summary: "Cowork case study sales leader.",
+  source: "https://claude.com/blog/how-an-anthropic-sales-leader-uses-claude-cowork-to-run-a-4-000-account-book" },
+
+{ id: "l-blog-managed", category: "link", title: "Blog — Managed Agents", tags: ["managed-agents"], status: "ref",
+  relevance: ["Cortex"], summary: "Managed Agents launch.",
+  source: "https://claude.com/blog/claude-managed-agents" },
+
+{ id: "l-blog-managed-features", category: "link", title: "Blog — Dreaming + Outcomes + Multiagent", tags: ["managed-agents", "dreaming"], status: "ref",
+  relevance: ["Cortex"], summary: "New in Managed Agents features.",
+  source: "https://claude.com/blog/new-in-claude-managed-agents" },
+
+{ id: "l-blog-large-codebases", category: "link", title: "Blog — Large codebases best practices", tags: ["codebases"], status: "ref",
+  relevance: ["Tomek"], summary: "5-layer harness + agentic search.",
+  source: "https://claude.com/blog/how-claude-code-works-in-large-codebases-best-practices-and-where-to-start" },
+
+{ id: "l-blog-everyday-connectors", category: "link", title: "Blog — Everyday life connectors", tags: ["connectors", "everyday"], status: "ref",
+  relevance: ["Setup Boy"], summary: "AllTrails, Audible, Booking etc.",
+  source: "https://claude.com/blog/connectors-for-everyday-life" },
+
+{ id: "l-blog-compliance-partners", category: "link", title: "Blog — Compliance API + 28 partners", tags: ["compliance"], status: "ref",
+  relevance: ["Plichta"], summary: "Compliance API + 28 security partners.",
+  source: "https://claude.com/blog/compliance-api-security-partners" },
+
+{ id: "l-docs-routines", category: "link", title: "Docs — Routines", tags: ["routines"], status: "ref",
+  relevance: ["Tomek"], summary: "Pełna dokumentacja Routines.",
+  source: "https://code.claude.com/docs/en/routines" },
+
+{ id: "l-docs-channels", category: "link", title: "Docs — Channels", tags: ["channels"], status: "ref",
+  relevance: ["Tomek"], summary: "Channels (iMessage/Telegram/Discord/custom).",
+  source: "https://code.claude.com/docs/en/channels" },
+
+{ id: "l-docs-channels-ref", category: "link", title: "Docs — Channels Reference", tags: ["channels", "custom"], status: "ref",
+  relevance: ["Tomek"], summary: "Build własny channel.",
+  source: "https://code.claude.com/docs/en/channels-reference" },
+
+{ id: "l-docs-rc", category: "link", title: "Docs — Remote Control", tags: ["remote-control"], status: "ref",
+  relevance: ["Tomek"], summary: "Remote Control docs.",
+  source: "https://code.claude.com/docs/en/remote-control" },
+
+{ id: "l-docs-computer-use", category: "link", title: "Docs — Computer Use", tags: ["computer-use", "macos"], status: "ref",
+  relevance: ["Setup Boy"], summary: "Computer Use docs.",
+  source: "https://code.claude.com/docs/en/computer-use" },
+
+{ id: "l-docs-agent-sdk", category: "link", title: "Docs — Agent SDK", tags: ["agent-sdk"], status: "ref",
+  relevance: ["Tomek"], summary: "Agent SDK Python/TypeScript.",
+  source: "https://code.claude.com/docs/en/agent-sdk/overview" },
+
+{ id: "l-docs-agent-teams", category: "link", title: "Docs — Agent Teams", tags: ["agent-teams"], status: "ref",
+  relevance: ["Cortex"], summary: "Agent Teams CLI experimental.",
+  source: "https://code.claude.com/docs/en/agent-teams" },
+
+{ id: "l-docs-subagents", category: "link", title: "Docs — Sub-agents", tags: ["subagents"], status: "ref",
+  relevance: ["Tomek"], summary: "Sub-agents documentation.",
+  source: "https://code.claude.com/docs/en/sub-agents" },
+
+{ id: "l-docs-skills", category: "link", title: "Docs — Skills", tags: ["skills"], status: "ref",
+  relevance: ["Tomek"], summary: "Skills documentation.",
+  source: "https://code.claude.com/docs/en/skills" },
+
+{ id: "l-docs-memory", category: "link", title: "Docs — Memory (CLAUDE.md + Auto memory)", tags: ["memory"], status: "ref",
+  relevance: ["Tomek"], summary: "Memory documentation.",
+  source: "https://code.claude.com/docs/en/memory" },
+
+{ id: "l-docs-hooks", category: "link", title: "Docs — Hooks Guide", tags: ["hooks"], status: "ref",
+  relevance: ["Tomek"], summary: "Hooks Guide.",
+  source: "https://code.claude.com/docs/en/hooks-guide" },
+
+{ id: "l-docs-ultraplan", category: "link", title: "Docs — Ultraplan", tags: ["ultraplan"], status: "ref",
+  relevance: ["Tomek"], summary: "Ultraplan documentation.",
+  source: "https://code.claude.com/docs/en/ultraplan" },
+
+{ id: "l-docs-worktrees", category: "link", title: "Docs — Worktrees", tags: ["worktrees"], status: "ref",
+  relevance: ["Tomek"], summary: "Worktrees documentation.",
+  source: "https://code.claude.com/docs/en/worktrees" },
+
+{ id: "l-docs-mcp", category: "link", title: "Docs — MCP", tags: ["mcp"], status: "ref",
+  relevance: ["Tomek"], summary: "MCP w Claude Code.",
+  source: "https://code.claude.com/docs/en/mcp" },
+
+{ id: "l-docs-plugins", category: "link", title: "Docs — Plugins", tags: ["plugins"], status: "ref",
+  relevance: ["Tomek"], summary: "Plugins documentation.",
+  source: "https://code.claude.com/docs/en/plugins" },
+
+{ id: "l-docs-tool-search", category: "link", title: "Docs — Tool Search", tags: ["tool-search"], status: "ref",
+  relevance: ["Tomek"], summary: "Tool Search documentation.",
+  source: "https://code.claude.com/docs/en/tool-search" },
+
+{ id: "l-docs-sandbox", category: "link", title: "Docs — Sandbox", tags: ["sandbox"], status: "ref",
+  relevance: ["Tomek", "Plichta"], summary: "Sandbox mode documentation.",
+  source: "https://code.claude.com/docs/en/sandbox" },
+
+{ id: "l-docs-zdr", category: "link", title: "Docs — Zero Data Retention", tags: ["zdr", "enterprise"], status: "ref",
+  relevance: ["Plichta"], summary: "Zero Data Retention documentation.",
+  source: "https://code.claude.com/docs/en/zero-data-retention" },
+
+{ id: "l-docs-output-styles", category: "link", title: "Docs — Output Styles", tags: ["output-styles"], status: "ref",
+  relevance: ["Tomek"], summary: "Output Styles documentation.",
+  source: "https://code.claude.com/docs/en/output-styles" },
+
+{ id: "l-docs-voice", category: "link", title: "Docs — Voice Dictation", tags: ["voice"], status: "ref",
+  relevance: ["Tomek"], summary: "Voice Dictation documentation.",
+  source: "https://code.claude.com/docs/en/voice-dictation" },
+
+{ id: "l-docs-common-workflows", category: "link", title: "Docs — Common Workflows", tags: ["workflows", "best-practices"], status: "ref",
+  relevance: ["Tomek"], summary: "Common Workflows + Best Practices.",
+  source: "https://code.claude.com/docs/en/common-workflows" },
+
+{ id: "l-docs-settings", category: "link", title: "Docs — Settings (managed)", tags: ["settings", "enterprise"], status: "ref",
+  relevance: ["Plichta"], summary: "Settings documentation w tym managed policy.",
+  source: "https://code.claude.com/docs/en/settings" },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-claude-seo-geo-warsztat", category: "link", title: "📈 Podręcznik Claude SEO+GEO — zakres pracy + pipeline + Senuto + GEO 1", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "📈 Podręcznik Claude SEO+GEO — zakres pracy + pipeline + Senuto + GEO 13-pillar + 6 procedur (recipes) + propozycja usługi. „Klaudiusz Opus poleca\". (2026-06-01)",
+  source: "https://tomekwlqq.github.io/eel-reports/claude-seo-geo-warsztat.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-claude-ads-meta-google-warsztat", category: "link", title: "🎯 Podręcznik Claude Ads", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "🎯 Podręcznik Claude Ads (Meta+Google) — reklama przez Claude+MCP, 6 procedur (audyt/launch/optymalizacja), propozycja usługi. „Klaudiusz Opus poleca\". (2026-06-01)",
+  source: "https://tomekwlqq.github.io/eel-reports/claude-ads-meta-google-warsztat.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-produkty-egzekucyjne", category: "link", title: "🎯 Produkty Egzekucyjne Cortex v0.5 — 130 wpisów", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "🎯 Produkty Egzekucyjne Cortex v0.5 — 130 wpisów (12 solo / 55 par komplet / 36 trójek / 27 czwórek) z Opus Score 1-10 + filtr Opus Recommended (81 rec) + 4 presety problemów głównych (Paid/Conversion/SEO+GEO/Content) + execution refs (skill",
+  source: "https://tomekwlqq.github.io/eel-reports/PRODUKTY_EGZEKUCYJNE.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-verdykty", category: "link", title: "📋 Verdykty sesji 30.05 — mobile-friendly synteza cross-check 3 warstw", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "📋 Verdykty sesji 30.05 — mobile-friendly synteza cross-check 3 warstw + GLOV verdict 6.5/10 (NIE gold) + 24 propozycji ulepszeń + 5 cross-warstwowych + rekomendowana sekwencja 5 priorytetów (~25 dni). TYLKO DO ROZMOWY. (2026-05-30)",
+  source: "https://tomekwlqq.github.io/eel-reports/VERDYKTY.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-self-learning-3-warstw", category: "link", title: "🧠 SELF_LEARNING analiza — głębsza ocena warstw HTML/Visual/Content pod", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "🧠 SELF_LEARNING analiza — głębsza ocena warstw HTML/Visual/Content pod kątem powtarzalności na skali. W1=8/10 zamknięty / W2=4/10 OTWARTY (krytyczny gap) / W3=6/10 częściowy. (2026-05-30)",
+  source: "https://tomekwlqq.github.io/eel-reports/SELF_LEARNING_3_WARSTW.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-retail-media-hebe-raport", category: "link", title: "Retail Media Networks — Kompendium + Rekomendacja Hebe.pl — definicje", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "Retail Media Networks — Kompendium + Rekomendacja Hebe.pl — definicje, formaty, technologie, 25+ sieci global/EU/PL, benchmarki CPM/CPC, beauty RMN case studies, 3-fazowy plan wdrożenia (2026-05-25)",
+  source: "https://tomekwlqq.github.io/eel-reports/retail_media_hebe_raport.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-mapa-percepcji", category: "link", title: "SejfZone — Mapa Percepcji — 2 zakładki: 🔫 Szafy na broń", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "SejfZone — Mapa Percepcji — 2 zakładki: 🔫 Szafy na broń (230 art.) + 🏠 Sejfy domowe (230 art.), CEP-ścieżki A–G, filtry, checklista (2026-05-25)",
+  source: "https://tomekwlqq.github.io/eel-reports/mapa-percepcji.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-sejfzone-raport-2026-05-21", category: "link", title: "SejfZone — raport GA4 EEL", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "SejfZone — raport GA4 EEL (2026-05-21)",
+  source: "https://tomekwlqq.github.io/eel-reports/SEJFZONE-raport-2026-05-21.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-sejfzone-r04-produkty", category: "link", title: "SejfZone — Ranking Produktów GA4", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "SejfZone — Ranking Produktów GA4 (2026-05-21)",
+  source: "https://tomekwlqq.github.io/eel-reports/sejfzone-r04-produkty.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-fera-content-audit-2026-05-22", category: "link", title: "Fera.pl — Content Audit PDP", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "Fera.pl — Content Audit PDP (5 produktów, benchmark Sephora, 2026-05-22)",
+  source: "https://tomekwlqq.github.io/eel-reports/FERA-content-audit-2026-05-22.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-geo-check-fera-sephora-2026-05-22", category: "link", title: "GEO Check — Fera.pl", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "GEO Check — Fera.pl (13/100) vs Sephora (62/100), karma sucha dla psa + Facial Moisturizers, 2026-05-22",
+  source: "https://tomekwlqq.github.io/eel-reports/GEO-check-fera-sephora-2026-05-22.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-opus-self-described", category: "link", title: "🤖 Opus 4.7 z pierwszej osoby", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "🤖 Opus 4.7 z pierwszej osoby (NIE 4.8) — autentyczny POV modelu + Real Truth Checker o self-uncertainty + szablon prompta do uruchomienia z 4.8. (2026-05-30)",
+  source: "https://tomekwlqq.github.io/eel-reports/OPUS_SELF_DESCRIBED.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-09 (kb_daily_update) ===
+{ id: "kbauto-eel-tactic-card-design", category: "link", title: "EEL Tactic Card — wizualny widok karty taktyki eksperymentu", tags: ["auto-dopiete", "2026-06-09"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "EEL Tactic Card — wizualny widok karty taktyki eksperymentu (design prototype)",
+  source: "https://tomekwlqq.github.io/eel-reports/EEL-tactic-card-design.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-09. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-12 (kb_daily_update) ===
+{ id: "kbauto-audi-ga4-raport-03-06-2026", category: "link", title: "📊 Raport GA4 Audi Plichta — dashboard: ruch/konwersje, demografia, lea", tags: ["auto-dopiete", "2026-06-12"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "📊 Raport GA4 Audi Plichta — dashboard: ruch/konwersje, demografia, leady, formularze serwisowe, leady nowe auta, architektura eventy. Narracja follow-the-shopper, heatmapy CR. Źródło lokalne: Projects/Audi_Plichta/ga4_cro/ (16 analiz — patr",
+  source: "https://tomekwlqq.github.io/audi-plichta-raport/audi-GA4-raport-03.06.2026.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-12. Zrodlo: LINKI.md.</p>` },
+
+{ id: "kbauto-geo-rekomendacje-fera-2026-05-22", category: "link", title: "GEO Rekomendacje — Fera.pl", tags: ["auto-dopiete", "2026-06-17"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "GEO Rekomendacje — Fera.pl (13→65/100), 8 DQ, gotowe fragmenty treści, 2026-05-22",
+  source: "https://tomekwlqq.github.io/eel-reports/GEO-rekomendacje-fera-2026-05-22.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-17. Zrodlo: LINKI.md.</p>` },
+
+// === auto-dopiete 2026-06-17 (kb_daily_update) ===
+{ id: "kbauto-geo-rekomendacje-sejfzone-2026-05-22", category: "link", title: "GEO Rekomendacje — SejfZone.pl", tags: ["auto-dopiete", "2026-06-17"], status: "live", hot: false,
+  relevance: ["Tomek"],
+  summary: "GEO Rekomendacje — SejfZone.pl (44–61→72–84/100), 8 DQ, szafy S1, 2026-05-22",
+  source: "https://tomekwlqq.github.io/eel-reports/GEO-rekomendacje-sejfzone-2026-05-22.html",
+  body: `<p>Auto-dopiete przez kb_daily_update 2026-06-17. Zrodlo: LINKI.md.</p>` },
+]; // END DATA
+
+// ============================================
+// RENDERING
+// ============================================
+
+const CAT_INFO = {
+  anthropic: { name: "Anthropic Features", icon: "🌐", order: 1 },
+  setup: { name: "Setup Tomka", icon: "🔧", order: 2 },
+  workflow: { name: "Workflows (Opus 4.8)", icon: "📚", order: 3 },
+  persona: { name: "Persony Setup Boy", icon: "🧩", order: 4 },
+  cortex: { name: "Cegiełki Cortex", icon: "🏗️", order: 5 },
+  decision: { name: "Decisions & TODOs", icon: "📋", order: 6 },
+  skill: { name: "Skille", icon: "🛠️", order: 7 },
+  doc: { name: "Dokumenty wewnętrzne", icon: "📂", order: 8 },
+  link: { name: "Linki", icon: "🔗", order: 9 }
+};
+
+let activeCat = null;
+let activeTags = new Set();
+let searchQuery = "";
+
+function getAllTags() {
+  const tags = new Set();
+  DATA.forEach(d => (d.tags || []).forEach(t => tags.add(t)));
+  return [...tags].sort();
+}
+
+function getCategoryCounts() {
+  const counts = {};
+  DATA.forEach(d => {
+    counts[d.category] = (counts[d.category] || 0) + 1;
+  });
+  return counts;
+}
+
+function renderSidebar() {
+  // Categories
+  const list = document.getElementById('catList');
+  const counts = getCategoryCounts();
+  const cats = Object.entries(CAT_INFO).sort((a,b) => a[1].order - b[1].order);
+
+  list.innerHTML = '<button class="cat-btn ' + (activeCat === null ? 'active' : '') + '" data-cat="all">' +
+    '<span class="cat-icon">📁</span><span>Wszystkie</span><span class="cat-count">' + DATA.length + '</span></button>';
+
+  cats.forEach(([key, info]) => {
+    const count = counts[key] || 0;
+    if (count === 0) return;
+    const isActive = activeCat === key;
+    list.innerHTML += `<button class="cat-btn ${isActive ? 'active' : ''}" data-cat="${key}">
+      <span class="cat-icon">${info.icon}</span><span>${info.name}</span><span class="cat-count">${count}</span></button>`;
+  });
+
+  // Tags (top 30)
+  const tagsList = document.getElementById('tagFilters');
+  const allTags = getAllTags();
+  const topTags = allTags.slice(0, 40);
+
+  tagsList.innerHTML = topTags.map(t =>
+    `<span class="tag-chip ${activeTags.has(t) ? 'active' : ''}" data-tag="${t}">${t}</span>`
+  ).join('');
+
+  // Bind cat clicks
+  list.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.cat;
+      activeCat = (cat === 'all') ? null : (activeCat === cat ? null : cat);
+      activeTags.clear(); // Clear tags when changing cat
+      render();
+    });
+  });
+
+  // Bind quick filters
+  document.querySelectorAll('[data-quick]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const q = btn.dataset.quick;
+      activeCat = null;
+      activeTags.clear();
+      searchQuery = "";
+      document.getElementById('searchInput').value = "";
+
+      if (q === "hot") {
+        // filter by hot
+        activeTags = new Set(["__hot__"]);
+      } else if (q === "research-preview") activeTags = new Set(["research-preview"]);
+      else if (q === "live") activeTags = new Set(["__live__"]);
+      else if (q === "macos") activeTags = new Set(["macos-only"]);
+      else if (q === "plichta") activeTags = new Set(["__plichta__"]);
+      else if (q === "setup-boy") activeTags = new Set(["__setup-boy__"]);
+      else if (q === "eel") activeTags = new Set(["__eel__"]);
+      else if (q === "archived") activeTags = new Set(["__archived__"]);
+      render();
+    });
+  });
+
+  // Bind tag chips
+  tagsList.querySelectorAll('.tag-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const t = chip.dataset.tag;
+      if (activeTags.has(t)) activeTags.delete(t);
+      else activeTags.add(t);
+      render();
+    });
+  });
+}
+
+function filterData() {
+  return DATA.filter(d => {
+    // Search
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const haystack = (d.title + " " + d.summary + " " + (d.body || "") + " " + (d.tags || []).join(" ") + " " + (d.relevance || []).join(" ")).toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+
+    // Category
+    if (activeCat && d.category !== activeCat) return false;
+
+    // Tags / quick filters
+    if (activeTags.size > 0) {
+      for (const t of activeTags) {
+        if (t === "__hot__") { if (!d.hot) return false; }
+        else if (t === "__live__") { if (d.status !== "live") return false; }
+        else if (t === "__plichta__") { if (!(d.relevance || []).includes("Plichta")) return false; }
+        else if (t === "__setup-boy__") { if (!(d.relevance || []).includes("Setup Boy")) return false; }
+        else if (t === "__eel__") { if (!(d.relevance || []).includes("EEL")) return false; }
+        else if (t === "__archived__") { if (d.status !== "archived") return false; }
+        else {
+          if (!(d.tags || []).includes(t)) return false;
+        }
+      }
+    }
+
+    return true;
+  });
+}
+
+function renderCard(d) {
+  const statusClass = d.status || "ref";
+  const tagsHTML = (d.tags || []).slice(0, 5).map(t => `<span class="meta-tag">${t}</span>`).join('');
+  const relevanceHTML = (d.relevance || []).map(r => `<span class="meta-tag relevance">${r}</span>`).join('');
+  const sourceHTML = d.source ? `<div class="card-source">📍 ${d.source.startsWith('http') ? '<a href="' + d.source + '" target="_blank">' + d.source + '</a>' : d.source}</div>` : '';
+  const bodyHTML = d.body ? `<div class="card-body">${d.body}</div><div class="card-expand-hint"></div>` : '';
+  const hotClass = d.hot ? 'hot' : '';
+  const hotMarker = d.hot ? '<span class="hot-marker">⭐⭐</span>' : '';
+
+  return `
+    <div class="card ${hotClass}" data-id="${d.id}">
+      <div class="card-header">
+        <div class="card-title">${d.title}${hotMarker}</div>
+        <span class="status-badge ${statusClass}">${d.status || 'ref'}</span>
+      </div>
+      <div class="card-summary">${d.summary || ''}</div>
+      <div class="card-meta">${tagsHTML} ${relevanceHTML}</div>
+      ${sourceHTML}
+      ${bodyHTML}
+    </div>
+  `;
+}
+
+function render() {
+  renderSidebar();
+
+  const filtered = filterData();
+  document.getElementById('resultsCount').textContent = `${filtered.length} z ${DATA.length} wpisów`;
+
+  const content = document.getElementById('content');
+  if (filtered.length === 0) {
+    content.innerHTML = '<div class="empty-state"><h3>Brak wyników</h3><p>Spróbuj innego wyszukiwania lub wyczyść filtry.</p></div>';
+    return;
+  }
+
+  // Group by category for display
+  const grouped = {};
+  filtered.forEach(d => {
+    if (!grouped[d.category]) grouped[d.category] = [];
+    grouped[d.category].push(d);
+  });
+
+  const cats = Object.keys(grouped).sort((a,b) => (CAT_INFO[a]?.order || 99) - (CAT_INFO[b]?.order || 99));
+
+  let html = '';
+  cats.forEach(catKey => {
+    const info = CAT_INFO[catKey] || { name: catKey, icon: "📌" };
+    html += `<div class="section-divider">${info.icon} ${info.name} <span style="font-size:13px;color:var(--text-muted);font-weight:400;">(${grouped[catKey].length})</span></div>`;
+    html += '<div class="cards-grid">' + grouped[catKey].map(renderCard).join('') + '</div>';
+  });
+
+  content.innerHTML = html;
+
+  // Bind expand on card click
+  content.querySelectorAll('.card').forEach(card => {
+    if (card.querySelector('.card-body')) {
+      card.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') return;
+        card.classList.toggle('expanded');
+      });
+      card.style.cursor = 'pointer';
+    }
+  });
+}
+
+// Search
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchQuery = e.target.value.trim();
+  render();
+});
+
+// Next update date display
+const nextUpdate = new Date();
+nextUpdate.setDate(nextUpdate.getDate() + 7);
+const _nextUpdateEl = document.getElementById('nextUpdate');
+if (_nextUpdateEl) _nextUpdateEl.textContent = nextUpdate.toLocaleDateString('pl-PL');
+
+// Initial render
+render();
+</script>
+</body>
+</html>

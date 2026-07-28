@@ -77,7 +77,6 @@ footer a{color:var(--accent2)}
 </head>
 <body>
 <div class="hero"><div class="w">
-<a href="GLOV_HUB.html" style="color:rgba(255,255,255,.72);font-size:12px;text-decoration:none;display:inline-block;margin-bottom:10px;letter-spacing:.02em">← GLOV HUB</a>
 <h1>GLOV® Rękawica do demakijażu — HUB</h1>
 <p>Category Standard (14 sekcji) + Pole pytań (8 ścieżek · 154 pytań) + Strategia + Konkurencja + Head-to-Head + Vision · 2026-07-01</p>
 </div></div>
@@ -5113,12 +5112,6 @@ function dlScrape(k){const d=SCRAPE_RAW[k];if(!d)return;
  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
  a.download=d.name.replace(/[^a-z0-9]+/gi,'_').replace(/^_|_$/g,'')+'_scrape.md';
  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(a.href);}
-// Tab color themes
-const TAB_ACCENTS={cs:'#c0392b',strategia:'#d97706',pole:'#1d4ed8',konkurencja:'#7c3aed',h2h:'#16a34a',vision:'#db2777',mapa:'#0891b2'};
-const TAB_GRADS={cs:'linear-gradient(135deg,#c0392b,#922b21)',strategia:'linear-gradient(135deg,#d97706,#b45309)',pole:'linear-gradient(135deg,#1d4ed8,#1e3a8a)',konkurencja:'linear-gradient(135deg,#7c3aed,#5b21b6)',h2h:'linear-gradient(135deg,#16a34a,#15803d)',vision:'linear-gradient(135deg,#db2777,#9d174d)',mapa:'linear-gradient(135deg,#0891b2,#0e7490)'};
-function applyTabTheme(t){
-  document.documentElement.style.setProperty('--accent',TAB_ACCENTS[t]||TAB_ACCENTS.cs);
-  const hero=document.querySelector('.hero');if(hero)hero.style.background=TAB_GRADS[t]||TAB_GRADS.cs;}
 // Tab switching
 document.querySelectorAll('.tab-link').forEach(a=>{
  a.addEventListener('click',e=>{e.preventDefault();
@@ -5127,7 +5120,6 @@ document.querySelectorAll('.tab-link').forEach(a=>{
   document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));
   a.classList.add('active');
   document.getElementById('tab-'+t).classList.add('active');
-  applyTabTheme(t);
  });
 });
 // Hash nav support
