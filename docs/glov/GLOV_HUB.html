@@ -138,6 +138,11 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
 .bl-qty{font-size:17px;font-weight:800;letter-spacing:-.4px;line-height:1.1;font-variant-numeric:tabular-nums}
 .bl-rev{font-size:11.5px;color:var(--txt2);margin-top:2px;font-variant-numeric:tabular-nums}
 .bl-zero .bl-qty{color:var(--muted)}
+.bl-r{font-size:13px;font-variant-numeric:tabular-nums;line-height:1.5}
+.bl-r-kasa{font-weight:700;color:var(--txt);letter-spacing:-.2px}
+.bl-r-zam{color:var(--txt2)}
+.bl-r-szt{color:var(--muted);font-size:12px}
+.bl-zero .bl-r{color:var(--muted)!important}
 .bl-sum-hdr{color:#1e293b!important;border-bottom-color:#1e293b!important}
 .bl-sum-cell .bl-qty{color:#1e293b;font-size:15px}
 @media(prefers-color-scheme:dark){.bl-sum-hdr{color:#e2e8f0!important;border-bottom-color:#e2e8f0!important}.bl-sum-cell .bl-qty{color:#e2e8f0}}
@@ -526,13 +531,21 @@ const MONTHS_PL=['','Sty','Lut','Mar','Kwi','Maj','Cze','Lip','Sie','Wrz','Paź'
 function blCell(period_d, src){
   const v=(period_d||{})[src]||{orders:0,items:0,revenue:0};
   const z=!v.orders;
-  return `<td class="bl-val${z?' bl-zero':''}"><div class="bl-qty">${zl(v.revenue)}</div><div class="bl-rev">${n(v.orders)} zam. · ${n(v.items||0)} szt.</div></td>`;
+  return `<td class="bl-val${z?' bl-zero':''}">
+    <div class="bl-r bl-r-kasa">${zl(v.revenue)}</div>
+    <div class="bl-r bl-r-zam">${n(v.orders)} zam.</div>
+    <div class="bl-r bl-r-szt">${n(v.items||0)} szt.</div>
+  </td>`;
 }
 function blSumCell(period_d, srcs){
   const total={orders:0,items:0,revenue:0};
   srcs.forEach(s=>{const v=(period_d||{})[s]||{};total.orders+=(v.orders||0);total.items+=(v.items||0);total.revenue+=(v.revenue||0);});
   const z=!total.orders;
-  return `<td class="bl-val bl-sum-cell${z?' bl-zero':''}"><div class="bl-qty">${zl(total.revenue)}</div><div class="bl-rev">${n(total.orders)} zam.</div></td>`;
+  return `<td class="bl-val bl-sum-cell${z?' bl-zero':''}">
+    <div class="bl-r bl-r-kasa">${zl(total.revenue)}</div>
+    <div class="bl-r bl-r-zam">${n(total.orders)} zam.</div>
+    <div class="bl-r bl-r-szt">${n(total.items)} szt.</div>
+  </td>`;
 }
 
 function renderBLSales(){
