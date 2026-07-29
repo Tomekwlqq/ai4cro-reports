@@ -226,8 +226,10 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
   <div class="meta-strip-head">
     <h2>📣 Meta Ads <span class="meta-updated" id="meta-updated"></span></h2>
     <div class="meta-strip-actions">
-      <button class="meta-toggle-btn active" id="meta-btn-dzis" onclick="renderMeta('today')">Dziś</button>
-      <button class="meta-toggle-btn" id="meta-btn-wczoraj" onclick="renderMeta('yesterday')">Wczoraj</button>
+      <button class="meta-toggle-btn active" id="meta-btn-today" onclick="renderMeta('today')">Dziś</button>
+      <button class="meta-toggle-btn" id="meta-btn-yesterday" onclick="renderMeta('yesterday')">Wczoraj</button>
+      <button class="meta-toggle-btn" id="meta-btn-last_7d" onclick="renderMeta('last_7d')">7 dni</button>
+      <button class="meta-toggle-btn" id="meta-btn-last_30d" onclick="renderMeta('last_30d')">30 dni</button>
       <button class="btn-refresh" onclick="loadMetaData(true)">🔄 Odśwież</button>
     </div>
   </div>
@@ -678,13 +680,15 @@ function roasPill(r){
 
 function renderMeta(mode){
   metaMode=mode;
-  document.getElementById('meta-btn-dzis').classList.toggle('active',mode==='today');
-  document.getElementById('meta-btn-wczoraj').classList.toggle('active',mode==='yesterday');
+  ['today','yesterday','last_7d','last_30d'].forEach(m=>{
+    const b=document.getElementById('meta-btn-'+m);
+    if(b) b.classList.toggle('active',m===mode);
+  });
   const d=window.META_DAILY;
   if(!d) return;
   const pd=d[mode];
   const t=pd.total;
-  const dateLabel=mode==='today'?d.today_date:d.yesterday_date;
+  const dateLabel=mode==='today'?d.today_date:mode==='yesterday'?d.yesterday_date:mode==='last_7d'?d.week_range:d.month_range;
   const el=document.getElementById('meta-content');
   document.getElementById('meta-updated').textContent=`· ${dateLabel} · odśw. ${d.updated}`;
 
