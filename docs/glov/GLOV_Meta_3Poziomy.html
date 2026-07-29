@@ -141,6 +141,32 @@ th.grp-bl{background:var(--bl-head);color:#3a1a70}
 .mini-tbl .sep td{border-top:2px solid var(--border)}
 .note{font-size:11px;color:var(--muted);margin-top:6px}
 .repro-meta{font-size:11px;color:var(--muted)}
+.meta-strip{background:var(--card,#f7f7f8);border:1px solid var(--border,#e2e2e5);border-radius:14px;padding:18px 22px;margin-bottom:24px;border-top:3px solid #1877f2}
+.meta-strip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.meta-strip-head h2{font-size:15px;font-weight:800;letter-spacing:-.3px;margin:0;display:flex;align-items:center;gap:8px}
+.meta-updated{font-size:11px;font-weight:400;color:var(--muted,#888)}
+.meta-strip-actions{display:flex;gap:6px;align-items:center}
+.meta-toggle-btn{background:#fff;border:1px solid #ddd;border-radius:7px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;color:#666;transition:.15s}
+.meta-toggle-btn.active{background:#1877f2;color:#fff;border-color:#1877f2}
+.meta-toggle-btn:hover:not(.active){border-color:#1877f2;color:#1877f2}
+.btn-refresh-m{background:#fff;border:1px solid #ddd;border-radius:7px;padding:5px 10px;font-size:12px;cursor:pointer;color:#666}
+.meta-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.meta-kpi-card{background:#fff;border:1px solid #e5e5e8;border-radius:10px;padding:12px 14px}
+.meta-kpi-card.roas-ok{border-color:#22c55e;background:#f0fdf4}
+.meta-kpi-card.roas-bad{border-color:#f59e0b;background:#fffbeb}
+.meta-kpi-label{font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.meta-kpi-val{font-size:20px;font-weight:900;letter-spacing:-.5px}
+.meta-kpi-sub{font-size:11px;color:#888;margin-top:2px}
+.meta-table{width:100%;border-collapse:collapse;font-size:12px}
+.meta-table th{text-align:left;padding:6px 8px;background:#f4f4f6;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#888;border-bottom:2px solid #e0e0e4}
+.meta-table td{padding:7px 8px;border-bottom:1px solid #f0f0f2;vertical-align:middle}
+.meta-table tbody tr:hover{background:#fafafa}
+.meta-roas-pill{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.meta-roas-pill.ok{background:#dcfce7;color:#16a34a}
+.meta-roas-pill.bad{background:#fef9c3;color:#b45309}
+.meta-roas-pill.nil{background:#f3f4f6;color:#9ca3af}
+.camp-name{font-size:12px;font-weight:600}
+.meta-loading{padding:20px;text-align:center;color:#888;font-size:13px}
 </style>
 </head>
 <body>
@@ -149,6 +175,19 @@ th.grp-bl{background:var(--bl-head);color:#3a1a70}
 <p class="muted">Kampanie · Zestawy reklam · Reklamy &nbsp;|&nbsp; Konto: act_414505328896049
   &nbsp;|&nbsp; Snapshot Meta: 2026-07-20–2026-07-26 &nbsp;|&nbsp; Wygenerowano: 2026-07-28</p>
 
+<div class="meta-strip">
+  <div class="meta-strip-head">
+    <h2>📣 Meta Ads — Live KPI <span class="meta-updated" id="meta-updated"></span></h2>
+    <div class="meta-strip-actions">
+      <button class="meta-toggle-btn active" id="meta-btn-today" onclick="renderMeta('today')">Dziś</button>
+      <button class="meta-toggle-btn" id="meta-btn-yesterday" onclick="renderMeta('yesterday')">Wczoraj</button>
+      <button class="meta-toggle-btn" id="meta-btn-last_7d" onclick="renderMeta('last_7d')">7 dni</button>
+      <button class="meta-toggle-btn" id="meta-btn-last_30d" onclick="renderMeta('last_30d')">30 dni</button>
+      <button class="btn-refresh-m" onclick="loadMetaData(true)">🔄</button>
+    </div>
+  </div>
+  <div id="meta-content"><div class="meta-loading">Ładowanie…</div></div>
+</div>
 
 <div class="kpi-strip">
   <div class="kpi-card">
@@ -4209,6 +4248,88 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<script>
+const META_URL='https://tomekwlqq.github.io/eel-reports/glov/glov_hub_meta_daily.json';
+let metaMode='today';
+
+function zl2(v){return(+v||0).toLocaleString('pl-PL',{minimumFractionDigits:2,maximumFractionDigits:2})+' zł';}
+function n2(v){return(+v||0).toLocaleString('pl-PL');}
+function roas2(v){return v!=null?v.toFixed(2):'—';}
+function roasPill(r){
+  if(r==null) return '<span class="meta-roas-pill nil">—</span>';
+  const cls=r>=1.5?'ok':'bad';
+  return `<span class="meta-roas-pill ${cls}">${r.toFixed(2)}×</span>`;
+}
+
+function renderMeta(mode){
+  metaMode=mode;
+  ['today','yesterday','last_7d','last_30d'].forEach(m=>{
+    const b=document.getElementById('meta-btn-'+m);
+    if(b) b.classList.toggle('active',m===mode);
+  });
+  const d=window.META_DAILY;
+  if(!d) return;
+  const pd=d[mode];
+  const t=pd.total;
+  const dateLabel=mode==='today'?d.today_date:mode==='yesterday'?d.yesterday_date:mode==='last_7d'?d.week_range:d.month_range;
+  const el=document.getElementById('meta-content');
+  document.getElementById('meta-updated').textContent=`· ${dateLabel} · odśw. ${d.updated}`;
+
+  const roasClass=t.roas>=1.5?'roas-ok':'roas-bad';
+  const kpiHtml=`<div class="meta-kpi">
+    <div class="meta-kpi-card">
+      <div class="meta-kpi-label">Wydatki</div>
+      <div class="meta-kpi-val">${zl2(t.spend)}</div>
+      <div class="meta-kpi-sub">${pd.campaigns.filter(c=>c.spend>0).length} kampanii</div>
+    </div>
+    <div class="meta-kpi-card">
+      <div class="meta-kpi-label">Zakupy (pixel)</div>
+      <div class="meta-kpi-val">${n2(t.purchases)}</div>
+      <div class="meta-kpi-sub">CPP ${t.purchases?zl2(t.spend/t.purchases):'—'}</div>
+    </div>
+    <div class="meta-kpi-card">
+      <div class="meta-kpi-label">Przychód (pixel)</div>
+      <div class="meta-kpi-val">${zl2(t.revenue)}</div>
+      <div class="meta-kpi-sub">${n2(t.impressions)} wyśw.</div>
+    </div>
+    <div class="meta-kpi-card ${roasClass}">
+      <div class="meta-kpi-label">ROAS</div>
+      <div class="meta-kpi-val">${roas2(t.roas)}×</div>
+      <div class="meta-kpi-sub">CTR ${t.ctr}%</div>
+    </div>
+  </div>`;
+
+  const rows=pd.campaigns.map(c=>`<tr>
+    <td><span class="camp-name" title="${c.name}">${c.name.replace(/adc_|zasieg_|ruch_/g,'')}</span></td>
+    <td>${zl2(c.spend)}</td>
+    <td>${n2(c.impressions)}</td>
+    <td>${c.clicks}</td>
+    <td>${c.ctr}%</td>
+    <td>${c.purchases||'—'}</td>
+    <td>${roasPill(c.roas)}</td>
+  </tr>`).join('');
+
+  el.innerHTML=kpiHtml+`<table class="meta-table">
+    <thead><tr><th>Kampania</th><th>Wydatki</th><th>Wyśw.</th><th>Klik.</th><th>CTR</th><th>Zakupy</th><th>ROAS</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+async function loadMetaData(force=false){
+  const el=document.getElementById('meta-content');
+  if(force) el.innerHTML='<div class="meta-loading">Pobieram…</div>';
+  try{
+    const r=await fetch(META_URL+'?t='+Date.now(),{signal:AbortSignal.timeout(15000)});
+    if(!r.ok) throw new Error(r.status);
+    window.META_DAILY=await r.json();
+    renderMeta(metaMode);
+  }catch(e){
+    if(window.META_DAILY) renderMeta(metaMode);
+    else el.innerHTML='<div class="meta-loading">Brak danych — odpal meta-refresh w Claude.</div>';
+  }
+}
+loadMetaData();
+</script>
 
 </body>
 </html>
