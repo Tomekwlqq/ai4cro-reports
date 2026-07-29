@@ -141,31 +141,53 @@ th.grp-bl{background:var(--bl-head);color:#3a1a70}
 .mini-tbl .sep td{border-top:2px solid var(--border)}
 .note{font-size:11px;color:var(--muted);margin-top:6px}
 .repro-meta{font-size:11px;color:var(--muted)}
-.meta-strip{background:var(--card,#f7f7f8);border:1px solid var(--border,#e2e2e5);border-radius:14px;padding:18px 22px;margin-bottom:24px;border-top:3px solid #1877f2}
-.meta-strip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
-.meta-strip-head h2{font-size:15px;font-weight:800;letter-spacing:-.3px;margin:0;display:flex;align-items:center;gap:8px}
-.meta-updated{font-size:11px;font-weight:400;color:var(--muted,#888)}
-.meta-strip-actions{display:flex;gap:6px;align-items:center}
-.meta-toggle-btn{background:#fff;border:1px solid #ddd;border-radius:7px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;color:#666;transition:.15s}
-.meta-toggle-btn.active{background:#1877f2;color:#fff;border-color:#1877f2}
-.meta-toggle-btn:hover:not(.active){border-color:#1877f2;color:#1877f2}
-.btn-refresh-m{background:#fff;border:1px solid #ddd;border-radius:7px;padding:5px 10px;font-size:12px;cursor:pointer;color:#666}
-.meta-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
-.meta-kpi-card{background:#fff;border:1px solid #e5e5e8;border-radius:10px;padding:12px 14px}
-.meta-kpi-card.roas-ok{border-color:#22c55e;background:#f0fdf4}
-.meta-kpi-card.roas-bad{border-color:#f59e0b;background:#fffbeb}
-.meta-kpi-label{font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
-.meta-kpi-val{font-size:20px;font-weight:900;letter-spacing:-.5px}
-.meta-kpi-sub{font-size:11px;color:#888;margin-top:2px}
-.meta-table{width:100%;border-collapse:collapse;font-size:12px}
-.meta-table th{text-align:left;padding:6px 8px;background:#f4f4f6;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#888;border-bottom:2px solid #e0e0e4}
-.meta-table td{padding:7px 8px;border-bottom:1px solid #f0f0f2;vertical-align:middle}
-.meta-table tbody tr:hover{background:#fafafa}
-.meta-roas-pill{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
-.meta-roas-pill.ok{background:#dcfce7;color:#16a34a}
-.meta-roas-pill.bad{background:#fef9c3;color:#b45309}
-.meta-roas-pill.nil{background:#f3f4f6;color:#9ca3af}
-.camp-name{font-size:12px;font-weight:600}
+/* ===== UPPER BLOCK ===== */
+.upper-block{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+@media(max-width:900px){.upper-block{grid-template-columns:1fr}}
+.day-col{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;border-top:4px solid #1877f2}
+.day-col.wczoraj{border-top-color:#8fa8c8}
+.day-head{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
+.day-title{font-size:15px;font-weight:800}
+.day-date{font-size:11px;color:var(--muted)}
+.day-refresh{margin-left:auto;background:none;border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;color:var(--muted)}
+.day-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+@media(max-width:1200px){.day-kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.dkpi{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
+.dkpi.meta{border-color:var(--meta-head);background:color-mix(in srgb,var(--meta-bg) 60%,#fff)}
+.dkpi.bl{border-color:var(--bl-head);background:color-mix(in srgb,var(--bl-bg) 60%,#fff)}
+.dkpi.roas-ok{border-color:#86efac!important;background:#f0fdf4!important}
+.dkpi.roas-ok .dk-val{color:var(--green)}
+.dkpi.roas-bad{border-color:#fde68a!important;background:#fffbeb!important}
+.dk-lbl{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
+.dk-val{font-size:15px;font-weight:900;letter-spacing:-.4px}
+.dk-sub{font-size:10px;color:var(--muted);margin-top:1px}
+.camp-mini-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px}
+.camp-mini-table th{padding:4px 6px;background:var(--bg);font-size:10px;font-weight:700;text-align:left;border-bottom:1px solid var(--border)}
+.camp-mini-table th.num{text-align:right}
+.camp-mini-table td{padding:4px 6px;border-bottom:1px solid var(--border);white-space:nowrap}
+.camp-mini-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+.camp-mini-table .name-cell{max-width:160px;white-space:normal;word-break:break-word;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.upper-loading{padding:40px;text-align:center;color:var(--muted);font-size:13px;grid-column:1/-1}
+details>summary{font-size:12px;font-weight:600;cursor:pointer;margin-bottom:6px;list-style:none;display:flex;align-items:center;gap:4px}
+details>summary::before{content:'▶';font-size:9px;transition:.15s}
+details[open]>summary::before{content:'▼'}
+/* ===== PERIOD PICKER ===== */
+.period-section{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:0 0 12px}
+.period-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.period-head h3{font-size:13px;font-weight:700;margin:0}
+.period-btn{padding:4px 14px;border:1px solid var(--border);background:#fff;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);transition:.15s}
+.period-btn.active{background:#1877f2;color:#fff;border-color:#1877f2}
+.period-range{font-size:11px;color:var(--muted);margin-left:4px}
+.btn-refresh-m{background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--muted)}
+.period-kpi{display:flex;gap:8px;flex-wrap:wrap}
+.pkpi{flex:1;min-width:110px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px}
+.pk-lbl{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:2px}
+.pk-val{font-size:16px;font-weight:800}
+.pk-delta{font-size:11px;margin-top:2px}
+.delta-up{color:var(--green);font-weight:600}
+.delta-dn{color:var(--red);font-weight:600}
+.delta-na{color:var(--muted)}
+/* Preserved meta-loading */
 .meta-loading{padding:20px;text-align:center;color:#888;font-size:13px}
 </style>
 </head>
@@ -175,75 +197,26 @@ th.grp-bl{background:var(--bl-head);color:#3a1a70}
 <p class="muted">Kampanie · Zestawy reklam · Reklamy &nbsp;|&nbsp; Konto: act_414505328896049
   &nbsp;|&nbsp; Snapshot Meta: 2026-07-20–2026-07-26 &nbsp;|&nbsp; Wygenerowano: 2026-07-28</p>
 
-<div class="meta-strip">
-  <div class="meta-strip-head">
-    <h2>📣 Meta Ads — Live KPI <span class="meta-updated" id="meta-updated"></span></h2>
-    <div class="meta-strip-actions">
-      <button class="meta-toggle-btn active" id="meta-btn-today" onclick="renderMeta('today')">Dziś</button>
-      <button class="meta-toggle-btn" id="meta-btn-yesterday" onclick="renderMeta('yesterday')">Wczoraj</button>
-      <button class="meta-toggle-btn" id="meta-btn-last_7d" onclick="renderMeta('last_7d')">7 dni</button>
-      <button class="meta-toggle-btn" id="meta-btn-last_30d" onclick="renderMeta('last_30d')">30 dni</button>
-      <button class="btn-refresh-m" onclick="loadMetaData(true)">🔄</button>
-    </div>
-  </div>
-  <div id="meta-content"><div class="meta-loading">Ładowanie…</div></div>
+<!-- UPPER BLOCK: Dziś | Wczoraj -->
+<div class="upper-block" id="upper-block">
+  <div class="upper-loading">Ładowanie danych live…</div>
 </div>
 
-<div class="kpi-strip">
-  <div class="kpi-card">
-    <div class="label">Wydatek Meta (snap.)</div>
-    <div class="value">5 361,94 zł</div>
-    <div class="sub">on-site: 3 825,47 zł</div>
+<div class="period-section">
+  <div class="period-head">
+    <h3>Podsumowanie okresu (Meta Ads)</h3>
+    <button class="period-btn active" id="pb-today" onclick="selectPeriod('today')">Dziś</button>
+    <button class="period-btn" id="pb-last_7d" onclick="selectPeriod('last_7d')">7 dni</button>
+    <button class="period-btn" id="pb-last_30d" onclick="selectPeriod('last_30d')">30 dni</button>
+    <span class="period-range" id="period-range"></span>
+    <button class="btn-refresh-m" onclick="refreshAllData(true)">🔄 Odśwież</button>
   </div>
-  <div class="kpi-card">
-    <div class="label">ROAS on-site (GA4)</div>
-    <div class="value">1,15×</div>
-    <div class="sub">bez rossmann (1 536,47 zł)</div>
-  </div>
-  <div class="kpi-card">
-    <div class="label">ROAS ogółem</div>
-    <div class="value">0,82×</div>
-    <div class="sub">całe konto / przychód GA4</div>
-  </div>
-  <div class="kpi-card">
-    <div class="label">Sesje GA4 (płatny Meta)</div>
-    <div class="value">2 309</div>
-    <div class="sub">z 41 wierszy UTM</div>
-  </div>
-  <div class="kpi-card">
-    <div class="label">Atrybucja zestawy</div>
-    <div class="value">99.4%</div>
-    <div class="sub">2 296 / 2 309 sesji</div>
-  </div>
-  <div class="kpi-card">
-    <div class="label">Atrybucja reklamy</div>
-    <div class="value">99.4%</div>
-    <div class="sub">2 295 / 2 309 sesji</div>
-  </div>
-  <div class="kpi-card" style="border-top:3px solid var(--bl-head)">
-    <div class="label">Zamówienia BL (7d)</div>
-    <div class="value">1 112</div>
-    <div class="sub">wszystkie kanały łącznie</div>
-  </div>
-  <div class="kpi-card" style="border-top:3px solid var(--bl-head)">
-    <div class="label">Kanały BL</div>
-    <div class="value">4</div>
-    <div class="sub">shop 449, tiktokeu 315, allegro 268, hebe 80</div>
+  <div id="period-kpi" class="period-kpi">
+    <div class="meta-loading" style="padding:12px">Ładowanie…</div>
   </div>
 </div>
 
-<div class="data-gap">
-  <strong>Dane Meta per zestaw/reklama:</strong> 7-dniowy snapshot (2026-07-20–2026-07-26).
-  Pełna historia wymaga ETL Meta daily (osobny pipeline API).
-  GA4 historia (channels_utm): brak — uruchom <code>--append-utm</code>.
-</div>
-
-<div class="info-banner">
-  <strong>Brak historycznych danych UTM.</strong>
-  Tabele GA4 pokazują 7-dniowy snapshot (2026-07-20 – 2026-07-26).
-  Uruchom <code>python3 glov_etl_pl_daily.py --append-utm</code> aby dodać historię
-  i odblokować date picker.
-</div>
+<h2 style="margin:16px 0 8px">Szczegółowy snapshot 3 poziomów (20–26.07.2026)</h2>
 
 <div class="filter-bar">
   <span class="filter-label">Filtry:</span>
@@ -4249,86 +4222,233 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <script>
-const META_URL='https://tomekwlqq.github.io/eel-reports/glov/glov_hub_meta_daily.json';
-let metaMode='today';
+const META_URL  = 'https://tomekwlqq.github.io/eel-reports/glov/glov_hub_meta_daily.json';
+const LIVE2_URL = 'https://tomekwlqq.github.io/eel-reports/glov/glov_live2.json';
+const SALES_URL = 'https://tomekwlqq.github.io/eel-reports/glov_hub_sales.json';
 
-function zl2(v){return(+v||0).toLocaleString('pl-PL',{minimumFractionDigits:2,maximumFractionDigits:2})+' zł';}
-function n2(v){return(+v||0).toLocaleString('pl-PL');}
-function roas2(v){return v!=null?v.toFixed(2):'—';}
-function roasPill(r){
-  if(r==null) return '<span class="meta-roas-pill nil">—</span>';
-  const cls=r>=1.5?'ok':'bad';
-  return `<span class="meta-roas-pill ${cls}">${r.toFixed(2)}×</span>`;
+let currentPeriod = 'today';
+
+/* ---- helpers ---- */
+function zl(v){return(+v||0).toLocaleString('pl-PL',{minimumFractionDigits:2,maximumFractionDigits:2})+' zł';}
+function n0(v){return(+v||0).toLocaleString('pl-PL');}
+function fx(v,d=2){return v!=null?(+v).toFixed(d):'—';}
+function roasFmt(v){return v!=null?v.toFixed(2)+'×':'—';}
+function pctFmt(num,den){return den?((num/den)*100).toFixed(1)+'%':'—';}
+function delta(cur,prev){
+  if(prev==null||prev===0) return '<span class="delta-na">—</span>';
+  const d=(cur-prev)/prev*100;
+  const sign=d>0?'+':'';
+  return `<span class="${d>0?'delta-up':'delta-dn'}">${sign}${d.toFixed(1)}%</span>`;
 }
 
-function renderMeta(mode){
-  metaMode=mode;
-  ['today','yesterday','last_7d','last_30d'].forEach(m=>{
-    const b=document.getElementById('meta-btn-'+m);
-    if(b) b.classList.toggle('active',m===mode);
-  });
-  const d=window.META_DAILY;
-  if(!d) return;
-  const pd=d[mode];
-  const t=pd.total;
-  const dateLabel=mode==='today'?d.today_date:mode==='yesterday'?d.yesterday_date:mode==='last_7d'?d.week_range:d.month_range;
-  const el=document.getElementById('meta-content');
-  document.getElementById('meta-updated').textContent=`· ${dateLabel} · odśw. ${d.updated}`;
+/* ---- GA4 Meta sessions from channels array ---- */
+function metaSessions(channels){
+  if(!channels) return null;
+  return channels
+    .filter(c=>c.source==='meta'||c.campaign==='(cross-network)')
+    .reduce((s,c)=>s+(c.sessions||0),0);
+}
 
-  const roasClass=t.roas>=1.5?'roas-ok':'roas-bad';
-  const kpiHtml=`<div class="meta-kpi">
-    <div class="meta-kpi-card">
-      <div class="meta-kpi-label">Wydatki</div>
-      <div class="meta-kpi-val">${zl2(t.spend)}</div>
-      <div class="meta-kpi-sub">${pd.campaigns.filter(c=>c.spend>0).length} kampanii</div>
-    </div>
-    <div class="meta-kpi-card">
-      <div class="meta-kpi-label">Zakupy (pixel)</div>
-      <div class="meta-kpi-val">${n2(t.purchases)}</div>
-      <div class="meta-kpi-sub">CPP ${t.purchases?zl2(t.spend/t.purchases):'—'}</div>
-    </div>
-    <div class="meta-kpi-card">
-      <div class="meta-kpi-label">Przychód (pixel)</div>
-      <div class="meta-kpi-val">${zl2(t.revenue)}</div>
-      <div class="meta-kpi-sub">${n2(t.impressions)} wyśw.</div>
-    </div>
-    <div class="meta-kpi-card ${roasClass}">
-      <div class="meta-kpi-label">ROAS</div>
-      <div class="meta-kpi-val">${roas2(t.roas)}×</div>
-      <div class="meta-kpi-sub">CTR ${t.ctr}%</div>
-    </div>
-  </div>`;
+/* ---- Attribution coverage ---- */
+function attrCov(channels, field){
+  if(!channels) return null;
+  const metaCh=channels.filter(c=>c.source==='meta'||c.campaign==='(cross-network)');
+  const total=metaCh.reduce((s,c)=>s+(c.sessions||0),0);
+  if(!total) return null;
+  const ok=metaCh.filter(c=>c[field]&&c[field]!==''&&c[field]!=='(not set)').reduce((s,c)=>s+(c.sessions||0),0);
+  return {ok,total};
+}
 
-  const rows=pd.campaigns.map(c=>`<tr>
-    <td><span class="camp-name" title="${c.name}">${c.name.replace(/adc_|zasieg_|ruch_/g,'')}</span></td>
-    <td>${zl2(c.spend)}</td>
-    <td>${n2(c.impressions)}</td>
-    <td>${c.clicks}</td>
-    <td>${c.ctr}%</td>
-    <td>${c.purchases||'—'}</td>
-    <td>${roasPill(c.roas)}</td>
+/* ---- Render single day column ---- */
+function renderDayCol(dayKey, M, L, S){
+  const meta   = M[dayKey];
+  const mt     = meta.total;
+  const date   = dayKey==='today'?M.today_date:M.yesterday_date;
+  const title  = dayKey==='today'?'Dziś':'Wczoraj';
+  const cls    = dayKey==='today'?'':'wczoraj';
+
+  // live2 alignment: live2.today.date === M.yesterday_date means live2.today = our Wczoraj
+  let live2Sec = null;
+  if(L){
+    if(dayKey==='today'   && L.today && L.today.date===M.today_date)     live2Sec=L.today;
+    if(dayKey==='yesterday'&& L.today && L.today.date===M.yesterday_date) live2Sec=L.today;
+    if(dayKey==='yesterday'&& L.yesterday && L.yesterday.date===M.yesterday_date) live2Sec=L.yesterday;
+  }
+
+  const ga4ch    = live2Sec?.ga4?.channels;
+  const sesje    = metaSessions(ga4ch);
+  const attrZ    = attrCov(ga4ch,'content');
+  const attrR    = attrCov(ga4ch,'campaign');
+
+  // Shop revenue for ROAS ogółem
+  let shopRev=null;
+  if(dayKey==='today'&&S&&S.today_d){
+    shopRev=Object.values(S.today_d).reduce((s,v)=>s+(v.revenue||0),0);
+  } else if(live2Sec?.shopify?.kpi){
+    shopRev=live2Sec.shopify.kpi.gross_sales;
+  }
+  const roasOg = shopRev&&mt.spend ? shopRev/mt.spend : null;
+
+  // BL orders/channels
+  let blOrders=null, blCh=null, blChStr='';
+  if(dayKey==='today'&&S&&S.today_d){
+    const entries=Object.entries(S.today_d).filter(([,v])=>v.orders>0);
+    blOrders=entries.reduce((s,[,v])=>s+v.orders,0);
+    blCh=entries.length;
+    blChStr=entries.map(([k,v])=>k.replace('tiktokeu','tik')+' '+v.orders).join('  ');
+  }
+
+  const roasMetaCls = mt.roas>=1.5?'roas-ok':mt.roas<1?'roas-bad':'';
+
+  // Active campaigns sorted by spend
+  const camps = meta.campaigns.filter(c=>c.spend>0).sort((a,b)=>b.spend-a.spend);
+  const campRows = camps.map(c=>`<tr>
+    <td class="name-cell" title="${c.name}">${c.name.replace(/^adc_|^zasieg_|^ruch_/,'')}</td>
+    <td class="num">${zl(c.spend)}</td>
+    <td class="num">${n0(c.impressions)}</td>
+    <td class="num">${c.purchases||'—'}</td>
+    <td class="num">${roasFmt(c.roas)}</td>
   </tr>`).join('');
 
-  el.innerHTML=kpiHtml+`<table class="meta-table">
-    <thead><tr><th>Kampania</th><th>Wydatki</th><th>Wyśw.</th><th>Klik.</th><th>CTR</th><th>Zakupy</th><th>ROAS</th></tr></thead>
-    <tbody>${rows}</tbody>
-  </table>`;
+  return `<div class="day-col ${cls}">
+  <div class="day-head">
+    <span class="day-title">${title}</span>
+    <span class="day-date">${date}</span>
+    <span class="day-date" style="margin-left:auto;font-size:10px">odśw. ${M.updated}</span>
+  </div>
+  <div class="day-kpi-grid">
+    <div class="dkpi meta">
+      <div class="dk-lbl">Wydatek Meta</div>
+      <div class="dk-val">${zl(mt.spend)}</div>
+      <div class="dk-sub">${camps.length} kampanii aktywnych</div>
+    </div>
+    <div class="dkpi meta ${roasMetaCls}">
+      <div class="dk-lbl">ROAS Meta</div>
+      <div class="dk-val">${roasFmt(mt.roas)}</div>
+      <div class="dk-sub">${n0(mt.purchases)} zakupów · ${zl(mt.revenue)}</div>
+    </div>
+    <div class="dkpi ${roasOg!=null&&roasOg>=1.5?'roas-ok':roasOg!=null&&roasOg<1?'roas-bad':''}">
+      <div class="dk-lbl">ROAS ogółem</div>
+      <div class="dk-val">${roasOg!=null?roasOg.toFixed(2)+'×':'—'}</div>
+      <div class="dk-sub">${shopRev!=null?zl(shopRev)+' sprzedaż':'brak danych'}</div>
+    </div>
+    <div class="dkpi">
+      <div class="dk-lbl">Sesje GA4 płatny</div>
+      <div class="dk-val">${sesje!=null?n0(sesje):'—'}</div>
+      <div class="dk-sub">${sesje!=null?'meta+cross-network':'brak GA4 live'}</div>
+    </div>
+    <div class="dkpi">
+      <div class="dk-lbl">Atrybucja zestawy</div>
+      <div class="dk-val">${attrZ?pctFmt(attrZ.ok,attrZ.total):'—'}</div>
+      <div class="dk-sub">${attrZ?n0(attrZ.ok)+'/'+n0(attrZ.total)+' sesji':'brak GA4'}</div>
+    </div>
+    <div class="dkpi">
+      <div class="dk-lbl">Atrybucja reklamy</div>
+      <div class="dk-val">${attrR?pctFmt(attrR.ok,attrR.total):'—'}</div>
+      <div class="dk-sub">${attrR?n0(attrR.ok)+'/'+n0(attrR.total)+' sesji':'brak GA4'}</div>
+    </div>
+    <div class="dkpi bl">
+      <div class="dk-lbl">Zamówienia BL</div>
+      <div class="dk-val">${blOrders!=null?n0(blOrders):'—'}</div>
+      <div class="dk-sub">${blOrders!=null?'wszystkie kanały':'tylko dziś dostępne'}</div>
+    </div>
+    <div class="dkpi bl">
+      <div class="dk-lbl">Kanały BL</div>
+      <div class="dk-val">${blCh!=null?blCh:'—'}</div>
+      <div class="dk-sub">${blChStr||''}</div>
+    </div>
+  </div>
+  <details open>
+    <summary>Kampanie aktywne (${camps.length})</summary>
+    <div style="overflow-x:auto">
+      <table class="camp-mini-table">
+        <thead><tr>
+          <th>Kampania</th>
+          <th class="num">Wydatki</th>
+          <th class="num">Wyśw.</th>
+          <th class="num">Zakupy</th>
+          <th class="num">ROAS</th>
+        </tr></thead>
+        <tbody>${campRows}</tbody>
+      </table>
+    </div>
+  </details>
+</div>`;
 }
 
-async function loadMetaData(force=false){
-  const el=document.getElementById('meta-content');
-  if(force) el.innerHTML='<div class="meta-loading">Pobieram…</div>';
+/* ---- Render upper block ---- */
+function renderUpperBlock(){
+  const M=window.META_DAILY, L=window.LIVE2, S=window.SALES;
+  if(!M) return;
+  document.getElementById('upper-block').innerHTML =
+    renderDayCol('today',M,L,S) + renderDayCol('yesterday',M,L,S);
+}
+
+/* ---- Period picker KPIs ---- */
+function renderPeriodKpi(period){
+  const M=window.META_DAILY;
+  if(!M) return;
+  currentPeriod=period;
+  ['today','last_7d','last_30d'].forEach(p=>{
+    const b=document.getElementById('pb-'+p);
+    if(b) b.classList.toggle('active',p===period);
+  });
+  const pd=M[period], t=pd.total;
+  const prevPd=period==='today'?M.yesterday:null;
+  const prevT=prevPd?.total;
+  const rangeLabel=period==='today'?M.today_date:period==='last_7d'?M.week_range:M.month_range;
+  const rEl=document.getElementById('period-range');
+  if(rEl) rEl.textContent=rangeLabel+(prevT?' · vs '+M.yesterday_date:'');
+
+  const kpis=[
+    {lbl:'Wydatki Meta',  val:zl(t.spend),            d:prevT?delta(t.spend,prevT.spend):''},
+    {lbl:'Zakupy pixel',  val:n0(t.purchases),         d:prevT?delta(t.purchases,prevT.purchases):''},
+    {lbl:'Przychód pixel',val:zl(t.revenue),           d:prevT?delta(t.revenue,prevT.revenue):''},
+    {lbl:'ROAS Meta',     val:roasFmt(t.roas),         d:prevT?delta(t.roas,prevT.roas):''},
+    {lbl:'Wyświetlenia',  val:n0(t.impressions),       d:prevT?delta(t.impressions,prevT.impressions):''},
+    {lbl:'Kliknięcia',    val:n0(t.clicks),            d:prevT?delta(t.clicks,prevT.clicks):''},
+    {lbl:'CTR',           val:t.ctr+'%',               d:''},
+    {lbl:'CPP',           val:t.purchases?zl(t.spend/t.purchases):'—', d:''},
+  ];
+  const html=kpis.map(k=>`<div class="pkpi">
+    <div class="pk-lbl">${k.lbl}</div>
+    <div class="pk-val">${k.val}</div>
+    <div class="pk-delta">${k.d||'<span class="delta-na">brak porównania</span>'}</div>
+  </div>`).join('');
+  const el=document.getElementById('period-kpi');
+  if(el) el.innerHTML=html;
+}
+
+function selectPeriod(p){ renderPeriodKpi(p); }
+
+/* ---- Data loading ---- */
+async function fetchJson(url){
+  const r=await fetch(url+'?t='+Date.now(),{signal:AbortSignal.timeout(15000)});
+  if(!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+async function refreshAllData(force=false){
+  const upEl=document.getElementById('upper-block');
+  if(force) upEl.innerHTML='<div class="upper-loading">Pobieranie…</div>';
   try{
-    const r=await fetch(META_URL+'?t='+Date.now(),{signal:AbortSignal.timeout(15000)});
-    if(!r.ok) throw new Error(r.status);
-    window.META_DAILY=await r.json();
-    renderMeta(metaMode);
+    const [meta,live2,sales]=await Promise.all([
+      fetchJson(META_URL),
+      fetchJson(LIVE2_URL).catch(()=>null),
+      fetchJson(SALES_URL).catch(()=>null),
+    ]);
+    window.META_DAILY=meta;
+    window.LIVE2=live2;
+    window.SALES=sales;
+    renderUpperBlock();
+    renderPeriodKpi(currentPeriod);
   }catch(e){
-    if(window.META_DAILY) renderMeta(metaMode);
-    else el.innerHTML='<div class="meta-loading">Brak danych — odpal meta-refresh w Claude.</div>';
+    if(window.META_DAILY){ renderUpperBlock(); renderPeriodKpi(currentPeriod); }
+    else upEl.innerHTML='<div class="upper-loading">Błąd ładowania — odśwież stronę</div>';
   }
 }
-loadMetaData();
+
+refreshAllData();
 </script>
 
 </body>
