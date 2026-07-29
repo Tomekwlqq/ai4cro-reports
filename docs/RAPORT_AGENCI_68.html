@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>68 Agentow — Raport Strukturalny</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f6f5f3;--surface:#fff;--surface2:#faf9f7;
+  --border:#e2e0dc;--border2:#d4d1cc;
+  --text:#1a1917;--text2:#57534e;--text3:#8c8680;
+  --blue:#2d5fa0;--blue-bg:#edf2f9;
+  --strat:#8b2252;--strat-bg:#faf0f4;
+  --ops:#2d7d46;--ops-bg:#eef7f1;
+  --build:#4a6fa5;--build-bg:#eef3fa;
+  --research:#6b5b8a;--research-bg:#f3f0f7;
+  --seo:#0e7490;--seo-bg:#ecfdf5;
+  --pm:#92400e;--pm-bg:#fef9ee;
+  --setup:#525252;--setup-bg:#f5f5f5;
+  --dep:#b85c38;
+  --green:#16a34a;--yellow:#ca8a04;--red:#dc2626;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;font-size:14px}
+
+.wrap{max-width:1100px;margin:0 auto;padding:24px 28px 60px}
+
+header{margin-bottom:32px}
+header h1{font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px}
+header .sub{font-size:13px;color:var(--text2)}
+
+.stats{display:flex;gap:20px;flex-wrap:wrap;margin:20px 0 28px;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:8px}
+.stat strong{font-size:20px;font-weight:700;color:var(--blue);display:block;font-variant-numeric:tabular-nums}
+.stat span{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+
+.toc{margin-bottom:32px;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:8px}
+.toc h3{font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);margin-bottom:10px}
+.toc-list{display:flex;flex-wrap:wrap;gap:6px}
+.toc-link{font-size:12px;font-weight:600;padding:4px 12px;border-radius:16px;text-decoration:none;border:1px solid var(--border);color:var(--text2);transition:all .15s}
+.toc-link:hover{border-color:var(--blue);color:var(--blue)}
+
+.group{margin-bottom:36px}
+.group-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.group-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.group-title{font-size:14px;font-weight:700;letter-spacing:.3px;text-transform:uppercase}
+.group-count{font-size:12px;color:var(--text3);margin-left:auto;font-variant-numeric:tabular-nums}
+.group-desc{font-size:12px;color:var(--text2);margin-bottom:14px;padding-left:20px}
+
+.agent{background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden;border-left:3px solid var(--border)}
+.agent.strat{border-left-color:var(--strat)}.agent.ops{border-left-color:var(--ops)}
+.agent.build{border-left-color:var(--build)}.agent.research{border-left-color:var(--research)}
+.agent.seo{border-left-color:var(--seo)}.agent.pm{border-left-color:var(--pm)}
+.agent.setup{border-left-color:var(--setup)}.agent.dep{border-left-color:var(--dep)}
+
+.agent-header{padding:14px 18px;cursor:pointer;display:flex;align-items:baseline;gap:10px;user-select:none}
+.agent-header:hover{background:var(--surface2)}
+.agent-name{font-size:14px;font-weight:700;color:var(--text)}
+.agent-model{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;background:var(--blue-bg);color:var(--blue);white-space:nowrap}
+.agent-model.haiku{background:#fef3c7;color:#92400e}
+.agent-model.opus{background:var(--strat-bg);color:var(--strat)}
+.agent-brief{font-size:12px;color:var(--text2);margin-left:auto;max-width:50%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.agent-toggle{font-size:14px;color:var(--text3);margin-left:8px;transition:transform .2s;flex-shrink:0}
+
+.agent-body{display:none;padding:0 18px 16px;border-top:1px solid var(--border)}
+.agent.open .agent-body{display:block}
+.agent.open .agent-toggle{transform:rotate(90deg)}
+
+.field{margin-top:12px}
+.field-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);margin-bottom:4px}
+.field-val{font-size:13px;color:var(--text);line-height:1.6}
+.field-val ul{padding-left:18px;margin:0}.field-val li{margin-bottom:2px}
+
+.tools-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.tool-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--surface2);color:var(--text2);border:1px solid var(--border);font-family:SFMono-Regular,Menlo,monospace}
+.tool-tag.mcp{background:#fef3c7;color:#92400e}
+
+.trigger-box{margin-top:10px;padding:10px 14px;background:#edf2f9;border-radius:6px;border:1px solid #d5dfe9}
+.trigger-box .field-label{color:var(--blue)}
+.trigger-kw{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--surface);color:var(--blue);border:1px solid #b8cde4;margin:2px 2px 2px 0;font-family:SFMono-Regular,Menlo,monospace}
+
+.highlight{background:var(--strat-bg);border:2px solid var(--strat);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.highlight .agent-header{background:var(--strat-bg)}
+.highlight .agent-body{border-top-color:#e0c4d0}
+.highlight-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--strat);color:#fff;margin-left:8px}
+
+.dep-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:#fef2e0;color:var(--dep);border:1px solid #f0d4b4}
+
+.summary-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}
+.summary-table th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);padding:6px 10px;border-bottom:2px solid var(--border)}
+.summary-table td{padding:6px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.summary-table tr:hover td{background:var(--surface2)}
+
+.auto-section{margin-top:40px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:10px}
+.auto-section h2{font-size:16px;font-weight:700;margin-bottom:4px}
+.auto-section .sub{font-size:12px;color:var(--text2);margin-bottom:16px}
+
+footer{text-align:center;padding:24px;font-size:11px;color:var(--text3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>68 Agentow Tomka — Raport Strukturalny</h1>
+  <p class="sub">Kto co robi, czym dysponuje, kiedy go wolac, i jak sprawic zeby sam sie odzywal. Data: 2026-07-29.</p>
+</header>
+
+<div class="stats">
+  <div class="stat"><strong>68</strong><span>agentow</span></div>
+  <div class="stat"><strong>7</strong><span>grup funkcyjnych</span></div>
+  <div class="stat"><strong>34</strong><span>Sonnet 4.6</span></div>
+  <div class="stat"><strong>13</strong><span>Haiku 4.5</span></div>
+  <div class="stat"><strong>21</strong><span>inherit (z sesji)</span></div>
+  <div class="stat"><strong>3</strong><span>kluczowi (brief nizej)</span></div>
+</div>
+
+<div class="toc">
+  <h3>Spis grup</h3>
+  <div class="toc-list">
+    <a class="toc-link" href="#strategiczni">Strategiczni (3)</a>
+    <a class="toc-link" href="#product-owners">Product Owners (2)</a>
+    <a class="toc-link" href="#badawcze">Badawcze & Jakosciowe (3)</a>
+    <a class="toc-link" href="#seo">SEO/GEO Specjalisci (18)</a>
+    <a class="toc-link" href="#gsd">GSD Build System (26)</a>
+    <a class="toc-link" href="#pm">PM & CS Workers (8)</a>
+    <a class="toc-link" href="#setup">Setup & Orchestracja (8)</a>
+    <a class="toc-link" href="#auto-activation">Auto-aktywacja (rekomendacje)</a>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- STRATEGICZNI -->
+<!-- ============================================================ -->
+<div class="group" id="strategiczni">
+  <div class="group-head">
+    <div class="group-dot" style="background:var(--strat)"></div>
+    <div class="group-title">Strategiczni — kierunek i filozofia</div>
+    <div class="group-count">3 agentow</div>
+  </div>
+  <p class="group-desc">Ci trzej mowia CO i DLACZEGO. Nie robia roboty — oceniaja, wyceniaja, hamuja przeobiecywanie. Wolaj ich PRZED decyzja, nie po.</p>
+
+  <!-- HEAD OF SALES — HIGHLIGHT -->
+  <div class="highlight">
+  <div class="agent strat open" id="head-of-sales">
+    <div class="agent-header" onclick="toggle(this)">
+      <span class="agent-name">head-of-sales</span>
+      <span class="agent-model">Sonnet 4.6</span>
+      <span class="highlight-badge">FOCUS TOMKA</span>
+      <span class="agent-brief">Oferty, wyceny, drabina cenowa, obrona ceny</span>
+      <span class="agent-toggle">&#9654;</span>
+    </div>
+    <div class="agent-body">
+      <div class="field">
+        <div class="field-label">Rola / brief</div>
+        <div class="field-val">
+          Buduje oferty i wyceny, pakietuje uslugi, projektuje drabine cenowa, broni ceny. Reprezentuje Tomka w rozmowie o wartosci — nie sprzedaje taniosci, sprzedaje wynik. Ma w glowie <strong>caly katalog produktow</strong> (Setup Boy Lite/Standard/Pro/Premium + linia AIcommerce) i <strong>drabine 3 szczebli</strong> (Wejscie / Rytm / Pelny).
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Kiedy wolac</div>
+        <div class="field-val">
+          <ul>
+            <li>Budowa oferty dla klienta (e-shop lub Setup Boy indywidualny)</li>
+            <li>Wycena — zakres, cena, szczebel drabiny</li>
+            <li>Pakietowanie uslug AIcommerce (bundel, nie per-pillar)</li>
+            <li>Projektowanie / modyfikacja drabiny cenowej</li>
+            <li>Negocjacja zakresu z klientem — obrona ceny (nie schodzisz, redukujesz scope)</li>
+            <li>Kwalifikacja klienta — czy ICP (2-15M EUR, B2C, 2+ rynki, bez data analityka)?</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Co MA w glowie (kanon)</div>
+        <div class="field-val">
+          <ul>
+            <li><strong>AICOMMERCE_BACKBONE.md</strong> — opis produktu (obszary, architektura, model). Czyta PRZED kazda oferta.</li>
+            <li><strong>AICOMMERCE_STANDARD_OFERTY.md</strong> — 4 standardy: tabelki wyceny, scenariusz, tresc modulow, katalog pozycji a la carte.</li>
+            <li><strong>Drabina 3 szczeble:</strong> Wejscie (~249 zl/mies lub jednorazowy) / Rytm (2.5-5K EUR/mies + setup) / Pelny (3-6K EUR setup + retainer)</li>
+            <li><strong>Linia Setup Boy:</strong> Lite 1200 zl / Standard 2000 zl / Pro 4000 zl / Premium 8000+800/mc</li>
+            <li><strong>ICP:</strong> e-shop B2C, FMCG/beauty/home, 2-15M EUR, 2+ rynki, 10-40 osob, budzet 15-50K EUR/mies</li>
+            <li><strong>Anchor cenowy:</strong> junior analyst DE = 3750-4600 EUR/mies → AIcommerce tansze i lepsze</li>
+            <li><strong>Hamulec:</strong> lapia przeobiecywanie Tomka, scope poza szczeblami, oddanie IP w cenie uslugi</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Zlota zasada</div>
+        <div class="field-val">
+          <strong>Kasa za myslenie</strong> — strategia i projekt rozwiazania to ZAWSZE osobna, platna pozycja. Nigdy nie wrzucaj myslenia za darmo do "buildu". Myslenie ma najwyzsza wartosc i wlasna cene.
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Czego NIE robi</div>
+        <div class="field-val">
+          <ul>
+            <li>NIE projektuje produktu/strategii (od tego strateg)</li>
+            <li>NIE robi delivery (audyt, baza CS) — od tego eksperci EEL/GEO</li>
+            <li>NIE trzyma porzadku plikow — eel-po/geo-po</li>
+            <li>NIE zmysla liczb — "brak danych, do potwierdzenia"</li>
+            <li>NIE oddaje IP w cenie uslugi bez swiadomej decyzji Tomka</li>
+            <li>NIE schodzi z ceny — redukuje scope</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Format outputu</div>
+        <div class="field-val">
+          Diagnoza bolu (2-3 zdania) → Proponowany szczebel + co dostaje → Cena → Co blokuje wyzszy szczebel → Sciezka wejscia → TRUTH CHECKER
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Narzedzia</div>
+        <div class="tools-list">
+          <span class="tool-tag">Read</span><span class="tool-tag">Grep</span><span class="tool-tag">Glob</span>
+          <span class="tool-tag">Write</span><span class="tool-tag">WebSearch</span><span class="tool-tag">WebFetch</span>
+          <span class="tool-tag mcp">ctx_search</span>
+        </div>
+      </div>
+
+      <div class="trigger-box">
+        <div class="field-label">Rekomendacja auto-aktywacji</div>
+        <div class="field-val" style="margin-top:4px;font-size:12px">
+          Uruchamiaj automatycznie gdy w rozmowie pojawia sie:
+        </div>
+        <div style="margin-top:6px">
+          <span class="trigger-kw">oferta</span>
+          <span class="trigger-kw">wycena</span>
+          <span class="trigger-kw">cennik</span>
+          <span class="trigger-kw">drabina</span>
+          <span class="trigger-kw">ile kosztuje</span>
+          <span class="trigger-kw">pakiet</span>
+          <span class="trigger-kw">pricing</span>
+          <span class="trigger-kw">bundel</span>
+          <span class="trigger-kw">setup boy</span>
+          <span class="trigger-kw">kwalifikacja klienta</span>
+          <span class="trigger-kw">retainer</span>
+          <span class="trigger-kw">abonament</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- AUDI-STRATEG -->
+  <div class="agent strat" id="audi-strateg">
+    <div class="agent-header" onclick="toggle(this)">
+      <span class="agent-name">audi-strateg</span>
+      <span class="agent-model">Sonnet 4.6</span>
+      <span class="agent-brief">Odpowiednik Tomka — cross-project kierunek, filozofia, hamulec</span>
+      <span class="agent-toggle">&#9654;</span>
+    </div>
+    <div class="agent-body">
+      <div class="field">
+        <div class="field-label">Rola / brief</div>
+        <div class="field-val">
+          Glowa nad kierunkiem we WSZYSTKICH projektach (EEL, GEO, GLOV, Plichta, Me&I). Reprezentuje <strong>sposob myslenia Tomka</strong>: 3D Commerce, SPACE, Total Adaptability. Nie klika kampanii, nie audytuje — mowi CO i DLACZEGO, ocenia output ekspertow jako calosc. Zszywanie pekniecia miedzy warstwami. Hamulec przed przeobiecywaniem.
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Kiedy wolac</div>
+        <div class="field-val">Decyzja strategiczna cross-project. Ocena kierunku vs filozofia. Hamulec przed obietnica klientowi. Kierunek i alokacja.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Czego NIE</div>
+        <div class="field-val">Operacje (kampanie, scoring, audyt). Liczby z domyslu. Obietnice scope'u.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Narzedzia</div>
+        <div class="tools-list">
+          <span class="tool-tag">Read</span><span class="tool-tag">Grep</span><span class="tool-tag">Glob</span>
+          <span class="tool-tag">WebSearch</span><span class="tool-tag">WebFetch</span>
+          <span class="tool-tag mcp">ctx_index</span><span class="tool-tag mcp">ctx_search</span>
+        </div>
+      </div>
+      <div class="trigger-box">
+        <div class="field-label">Auto-aktywacja</div>
+        <div style="margin-top:6px">
+          <span class="trigger-kw">strategia</span>
+          <span class="trigger-kw">kierunek</span>
+          <span class="trigger-kw">filozofia</span>
+          <span class="trigger-kw">cross-project</span>
+          <span class="trigger-kw">plichta brief</span>
+          <span class="trigger-kw">alokacja</span>
+          <span class="trigger-kw">3D Commerce</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRATEG -->
+  <div class="agent strat" id="strateg">
+    <div class="agent-header" onclick="toggle(this)">
+      <span class="agent-name">strateg</span>
+      <span class="agent-model">Sonnet 4.6</span>
+      <span class="agent-brief">Weryfikator jakosci myslenia — bramka CEP/sciezek/map percepcji</span>
+      <span class="agent-toggle">&#9654;</span>
+    </div>
+    <div class="agent-body">
+      <div class="field">
+        <div class="field-label">Rola / brief</div>
+        <div class="field-val">
+          <strong>Weryfikator jakosci MYSLENIA strategicznego</strong>, nie porzadku i nie formatu. Dwie soczewki: (1) Strateg kategorii (Ehrenberg-Bass, Sharp, Romaniuk) + (2) Psycholog sprzedazy (JTBD, ekonomia behawioralna). Lapie to czego geo-po i eel-quality NIE lapia: czy CEP to sytuacja czy atrybut, czy pytanie to glos klienta czy banal, czy sciezka oddaje realna psychologie decyzji. Powstal z konkretnej porazki — engine generowal "CEP-y" ktore byly segmentami. Ma <strong>9 twardych bramek</strong> + rejestr kompetencji (STRATEG_LEARNINGS.md).
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Kiedy wolac</div>
+        <div class="field-val">BRAMKA na wyjsciu kazdego artefaktu strategicznego: CEP, sciezki percepcji, pole pytan, mapa percepcji, werdykt, reko, audyt — ZANIM kaskada w dol. Dziala w GEO i EEL.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">9 bramek</div>
+        <div class="field-val">
+          <ol style="font-size:12px;padding-left:18px">
+            <li>GATE sytuacja-vs-atrybut (CEP)</li>
+            <li>Test "dlaczego TERAZ" (trigger sytuacyjny)</li>
+            <li>Test glosu klienta (pytania/Discovery)</li>
+            <li>Test glebokosci sciezki</li>
+            <li>Test "da sie z tego prowadzic analize konkurencji"</li>
+            <li>Test moatu / Inference Advantage</li>
+            <li>Audyt pokrycia DFS (STANDARD)</li>
+            <li>Audyt glosu klienta / recenzje (OPCJONALNE)</li>
+            <li>Audyt pokrycia kontentu bohatera</li>
+          </ol>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Output</div>
+        <div class="field-val">Werdykt PRZEPUSZCZAM / BLOKUJE + per finding [P0-P3] + cytat reguly + konkret + jak ma wygladac poprawnie. NIE naprawia sam.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Narzedzia</div>
+        <div class="tools-list">
+          <span class="tool-tag">Read</span><span class="tool-tag">Grep</span><span class="tool-tag">Glob</span>
+          <span class="tool-tag">Bash</span><span class="tool-tag">WebSearch</span>
+        </div>
+      </div>
+      <div class="trigger-box">
+        <div class="field-label">Auto-aktywacja</div>
+        <div style="margin-top:6px">
+          <span class="trigger-kw">CEP gotowe</span>
+          <span class="trigger-kw">sciezki percepcji</span>
+          <span class="trigger-kw">pole pytan</span>
+          <span class="trigger-kw">mapa percepcji</span>
+          <span class="trigger-kw">werdykt</span>
+          <span class="trigger-kw">cs_pipeline zakonczone</span>
+          <span class="trigger-kw">bramka strategiczna</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PRODUCT OWNERS -->
+<!-- ============================================================ -->
+<div class="group" id="product-owners">
+  <div class="group-head">
+    <div class="group-dot" style="background:var(--ops)"></div>
+    <div class="group-title">Product Owners — porzadek i gate</div>
+    <div class="group-count">2 agentow</div>
+  </div>
+  <p class="group-desc">Trzymacze porzadku. Wolaj ich ZANIM zaczniesz cokolwiek robic w ich domenie. Jedna funkcja: "czy to juz jest? gdzie? czego uzyc?"</p>
+
+  <div class="agent ops" id="eel-po">
+    <div class="agent-header" onclick="toggle(this)">
+      <span class="agent-name">eel-po</span>
+      <span class="agent-model">Sonnet 4.6</span>
+      <span class="agent-brief">PO EEL — wie gdzie wszystko lezy, anty-"od zera"</span>
+      <span class="agent-toggle">&#9654;</span>
+    </div>
+    <div class="agent-body">
+      <div class="field">
+        <div class="field-label">Rola / brief</div>
+        <div class="field-val">
+          HARDKOROWY TRZYMACZ PORZADKU EEL — gosciu ktory WIE GDZIE LEZY KAZDY PLIK. NIE partner, NIE doradca, NIE wykonawca. Jedyna funkcja: <strong>nikt nie buduje od zera</strong>, nic sie nie rozlazi, wszystko ma jedno miejsce (HUB). Wlasciciel i straznik hubow: shop_mapping_hub, EEL_HUB, EEL_TACTICS_HUB, EEL_INWENTARZ. Pilnuje hierarchii STRONA→SHOPPER→AKCJE→DANE i kanonu. Kanon-call jest JEGO — gdy quality flaguje, on rozstrzyga.
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Kiedy wolac</div>
+        <div class="field-val">ZANIM cokolwiek zaczniesz w EEL: "czy to juz jest? gdzie? czego uzyc/wzbogacic?" Gdy widzisz budowanie od zera mimo ze artefakt istnieje. Gdy cos powstalo i trzeba wpiac do huba.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Narzedzia</div>
+        <div class="tools-list">
+          <span class="tool-tag">Read</span><span class="tool-tag">Grep</span><span class="tool-tag">Glob</span>
+          <span class="tool-tag">Bash</span><span class="tool-tag">Edit</span><span class="tool-tag">Write</span>
+        </div>
+      </div>
+      <div class="trigger-box">
+        <div class="field-label">Auto-aktywacja</div>
+        <div style="margin-top:6px">
+          <span class="trigger-kw">projekt=EEL (start)</span>
+          <span class="trigger-kw">zbuduj/zrob w EEL</span>
+          <span class="trigger-kw">EEL hub</span>
+          <span class="trigger-kw">inwentarz</span>
+          <span class="trigger-kw">shop mapping</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="agent ops" id="geo-po">
+    <div class="agent-header" onclick="toggle(this)">
+      <span class="agent-name">geo-po</span>
+      <span class="agent-model">Sonnet 4.6</span>
+      <span class="agent-brief">PO GEO + opiekun Metodologii Audytu 360 SEO</span>
+      <span class="agent-toggle">&#9654;</span>
+    </div>
+    <div class="agent-body">
+      <div class="field">
+        <div class="field-label">Rola / brief</div>
+        <div class="field-val">
+          Dwie domeny: (1) GEO PDP Optimizer — trzymacz porzadku, nikt nie buduje od zera, GEO_HUB, CS=moat, oba algorytmy (CS+serwis). (2) METODOLOGIA AUDYTU 360 SEO (V5.2) — opiekun kanonu audytowania stron klientow: 13 modulow, 4 reguly (R2 Repro = najwazniejsza). UWAGA: "GEO" w audycie = gotowosc strony klienta na AI — to INNE niz projekt GEO PDP.
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Kiedy wolac</div>
+        <div class="field-val">ZANIM zaczniesz audyt SEO/GEO strony albo robote w GEO PDP. Bramka formatu CS na wyjsciu (16 sekcji wg wzorca sejfow).</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Narzedzia</div>
+        <div class="tools-list">
+          <span class="tool-tag">Read</span><span class="tool-tag">Grep</span><span class="tool-tag">Glob</span>
+          <span class="tool-tag">Bash</span><span class="tool-tag">Edit</span><span class="tool-tag">Write</span>
+          <span class="tool-tag">WebSearch</span><span class="tool-tag">WebFetch</span>
+        </div>
+      </div>
+      <div class="trigger-box">
+        <div class="field-label">Auto-aktywacja</div>
+        <div style="margin-top:6px">
+          <span class="trigger-kw">projekt=GEO (start)</span>
+          <span class="trigger-kw">zbuduj CS</span>
+          <span class="trigger-kw">audyt SEO</span>
+          <span class="trigger-kw">metodologia audytu</span>
+          <span class="trigger-kw">cs_pipeline</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- BADAWCZE -->
+<!-- ============================================================ -->
+<div class="group" id="badawcze">
+  <div class="group-head">
+    <div class="group-dot" style="background:var(--research)"></div>
+    <div class="group-title">Badawcze & Jakosciowe</div>
+    <div class="group-count">3 agentow</div>
+  </div>
+
+  <div class="agent research" id="eel-researcher">
+    <div class="agent-header" onclick="toggle(this)">
+      <span class="agent-name">eel-researcher</span>
+      <span class="agent-model">Sonnet 4.6</span>
+      <span class="agent-brief">Consumer Journey researcher — warstwy procesu zakupowego</span>
+      <span class="agent-toggle">&#9654;</span>
+    </div>
+    <div class="agent-body">
+      <div class="field">
+        <div class="field-label">Rola / brief</div>
+        <div class="field-val">
+          Bada JEDEN proces zakupowy jednego konsumenta w CALYM ekosystemie (reklama→strona→sciezka→finalizacja). GEO, SEO, CRO, visual mapping, GA4, taktyki to WARSTWY tego samego procesu (WARSTWY_PLAYBOOK 0-12), nie osobne swiaty. Doklada warstwy, LACZY obszary, szuka emergencji 1+2, rozwija zasady autorekomendacji.
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Kiedy</div>
+        <div class="field-val">Research/synteza/budowa zasad w ekosystemie zakupowym. NIE strateg, NIE sprawdzacz.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Narzedzia</div>
+        <div class="tools-list">
+          <span class="tool-tag">Read</span><span class="tool-tag">Grep</span><span class="tool-tag">Glob</span>
+          <span class="tool-tag">Bash</span><span class="tool-tag">Edit</span><span class="tool-tag">Write</span>
+          <span class="tool-tag">WebSearch</span><span class="tool-tag">WebFetch</span>
+        </div>
+      </div>
+      <div class="trigger-box">
+        <div class="field-label">Auto-aktywacja</div>
+        <div style="margin-top:6px">
+          <span class="trigger-kw">research warstwy</span>
+          <span class="trigger-kw">consumer journey</span>
+          <span class="trigger-kw">zasady reko</span>
+          <span class="trigger-kw">emergencja</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="agent research" id="eel-quality">
+    <div class="agent-header" onclick="toggle(this)">
+      <span class="agent-name">eel-quality</span>
+      <span class="agent-model haiku">Haiku 4.5</span>
+      <span class="agent-brief">Junior Quality — sprawdzacz kanonu EEL po researcherze/wykonawcy</span>
+      <span class="agent-toggle">&#9654;</span>
+    </div>
+    <div class="agent-body">
+      <div class="field">
+        <div class="field-label">Rola / brief</div>
+        <div class="field-val">
+          Bierze GOTOWY output i przepuszcza przez twarda checkliste kanonu EEL: hierarchia STRONA→SHOPPER→AKCJE→DANE, reko=Element→Akcja→Event, obie perspektywy, format gold-standard, REALNY dowod (screenshot nie rc=0), dane z profilu nie mock. Zwraca werdykt P0-P3. NIE naprawia sam (oddaje wykonawcy), NIE ocenia jakosci MYSLENIA (od tego strateg).
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Kiedy</div>
+        <div class="field-val">Na KONCU roboty EEL — ostatnia bramka przed Tomkiem.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Narzedzia</div>
+        <div class="tools-list">
+          <span class="tool-tag">Read</span><span class="tool-tag">Grep</span><span class="tool-tag">Glob</span>
+          <span class="tool-tag">Bash</span><span class="tool-tag">Write</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="agent research" id="net-researcher">
+    <div class="agent-header" onclick="toggle(this)">
+      <span class="agent-name">net-researcher</span>
+      <span class="agent-model haiku">Haiku 4.5</span>
+      <span class="agent-brief">Tani zwiadowca netowy — surowy recon przed synteza</span>
+      <span class="agent-toggle">&#9654;</span>
+    </div>
+    <div class="agent-body">
+      <div class="field">
+        <div class="field-label">Rola / brief</div>
+        <div class="field-val">
+          Sprawdzenie faktu, czytanie docs/strony, "czy X ma API / MCP / integracje", zgarnianie danych z netu, szukanie zrodel. Zwraca fakty, nie rekomendacje. NIE do syntezy sprzedazowej (head-of-sales) ani decyzji strategicznych (strateg).
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Narzedzia</div>
+        <div class="tools-list">
+          <span class="tool-tag">WebSearch</span><span class="tool-tag">WebFetch</span>
+          <span class="tool-tag">Read</span><span class="tool-tag">Grep</span><span class="tool-tag">Glob</span>
+          <span class="tool-tag mcp">ctx_search</span>
+        </div>
+      </div>
+      <div class="trigger-box">
+        <div class="field-label">Auto-aktywacja</div>
+        <div style="margin-top:6px">
+          <span class="trigger-kw">czy X ma API</span>
+          <span class="trigger-kw">sprawdz w necie</span>
+          <span class="trigger-kw">recon</span>
+          <span class="trigger-kw">znajdz zrodlo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SEO/GEO SPECJALISCI -->
+<!-- ============================================================ -->
+<div class="group" id="seo">
+  <div class="group-head">
+    <div class="group-dot" style="background:var(--seo)"></div>
+    <div class="group-title">SEO/GEO Specjalisci</div>
+    <div class="group-count">18 agentow</div>
+  </div>
+  <p class="group-desc">Specjalisci modulowi SEO/GEO audytu. Kazdy odpowiada za JEDEN wymiar (technical, content, backlinks, GEO, performance, schema...). Spawnowane przez orchestratora audytu, nie reczne.</p>
+
+  <div style="overflow-x:auto">
+  <table class="summary-table">
+    <thead><tr>
+      <th>Agent</th><th>Model</th><th>Domena</th><th>Co robi</th><th>Kluczowe narzedzia</th>
+    </tr></thead>
+    <tbody>
+      <tr><td><strong>seo-technical</strong></td><td>Sonnet 4.6</td><td>Crawlability, indeksacja</td><td>Analiza crawlability, indexability, security, URL, mobile, CWV, JS rendering</td><td>Read, Bash, Write</td></tr>
+      <tr><td><strong>seo-content</strong></td><td>Sonnet 4.6</td><td>Jakosc tresci</td><td>E-E-A-T, readability, depth, AI citation readiness, thin content</td><td>Read, Bash, Write</td></tr>
+      <tr><td><strong>seo-geo</strong></td><td>Sonnet 4.6</td><td>AI search</td><td>AI crawler accessibility, llms.txt, passage citability, brand mention, AIO/ChatGPT/Perplexity</td><td>Read, Bash, WebFetch, Write</td></tr>
+      <tr><td><strong>seo-cluster</strong></td><td>Sonnet 4.6</td><td>Topic clustering</td><td>SERP overlap, intent classification, hub-and-spoke architecture, link matrices</td><td>WebSearch, WebFetch, Read, Write</td></tr>
+      <tr><td><strong>seo-ecommerce</strong></td><td>Sonnet 4.6</td><td>E-commerce SEO</td><td>Product schema, Google Shopping, Amazon visibility, pricing gaps</td><td>Read, Bash, Write</td></tr>
+      <tr><td><strong>seo-sxo</strong></td><td>Sonnet 4.6</td><td>Search Experience</td><td>SERP backwards analysis, page-type mismatch, user stories, persona scoring</td><td>WebSearch, WebFetch, Read, Write</td></tr>
+      <tr><td><strong>seo-local</strong></td><td>Sonnet 4.6</td><td>Local SEO</td><td>GBP, NAP, citations, reviews, local schema, location pages</td><td>Read, Bash, WebFetch, Write</td></tr>
+      <tr><td><strong>seo-maps</strong></td><td>Sonnet 4.6</td><td>Maps intelligence</td><td>Geo-grid rank tracking, GBP audit, review intelligence, competitor radius</td><td>Read, Bash, WebFetch, Write</td></tr>
+      <tr><td><strong>seo-schema</strong></td><td>Sonnet 4.6</td><td>Structured data</td><td>Schema.org detekcja, walidacja, generacja JSON-LD</td><td>Read, Bash, Write</td></tr>
+      <tr><td><strong>seo-drift</strong></td><td>Sonnet 4.6</td><td>Drift detection</td><td>Baseline SEO elements, snapshot comparison, regression detection</td><td>Read, Bash, Write</td></tr>
+      <tr><td><strong>seo-flow</strong></td><td>Sonnet 4.6</td><td>FLOW framework</td><td>FLOW stage prompts, structured output per stage</td><td>Read, WebFetch</td></tr>
+      <tr><td><strong>seo-image-gen</strong></td><td>Sonnet 4.6</td><td>OG/social images</td><td>Audyt OG images, image generation plan z promptami (NIE auto-gen)</td><td>Read, Bash</td></tr>
+      <tr><td><strong>seo-backlinks</strong></td><td style="color:var(--yellow)">Haiku 4.5</td><td>Backlink profile</td><td>Moz API, Bing Webmaster, Common Crawl, confidence-weighted scoring</td><td>Read, Bash, Write</td></tr>
+      <tr><td><strong>seo-dataforseo</strong></td><td style="color:var(--yellow)">Haiku 4.5</td><td>DataForSEO</td><td>Live SERP, keyword metrics, backlinks, on-page, content, business listings</td><td>Read, Bash, Write</td></tr>
+      <tr><td><strong>seo-google</strong></td><td style="color:var(--yellow)">Haiku 4.5</td><td>Google APIs</td><td>CrUX CWV, GSC indexation, GA4 organic traffic</td><td>Read, Bash, Write</td></tr>
+      <tr><td><strong>seo-performance</strong></td><td style="color:var(--yellow)">Haiku 4.5</td><td>Performance</td><td>Core Web Vitals, page load metrics</td><td>Read, Bash, Write</td></tr>
+      <tr><td><strong>seo-sitemap</strong></td><td style="color:var(--yellow)">Haiku 4.5</td><td>Sitemaps</td><td>XML sitemap validation, generation, quality gates</td><td>Read, Bash, Write</td></tr>
+      <tr><td><strong>seo-visual</strong></td><td style="color:var(--yellow)">Haiku 4.5</td><td>Visual analysis</td><td>Screenshots, mobile rendering, above-the-fold analysis (Playwright)</td><td>Read, Bash, Write</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- GSD BUILD SYSTEM -->
+<!-- ============================================================ -->
+<div class="group" id="gsd">
+  <div class="group-head">
+    <div class="group-dot" style="background:var(--build)"></div>
+    <div class="group-title">GSD Build System</div>
+    <div class="group-count">26 agentow</div>
+  </div>
+  <p class="group-desc">System budowania projektow (Get Shit Done). Spawnowane przez skille /gsd:*, NIE recznie. Podzielone na: Research → Plan → Execute → Verify → Review.</p>
+
+  <div style="overflow-x:auto">
+  <table class="summary-table">
+    <thead><tr>
+      <th>Faza</th><th>Agent</th><th>Model</th><th>Co robi</th>
+    </tr></thead>
+    <tbody>
+      <tr><td rowspan="6" style="font-weight:700;color:var(--build)">RESEARCH</td>
+        <td>gsd-project-researcher</td><td>Haiku</td><td>Bada ekosystem domeny PRZED roadmapa</td></tr>
+      <tr><td>gsd-phase-researcher</td><td>Haiku</td><td>Research jak wdrozyc faze → RESEARCH.md</td></tr>
+      <tr><td>gsd-ai-researcher</td><td>Haiku</td><td>Docs frameworka AI → implementation guidance</td></tr>
+      <tr><td>gsd-domain-researcher</td><td>Haiku</td><td>Kontekst domenowy/biznesowy systemu AI</td></tr>
+      <tr><td>gsd-research-synthesizer</td><td>Haiku</td><td>Synteza outputow 4 researcherow → SUMMARY.md</td></tr>
+      <tr><td>gsd-intel-updater</td><td>Haiku</td><td>Analizuje codebase → .planning/intel/</td></tr>
+
+      <tr><td rowspan="6" style="font-weight:700;color:var(--build)">PLAN</td>
+        <td>gsd-roadmapper</td><td>Sonnet 4.6</td><td>Roadmapy z phase breakdown + success criteria</td></tr>
+      <tr><td>gsd-planner</td><td>Sonnet 4.6</td><td>Plany wykonawcze z task breakdown + dependency</td></tr>
+      <tr><td>gsd-plan-checker</td><td>Sonnet 4.6</td><td>Weryfikacja planu goal-backward PRZED wykonaniem</td></tr>
+      <tr><td>gsd-pattern-mapper</td><td>Haiku</td><td>Analiza codebase → PATTERNS.md (analogi)</td></tr>
+      <tr><td>gsd-codebase-mapper</td><td>Haiku</td><td>Eksploracja codebase → analiza techniczna</td></tr>
+      <tr><td>gsd-assumptions-analyzer</td><td>Haiku</td><td>Analiza zalozen z dowodami</td></tr>
+
+      <tr><td rowspan="3" style="font-weight:700;color:var(--build)">EXECUTE</td>
+        <td>gsd-executor</td><td>Sonnet 4.6</td><td>Wykonuje plany GSD z atomic commits</td></tr>
+      <tr><td>gsd-debugger</td><td>Sonnet 4.6</td><td>Bada bugi metoda naukowa</td></tr>
+      <tr><td>gsd-debug-session-manager</td><td>Sonnet 4.6</td><td>Orkiestracja cykli debug z checkpointami</td></tr>
+
+      <tr><td rowspan="4" style="font-weight:700;color:var(--build)">VERIFY</td>
+        <td>gsd-verifier</td><td>Sonnet 4.6</td><td>Weryfikacja goal-backward: czy faza dowozi</td></tr>
+      <tr><td>gsd-integration-checker</td><td>Sonnet 4.6</td><td>Cross-phase integration + E2E flows</td></tr>
+      <tr><td>gsd-nyquist-auditor</td><td>Sonnet 4.6</td><td>Wypelnia luki coverage → generuje testy</td></tr>
+      <tr><td>gsd-security-auditor</td><td>Sonnet 4.6</td><td>Weryfikacja threat mitigations z PLAN.md</td></tr>
+
+      <tr><td rowspan="4" style="font-weight:700;color:var(--build)">REVIEW</td>
+        <td>gsd-code-reviewer</td><td>Sonnet 4.6</td><td>Review kodu: bugi, security, quality → REVIEW.md</td></tr>
+      <tr><td>gsd-code-fixer</td><td>Sonnet 4.6</td><td>Naprawy findings z REVIEW.md (atomic commits)</td></tr>
+      <tr><td>gsd-ui-auditor</td><td>Sonnet 4.6</td><td>6-pillar visual audit frontend → UI-REVIEW.md</td></tr>
+      <tr><td>gsd-eval-auditor</td><td>Sonnet 4.6</td><td>Audit pokrycia ewaluacji AI vs AI-SPEC.md</td></tr>
+
+      <tr><td rowspan="3" style="font-weight:700;color:var(--build)">DOCS & META</td>
+        <td>gsd-doc-writer</td><td>Sonnet 4.6</td><td>Pisze/update dokumentacje projektowa</td></tr>
+      <tr><td>gsd-doc-classifier</td><td>Haiku</td><td>Klasyfikuje dokument: ADR/PRD/SPEC/DOC</td></tr>
+      <tr><td>gsd-doc-verifier</td><td>Haiku</td><td>Weryfikuje fakty w docs vs codebase</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="font-size:11px;color:var(--text3);margin-top:8px">+ gsd-advisor-researcher, gsd-doc-synthesizer, gsd-eval-planner, gsd-framework-selector, gsd-ui-checker, gsd-ui-researcher, gsd-user-profiler (spawned by orchestrators)</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- PM & CS WORKERS -->
+<!-- ============================================================ -->
+<div class="group" id="pm">
+  <div class="group-head">
+    <div class="group-dot" style="background:var(--pm)"></div>
+    <div class="group-title">PM, CS Workers & inne operacyjne</div>
+    <div class="group-count">8 agentow</div>
+  </div>
+
+  <div style="overflow-x:auto">
+  <table class="summary-table">
+    <thead><tr>
+      <th>Agent</th><th>Model</th><th>Co robi</th><th>Kiedy</th>
+    </tr></thead>
+    <tbody>
+      <tr><td><strong>pm-critic</strong></td><td>Sonnet 4.6</td><td>Adversarial review artefaktow PM (PRD, personas, OKR). Zwraca P0-P3.</td><td>Proaktywnie PO kazdym PM-skillu</td></tr>
+      <tr><td><strong>pm-workflow-orchestrator</strong></td><td>inherit</td><td>Orkiestruje sekwencje pm-skilli z prioritized-action-plan</td><td>Explicit invocation</td></tr>
+      <tr><td><strong>pm-release-conductor</strong></td><td>Sonnet 4.6</td><td>Guided release runbook: 6 gates (G0-G4). Chainuje auditor+changelog.</td><td>Explicit — release</td></tr>
+      <tr><td><strong>pm-skill-auditor</strong></td><td>Sonnet 4.6</td><td>Repo-level governance: frontmatter lint, sync AGENTS.md, contracts</td><td>Pre-release health check</td></tr>
+      <tr><td><strong>pm-changelog-curator</strong></td><td>Haiku</td><td>Drafty CHANGELOG z git log. Public paths only.</td><td>Chained by release-conductor G2</td></tr>
+      <tr><td><strong>cs-worker</strong></td><td>inherit</td><td>Worker CS dla DOWOLNEGO klienta: JSONy, CSV, staty, zestawienia, update SESSION_BRIDGE</td><td>Wolany przez skille /cs-*</td></tr>
+      <tr><td><strong>cs-sejf-worker</strong></td><td>Sonnet 4.6</td><td><span class="dep-badge">DEPRECATED</span> Worker CS SejfZone — uzyj cs-worker</td><td>NIE wolaj</td></tr>
+      <tr><td><strong>cortex-lab</strong></td><td>inherit</td><td>Orkiestracja Cortex audytow: lead + 4 teammates per warstwa + validator</td><td>Nowy klient EEL audit</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SETUP -->
+<!-- ============================================================ -->
+<div class="group" id="setup">
+  <div class="group-head">
+    <div class="group-dot" style="background:var(--setup)"></div>
+    <div class="group-title">Setup & Orchestracja</div>
+    <div class="group-count">1 agent</div>
+  </div>
+
+  <div class="agent setup" id="pan-setup">
+    <div class="agent-header" onclick="toggle(this)">
+      <span class="agent-name">pan-setup</span>
+      <span class="agent-model">Sonnet 4.6</span>
+      <span class="agent-brief">Ziom od calego setupu — hooki, skille, agenci, automaty, MCP</span>
+      <span class="agent-toggle">&#9654;</span>
+    </div>
+    <div class="agent-body">
+      <div class="field">
+        <div class="field-label">Rola / brief</div>
+        <div class="field-val">
+          Wie wszystko o setupie Tomka: 254 skille, 68 agentow, 16 projektow, 18 hookow, pamiec, automaty launchd/cron, MCP, sciezki, konwencje. Domyslnie DORADZA (tlumaczysz, diagnozujesz, proponujesz). Dziala (Edit/Write/Bash) dopiero gdy Tomek powie "zrob/napraw/dodaj". SETUP_MAP.md = jego mozg.
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Kiedy wolac</div>
+        <div class="field-val">"Gdzie jest X / czemu Y nie dziala / jak dziala Z" w setupie. Cos sie sypie. Trzeba dodac/naprawic/posprzatac. Audyt stanu.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Narzedzia</div>
+        <div class="tools-list">
+          <span class="tool-tag">Read</span><span class="tool-tag">Write</span><span class="tool-tag">Edit</span>
+          <span class="tool-tag">Bash</span><span class="tool-tag">Grep</span><span class="tool-tag">Glob</span>
+          <span class="tool-tag">WebFetch</span>
+        </div>
+      </div>
+      <div class="trigger-box">
+        <div class="field-label">Auto-aktywacja</div>
+        <div style="margin-top:6px">
+          <span class="trigger-kw">setup</span>
+          <span class="trigger-kw">hook nie dziala</span>
+          <span class="trigger-kw">skill nie dziala</span>
+          <span class="trigger-kw">launchd/cron</span>
+          <span class="trigger-kw">MCP problem</span>
+          <span class="trigger-kw">pan setup</span>
+          <span class="trigger-kw">gdzie jest plik</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- AUTO-AKTYWACJA -->
+<!-- ============================================================ -->
+<div class="auto-section" id="auto-activation">
+  <h2>Rekomendacja: Auto-aktywacja agentow</h2>
+  <p class="sub">Jak sprawic zeby agenci sami sie uaktywniali na podstawie kontekstu pracy — bez wolania z palca.</p>
+
+  <div class="field" style="margin-top:0">
+    <div class="field-label">Mechanizm (do zbudowania)</div>
+    <div class="field-val">
+      <p>Obecnie agenci sa wolani recznie (przez <code>Agent(subagent_type:"...")</code> albo <code>@nazwa</code>). Auto-aktywacja wymaga <strong>hooka session-start</strong> albo <strong>reguly w CLAUDE.md</strong> ktora matcher kontekstu triggeruje agenta. Dwa podejscia:</p>
+      <br>
+      <p><strong>A. Hook-based (proactive: true w frontmatter)</strong> — agent odpala sie automatycznie gdy sesja startuje i kontekst pasuje. Problem: nie ma jeszcze mechanizmu matchowania kontekstu w hookach (Claude Code hooks reaguja na eventy narzedzi, nie na tresc).</p>
+      <br>
+      <p><strong>B. Instrukcja w CLAUDE.md (realny, dzis)</strong> — w CLAUDE.md projektowym dopisujemy regule: "Gdy kontekst pracy zawiera [slowa kluczowe], ZANIM zaczniesz robotę, uruchom agenta [X] jako gate." To dziala OD RAZU — kazda sesja czyta CLAUDE.md.</p>
+      <br>
+      <p><strong>C. Skill-wrapper (docelowy)</strong> — skill <code>/auto-dispatch</code> ktory na starcie sesji (albo przy hasle triggera) spawnu-je agenta z dopasowanym briefem. Jak router.</p>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">Rekomendowane triggery (do wpiecia w podejscie B)</div>
+  </div>
+
+  <div style="overflow-x:auto">
+  <table class="summary-table">
+    <thead><tr>
+      <th style="min-width:120px">Agent</th>
+      <th>Trigger kontekstowy</th>
+      <th>Typ aktywacji</th>
+    </tr></thead>
+    <tbody>
+      <tr><td><strong>eel-po</strong></td><td>Start sesji w projekcie EEL / haslo "eel"</td><td style="color:var(--green)">GATE — zanim cokolwiek w EEL</td></tr>
+      <tr><td><strong>geo-po</strong></td><td>Start sesji w projekcie GEO / haslo "geo" / "audyt seo"</td><td style="color:var(--green)">GATE — zanim cokolwiek w GEO</td></tr>
+      <tr><td><strong>strateg</strong></td><td>Gotowy artefakt: CEP, sciezki, pole pytan, mapa percepcji</td><td style="color:var(--yellow)">BRAMKA — po generacji, przed kaskada</td></tr>
+      <tr><td><strong>eel-quality</strong></td><td>Gotowy output EEL (audyt, reko, vision report)</td><td style="color:var(--yellow)">BRAMKA — po wykonaniu, przed Tomkiem</td></tr>
+      <tr><td><strong>head-of-sales</strong></td><td>"oferta" / "wycena" / "cennik" / "klient pyta ile" / "setup boy" / "pricing"</td><td style="color:var(--strat)">DISPATCH — wolaj jako wykonawce</td></tr>
+      <tr><td><strong>audi-strateg</strong></td><td>"strategia" / "kierunek" / "filozofia" / decyzja cross-project</td><td style="color:var(--strat)">DISPATCH — wolaj do oceny kierunku</td></tr>
+      <tr><td><strong>pan-setup</strong></td><td>"setup" / "hook" / "skill" / "launchd" / "MCP" / cos sie sypie w infra</td><td style="color:var(--blue)">DISPATCH — diagnostyka/naprawa</td></tr>
+      <tr><td><strong>net-researcher</strong></td><td>"sprawdz" / "czy X ma" / recon URL / szukanie zrodla</td><td style="color:var(--text3)">BATCH — tani recon (Haiku)</td></tr>
+      <tr><td><strong>cortex-lab</strong></td><td>"audyt klienta" / "nowy klient EEL" / "cortex run"</td><td style="color:var(--strat)">DISPATCH — pelny audyt</td></tr>
+      <tr><td><strong>eel-researcher</strong></td><td>"consumer journey" / "warstwy" / "emergencja" / "zasady reko"</td><td style="color:var(--blue)">DISPATCH — research/synteza</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="field" style="margin-top:16px">
+    <div class="field-label">Nastepny krok (co zrobic)</div>
+    <div class="field-val">
+      <ol style="padding-left:18px">
+        <li><strong>Wpisac reguly gate do CLAUDE.md projektowych</strong> (EEL i GEO) — dzis, zero buildu: "Gdy zaczynasz robote w EEL, NAJPIERW wolaj eel-po."</li>
+        <li><strong>Hook session_start</strong> — rozszerzyc istniejacy hook o matcher slow kluczowych z tabeli → auto-spawn agenta z briefem kontekstowym.</li>
+        <li><strong>Skill /auto-dispatch</strong> — docelowo: router ktory na starcie sesji analizuje kontekst (cwd, ostatni SESSION_BRIDGE, haslo wywolujace) i dispatchuje agenta + brief. Fable projektuje, Sonnet wykonuje.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<footer>
+  68 agentow &middot; ~/.claude/agents/ &middot; Raport wygenerowany 2026-07-29 &middot; Pan Setup
+</footer>
+
+</div>
+
+<script>
+function toggle(el) {
+  el.closest('.agent').classList.toggle('open');
+}
+// Open head-of-sales by default (already has class 'open')
+</script>
+</body>
+</html>
