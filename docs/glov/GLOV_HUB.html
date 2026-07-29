@@ -120,8 +120,8 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
 @keyframes lpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 .sales-strip-actions{display:flex;gap:8px;align-items:center}
 .btn-live{background:#16a34a;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
-.btn-refresh{background:var(--card);color:var(--txt2);border:1px solid var(--line);border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer}
-.btn-refresh:hover{border-color:var(--accent);color:var(--txt)}
+.btn-refresh{background:#2563eb;color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.btn-refresh:hover{background:#1d4ed8}
 .sales-loading{color:var(--muted);font-size:13px;text-align:center;padding:20px 0}
 
 /* macierz sprzedaży */
@@ -133,6 +133,7 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
 .bl-matrix td.bl-lbl{padding-right:12px;vertical-align:middle}
 .bl-period{font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.3px}
 .bl-psub{font-size:10.5px;color:var(--muted);margin-top:1px}
+.row-dzis .bl-psub{font-size:14px;font-weight:700;color:var(--txt)}
 .bl-matrix td.bl-val{text-align:right;padding-left:10px}
 .bl-qty{font-size:17px;font-weight:800;letter-spacing:-.4px;line-height:1.1;font-variant-numeric:tabular-nums}
 .bl-rev{font-size:11.5px;color:var(--txt2);margin-top:2px;font-variant-numeric:tabular-nums}
@@ -514,7 +515,6 @@ btn.onclick=()=>{
 };
 
 // ── SPRZEDAŻ MATRIX ──────────────────────────────────────────────────────
-const BL_API='http://localhost:9871/api';
 function n(v,d=0){return(+v||0).toLocaleString('pl-PL',{minimumFractionDigits:d,maximumFractionDigits:d});}
 function zl(v){return n(v,2)+' zł';}
 const SRC_COLORS={'shop':'#7c5cff','allegro':'#f5751a','tiktokeu':'#16a34a','hebe':'#e91e8c'};
@@ -524,16 +524,6 @@ function blCell(period_d, src){
   const v=(period_d||{})[src]||{orders:0,items:0,revenue:0};
   const z=!v.orders;
   return `<td class="bl-val${z?' bl-zero':''}"><div class="bl-qty">${n(v.orders)}</div><div class="bl-rev">${n(v.items||0)} szt.</div><div class="bl-rev">${zl(v.revenue)}</div></td>`;
-}
-
-function mergeSalesData(){
-  const sh=window.SHOPIFY_SALES;
-  const bl=window.BL_SALES;
-  if(!sh||!bl) return;
-  if(sh.today) bl.today_d.shop={orders:sh.today.orders,items:sh.today.items,revenue:sh.today.revenue};
-  if(sh.month) bl.month_d.shop={orders:sh.month.orders,items:sh.month.items,revenue:sh.month.revenue};
-  if(sh.year)  bl.year_d.shop ={orders:sh.year.orders, items:sh.year.items, revenue:sh.year.revenue};
-  bl._shopify_updated=sh.updated;
 }
 
 function renderBLSales(){
@@ -566,9 +556,8 @@ function renderBLSales(){
     ${src.map(s=>blCell(d.today_d,s)).join('')}
   </tr>`;
 
-  const shUpd=d._shopify_updated?`Shopify: <strong>${d._shopify_updated}</strong> · `:'';
   const foot=`<div class="bl-foot">
-    <span class="bl-foot-txt">${shUpd}BL: <strong>${d.updated}</strong> · Shopify=total_price (z dost.) · Allegro/TikTok/Hebe=BL</span>
+    <span class="bl-foot-txt">Baselinker · zakres <strong>${d.range}</strong> · aktualizacja: <strong>${d.updated}</strong></span>
     <button class="btn-refresh" onclick="loadSalesData(true)">🔄 Pobierz świeże</button>
   </div>`;
 
@@ -578,22 +567,19 @@ function renderBLSales(){
   </table>${foot}`;
 }
 
+const SALES_URL='https://tomekwlqq.github.io/eel-reports/glov_hub_sales.json';
+
 async function loadSalesData(force=false){
   const el=document.getElementById('sales-content');
   if(force) el.innerHTML='<div class="sales-loading">Pobieram świeże dane…</div>';
-  const [blR,shR]=await Promise.allSettled([
-    fetch(force?BL_API+'/refresh':BL_API+'/bl-sales',
-          {method:force?'POST':'GET',signal:AbortSignal.timeout(25000)}),
-    fetch(force?BL_API+'/shopify-refresh':BL_API+'/shopify-sales',
-          {method:force?'POST':'GET',signal:AbortSignal.timeout(35000)})
-  ]);
-  if(blR.status==='fulfilled'&&blR.value.ok) window.BL_SALES=await blR.value.json();
-  if(shR.status==='fulfilled'&&shR.value.ok) window.SHOPIFY_SALES=await shR.value.json();
-  if(window.BL_SALES){
-    if(window.SHOPIFY_SALES) mergeSalesData();
+  try{
+    const r=await fetch(SALES_URL+'?t='+Date.now(),{signal:AbortSignal.timeout(15000)});
+    if(!r.ok) throw new Error(r.status);
+    window.BL_SALES=await r.json();
     renderBLSales();
-  } else {
-    el.innerHTML='<div class="sales-loading">Serwer offline — uruchom <code>python3 glov_server.py</code></div>';
+  }catch(e){
+    if(window.BL_SALES) renderBLSales();
+    else el.innerHTML='<div class="sales-loading">Brak danych — odśwież za chwilę lub uruchom <code>python3 update_hub_sales.py</code></div>';
   }
 }
 function loadBLSales(force=false){return loadSalesData(force);}
