@@ -498,7 +498,8 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
 </div>
 
 <!-- @BL_SALES -->
-<script id="bl-sales-data">window.BL_SALES={"updated": "2026-07-28 16:17", "today": "2026-07-28", "month": "2026-07", "year": "2026", "range": "2026-07-01 – 2026-07-28", "sources": ["shop", "allegro", "tiktokeu", "hebe"], "labels": {"shop": "Shopify", "allegro": "Allegro", "tiktokeu": "TikTok", "hebe": "Hebe"}, "today_d": {"shop": {"orders": 21, "items": 40, "revenue": 1368.94}, "allegro": {"orders": 13, "items": 26, "revenue": 972.5599999999998}, "hebe": {"orders": 3, "items": 3, "revenue": 109.75}}, "month_d": {"allegro": {"orders": 717, "items": 1345, "revenue": 50102.14000000038}, "shop": {"orders": 1031, "items": 1882, "revenue": 81703.83999999886}, "hebe": {"orders": 302, "items": 332, "revenue": 15726.29999999993}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}, "year_d": {"allegro": {"orders": 717, "items": 1345, "revenue": 50102.14000000038}, "shop": {"orders": 1031, "items": 1882, "revenue": 81703.83999999886}, "hebe": {"orders": 302, "items": 332, "revenue": 15726.29999999993}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}, "all_d": {"allegro": {"orders": 717, "items": 1345, "revenue": 50102.14000000038}, "shop": {"orders": 1031, "items": 1882, "revenue": 81703.83999999886}, "hebe": {"orders": 302, "items": 332, "revenue": 15726.29999999993}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}};</script>
+<script id="bl-sales-data">window.BL_SALES={"updated": "2026-07-28 19:27", "today": "2026-07-28", "month": "2026-07", "year": "2026", "range": "2026-07-01 – 2026-07-28", "sources": ["shop", "allegro", "tiktokeu", "hebe"], "labels": {"shop": "Shopify", "allegro": "Allegro", "tiktokeu": "TikTok", "hebe": "Hebe"}, "today_d": {"shop": {"orders": 42, "items": 71, "revenue": 3308.6300000000015}, "allegro": {"orders": 24, "items": 48, "revenue": 1767.3300000000008}, "hebe": {"orders": 6, "items": 7, "revenue": 344.35}}, "month_d": {"allegro": {"orders": 728, "items": 1367, "revenue": 50896.91000000038}, "shop": {"orders": 1052, "items": 1913, "revenue": 83643.52999999875}, "hebe": {"orders": 305, "items": 336, "revenue": 15960.899999999929}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}, "year_d": {"allegro": {"orders": 728, "items": 1367, "revenue": 50896.91000000038}, "shop": {"orders": 1052, "items": 1913, "revenue": 83643.52999999875}, "hebe": {"orders": 305, "items": 336, "revenue": 15960.899999999929}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}, "all_d": {"allegro": {"orders": 728, "items": 1367, "revenue": 50896.91000000038}, "shop": {"orders": 1052, "items": 1913, "revenue": 83643.52999999875}, "hebe": {"orders": 305, "items": 336, "revenue": 15960.899999999929}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}};</script>
+
 
 <script>
 const root=document.documentElement, btn=document.getElementById('themeBtn');
@@ -512,8 +513,7 @@ btn.onclick=()=>{
   btn.textContent = next==='light'?'🌙':'☀️';
 };
 
-// ── SPRZEDAŻ BL MATRIX ───────────────────────────────────────────────────
-const BL_API='http://localhost:9871/api';
+// ── SPRZEDAŻ MATRIX ──────────────────────────────────────────────────────
 function n(v,d=0){return(+v||0).toLocaleString('pl-PL',{minimumFractionDigits:d,maximumFractionDigits:d});}
 function zl(v){return n(v,2)+' zł';}
 const SRC_COLORS={'shop':'#7c5cff','allegro':'#f5751a','tiktokeu':'#16a34a','hebe':'#e91e8c'};
@@ -528,7 +528,7 @@ function blCell(period_d, src){
 function renderBLSales(){
   const el=document.getElementById('sales-content');
   const d=window.BL_SALES;
-  if(!d){el.innerHTML='<div class="sales-loading">Brak danych — uruchom: <code>python3 update_hub_sales.py</code></div>';return;}
+  if(!d){el.innerHTML='<div class="sales-loading">Brak danych — uruchom: <code>python3 glov_server.py</code></div>';return;}
 
   const src=d.sources||['shop','allegro','tiktokeu','hebe'];
   const lbl=d.labels||{};
@@ -537,13 +537,11 @@ function renderBLSales(){
   const yr=d.year||'';
   const todayShort=d.today?(d.today.substring(5).replace('-','.')+''):'-';
 
-  // Nagłówek kolumn
   const thCh=src.map(s=>{
     const c=SRC_COLORS[s]||'#9a9aa5';
     return `<th style="color:${c};border-bottom-color:${c}">${lbl[s]||s}</th>`;
   }).join('');
 
-  // Wiersze
   const rowRok=`<tr class="row-rok">
     <td class="bl-lbl"><div class="bl-period">ROK ${yr}</div></td>
     ${src.map(s=>blCell(d.year_d,s)).join('')}
@@ -558,8 +556,8 @@ function renderBLSales(){
   </tr>`;
 
   const foot=`<div class="bl-foot">
-    <span class="bl-foot-txt">Dane z Baselinker · zakres <strong>${d.range}</strong> · aktualizacja: <strong>${d.updated}</strong></span>
-    <button class="btn-refresh" onclick="loadBLSales(true)">🔄 Pobierz świeże</button>
+    <span class="bl-foot-txt">Baselinker · zakres <strong>${d.range}</strong> · aktualizacja: <strong>${d.updated}</strong></span>
+    <button class="btn-refresh" onclick="loadSalesData(true)">🔄 Pobierz świeże</button>
   </div>`;
 
   el.innerHTML=`<table class="bl-matrix">
@@ -568,19 +566,21 @@ function renderBLSales(){
   </table>${foot}`;
 }
 
-async function loadBLSales(force=false){
+const SALES_URL='https://tomekwlqq.github.io/eel-reports/glov_hub_sales.json';
+
+async function loadSalesData(force=false){
   const el=document.getElementById('sales-content');
-  if(force) el.innerHTML='<div class="sales-loading">Pobieram świeże dane z Baselinker…</div>';
+  if(force) el.innerHTML='<div class="sales-loading">Pobieram świeże dane…</div>';
   try{
-    const url=force?BL_API+'/refresh':BL_API+'/bl-sales';
-    const r=await fetch(url,{method:force?'POST':'GET',signal:AbortSignal.timeout(25000)});
+    const r=await fetch(SALES_URL+'?t='+Date.now(),{signal:AbortSignal.timeout(15000)});
     if(!r.ok) throw new Error(r.status);
     window.BL_SALES=await r.json();
     renderBLSales();
   }catch(e){
     if(window.BL_SALES) renderBLSales();
-    else el.innerHTML='<div class="sales-loading">Serwer offline — uruchom <code>python3 glov_server.py</code></div>';
+    else el.innerHTML='<div class="sales-loading">Brak danych — odśwież za chwilę lub uruchom <code>python3 update_hub_sales.py</code></div>';
   }
 }
-loadBLSales();
+function loadBLSales(force=false){return loadSalesData(force);}
+loadSalesData();
 </script></body></html>
