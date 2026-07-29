@@ -205,6 +205,16 @@ th.grp-bl{background:var(--bl-head);color:#3a1a70}
 .delta-dn{color:var(--red);font-weight:700}
 .delta-na{color:var(--muted)}
 .meta-loading{padding:20px;text-align:center;color:#888;font-size:13px}
+/* ===== PERIOD KPI BAR ===== */
+.period-kpi-bar{display:flex;gap:0;flex-wrap:nowrap;margin:12px 0;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.pkpi{flex:1;min-width:110px;padding:12px 14px;border-right:1px solid var(--border)}
+.pkpi:last-child{border-right:none}
+.pkpi-lbl{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pkpi-val{font-size:17px;font-weight:900;letter-spacing:-.5px}
+.pkpi-sub{font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pkpi-meta{border-top:3px solid var(--meta-head)}
+.pkpi-ga4{border-top:3px solid var(--ga4-head)}
+.pkpi-bl{border-top:3px solid var(--bl-head)}
 </style>
 </head>
 <body>
@@ -223,10 +233,6 @@ th.grp-bl{background:var(--bl-head);color:#3a1a70}
     </div>
     <span class="live-meta" id="live-meta-updated"></span>
     <button class="live-refresh" onclick="refreshAllData(true)">🔄</button>
-  </div>
-  <!-- 8 KPI kart (4+4) -->
-  <div class="kpi8-grid" id="day-kpi">
-    <div class="kpi8-load">Ładowanie…</div>
   </div>
   <!-- 3 zakładki górnej sekcji -->
   <div class="day-tab-nav">
@@ -260,6 +266,9 @@ th.grp-bl{background:var(--bl-head);color:#3a1a70}
   <div id="comp-range-lbl" class="comp-range" style="display:none"></div>
   <div id="comp-kpi" class="comp-kpi-row" style="display:none"></div>
 </div>
+
+<!-- ===== PASEK KPI DLA WYBRANEGO OKRESU ===== -->
+<div id="period-kpi-bar" class="period-kpi-bar"></div>
 
 <h3 style="margin:12px 0 8px;font-size:14px;font-weight:700">Snapshot 3 poziomów (20–26.07.2026)</h3>
 
@@ -4309,7 +4318,6 @@ function setDay(key){
   currentDay = key;
   document.getElementById('dbtn-today').classList.toggle('active', key==='today');
   document.getElementById('dbtn-yesterday').classList.toggle('active', key==='yesterday');
-  renderDayKpi();
   renderDayCampanel();
 }
 
@@ -4340,76 +4348,93 @@ function cloneEtlToDay(panelId, sourceId){
   panel.dataset.filled = '1';
 }
 
-function renderDayKpi(){
+function renderPeriodKpi(){
   const M = window.META_DAILY;
   const L = window.LIVE2;
   const S = window.SALES;
-  const grid = document.getElementById('day-kpi');
-  if(!M){ grid.innerHTML='<div class="kpi8-load">Ładowanie…</div>'; return; }
+  const bar = document.getElementById('period-kpi-bar');
+  if(!M || !bar) return;
 
-  const dk = currentDay;
-  const md = M[dk] && M[dk].total ? M[dk].total : null;
+  const p = currentPreset;
+  /* preset 'today' → używamy M.yesterday (ostatni zamknięty dzień) */
+  const presetData = {
+    'today':    M.yesterday,
+    'last_7d':  M.last_7d,
+    'last_30d': M.last_30d
+  };
+  const md = (presetData[p] && presetData[p].total) ? presetData[p].total : null;
 
-  /* GA4: live2.today.date === M.yesterday_date → pasuje do 'yesterday' */
+  /* GA4 — dostępne tylko gdy live2.today.date === M.yesterday_date (1d lag) */
   let lv = null;
-  if(dk==='yesterday' && L && L.today && L.today.date===M.yesterday_date) lv = L.today;
+  if(p==='today' && L && L.today && L.today.date === M.yesterday_date) lv = L.today;
 
-  /* BL */
-  let blOrders=null, blRev=null;
-  if(dk==='today' && S && S.today_d){
-    blOrders = Object.values(S.today_d).reduce((a,v)=>a+(v.orders||0),0);
-    blRev    = Object.values(S.today_d).reduce((a,v)=>a+(v.revenue||0),0);
-  } else if(dk==='yesterday' && lv && lv.shopify && lv.shopify.kpi){
+  /* GA4: płatne sesje Meta (source=meta, medium=cpc) + atrybucja */
+  let paidSess=null, zestSess=null, reklSess=null;
+  if(lv && lv.ga4 && lv.ga4.channels){
+    const metaCpc = lv.ga4.channels.filter(c => c.source==='meta' && c.medium==='cpc');
+    paidSess  = metaCpc.reduce((a,c)=>a+(c.sessions||0),0);
+    zestSess  = metaCpc.filter(c=>c.content && c.content!=='').reduce((a,c)=>a+(c.sessions||0),0);
+    /* reklamy: content + any term/ad signal — uproszczone: content ≠ 'advantage' */
+    reklSess  = metaCpc.filter(c=>c.content && c.content!=='' && c.content!=='advantage').reduce((a,c)=>a+(c.sessions||0),0);
+  }
+  const zestPct = (paidSess && zestSess!=null) ? (zestSess/paidSess*100).toFixed(1)+'%' : null;
+  const reklPct = (paidSess && reklSess!=null) ? (reklSess/paidSess*100).toFixed(1)+'%' : null;
+
+  /* BL — dla yesterday: live2.today.shopify; dla 7d/30d: brak */
+  let blOrders=null, blRev=null, blChannels=null, blChStr='';
+  if(lv && lv.shopify && lv.shopify.kpi){
     blOrders = lv.shopify.kpi.orders;
     blRev    = lv.shopify.kpi.net_sales;
   }
+  if(p==='today' && S && S.today_d){
+    const chActive = Object.entries(S.today_d).filter(([,v])=>v.orders>0);
+    blChannels = chActive.length;
+    blChStr = chActive.map(([k,v])=>`${k} ${v.orders}`).join(', ');
+  }
 
-  const ga4sess = lv && lv.ga4 && lv.ga4.kpi ? lv.ga4.kpi.sessions : null;
-  const ga4rev  = lv && lv.ga4 && lv.ga4.kpi ? lv.ga4.kpi.revenue  : null;
-  const roas    = md ? md.roas : null;
-  const roasCls = roas!=null ? (roas>=2?'kpi8-ok':'kpi8-warn') : '';
-  const lagNote = '<div class="kpi8-sub" style="color:var(--red);font-size:9px">lag 1d</div>';
+  /* ROAS ogółem = BL net_sales / Meta spend */
+  const roasOg = (blRev && md && md.spend>0) ? (blRev/md.spend) : null;
 
-  grid.innerHTML = `
-    <div class="kpi8-cell kpi8-meta">
-      <div class="kpi8-lbl">Wydatek</div>
-      <div class="kpi8-val">${md?fmt(md.spend,'zl'):'—'}</div>
-      <div class="kpi8-sub">Meta</div>
+  bar.innerHTML = `
+    <div class="pkpi pkpi-meta">
+      <div class="pkpi-lbl">Wydatek Meta</div>
+      <div class="pkpi-val">${md?fmt(md.spend,'zl'):'—'}</div>
+      <div class="pkpi-sub">${md&&md.reach?'zasięg '+fmt(md.reach,'n'):''}</div>
     </div>
-    <div class="kpi8-cell kpi8-meta">
-      <div class="kpi8-lbl">Zakupy px</div>
-      <div class="kpi8-val">${md&&md.purchases!=null?md.purchases:'—'}</div>
-      <div class="kpi8-sub">Meta pixel</div>
+    <div class="pkpi pkpi-meta">
+      <div class="pkpi-lbl">ROAS Meta</div>
+      <div class="pkpi-val">${md&&md.roas?fmt(md.roas,'roas'):'—'}</div>
+      <div class="pkpi-sub">${md&&md.purchases!=null?md.purchases+' zakupów · '+(md.revenue?fmt(md.revenue,'zl'):''): ''}</div>
     </div>
-    <div class="kpi8-cell kpi8-meta ${roasCls}">
-      <div class="kpi8-lbl">ROAS</div>
-      <div class="kpi8-val">${roas!=null?fmt(roas,'roas'):'—'}</div>
-      <div class="kpi8-sub">Meta pixel</div>
+    <div class="pkpi pkpi-meta">
+      <div class="pkpi-lbl">ROAS ogółem</div>
+      <div class="pkpi-val">${roasOg?fmt(roasOg,'roas'):'—'}</div>
+      <div class="pkpi-sub">${blRev?fmt(blRev,'zl')+' sprzedaż BL':'BL revenue / Meta spend'}</div>
     </div>
-    <div class="kpi8-cell kpi8-meta">
-      <div class="kpi8-lbl">Zasięg</div>
-      <div class="kpi8-val">${md&&md.reach!=null?fmt(md.reach,'n'):'—'}</div>
-      <div class="kpi8-sub">Meta</div>
+    <div class="pkpi pkpi-ga4">
+      <div class="pkpi-lbl">Sesje GA4 płatny</div>
+      <div class="pkpi-val">${paidSess!=null?fmt(paidSess,'n'):'—'}</div>
+      <div class="pkpi-sub">${paidSess!=null?'meta · cpc':'brak GA4 za ten okres'}</div>
     </div>
-    <div class="kpi8-cell kpi8-ga4">
-      <div class="kpi8-lbl">Sesje GA4</div>
-      <div class="kpi8-val">${ga4sess!=null?fmt(ga4sess,'n'):'—'}</div>
-      ${dk==='today'?lagNote:'<div class="kpi8-sub">GA4</div>'}
+    <div class="pkpi pkpi-ga4">
+      <div class="pkpi-lbl">Atrybucja zestawy</div>
+      <div class="pkpi-val">${zestPct||'—'}</div>
+      <div class="pkpi-sub">${zestSess!=null&&paidSess?zestSess+'/'+paidSess+' sesji':'brak GA4'}</div>
     </div>
-    <div class="kpi8-cell kpi8-ga4">
-      <div class="kpi8-lbl">Przychód GA4</div>
-      <div class="kpi8-val">${ga4rev!=null?fmt(ga4rev,'zl'):'—'}</div>
-      ${dk==='today'?lagNote:'<div class="kpi8-sub">GA4</div>'}
+    <div class="pkpi pkpi-ga4">
+      <div class="pkpi-lbl">Atrybucja reklamy</div>
+      <div class="pkpi-val">${reklPct||'—'}</div>
+      <div class="pkpi-sub">${reklSess!=null&&paidSess?reklSess+'/'+paidSess+' sesji':'brak GA4'}</div>
     </div>
-    <div class="kpi8-cell kpi8-bl">
-      <div class="kpi8-lbl">Zamówienia BL</div>
-      <div class="kpi8-val">${blOrders!=null?blOrders:'—'}</div>
-      <div class="kpi8-sub">multi-channel</div>
+    <div class="pkpi pkpi-bl">
+      <div class="pkpi-lbl">Zamówienia BL</div>
+      <div class="pkpi-val">${blOrders!=null?blOrders:'—'}</div>
+      <div class="pkpi-sub">wszystkie kanały</div>
     </div>
-    <div class="kpi8-cell kpi8-bl">
-      <div class="kpi8-lbl">Przychód BL</div>
-      <div class="kpi8-val">${blRev!=null?fmt(blRev,'zl'):'—'}</div>
-      <div class="kpi8-sub">BL netto</div>
+    <div class="pkpi pkpi-bl">
+      <div class="pkpi-lbl">Kanały BL</div>
+      <div class="pkpi-val">${blChannels!=null?blChannels:'—'}</div>
+      <div class="pkpi-sub">${blChStr||''}</div>
     </div>
   `;
 }
@@ -4532,6 +4557,7 @@ function setPreset(p){
     document.getElementById('picker-from').value = pts[0]||'';
     document.getElementById('picker-to').value   = pts[1]||'';
   }
+  renderPeriodKpi();
 }
 
 function generateReport(){
@@ -4601,13 +4627,10 @@ async function refreshAllData(force=false){
     if(yd) yd.textContent = M.yesterday_date ? '('+M.yesterday_date.slice(5)+')' : '';
     if(updEl) updEl.textContent = 'Aktualizacja: '+(M.updated||'');
 
-    renderDayKpi();
     renderDayCampanel();
     setPreset(currentPreset);
   } catch(e){
     if(updEl) updEl.textContent = 'Błąd: '+e.message;
-    const g = document.getElementById('day-kpi');
-    if(g) g.innerHTML = '<div class="kpi8-load">Błąd ładowania: '+e.message+'</div>';
   }
 }
 
