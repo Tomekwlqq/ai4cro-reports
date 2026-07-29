@@ -4416,36 +4416,97 @@ function renderDayKpi(){
 
 function renderDayCampanel(){
   const M = window.META_DAILY;
+  const L = window.LIVE2;
   const panel = document.getElementById('day-panel-kampanie');
   if(!M){ panel.innerHTML='<div class="meta-loading">Brak danych</div>'; return; }
-  const dayData = M[currentDay];
+  const dk = currentDay;
+  const dayData = M[dk];
   if(!dayData||!dayData.campaigns){
-    panel.innerHTML='<div class="meta-loading">Brak kampanii</div>'; return;
+    panel.innerHTML='<div class="meta-loading">Brak kampanii dla tego dnia</div>'; return;
   }
+
+  /* GA4 lookup — dostępne tylko dla 'yesterday' przez live2.today */
+  const ga4Map = {};
+  const isToday = dk==='today';
+  if(!isToday && L && L.today && L.today.ga4 && L.today.ga4.channels){
+    L.today.ga4.channels.forEach(ch=>{
+      if(ch.campaign) ga4Map[ch.campaign.toLowerCase()] = ch;
+    });
+  }
+
+  const dateLabel = dk==='today' ? (M.today_date||'Dziś') : (M.yesterday_date||'Wczoraj');
+
   const rows = dayData.campaigns.map(c=>{
     const rpCls = c.roas>=2?'rp-ok':c.roas>0?'rp-bad':'rp-na';
     const rpTxt = c.roas>0?c.roas.toFixed(2)+'×':'—';
     const badge = c.status==='ACTIVE'
       ? '<span class="badge-active">ACTIVE</span>'
       : '<span class="badge-paused">PAUSED</span>';
-    return `<tr>
-      <td class="nm">${c.name||c.id}</td>
+
+    const ga4 = !isToday ? (ga4Map[c.name.toLowerCase()]||null) : null;
+    const ga4sess = ga4 ? ga4.sessions : null;
+    const ga4txn  = ga4 ? (ga4.purchases??null) : null;
+    const ga4rev  = ga4 ? (ga4.revenue??null) : null;
+    const ga4roas = (ga4rev!=null && c.spend>0) ? (ga4rev/c.spend) : null;
+
+    const ga4cells = isToday
+      ? `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">brak (lag 1d)</td>`
+      : `<td class="ga4 num">${ga4sess!=null?fmt(ga4sess,'n'):'—'}</td>
+         <td class="ga4 num">—</td>
+         <td class="ga4 num">—</td>
+         <td class="ga4 num">${ga4txn!=null?ga4txn:'—'}</td>
+         <td class="ga4 num">${ga4rev!=null?fmt(ga4rev,'zl'):'—'}</td>
+         <td class="ga4 num">${ga4roas!=null?fmt(ga4roas,'roas'):'—'}</td>`;
+
+    return `<tr class="row-match" data-status="${c.status}">
+      <td class="name-cell"><span class="camp-name">${c.name||c.id}</span></td>
       <td>${badge}</td>
-      <td class="num">${fmt(c.spend,'zl')}</td>
-      <td class="num">${c.impressions!=null?fmt(c.impressions,'n'):'—'}</td>
-      <td class="num">${c.clicks!=null?fmt(c.clicks,'n'):'—'}</td>
-      <td class="num">${c.purchases!=null?c.purchases:'—'}</td>
-      <td class="num"><span class="${rpCls}">${rpTxt}</span></td>
+      <td class="muted">—</td>
+      <td class="meta num">${fmt(c.spend,'zl')}</td>
+      <td class="meta num">${c.reach!=null?fmt(c.reach,'n'):'—'}</td>
+      <td class="meta num">${c.impressions!=null?fmt(c.impressions,'n'):'—'}</td>
+      <td class="meta num">${c.clicks!=null?fmt(c.clicks,'n'):'—'}</td>
+      <td class="meta num">${c.ctr!=null?fmt(c.ctr,'pct'):'—'}</td>
+      <td class="meta num">${c.purchases!=null?c.purchases:'—'}</td>
+      <td class="meta num"><span class="${rpCls}">${rpTxt}</span></td>
+      ${ga4cells}
+      <td class="bl num">—</td>
+      <td class="bl num">—</td>
     </tr>`;
   }).join('');
-  panel.innerHTML = `<table class="live-tbl">
-    <thead><tr>
-      <th>Kampania</th><th>Status</th>
-      <th class="num">Wydatek</th><th class="num">Impr</th>
-      <th class="num">Kliki</th><th class="num">Zakupy</th><th class="num">ROAS</th>
-    </tr></thead>
-    <tbody>${rows}</tbody>
-  </table>`;
+
+  panel.innerHTML = `<div style="overflow-x:auto;padding:8px 0">
+    <table class="data-table" style="min-width:900px">
+      <thead>
+        <tr>
+          <th rowspan="2" class="th-name">Kampania</th>
+          <th rowspan="2">Status</th>
+          <th rowspan="2">Cel</th>
+          <th colspan="7" class="grp-meta">Meta · ${dateLabel}</th>
+          <th colspan="6" class="grp-ga4">GA4 · ${isToday?'lag 1d':dateLabel}</th>
+          <th colspan="2" class="grp-bl">BL · n/d per kampania</th>
+        </tr>
+        <tr>
+          <th class="meta num">Wydatek</th>
+          <th class="meta num">Zasięg</th>
+          <th class="meta num">Impr</th>
+          <th class="meta num">Klik</th>
+          <th class="meta num">CTR</th>
+          <th class="meta num">Zakupy¹</th>
+          <th class="meta num">ROAS px</th>
+          <th class="ga4 num">Sesje</th>
+          <th class="ga4 num">ATC</th>
+          <th class="ga4 num">Check</th>
+          <th class="ga4 num">Txn</th>
+          <th class="ga4 num">Przychód</th>
+          <th class="ga4 num">ROAS ga4</th>
+          <th class="bl num">BL Zam.</th>
+          <th class="bl num">BL Rev</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
 }
 
 /* ===== PICKER SECTION ===== */
