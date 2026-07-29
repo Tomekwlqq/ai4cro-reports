@@ -140,8 +140,8 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
 .bl-zero .bl-qty{color:var(--muted)}
 .bl-r{font-size:13px;font-variant-numeric:tabular-nums;line-height:1.5}
 .bl-r-kasa{font-weight:700;color:var(--txt);letter-spacing:-.2px}
-.bl-r-zam{color:var(--txt2)}
-.bl-r-szt{color:var(--muted);font-size:12px}
+.bl-r-zam{color:var(--txt2);font-size:13px}
+.bl-r-szt{color:var(--muted);font-size:13px}
 .bl-zero .bl-r{color:var(--muted)!important}
 .bl-sum-hdr{color:#1e293b!important;border-bottom-color:#1e293b!important}
 .bl-sum-cell .bl-qty{color:#1e293b;font-size:15px}
@@ -558,7 +558,7 @@ function renderBLSales(){
   const mNum=parseInt((d.month||'').split('-')[1]||0);
   const mName=MONTHS_PL[mNum]||d.month;
   const yr=d.year||'';
-  const todayShort=d.today?(d.today.substring(5).replace('-','.')+''):'-';
+  const todayShort=d.today?(()=>{const p=d.today.split('-');return p[2]+'-'+p[1]+'-'+p[0].slice(-2);})():'-';
 
   const thCh=src.map(s=>{
     const c=SRC_COLORS[s]||'#9a9aa5';
