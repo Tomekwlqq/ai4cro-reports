@@ -141,53 +141,69 @@ th.grp-bl{background:var(--bl-head);color:#3a1a70}
 .mini-tbl .sep td{border-top:2px solid var(--border)}
 .note{font-size:11px;color:var(--muted);margin-top:6px}
 .repro-meta{font-size:11px;color:var(--muted)}
-/* ===== UPPER BLOCK ===== */
-.upper-block{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
-@media(max-width:900px){.upper-block{grid-template-columns:1fr}}
-.day-col{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;border-top:4px solid #1877f2}
-.day-col.wczoraj{border-top-color:#8fa8c8}
-.day-head{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
-.day-title{font-size:15px;font-weight:800}
-.day-date{font-size:11px;color:var(--muted)}
-.day-refresh{margin-left:auto;background:none;border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;color:var(--muted)}
-.day-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
-@media(max-width:1200px){.day-kpi-grid{grid-template-columns:repeat(2,1fr)}}
-.dkpi{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
-.dkpi.meta{border-color:var(--meta-head);background:color-mix(in srgb,var(--meta-bg) 60%,#fff)}
-.dkpi.bl{border-color:var(--bl-head);background:color-mix(in srgb,var(--bl-bg) 60%,#fff)}
-.dkpi.roas-ok{border-color:#86efac!important;background:#f0fdf4!important}
-.dkpi.roas-ok .dk-val{color:var(--green)}
-.dkpi.roas-bad{border-color:#fde68a!important;background:#fffbeb!important}
-.dk-lbl{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
-.dk-val{font-size:15px;font-weight:900;letter-spacing:-.4px}
-.dk-sub{font-size:10px;color:var(--muted);margin-top:1px}
-.camp-mini-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px}
-.camp-mini-table th{padding:4px 6px;background:var(--bg);font-size:10px;font-weight:700;text-align:left;border-bottom:1px solid var(--border)}
-.camp-mini-table th.num{text-align:right}
-.camp-mini-table td{padding:4px 6px;border-bottom:1px solid var(--border);white-space:nowrap}
-.camp-mini-table td.num{text-align:right;font-variant-numeric:tabular-nums}
-.camp-mini-table .name-cell{max-width:160px;white-space:normal;word-break:break-word;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
-.upper-loading{padding:40px;text-align:center;color:var(--muted);font-size:13px;grid-column:1/-1}
-details>summary{font-size:12px;font-weight:600;cursor:pointer;margin-bottom:6px;list-style:none;display:flex;align-items:center;gap:4px}
-details>summary::before{content:'▶';font-size:9px;transition:.15s}
-details[open]>summary::before{content:'▼'}
-/* ===== PERIOD PICKER ===== */
-.period-section{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:0 0 12px}
-.period-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-.period-head h3{font-size:13px;font-weight:700;margin:0}
-.period-btn{padding:4px 14px;border:1px solid var(--border);background:#fff;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);transition:.15s}
-.period-btn.active{background:#1877f2;color:#fff;border-color:#1877f2}
-.period-range{font-size:11px;color:var(--muted);margin-left:4px}
-.btn-refresh-m{background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--muted)}
-.period-kpi{display:flex;gap:8px;flex-wrap:wrap}
-.pkpi{flex:1;min-width:110px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px}
-.pk-lbl{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:2px}
-.pk-val{font-size:16px;font-weight:800}
-.pk-delta{font-size:11px;margin-top:2px}
-.delta-up{color:var(--green);font-weight:600}
-.delta-dn{color:var(--red);font-weight:600}
+/* ===== LIVE SECTION (Dziś/Wczoraj toggle) ===== */
+.live-section{background:var(--card);border:1px solid var(--border);border-radius:8px;margin:12px 0;border-top:3px solid #1877f2;overflow:hidden}
+.live-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--bg)}
+.live-title{font-size:14px;font-weight:800;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.live-dot{width:9px;height:9px;border-radius:50%;background:#e53e3e;display:inline-block;flex-shrink:0}
+.day-toggle{display:flex;gap:6px}
+.day-btn{padding:5px 14px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);transition:.15s;white-space:nowrap}
+.day-btn.active{background:#1877f2;color:#fff;border-color:#1877f2}
+.live-meta{font-size:11px;color:var(--muted);margin-left:auto;white-space:nowrap}
+.live-refresh{background:none;border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;color:var(--muted)}
+.kpi8-grid{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)}
+.kpi8-cell{padding:12px 14px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.kpi8-cell:nth-child(4n){border-right:none}
+.kpi8-cell:nth-child(n+5){border-bottom:none}
+.kpi8-lbl{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+.kpi8-val{font-size:17px;font-weight:900;letter-spacing:-.5px}
+.kpi8-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.kpi8-meta{border-left:3px solid var(--meta-head)}
+.kpi8-ga4{border-left:3px solid var(--ga4-head)}
+.kpi8-bl{border-left:3px solid var(--bl-head)}
+.kpi8-ok{background:#f0fdf4}.kpi8-ok .kpi8-val{color:var(--green)}
+.kpi8-warn{background:#fffbeb}
+.kpi8-load{grid-column:1/-1;padding:32px;text-align:center;color:var(--muted);font-size:13px}
+/* Day 3-tab nav */
+.day-tab-nav{display:flex;border-bottom:2px solid var(--border);padding:0 16px;background:var(--bg)}
+.day-tab-btn{padding:8px 16px;border:none;background:none;cursor:pointer;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;font-weight:500;transition:.15s}
+.day-tab-btn.active{color:var(--text);border-bottom-color:#1877f2;font-weight:700}
+.day-panel{display:none;padding:12px 16px;overflow-x:auto}
+.day-panel.active{display:block}
+/* Camp live table */
+.live-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.live-tbl th{text-align:left;padding:6px 8px;background:var(--bg);font-size:11px;font-weight:700;border-bottom:2px solid var(--border);white-space:nowrap}
+.live-tbl th.num{text-align:right}
+.live-tbl td{padding:6px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+.live-tbl td.num{text-align:right;font-variant-numeric:tabular-nums}
+.live-tbl .nm{max-width:220px;overflow:hidden;text-overflow:ellipsis}
+.rp-ok{display:inline-block;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#16a34a;font-weight:700;font-size:11px}
+.rp-bad{display:inline-block;padding:2px 8px;border-radius:10px;background:#fef9c3;color:#b45309;font-weight:700;font-size:11px}
+.rp-na{display:inline-block;padding:2px 8px;border-radius:10px;background:#f3f4f6;color:#9ca3af;font-size:11px}
+.etl-note{font-size:11px;color:var(--muted);padding:8px 0 10px;font-style:italic}
+/* ===== GLOV-LIVE PICKER ===== */
+.picker-section{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:12px 0}
+.picker-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.picker-fld{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.picker-fld input[type=date]{font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg);font-weight:400;color:var(--text)}
+.picker-sep{width:1px;height:24px;background:var(--border);flex-shrink:0}
+.preset-wrap{display:flex;align-items:center;gap:6px}
+.preset-lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+.preset-btn{padding:5px 14px;border:1px solid var(--border);background:#fff;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);transition:.15s;white-space:nowrap}
+.preset-btn.active{background:#1877f2;color:#fff;border-color:#1877f2}
+.compare-lbl{display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;font-weight:600;white-space:nowrap}
+.compare-lbl input{cursor:pointer}
+.generuj-btn{padding:7px 20px;background:#1877f2;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;margin-left:auto}
+.generuj-btn:hover{background:#1557b0}
+.comp-kpi-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.ckpi{flex:1;min-width:100px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px}
+.ckpi-lbl{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:2px}
+.ckpi-val{font-size:15px;font-weight:800}
+.ckpi-delta{font-size:11px;margin-top:2px}
+.comp-range{font-size:11px;color:var(--muted);padding:4px 0 8px;font-style:italic}
+.delta-up{color:var(--green);font-weight:700}
+.delta-dn{color:var(--red);font-weight:700}
 .delta-na{color:var(--muted)}
-/* Preserved meta-loading */
 .meta-loading{padding:20px;text-align:center;color:#888;font-size:13px}
 </style>
 </head>
@@ -197,26 +213,55 @@ details[open]>summary::before{content:'▼'}
 <p class="muted">Kampanie · Zestawy reklam · Reklamy &nbsp;|&nbsp; Konto: act_414505328896049
   &nbsp;|&nbsp; Snapshot Meta: 2026-07-20–2026-07-26 &nbsp;|&nbsp; Wygenerowano: 2026-07-28</p>
 
-<!-- UPPER BLOCK: Dziś | Wczoraj -->
-<div class="upper-block" id="upper-block">
-  <div class="upper-loading">Ładowanie danych live…</div>
+<!-- ===== GÓRNA SEKCJA: Toggle Dziś / Wczoraj ===== -->
+<div class="live-section">
+  <div class="live-head">
+    <span class="live-title"><span class="live-dot"></span> Meta Ads — Wyniki live</span>
+    <div class="day-toggle">
+      <button class="day-btn active" id="dbtn-today" onclick="setDay('today')">🔴 Dziś <span id="lbl-today-date"></span></button>
+      <button class="day-btn" id="dbtn-yesterday" onclick="setDay('yesterday')">Wczoraj <span id="lbl-yesterday-date"></span></button>
+    </div>
+    <span class="live-meta" id="live-meta-updated"></span>
+    <button class="live-refresh" onclick="refreshAllData(true)">🔄</button>
+  </div>
+  <!-- 8 KPI kart (4+4) -->
+  <div class="kpi8-grid" id="day-kpi">
+    <div class="kpi8-load">Ładowanie…</div>
+  </div>
+  <!-- 3 zakładki górnej sekcji -->
+  <div class="day-tab-nav">
+    <button class="day-tab-btn active" id="dtab-kampanie" onclick="setDayTab('kampanie')">Kampanie</button>
+    <button class="day-tab-btn" id="dtab-zestawy" onclick="setDayTab('zestawy')">Zestawy reklam</button>
+    <button class="day-tab-btn" id="dtab-reklamy" onclick="setDayTab('reklamy')">Reklamy</button>
+  </div>
+  <div class="day-panel active" id="day-panel-kampanie">
+    <div class="meta-loading">Ładowanie kampanii…</div>
+  </div>
+  <div class="day-panel" id="day-panel-zestawy"></div>
+  <div class="day-panel" id="day-panel-reklamy"></div>
 </div>
 
-<div class="period-section">
-  <div class="period-head">
-    <h3>Podsumowanie okresu (Meta Ads)</h3>
-    <button class="period-btn active" id="pb-today" onclick="selectPeriod('today')">Dziś</button>
-    <button class="period-btn" id="pb-last_7d" onclick="selectPeriod('last_7d')">7 dni</button>
-    <button class="period-btn" id="pb-last_30d" onclick="selectPeriod('last_30d')">30 dni</button>
-    <span class="period-range" id="period-range"></span>
-    <button class="btn-refresh-m" onclick="refreshAllData(true)">🔄 Odśwież</button>
+<!-- ===== DOLNA SEKCJA: GLOV-Live picker ===== -->
+<div class="picker-section">
+  <div class="picker-row">
+    <div class="picker-fld">OD <input type="date" id="picker-from"></div>
+    <div class="picker-fld">DO <input type="date" id="picker-to"></div>
+    <div class="picker-sep"></div>
+    <div class="preset-wrap">
+      <span class="preset-lbl">Preset</span>
+      <button class="preset-btn active" id="prst-today" onclick="setPreset('today')">Ostatni dzień</button>
+      <button class="preset-btn" id="prst-7d" onclick="setPreset('last_7d')">7 dni</button>
+      <button class="preset-btn" id="prst-30d" onclick="setPreset('last_30d')">30 dni</button>
+    </div>
+    <div class="picker-sep"></div>
+    <label class="compare-lbl"><input type="checkbox" id="compare-chk"> Porównaj z poprzednim</label>
+    <button class="generuj-btn" onclick="generateReport()">Generuj →</button>
   </div>
-  <div id="period-kpi" class="period-kpi">
-    <div class="meta-loading" style="padding:12px">Ładowanie…</div>
-  </div>
+  <div id="comp-range-lbl" class="comp-range" style="display:none"></div>
+  <div id="comp-kpi" class="comp-kpi-row" style="display:none"></div>
 </div>
 
-<h2 style="margin:16px 0 8px">Szczegółowy snapshot 3 poziomów (20–26.07.2026)</h2>
+<h3 style="margin:12px 0 8px;font-size:14px;font-weight:700">Snapshot 3 poziomów (20–26.07.2026)</h3>
 
 <div class="filter-bar">
   <span class="filter-label">Filtry:</span>
@@ -4226,227 +4271,285 @@ const META_URL  = 'https://tomekwlqq.github.io/eel-reports/glov/glov_hub_meta_da
 const LIVE2_URL = 'https://tomekwlqq.github.io/eel-reports/glov/glov_live2.json';
 const SALES_URL = 'https://tomekwlqq.github.io/eel-reports/glov_hub_sales.json';
 
-let currentPeriod = 'today';
+let currentDay = 'today';
+let currentDayTab = 'kampanie';
+let currentPreset = 'today';
+let _cache = {};
 
 /* ---- helpers ---- */
-function zl(v){return(+v||0).toLocaleString('pl-PL',{minimumFractionDigits:2,maximumFractionDigits:2})+' zł';}
-function n0(v){return(+v||0).toLocaleString('pl-PL');}
-function fx(v,d=2){return v!=null?(+v).toFixed(d):'—';}
-function roasFmt(v){return v!=null?v.toFixed(2)+'×':'—';}
-function pctFmt(num,den){return den?((num/den)*100).toFixed(1)+'%':'—';}
-function delta(cur,prev){
-  if(prev==null||prev===0) return '<span class="delta-na">—</span>';
-  const d=(cur-prev)/prev*100;
-  const sign=d>0?'+':'';
-  return `<span class="${d>0?'delta-up':'delta-dn'}">${sign}${d.toFixed(1)}%</span>`;
-}
-
-/* ---- GA4 Meta sessions from channels array ---- */
-function metaSessions(channels){
-  if(!channels) return null;
-  return channels
-    .filter(c=>c.source==='meta'||c.campaign==='(cross-network)')
-    .reduce((s,c)=>s+(c.sessions||0),0);
-}
-
-/* ---- Attribution coverage ---- */
-function attrCov(channels, field){
-  if(!channels) return null;
-  const metaCh=channels.filter(c=>c.source==='meta'||c.campaign==='(cross-network)');
-  const total=metaCh.reduce((s,c)=>s+(c.sessions||0),0);
-  if(!total) return null;
-  const ok=metaCh.filter(c=>c[field]&&c[field]!==''&&c[field]!=='(not set)').reduce((s,c)=>s+(c.sessions||0),0);
-  return {ok,total};
-}
-
-/* ---- Render single day column ---- */
-function renderDayCol(dayKey, M, L, S){
-  const meta   = M[dayKey];
-  const mt     = meta.total;
-  const date   = dayKey==='today'?M.today_date:M.yesterday_date;
-  const title  = dayKey==='today'?'Dziś':'Wczoraj';
-  const cls    = dayKey==='today'?'':'wczoraj';
-
-  // live2 alignment: live2.today.date === M.yesterday_date means live2.today = our Wczoraj
-  let live2Sec = null;
-  if(L){
-    if(dayKey==='today'   && L.today && L.today.date===M.today_date)     live2Sec=L.today;
-    if(dayKey==='yesterday'&& L.today && L.today.date===M.yesterday_date) live2Sec=L.today;
-    if(dayKey==='yesterday'&& L.yesterday && L.yesterday.date===M.yesterday_date) live2Sec=L.yesterday;
-  }
-
-  const ga4ch    = live2Sec?.ga4?.channels;
-  const sesje    = metaSessions(ga4ch);
-  const attrZ    = attrCov(ga4ch,'content');
-  const attrR    = attrCov(ga4ch,'campaign');
-
-  // Shop revenue for ROAS ogółem
-  let shopRev=null;
-  if(dayKey==='today'&&S&&S.today_d){
-    shopRev=Object.values(S.today_d).reduce((s,v)=>s+(v.revenue||0),0);
-  } else if(live2Sec?.shopify?.kpi){
-    shopRev=live2Sec.shopify.kpi.gross_sales;
-  }
-  const roasOg = shopRev&&mt.spend ? shopRev/mt.spend : null;
-
-  // BL orders/channels
-  let blOrders=null, blCh=null, blChStr='';
-  if(dayKey==='today'&&S&&S.today_d){
-    const entries=Object.entries(S.today_d).filter(([,v])=>v.orders>0);
-    blOrders=entries.reduce((s,[,v])=>s+v.orders,0);
-    blCh=entries.length;
-    blChStr=entries.map(([k,v])=>k.replace('tiktokeu','tik')+' '+v.orders).join('  ');
-  }
-
-  const roasMetaCls = mt.roas>=1.5?'roas-ok':mt.roas<1?'roas-bad':'';
-
-  // Active campaigns sorted by spend
-  const camps = meta.campaigns.filter(c=>c.spend>0).sort((a,b)=>b.spend-a.spend);
-  const campRows = camps.map(c=>`<tr>
-    <td class="name-cell" title="${c.name}">${c.name.replace(/^adc_|^zasieg_|^ruch_/,'')}</td>
-    <td class="num">${zl(c.spend)}</td>
-    <td class="num">${n0(c.impressions)}</td>
-    <td class="num">${c.purchases||'—'}</td>
-    <td class="num">${roasFmt(c.roas)}</td>
-  </tr>`).join('');
-
-  return `<div class="day-col ${cls}">
-  <div class="day-head">
-    <span class="day-title">${title}</span>
-    <span class="day-date">${date}</span>
-    <span class="day-date" style="margin-left:auto;font-size:10px">odśw. ${M.updated}</span>
-  </div>
-  <div class="day-kpi-grid">
-    <div class="dkpi meta">
-      <div class="dk-lbl">Wydatek Meta</div>
-      <div class="dk-val">${zl(mt.spend)}</div>
-      <div class="dk-sub">${camps.length} kampanii aktywnych</div>
-    </div>
-    <div class="dkpi meta ${roasMetaCls}">
-      <div class="dk-lbl">ROAS Meta</div>
-      <div class="dk-val">${roasFmt(mt.roas)}</div>
-      <div class="dk-sub">${n0(mt.purchases)} zakupów · ${zl(mt.revenue)}</div>
-    </div>
-    <div class="dkpi ${roasOg!=null&&roasOg>=1.5?'roas-ok':roasOg!=null&&roasOg<1?'roas-bad':''}">
-      <div class="dk-lbl">ROAS ogółem</div>
-      <div class="dk-val">${roasOg!=null?roasOg.toFixed(2)+'×':'—'}</div>
-      <div class="dk-sub">${shopRev!=null?zl(shopRev)+' sprzedaż':'brak danych'}</div>
-    </div>
-    <div class="dkpi">
-      <div class="dk-lbl">Sesje GA4 płatny</div>
-      <div class="dk-val">${sesje!=null?n0(sesje):'—'}</div>
-      <div class="dk-sub">${sesje!=null?'meta+cross-network':'brak GA4 live'}</div>
-    </div>
-    <div class="dkpi">
-      <div class="dk-lbl">Atrybucja zestawy</div>
-      <div class="dk-val">${attrZ?pctFmt(attrZ.ok,attrZ.total):'—'}</div>
-      <div class="dk-sub">${attrZ?n0(attrZ.ok)+'/'+n0(attrZ.total)+' sesji':'brak GA4'}</div>
-    </div>
-    <div class="dkpi">
-      <div class="dk-lbl">Atrybucja reklamy</div>
-      <div class="dk-val">${attrR?pctFmt(attrR.ok,attrR.total):'—'}</div>
-      <div class="dk-sub">${attrR?n0(attrR.ok)+'/'+n0(attrR.total)+' sesji':'brak GA4'}</div>
-    </div>
-    <div class="dkpi bl">
-      <div class="dk-lbl">Zamówienia BL</div>
-      <div class="dk-val">${blOrders!=null?n0(blOrders):'—'}</div>
-      <div class="dk-sub">${blOrders!=null?'wszystkie kanały':'tylko dziś dostępne'}</div>
-    </div>
-    <div class="dkpi bl">
-      <div class="dk-lbl">Kanały BL</div>
-      <div class="dk-val">${blCh!=null?blCh:'—'}</div>
-      <div class="dk-sub">${blChStr||''}</div>
-    </div>
-  </div>
-  <details open>
-    <summary>Kampanie aktywne (${camps.length})</summary>
-    <div style="overflow-x:auto">
-      <table class="camp-mini-table">
-        <thead><tr>
-          <th>Kampania</th>
-          <th class="num">Wydatki</th>
-          <th class="num">Wyśw.</th>
-          <th class="num">Zakupy</th>
-          <th class="num">ROAS</th>
-        </tr></thead>
-        <tbody>${campRows}</tbody>
-      </table>
-    </div>
-  </details>
-</div>`;
-}
-
-/* ---- Render upper block ---- */
-function renderUpperBlock(){
-  const M=window.META_DAILY, L=window.LIVE2, S=window.SALES;
-  if(!M) return;
-  document.getElementById('upper-block').innerHTML =
-    renderDayCol('today',M,L,S) + renderDayCol('yesterday',M,L,S);
-}
-
-/* ---- Period picker KPIs ---- */
-function renderPeriodKpi(period){
-  const M=window.META_DAILY;
-  if(!M) return;
-  currentPeriod=period;
-  ['today','last_7d','last_30d'].forEach(p=>{
-    const b=document.getElementById('pb-'+p);
-    if(b) b.classList.toggle('active',p===period);
-  });
-  const pd=M[period], t=pd.total;
-  const prevPd=period==='today'?M.yesterday:null;
-  const prevT=prevPd?.total;
-  const rangeLabel=period==='today'?M.today_date:period==='last_7d'?M.week_range:M.month_range;
-  const rEl=document.getElementById('period-range');
-  if(rEl) rEl.textContent=rangeLabel+(prevT?' · vs '+M.yesterday_date:'');
-
-  const kpis=[
-    {lbl:'Wydatki Meta',  val:zl(t.spend),            d:prevT?delta(t.spend,prevT.spend):''},
-    {lbl:'Zakupy pixel',  val:n0(t.purchases),         d:prevT?delta(t.purchases,prevT.purchases):''},
-    {lbl:'Przychód pixel',val:zl(t.revenue),           d:prevT?delta(t.revenue,prevT.revenue):''},
-    {lbl:'ROAS Meta',     val:roasFmt(t.roas),         d:prevT?delta(t.roas,prevT.roas):''},
-    {lbl:'Wyświetlenia',  val:n0(t.impressions),       d:prevT?delta(t.impressions,prevT.impressions):''},
-    {lbl:'Kliknięcia',    val:n0(t.clicks),            d:prevT?delta(t.clicks,prevT.clicks):''},
-    {lbl:'CTR',           val:t.ctr+'%',               d:''},
-    {lbl:'CPP',           val:t.purchases?zl(t.spend/t.purchases):'—', d:''},
-  ];
-  const html=kpis.map(k=>`<div class="pkpi">
-    <div class="pk-lbl">${k.lbl}</div>
-    <div class="pk-val">${k.val}</div>
-    <div class="pk-delta">${k.d||'<span class="delta-na">brak porównania</span>'}</div>
-  </div>`).join('');
-  const el=document.getElementById('period-kpi');
-  if(el) el.innerHTML=html;
-}
-
-function selectPeriod(p){ renderPeriodKpi(p); }
-
-/* ---- Data loading ---- */
-async function fetchJson(url){
-  const r=await fetch(url+'?t='+Date.now(),{signal:AbortSignal.timeout(15000)});
+async function fetchJson(url, force=false){
+  if(!force && _cache[url]) return _cache[url];
+  const r = await fetch(url+'?_='+Date.now());
   if(!r.ok) throw new Error(r.status);
-  return r.json();
+  const d = await r.json();
+  _cache[url] = d;
+  return d;
 }
+
+function fmt(v, type){
+  if(v == null || v === undefined) return '—';
+  if(type==='zl') return Math.round(v).toLocaleString('pl-PL')+' zł';
+  if(type==='zl2') return v.toLocaleString('pl-PL',{minimumFractionDigits:2,maximumFractionDigits:2})+' zł';
+  if(type==='roas') return (+v).toFixed(2)+'×';
+  if(type==='pct') return (+v).toFixed(2)+'%';
+  if(type==='n') return Math.round(v).toLocaleString('pl-PL');
+  return v;
+}
+
+function dlt(cur, prev){
+  if(cur==null||prev==null||prev===0) return '<span class="delta-na">—</span>';
+  const d = ((cur-prev)/prev*100);
+  const cls = d>0?'delta-up':'delta-dn';
+  return `<span class="${cls}">${d>0?'+':''}${d.toFixed(1)}%</span>`;
+}
+
+/* ===== LIVE SECTION: Toggle Dziś / Wczoraj ===== */
+
+function setDay(key){
+  currentDay = key;
+  document.getElementById('dbtn-today').classList.toggle('active', key==='today');
+  document.getElementById('dbtn-yesterday').classList.toggle('active', key==='yesterday');
+  renderDayKpi();
+  renderDayCampanel();
+}
+
+function setDayTab(tab){
+  currentDayTab = tab;
+  ['kampanie','zestawy','reklamy'].forEach(t=>{
+    document.getElementById('dtab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('day-panel-'+t).classList.toggle('active', t===tab);
+  });
+  if(tab==='zestawy') cloneEtlToDay('day-panel-zestawy','tab-zestawy');
+  if(tab==='reklamy') cloneEtlToDay('day-panel-reklamy','tab-reklamy');
+}
+
+function cloneEtlToDay(panelId, sourceId){
+  const panel = document.getElementById(panelId);
+  if(panel.dataset.filled) return;
+  const src = document.getElementById(sourceId);
+  if(!src){ panel.innerHTML='<div class="meta-loading">Brak danych</div>'; return; }
+  const note = document.createElement('div');
+  note.className = 'etl-note';
+  note.textContent = 'Snapshot ETL (20–26.07.2026) — dane live dla tego poziomu niedostępne';
+  panel.innerHTML = '';
+  panel.appendChild(note);
+  const clone = src.cloneNode(true);
+  clone.id = panelId+'-clone';
+  clone.style.display = 'block';
+  panel.appendChild(clone);
+  panel.dataset.filled = '1';
+}
+
+function renderDayKpi(){
+  const M = window.META_DAILY;
+  const L = window.LIVE2;
+  const S = window.SALES;
+  const grid = document.getElementById('day-kpi');
+  if(!M){ grid.innerHTML='<div class="kpi8-load">Ładowanie…</div>'; return; }
+
+  const dk = currentDay;
+  const md = M[dk] && M[dk].total ? M[dk].total : null;
+
+  /* GA4: live2.today.date === M.yesterday_date → pasuje do 'yesterday' */
+  let lv = null;
+  if(dk==='yesterday' && L && L.today && L.today.date===M.yesterday_date) lv = L.today;
+
+  /* BL */
+  let blOrders=null, blRev=null;
+  if(dk==='today' && S && S.today_d){
+    blOrders = Object.values(S.today_d).reduce((a,v)=>a+(v.orders||0),0);
+    blRev    = Object.values(S.today_d).reduce((a,v)=>a+(v.revenue||0),0);
+  } else if(dk==='yesterday' && lv && lv.shopify && lv.shopify.kpi){
+    blOrders = lv.shopify.kpi.orders;
+    blRev    = lv.shopify.kpi.net_sales;
+  }
+
+  const ga4sess = lv && lv.ga4 && lv.ga4.kpi ? lv.ga4.kpi.sessions : null;
+  const ga4rev  = lv && lv.ga4 && lv.ga4.kpi ? lv.ga4.kpi.revenue  : null;
+  const roas    = md ? md.roas : null;
+  const roasCls = roas!=null ? (roas>=2?'kpi8-ok':'kpi8-warn') : '';
+  const lagNote = '<div class="kpi8-sub" style="color:var(--red);font-size:9px">lag 1d</div>';
+
+  grid.innerHTML = `
+    <div class="kpi8-cell kpi8-meta">
+      <div class="kpi8-lbl">Wydatek</div>
+      <div class="kpi8-val">${md?fmt(md.spend,'zl'):'—'}</div>
+      <div class="kpi8-sub">Meta</div>
+    </div>
+    <div class="kpi8-cell kpi8-meta">
+      <div class="kpi8-lbl">Zakupy px</div>
+      <div class="kpi8-val">${md&&md.purchases!=null?md.purchases:'—'}</div>
+      <div class="kpi8-sub">Meta pixel</div>
+    </div>
+    <div class="kpi8-cell kpi8-meta ${roasCls}">
+      <div class="kpi8-lbl">ROAS</div>
+      <div class="kpi8-val">${roas!=null?fmt(roas,'roas'):'—'}</div>
+      <div class="kpi8-sub">Meta pixel</div>
+    </div>
+    <div class="kpi8-cell kpi8-meta">
+      <div class="kpi8-lbl">Zasięg</div>
+      <div class="kpi8-val">${md&&md.reach!=null?fmt(md.reach,'n'):'—'}</div>
+      <div class="kpi8-sub">Meta</div>
+    </div>
+    <div class="kpi8-cell kpi8-ga4">
+      <div class="kpi8-lbl">Sesje GA4</div>
+      <div class="kpi8-val">${ga4sess!=null?fmt(ga4sess,'n'):'—'}</div>
+      ${dk==='today'?lagNote:'<div class="kpi8-sub">GA4</div>'}
+    </div>
+    <div class="kpi8-cell kpi8-ga4">
+      <div class="kpi8-lbl">Przychód GA4</div>
+      <div class="kpi8-val">${ga4rev!=null?fmt(ga4rev,'zl'):'—'}</div>
+      ${dk==='today'?lagNote:'<div class="kpi8-sub">GA4</div>'}
+    </div>
+    <div class="kpi8-cell kpi8-bl">
+      <div class="kpi8-lbl">Zamówienia BL</div>
+      <div class="kpi8-val">${blOrders!=null?blOrders:'—'}</div>
+      <div class="kpi8-sub">multi-channel</div>
+    </div>
+    <div class="kpi8-cell kpi8-bl">
+      <div class="kpi8-lbl">Przychód BL</div>
+      <div class="kpi8-val">${blRev!=null?fmt(blRev,'zl'):'—'}</div>
+      <div class="kpi8-sub">BL netto</div>
+    </div>
+  `;
+}
+
+function renderDayCampanel(){
+  const M = window.META_DAILY;
+  const panel = document.getElementById('day-panel-kampanie');
+  if(!M){ panel.innerHTML='<div class="meta-loading">Brak danych</div>'; return; }
+  const dayData = M[currentDay];
+  if(!dayData||!dayData.campaigns){
+    panel.innerHTML='<div class="meta-loading">Brak kampanii</div>'; return;
+  }
+  const rows = dayData.campaigns.map(c=>{
+    const rpCls = c.roas>=2?'rp-ok':c.roas>0?'rp-bad':'rp-na';
+    const rpTxt = c.roas>0?c.roas.toFixed(2)+'×':'—';
+    const badge = c.status==='ACTIVE'
+      ? '<span class="badge-active">ACTIVE</span>'
+      : '<span class="badge-paused">PAUSED</span>';
+    return `<tr>
+      <td class="nm">${c.name||c.id}</td>
+      <td>${badge}</td>
+      <td class="num">${fmt(c.spend,'zl')}</td>
+      <td class="num">${c.impressions!=null?fmt(c.impressions,'n'):'—'}</td>
+      <td class="num">${c.clicks!=null?fmt(c.clicks,'n'):'—'}</td>
+      <td class="num">${c.purchases!=null?c.purchases:'—'}</td>
+      <td class="num"><span class="${rpCls}">${rpTxt}</span></td>
+    </tr>`;
+  }).join('');
+  panel.innerHTML = `<table class="live-tbl">
+    <thead><tr>
+      <th>Kampania</th><th>Status</th>
+      <th class="num">Wydatek</th><th class="num">Impr</th>
+      <th class="num">Kliki</th><th class="num">Zakupy</th><th class="num">ROAS</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+/* ===== PICKER SECTION ===== */
+
+function setPreset(p){
+  currentPreset = p;
+  const keyMap = {'today':'today','last_7d':'7d','last_30d':'30d'};
+  Object.keys(keyMap).forEach(k=>{
+    const el = document.getElementById('prst-'+keyMap[k]);
+    if(el) el.classList.toggle('active', k===p);
+  });
+  const M = window.META_DAILY;
+  if(!M) return;
+  if(p==='today'){
+    document.getElementById('picker-from').value = M.today_date||'';
+    document.getElementById('picker-to').value   = M.today_date||'';
+  } else if(p==='last_7d'){
+    const pts = (M.week_range||'').split(' – ');
+    document.getElementById('picker-from').value = pts[0]||'';
+    document.getElementById('picker-to').value   = pts[1]||'';
+  } else if(p==='last_30d'){
+    const pts = (M.month_range||'').split(' – ');
+    document.getElementById('picker-from').value = pts[0]||'';
+    document.getElementById('picker-to').value   = pts[1]||'';
+  }
+}
+
+function generateReport(){
+  const M = window.META_DAILY;
+  const compEl  = document.getElementById('comp-kpi');
+  const rangeEl = document.getElementById('comp-range-lbl');
+  if(!M){ compEl.style.display='none'; rangeEl.style.display='none'; return; }
+
+  const p = currentPreset;
+  const doCompare = document.getElementById('compare-chk').checked;
+
+  const periodMap = {
+    'today':    { data: M.today,   label: M.today_date||'Dziś',     prev: M.yesterday,   prevLabel: M.yesterday_date||'Wczoraj' },
+    'last_7d':  { data: M.last_7d, label: M.week_range||'7 dni',    prev: null,           prevLabel: 'brak danych' },
+    'last_30d': { data: M.last_30d,label: M.month_range||'30 dni',  prev: null,           prevLabel: 'brak danych' },
+  };
+  const pm = periodMap[p] || periodMap['today'];
+  const cur  = pm.data ? pm.data.total : null;
+  const prev = doCompare ? (pm.prev ? pm.prev.total : null) : null;
+
+  if(!cur){ compEl.style.display='none'; rangeEl.style.display='none'; return; }
+
+  rangeEl.style.display = 'block';
+  rangeEl.textContent   = doCompare ? `${pm.label} vs ${pm.prevLabel}` : pm.label;
+
+  const metrics = [
+    {key:'spend',       lbl:'Wydatek',   fmt:'zl'},
+    {key:'impressions', lbl:'Impresje',  fmt:'n'},
+    {key:'clicks',      lbl:'Kliki',     fmt:'n'},
+    {key:'purchases',   lbl:'Zakupy',    fmt:'n'},
+    {key:'revenue',     lbl:'Przychód',  fmt:'zl'},
+    {key:'roas',        lbl:'ROAS',      fmt:'roas'},
+    {key:'reach',       lbl:'Zasięg',    fmt:'n'},
+    {key:'ctr',         lbl:'CTR',       fmt:'pct'},
+  ];
+
+  compEl.style.display = 'flex';
+  compEl.innerHTML = metrics.map(m=>{
+    const v  = cur[m.key];
+    const pv = prev ? prev[m.key] : null;
+    const d  = (doCompare && pv!=null) ? `<div class="ckpi-delta">${dlt(v,pv)}</div>` : '';
+    return `<div class="ckpi">
+      <div class="ckpi-lbl">${m.lbl}</div>
+      <div class="ckpi-val">${v!=null?fmt(v,m.fmt):'—'}</div>${d}
+    </div>`;
+  }).join('');
+}
+
+/* ===== REFRESH ALL ===== */
 
 async function refreshAllData(force=false){
-  const upEl=document.getElementById('upper-block');
-  if(force) upEl.innerHTML='<div class="upper-loading">Pobieranie…</div>';
-  try{
-    const [meta,live2,sales]=await Promise.all([
-      fetchJson(META_URL),
-      fetchJson(LIVE2_URL).catch(()=>null),
-      fetchJson(SALES_URL).catch(()=>null),
+  const updEl = document.getElementById('live-meta-updated');
+  if(updEl) updEl.textContent = 'Ładowanie…';
+  try {
+    const [M, L, S] = await Promise.all([
+      fetchJson(META_URL, force),
+      fetchJson(LIVE2_URL, force).catch(()=>null),
+      fetchJson(SALES_URL, force).catch(()=>null),
     ]);
-    window.META_DAILY=meta;
-    window.LIVE2=live2;
-    window.SALES=sales;
-    renderUpperBlock();
-    renderPeriodKpi(currentPeriod);
-  }catch(e){
-    if(window.META_DAILY){ renderUpperBlock(); renderPeriodKpi(currentPeriod); }
-    else upEl.innerHTML='<div class="upper-loading">Błąd ładowania — odśwież stronę</div>';
+    window.META_DAILY = M;
+    window.LIVE2 = L;
+    window.SALES = S;
+
+    const td = document.getElementById('lbl-today-date');
+    const yd = document.getElementById('lbl-yesterday-date');
+    if(td) td.textContent = M.today_date ? '('+M.today_date.slice(5)+')' : '';
+    if(yd) yd.textContent = M.yesterday_date ? '('+M.yesterday_date.slice(5)+')' : '';
+    if(updEl) updEl.textContent = 'Aktualizacja: '+(M.updated||'');
+
+    renderDayKpi();
+    renderDayCampanel();
+    setPreset(currentPreset);
+  } catch(e){
+    if(updEl) updEl.textContent = 'Błąd: '+e.message;
+    const g = document.getElementById('day-kpi');
+    if(g) g.innerHTML = '<div class="kpi8-load">Błąd ładowania: '+e.message+'</div>';
   }
 }
+
 
 refreshAllData();
 </script>
