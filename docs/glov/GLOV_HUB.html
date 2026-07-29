@@ -138,6 +138,9 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
 .bl-qty{font-size:17px;font-weight:800;letter-spacing:-.4px;line-height:1.1;font-variant-numeric:tabular-nums}
 .bl-rev{font-size:11.5px;color:var(--txt2);margin-top:2px;font-variant-numeric:tabular-nums}
 .bl-zero .bl-qty{color:var(--muted)}
+.bl-sum-hdr{color:#1e293b!important;border-bottom-color:#1e293b!important}
+.bl-sum-cell .bl-qty{color:#1e293b;font-size:15px}
+@media(prefers-color-scheme:dark){.bl-sum-hdr{color:#e2e8f0!important;border-bottom-color:#e2e8f0!important}.bl-sum-cell .bl-qty{color:#e2e8f0}}
 .bl-zero .bl-rev{color:var(--line)}
 .row-dzis td{background:rgba(22,163,74,.04);border-bottom:none!important}
 .row-dzis .bl-period{color:var(--green)}
@@ -523,7 +526,13 @@ const MONTHS_PL=['','Sty','Lut','Mar','Kwi','Maj','Cze','Lip','Sie','Wrz','Paź'
 function blCell(period_d, src){
   const v=(period_d||{})[src]||{orders:0,items:0,revenue:0};
   const z=!v.orders;
-  return `<td class="bl-val${z?' bl-zero':''}"><div class="bl-qty">${n(v.orders)}</div><div class="bl-rev">${n(v.items||0)} szt.</div><div class="bl-rev">${zl(v.revenue)}</div></td>`;
+  return `<td class="bl-val${z?' bl-zero':''}"><div class="bl-qty">${zl(v.revenue)}</div><div class="bl-rev">${n(v.orders)} zam. · ${n(v.items||0)} szt.</div></td>`;
+}
+function blSumCell(period_d, srcs){
+  const total={orders:0,items:0,revenue:0};
+  srcs.forEach(s=>{const v=(period_d||{})[s]||{};total.orders+=(v.orders||0);total.items+=(v.items||0);total.revenue+=(v.revenue||0);});
+  const z=!total.orders;
+  return `<td class="bl-val bl-sum-cell${z?' bl-zero':''}"><div class="bl-qty">${zl(total.revenue)}</div><div class="bl-rev">${n(total.orders)} zam.</div></td>`;
 }
 
 function renderBLSales(){
@@ -546,14 +555,17 @@ function renderBLSales(){
   const rowRok=`<tr class="row-rok">
     <td class="bl-lbl"><div class="bl-period">ROK ${yr}</div></td>
     ${src.map(s=>blCell(d.year_d,s)).join('')}
+    ${blSumCell(d.year_d,src)}
   </tr>`;
   const rowMies=`<tr class="row-mies">
     <td class="bl-lbl"><div class="bl-period">${mName}</div><div class="bl-psub">${mName} ${yr}</div></td>
     ${src.map(s=>blCell(d.month_d,s)).join('')}
+    ${blSumCell(d.month_d,src)}
   </tr>`;
   const rowDzis=`<tr class="row-dzis">
     <td class="bl-lbl"><div class="bl-period">Dziś</div><div class="bl-psub">${todayShort}</div></td>
     ${src.map(s=>blCell(d.today_d,s)).join('')}
+    ${blSumCell(d.today_d,src)}
   </tr>`;
 
   const foot=`<div class="bl-foot">
@@ -562,7 +574,7 @@ function renderBLSales(){
   </div>`;
 
   el.innerHTML=`<table class="bl-matrix">
-  <thead><tr><th class="bl-lbl-h"></th>${thCh}</tr></thead>
+  <thead><tr><th class="bl-lbl-h"></th>${thCh}<th class="bl-sum-hdr">SUMA</th></tr></thead>
   <tbody>${rowRok}${rowMies}${rowDzis}</tbody>
   </table>${foot}`;
 }
