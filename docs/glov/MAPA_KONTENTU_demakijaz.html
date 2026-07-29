@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa kontentu konkurencji — rękawica do demakijażu (GLOV)</title>
+<style>
+  :root{
+    --bg:#faf8f5;--card:#fff;--ink:#1c1a17;--mut:#6b6457;--line:#e7e1d8;--chip:#f0ebe2;
+    --ok:#2f8f5b;--warn:#c0392b;--info:#1a6fb5;
+    --glov:#c0392b;--raypath:#2e6fb5;--mue:#7b3fa0;--ross:#e07a10;--yves:#2e8b57;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:32px 18px}
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-size:24px;margin:0 0 4px;color:var(--ink)}
+  .sub{color:var(--mut);margin:0 0 22px;font-size:13px}
+  h2{font-size:17px;margin:32px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--line)}
+  h3{font-size:15px;margin:20px 0 8px}
+
+  /* BRAND TABS */
+  .btabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+  .btab{font:600 13px/1 inherit;padding:8px 16px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--mut);cursor:pointer;transition:all .15s}
+  .btab:hover{opacity:.85}
+  .btab[data-brand="glov"].active,.btab[data-brand="glov"]:hover{border-color:var(--glov);color:var(--glov)}
+  .btab[data-brand="glov"].active{background:var(--glov);color:#fff}
+  .btab[data-brand="raypath"].active,.btab[data-brand="raypath"]:hover{border-color:var(--raypath);color:var(--raypath)}
+  .btab[data-brand="raypath"].active{background:var(--raypath);color:#fff}
+  .btab[data-brand="mue"].active,.btab[data-brand="mue"]:hover{border-color:var(--mue);color:var(--mue)}
+  .btab[data-brand="mue"].active{background:var(--mue);color:#fff}
+  .btab[data-brand="ross"].active,.btab[data-brand="ross"]:hover{border-color:var(--ross);color:var(--ross)}
+  .btab[data-brand="ross"].active{background:var(--ross);color:#fff}
+  .btab[data-brand="yves"].active,.btab[data-brand="yves"]:hover{border-color:var(--yves);color:var(--yves)}
+  .btab[data-brand="yves"].active{background:var(--yves);color:#fff}
+
+  /* CARDS */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .card-head{padding:12px 16px;font-weight:700;font-size:14px;color:#fff}
+  .card-head.glov{background:var(--glov)}
+  .card-head.raypath{background:var(--raypath)}
+  .card-head.mue{background:var(--mue)}
+  .card-head.ross{background:var(--ross)}
+  .card-head.yves{background:var(--yves)}
+  .card-head.blocked{background:#999}
+  .card-body{padding:14px 16px}
+
+  /* MATRIX TABLE */
+  .matrix{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0;font-size:13.5px}
+  .matrix th,.matrix td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  .matrix th{background:var(--chip);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);font-weight:700}
+  .matrix tr:last-child td{border-bottom:none}
+  .matrix td:first-child{font-weight:600;color:var(--ink);width:150px;min-width:110px}
+  .dim-glov{border-left:3px solid var(--glov)}
+  .dim-raypath{border-left:3px solid var(--raypath)}
+  .dim-mue{border-left:3px solid var(--mue)}
+  .dim-ross{border-left:3px solid var(--ross)}
+  .dim-yves{border-left:3px solid var(--yves)}
+
+  /* LABELS / CHIPS */
+  .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);margin:12px 0 4px}
+  .chip{display:inline-block;background:var(--chip);border-radius:6px;padding:2px 8px;margin:2px 3px 2px 0;font-size:12px}
+  .chip.ok{background:#e8f5ee;color:#1a6b3c}
+  .chip.warn{background:#fdecea;color:#a52828}
+  .chip.info{background:#e8f0fb;color:#1a4fa0}
+
+  /* QUOTES */
+  .q{font-style:italic;color:#3a352d;background:var(--chip);border-radius:6px;padding:7px 11px;margin:5px 0;font-size:13px;line-height:1.5}
+  .q b{font-style:normal;color:var(--ink)}
+  .q.neg{background:#fdecea;color:#a52828}
+  .q.pos{background:#e8f5ee;color:#1a6b3c}
+  .q.nd{background:#f5f5f5;color:#888;font-style:normal}
+
+  /* BOXES */
+  .box{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--glov);border-radius:8px;padding:14px 16px;margin:14px 0;font-size:14px}
+  .box.gap{border-left-color:var(--warn)}
+  .box.ok{border-left-color:var(--ok)}
+  .box.info{border-left-color:var(--info)}
+
+  /* BLOCKED */
+  .blocked-badge{display:inline-block;background:#fdecea;color:#a52828;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:700}
+
+  /* RIVAL PANELS */
+  .rival-panel{display:none}
+  .rival-panel.active{display:block}
+
+  ul{margin:4px 0;padding-left:18px}li{margin:3px 0;font-size:13.5px}
+  .meta{font-size:12px;color:var(--mut);margin:0 0 8px}
+  .stars{font-weight:700}
+  a{color:var(--info);text-decoration:none}
+
+  /* GAPS SECTION */
+  .gaps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:12px 0}
+  .gap-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+  .gap-card h4{margin:0 0 8px;font-size:14px}
+  .gap-card p{margin:0;font-size:13px;color:var(--mut)}
+  .p0{border-top:3px solid #c0392b}.p1{border-top:3px solid #e07a10}.p2{border-top:3px solid #2e6fb5}
+
+  @media(max-width:760px){.cols{grid-template-columns:1fr}.gaps-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Mapa kontentu konkurencji — rękawica do demakijażu GLOV</h1>
+<p class="sub">Kategoria: rękawica do demakijażu z mikrofibry · <b>5 konkurentów Kosza A</b> (1 bohater GLOV + 4 rywale: Raypath, MakeUp Eraser, Rossmann Isana, Yves Rocher) · dane: 2026-07-01 · metoda: <a href="../METODOLOGIA_ANALIZA_KONKURENCJI_OD_URL.md">METODOLOGIA_ANALIZA_KONKURENCJI_OD_URL.md</a> Fazy 6-9 · scrape 1:1</p>
+
+<div class="box info">
+<strong>Head-to-head: GLOV vs rywal (wybierz markę).</strong> Lewa karta = GLOV Iconic Mitt (stała). Prawa = wybrany konkurent. 7 wymiarów cytowalności + recenzje post-purchase. Dane: scrape tekstowy 1:1 z PDP (nie parafraza). Yves Rocher odblokowany Playwright 2026-07-01.
+</div>
+
+<!-- BRAND SELECTOR -->
+<div class="btabs">
+  <button class="btab active" data-brand="raypath" onclick="setRival('raypath',this)">Raypath Face Glove</button>
+  <button class="btab" data-brand="mue" onclick="setRival('mue',this)">MakeUp Eraser</button>
+  <button class="btab" data-brand="ross" onclick="setRival('ross',this)">Rossmann Isana</button>
+  <button class="btab" data-brand="yves" onclick="setRival('yves',this)">Yves Rocher</button>
+</div>
+
+<!-- HEAD-TO-HEAD COLS -->
+<div class="cols">
+
+  <!-- LEFT: GLOV (stała) -->
+  <div class="card">
+    <div class="card-head glov">GLOV — Iconic Mitt (bohater, PL)</div>
+    <div class="card-body">
+      <p class="meta"><a href="https://glov.co/collections/rekawice-do-demakijazu/products/rekawica-do-mycia-twarzy-i-demakijazu-cery-mieszanej-glov-on-the-go" target="_blank">glov.co</a> · 39,90 zł / 1 szt. · scrape: WebFetch + capture, 2026-07-01</p>
+
+      <div class="lbl">1. Tytuł PDP</div>
+      <div>„Rękawiczka do demakijażu i oczyszczania twarzy tylko przy użyciu wody GLOV® Iconic Mitt"</div>
+
+      <div class="lbl">2. Opis / struktura</div>
+      <ul>
+        <li>Bullety cech (9 punktów) — brak nazwanych sekcji narracyjnych</li>
+        <li>„Pro tips" (jak używać — 6 kroków)</li>
+        <li>Licznik użytkowników + recenzje</li>
+        <li>Brak hierarchii sekcji tekstowych (H2/H3)</li>
+      </ul>
+
+      <div class="lbl">3. Claimy / dowód</div>
+      <ul>
+        <li>„9 na 10 Wizażanek przyznało, że dogłębnie oczyszcza" (konsumenckie)</li>
+        <li>„8 na 10 Wizażanek: nie wrócę do poprzedniej rutyny" (konsumenckie)</li>
+        <li>„99% Wizażanek: idealne dopełnienie rytuału" (konsumenckie)</li>
+        <li>„Dołącz do ponad 2,5 miliona osób na świecie"</li>
+        <li>„Polski patent, który zrewolucjonizował globalny rynek"</li>
+      </ul>
+      <span class="chip warn">tylko dowód konsumencki (Wizaż)</span><span class="chip warn">brak dowodu klinicznego</span>
+
+      <div class="lbl">4. FAQ</div>
+      <span class="chip warn">BRAK sekcji FAQ na PDP</span>
+
+      <div class="lbl">5. Materiał / skład</div>
+      <div>80% poliester, 20% poliamid · patent P.403173 · mikrowłókno 0,001 mm</div>
+      <span class="chip warn">brak certyfikatu dermatologicznego</span>
+
+      <div class="lbl">6. Cena / wartość</div>
+      <ul>
+        <li>39,90 zł / 1 szt. (Wyprzedaż; reg. 49,90 zł)</li>
+        <li>„Zastępuje 400 płatków bawełnianych / 3 mies."</li>
+        <li>„Zastępuje 5 produktów do demakijażu"</li>
+        <li>~0,44 zł/użycie (3 mies. × 90 użyć)</li>
+        <li>Program zwrotu (recykling — ławki)</li>
+      </ul>
+
+      <div class="lbl">7. Trust / recenzje</div>
+      <ul>
+        <li><span class="stars">91 recenzji · 95% ocen 5★</span></li>
+        <li>„Ponad 2,5 miliona użytkowników na świecie"</li>
+        <li>Darmowa dostawa od 150 zł</li>
+      </ul>
+
+      <div class="lbl">Recenzje (wzorce) — Wizaż 4.4★ / 262 rec.</div>
+      <div class="q pos">„Wystarczy woda iiii można zacząć działać! Z łatwością radzi sobie ze zmyciem podkładu, pomadki czy tuszu!"</div>
+      <div class="q pos">„Koniec z tonami brudnych wacików"</div>
+      <div class="q neg">„To wcale nieprawda, że zmywa makijaż samą wodą — nie domywa tuszu do rzęs"</div>
+      <div class="q neg">„Schnie ponad dobę. Idea niehigieniczna. Wysoka cena."</div>
+      <div class="q neg">„Absolutnie nie warta ceny — bambusowa ściereczka za 15 zł robi to samo"</div>
+    </div>
+  </div>
+
+  <!-- RIGHT: RIVAL PANELS -->
+  <div>
+
+    <!-- RAYPATH -->
+    <div class="rival-panel active" id="panel-raypath">
+      <div class="card">
+        <div class="card-head raypath">Raypath — Face Glove (PL, rynek bezpośredni)</div>
+        <div class="card-body">
+          <p class="meta"><a href="https://raypath.eco/pl/products/face-glove-cleanser-for-makeup-removal-and-facial-care-raypath-76048.html" target="_blank">raypath.eco/pl</a> · 54,00 zł / 1 szt. · scrape: WebFetch 1:1, 2026-07-01</p>
+
+          <div class="lbl">1. Tytuł PDP</div>
+          <div>„FACE GLOVE CZYŚCIK DO DEMAKIJAŻU I PIELĘGNACJI TWARZY RAYPATH"</div>
+
+          <div class="lbl">2. Opis / struktura</div>
+          <ul>
+            <li>Krótki opis intro (1 akapit)</li>
+            <li>Bullety cech (6 punktów)</li>
+            <li><b>5 nazwanych sekcji:</b> „Rękawiczka do zmywania makijażu samą wodą" · „Profesjonalny czyścik – myjka do twarzy" · „Sposób użycia" · „Aktywacja" · „Pielęgnacja"</li>
+            <li><b>FAQ: 9 pytań z odpowiedziami</b> — najbogatsza struktura z całej piątki</li>
+          </ul>
+          <span class="chip ok">5 sekcji narracyjnych</span><span class="chip ok">FAQ 9 pytań</span>
+
+          <div class="lbl">3. Claimy / dowód</div>
+          <ul>
+            <li>„Przebadany alergologicznie i dermatologicznie"</li>
+            <li>„Nanosrebro w włóknach"</li>
+            <li>„Eliminuje nadmiar sebum"</li>
+            <li>„Świetnie zmywa nawet wodoodporny tusz i makijaż"</li>
+          </ul>
+          <span class="chip ok">certyfikat dermatologiczny + alergologiczny</span><span class="chip info">nanosrebro = wyróżnik materialny</span>
+
+          <div class="lbl">4. FAQ</div>
+          <span class="chip ok">9 pytań z odpowiedziami</span>
+          <ul>
+            <li>Zastosowanie · bezpieczeństwo · działanie bez kosmetyków</li>
+            <li>Pielęgnacja · skuteczność per typ makijażu</li>
+          </ul>
+
+          <div class="lbl">5. Materiał / skład</div>
+          <div>Mikrofibra z nanosrebrem · „Profesjonalny czyścik" · strona „Aktywacja" (pierwsze użycie)</div>
+          <span class="chip ok">nanosrebro — unikalny składnik</span><span class="chip warn">brak % składu (poliester/poliamid)</span>
+
+          <div class="lbl">6. Cena / wartość</div>
+          <ul>
+            <li>54,00 zł / 1 szt. (droższy od GLOV o 14 zł)</li>
+            <li>18 miesięcy gwarancji producenta</li>
+            <li>14 dni na zwrot</li>
+            <li>Brak przelicznika koszt/użycie</li>
+          </ul>
+          <span class="chip warn">wyższa cena bez kalkulatora ROI</span>
+
+          <div class="lbl">7. Trust / recenzje</div>
+          <ul>
+            <li><span class="stars">5.00/5.00 · 17 opinii</span> (mała próba)</li>
+            <li>Gwarancja 18 mies. · zwrot 14 dni</li>
+          </ul>
+
+          <div class="lbl">Recenzje (wzorce) — Wizaż 5.0★ / 4 rec. PL</div>
+          <div class="q pos">„Zmywa super makijaż, idealna na podróże — wielorazowość i trwałość"</div>
+          <div class="q pos">„Delikatna, nie podrażnia oczu, używam z soczewkami"</div>
+          <div class="q nd">[BRAK DANYCH PL — za mała próba recenzji]</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAKEUP ERASER -->
+    <div class="rival-panel" id="panel-mue">
+      <div class="card">
+        <div class="card-head mue">MakeUp Eraser — Chic Black (US, dystr. Sephora/Douglas PL)</div>
+        <div class="card-body">
+          <p class="meta"><a href="https://www.douglas.pl/pl/p/3001055895" target="_blank">douglas.pl</a> · ~77 zł / 1 szt. · scrape: capture Douglas + Faza 5 rekon (WebFetch 403 Sephora/Douglas), 2026-07-01</p>
+
+          <div class="lbl">1. Tytuł PDP</div>
+          <div>„CHIC BLACK MAKEUP [ERASER]" (Douglas tytułuje; Sephora: „Ściereczka wielokrotnego użytku do demakijażu")</div>
+          <span class="chip warn">błędna kategoria Douglas: „Płyn do demakijażu" — niespójna taksonomia</span>
+
+          <div class="lbl">2. Opis / struktura</div>
+          <ul>
+            <li>Forma: ściereczka (18×39 cm), NIE rękawica</li>
+            <li>Obustronność: długie włókna (oczy/tusz) + krótkie (podkład)</li>
+            <li>Edycje: Chic Black / Original Pink / Queen Purple · zestaw 7-Day Set</li>
+            <li>Minimalistyczny PDP Douglas: 2 bullety + cena</li>
+          </ul>
+          <span class="chip warn">brak sekcji FAQ na PDP Douglas</span>
+
+          <div class="lbl">3. Claimy / dowód</div>
+          <ul>
+            <li>„SmartErase Technology™" — zastrzeżona technologia</li>
+            <li><b>„Klinicznie udowodnione 2,5× lepiej niż chusteczki jednorazowe"</b></li>
+            <li>„Rekomendacja dermatologa"</li>
+            <li>„Do 200 prań / do 5 lat"</li>
+            <li>„Antybakteryjne"</li>
+            <li>„Erases all makeup with water only" (waterproof)</li>
+          </ul>
+          <span class="chip ok">dowód kliniczny (2,5×)</span><span class="chip ok">rekomendacja dermatologa</span><span class="chip ok">SmartErase™</span>
+          <div class="box gap" style="padding:8px 12px;margin:8px 0;font-size:13px">
+            <b>NAJSILNIEJSZY medyczny stack w piątce.</b> MakeUp Eraser = jedyny gracz z dowodem klinicznym + dermatologiem + technologią zastrzeżoną. GLOV opiera się na konsumenckich badaniach Wizaż (9/10) — inny tier wiarygodności dla GEO.
+          </div>
+
+          <div class="lbl">4. FAQ</div>
+          <span class="chip warn">BRAK na PDP Douglas</span>
+          <div>(klinicznie udowodnione fakty są na makeuperaser.com — PL PDP nie ma FAQ)</div>
+
+          <div class="lbl">5. Materiał / skład</div>
+          <div>Mikrofibra poliestrowa (skład niepotwierdzony dokładnie) · „bez parabenów" · „nie zawiera alkoholu"</div>
+          <span class="chip info">forma: ściereczka (nie rękawica) — inny UX niż GLOV</span>
+
+          <div class="lbl">6. Cena / wartość</div>
+          <ul>
+            <li>~77 zł / 1 szt. — najdroższy z piątki</li>
+            <li>7-Day Set (7 ściereczek) — zestaw tygodniowy</li>
+            <li>„Do 200 prań / 5 lat" — najdłuższa deklarowana żywotność</li>
+            <li>Koszt/użycie: ~77 zł / 200 prań = 0,39 zł/pranie (najtańszy per użycie przy pełnym cyklu)</li>
+          </ul>
+          <span class="chip ok">najtańszy koszt/użycie w piątce (długa żywotność)</span>
+
+          <div class="lbl">7. Trust / recenzje</div>
+          <ul>
+            <li>Brak lokalnych recenzji PL na PDP Douglas (403)</li>
+            <li>Lojalność premium: „3. zakup z rzędu"</li>
+          </ul>
+
+          <div class="lbl">Recenzje (wzorce) — głównie EN/global</div>
+          <div class="q pos">„Wystarczyło kilka ruchów i nawet wodoodporny makijaż zniknął"</div>
+          <div class="q pos">„3. zakup — nie wyobrażam sobie bez niej w podróży"</div>
+          <div class="q neg">„Mokra z makijażem wygląda obrzydliwie — trzeba od razu prać"</div>
+          <div class="q warn">⚠️ Recenzje PL niedostępne (Sephora/Douglas 403 bot-guard)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROSSMANN ISANA -->
+    <div class="rival-panel" id="panel-ross">
+      <div class="card">
+        <div class="card-head ross">Rossmann Isana — myjka do twarzy z mikrofibry (PL budget)</div>
+        <div class="card-body">
+          <p class="meta"><a href="https://www.rossmann.pl/Produkt/Szczoteczki-i-myjki-do-twarzy/Isana-myjka-do-twarzy-z-mikrofibry-wym-5-x-25-cm-1-szt,323606,13069" target="_blank">rossmann.pl</a> · ~12–15 zł / 1 szt. · scrape: WebFetch 1:1, 2026-07-01 · uwaga: <span class="blocked-badge">PRODUKT WYCOFANY</span></p>
+
+          <div class="lbl">1. Tytuł PDP</div>
+          <div>„ISANA, myjka do twarzy z mikrofibry, wym. 5 x 25 cm, 1 szt."</div>
+
+          <div class="lbl">2. Opis / struktura</div>
+          <ul>
+            <li>1 akapit opisu (3 zdania)</li>
+            <li>5 bulletów cech</li>
+            <li>Tabela składu</li>
+            <li>Instrukcja prania</li>
+            <li>Zero sekcji narracyjnych · zero claimów marketingowych</li>
+          </ul>
+          <span class="chip warn">najuboższa treść z całej piątki</span>
+
+          <div class="lbl">3. Claimy / dowód</div>
+          <div class="q nd">BRAK — żadnych claimów marketingowych ani dowodów</div>
+          <div>Opis techniczny: „specjalna struktura mikrofibry delikatnie masuje skórę i skutecznie usuwa cząsteczki brudu, makijaż i zrogowaciałe komórki naskórka"</div>
+
+          <div class="lbl">4. FAQ</div>
+          <span class="chip warn">BRAK</span>
+
+          <div class="lbl">5. Materiał / skład</div>
+          <div>86% poliester, 14% poliamid · forma: ściereczka płaska 25×25 cm (nie rękawica)</div>
+          <span class="chip info">niemal identyczny skład jak GLOV (80/20) — różnicowanie niemożliwe przez materiał</span>
+
+          <div class="lbl">6. Cena / wartość</div>
+          <ul>
+            <li>~12–15 zł / 1 szt. — najtańsza cena wejścia w piątce</li>
+            <li>Brak deklarowanej żywotności</li>
+            <li>Brak przelicznika koszt/użycie</li>
+          </ul>
+          <span class="chip warn">3× tańsza od GLOV bez narracji różnicującej</span>
+
+          <div class="lbl">7. Trust / recenzje</div>
+          <div class="q nd">BRAK recenzji tekstowych dostępnych online (produkt wycofany)</div>
+          <div>Produkt wycofany — cena/dostępność archiwalna</div>
+
+          <div class="lbl">Recenzje (wzorce)</div>
+          <div class="q nd">[BRAK DANYCH — niewystarczające recenzje PL dostępne]</div>
+          <div class="q nd">Segment budget: klientki nie recenzują produktów Rossmann na Wizaż/Ceneo — kupują z półki bez researchu</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- YVES ROCHER -->
+    <div class="rival-panel" id="panel-yves">
+      <div class="card">
+        <div class="card-head yves">Yves Rocher — Rękawica do demakijażu (PL mid, 356 recenzji)</div>
+        <div class="card-body">
+          <p class="meta"><a href="https://www.yves-rocher.pl/pielegnacja-twarzy/preparaty-do-czyszczenia/zele-i-pianki-do-mycia-twarzy/rekawica-do-demakijazu/p/45658" target="_blank">yves-rocher.pl</a> · 52,90 zł / 1 szt. · scrape: Playwright PDP (odblokowane 2026-07-01) ✅</p>
+
+          <div class="lbl">1. Tytuł PDP</div>
+          <div>„Rękawica do demakijażu" (krótki, bez technologii)</div>
+          <div>Podtytuł: „Delikatnie usuwa nawet najbardziej odporny makijaż"</div>
+
+          <div class="lbl">2. Opis / struktura</div>
+          <ul>
+            <li>2 akapity opisu produktu</li>
+            <li>Bullety: Rodzaj skóry | Materiał | Jak używać</li>
+            <li>Sekcja „Udowodniona i potwierdzona skuteczność" z % badania</li>
+            <li>Eco badges: „Zero plastikowych odpadów" + „Podejmuję działania na rzecz planety"</li>
+          </ul>
+          <span class="chip ok">eco badges + narracja środowiskowa</span><span class="chip warn">brak FAQ</span>
+
+          <div class="lbl">3. Claimy / dowód</div>
+          <ul>
+            <li>„84% kobiet: ślady makijażu są idealnie usunięte" (badanie 25 kobiet / 1 miesiąc)</li>
+            <li>„92% kobiet: twarz jest idealnie oczyszczona"</li>
+            <li>„84% kobiet: rękawica skutecznie oczyszcza przy użyciu samej wody"</li>
+          </ul>
+          <span class="chip ok">własne badanie konsumenckie (25 kobiet)</span><span class="chip warn">próba mała (25 os.) vs GLOV Wizaż (n=tysiące)</span>
+          <div class="box gap" style="padding:8px 12px;margin:8px 0;font-size:13px">
+            <b>KOREKTA MATERIAŁU (Faza 5 vs PDP 1:1):</b> Faza 5 rekon wskazywał „włókno roślinne (plant fiber)". PDP Playwright 1:1 mówi <b>„ultramiękka mikrofibra"</b> — materiał syntetyczny, nie roślinny. Narracja eco YR = wielorazowość + redukcja odpadów, NIE materiał bio. Koryguj DANE.md.
+          </div>
+
+          <div class="lbl">4. FAQ</div>
+          <span class="chip warn">BRAK sekcji FAQ na PDP</span>
+
+          <div class="lbl">5. Materiał / skład</div>
+          <div>„Ultramiękka mikrofibra" (syntetyk — skład % nieujawniony na PDP)</div>
+          <span class="chip warn">brak składu procentowego</span>
+
+          <div class="lbl">6. Cena / wartość</div>
+          <ul>
+            <li>52,90 zł / 1 szt. — wyższa od GLOV (39,90 zł)</li>
+            <li>Brak przelicznika koszt/użycie</li>
+            <li>Darmowa wysyłka od 179 zł</li>
+          </ul>
+          <span class="chip warn">droższa od GLOV bez jasnej narracji „dlaczego drożej"</span>
+
+          <div class="lbl">7. Trust / recenzje</div>
+          <ul>
+            <li><span class="stars">4.6★ · 356 recenzji</span> — najwyższy wolumen z piątki</li>
+            <li>Rozkład: 268 recenzji 5★ (75%)</li>
+            <li>Uwaga: recenzje globalne (FR/PL/RO/CZ) — mała próba PL</li>
+          </ul>
+
+          <div class="lbl">Recenzje (wzorce) — PDP + blog PL</div>
+          <div class="q pos">„Gant très doux et très efficace" (FR dominujący wzorzec — miękka i skuteczna)</div>
+          <div class="q pos">„Ślady makijażu idealnie usunięte · twarz odprężona"</div>
+          <div class="q neg">„Za mała — to nie rękawica, to mini-rękawica" (FR 2★)</div>
+          <div class="q neg">„Ze swoim makijażem nie wystarczy sama rękawica — muszę używać po oleju jako krok 2" (FR 4★)</div>
+          <div class="q neg">„Szarzeje po myciu mydłem · nużące codzienne pranie" (blog PL)</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /right col -->
+</div><!-- /cols -->
+
+<!-- ========================================== -->
+<!-- MATRYCA 7 WYMIARÓW (pełna, wszystkie marki) -->
+<!-- ========================================== -->
+<h2>Matryca 7 wymiarów — wszystkie marki naraz</h2>
+
+<p style="font-size:13px;color:var(--mut);margin:0 0 12px">Zestawienie cytowalności GEO: jak każda marka pokrywa 7 kluczowych wymiarów decyzyjnych. Dane 1:1 ze scrape tekstowego. Yves Rocher: Playwright capture 2026-07-01.</p>
+
+<div style="overflow-x:auto">
+<table class="matrix">
+  <thead>
+    <tr>
+      <th>Wymiar</th>
+      <th style="border-left:3px solid var(--glov)">GLOV Iconic Mitt</th>
+      <th style="border-left:3px solid var(--raypath)">Raypath Face Glove</th>
+      <th style="border-left:3px solid var(--mue)">MakeUp Eraser</th>
+      <th style="border-left:3px solid var(--ross)">Rossmann Isana</th>
+      <th style="border-left:3px solid var(--yves)">Yves Rocher</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tytuł PDP</td>
+      <td class="dim-glov">„Rękawiczka do demakijażu i oczyszczania twarzy tylko przy użyciu wody GLOV® Iconic Mitt" — długi, keyword-rich</td>
+      <td class="dim-raypath">„FACE GLOVE CZYŚCIK DO DEMAKIJAŻU I PIELĘGNACJI TWARZY RAYPATH" — caps, PRO positioning</td>
+      <td class="dim-mue">„CHIC BLACK MAKEUP ERASER" / „Ściereczka wielokrotnego użytku do demakijażu" — forma inna niż rękawica</td>
+      <td class="dim-ross">„ISANA, myjka do twarzy z mikrofibry, wym. 5 x 25 cm" — technicznie, bez emocji</td>
+      <td class="dim-yves">„Rękawica do demakijażu" + podtytuł „Delikatnie usuwa nawet najbardziej odporny makijaż"</td>
+    </tr>
+    <tr>
+      <td>Opis / struktura</td>
+      <td class="dim-glov">Bullety (9) + Pro tips. Brak nazwanych sekcji H2/H3. Średnie bogactwo struktury.</td>
+      <td class="dim-raypath"><b>Najbogatszy:</b> 5 sekcji narracyjnych + FAQ 9 pytań + bullety. Jasna hierarchia.</td>
+      <td class="dim-mue">Minimalistyczny PDP Douglas (2 bullety). Pełna treść tylko na makeuperaser.com (EN). PL = ubogie.</td>
+      <td class="dim-ross"><b>Najuboższy:</b> 1 akapit + 5 bulletów technicznych + tabela składu. Zero narracji.</td>
+      <td class="dim-yves">2 akapity + bullety + eco badges + sekcja badania skuteczności. Średnie bogactwo.</td>
+    </tr>
+    <tr>
+      <td>Claimy / dowód</td>
+      <td class="dim-glov">Dowód konsumencki: Wizaż (9/10, 8/10, 99%). „2,5 mln userów". „Polski patent". Brak klinicznego.</td>
+      <td class="dim-raypath">Certyfikat alergologiczny + dermatologiczny. Nanosrebro. Brak liczb procentowych z badań.</td>
+      <td class="dim-mue"><b>Najsilniejszy:</b> „klinicznie 2,5× lepiej niż chusteczki" + dermatolog + SmartErase™ + „200 prań / 5 lat"</td>
+      <td class="dim-ross">BRAK claimów. Tylko opis techniczny mechaniki mikrofibry.</td>
+      <td class="dim-yves">Własne badanie: 84% / 92% / 84% (próba 25 kobiet / 1 mies.). Eco: „zero plastikowych odpadów".</td>
+    </tr>
+    <tr>
+      <td>FAQ</td>
+      <td class="dim-glov"><span class="chip warn">BRAK</span></td>
+      <td class="dim-raypath"><b><span class="chip ok">9 pytań</span></b> — jedyny z piątki z FAQ na PDP. Bezpieczeństwo, pielęgnacja, skuteczność.</td>
+      <td class="dim-mue"><span class="chip warn">BRAK na PDP Douglas/Sephora PL</span> (FAQ na makeuperaser.com EN)</td>
+      <td class="dim-ross"><span class="chip warn">BRAK</span></td>
+      <td class="dim-yves"><span class="chip warn">BRAK</span></td>
+    </tr>
+    <tr>
+      <td>Materiał / forma</td>
+      <td class="dim-glov">80% PES / 20% PA · forma: rękawica (otulona dłoń) · patent P.403173</td>
+      <td class="dim-raypath">Mikrofibra z nanosrebrem · forma: rękawica. Nanosrebro = wyróżnik antybakteryjny.</td>
+      <td class="dim-mue">Mikrofibra poliestrowa · forma: ściereczka 18×39 cm (NIE rękawica) · obustronność (long/short fiber)</td>
+      <td class="dim-ross">86% PES / 14% PA · forma: ściereczka 25×25 cm. Identyczna baza co GLOV.</td>
+      <td class="dim-yves">„Ultramiękka mikrofibra" (syntetyk, % nieujawniony) · forma: rękawica. Eco-narracja = wielorazowość, nie biomateriał.</td>
+    </tr>
+    <tr>
+      <td>Cena / wartość</td>
+      <td class="dim-glov">39,90 zł · „Zastępuje 400 płatków / 3 mies." · program zwrotu · ~0,44 zł/użycie</td>
+      <td class="dim-raypath">54,00 zł · gwarancja 18 mies. · zwrot 14 dni. Brak przelicznika ROI.</td>
+      <td class="dim-mue">~77 zł · „200 prań / 5 lat" → 0,39 zł/pranie (najtańszy per cykl) · zestaw 7-Day</td>
+      <td class="dim-ross">~12–15 zł · najtańsza cena wejścia. Brak żywotności i ROI.</td>
+      <td class="dim-yves">52,90 zł · droższa od GLOV. Brak przelicznika koszt/użycie. Darmowa wysyłka od 179 zł.</td>
+    </tr>
+    <tr>
+      <td>Trust / recenzje</td>
+      <td class="dim-glov">91 recenzji · 95% 5★ · „2,5 mln userów". Dobre 5★ ratio, mały wolumen PDP.</td>
+      <td class="dim-raypath">17 opinii · 5.0/5.0. Bardzo mały wolumen — MLM model = recenzje rozproszone.</td>
+      <td class="dim-mue">Brak lokalnych recenzji PL na PDP (403). Globalnie: lojalność premium (3. zakup).</td>
+      <td class="dim-ross">BRAK recenzji tekstowych (produkt wycofany).</td>
+      <td class="dim-yves"><b>356 recenzji · 4.6★</b> — <b>najwyższy wolumen z piątki</b>. Recenzje globalne (FR dominujące).</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ========================================== -->
+<!-- WNIOSKI: LUKI GLOV -->
+<!-- ========================================== -->
+<h2>Luki GLOV — analiza head-to-head</h2>
+
+<div class="gaps-grid">
+
+  <div class="gap-card p0">
+    <h4>🔴 P0 — Brak FAQ (cytowalność GEO)</h4>
+    <p>Raypath = jedyny rywal z FAQ na PDP (9 pytań: bezpieczeństwo, pielęgnacja, skuteczność). GLOV nie odpowiada na literalne pytania klientki na stronie produktu. AI cytuje FAQ bezpośrednio — GLOV odpada z discovery „czy rękawica jest higieniczna?", „co z wodoodpornym tuszem?". Raypath odpowiada, GLOV nie.</p>
+  </div>
+
+  <div class="gap-card p0">
+    <h4>🔴 P0 — Brak dowodu klinicznego (tier wiarygodności)</h4>
+    <p>MakeUp Eraser: „klinicznie 2,5× lepiej niż chusteczki" + dermatolog. Raypath: certyfikat alergologiczny + dermatologiczny. GLOV: badania Wizaż (konsumenckie, nie kliniczne). Dla AI i dla cermakulturowej klientki — kliniczny > konsumencki. GLOV ma lukę S2 na wiarygodność medyczną.</p>
+  </div>
+
+  <div class="gap-card p0">
+    <h4>🔴 P0 — Różnicowanie materiałowe niewidoczne</h4>
+    <p>GLOV (80/20 PES/PA) = niemal identyczny skład co Rossmann Isana (86/14 PES/PA) — budżetowy odpowiednik za 12–15 zł. Klientka kalkulująca „czym się różni GLOV od Rossmann" nie znajdzie odpowiedzi na PDP. Patent P.403173 jest, ale nie jest WYJAŚNIONY mechanicznie (mikrowłókno 0,001 mm, struktura gwiazdy). Nanosrebro Raypath = wyróżnik którego GLOV nie ma.</p>
+  </div>
+
+  <div class="gap-card p1">
+    <h4>🟠 P1 — Brak narracji strukturalnej</h4>
+    <p>Raypath ma 5 nazwanych sekcji (Jak używać / Aktywacja / Pielęgnacja / Profesjonalny czyścik / Myjka samą wodą). GLOV ma bullety + Pro tips. Brak hierarchii H2/H3 = treść trudna do skanowania przez AI i przez użytkownika. Algorytm GEO nie ma gotowych „passage" do cytowania.</p>
+  </div>
+
+  <div class="gap-card p1">
+    <h4>🟠 P1 — Trust przez wolumen vs jakość (Yves Rocher)</h4>
+    <p>Yves Rocher: 356 recenzji · 4.6★. GLOV: 91 recenzji · 95% 5★. Wolumen opinii przy podobnej cenie (Yves 52,90 zł vs GLOV 39,90 zł) daje Yves Rocher przewagę percepcyjną zaufania — nawet przy nieco niższym ratingu. GLOV „podwoi wolumen" przez agregację Wizaż → PDP lub zachęcanie recenzji po zakupie.</p>
+  </div>
+
+  <div class="gap-card p2">
+    <h4>🔵 P2 — Brak przelicznika koszt/cykl życia vs premium</h4>
+    <p>GLOV komunikuje „400 płatków / 3 mies." ale nie porównuje z MakeUp Eraser (200 prań / 5 lat = 0,39 zł/pranie). GLOV ma ~0,44 zł/użycie — droższy per cykl niż MakeUp Eraser przy pełnym cyklu. Brak narracji dlaczego GLOV wart 39,90 zł vs Isana za 15 zł (ta sama baza PES/PA) bez wyjaśnienia patentu.</p>
+  </div>
+
+</div>
+
+<!-- ========================================== -->
+<!-- ANALIZA CEN -->
+<!-- ========================================== -->
+<h2>Analiza cen — segmenty i kotwice</h2>
+
+<table class="matrix">
+  <thead>
+    <tr>
+      <th>Marka</th><th>Cena PL</th><th>Forma</th><th>Koszt/użycie</th><th>Segment</th><th>Werdykt pozycji</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>Rossmann Isana</b></td>
+      <td>~12–15 zł</td>
+      <td>Ściereczka</td>
+      <td>nieokreślony</td>
+      <td><span class="chip">Budget</span></td>
+      <td>Kotwica budżetowa — 3× taniej niż GLOV, ta sama baza PES/PA</td>
+    </tr>
+    <tr>
+      <td><b>GLOV Iconic Mitt</b></td>
+      <td>39,90 zł</td>
+      <td>Rękawica</td>
+      <td>~0,44 zł/użycie</td>
+      <td><span class="chip info">Mid</span></td>
+      <td>OK — górny mid. Musi uzasadnić premium vs Isana przez patent + UX rękawicy</td>
+    </tr>
+    <tr>
+      <td><b>Yves Rocher</b></td>
+      <td>52,90 zł</td>
+      <td>Rękawica</td>
+      <td>nieokreślony</td>
+      <td><span class="chip info">Mid+</span></td>
+      <td>Droższa od GLOV bez wyraźnego uzasadnienia. Wygrywa wolumenem recenzji.</td>
+    </tr>
+    <tr>
+      <td><b>Raypath Face Glove</b></td>
+      <td>54,00 zł</td>
+      <td>Rękawica</td>
+      <td>nieokreślony</td>
+      <td><span class="chip info">Mid+</span></td>
+      <td>Premium uzasadnione nanosrebrem + certyfikatami. Małe wolumeny sprzedaży (MLM).</td>
+    </tr>
+    <tr>
+      <td><b>MakeUp Eraser</b></td>
+      <td>~77 zł</td>
+      <td>Ściereczka</td>
+      <td>~0,39 zł/pranie (200 prań)</td>
+      <td><span class="chip warn">Premium</span></td>
+      <td>Najdroższa cena wejścia. Najtańsza per cykl życia (200 prań). Dowód kliniczny uzasadnia premium.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="box ok" style="margin-top:14px">
+<b>Werdykt pozycji cenowej GLOV:</b> 39,90 zł = pozycja OK w górnym mid. Główne zagrożenia: (1) Rossmann Isana podcinają od dołu (~15 zł, ta sama baza materiałowa bez narracji różnicy), (2) MakeUp Eraser wygrywa per cykl życia (0,39 vs 0,44 zł/użycie) mimo wyższej ceny wejścia. GLOV musi budować premium przez <b>UX rękawicy (otulona dłoń, kontrola aplikacji) + patent + eco program zwrotu</b> — nie przez skład PES/PA który ma każdy budżetowy rywal.
+</div>
+
+<!-- ========================================== -->
+<!-- RECENZJE — WZORCE PRZEKROJOWE -->
+<!-- ========================================== -->
+<h2>Wzorce recenzji post-purchase — język klienta</h2>
+
+<div class="cols" style="margin-bottom:20px">
+  <div>
+    <div class="lbl" style="color:var(--ok)">Top 5 CHWAŁ (wspólne wszystkie marki)</div>
+    <ul>
+      <li><b>„Samą wodą / bez chemii"</b> — claim konwertujący: zaskoczenie przy pierwszym użyciu</li>
+      <li><b>„Idealna w podróży"</b> — bez płynów, kompakt, travel use case silny we wszystkich markach</li>
+      <li><b>„Delikatna / nie podrażnia"</b> — cera wrażliwa, oczy, soczewki</li>
+      <li><b>„Wielorazowa / eko / oszczędność"</b> — tożsamość ekologiczna jako motywacja zakupowa</li>
+      <li><b>„Szybki demakijaż"</b> — wygoda i czas jako trigger</li>
+    </ul>
+  </div>
+  <div>
+    <div class="lbl" style="color:var(--warn)">Top 5 ZAWODÓW (wspólne wszystkie marki)</div>
+    <ul>
+      <li><b>Waterproof = granica</b> — eyeliner, trwały tusz bez oleju nie zawsze schodzi</li>
+      <li><b>Higiena i suszenie</b> — szarzenie, >24h suszenie, ryzyko bakterii (GLOV dominujący)</li>
+      <li><b>Cena wejścia</b> — „za droga na kawałek materiału" (GLOV, MakeUp Eraser)</li>
+      <li><b>Rozmiar / repozycjonowanie</b> — za małe żeby pokryć twarz bez przesuwania (Yves Rocher)</li>
+      <li><b>„Musiałam użyć z micelarnym"</b> — oczekiwanie vs rzeczywistość przy ciężkim makijażu</li>
+    </ul>
+  </div>
+</div>
+
+<div class="lbl">Kluczowy język klientek (wsad do CS Discovery Questions §3)</div>
+<div>
+  <span class="chip">„czy to naprawdę działa na samą wodę?"</span>
+  <span class="chip">„co z wodoodpornym tuszem?"</span>
+  <span class="chip">„czy będzie higieniczna?"</span>
+  <span class="chip">„jak długo wytrzyma?"</span>
+  <span class="chip">„czy nie będzie podrażniać?"</span>
+  <span class="chip">„czym różni się GLOV od zwykłej ściereczki za 15 zł?"</span>
+  <span class="chip">„co z bakteriami / kiedy prać?"</span>
+  <span class="chip">„czy zastępuje micelarny na 100%?"</span>
+</div>
+
+<!-- FOOTER -->
+<div style="margin-top:32px;padding-top:16px;border-top:1px solid var(--line);color:var(--mut);font-size:12px">
+  <b>TRUTH CHECKER (Faza 9)</b><br>
+  Co wiem: 4/5 PDP scraped 1:1 (GLOV+Raypath WebFetch; Rossmann WebFetch; Yves Rocher Playwright 2026-07-01). MakeUp Eraser: capture Douglas + Faza 5 rekon (Sephora 403).<br>
+  Co zakładam: Rossmann Isana „wycofany" = dane archiwalne (cena ~12–15 zł z Fazy 5 SERP). MakeUp Eraser claimy kliniczne z makeuperaser.com EN = aktualne dla PL dystrybucji.<br>
+  Co może być błędne: YR materiał — PDP mówi „mikrofibra", Faza 5 rekon wskazywał „plant fiber" — PDP 1:1 jest prawdą; korekta wprowadzona. Raypath recenzje PL — za mała próba (4 Wizaż).<br>
+  Co zostało: Faza 10 (mapa percepcji) + Faza 11 (HUB montaż). Raypath więcej recenzji przez capture headed Allegro.<br>
+  Plik: <code>research/MAPA_KONTENTU_KONKURENCJI_demakijaz.html</code> · zbudowano: 2026-07-01
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+function setRival(brand, btn) {
+  // Update buttons
+  document.querySelectorAll('.btab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Update panels
+  document.querySelectorAll('.rival-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('panel-' + brand);
+  if (panel) panel.classList.add('active');
+}
+</script>
+
+</body>
+</html>
