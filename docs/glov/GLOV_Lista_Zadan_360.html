@@ -50,6 +50,8 @@ select.empty{color:var(--muted)}
 .arrow{color:var(--txt2);font-size:22px;line-height:1;user-select:none;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;transition:.15s}
 tr.main:hover .arrow{background:var(--bg2);color:var(--accent)}
 .arrow.open{color:var(--accent)}
+.execlink.strong{background:linear-gradient(135deg,#f5751a,#e0560a);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(245,117,26,.3)}
+.execlink.strong:hover{background:linear-gradient(135deg,#e0560a,#c44a08);color:#fff}
 .execlink{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;text-decoration:none;padding:5px 10px;border-radius:8px;background:rgba(124,92,255,.12);color:var(--accent);border:1px solid rgba(124,92,255,.28);white-space:nowrap;transition:.15s}
 .execlink:hover{background:var(--accent);color:#fff;border-color:var(--accent);transform:translateY(-1px)}
 .execlink .ext{font-size:10px;opacity:.8}
@@ -131,7 +133,7 @@ tr.exp td{padding:0;border-bottom:1px solid var(--line)}
 
 <script>
 const TASKS=[
-{id:"t1",t:"Skrócić globalny sufiks title — odzyskać ~53 znaki na 100% stron",area:"On-page",pr:"P0",time:"20 min",cnb:false,who:"Dev (Shopify)",mod:"M2 · On-page i czystość DOM (3/10)",
+{id:"t1",doc:{href:"GLOV_Title_Lista.html",strong:true,label:"📋 67 stron",title:"Pełna lista tytułów stron do skrócenia — z ruchem GSC"},t:"Skrócić globalny sufiks title — odzyskać ~53 znaki na 100% stron",area:"On-page",pr:"P0",time:"20 min",cnb:false,who:"Dev (Shopify)",mod:"M2 · On-page i czystość DOM (3/10)",
 impact:"46 z 46 stron (100%) ma title dłuższy niż 60 znaków · średnia 105 znaków · sam sufiks zjada 60 znaków budżetu",
 why:"Shopify dokleja do każdej strony sufiks <code>– GLOV - Innowacja w oczyszczaniu twarzy i pielęgnacji ciała</code> (60 znaków). Google obcina title po szerokości ~600px (≈50–60 znaków), więc unikalna część tytułu wypada poza krawędź — klient w wynikach nie widzi, czego strona dotyczy. Przykład: PDP rękawicy ma title 131 znaków, widocznych ~60, przepada 71. To jedna zmiana, która działa na całą domenę i uderza wprost w CTR 1,95%.",
 steps:["⚠️ <b>Najpierw sprawdzić podwójny brand:</b> 17 stron (268 771 wyświetleń = 46% ekspozycji domeny, m.in. flagowy pumeks i strona główna) ma <b>już ręcznie wpisane <code>| GLOV</code></b> na końcu własnego page title — dziś wychodzi <code>… | GLOV – GLOV - Innowacja…</code>. Po zmianie sufiksu dostaną <code>| GLOV | GLOV</code>. Albo wyczyścić ręczne <code>| GLOV</code> w tych tytułach, albo dać w liquid warunek „nie doklejaj, jeśli tytuł już kończy się na GLOV”. Pełna lista: <a href=\"GLOV_Title_Lista.html\" target=\"_blank\">GLOV_Title_Lista.html</a> → filtr „Podwójny brand po fiksie”.","W <code>layout/theme.liquid</code> znaleźć tag <code>&lt;title&gt;</code>.","Podmienić zawartość na <code>{{ page_title }} | GLOV</code> (sufiks z 61 znaków → 7).","Sprawdzić, czy motyw nie dokleja sufiksu też w drugim miejscu (np. snippet SEO albo aplikacja SEO) — inaczej wróci.","Po deployu przecrawlować 5 kluczowych URL i policzyć długość title (powinno spaść ~54 znaki na każdej stronie).","<b>Zostaje robota ręczna:</b> 22 strony mają tytuł, który po odjęciu sufiksu <i>nadal</i> przekracza ~60 znaków — skrócić per strona w Shopify Admin (lista z URL-ami, handle'ami i ile ciąć: <a href=\"GLOV_Title_Lista.html\" target=\"_blank\">GLOV_Title_Lista.html</a>).","Poczekać na reindeksację (1–3 tyg.) i porównać CTR tych stron w GSC."],
@@ -355,7 +357,7 @@ function render(){
       '<td>'+sel(it.id,'exec')+'</td>'+
       '<td class="hide-m"><span class="dt">'+esc(it.time)+'</span></td>'+
       '<td>'+(it.doc
-        ? '<a class="execlink" href="'+it.doc.href+'" target="_blank" onclick="event.stopPropagation()" title="'+esc(it.doc.title||'Dokument wykonawczy')+'">'+esc(it.doc.label)+' <span class="ext">↗</span></a>'
+        ? '<a class="execlink '+(it.doc.strong?"strong":"")+'" href="'+it.doc.href+'" target="_blank" onclick="event.stopPropagation()" title="'+esc(it.doc.title||'Dokument wykonawczy')+'">'+esc(it.doc.label)+' <span class="ext">↗</span></a>'
         : '<span class="execnone" title="Brak osobnego dokumentu — instrukcja w rozwinięciu wiersza">—</span>')+'</td>'+
       '<td><span class="arrow '+(isOpen?'open':'')+'">'+(isOpen?'▾':'▸')+'</span></td>'+
     '</tr>';
