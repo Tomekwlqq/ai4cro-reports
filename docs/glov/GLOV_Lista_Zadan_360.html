@@ -1,0 +1,412 @@
+<!DOCTYPE html><html lang="pl" data-theme="light"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLOV — Lista zadań z Audytu 360</title>
+<style>
+[data-theme="light"]{--bg:#fff;--bg2:#f7f7f8;--card:#fff;--line:#e6e6e9;--line2:#ededf0;--txt:#0a0a0a;--txt2:#6b6b76;--muted:#9a9aa5;--accent:#7c5cff;--green:#16a34a;--shadow:0 1px 3px rgba(0,0,0,.06)}
+[data-theme="dark"]{--bg:#0f1115;--bg2:#181b22;--card:#181b22;--line:#2a2f3a;--line2:#23272f;--txt:#e8eaed;--txt2:#9aa0aa;--muted:#6b7280;--accent:#7c5cff;--green:#3ecf8e;--shadow:0 1px 3px rgba(0,0,0,.3)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;line-height:1.5;padding:0 0 60px;transition:.3s}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:30}
+.logo{font-size:18px;font-weight:800;letter-spacing:-.5px}.logo span{color:var(--accent)}
+.tnav{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.tnav a{color:var(--txt2);text-decoration:none;font-size:13px}.tnav a:hover{color:var(--txt)}
+.btn{background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:7px 13px;cursor:pointer;font-size:12.5px;color:var(--txt);font-weight:600}
+.btn:hover{border-color:var(--accent)}
+.wrap{max-width:1280px;margin:0 auto;padding:24px 22px}
+h1{font-size:30px;font-weight:800;letter-spacing:-1px;margin-bottom:4px}
+.sub{color:var(--txt2);font-size:14px;margin-bottom:20px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px;box-shadow:var(--shadow)}
+.stat .v{font-size:23px;font-weight:800}.stat .l{font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.3px}
+.progress{height:8px;background:var(--bg2);border-radius:10px;overflow:hidden;margin:14px 0 22px}
+.progress span{display:block;height:100%;background:var(--green);border-radius:10px;transition:.4s}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.chip{font-size:12px;padding:6px 13px;border-radius:30px;background:var(--bg2);color:var(--txt2);border:1px solid var(--line);cursor:pointer;font-weight:600}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.chip.p-P0.on{background:#ff5c7c;border-color:#ff5c7c}
+.chip.p-P1.on{background:#f5a623;border-color:#f5a623}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px;color:var(--txt2);font-size:11px;text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--line)}
+td{padding:11px 10px;border-bottom:1px solid var(--line2);vertical-align:top}
+tr.main{cursor:pointer}
+tr.main:hover{background:var(--bg2)}
+tr.done .task{text-decoration:line-through}
+tr.done{opacity:.55}
+.task{font-weight:600;font-size:13.5px;max-width:430px}
+.impact{font-size:11.5px;color:var(--txt2);margin-top:3px;max-width:430px}
+.pr{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;white-space:nowrap}
+.pr-P0{background:rgba(255,92,124,.16);color:#ff5c7c}
+.pr-P1{background:rgba(245,166,35,.16);color:#f5a623}
+.pr-P2{background:rgba(91,141,239,.16);color:#5b8def}
+.area{font-size:11px;padding:2px 8px;border-radius:5px;background:var(--bg2);color:var(--txt2);border:1px solid var(--line2);white-space:nowrap}
+.cnb{font-size:10px;padding:2px 7px;border-radius:5px;background:rgba(124,92,255,.14);color:var(--accent);font-weight:700;white-space:nowrap;margin-left:6px}
+.mod{font-size:10.5px;color:var(--muted);margin-top:3px}
+.dt{font-size:11.5px;color:var(--txt2);white-space:nowrap}
+.chk{width:20px;height:20px;cursor:pointer;accent-color:var(--green)}
+select{background:var(--bg2);border:1px solid var(--line);border-radius:7px;padding:6px 7px;font-size:12px;color:var(--txt);font-family:inherit;cursor:pointer;min-width:92px}
+select:focus{border-color:var(--accent);outline:none}
+select.empty{color:var(--muted)}
+.arrow{color:var(--txt2);font-size:22px;line-height:1;user-select:none;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;transition:.15s}
+tr.main:hover .arrow{background:var(--bg2);color:var(--accent)}
+.arrow.open{color:var(--accent)}
+.execlink{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;text-decoration:none;padding:5px 10px;border-radius:8px;background:rgba(124,92,255,.12);color:var(--accent);border:1px solid rgba(124,92,255,.28);white-space:nowrap;transition:.15s}
+.execlink:hover{background:var(--accent);color:#fff;border-color:var(--accent);transform:translateY(-1px)}
+.execlink .ext{font-size:10px;opacity:.8}
+.execnone{color:var(--muted);font-size:13px;cursor:help}
+tr.exp{background:var(--bg2)}
+tr.exp td{padding:0;border-bottom:1px solid var(--line)}
+.det{padding:18px 22px 22px;max-width:960px}
+.det h4{font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--accent);margin:16px 0 6px;font-weight:800}
+.det h4:first-child{margin-top:0}
+.det p{font-size:13.5px;color:var(--txt);margin-bottom:6px}
+.det ol,.det ul{margin:4px 0 6px 20px;font-size:13.5px}
+.det li{margin-bottom:5px}
+.det code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0 4px}
+.mi{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px 11px}
+.mi .k{font-size:10px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted);font-weight:700}
+.mi .v2{font-size:12.5px;margin-top:2px}
+.repro{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:10px 12px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--txt2);white-space:pre-wrap;margin-top:4px}
+.cmt{width:100%;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--txt);font-family:inherit;resize:vertical;min-height:56px;margin-top:4px}
+.cmt:focus{border-color:var(--accent);outline:none}
+.note{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px 15px;font-size:12.5px;color:var(--txt2);margin-bottom:18px}
+.execbanner{display:flex;align-items:center;gap:16px;background:linear-gradient(110deg,rgba(124,92,255,.13),rgba(124,92,255,.04));border:1px solid rgba(124,92,255,.32);border-radius:14px;padding:16px 20px;margin-bottom:20px;text-decoration:none;color:var(--txt);transition:.18s}
+.execbanner:hover{border-color:var(--accent);box-shadow:0 8px 24px rgba(124,92,255,.18);transform:translateY(-2px)}
+.eb-ico{width:44px;height:44px;border-radius:12px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.eb-txt{flex:1}
+.eb-txt h3{font-size:15px;font-weight:750;letter-spacing:-.2px;margin-bottom:3px}
+.eb-txt p{font-size:12.5px;color:var(--txt2);line-height:1.5}
+.eb-go{font-size:24px;color:var(--accent);flex-shrink:0}
+@media(max-width:640px){.execbanner{flex-direction:column;align-items:flex-start;gap:10px}.eb-go{display:none}}
+.foot{font-size:11px;color:var(--muted);margin-top:24px;text-align:center;line-height:1.7}
+@media(max-width:900px){.hide-m{display:none}.task{max-width:none}}
+</style></head><body>
+<div class="topbar">
+  <div class="logo">glov<span>.</span>zadania</div>
+  <div class="tnav">
+    <a href="GLOV_HUB.html">← HUB</a>
+    <a href="GLOV_Audyt_360_2026-07-17.html">Audyt 360 ↗</a>
+    <button class="btn" id="exportBtn">⬇ Eksport stanu</button>
+    <button class="btn" id="importBtn">⬆ Wczytaj</button>
+    <input type="file" id="importFile" accept=".json" style="display:none">
+    <button class="btn" id="themeBtn">🌙</button>
+  </div>
+</div>
+<div class="wrap">
+<h1>Lista zadań — Audyt 360 SEO &amp; GEO</h1>
+<div class="sub">Wszystkie zadania wynikające z audytu 360 z 17.07.2026 + 2 pozycje kluczowe z listy CNB (27.07) · <b>kliknij wiersz</b>, żeby rozwinąć dokładny opis: dlaczego, co konkretnie zrobić, gdzie, jak zweryfikować</div>
+
+<div class="note">👤 <b>Przygotowuje</b> = kto opracowuje i przekazuje gotowy wsad (Tomek / Kuba). <b>Egzekwuje</b> = kto wdraża (Tomek / Kuba / CNB). · <span class="cnb">CNB 27.07</span> = pozycja z listy Kacpra „po dev stronie”. · 💾 Stan (✓ / osoby / komentarze) zapisuje się lokalnie w przeglądarce — backup przez <b>Eksport stanu</b>.</div>
+
+<a class="execbanner" href="GLOV_BRIEF_POMIAR_2026-07-30.html">
+  <div class="eb-ico">📐</div>
+  <div class="eb-txt">
+    <h3>Brief pomiarowy dla wykonawcy — ścieżki, UTM, kwalifikacja ruchu</h3>
+    <p>Osobny dokument wykonawczy: 8 zadań (Z1–Z8) z testami odbioru. Zweryfikowany na danych GA4 z 30.07 — zastępuje stare instrukcje GTM i Unassigned.</p>
+  </div>
+  <div class="eb-go">→</div>
+</a>
+
+<div class="stats" id="stats"></div>
+<div class="progress"><span id="progbar"></span></div>
+<div class="filters" id="filters"></div>
+
+<table>
+  <thead><tr>
+    <th style="width:34px">✓</th><th>Zadanie</th>
+    <th class="hide-m" style="width:96px">Obszar</th>
+    <th style="width:52px">Prio</th>
+    <th style="width:110px">Przygotowuje</th>
+    <th style="width:110px">Egzekwuje</th>
+    <th class="hide-m" style="width:88px">Czas</th>
+    <th style="width:104px">Egzekucja</th>
+    <th style="width:40px"></th>
+  </tr></thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<div class="foot">Źródło: <b>GLOV_Audyt_360_2026-07-17.html</b> (metodologia V5.2, 10 z 13 modułów z twardymi danymi, ocena 48/100) + lista zadań dev CNB z 27.07.2026 (Kacper) + Master lista napraw (sticky ATC, js_error).<br>Wygenerowano 2026-07-30 · stan w localStorage · INTERNAL.</div>
+</div>
+
+<script>
+const TASKS=[
+{id:"t1",t:"Skrócić globalny sufiks title — odzyskać ~53 znaki na 100% stron",area:"On-page",pr:"P0",time:"20 min",cnb:false,who:"Dev (Shopify)",mod:"M2 · On-page i czystość DOM (3/10)",
+impact:"46 z 46 stron (100%) ma title dłuższy niż 60 znaków · średnia 105 znaków · sam sufiks zjada 60 znaków budżetu",
+why:"Shopify dokleja do każdej strony sufiks <code>– GLOV - Innowacja w oczyszczaniu twarzy i pielęgnacji ciała</code> (60 znaków). Google obcina title po szerokości ~600px (≈50–60 znaków), więc unikalna część tytułu wypada poza krawędź — klient w wynikach nie widzi, czego strona dotyczy. Przykład: PDP rękawicy ma title 131 znaków, widocznych ~60, przepada 71. To jedna zmiana, która działa na całą domenę i uderza wprost w CTR 1,95%.",
+steps:["⚠️ <b>Najpierw sprawdzić podwójny brand:</b> 17 stron (268 771 wyświetleń = 46% ekspozycji domeny, m.in. flagowy pumeks i strona główna) ma <b>już ręcznie wpisane <code>| GLOV</code></b> na końcu własnego page title — dziś wychodzi <code>… | GLOV – GLOV - Innowacja…</code>. Po zmianie sufiksu dostaną <code>| GLOV | GLOV</code>. Albo wyczyścić ręczne <code>| GLOV</code> w tych tytułach, albo dać w liquid warunek „nie doklejaj, jeśli tytuł już kończy się na GLOV”. Pełna lista: <a href=\"GLOV_Title_Lista.html\" target=\"_blank\">GLOV_Title_Lista.html</a> → filtr „Podwójny brand po fiksie”.","W <code>layout/theme.liquid</code> znaleźć tag <code>&lt;title&gt;</code>.","Podmienić zawartość na <code>{{ page_title }} | GLOV</code> (sufiks z 61 znaków → 7).","Sprawdzić, czy motyw nie dokleja sufiksu też w drugim miejscu (np. snippet SEO albo aplikacja SEO) — inaczej wróci.","Po deployu przecrawlować 5 kluczowych URL i policzyć długość title (powinno spaść ~54 znaki na każdej stronie).","<b>Zostaje robota ręczna:</b> 22 strony mają tytuł, który po odjęciu sufiksu <i>nadal</i> przekracza ~60 znaków — skrócić per strona w Shopify Admin (lista z URL-ami, handle'ami i ile ciąć: <a href=\"GLOV_Title_Lista.html\" target=\"_blank\">GLOV_Title_Lista.html</a>).","Poczekać na reindeksację (1–3 tyg.) i porównać CTR tych stron w GSC."],
+where:"layout/theme.liquid → tag &lt;title&gt;",
+needs:"Zamiana stringa na {{ page_title }} | GLOV. Efekt na 100% stron sklepu (2 155 URL) z jednej edycji.",
+repro:"python3 scratchpad/crawl3.py → glov_dom.json\n[p for p in pages if p['status']==200 and p['title_len']>60] → 46/46\nnajdłuższy: 131 zn. /products/rekawica-do-mycia-twarzy-i-demakijazu-cery-mieszanej-glov-on"},
+
+{id:"t2",t:"Naprawić skakanie layoutu na karcie produktu — CLS 0,66 → &lt;0,1",area:"CWV",pr:"P0",time:"3–4 h",cnb:true,who:"Dev (Shopify)",mod:"M4 · Core Web Vitals (5/10)",
+impact:"Strona /products/pumeks-glov-z-nano-szkla… = 24% wszystkich wyświetleń domeny (142 998) i nie przechodzi ANI JEDNEGO progu na mobile, gdzie jest ~80% ruchu",
+why:"To znalezisko z listy Kacpra „Najważniejsza strona sklepu jest jednocześnie najgorszą”. Dane CrUX (realni użytkownicy Chrome, nie Lighthouse): mobile LCP 3 292 ms (próg 2 500, 1,3×), INP 204 ms (próg 200), <b>CLS 0,66 przy progu 0,1 — przekroczenie 6,6×</b>. Desktop CLS 0,22, więc problem jest mobilny. CLS 0,66 znaczy, że znaczna część ekranu przeskakuje po doładowaniu: klient celuje w „Dodaj do koszyka”, baner/widget się doładowuje, treść zjeżdża, klik trafia w nic. Cała domena (origin) przechodzi wszystkie progi — dlatego poprzednie audyty tego nie zobaczyły, mierzyły origin i stronę główną.",
+steps:["Zidentyfikować elementy doładowywane nad foldem na PDP: banner z kodem rabatowym (główny podejrzany — wstrzykuje się nad treścią i spycha stronę w dół), widget opinii, galeria, aplikacje wstrzykujące treść.","Nadać kontenerom <code>min-height</code> / <code>aspect-ratio</code>, żeby miejsce było zarezerwowane przed doładowaniem.","Dodać jawne <code>width</code> + <code>height</code> wszystkim obrazom w galerii i sekcjach ATF.","Zacząć od bannera rabatowego — jeśli nie da się zarezerwować wysokości, rozważyć render server-side albo umieszczenie pod foldem.","Zmierzyć ponownie: lab (PSI mobile) do diagnozy, a werdykt z CrUX po ~28 dniach (okno field data)."],
+where:"sections/product-template.liquid + snippety aplikacji wstrzykujących treść nad foldem",
+needs:"Werdykt zawsze z CrUX (field), nie z Lighthouse — ta sama strona w labie pokazuje LCP 30,6 s i CLS 1,044, co jest artefaktem symulowanego łącza. Priorytet #1 techniczny w całym audycie.",
+repro:"python3 scratchpad/crux.py → crux.json (field, werdykt)\npython3 scratchpad/psi.py → psi.json (lab, tylko diagnoza)\nAPI: chromeuxreport.googleapis.com/v1/records:queryRecord · klucz ~/.config/crux_key"},
+
+{id:"t3",t:"Wyjaśnić z klientem, czym jest „GLOV Beauty subscription” — 8,5% ruchu organic",area:"Biznes",pr:"P0",time:"10 min",cnb:false,who:"Klient + Tomek",mod:"M5 · Sygnały behawioralne (3/10)",
+impact:"976 kliknięć = 8,5% całego ruchu organicznego, CTR 35,8% (18× średnia domeny 1,95%) — najbardziej klikany content GLOV to instrukcje anulowania subskrypcji",
+why:"Frazy typu „how to cancel glov beauty subscription” (CTR 43–58%, pozycje 1,3–1,4) i „glov beauty login” (127 klików) generują 8,5% ruchu organicznego. To realne kliknięcia, które wchodzą do statystyk, ale to nie są ludzie chcący kupić. Trzy możliwe wyjaśnienia i każde znaczy co innego: (1) GLOV ma subskrypcję z problemem retencji, (2) „GLOV Beauty” to inny podmiot, a glov.co przechwytuje jego ruch, (3) to pozostałość po wycofanej usłudze. Bez rozstrzygnięcia zniekształcona jest każda analiza CTR — bo mediana CTR domeny jest zawyżana ruchem, który nie ma wartości handlowej.",
+steps:["Zapytać klienta wprost: czy GLOV prowadzi/prowadził subskrypcję i czy „GLOV Beauty” to ten sam podmiot.","Jeśli to obcy ruch — wyciąć te frazy z analiz CTR i przeliczyć krzywą CTR domeny (Moduł 5).","Jeśli to własna subskrypcja — temat retencji, nie SEO; przekazać do rozmowy o produkcie.","Jeśli to pozostałość po wycofanej usłudze — zdecydować, co z tymi stronami (noindex vs przekierowanie na ofertę)."],
+where:"rozmowa z klientem (10 minut) + korekta analiz CTR po odpowiedzi",
+needs:"Nie zgadywać. Audyt świadomie nie stawia tu diagnozy — to pytanie do klienta, nie znalezisko.",
+repro:"python3 scratchpad/gsc_audit.py → klucz m5_top_queries\nfrazy: 'glov beauty cancel subscription' 242 klik / CTR 44,65% · 'glov beauty login' 127 klik / CTR 14,3%"},
+
+{id:"t13",t:"Sticky ATC na mobile + Buy Now na wszystkich PDP",area:"PDP",pr:"P0",time:"1 dzień",cnb:true,who:"Dev (Shopify)",mod:"Master lista napraw (fix25) + GA4 R01–R09",
+impact:"Drop view→ATC 82,2% — tylko 1 na 5 wchodzących na PDP dodaje do koszyka; szacowana strata 45 000–60 000 PLN/mies.",
+why:"Pozycja z listy Kacpra „do zrobienia kluczowe”. Na mobile (63–80% ruchu) przycisk „Dodaj do koszyka” wypada poza fold po przewinięciu do opisu/opinii — klient, który się przekonał czytając stronę, musi wracać na górę. Brakuje też Buy Now, czyli dla każdego zdecydowanego kupującego jest jeden krok więcej (PDP → koszyk → checkout). Uwaga na kolejność: sticky ATC to element doładowywany nad treścią, więc trzeba go wdrożyć razem z naprawą CLS (zadanie „CLS 0,66”) — inaczej dołoży skakania layoutu.",
+steps:["Dodać sticky bar na mobile (dół ekranu): miniatura + nazwa + cena + wariant + „Dodaj do koszyka”.","Pojawia się po przewinięciu poza główny przycisk ATC (IntersectionObserver), nie od razu — i ma zarezerwowaną wysokość, żeby nie generował CLS.","Dodać Buy Now (bezpośrednio do checkoutu) na wszystkich PDP, nie tylko na wybranych.","Sprawdzić kolizję z widgetem Trusted Shops (znany bug z-index na PDP mobile) i z cookie banerem.","Oeventować: add_to_cart z parametrem źródła (sticky vs główny przycisk) — inaczej nie zmierzymy efektu.","Zmierzyć po 2 tygodniach: view_item → add_to_cart dla PDP mobile (baza: 17,8% ATC rate)."],
+where:"sections/product-template.liquid + nowy snippet sticky-atc + GTM (event)",
+needs:"Wdrażać PO albo RAZEM z naprawą CLS na PDP — sticky element wstrzykiwany nad treścią bez rezerwacji miejsca pogorszy CLS 0,66.",
+repro:"GA4: view_item vs add_to_cart per deviceCategory=mobile, 90 dni\nbaza z audytu: view_item 8 465 → ATC 1 505 (17,8%) = drop 82,2%"},
+
+{id:"t14",doc:{href:"GLOV_BRIEF_POMIAR_2026-07-30.html#z8",label:"📋 Brief",title:"Brief pomiarowy — zadanie Z8 (js_error)"},t:"Masowy js_error: 38 907 eventów / 7 549 użytkowników — epicentrum /collections/sklep",area:"Technika",pr:"P0",time:"1–2 dni",cnb:true,who:"Dev (Shopify)",mod:"Audyt oeventowania GA4 (fix33)",
+impact:"5,2 błędu na użytkownika · /collections/sklep: 12 073 błędy (5,4/user) · koreluje z dropem lista→produkt 75,6–90,6%",
+why:"Druga pozycja z listy Kacpra „do zrobienia kluczowe”. To nie artefakt trackingu — skala (38 907 eventów u 7 549 userów) i koncentracja na głównym listingu wskazują realny błąd JS. Główny listing jest jednocześnie miejscem największego dropu na ścieżce (lista → produkt) i tam, gdzie userzy klikają „Załaduj więcej” 20+ razy. Dopóki nie wiemy, jaki to błąd, każda inna optymalizacja listingu strzela na oślep.",
+steps:["Wyciągnąć z GA4 parametry eventu js_error dla /collections/sklep: message, filename, lineno (jeśli są przekazywane).","Jeśli parametrów nie ma — dodać je w GTM (window.onerror → dataLayer) i zebrać dane przez 48 h.","Odtworzyć na żywym /collections/sklep w Chrome DevTools (mobile emulacja + throttling) — sprawdzić konsolę przy scrollu i „Załaduj więcej”.","Zidentyfikować źródło: skrypt motywu vs aplikacja (podejrzani: filtry AJAX, Monster Cart/GFG, wtyczka językowa, widget opinii).","Naprawić lub wyłączyć sprawcę; jeśli to aplikacja — zgłoszenie do dostawcy + workaround.","Zmierzyć: js_error/user na /collections/sklep przed i po (baza 5,4)."],
+where:"/collections/sklep (główny listing) → skrypty motywu + aplikacje wstrzykujące JS",
+needs:"Najpierw diagnoza (jaki błąd), potem naprawa. Bez parametrów eventu w GA4 nie ruszymy — to może być pierwszy krok w GTM.",
+repro:"GA4: eventName=js_error, dimension pagePath, 90 dni\n38 907 eventCount / 7 549 totalUsers · /collections/sklep 12 073"},
+
+{id:"t16",t:"Uzgodnić matrycę wdrożeniową z CNB — kolejność, właściciele, terminy",area:"Koordynacja",pr:"P0",time:"1 h",cnb:true,who:"Tomek + CNB",mod:"M12 · Matryca wdrożeniowa",
+impact:"Cały koszt P0 to ~4 godziny dewelopera + 10 minut rozmowy — pod warunkiem, że kolejność jest uzgodniona, a nie improwizowana",
+why:"Kacper wpisał „matryca wdrożeniowa” jako pozycję po stronie dev — to nie zadanie techniczne, tylko ustalenie kolejności i właścicieli. Zasada priorytetu z audytu: GLOV nie potrzebuje więcej widoczności (589 743 wyświetlenia, +15,6% Y/Y kliknięć), potrzebuje żeby ta widoczność zamieniała się w kliknięcia. Dlatego na górze są rzeczy ruszające CTR 1,95%, a nie te, które wyglądają najbardziej technicznie. Bez tego ustalenia CNB naturalnie weźmie się za to, co najprostsze, a nie za to, co najdroższe w skutkach.",
+steps:["Przejść tę listę z CNB i przypisać każdą pozycję: kto przygotowuje wsad (Tomek/Kuba), kto wdraża (Tomek/Kuba/CNB).","Zatwierdzić kolejność P0: title suffix (20 min) → CLS PDP (3–4 h) → subscription (rozmowa) → sticky ATC + js_error.","Ustalić, co wchodzi na preview a co na produkcję od razu (GLOV to żywy sklep — bez undo).","Ustalić termin QA po każdej partii i kto go robi (weryfikacja repro, nie „powinno działać”).","Wpisać daty w tę listę (komentarz per zadanie) i wyeksportować stan jako zapis uzgodnień."],
+where:"spotkanie / wątek z CNB + ta lista jako dokument roboczy",
+needs:"Decyzja o rytmie wdrożeń. P1/P2 mogą lecieć partiami, ale P0 nie powinny czekać na resztę.",
+repro:"—"},
+
+{id:"t4",t:"Dodać H1 na stronie głównej — dziś 18× H2 i zero H1",area:"On-page",pr:"P1",time:"15 min",cnb:true,who:"Dev (Shopify)",mod:"M2 · On-page i czystość DOM",
+impact:"Najważniejsza strona domeny (17 693 wyświetlenia, CTR 3,56%) bez głównego nagłówka — sygnał tematyczny rozmyty",
+why:"Pozycja z listy Kacpra. Google czyta hierarchię nagłówków, żeby zrozumieć temat strony — na stronie głównej dostaje 18 znaczników <code>&lt;h2&gt;</code> i żadnego <code>&lt;h1&gt;</code>. Poza HP problem prawie nie istnieje: 45 z 46 stron ma poprawny H1 (poprzedni audyt z 12.07 pisał o „całkowitym śmietniku H1–H6” i wystawił 2/10 — to była nadinterpretacja).",
+steps:["Dodać jeden <code>&lt;h1&gt;</code> w sekcji hero strony głównej: marka + kategoria (np. „GLOV — innowacyjne akcesoria do demakijażu i pielęgnacji”).","Sekcje, które dziś są H2 obok hero, zostawić jako H2 — nie trzeba przebudowywać całej hierarchii.","Zweryfikować, że H1 jest jeden (nie duplikuje się w sliderze / w wariancie mobilnym).","Sprawdzić curl-em po deployu: liczba H1 = 1."],
+where:"szablon strony głównej (sekcja hero)",
+needs:"Treść H1 może być krótka i brandowa — to nie jest miejsce na upychanie fraz.",
+repro:"curl -A Chrome https://glov.co/ | grep -c '<h1'\nstan 2026-07-21: h1=0, h2=18"},
+
+{id:"t5",t:"Zamienić &lt;h2&gt; na &lt;div&gt; w przełączniku waluty i stopce (100% stron)",area:"On-page",pr:"P2",time:"1 h",cnb:true,who:"Dev (Shopify)",mod:"M2 · On-page i czystość DOM",
+impact:"46 z 46 stron (100%) ma H2 owijający elementy interfejsu: „Waluta” ×35, „Currency” ×11, „Patenty”, „Wzory użytkowe”",
+why:"Pozycja z listy Kacpra „Nagłówki opisują przełącznik waluty, nie produkt”. Google czyta hierarchię nagłówków jako listę tematów strony — i dostaje informację, że jednym z głównych tematów każdej strony w sklepie jest „Waluta”. Wygląd się nie zmienia, zmienia się wyłącznie sygnał semantyczny. To pozycja techniczna: audyt mówi tylko „UI ma przestać udawać nagłówek”. Czym wypełnić H2 (jakie sekcje treści) to osobne zadanie — patrz „Skeleton H2 per kategoria”.",
+steps:["W snippecie przełącznika waluty zamienić <code>&lt;h2&gt;Waluta&lt;/h2&gt;</code> na <code>&lt;div class=\"currency\"&gt;</code>.","W <code>sections/footer.liquid</code> zamienić H2 „Patenty” / „Wzory użytkowe” na <code>&lt;div class=\"footer-legal\"&gt;</code>.","Przenieść style z selektora H2 do nowych klas CSS (wygląd bez zmian).","Sprawdzić inne szablony (koszyk, drawer) czy nie mają tego samego wzorca.","Po deployu przecrawlować i policzyć H2 na losowych 5 stronach."],
+where:"sections/footer.liquid + snippet przełącznika waluty",
+needs:"Podmiana tagu + przeniesienie stylu do klasy. Zero zmian wizualnych — jeśli coś się rozjedzie, to znaczy że styl siedział na selektorze h2.",
+repro:"python3 scratchpad/crawl3.py → glov_dom.json · pole h2_texts\nstan: 'Waluta' ×35, 'Currency' ×11, 'Patenty' ×1, 'Wzory użytkowe' ×1"},
+
+{id:"t6",t:"Skeleton H2 per kategoria — teksty SEO kolekcji jako nagłówki (30 H2 / 8 kategorii)",area:"Content",pr:"P1",time:"~1 dzień × 8 kat.",cnb:true,who:"Dev (struktura) + Copy (treść)",mod:"M2 · Brief wykonawcy",
+impact:"30 nagłówków H2 rozpisanych na 8 kategorii, każdy wywiedziony z realnego zapytania w GSC (np. „tarka z nano szkła” 12 597 wyświetleń, „satynowy czepek do spania” 2 085)",
+why:"Pozycja z listy Kacpra „przerobienie tekstów seo kolekcji na h2”. Dziś opisy SEO kolekcji to blok tekstu bez struktury, a H2 zajmuje interfejs. Skeleton z audytu daje gotowe nagłówki wywiedzione z popytu (wyświetlenia w GSC = dowód, że ludzie tak pytają), nie wymyślone. To NIE jest 361 ręcznych decyzji: (1) jedna edycja szablonu <code>sections/product-*.liquid</code> wchodzi na wszystkie karty danego typu, (2) nagłówki definiowane per kategoria (cała kategoria dzieli te same pytania klientów), (3) treść w H2 = metafields produktu (skład, sposób użycia), raz per produkt albo współdzielone w kategorii.",
+steps:["Wziąć tabelę skeletonu z audytu (Moduł 2, sekcja „Brief wykonawcy”) — 8 kategorii × 3–5 H2.","Dev: dodać strukturę sekcji H2 do szablonu karty produktu i szablonu kolekcji, z treścią z metafields.","Copy: wypełnić treść pod każdym H2 wg zapytania źródłowego (skład, jak używać, opinie, co to jest).","⚠️ Dociągnąć zapytania dla kategorii oznaczonych jako niepełne: „Ręczniki do twarzy” i „Gąbki do makijażu” — próbka GSC (100 zapytań) dała za mało dopasowań na pełny skeleton.","Kategoria „szczotki do włosów” nie ma w próbce ani jednego trafienia — nie wymyślać, dociągnąć świeży export GSC filtrowany per kategoria.","Wdrażać kategoriami, nie wszystko naraz — po pierwszej sprawdzić efekt na pozycjach i CTR."],
+where:"sections/product-*.liquid + opisy kolekcji w Shopify Admin + metafields produktu (skład, sposób użycia)",
+needs:"Świeży export GSC per kategoria przed wdrożeniem kategorii niepełnych. Kolejność treści per typ strony należy do Category Standards, nie do audytu technicznego.",
+repro:"cat _audyt_360_2026-07/h2_blueprint.json | python3 -c \"import json,sys;d=json.load(sys.stdin);print(sum(len(v) for k,v in d.items() if k!='_meta'))\"\n→ 30 H2 na 8 kategorii · źródło zapytań: gsc_audit.json m6_top (40) + m6_striking (60)"},
+
+{id:"t8",t:"Ograniczyć hreflang z 203 wersji do realnie obsługiwanych rynków",area:"Wielorynkowość",pr:"P1",time:"2 h po decyzji",cnb:true,who:"Dev + SEO + decyzja biznesowa",mod:"M3 · Hreflang / wielorynkowość (4/10)",
+impact:"Fraza „glov” (własna marka): 157 828 wyświetleń, 168 konkurujących URL-i, 11 rynków mieszanych, średnia pozycja 6,0 i CTR 1,94% na zapytanie o własną nazwę",
+why:"Pozycja z listy Kacpra „Hreflang / wielorynkowość”. Formalnie kod jest bez zarzutu: 46/46 stron ma hreflang, wszystkie mają x-default. Problem jest w skali — każda strona deklaruje <b>203 wersje językowe</b>, a Google mając 203 kandydatów wybiera źle: na 20 fraz pokazuje użytkownikom niewłaściwy rynek. To także ~30 KB nadmiarowego kodu w każdym <code>&lt;head&gt;</code>. Poprawny kod nie znaczy, że działa.",
+steps:["<b>Najpierw decyzja biznesowa:</b> które z 6 rynków (de-de, en-eu, en-gb, en-global, fr-fr, pl) są realnie obsługiwane — z magazynem, obsługą i płatnościami.","Wyciąć z bloku hreflang wszystkie deklaracje poza realnymi rynkami (203 → tyle, ile rynków × wersji).","Zweryfikować mapowanie język→region (en-gb vs en-eu vs en-global — czy te trzy mają sens obok siebie).","Sprawdzić, że każda pozostała deklaracja ma fizyczny return-link ze strony docelowej i self-reference.","Zsynchronizować sitemapy per rynek z nową listą.","Po 2–3 tygodniach sprawdzić w GSC → International Targeting oraz frazę „glov”: czy Google przestał mieszać rynki."],
+where:"layout/theme.liquid (blok hreflang) lub aplikacja wielojęzyczna",
+needs:"Decyzja biznesowa PRZED kodem — dev nie zdecyduje, które rynki są realne. To jedyna pozycja, która blokuje się na Tomku/kliencie, nie na CNB.",
+repro:"curl -A Chrome https://glov.co/ | grep -c 'hreflang'\n→ 203 alternates na stronę · GSC (query+page) grupowane po prefiksie rynku → 20 fraz z mieszaniem"},
+
+{id:"t7",t:"Uzupełnić meta description — 13 stron z ruchem bez opisu",area:"On-page",pr:"P1",time:"2 h",cnb:false,who:"Copy / SEO (bez dewelopera)",mod:"M2 · On-page i czystość DOM",
+impact:"13 z 46 stron z ruchem (28%) zostawia Google wolną rękę — snippet zostanie sklejony z losowego fragmentu strony",
+why:"Meta description nie jest czynnikiem rankingowym (brak = brak kary), ale przy CTR domeny 1,95% to jedyna dźwignia, która działa od razu i nie wymaga dewelopera. Uwaga na mit: „155–160 znaków” to wymysł narzędzi SEO, nie limit Google — John Mueller odrzucił to wprost. Google obcina po szerokości w pikselach, więc piszemy pod czytelność i kliknięcie, nie pod licznik.",
+steps:["Wyciągnąć listę 13 stron bez description z crawl DOM, posortować po wyświetleniach w GSC.","Napisać opisy zaczynając od stron z największą ekspozycją — najpierw te, gdzie brak opisu kosztuje najwięcej.","Pisać pod kliknięcie: konkret + korzyść + wyróżnik (nie streszczenie kategorii).","Wgrać hurtem przez Shopify Admin → Bulk Editor.","Po reindeksacji porównać CTR tych 13 URL w GSC (baza per URL przed zmianą)."],
+where:"Shopify Admin → Bulk Editor",
+needs:"Nic po stronie dev. Robota czysto redakcyjna — do zrobienia równolegle z zadaniami technicznymi.",
+repro:"python3 scratchpad/crawl3.py → glov_dom.json\n[p for p in pages if not p['meta_description']] → 13/46"},
+
+{id:"t10",t:"Rozdzielić intencje — kanibalizacja kolekcja vs produkt (6 realnych konfliktów)",area:"Content",pr:"P1",time:"3 h",cnb:false,who:"SEO / Copy",mod:"M7 · Kanibalizacja treści (4/10)",
+impact:"60 realnych konfliktów (nie 253 — po odfiltrowaniu szumu i różnych rynków); wzorzec powtarzalny: kolekcja bije się z produktem",
+why:"Fraz z wieloma URL-ami jest 253 z 1 418, ale kanibalizacja to nie „dwa URL na jedną frazę” — to dwa URL, które realnie walczą (różnica pozycji &lt;3 i stosunek wyświetleń &gt;0,5, w obrębie jednego rynku). Po tym progu zostaje 60. Wzorzec: informacyjne pytanie trafia na dwie komercyjne strony. „Co to jest nano szkło” (505 wyświetleń w grze) odpowiada kolekcja (poz. 4,0) i karta produktu (poz. 3,5) — obie sprzedażowe, żadna nie wygrywa. Ktoś, kto pyta „co to jest”, nie chce koszyka, chce odpowiedzi. To jest jednocześnie przyczyna niskiego CTR z Modułu 5.",
+steps:["Wziąć 6 top konfliktów: „szczotka glov” (928), „co to jest nano szkło” (505), „glov nano glass” (409), „glov beauty uk” (383), „nano szkło co to” (340), „glov szczotka do włosów” (328).","Dla każdego wyznaczyć jedną stronę-odpowiedź: pytania informacyjne → kolekcja (strona edukacyjna), zakup → karta produktu.","Dla „nano szkło”: kolekcja /collections/nano-glass-collection zostaje stroną-odpowiedzią; rozbudować jej opis o sekcję „co to jest nano szkło” i podlinkować z niej produkt.","Z karty produktu usunąć/ograniczyć duplikującą treść informacyjną, zostawić zakupową; linkować do kolekcji po odpowiedź.","„glov beauty uk” to konflikt /en-eu vs /en-gb — to problem hreflang, nie treści: rozstrzygnąć w zadaniu o hreflangu.","Po 3 tygodniach sprawdzić w GSC, czy dla tych fraz została jedna dominująca strona."],
+where:"opis kolekcji /collections/nano-glass-collection + linkowanie wewnętrzne + opisy produktów",
+needs:"Próg to heurystyka (poz. &lt;3 ORAZ imp &gt;0,5) — kalibrować per witryna. Konflikty między rynkami (pl vs de) to NIE kanibalizacja.",
+repro:"python3 scratchpad/gsc_audit.py → klucz m7_cannibalization\nwymiary GSC ['query','page'], filtr impressions>=20, top2 wg impresji, w obrębie 1 rynku"},
+
+{id:"t11",t:"Top 5 fraz z drugiej strony Google — fraza do &lt;h2&gt; + akapit",area:"Content",pr:"P1",time:"4 h",cnb:false,who:"Copy / SEO",mod:"M6 · Mapowanie fraz (5/10)",
+impact:"60 fraz na pozycjach 11–20 z realną ekspozycją i prawie zero kliknięć; top: „coconut oil makeup remover” 5 242 wyśw. / 2 kliki, „satynowy czepek do spania” 2 085 / 6",
+why:"Pozycje 11–20 to druga strona Google — praktycznie zero kliknięć, ale wystarczy jeden precyzyjny ruch, żeby weszły na pierwszą. Sortujemy po wyświetleniach, bo największa ekspozycja = największa dźwignia. Kolejne w kolejce: „czepek satynowy do spania” (1 655), „rozjaśnianie włosów” (1 636 wyśw., 0 klików, poz. 20,4), „czepek do spania” (730), „blowout” (703), „gąbka do makijażu” (688, 0 klików).",
+steps:["Wybrać 5 fraz z największą ekspozycją i przypisać każdej właściwy URL (kolekcja lub produkt — spójnie z rozdzieleniem intencji z zadania o kanibalizacji).","Dodać frazę <b>dosłownie</b> jako <code>&lt;h2&gt;</code> na tej stronie + 300–500 znaków gęstej treści pod nim (odpowiedź, nie lanie wody).","Sprawdzić dla każdej frazy, czy SERP nie jest zdominowany przez AI Overview — wtedy awans 11→5 nie przełoży się 1:1 na kliknięcia.","Podlinkować wewnętrznie z powiązanej treści (blog → kolekcja/produkt) na dokładnej frazie.","Zmierzyć po 3–4 tygodniach: pozycja + kliknięcia per fraza w GSC (baza wyżej)."],
+where:"opisy kolekcji i produktów w Shopify Admin",
+needs:"Wchodzi w parze z zadaniem o skeletonie H2 — jeśli szablon dostaje strukturę H2, te frazy powinny wejść w tę strukturę, a nie obok niej.",
+repro:"python3 scratchpad/gsc_audit.py → klucz m6_striking\nfiltr: pozycja 11–20, wyświetlenia >=30 → 60 fraz"},
+
+{id:"t12",t:"noindex na stronach konta — /pages/profile, profile-edit, set-password",area:"Technika",pr:"P1",time:"30 min",cnb:false,who:"Dev (Shopify)",mod:"M2 · On-page i czystość DOM",
+impact:"3 strony funkcjonalne zwracają 200, bez noindex i bez H1 — thin-content, który może trafić do wyników zamiast kart produktu",
+why:"Strony funkcjonalne (profil, edycja profilu, ustawianie hasła) nie mają wartości w wyszukiwarce, a są indeksowalne. Marnują budżet indeksowania i mogą pokazać się w wynikach na frazy brandowe zamiast oferty. Przy 2 155 URL to nie kwestia crawl budgetu (moduł 9 nie dotyczy przy tej skali), ale higieny indeksu.",
+steps:["Dodać <code>&lt;meta name=\"robots\" content=\"noindex,follow\"&gt;</code> w szablonach <code>pages/profile*</code> i <code>set-password</code>.","Sprawdzić w GSC (Sprawdzenie URL), czy te strony są już zaindeksowane.","Jeśli tak — zgłosić do usunięcia z indeksu po wdrożeniu noindex (albo poczekać na naturalne wypadnięcie).","Przejrzeć, czy nie ma innych stron funkcjonalnych bez noindex (koszyk, wishlist, wyniki wyszukiwania wewnętrznego)."],
+where:"szablony pages/profile*, set-password",
+needs:"noindex,follow (nie nofollow) — linki nawigacyjne mają dalej przekazywać sygnał.",
+repro:"curl -A Chrome https://glov.co/pages/profile → status=200, meta robots=brak, h1=0 (2026-07-21)\nto samo: /pages/profile-edit, /pages/set-password"},
+
+{id:"t9",t:"Zweryfikować język treści pod /en-global/blogs/pl",area:"Wielorynkowość",pr:"P2",time:"30 min",cnb:false,who:"SEO",mod:"M3 · Hreflang / wielorynkowość",
+impact:"Na /blogs/pl jest 203 deklaracje hreflang, z czego 198 wariantów en-XX wskazuje na ścieżkę zawierającą „pl”",
+why:"Formalnie hreflang jest poprawny (x-default obecny, self-reference jest), ale 198 deklaracji angielskich prowadzi na <code>/en-global/blogs/pl</code> — URL z „pl” w ścieżce mimo wersji angielskiej. Jeśli pod tym adresem renderuje się polski tekst w angielskim sklepie, mamy duplikat językowy i Google ma prawo mieszać rynki (co potwierdza Moduł 3). To zadanie diagnostyczne — wynik decyduje, czy w ogóle jest co naprawiać.",
+steps:["Otworzyć 3–5 URL-i /en-global/blogs/pl/... i sprawdzić, w jakim języku jest treść.","Sprawdzić w GSC raport International Targeting, czy Google raportuje błędy return-link dla tych URL.","Jeśli treść jest polska — decyzja: albo przetłumaczyć, albo wyłączyć wariant en-XX dla bloga (noindex/usunięcie z hreflang).","Wynik dopisać do zadania o hreflangu — może zmienić zakres cięcia deklaracji."],
+where:"weryfikacja ręczna + GSC → International Targeting",
+needs:"Nic po stronie dev na tym etapie. Dopiero wynik weryfikacji generuje (albo nie) zadanie wdrożeniowe.",
+repro:"curl -A Chrome https://glov.co/blogs/pl → 203 alternates, 198× en-XX → /en-global/blogs/pl (2026-07-21)"},
+
+{id:"t15",t:"Odświeżyć profil linków i domain rank, potem strategia autorytetu",area:"Autorytet",pr:"P1",time:"kwartał",cnb:false,who:"SEO / Tomek",mod:"M8 · Konkurencja i autorytet (2/10) ⚠️ stare dane",
+impact:"Widoczność GLOV 2 242 vs lider kategorii 43 678 (19×). Domain rank 65 956 — gorszy niż prawie wszyscy konkurenci w kategorii",
+why:"To jedyny obszar, w którym GLOV odstaje <b>rzędem wielkości</b>, a nie o kilka procent — wszystkie pozostałe naprawy razem nie przebiją tej różnicy. Autorytet jest sufitem: można mieć idealną technikę i się nie przebić, bo domena jest za słaba (badanie na 129 tys. domen: siła domeny bije świeżość treści jako predyktor cytowań, także w AI). Uwaga: dane w audycie są z 16.06.2026 i nie zostały odświeżone — kierunek jest pewny (różnica 20× nie znika w miesiąc), ale konkretne liczby wymagają ponownego pomiaru przed rozmową z klientem.",
+steps:["Odświeżyć dane: seo-backlinks (Common Crawl + Moz — darmowe) + Senuto widoczność, ten sam zestaw konkurentów.","Zrobić gap-analysis referring domains: kto linkuje do rytmnatury.pl / lullalove.com, a nie do GLOV.","Wybrać 2–3 typy linków realne do zdobycia (prasa beauty, blogi pielęgnacyjne, katalogi produktowe) — nie „budowanie linków” w ogólności.","Rozpisać kwartalny plan: ile domen miesięcznie, kto robi outreach, jaki content jest przynętą.","Mierzyć kwartalnie: referring domains + widoczność vs lider (baza: 2 242 vs 43 678)."],
+where:"seo-backlinks (Common Crawl + Moz) + Senuto · potem outreach",
+needs:"To praca kwartalna, nie zadanie do odhaczenia. Nie blokuje żadnej pozycji technicznej — może iść równolegle.",
+repro:"_seo_audit_data/modul6789.json (16.06.2026) — DO ODŚWIEŻENIA\nwidoczność: glov.co 2 242 · rytmnatury.pl 43 678 · lullalove.com 35 092 · almania.pl 28 122"},
+
+{id:"t17",t:"Domknąć moduły bez danych — pełny crawl 2 155 URL + ROI (CR/AOV)",area:"Audyt",pr:"P2",time:"1 dzień",cnb:false,who:"Tomek (analityka)",mod:"M1 częściowo · M11 niepełne",
+impact:"Ocena 48/100 liczona z 10 z 13 modułów — trzy moduły nie mają danych i świadomie nie wchodzą do mianownika",
+why:"Audyt nie wystawia ocen temu, czego nie zmierzył. Żeby domknąć obraz brakuje dwóch rzeczy: (1) <b>M1 Technika on-site</b> — sitemapa i przekierowania sprawdzone (0 łańcuchów 301), ale pełny crawl 2 155 URL nie przeszedł, bo Cloudflare ograniczał tempo; (2) <b>M11 ROI</b> — jest własna krzywa CTR GLOV, brakuje aktualnego CR i AOV z GA4/Shopify za ten sam okres, więc nie da się wycenić napraw w złotówkach. M9 (crawl budget) nie dotyczy — 2 155 URL to poniżej progu istotności wg Google, wróci przy ~5 000 URL.",
+steps:["M1: przepuścić crawl z limitem tempa w nocy (albo Screaming Frog z profilem uwierzytelnionym), pełne 2 155 URL.","M1: sprawdzić na pełnej próbce to, co audyt widział tylko na 46 stronach z ruchem (title, H, meta, status).","M11: pobrać z GA4 konwersje z organic za okres audytu (2026-04-16…2026-07-14) + z Shopify AOV za ten sam okres.","M11: przeliczyć wycenę napraw w PLN — ile realnie wart jest wzrost CTR z 1,95% na 3% przy tym CR i AOV.","Zaktualizować ocenę audytu z pełnego zestawu modułów."],
+where:"crawl nocny + GA4 (organic conversions) + Shopify (AOV)",
+needs:"Nie blokuje wdrożeń. Domyka wiarygodność audytu i pozwala rozmawiać z klientem liczbami w PLN, nie procentami.",
+repro:"python3 scratchpad/crawl_glov.py → glov_crawl.json · klucz sitemap_count = 2 155\nGA4: property 342844459, sessionDefaultChannelGroup=Organic Search"}
+];
+
+const PREP=["Tomek","Kuba"];
+const EXEC=["Tomek","Kuba","CNB"];
+const KEY='glov-zadania360-state';
+let state=JSON.parse(localStorage.getItem(KEY)||'{}');
+// --- Przypisania domyślne (propozycja 30.07): dev Shopify → CNB · treść/copy → Kuba · analityka, decyzje i rozmowy z klientem → Tomek.
+// Nie nadpisuje ręcznych zmian zrobionych w przeglądarce. ---
+const DEFAULTS={
+t1:{prep:"Tomek",exec:"CNB"},    // spec techniczna 1 linijki → wdrożenie w theme.liquid
+t2:{prep:"Tomek",exec:"CNB"},    // CLS: diagnoza z CrUX/PSI po stronie Tomka, rezerwacja miejsca po stronie devu
+t3:{prep:"Tomek",exec:"Tomek"},  // rozmowa z klientem — nie do oddania
+t13:{prep:"Tomek",exec:"CNB"},   // sticky ATC: spec UX + event, wdrożenie dev
+t14:{prep:"Tomek",exec:"CNB"},   // js_error: parametry eventu w GTM (Tomek), naprawa skryptu (dev)
+t16:{prep:"Tomek",exec:"Tomek"}, // uzgodnienie matrycy z CNB
+t4:{prep:"Kuba",exec:"CNB"},     // treść H1 = copy, wstawienie w szablon = dev
+t5:{prep:"Tomek",exec:"CNB"},    // podmiana tagów + CSS
+t6:{prep:"Kuba",exec:"CNB"},     // skeleton H2: treść i metafields Kuba, struktura szablonu CNB
+t8:{prep:"Tomek",exec:"CNB"},    // decyzja o rynkach po stronie Tomka/klienta, cięcie hreflang dev
+t12:{prep:"Tomek",exec:"CNB"},   // noindex na szablonach kont
+t7:{prep:"Kuba",exec:"Kuba"},    // meta description — Bulk Editor, bez dewelopera
+t10:{prep:"Tomek",exec:"Kuba"},  // rozstrzygnięcie intencji z GSC (Tomek) → przepisanie opisów (Kuba)
+t11:{prep:"Tomek",exec:"Kuba"},  // dobór fraz i URL z GSC (Tomek) → H2 + akapity (Kuba)
+t9:{prep:"Tomek",exec:"Tomek"},  // weryfikacja języka + GSC
+t15:{prep:"Tomek",exec:"Tomek"}, // linki i autorytet — kwartalna robota Tomka
+t17:{prep:"Tomek",exec:"Tomek"}  // crawl nocny + ROI z GA4/Shopify
+};
+for(const k in DEFAULTS){ if(!(k in state)) state[k]=Object.assign({},DEFAULTS[k]); }
+let fPr='all', fDone='all', fCnb=false, fExec='all';
+const open={};
+
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+const root=document.documentElement,tb=document.getElementById('themeBtn');
+const th=localStorage.getItem('glov-theme')||'light';root.setAttribute('data-theme',th);tb.textContent=th==='light'?'🌙':'☀️';
+tb.onclick=()=>{const n=root.getAttribute('data-theme')==='light'?'dark':'light';root.setAttribute('data-theme',n);localStorage.setItem('glov-theme',n);tb.textContent=n==='light'?'🌙':'☀️';};
+
+function esc(s){return (s||'').replace(/&(?!amp;|lt;|gt;|quot;|nbsp;)/g,'&amp;').replace(/"/g,'&quot;');}
+function sel(id,kind){
+  const st=state[id]||{};const cur=kind==='prep'?(st.prep||''):(st.exec||'');
+  const opts=kind==='prep'?PREP:EXEC;
+  let h='<select class="'+(cur?'':'empty')+'" onchange="setP(\''+id+'\',\''+kind+'\',this.value)" onclick="event.stopPropagation()">';
+  h+='<option value=""'+(cur?'':' selected')+'>— kto? —</option>';
+  opts.forEach(o=>{h+='<option value="'+o+'"'+(cur===o?' selected':'')+'>'+o+'</option>';});
+  return h+'</select>';
+}
+
+function render(){
+  const prs=['P0','P1','P2'];
+  let fh='<span class="chip '+(fPr==='all'?'on':'')+'" onclick="setPr(\'all\')">Wszystkie priorytety</span>';
+  prs.forEach(p=>{fh+='<span class="chip p-'+p+' '+(fPr===p?'on':'')+'" onclick="setPr(\''+p+'\')">'+p+'</span>';});
+  fh+='<span class="chip '+(fCnb?'on':'')+'" onclick="tCnb()">Lista CNB (8)</span>';
+  fh+='<span style="flex:1"></span>';
+  EXEC.forEach(e=>{fh+='<span class="chip '+(fExec===e?'on':'')+'" onclick="setEx(\''+e+'\')">'+e+'</span>';});
+  fh+='<span class="chip '+(fExec==='none'?'on':'')+'" onclick="setEx(\'none\')">nieprzypisane</span>';
+  fh+='<span class="chip '+(fDone==='open'?'on':'')+'" onclick="setDone(\'open\')">Do zrobienia</span>';
+  fh+='<span class="chip '+(fDone==='done'?'on':'')+'" onclick="setDone(\'done\')">Zrobione</span>';
+  fh+='<span class="chip '+(fDone==='all'?'on':'')+'" onclick="setDone(\'all\')">Wszystkie</span>';
+  document.getElementById('filters').innerHTML=fh;
+
+  let rows=TASKS.filter(it=>{
+    const st=state[it.id]||{};
+    if(fPr!=='all'&&it.pr!==fPr)return false;
+    if(fCnb&&!it.cnb)return false;
+    if(fDone==='open'&&st.done)return false;
+    if(fDone==='done'&&!st.done)return false;
+    if(fExec==='none'&&st.exec)return false;
+    if(fExec!=='all'&&fExec!=='none'&&st.exec!==fExec)return false;
+    return true;
+  });
+  const ord={P0:0,P1:1,P2:2};
+  rows.sort((a,b)=>{
+    const da=!!(state[a.id]&&state[a.id].done),db=!!(state[b.id]&&state[b.id].done);
+    if(da!==db)return da-db;
+    return (ord[a.pr]??9)-(ord[b.pr]??9);
+  });
+
+  let h='';
+  rows.forEach(it=>{
+    const st=state[it.id]||{};const done=!!st.done;const isOpen=!!open[it.id];
+    h+='<tr class="main '+(done?'done':'')+'" onclick="tog(\''+it.id+'\')">'+
+      '<td><input type="checkbox" class="chk" '+(done?'checked':'')+' onclick="event.stopPropagation()" onchange="setDoneOne(\''+it.id+'\',this.checked)"></td>'+
+      '<td><div class="task">'+it.t+(it.cnb?'<span class="cnb">CNB 27.07</span>':'')+'</div>'+
+        '<div class="impact">📊 '+esc(it.impact)+'</div><div class="mod">'+esc(it.mod)+'</div></td>'+
+      '<td class="hide-m"><span class="area">'+esc(it.area)+'</span></td>'+
+      '<td><span class="pr pr-'+it.pr+'">'+it.pr+'</span></td>'+
+      '<td>'+sel(it.id,'prep')+'</td>'+
+      '<td>'+sel(it.id,'exec')+'</td>'+
+      '<td class="hide-m"><span class="dt">'+esc(it.time)+'</span></td>'+
+      '<td>'+(it.doc
+        ? '<a class="execlink" href="'+it.doc.href+'" target="_blank" onclick="event.stopPropagation()" title="'+esc(it.doc.title||'Dokument wykonawczy')+'">'+esc(it.doc.label)+' <span class="ext">↗</span></a>'
+        : '<span class="execnone" title="Brak osobnego dokumentu — instrukcja w rozwinięciu wiersza">—</span>')+'</td>'+
+      '<td><span class="arrow '+(isOpen?'open':'')+'">'+(isOpen?'▾':'▸')+'</span></td>'+
+    '</tr>';
+    if(isOpen){
+      h+='<tr class="exp"><td colspan="9"><div class="det">'+
+        '<h4>Dlaczego to jest problem</h4><p>'+it.why+'</p>'+
+        '<h4>Co dokładnie zrobić</h4><ol>'+it.steps.map(s=>'<li>'+s+'</li>').join('')+'</ol>'+
+        '<div class="meta">'+
+          '<div class="mi"><div class="k">Gdzie</div><div class="v2">'+it.where+'</div></div>'+
+          '<div class="mi"><div class="k">Kto robi — wg audytu</div><div class="v2">'+esc(it.who)+'</div></div>'+
+          '<div class="mi"><div class="k">Czas</div><div class="v2">'+esc(it.time)+'</div></div>'+
+        '</div>'+
+        '<h4>Warunki i uwagi</h4><p>'+it.needs+'</p>'+
+        '<h4>Jak zweryfikować (repro)</h4><div class="repro">'+esc(it.repro)+'</div>'+
+        '<h4>Komentarz / ustalenia</h4>'+
+        '<textarea class="cmt" placeholder="np. termin, kto potwierdził, co wyszło po wdrożeniu..." onclick="event.stopPropagation()" onchange="setCmt(\''+it.id+'\',this.value)">'+esc((state[it.id]||{}).cmt||'')+'</textarea>'+
+      '</div></td></tr>';
+    }
+  });
+  document.getElementById('tbody').innerHTML=h||'<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--muted)">Brak zadań dla tego filtra</td></tr>';
+
+  const tot=TASKS.length,done=TASKS.filter(i=>state[i.id]&&state[i.id].done).length;
+  const p0=TASKS.filter(i=>i.pr==='P0').length,p0d=TASKS.filter(i=>i.pr==='P0'&&state[i.id]&&state[i.id].done).length;
+  const noOwner=TASKS.filter(i=>!(state[i.id]&&state[i.id].exec)).length;
+  document.getElementById('stats').innerHTML=
+    '<div class="stat"><div class="v">'+tot+'</div><div class="l">Zadań razem</div></div>'+
+    '<div class="stat"><div class="v" style="color:var(--green)">'+done+'</div><div class="l">Zrobione</div></div>'+
+    '<div class="stat"><div class="v" style="color:#ff5c7c">'+p0+'</div><div class="l">P0 ('+p0d+' ✓)</div></div>'+
+    '<div class="stat"><div class="v" style="color:var(--accent)">'+TASKS.filter(i=>i.cnb).length+'</div><div class="l">Z listy CNB</div></div>'+
+    '<div class="stat"><div class="v">'+noOwner+'</div><div class="l">Bez wykonawcy</div></div>';
+  document.getElementById('progbar').style.width=(done/tot*100)+'%';
+}
+window.tog=(id)=>{open[id]=!open[id];render();};
+window.setDoneOne=(id,v)=>{state[id]=state[id]||{};state[id].done=v;save();render();};
+window.setP=(id,kind,v)=>{state[id]=state[id]||{};state[id][kind]=v;save();render();};
+window.setCmt=(id,v)=>{state[id]=state[id]||{};state[id].cmt=v;save();};
+window.setPr=(p)=>{fPr=p;render();};
+window.setDone=(d)=>{fDone=d;render();};
+window.tCnb=()=>{fCnb=!fCnb;render();};
+window.setEx=(e)=>{fExec=(fExec===e?'all':e);render();};
+
+document.getElementById('exportBtn').onclick=()=>{
+  const blob=new Blob([JSON.stringify({state:state,exported:new Date().toISOString()},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='glov_zadania360_stan_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+};
+document.getElementById('importBtn').onclick=()=>document.getElementById('importFile').click();
+document.getElementById('importFile').onchange=(e)=>{
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);state=d.state||d;save();render();alert('Stan wczytany ✓');}catch(err){alert('Błąd pliku');}};
+  r.readAsText(f);
+};
+render();
+</script>
+</body></html>
