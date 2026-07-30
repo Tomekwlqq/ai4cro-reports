@@ -818,6 +818,8 @@ const ART_RAW={"25":{"t":"Dostałem pozwolenie na broń — co teraz? Kompletny 
 function decodeArt(b64){ try{ return decodeURIComponent(escape(atob(b64))); }catch(e){ return "<p>Błąd dekodowania treści.</p>"; } }
 const ARTICLES={};
 for(var aid in ART_RAW){ ARTICLES[aid]={title:ART_RAW[aid].t, html:decodeArt(ART_RAW[aid].b)}; }
+const ORIG_BASE="https://tomekwlqq.github.io/eel-reports/sejfzone-blog/";
+const ORIG_FILES={30:"art_30_certyfikat_s1_szafa.html",31:"art_31_ranking_szaf_na_bron.html",34:"art_34_rozmiar_szafy_na_bron.html",38:"art_38_zamek_szafa_na_bron.html",40:"art_40_montaz_szafy_na_bron.html"};
 
 /* ===== INDEKS WYNIKÓW SKANU (scan_links.py → DATA) ===== */
 const DATA_SCAN={};
@@ -1898,7 +1900,7 @@ function render(){
       +'<td><b>'+r.ind+'</b></td>'
       +'<td>'+rCellT(r)+'</td>'+'<td>'+rCellB(r)+'</td>'+'<td>'+rLinkBadge(r)+'</td>'
       +'<td style="font-size:12px;color:#667">'+resc(r.sc)+'</td>'
-      +'<td style="width:100px;text-align:center;vertical-align:middle;padding:6px 4px">'+((r.lk&&r.lk.blog_url)?(r.lk&&r.lk.thumb_url?'<a href="'+r.lk.blog_url+'" target="_blank"><img src="'+r.lk.thumb_url+'" style="width:88px;height:55px;object-fit:cover;border-radius:3px;display:block;margin:0 auto 5px" loading="lazy"></a>':'')+'<a href="'+r.lk.blog_url+'" target="_blank" style="font-size:11px;font-weight:700;color:#1A6EF4;text-decoration:none;white-space:nowrap">sejfzone →</a>':'')+'</td>'
+      +'<td style="width:100px;text-align:center;vertical-align:middle;padding:6px 4px">'+((r.lk&&r.lk.blog_url)?(r.lk&&r.lk.thumb_url?'<a href="'+r.lk.blog_url+'" target="_blank"><img src="'+r.lk.thumb_url+'" style="width:88px;height:55px;object-fit:cover;border-radius:3px;display:block;margin:0 auto 5px" loading="lazy"></a>':'')+'<a href="'+r.lk.blog_url+'" target="_blank" style="font-size:11px;font-weight:700;color:#1A6EF4;text-decoration:none;white-space:nowrap">sejfzone →</a>':'')+(ORIG_FILES[+r.nr]?'<br><a href="'+ORIG_BASE+ORIG_FILES[+r.nr]+'" target="_blank" style="font-size:11px;font-weight:600;color:#667;text-decoration:none;white-space:nowrap">📄 oryginał</a>':'')+'</td>'
       +'<td class="ttl">'+ttl+'</td>'
       +'<td><button class="bgbtn" data-id="'+resc(r.id)+'" title="Brief graficzny">🖼️</button></td></tr>';
   }).join('') || '<tr><td colspan="11" style="color:var(--mut);padding:16px">Brak wyników.</td></tr>';
@@ -2070,6 +2072,7 @@ function renderArticles(){
     return card(r,'<div style="display:flex;flex-direction:column;gap:6px;margin-top:6px">'
       +'<button class="minibtn ok artprev" data-nr="'+r.nr+'" data-kl="'+r.kl+'" style="width:100%">👁 Podgląd HTML</button>'
       +'<button class="minibtn ok artcopy" data-nr="'+r.nr+'" data-kl="'+r.kl+'" style="width:100%">📋 Kopiuj do wklejenia</button>'
+      +(ORIG_FILES[+r.nr]?'<a href="'+ORIG_BASE+ORIG_FILES[+r.nr]+'" target="_blank" class="minibtn ok" style="width:100%;display:block;text-align:center;text-decoration:none;color:#456;font-weight:600">📄 Oryginał engine</a>':'')
       +'</div>');
   });
   const cAkc=col("✅ Do akceptu",doAkceptu,"#1A6EF4",r=>{
@@ -2083,7 +2086,8 @@ function renderArticles(){
     const fromRows=r.st==="LIVE"; // artykuły z ROWS.st=LIVE dostaną fallback daty
     const d=deployDate(r,fromRows);
     return card(r,(d?'<div style="font-size:10.5px;color:#667;margin-bottom:4px">wdrożony: '+d+'</div>':'')
-      +(burl?'<a href="'+burl+'" target="_blank" style="display:inline-block;font-size:11px;font-weight:700;color:#1A6EF4;text-decoration:none;white-space:nowrap">sejfzone →</a>':'<span style="font-size:11px;color:#aab">brak linku</span>'));
+      +(burl?'<a href="'+burl+'" target="_blank" style="display:inline-block;font-size:11px;font-weight:700;color:#1A6EF4;text-decoration:none;white-space:nowrap">sejfzone →</a>':'<span style="font-size:11px;color:#aab">brak linku</span>')
+      +(ORIG_FILES[+r.nr]?'<br><a href="'+ORIG_BASE+ORIG_FILES[+r.nr]+'" target="_blank" style="font-size:11px;font-weight:600;color:#667;text-decoration:none">📄 oryginał engine</a>':''));
   });
   document.getElementById("kanban").innerHTML=cLive+cWdr+cAkc+cNext;
   // generator paczki
