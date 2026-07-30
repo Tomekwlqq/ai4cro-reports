@@ -1,0 +1,1100 @@
+<!DOCTYPE html><html lang="pl" data-theme="light"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLOV — Brief pomiarowy dla wykonawcy (30.07.2026)</title>
+<style>
+[data-theme="light"]{
+  --bg:#ffffff; --bg2:#f7f7f8; --card:#ffffff; --line:#e6e6e9; --line2:#ededf0;
+  --txt:#0a0a0a; --txt2:#6b6b76; --muted:#9a9aa5;
+  --accent:#7c5cff; --black:#0a0a0a; --green:#16a34a; --star:#f5a623;
+  --red:#dc2626; --amber:#d97706; --blue:#0f7ae5;
+  --shadow:0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-h:0 8px 24px rgba(0,0,0,.10);
+  --codebg:#f5f5f7; --codeline:#e6e6e9;
+}
+[data-theme="dark"]{
+  --bg:#0f1115; --bg2:#181b22; --card:#181b22; --line:#2a2f3a; --line2:#23272f;
+  --txt:#e8eaed; --txt2:#9aa0aa; --muted:#6b7280;
+  --accent:#7c5cff; --black:#e8eaed; --green:#3ecf8e; --star:#f5a623;
+  --red:#f87171; --amber:#fbbf24; --blue:#4da3ff;
+  --shadow:0 1px 3px rgba(0,0,0,.3); --shadow-h:0 8px 24px rgba(0,0,0,.5);
+  --codebg:#12151b; --codeline:#2a2f3a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,sans-serif;line-height:1.55;transition:background .3s,color .3s}
+.wrap{max-width:1000px;margin:0 auto;padding:0 22px 80px}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:20}
+.logo{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.logo span{color:var(--accent)}
+.topnav{display:flex;align-items:center;gap:18px;font-size:13px;color:var(--txt2)}
+.topnav a{color:var(--txt2);text-decoration:none}.topnav a:hover{color:var(--txt)}
+.theme-btn{background:var(--bg2);border:1px solid var(--line);border-radius:10px;width:38px;height:38px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:.15s;color:var(--txt)}
+.theme-btn:hover{border-color:var(--accent)}
+
+.hero{padding:46px 0 26px;border-bottom:1px solid var(--line)}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--txt2);background:var(--bg2);border:1px solid var(--line);padding:5px 13px;border-radius:30px;margin-bottom:18px}
+.badge .dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+h1{font-size:42px;font-weight:800;letter-spacing:-1.5px;line-height:1.1}
+@media(max-width:640px){h1{font-size:30px}}
+.hero .lead{font-size:16px;color:var(--txt2);max-width:760px;margin-top:16px}
+.hero .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.pill{font-size:12px;padding:5px 13px;border-radius:30px;background:var(--bg2);color:var(--txt2);border:1px solid var(--line)}
+
+h2.sec{font-size:24px;font-weight:800;letter-spacing:-.7px;margin:52px 0 8px;scroll-margin-top:80px}
+.secsub{font-size:14.5px;color:var(--txt2);margin-bottom:22px;max-width:820px}
+
+/* cele */
+.goals{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+@media(max-width:820px){.goals{grid-template-columns:1fr}}
+.goal{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow);position:relative}
+.goal .num{width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;margin-bottom:13px}
+.goal h3{font-size:16px;font-weight:750;margin-bottom:8px;letter-spacing:-.2px}
+.goal p{font-size:13.5px;color:var(--txt2);line-height:1.6}
+.goal .now{margin-top:12px;padding-top:11px;border-top:1px solid var(--line2);font-size:12.5px;color:var(--txt2)}
+.goal .now b{color:var(--red)}
+
+/* tabela faktów */
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px}
+th{text-align:left;padding:11px 12px;background:var(--bg2);border-bottom:1px solid var(--line);font-weight:700;font-size:12.5px;color:var(--txt2);text-transform:uppercase;letter-spacing:.3px}
+td{padding:11px 12px;border-bottom:1px solid var(--line2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+.ok{color:var(--green);font-weight:700}
+.bad{color:var(--red);font-weight:700}
+.warn{color:var(--amber);font-weight:700}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:var(--codebg);border:1px solid var(--codeline);padding:1.5px 6px;border-radius:5px}
+pre{background:var(--codebg);border:1px solid var(--codeline);border-radius:12px;padding:16px;overflow-x:auto;margin:12px 0;font-size:12.5px;line-height:1.6}
+pre code{background:none;border:none;padding:0}
+
+/* zadania */
+.task{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:0;margin-bottom:20px;box-shadow:var(--shadow);overflow:hidden}
+.task-head{padding:20px 24px;border-bottom:1px solid var(--line2);display:flex;align-items:flex-start;gap:14px;background:var(--bg2)}
+.task-id{font-size:12px;font-weight:800;background:var(--accent);color:#fff;padding:4px 10px;border-radius:7px;flex-shrink:0;letter-spacing:.3px}
+.task-id.p0{background:var(--red)}
+.task-id.p1{background:var(--amber)}
+.task-id.p2{background:var(--txt2)}
+.task-head h3{font-size:18px;font-weight:750;letter-spacing:-.3px;flex:1;line-height:1.35}
+.task-body{padding:6px 24px 22px}
+.task h4{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--txt2);margin:20px 0 9px}
+.task h4:first-child{margin-top:18px}
+.task p{font-size:14px;line-height:1.65;margin-bottom:9px}
+.task ul,.task ol{margin:8px 0 8px 22px;font-size:14px;line-height:1.7}
+.task li{margin-bottom:6px}
+.repro{background:rgba(22,163,74,.07);border:1px solid rgba(22,163,74,.25);border-radius:12px;padding:15px 18px;margin-top:8px}
+.repro h4{margin-top:0;color:var(--green)}
+.repro p,.repro li{font-size:13.5px}
+.effect{background:rgba(124,92,255,.07);border:1px solid rgba(124,92,255,.25);border-radius:12px;padding:15px 18px;margin-top:14px}
+.effect h4{margin-top:0;color:var(--accent)}
+.effect p{font-size:13.5px;margin-bottom:0}
+.tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line2)}
+.t{font-size:11px;padding:4px 10px;border-radius:7px;font-weight:600;background:var(--bg2);color:var(--txt2);border:1px solid var(--line2)}
+.t.acc{background:rgba(124,92,255,.1);color:var(--accent);border-color:transparent}
+.t.grn{background:rgba(22,163,74,.1);color:var(--green);border-color:transparent}
+.t.red{background:rgba(220,38,38,.1);color:var(--red);border-color:transparent}
+
+/* callout */
+.callout{border-left:3px solid var(--accent);background:var(--bg2);border-radius:0 12px 12px 0;padding:16px 20px;margin:18px 0;font-size:14px;line-height:1.65}
+.callout.red{border-left-color:var(--red)}
+.callout.green{border-left-color:var(--green)}
+.callout b{font-weight:700}
+
+/* nie robić */
+.dont{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin-bottom:14px;box-shadow:var(--shadow)}
+.dont h3{font-size:15.5px;font-weight:750;margin-bottom:8px;color:var(--red);letter-spacing:-.2px}
+.dont p{font-size:13.5px;color:var(--txt2);line-height:1.65;margin-bottom:6px}
+.dont p:last-child{margin-bottom:0}
+.dont .verdict{font-size:13px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line2);color:var(--txt)}
+
+/* spis */
+.toc{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:22px 26px;margin:26px 0}
+.toc h3{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--txt2);margin-bottom:14px}
+.toc ol{margin-left:20px;font-size:14.5px;line-height:2}
+.toc a{color:var(--txt);text-decoration:none;border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* truth checker */
+.tc{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:28px 30px;margin-top:44px}
+.tc h2{font-size:19px;font-weight:800;letter-spacing:-.4px;margin-bottom:6px}
+.tc .tcsub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.tc h4{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--txt2);margin:18px 0 7px}
+.tc ul{margin-left:20px;font-size:13.5px;line-height:1.75}
+.tc li{margin-bottom:5px}
+
+footer{margin-top:50px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);text-align:center;line-height:1.8}
+</style></head><body>
+
+<div class="wrap">
+
+<div class="topbar">
+  <div class="logo">GLOV<span>.</span> brief pomiarowy</div>
+  <div class="topnav">
+    <a href="GLOV_HUB.html">← HUB</a>
+    <button class="theme-btn" id="tb" title="Tryb jasny/ciemny">🌙</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="badge"><span class="dot"></span> Wersja zweryfikowana na danych · 30.07.2026</div>
+  <h1>Co ma zacząć mierzyć glov.co</h1>
+  <p class="lead">
+    Brief dla wykonawcy technicznego. Dokument opisuje <b>trzy rzeczy, które chcemy osiągnąć</b>,
+    pokazuje na liczbach <b>gdzie dziś pomiar się urywa</b>, i daje konkretne zadania z testem odbioru.
+    Każda liczba w tym dokumencie została sprawdzona zapytaniem do GA4 w dniu 30.07.2026 — to nie są szacunki branżowe.
+  </p>
+  <div class="meta">
+    <span class="pill">GA4 property 342844459</span>
+    <span class="pill">GTM-PQ9JFT2</span>
+    <span class="pill">Shopify (plan podstawowy, nie Plus)</span>
+    <span class="pill">Okres danych: 30 dni do 29.07.2026</span>
+  </div>
+</div>
+
+<h2 class="sec">Po co to robimy — trzy cele</h2>
+<p class="secsub">
+  To jest sedno briefu. Wszystkie zadania niżej służą wyłącznie tym trzem celom.
+  Jeżeli jakieś zadanie nie posuwa żadnego z nich — nie robimy go.
+</p>
+
+<div class="goals">
+  <div class="goal">
+    <div class="num">1</div>
+    <h3>Prześledzić ścieżkę zakupową od początku do końca</h3>
+    <p>
+      Chcemy umieć odpowiedzieć: <i>klient zobaczył produkt na liście X, kliknął w niego,
+      dodał do koszyka i kupił</i> — jako jeden ciągły łańcuch. Dziś łańcuch rwie się
+      w połowie i nie wiemy, która lista i który obszar strony faktycznie robi sprzedaż.
+    </p>
+    <div class="now">Stan: <b>łańcuch przerwany na dodaniu do koszyka</b></div>
+  </div>
+  <div class="goal">
+    <div class="num">2</div>
+    <h3>Uporządkować UTM-y, żeby każde źródło ruchu było rozpoznane</h3>
+    <p>
+      Chcemy, żeby każda kampania, mailing i partner miały jednolite oznaczenie w linku —
+      i żeby GA4 samo wrzucało je do właściwego kanału, bez ręcznego zgadywania kto to był.
+    </p>
+    <div class="now">Stan: <b>5 różnych konwencji naraz</b></div>
+  </div>
+  <div class="goal">
+    <div class="num">3</div>
+    <h3>Zakwalifikować ruch „nieprzypisany" i „bezpośredni"</h3>
+    <p>
+      Chcemy wiedzieć, kto naprawdę siedzi w workach <code>Unassigned</code> i <code>Direct</code>.
+      Nie po to, żeby worek zniknął z raportu — po to, żeby przypisać sprzedaż do źródła, które ją wygenerowało.
+    </p>
+    <div class="now">Stan: <b>Direct = 41% sesji</b></div>
+  </div>
+</div>
+
+<div class="toc">
+  <h3>Zadania — kolejność wykonania</h3>
+  <ol>
+    <li><a href="#z1">Z1 · Przenieść nazwę listy do koszyka i zakupu</a> — <b>cel 1</b>, priorytet najwyższy</li>
+    <li><a href="#z2">Z2 · Dodać kontekst „gdzie kliknięto" do dodania do koszyka</a> — <b>cel 1</b></li>
+    <li><a href="#z3">Z3 · Oeventować karuzele na stronie głównej</a> — <b>cel 1</b></li>
+    <li><a href="#z4">Z4 · Standard UTM dla wszystkich źródeł</a> — <b>cel 2</b></li>
+    <li><a href="#z5">Z5 · Grupa kanałów dla partnerów i mailingu</a> — <b>cel 3</b></li>
+    <li><a href="#z6">Z6 · Śledztwo: skąd skok Direct od 15 czerwca</a> — <b>cel 3</b>, pilne</li>
+    <li><a href="#z7">Z7 · „Gubiony landing page" — co to właściwie jest</a> — <b>cel 3</b></li>
+    <li><a href="#z8">Z8 · 45 tysięcy błędów JavaScript miesięcznie</a> — tło, ale realne</li>
+  </ol>
+  <p style="font-size:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)">
+    Dalej, poza zakresem prac technicznych: <a href="#reko" style="color:var(--accent);font-weight:700;text-decoration:none">📈 Rekomendacja — po co nam to naprawdę</a>
+    (4 znaleziska z połączenia danych o popycie w Google z danymi ze sklepu)
+  </p>
+</div>
+
+<h2 class="sec">Stan faktyczny — co sprawdziliśmy w GA4</h2>
+<p class="secsub">
+  Zanim zlecimy cokolwiek, ustalamy punkt wyjścia. Poniższe liczby pochodzą z zapytań do GA4 API
+  z 30.07.2026, okres 30 dni. To jest baza, względem której będziemy odbierać pracę.
+</p>
+
+<div class="tblwrap">
+<table>
+  <thead><tr><th>Element pomiaru</th><th>Stan</th><th>Liczba (30 dni)</th><th>Komentarz</th></tr></thead>
+  <tbody>
+    <tr><td>Zdarzenia e-commerce (komplet)</td><td class="ok">✔ działa</td><td>10 typów zdarzeń</td><td>Od <code>view_item_list</code> po <code>purchase</code> — wszystko leci. Nie trzeba budować od zera.</td></tr>
+    <tr><td>Wyświetlenia list produktowych</td><td class="ok">✔ działa</td><td>148 835</td><td>Z nazwą listy, np. <code>/collections/coolnails</code></td></tr>
+    <tr><td>Kliknięcia w produkt z listy</td><td class="ok">✔ działa</td><td>6 435</td><td>Z nazwą listy — wiemy skąd klik</td></tr>
+    <tr><td>Wyświetlenia karty produktu</td><td class="ok">✔ działa</td><td>41 523</td><td>Z pełnym adresem strony</td></tr>
+    <tr><td><b>Dodania do koszyka z nazwą listy</b></td><td class="bad">✘ zero</td><td><b>0</b></td><td><b>Tu rwie się ścieżka.</b> Wiemy że dodano, nie wiemy skąd</td></tr>
+    <tr><td><b>Zakupy z nazwą listy</b></td><td class="bad">✘ zero</td><td><b>0</b></td><td>Nie da się powiedzieć, która lista sprzedaje</td></tr>
+    <tr><td><b>Adres strony przy dodaniu do koszyka</b></td><td class="bad">✘ pusty</td><td>0 z 5 531</td><td>Puste jest też <code>pageTitle</code> i <code>hostName</code> — zero kontekstu</td></tr>
+    <tr><td>Karuzele na stronie głównej</td><td class="bad">✘ brak</td><td>—</td><td>Strona główna nie występuje w ogóle jako lista produktowa</td></tr>
+    <tr><td>Ruch <code>Unassigned</code></td><td class="warn">⚠ mały</td><td>1 693 (3,7%)</td><td>Mniejszy problem niż zakładaliśmy — patrz Z5</td></tr>
+    <tr><td>Ruch <code>Direct</code></td><td class="bad">✘ spuchł</td><td>19 069 (41,4%)</td><td>Skok 4,5× w połowie czerwca — patrz Z6</td></tr>
+    <tr><td>Błędy JavaScript</td><td class="bad">✘ dużo</td><td>45 131</td><td>Prawie tyle co sesji — patrz Z8</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout green">
+  <b>Dobra wiadomość na start:</b> fundament stoi. Sklep ma pełny zestaw zdarzeń e-commerce,
+  łącznie z checkoutem (<code>begin_checkout</code> 1 781, <code>add_shipping_info</code> 1 430,
+  <code>add_payment_info</code> 1 196, <code>purchase</code> 1 131). Nie zamawiamy wdrożenia od zera —
+  zamawiamy <b>połączenie tego, co już jest, w jeden ciągły łańcuch</b> i uzupełnienie brakującego kontekstu.
+</div>
+
+<h2 class="sec" id="cel1">Cel 1 · Ścieżka zakupowa — najważniejsze</h2>
+<p class="secsub">
+  Chcemy zobaczyć drogę klienta jako całość: <b>lista → klik → karta produktu → koszyk → zakup</b>.
+  Dziś GA4 widzi pierwsze trzy kroki i ostatnie dwa, ale nie potrafi ich ze sobą połączyć.
+</p>
+
+<div class="task" id="z1">
+  <div class="task-head">
+    <span class="task-id p0">Z1 · P0</span>
+    <h3>Przenieść nazwę listy produktowej do zdarzeń „dodanie do koszyka" i „zakup"</h3>
+  </div>
+  <div class="task-body">
+    <h4>Co chcemy osiągnąć</h4>
+    <p>
+      Chcemy umieć zadać raportowi pytanie: <i>„ile sprzedaży zrobiła kolekcja Coolnails,
+      a ile lista główna /collections/sklep?"</i> — i dostać odpowiedź.
+      Dziś to pytanie jest bez odpowiedzi, bo informacja o liście gubi się w momencie dodania produktu do koszyka.
+    </p>
+
+    <h4>Dlaczego to jest problem</h4>
+    <p>
+      GA4 przypina nazwę listy (<code>item_list_name</code>) do produktu w momencie wyświetlenia i kliknięcia,
+      ale nie przenosi jej dalej. Efekt w liczbach — dla <b>każdej bez wyjątku</b> listy w sklepie:
+    </p>
+    <div class="tblwrap">
+    <table>
+      <thead><tr><th>Lista</th><th>Produktów wyświetlonych</th><th>Kliknięć</th><th>CTR</th><th>Dodań do koszyka</th></tr></thead>
+      <tbody>
+        <tr><td><code>/collections/sklep</code></td><td>234 929</td><td>2 413</td><td>1,03%</td><td class="bad">0</td></tr>
+        <tr><td><code>/collections/coolnails</code></td><td>13 293</td><td>719</td><td class="ok">5,41%</td><td class="bad">0</td></tr>
+        <tr><td><code>/collections/nano-glass-collection</code></td><td>1 168</td><td>125</td><td class="ok">10,70%</td><td class="bad">0</td></tr>
+        <tr><td><code>/collections/produkty-do-pielegnacji-wlosow</code></td><td>24 314</td><td>552</td><td>2,27%</td><td class="bad">0</td></tr>
+        <tr><td><code>/collections/zestawy</code></td><td>5 536</td><td>88</td><td>1,59%</td><td class="bad">0</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="margin-top:12px">
+      Zwróćcie uwagę na kolumnę CTR — już teraz widać, że kolekcje tematyczne konwertują
+      <b>5–10× lepiej niż lista główna</b>. To jest dokładnie ten rodzaj wniosku, którego chcemy więcej,
+      tylko doprowadzonego do końca łańcucha: do koszyka i do złotówek.
+    </p>
+
+    <h4>Co dokładnie zrobić</h4>
+    <ol>
+      <li>
+        <b>Ustalić, skąd wychodzą zdarzenia koszykowe.</b> Dane wskazują, że <code>add_to_cart</code>,
+        <code>begin_checkout</code> i <code>purchase</code> nie są wysyłane przez Google Tag Manager
+        ze strony, tylko innym kanałem (najprawdopodobniej Shopify Customer Events / Web Pixel).
+        Dowód: te zdarzenia mają puste <code>pagePath</code>, <code>pageTitle</code> <b>oraz</b> <code>hostName</code> —
+        tag działający w przeglądarce zawsze zna przynajmniej nazwę hosta.
+        <br><i>Do potwierdzenia w:</i> Shopify Admin → Ustawienia → Zdarzenia klienta (Customer events) —
+        sprawdzić, czy jest tam własny piksel wysyłający do GA4.
+      </li>
+      <li>
+        <b>Zapamiętać listę w momencie kliknięcia w produkt.</b> Gdy użytkownik klika produkt na liście
+        (zdarzenie <code>select_item</code>), zapisać parę <code>id produktu → nazwa listy</code>
+        w pamięci sesji przeglądarki.
+      </li>
+      <li>
+        <b>Doklejać zapamiętaną listę przy dodaniu do koszyka i przy zakupie.</b> W momencie wysyłania
+        <code>add_to_cart</code> oraz <code>purchase</code> odczytać zapisaną wartość i dołożyć
+        <code>item_list_name</code> (oraz <code>item_list_id</code>) do każdego produktu w tablicy <code>items</code>.
+      </li>
+      <li>
+        <b>Obsłużyć przypadek braku listy.</b> Jeśli klient wszedł na kartę produktu prosto z reklamy
+        i nie było żadnej listy — wpisać wartość jawną, np. <code>direct_pdp</code>. Nie zostawiać pustego pola.
+      </li>
+    </ol>
+
+    <h4>Warunki i uwagi</h4>
+    <ul>
+      <li>
+        <b>To nie jest zadanie do zrobienia w samym GTM.</b> Skoro zdarzenia koszykowe nie mają kontekstu strony,
+        zmienna typu „ścieżka URL" w GTM nie ma czego odczytać. Poprawka musi trafić tam, skąd te zdarzenia realnie wychodzą.
+      </li>
+      <li>
+        Sklep jest na <b>zwykłym planie Shopify, nie Plus</b> — plik <code>checkout.liquid</code> nie jest dostępny.
+        Ingerencja w checkout możliwa wyłącznie przez Customer Events (Web Pixel).
+      </li>
+      <li>
+        Jeżeli piksel działa w piaskownicy (sandbox), dostęp do pamięci przeglądarki jest tam asynchroniczny —
+        wykonawca powinien to uwzględnić i potwierdzić, że odczyt zdąży przed wysłaniem zdarzenia.
+      </li>
+      <li>
+        <code>item_list_name</code> to <b>standardowy parametr GA4</b> — nie wymaga rejestrowania
+        własnego wymiaru. Zadziała w raportach od razu po poprawnym wysłaniu.
+      </li>
+    </ul>
+
+    <div class="repro">
+      <h4>Jak zweryfikować (test odbioru)</h4>
+      <ol>
+        <li>Wejść na <code>/collections/coolnails</code>, kliknąć dowolny produkt, dodać do koszyka, złożyć zamówienie testowe.</li>
+        <li>W GA4 → DebugView sprawdzić, czy <code>add_to_cart</code> i <code>purchase</code> niosą <code>item_list_name = /collections/coolnails</code>.</li>
+        <li>Po 24 h uruchomić raport: wymiar <code>Item list name</code> + metryki <code>Items added to cart</code> i <code>Items purchased</code>.</li>
+        <li><b>Kryterium odbioru:</b> kolumna „dodane do koszyka" pokazuje wartości większe od zera dla co najmniej 5 różnych list. Dziś dla wszystkich jest 0.</li>
+      </ol>
+    </div>
+
+    <div class="effect">
+      <h4>Co nam to daje</h4>
+      <p>
+        Pierwszy raz będzie można policzyć sprzedaż per lista i per kolekcja — czyli odpowiedzieć,
+        czy warto pchać ruch na listę główną (CTR 1,03%), czy na kolekcje tematyczne (CTR 5–11%).
+        To jest bezpośrednio przekładalne na decyzje o budżecie reklamowym.
+      </p>
+    </div>
+
+    <div class="tags"><span class="t acc">Shopify Customer Events</span><span class="t">GA4</span><span class="t grn">cel 1 — ścieżki</span></div>
+  </div>
+</div>
+
+<div class="task" id="z2">
+  <div class="task-head">
+    <span class="task-id p0">Z2 · P0</span>
+    <h3>Dodać kontekst „gdzie kliknięto" do dodania do koszyka</h3>
+  </div>
+  <div class="task-body">
+    <h4>Co chcemy osiągnąć</h4>
+    <p>
+      Chcemy wiedzieć, <b>z jakiego miejsca</b> klient dodał produkt do koszyka: z karty produktu,
+      z szybkiego dodawania na liście, z karuzeli na stronie głównej, czy z propozycji w koszyku.
+      To dwie różne informacje niż w zadaniu Z1: tam chodzi o <i>listę pochodzenia produktu</i>,
+      tutaj o <i>fizyczne miejsce kliknięcia</i>.
+    </p>
+
+    <h4>Dlaczego to jest problem</h4>
+    <p>
+      Wszystkie 5 531 dodań do koszyka z ostatnich 30 dni ma pusty adres strony —
+      dosłownie 100%, bez jednego wyjątku. Nie da się rozróżnić dodania z karty produktu
+      od szybkiego dodania z kafelka na liście. A to są dwa zupełnie różne zachowania zakupowe:
+      pierwsze poprzedza czytanie opisu, drugie jest impulsem.
+    </p>
+
+    <h4>Co dokładnie zrobić</h4>
+    <ol>
+      <li>
+        Do zdarzenia <code>add_to_cart</code> dołożyć dwa własne parametry:
+        <ul>
+          <li><code>atc_url</code> — pełny adres strony, na której nastąpiło kliknięcie</li>
+          <li><code>atc_area</code> — nazwa obszaru: <code>pdp_main</code>, <code>listing_quickadd</code>,
+              <code>home_carousel</code>, <code>cart_upsell</code>, <code>bundle</code></li>
+        </ul>
+      </li>
+      <li>
+        Wartość <code>atc_area</code> ustalać po <b>sekcji Shopify</b>, w której leży kliknięty przycisk
+        (motywy Shopify oznaczają sekcje identyfikatorem <code>shopify-section-*</code>) —
+        nie po samym adresie URL. Sam adres nie odróżni karuzeli od siatki produktów na tej samej stronie.
+      </li>
+      <li>
+        Zarejestrować oba parametry w GA4: Administracja → Definicje niestandardowe →
+        Utwórz wymiar niestandardowy, zakres „zdarzenie". <b>Bez tego kroku parametry lecą, ale są niewidoczne w raportach.</b>
+      </li>
+    </ol>
+
+    <h4>Warunki i uwagi</h4>
+    <ul>
+      <li>
+        Lista dozwolonych wartości <code>atc_area</code> musi być <b>zamknięta i uzgodniona przed wdrożeniem</b>.
+        Otwarta lista skończy się kilkudziesięcioma wariantami tej samej nazwy i wymiar będzie bezużyteczny.
+      </li>
+      <li>
+        W GA4 obowiązuje limit 50 wymiarów niestandardowych o zakresie zdarzenia — obecnie wykorzystany jest 1,
+        więc miejsca jest pod dostatkiem.
+      </li>
+    </ul>
+
+    <div class="repro">
+      <h4>Jak zweryfikować (test odbioru)</h4>
+      <ol>
+        <li>Dodać ten sam produkt do koszyka trzema drogami: z karty produktu, z listy (szybkie dodawanie), z karuzeli na stronie głównej.</li>
+        <li>W DebugView sprawdzić, że trzy zdarzenia <code>add_to_cart</code> mają trzy <b>różne</b> wartości <code>atc_area</code> i poprawne <code>atc_url</code>.</li>
+        <li><b>Kryterium odbioru:</b> w raporcie po 24 h wymiar <code>atc_area</code> ma co najmniej 3 różne wartości, a udział pustych wynosi poniżej 5%.</li>
+      </ol>
+    </div>
+
+    <div class="effect">
+      <h4>Co nam to daje</h4>
+      <p>
+        Odpowiedź, czy szybkie dodawanie z listy pomaga, czy szkodzi — i czy karuzele na stronie głównej
+        w ogóle zarabiają. Dziś obie te rzeczy są niewidoczne.
+      </p>
+    </div>
+
+    <div class="tags"><span class="t acc">Shopify Customer Events</span><span class="t">GA4 wymiary</span><span class="t grn">cel 1 — ścieżki</span></div>
+  </div>
+</div>
+
+<div class="task" id="z3">
+  <div class="task-head">
+    <span class="task-id p1">Z3 · P1</span>
+    <h3>Oeventować karuzele i polecane produkty na stronie głównej</h3>
+  </div>
+  <div class="task-body">
+    <h4>Co chcemy osiągnąć</h4>
+    <p>
+      Strona główna ma być mierzona tak samo jak kolekcja — chcemy wiedzieć,
+      ile osób zobaczyło produkty w karuzeli, ile kliknęło i ile z tego kupiło.
+    </p>
+
+    <h4>Dlaczego to jest problem</h4>
+    <p>
+      W zestawieniu wszystkich list produktowych z 30 dni (94 pozycje) <b>nie ma ani jednej pozycji
+      dla strony głównej</b>. Są wszystkie kolekcje, są nawet wersje językowe <code>/en-eu/</code>,
+      ale strony głównej nie ma. To znaczy, że karuzele i sekcje polecanych produktów na stronie głównej
+      nie wysyłają zdarzenia <code>view_item_list</code> w ogóle.
+    </p>
+    <p>
+      Widać to też w innym miejscu: kliknięć w produkt z listy jest 6 435,
+      a wyświetleń kart produktu 41 523. Większość wejść na kartę produktu przychodzi drogą,
+      której nie mierzymy.
+    </p>
+
+    <h4>Co dokładnie zrobić</h4>
+    <ol>
+      <li>Dla każdej sekcji produktowej na stronie głównej wysyłać <code>view_item_list</code> w momencie, gdy sekcja pojawi się w polu widzenia użytkownika.</li>
+      <li>Nadać sekcjom czytelne, stałe nazwy list — np. <code>home_bestsellery</code>, <code>home_nowosci</code>, <code>home_polecane</code>. Nie adres URL, bo dla każdej sekcji byłby identyczny.</li>
+      <li>Przy kliknięciu w produkt z takiej sekcji wysyłać <code>select_item</code> z tą samą nazwą listy.</li>
+      <li>To samo zastosować do sekcji „podobne produkty" i „klienci kupili także" na kartach produktów.</li>
+    </ol>
+
+    <div class="repro">
+      <h4>Jak zweryfikować (test odbioru)</h4>
+      <ol>
+        <li>Wejść na stronę główną, przewinąć do każdej sekcji produktowej, kliknąć jeden produkt.</li>
+        <li><b>Kryterium odbioru:</b> w raporcie „nazwa listy produktów" pojawiają się pozycje <code>home_*</code> z niezerowymi wyświetleniami i kliknięciami. Dziś nie ma ich wcale.</li>
+      </ol>
+    </div>
+
+    <div class="tags"><span class="t acc">motyw Shopify</span><span class="t">GTM</span><span class="t grn">cel 1 — ścieżki</span></div>
+  </div>
+</div>
+
+<h2 class="sec" id="cel2">Cel 2 · Porządek w UTM-ach</h2>
+<p class="secsub">
+  Chcemy jednej konwencji oznaczania linków dla wszystkich źródeł ruchu — żeby GA4 samo
+  wrzucało ruch do właściwego kanału i żeby nikt nie musiał zgadywać, co znaczy dany wpis.
+</p>
+
+<div class="task" id="z4">
+  <div class="task-head">
+    <span class="task-id p1">Z4 · P1</span>
+    <h3>Wprowadzić jeden standard UTM i poprawić źródła, które go łamią</h3>
+  </div>
+  <div class="task-body">
+    <h4>Co chcemy osiągnąć</h4>
+    <p>
+      Każdy link prowadzący do sklepu — z mailingu, od partnera, z kodu QR na opakowaniu, z artykułu prasowego —
+      ma być oznaczony według tej samej konwencji. Wtedy GA4 rozpoznaje go automatycznie
+      i nie ląduje on w worku „nieprzypisane".
+    </p>
+
+    <h4>Dlaczego to jest problem</h4>
+    <p>
+      Sprawdziliśmy zawartość worka <code>Unassigned</code> — poza sesjami bez żadnego źródła
+      siedzą tam wyłącznie źródła z niestandardowym oznaczeniem kanału:
+    </p>
+    <div class="tblwrap">
+    <table>
+      <thead><tr><th>Źródło</th><th>Oznaczenie kanału (utm_medium)</th><th>Sesje</th><th>Dlaczego wypada</th></tr></thead>
+      <tbody>
+        <tr><td>tradetracker</td><td><code>afiliacja</code></td><td>136</td><td>GA4 nie zna słowa „afiliacja"</td></tr>
+        <tr><td>newsletter</td><td><i>puste</i></td><td>130</td><td>Brak oznaczenia kanału</td></tr>
+        <tr><td>newsletter</td><td><code>mailing</code></td><td>40</td><td>GA4 rozpoznaje <code>email</code>, nie <code>mailing</code></td></tr>
+        <tr><td>tradetracker</td><td><code>vouchers</code></td><td>21</td><td>oznaczenie własne</td></tr>
+        <tr><td>QR / PACKAGING</td><td><code>packaging</code>, <code>QR</code></td><td>9</td><td>dodatkowo raz wielkimi, raz małymi literami</td></tr>
+        <tr><td>tradetracker</td><td><code>cashback</code>, <code>porownywarka</code></td><td>6</td><td>oznaczenia własne</td></tr>
+        <tr><td>prasa, wydawcy, blog</td><td><code>artykuły</code>, <code>Axel</code>, <code>prezentownik</code></td><td>5</td><td>polskie znaki i nazwy własne</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="margin-top:12px">
+      Osobno: <code>QR/packaging</code> i <code>PACKAGING/QR</code> to <b>to samo źródło zapisane na dwa sposoby</b>,
+      w dodatku z zamienionymi rolami. GA4 rozlicza je jako dwa różne byty.
+    </p>
+
+    <h4>Co dokładnie zrobić</h4>
+    <ol>
+      <li>
+        <b>Przyjąć standard</b> i opisać go w jednym dokumencie dostępnym dla wszystkich, którzy tworzą linki:
+        <pre><code>utm_source  = nazwa konkretnego źródła, małymi literami, bez polskich znaków
+              (meta, google, tradetracker, newsletter, packaging, prasa)
+utm_medium  = TYLKO z zamkniętej listy rozpoznawanej przez GA4:
+              cpc · paid_social · email · affiliate · referral · organic_social · qr
+utm_campaign = nazwa akcji, małymi literami, myślniki zamiast spacji
+utm_content  = wariant kreacji / konkretny link</code></pre>
+      </li>
+      <li>
+        <b>Poprawić u źródła</b> — kolejność wg wielkości:
+        <ul>
+          <li>TradeTracker: <code>utm_medium=affiliate</code> zamiast <code>afiliacja</code>, <code>vouchers</code>, <code>cashback</code>, <code>porownywarka</code>. Typ współpracy przenieść do <code>utm_campaign</code>.</li>
+          <li>Newsletter: <code>utm_medium=email</code> zamiast <code>mailing</code> i zamiast pustego.</li>
+          <li>Kody QR na opakowaniach: jedna wersja, <code>utm_source=packaging</code> + <code>utm_medium=qr</code>. Przy kolejnym druku, starych opakowań nie wycofujemy.</li>
+          <li>Prasa i wydawcy: <code>utm_medium=referral</code>, nazwa wydawcy w <code>utm_source</code>.</li>
+        </ul>
+      </li>
+      <li>
+        <b>Zweryfikować Meta i Google Ads</b> — te akurat są dziś oznaczone poprawnie
+        (Meta trafia do „Paid Social", Google do „Paid Search") i <b>nie należy przy nich nic zmieniać</b>.
+        Sprawdzić tylko, czy nowe kampanie dziedziczą ten sam szablon.
+      </li>
+    </ol>
+
+    <div class="repro">
+      <h4>Jak zweryfikować (test odbioru)</h4>
+      <ol>
+        <li>Raport: wymiary <code>Source</code> / <code>Medium</code>, filtr na kanał <code>Unassigned</code>.</li>
+        <li><b>Kryterium odbioru:</b> po 14 dniach od poprawki w tym raporcie nie ma już pozycji tradetracker ani newsletter. Zostają wyłącznie sesje <code>(not set)/(not set)</code>, którymi zajmuje się zadanie Z6.</li>
+      </ol>
+    </div>
+
+    <div class="tags"><span class="t acc">TradeTracker</span><span class="t">newsletter</span><span class="t">druk / QR</span><span class="t grn">cel 2 — UTM</span></div>
+  </div>
+</div>
+
+<h2 class="sec" id="cel3">Cel 3 · Kwalifikacja ruchu nieprzypisanego</h2>
+<p class="secsub">
+  Uwaga na proporcje: worek <code>Unassigned</code> jest <b>mały</b> (3,7%), a worek <code>Direct</code>
+  jest <b>ogromny</b> (41,4%) i spuchł skokowo w połowie czerwca. Kolejność prac wynika z tych proporcji.
+</p>
+
+<div class="task" id="z5">
+  <div class="task-head">
+    <span class="task-id p2">Z5 · P2</span>
+    <h3>Własna grupa kanałów dla partnerów i mailingu</h3>
+  </div>
+  <div class="task-body">
+    <h4>Co chcemy osiągnąć</h4>
+    <p>
+      Żeby partnerzy afiliacyjni i mailing miały <b>własne, nazwane kanały</b> w raportach —
+      zamiast wpadać do worka „nieprzypisane".
+    </p>
+
+    <h4>Dlaczego to jest problem — i dlaczego mniejszy, niż się wydawało</h4>
+    <p>
+      Ruch <code>Unassigned</code> to dziś <b>1 693 sesje z 46 066, czyli 3,7%</b>.
+      Dla porządku sprawdziliśmy też historię: maj 4,6%, czerwiec 7,8% (jednorazowy tydzień
+      z incydentem: 1–7.06 aż 2 286 sesji), lipiec 3,7%.
+      <b>Nigdy nie było poziomu kilkunastu procent.</b>
+    </p>
+    <p>
+      Skład worka: <b>79% to sesje zupełnie bez źródła</b> (<code>(not set)/(not set)</code>, 1 338 sesji) —
+      tych żadna grupa kanałów nie naprawi, bo nie ma czego grupować; to zadanie Z6.
+      Pozostałe ~21% to partnerzy i mailing z zadania Z4.
+    </p>
+
+    <h4>Co dokładnie zrobić</h4>
+    <ol>
+      <li>Wykonać najpierw Z4 (poprawa u źródła). Grupa kanałów to tylko <b>zabezpieczenie na przeszłość i na wyjątki</b>, nie zamiennik poprawnych UTM-ów.</li>
+      <li>GA4 → Administracja → Grupy kanałów → Utwórz nową (nie modyfikować grupy domyślnej — jest niezmienialna i nie chcemy tracić porównywalności historii).</li>
+      <li>Dodać reguły na <b>realnie występujące</b> źródła:
+        <ul>
+          <li>Afiliacja: <code>source zawiera "tradetracker"</code></li>
+          <li>Newsletter: <code>source zawiera "newsletter"</code></li>
+          <li>Opakowania/QR: <code>source zawiera "packaging" LUB source = "QR"</code></li>
+          <li>PR i wydawcy: <code>source zawiera "prasa" LUB "wydawcy"</code></li>
+        </ul>
+      </li>
+    </ol>
+
+    <div class="callout red">
+      <b>Nie budujemy reguł dla Allegro, TikTok Shop ani Hebe.</b> Wcześniejsza wersja instrukcji
+      wymieniała właśnie te trzy. Sprawdziliśmy zawartość worka <code>Unassigned</code> pozycja po pozycji —
+      <b>żadnego z nich tam nie ma</b>. Reguły dla nieistniejącego ruchu to tylko zaśmiecony panel.
+    </div>
+
+    <div class="repro">
+      <h4>Jak zweryfikować (test odbioru)</h4>
+      <ol>
+        <li>Raport z nową grupą kanałów, okres 30 dni wstecz (grupy kanałów działają wstecz na danych historycznych).</li>
+        <li><b>Kryterium odbioru:</b> kanały „Afiliacja" i „Newsletter" pokazują niezerowe sesje, a <code>Unassigned</code> spada o mniej więcej 350 sesji miesięcznie.</li>
+      </ol>
+    </div>
+
+    <div class="tags"><span class="t">GA4 Admin</span><span class="t grn">cel 3 — kwalifikacja</span></div>
+  </div>
+</div>
+
+<div class="task" id="z6">
+  <div class="task-head">
+    <span class="task-id p0">Z6 · P0</span>
+    <h3>Śledztwo: dlaczego ruch bezpośredni skoczył 4,5× w połowie czerwca</h3>
+  </div>
+  <div class="task-body">
+    <h4>Co chcemy osiągnąć</h4>
+    <p>
+      Ustalić, co się stało w tygodniu <b>15–21 czerwca 2026</b>, i odzyskać atrybucję.
+      To jest dziś największa dziura w pomiarze GLOV — nieporównywalnie większa niż <code>Unassigned</code>.
+    </p>
+
+    <h4>Dlaczego to jest problem</h4>
+    <p>
+      Ruch bezpośredni z Polski, tydzień po tygodniu (sam polski, żeby wykluczyć boty i zagranicę):
+    </p>
+    <div class="tblwrap">
+    <table>
+      <thead><tr><th>Tydzień</th><th>Sesje Direct (PL)</th><th>Zmiana</th></tr></thead>
+      <tbody>
+        <tr><td>W22 · 25–31.05</td><td>355</td><td>—</td></tr>
+        <tr><td>W23 · 1–7.06</td><td>389</td><td>+10%</td></tr>
+        <tr><td>W24 · 8–14.06</td><td>822</td><td>+111%</td></tr>
+        <tr><td><b>W25 · 15–21.06</b></td><td class="bad"><b>3 733</b></td><td class="bad"><b>+354%</b></td></tr>
+        <tr><td>W26 · 22–28.06</td><td>3 909</td><td>+5%</td></tr>
+        <tr><td>W27 · 29.06–5.07</td><td>3 692</td><td>−6%</td></tr>
+        <tr><td>W28 · 6–12.07</td><td>3 471</td><td>−6%</td></tr>
+        <tr><td>W29 · 13–19.07</td><td>2 961</td><td>−15%</td></tr>
+        <tr><td>W30 · 20–26.07</td><td class="warn">1 776</td><td class="warn">−40%</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="margin-top:12px">
+      To jest skok schodkowy, nie trend — z dnia na dzień, i utrzymał się sześć tygodni.
+      Tak zachowuje się <b>zmiana techniczna</b>, nie zmiana zachowania klientów.
+      Łącznie w tym okresie około <b>14 700 polskich sesji straciło informację o źródle</b>.
+      Od W30 wartość opada, co może oznaczać, że przyczyna sama wygasła albo została po cichu cofnięta —
+      to też trzeba ustalić, bo jeśli wróci, wrócimy do punktu wyjścia.
+    </p>
+    <p>
+      Znaczenie praktyczne: sesja w worku <code>Direct</code> to sesja, której sprzedaży nie da się przypisać
+      do żadnej kampanii. Przy 41% udziału robi to bezpośrednią różnicę w ocenie zwrotu z reklamy.
+    </p>
+
+    <h4>Co dokładnie zrobić</h4>
+    <ol>
+      <li>
+        <b>Ustalić, co wdrożono między 8 a 21 czerwca.</b> Do sprawdzenia, w tej kolejności:
+        <ul>
+          <li>GTM → historia wersji kontenera <code>GTM-PQ9JFT2</code> — czy była publikacja w tym oknie</li>
+          <li>Shopify → aktualizacje motywu i instalacje/aktualizacje aplikacji</li>
+          <li>Baner zgody na pliki cookie — zmiana dostawcy, wersji lub domyślnych ustawień</li>
+          <li>Zmiany w przekierowaniach lub w domenie</li>
+        </ul>
+      </li>
+      <li>
+        <b>Sprawdzić kolejność uruchamiania tagów.</b> Jeśli tag GA4 startuje przed przetworzeniem zgody
+        albo przed odczytaniem parametrów z adresu, część sesji traci źródło i ląduje w <code>Direct</code>.
+        Właściwe ustawienie: tag podstawowy GA4 na wyzwalaczu <b>„Inicjalizacja — wszystkie strony"</b>,
+        zdarzenia na wyzwalaczach późniejszych.
+        <br><i>Uwaga:</i> dwa wcześniejsze dokumenty podawały tu <b>sprzeczne</b> zalecenia
+        (jeden „Page View", drugi „Initialization"). Obowiązuje wersja z tego akapitu — i tak wymaga potwierdzenia w podglądzie GTM.
+      </li>
+      <li>
+        <b>Zweryfikować Consent Mode v2</b> — czy jest wdrożony, i czy ma włączone
+        <code>url_passthrough</code> (przenosi parametry kampanii mimo braku zgody)
+        oraz <code>ads_data_redaction</code>.
+      </li>
+      <li>
+        <b>Sprawdzić listę wykluczonych odsyłających</b> (Administracja → Strumienie danych → Ustawienia tagu →
+        Lista wykluczonych witryn odsyłających). Nadmiarowy wpis, np. domena bramki płatniczej,
+        wypycha powracające sesje do <code>Direct</code>.
+      </li>
+    </ol>
+
+    <div class="repro">
+      <h4>Jak zweryfikować (test odbioru)</h4>
+      <ol>
+        <li>Wejść na sklep z linku z pełnymi UTM-ami, w trybie prywatnym, odrzucając zgodę na cookie. Powtórzyć akceptując zgodę.</li>
+        <li>W DebugView sprawdzić, czy w obu przypadkach sesja ma poprawne źródło.</li>
+        <li><b>Kryterium odbioru:</b> tygodniowy Direct z Polski wraca poniżej 1 500 sesji i utrzymuje się tam przez 3 kolejne tygodnie.</li>
+      </ol>
+    </div>
+
+    <div class="tags"><span class="t red">pilne</span><span class="t acc">GTM</span><span class="t">consent</span><span class="t grn">cel 3 — kwalifikacja</span></div>
+  </div>
+</div>
+
+<div class="task" id="z7">
+  <div class="task-head">
+    <span class="task-id p1">Z7 · P1</span>
+    <h3>„Gubiony landing page" — co to właściwie znaczy i co z tym zrobić</h3>
+  </div>
+  <div class="task-body">
+    <h4>Wyjaśnienie po ludzku</h4>
+    <p>
+      <b>Landing page</b> to pierwsza strona, którą klient zobaczył po wejściu na sklep —
+      strona wejścia. GA4 zapisuje ją dla każdej sesji, żeby dało się powiedzieć:
+      <i>„ta reklama przyprowadziła ludzi na kartę produktu Luna Eye"</i> albo
+      <i>„ta kampania wrzuca ludzi na drugą stronę listingu"</i>.
+    </p>
+    <p>
+      <b>„Gubiony landing" to sytuacja, w której GA4 wie, że ktoś wszedł, ale nie wie, na którą stronę wszedł</b> —
+      w raporcie zamiast adresu widać <code>(not set)</code>. Skutek jest konkretny:
+      nie da się ocenić, dokąd kampania faktycznie kieruje ludzi, więc nie da się stwierdzić,
+      czy reklama prowadzi na dobrą stronę, czy pali budżet na przypadkowej podstronie.
+    </p>
+    <p>
+      Najczęstsza przyczyna w tym sklepie: <b>przeglądarka wbudowana w aplikację Facebooka i Instagrama</b>.
+      Gdy ktoś klika reklamę w aplikacji, strona otwiera się w uproszczonej przeglądarce wewnątrz aplikacji,
+      która nie przekazuje pełnych danych nawigacji. Znaczniki kampanii przetrwają, adres strony wejścia — nie.
+    </p>
+
+    <h4>Co dokładnie zrobić</h4>
+    <ol>
+      <li>
+        <b>Wymusić przekazanie pełnego adresu.</b> W konfiguracji tagu GA4 ustawić parametr
+        <code>page_location</code> jawnie na pełny adres strony, zamiast polegać na automatyce.
+        To jedna zmiana w GTM i najtańszy krok z całej listy.
+      </li>
+      <li>
+        <b>Sprawdzić przekierowania w reklamach.</b> Jeśli link reklamy przechodzi przez skracacz
+        lub dodatkowe przekierowanie, adres wejścia gubi się po drodze. W Meta Ads Manager
+        sprawdzić adresy docelowe kampanii — mają prowadzić prosto na docelową stronę.
+      </li>
+      <li>
+        <b>Uporządkować oczekiwania.</b> Tego problemu nie da się usunąć do zera —
+        to ograniczenie przeglądarki w aplikacji Meta, nie błąd sklepu. Celem jest ograniczenie skali, nie zero.
+      </li>
+    </ol>
+
+    <div class="callout">
+      <b>Powiązanie z Z6:</b> jeżeli zadanie Z6 wykaże, że skok <code>Direct</code> od 15 czerwca
+      ma to samo źródło (tag odpalający się zanim adres jest gotowy), to obie sprawy naprawia jedna zmiana.
+      Dlatego Z6 i Z7 należy robić razem, a nie osobno.
+    </div>
+
+    <div class="repro">
+      <h4>Jak zweryfikować (test odbioru)</h4>
+      <ol>
+        <li>Otworzyć reklamę z telefonu, z poziomu aplikacji Instagram (nie z przeglądarki systemowej).</li>
+        <li>Sprawdzić w DebugView, czy sesja ma wypełnioną stronę wejścia.</li>
+        <li><b>Kryterium odbioru:</b> udział sesji ze stroną wejścia <code>(not set)</code> spada wyraźnie względem pomiaru sprzed zmiany. Wartość bazową zmierzyć <b>przed</b> wdrożeniem — inaczej nie będzie do czego porównać.</li>
+      </ol>
+    </div>
+
+    <div class="tags"><span class="t acc">GTM</span><span class="t">Meta Ads</span><span class="t grn">cel 3 — kwalifikacja</span></div>
+  </div>
+</div>
+
+<h2 class="sec">Znalezione przy okazji</h2>
+<p class="secsub">Nie było przedmiotem zlecenia, ale wyszło podczas weryfikacji i ma realny wpływ na sprzedaż.</p>
+
+<div class="task" id="z8">
+  <div class="task-head">
+    <span class="task-id p1">Z8 · P1</span>
+    <h3>45 tysięcy błędów JavaScript miesięcznie, głównie na stronach sprzedażowych</h3>
+  </div>
+  <div class="task-body">
+    <h4>Dlaczego to jest problem</h4>
+    <p>
+      Sklep wysyła zdarzenie <code>js_error</code> — i w 30 dni naliczyliśmy ich <b>45 131</b>,
+      przy 46 066 sesjach. To jest średnio jeden błąd na sesję. Rozkład nie jest przypadkowy:
+    </p>
+    <div class="tblwrap">
+    <table>
+      <thead><tr><th>Strona</th><th>Błędy</th><th>Uwaga</th></tr></thead>
+      <tbody>
+        <tr><td><code>/collections/sklep</code></td><td>8 223</td><td>główna lista sklepu</td></tr>
+        <tr><td><code>/collections/.../klips-zero-gravity</code></td><td>3 929</td><td>karta produktu</td></tr>
+        <tr><td><code>/products/...sleeping-beauty</code></td><td>3 110</td><td>karta produktu</td></tr>
+        <tr><td><code>/products/...skin-smoothing</code></td><td>2 751</td><td>karta produktu</td></tr>
+        <tr><td><code>/products/pumeks...</code></td><td>2 124</td><td>karta produktu</td></tr>
+        <tr><td><code>/</code></td><td>1 347</td><td>strona główna</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="margin-top:12px">
+      To są dokładnie te strony, na których odbywa się sprzedaż. Błąd JavaScript na karcie produktu
+      potrafi przerwać działanie przycisku dodawania do koszyka albo zatrzymać wysyłkę zdarzeń pomiarowych —
+      czyli może być <b>współprzyczyną problemów opisanych w Z1 i Z2</b>.
+    </p>
+
+    <h4>Co dokładnie zrobić</h4>
+    <ol>
+      <li>Wyciągnąć treść błędów — zdarzenie <code>js_error</code> powinno nieść komunikat i nazwę pliku. Jeśli nie niesie, dołożyć te parametry (to warunek jakiejkolwiek diagnozy).</li>
+      <li>Pogrupować po komunikacie i naprawić trzy najczęstsze.</li>
+      <li>Sprawdzić, czy źródłem nie jest aplikacja zewnętrzna zainstalowana w Shopify — przy tej skali i tak równym rozkładzie to pierwszy podejrzany.</li>
+    </ol>
+
+    <div class="repro">
+      <h4>Jak zweryfikować (test odbioru)</h4>
+      <p><b>Kryterium odbioru:</b> liczba <code>js_error</code> spada poniżej 10 000 miesięcznie, a na <code>/collections/sklep</code> poniżej 1 000.</p>
+    </div>
+
+    <div class="tags"><span class="t">front-end</span><span class="t">aplikacje Shopify</span></div>
+  </div>
+</div>
+
+<h2 class="sec" id="reko">Rekomendacja — po co nam to naprawdę</h2>
+<p class="secsub">
+  Ta sekcja nie jest zleceniem dla wykonawcy technicznego — to uzasadnienie, dlaczego zadania Z1–Z3
+  są warte pieniędzy, i co konkretnie zbudujemy na naprawionym pomiarze.
+</p>
+
+<div class="callout">
+  <b>Teza:</b> naprawiony pomiar ścieżek pozwala połączyć trzy warstwy, które dziś żyją osobno —
+  <b>popyt zewnętrzny</b> (czego ludzie szukają w Google), <b>ekspozycję wewnętrzną</b> (co i gdzie im pokazujemy)
+  i <b>sprzedaż</b> (co z tego kupują). Dopiero razem odpowiadają na pytanie, gdzie dokładać budżet,
+  a gdzie naprawiać stronę. Poniżej — co widać już dziś i czego brakuje.
+</div>
+
+<h3 style="font-size:17px;font-weight:750;margin:30px 0 10px;letter-spacing:-.3px">Znalezisko 1 · Lista główna <code>/collections/sklep</code> jest największym wąskim gardłem sklepu</h3>
+<p style="font-size:14px;margin-bottom:12px">
+  Zebrane w jednym miejscu, wszystkie liczby z tego samego okresu 30 dni:
+</p>
+<div class="tblwrap">
+<table>
+  <thead><tr><th>Strona wejścia</th><th>Sesje</th><th>Zakupy</th><th>Konwersja</th><th>Klikalność listy</th><th>Błędy JS</th></tr></thead>
+  <tbody>
+    <tr><td><code>/collections/sklep</code></td><td>12 517</td><td>125</td><td class="bad">1,00%</td><td class="bad">1,03%</td><td class="bad">8 223</td></tr>
+    <tr><td><code>/collections/rekawice-do-demakijazu</code></td><td>405</td><td>16</td><td class="ok">3,95%</td><td>3,35%</td><td>—</td></tr>
+    <tr><td><code>/collections/produkty-do-pielegnacji-wlosow</code></td><td>249</td><td>7</td><td class="ok">2,81%</td><td>2,27%</td><td>—</td></tr>
+    <tr><td><code>/collections/nano-glass-collection</code></td><td>—</td><td>—</td><td>—</td><td class="ok">10,70%</td><td>—</td></tr>
+    <tr><td><code>/collections/coolnails</code></td><td>597</td><td>3</td><td>0,50%</td><td class="ok">5,41%</td><td>737</td></tr>
+  </tbody>
+</table>
+</div>
+<p style="font-size:14px;margin-top:12px">
+  Lista główna zbiera <b>najwięcej ruchu wejściowego w całym sklepie</b> (12 517 sesji, więcej niż wszystkie
+  pozostałe kolekcje razem) i jednocześnie ma <b>najgorszą klikalność produktów</b> (1,03% wobec 5–11% na kolekcjach tematycznych),
+  <b>najgorszą konwersję</b> i <b>epicentrum błędów JavaScript</b>. Trzy niezależne pomiary wskazują to samo miejsce.
+</p>
+<div class="effect">
+  <h4>Rekomendacja</h4>
+  <p>
+    Przekierować ruch płatny i organiczny z listy ogólnej na kolekcje tematyczne — one już dziś konwertują
+    3–4× lepiej. Równolegle naprawić błędy JS na tej stronie (Z8), bo mogą być współprzyczyną słabej klikalności.
+    <b>Warunek pomiaru efektu:</b> bez zadania Z1 nie zmierzymy, czy przepięcie zadziałało —
+    dziś nie da się przypisać sprzedaży do listy.
+  </p>
+</div>
+
+<h3 style="font-size:17px;font-weight:750;margin:30px 0 10px;letter-spacing:-.3px">Znalezisko 2 · Gotowe strony z realnym popytem, które nie rankują</h3>
+<p style="font-size:14px;margin-bottom:12px">
+  Zestawienie danych DataForSEO (popyt w Google, Polska) z istniejącymi stronami sklepu.
+  To są kolekcje i karty produktów, <b>które już istnieją</b> — problem jest wyłącznie w widoczności:
+</p>
+<div class="tblwrap">
+<table>
+  <thead><tr><th>Fraza</th><th>Wyszukań/mies.</th><th>Pozycja</th><th>Strona docelowa</th><th>Ocena</th></tr></thead>
+  <tbody>
+    <tr><td>szczotka / szczotki do szczotkowania na sucho (3 warianty)</td><td>~5 700 łącznie</td><td class="bad">49–55</td><td><code>/collections/szczotki-do-masazu-na-sucho</code></td><td>strona jest, poza zasięgiem</td></tr>
+    <tr><td>rękawica do samoopalacza</td><td>2 900</td><td class="bad">65</td><td><code>/collections/rekawice-do-samoopalacza</code></td><td>strona jest, poza zasięgiem</td></tr>
+    <tr><td>czepek do spania</td><td>2 400</td><td class="bad">50</td><td><code>/products/glov-satynowy-czepek-do-wlosow</code></td><td>karta jest, poza zasięgiem</td></tr>
+    <tr><td>turban do włosów</td><td>2 400</td><td class="warn">19</td><td><code>/collections/turbany-do-wlosow</code></td><td class="warn">blisko pierwszej strony</td></tr>
+    <tr><td>ręczniki / ręcznik do twarzy</td><td>1 900 + 1 900</td><td class="warn">16 / 24</td><td><code>/collections/reczniki-do-twarzy</code></td><td class="warn">blisko pierwszej strony</td></tr>
+    <tr><td>nano szkło do pięt</td><td>1 600</td><td class="ok">4</td><td><code>/products/pumeks-glov...</code></td><td class="ok">działa — wzorzec do powielenia</td></tr>
+    <tr><td>grzebień do fal</td><td>1 300</td><td class="ok">3</td><td><code>/products/grzebien-3d-coolcurl</code></td><td class="ok">działa</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="effect">
+  <h4>Rekomendacja</h4>
+  <p>
+    Zacząć od <b>turbanów i ręczników do twarzy</b> — pozycje 16–24 to jeden dobry ruch od pierwszej strony,
+    przy łącznym popycie ~6 200 wyszukań miesięcznie. To tańsze niż budowanie czegokolwiek od zera.
+    Wzorzec, który już działa (<code>nano szkło do pięt</code>, pozycja 4) jest w tym samym sklepie — wystarczy go powtórzyć.
+  </p>
+</div>
+
+<h3 style="font-size:17px;font-weight:750;margin:30px 0 10px;letter-spacing:-.3px">Znalezisko 3 · Blog przyciąga ruch, pod którym nie ma produktu</h3>
+<p style="font-size:14px">
+  Największa fraza, na jaką widoczny jest glov.co, to <code>gua sha</code> — <b>12 100 wyszukań miesięcznie</b>,
+  ale pozycja 71 i wpis blogowy zamiast produktu. <b>Sprawdziliśmy katalog Shopify: GLOV nie ma produktu gua sha.</b>
+  Podobnie <code>kalendarz księżycowy zdrowia i urody</code> — tu pozycje są wręcz świetne (7–13, ~2 400 wyszukań),
+  ale to fraza bez jakiejkolwiek intencji zakupowej.
+</p>
+<div class="effect">
+  <h4>Rekomendacja</h4>
+  <p>
+    Nie traktować tego ruchu jako sprzedażowego i nie inwestować w podnoszenie <code>gua sha</code> —
+    to byłoby ściąganie ludzi po produkt, którego nie ma. Ruch blogowy zostaje jako zasięgowy.
+    <b>Decyzja do podjęcia po stronie biznesu, nie wykonawcy:</b> czy 12 100 wyszukań miesięcznie
+    uzasadnia rozszerzenie katalogu — GLOV ma już akcesoria do masażu twarzy, więc kategoria nie jest obca.
+  </p>
+</div>
+
+<h3 style="font-size:17px;font-weight:750;margin:30px 0 10px;letter-spacing:-.3px">Znalezisko 4 · Karty produktów-duplikatów zbierają ruch i nie sprzedają</h3>
+<p style="font-size:14px">
+  W zestawieniu stron wejścia widać karty z końcówką <code>-kopia</code> w adresie:
+  <code>pumeks-i-depilator-2w1-kopia</code> (562 sesje, 0 zakupów),
+  <code>...velvet-nano-touch-kopia</code> (401 sesji, 0 zakupów).
+  Obok nich oryginał <code>pumeks-i-depilator-2w1</code> (452 sesje, 0 zakupów), przy czym ta sama karta
+  wejściem przez kolekcję ciała sprzedaje bardzo dobrze (223 sesje, 12 zakupów, konwersja 5,4%).
+</p>
+<div class="effect">
+  <h4>Rekomendacja</h4>
+  <p>
+    To spina się z zadaniem <b>t10 z listy audytu 360</b> (kanibalizacja kolekcja vs produkt) —
+    duplikaty rozbijają ruch i sygnały rankingowe między kilka adresów.
+    Uporządkować kartoteki i ustawić przekierowania, zanim zaczniemy budować cokolwiek na ruchu do tych stron.
+  </p>
+</div>
+
+<h3 style="font-size:17px;font-weight:750;margin:30px 0 10px;letter-spacing:-.3px">Docelowo · Jeden widok „popyt → ekspozycja → sprzedaż"</h3>
+<p style="font-size:14px">
+  Wszystkie cztery znaleziska powyżej powstały z ręcznego zestawienia trzech źródeł.
+  Docelowo ma to być jedna, odświeżana tabela — po jednym wierszu na kategorię:
+</p>
+<div class="tblwrap">
+<table>
+  <thead><tr><th>Kolumna</th><th>Skąd</th><th>Dostępne dziś?</th></tr></thead>
+  <tbody>
+    <tr><td>Popyt: wyszukania miesięcznie</td><td>DataForSEO</td><td class="ok">✔ tak</td></tr>
+    <tr><td>Pozycja w Google</td><td>DataForSEO</td><td class="ok">✔ tak</td></tr>
+    <tr><td>Sesje wejściowe na stronę</td><td>GA4 landing page</td><td class="ok">✔ tak</td></tr>
+    <tr><td>Produkty pokazane / klikalność listy</td><td>GA4 lista produktów</td><td class="ok">✔ tak</td></tr>
+    <tr><td><b>Dodania do koszyka z tej listy</b></td><td>GA4 lista produktów</td><td class="bad">✘ wymaga Z1</td></tr>
+    <tr><td><b>Sprzedaż i przychód z tej listy</b></td><td>GA4 lista produktów</td><td class="bad">✘ wymaga Z1</td></tr>
+    <tr><td><b>Który obszar strony sprzedaje</b></td><td>GA4 <code>atc_area</code></td><td class="bad">✘ wymaga Z2</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="callout green">
+  <b>Wniosek dla kolejności prac:</b> cztery z siedmiu kolumn mamy już dziś — dlatego znaleziska 1–4 dało się
+  zrobić od ręki i można działać na nich od razu. Trzy brakujące kolumny to <b>dokładnie</b> te,
+  które odblokowują zadania Z1 i Z2. I to są te trzy, które odpowiadają na pytanie „ile to dało w złotówkach" —
+  czyli jedyne, na podstawie których da się bronić decyzji budżetowych.
+</div>
+
+<h2 class="sec">Czego świadomie NIE robimy</h2>
+<p class="secsub">
+  Te zalecenia krążyły we wcześniejszych wersjach dokumentów. Sprawdziliśmy je na danych GLOV
+  i nie wchodzą do zakresu. Zapisujemy to wprost, żeby nie wróciły przy kolejnej rozmowie.
+</p>
+
+<div class="dont">
+  <h3>✘ Poprawianie utm_medium w Meta Ads „żeby zmniejszyć Unassigned"</h3>
+  <p>
+    Zalecenie mówiło o redukcji worka o 40–60% po zmianie oznaczenia kampanii Meta na <code>paid_social</code>.
+  </p>
+  <p>
+    Rozbiliśmy worek <code>Unassigned</code> na źródła: <b>nie ma tam ani jednej sesji z Meta</b>.
+    Meta jest już poprawnie rozpoznawana i trafia do kanału „Paid Social" — 11 599 sesji w 30 dniach.
+  </p>
+  <p class="verdict"><b>Werdykt:</b> zmiana naprawiałaby coś, co działa — z ryzykiem zepsucia poprawnej atrybucji.</p>
+</div>
+
+<div class="dont">
+  <h3>✘ Przełączanie tożsamości raportowania na „na podstawie urządzenia"</h3>
+  <p>
+    Zalecenie obiecywało 10–20% mniej ruchu nieprzypisanego, kosztem dokładności danych demograficznych.
+  </p>
+  <p>
+    Ustawienie to rządzi <b>łączeniem użytkowników między urządzeniami</b>, a nie przypisaniem kanału do sesji.
+    W dodatku 79% worka to sesje bez jakiegokolwiek źródła — nie ma tam czego łączyć.
+  </p>
+  <p class="verdict"><b>Werdykt:</b> realny koszt (gorsze dane o użytkownikach), obiecany zysk niepotwierdzony.</p>
+</div>
+
+<div class="dont">
+  <h3>✘ Cel „zejście z Unassigned z 15% do 3–5%"</h3>
+  <p>
+    Sprawdziliśmy trzy miesiące: maj 4,6%, czerwiec 7,8%, lipiec 3,7%. Poziomu 15% nie było nigdy.
+    Deklarowany cel „3–5%" jest już osiągnięty — <b>dziś jest 3,7%</b>.
+  </p>
+  <p>
+    Osobno: tabela oczekiwanych efektów w tamtym dokumencie sumowała się do 65–100% redukcji kanału,
+    który stanowi 3,7% ruchu. Ta arytmetyka nie domykała się niezależnie od wszystkiego innego.
+  </p>
+  <p class="verdict"><b>Werdykt:</b> cel był policzony na danych branżowych, nie na danych GLOV. Prawdziwy worek to <code>Direct</code> (41,4%) — zadanie Z6.</p>
+</div>
+
+<div class="dont">
+  <h3>✘ Ustalanie źródła dodania do koszyka przez zmienną „ścieżka strony" w GTM</h3>
+  <p>
+    Wcześniejsza instrukcja proponowała skrypt w GTM, który odczytuje adres strony w chwili kliknięcia
+    i na tej podstawie zwraca <code>pdp</code> / <code>collection</code> / <code>home</code>.
+  </p>
+  <p>
+    Zdarzenie <code>add_to_cart</code> nie ma <b>żadnego</b> kontekstu przeglądarki —
+    puste są <code>pagePath</code>, <code>pageTitle</code> i <code>hostName</code> jednocześnie, we wszystkich 5 531 przypadkach.
+    Skrypt w GTM nie miałby czego odczytać. Dodatkowo cztery kubełki i tak nie odróżniłyby karuzeli od siatki produktów.
+  </p>
+  <p class="verdict"><b>Werdykt:</b> zastąpione zadaniami Z1 i Z2, które sięgają tam, skąd te zdarzenia naprawdę wychodzą.</p>
+</div>
+
+<h2 class="sec">Podsumowanie dla wykonawcy</h2>
+<div class="tblwrap">
+<table>
+  <thead><tr><th>#</th><th>Zadanie</th><th>Cel</th><th>Gdzie się to robi</th><th>Priorytet</th></tr></thead>
+  <tbody>
+    <tr><td>Z1</td><td>Nazwa listy w koszyku i zakupie</td><td>1 — ścieżki</td><td>Shopify Customer Events</td><td class="bad">P0</td></tr>
+    <tr><td>Z2</td><td>Kontekst „gdzie kliknięto" przy ATC</td><td>1 — ścieżki</td><td>Shopify Customer Events + GA4</td><td class="bad">P0</td></tr>
+    <tr><td>Z6</td><td>Śledztwo skoku Direct od 15.06</td><td>3 — kwalifikacja</td><td>GTM + Shopify + consent</td><td class="bad">P0</td></tr>
+    <tr><td>Z3</td><td>Karuzele na stronie głównej</td><td>1 — ścieżki</td><td>motyw Shopify / GTM</td><td class="warn">P1</td></tr>
+    <tr><td>Z4</td><td>Standard UTM</td><td>2 — UTM</td><td>TradeTracker, newsletter, druk</td><td class="warn">P1</td></tr>
+    <tr><td>Z7</td><td>Gubiony landing page</td><td>3 — kwalifikacja</td><td>GTM + Meta Ads</td><td class="warn">P1</td></tr>
+    <tr><td>Z8</td><td>Błędy JavaScript</td><td>tło</td><td>front-end / aplikacje</td><td class="warn">P1</td></tr>
+    <tr><td>Z5</td><td>Grupa kanałów dla partnerów</td><td>3 — kwalifikacja</td><td>GA4 Admin</td><td>P2</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout">
+  <b>Zasada wdrożeniowa dla wszystkich zadań:</b> każda zmiana najpierw w trybie podglądu (Preview),
+  potwierdzenie w GA4 DebugView, dopiero potem publikacja z nazwanej wersji.
+  GTM ma historię wersji — cofnięcie błędnej zmiany to jedno kliknięcie.
+  <b>Przed startem prac zapisać wartości bazowe</b> wszystkich metryk z tabeli „Stan faktyczny" — inaczej nie będzie do czego porównać efektu.
+</div>
+
+<div class="tc">
+  <h2>TRUTH CHECKER</h2>
+  <div class="tcsub">Co wiem · Co zakładam · Co może być błędne · Co zweryfikować · Co poprawię z jednym inputem</div>
+
+  <h4>Co wiem (sprawdzone zapytaniem do GA4, 30.07.2026)</h4>
+  <ul>
+    <li>Komplet zdarzeń e-commerce działa, łącznie z checkoutem — 10 typów zdarzeń.</li>
+    <li><code>itemsAddedToCart</code> i <code>itemsPurchased</code> = 0 dla wszystkich 94 list produktowych.</li>
+    <li><code>add_to_cart</code> (5 531), <code>begin_checkout</code>, <code>purchase</code> mają puste <code>pagePath</code>, <code>pageTitle</code> i <code>hostName</code> — w 100% przypadków.</li>
+    <li>Strona główna nie występuje w zestawieniu list produktowych.</li>
+    <li>Unassigned = 1 693 sesji (3,7%); skład: 79% <code>(not set)/(not set)</code>, reszta tradetracker i newsletter. Meta i Google Ads tam nie występują.</li>
+    <li>Direct z Polski: W24 = 822 → W25 = 3 733, utrzymane 6 tygodni, od W30 spadek do 1 776.</li>
+    <li>Plan sklepu: Shopify (nie Plus) — potwierdzone przez API Shopify.</li>
+    <li><code>js_error</code> = 45 131 w 30 dni, skupione na stronach sprzedażowych.</li>
+  </ul>
+
+  <h4>Co zakładam</h4>
+  <ul>
+    <li>Że zdarzenia koszykowe idą przez Shopify Customer Events (Web Pixel). To <b>wniosek z braku kontekstu przeglądarki</b>, nie odczyt z panelu — nie mam dostępu do GTM ani do ustawień Shopify. Zadanie Z1 zaczyna się od potwierdzenia tego założenia.</li>
+    <li>Że skok Direct ma przyczynę techniczną, bo jest schodkowy i utrzymał się 6 tygodni. Wykluczyłem boty i zagranicę, filtrując wyłącznie ruch z Polski.</li>
+    <li>Że motyw używa standardowych sekcji Shopify — na tym opiera się propozycja rozpoznawania obszaru w Z2.</li>
+  </ul>
+
+  <h4>Co może być błędne</h4>
+  <ul>
+    <li>Jeżeli zdarzenia koszykowe idą jednak z GTM przy nietypowej konfiguracji tagu, sposób wykonania Z1 i Z2 się zmieni — cel i test odbioru zostają bez zmian.</li>
+    <li>Spadek Direct od W30 może oznaczać, że przyczyna wygasła sama. Wtedy Z6 zmienia charakter z naprawy na ustalenie, co to było, żeby nie wróciło.</li>
+    <li>Szacunek „14 700 straconych sesji" opiera się na założeniu, że poziom bazowy to ~800 sesji tygodniowo (średnia W22–W24). Inna baza da inną liczbę.</li>
+    <li>Nie wiem, czy <code>js_error</code> to zdarzenie wbudowane w motyw, czy dodane przez aplikację — od tego zależy, czy da się z niego wyciągnąć treść błędu.</li>
+  </ul>
+
+  <h4>Co zweryfikować przed rozpoczęciem prac</h4>
+  <ul>
+    <li>Shopify Admin → Ustawienia → Zdarzenia klienta: czy istnieje własny piksel wysyłający do GA4.</li>
+    <li>GTM → historia wersji kontenera: czy była publikacja między 8 a 21 czerwca.</li>
+    <li>Podgląd GTM przy kliknięciu „dodaj do koszyka": czy jakikolwiek tag GTM w ogóle się odpala.</li>
+    <li>Czy Consent Mode v2 jest wdrożony i z jakimi ustawieniami.</li>
+  </ul>
+
+  <h4>Co poprawię, gdy dostanę jeden dodatkowy input</h4>
+  <ul>
+    <li><b>Zrzut ekranu z Shopify → Zdarzenia klienta</b> — domknie diagnozę Z1 i Z2 i pozwoli napisać konkretny kod zamiast opisu mechanizmu.</li>
+    <li><b>Dostęp do odczytu GTM</b> — pozwoli rozstrzygnąć Z6 bez zgadywania i podać dokładny tag do poprawy.</li>
+    <li><b>Data ostatniej aktualizacji motywu i lista aplikacji z czerwca</b> — najpewniej wskaże winowajcę skoku Direct w jednym kroku.</li>
+  </ul>
+</div>
+
+<footer>
+  GLOV — brief pomiarowy dla wykonawcy · 30.07.2026<br>
+  Dane: GA4 property 342844459 (glov.co, PLN) · okres 30 dni do 29.07.2026 · GTM-PQ9JFT2 · Shopify plan podstawowy<br>
+  Wszystkie liczby zweryfikowane zapytaniem do GA4 Data API w dniu sporządzenia dokumentu.<br>
+  Zastępuje: <code>GLOV_Instrukcja_GA4_Unassigned.md</code> i <code>GLOV_Instrukcja_GTM_Eventy.md</code>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('tb');
+  var saved=localStorage.getItem('glov-theme');
+  if(saved){root.setAttribute('data-theme',saved);}
+  function sync(){btn.textContent = root.getAttribute('data-theme')==='dark' ? '☀️' : '🌙';}
+  sync();
+  btn.addEventListener('click',function(){
+    var next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme',next);
+    localStorage.setItem('glov-theme',next);
+    sync();
+  });
+})();
+</script>
+</body></html>
