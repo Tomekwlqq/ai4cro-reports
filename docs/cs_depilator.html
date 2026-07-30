@@ -3,181 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>GEO DT DB — PL — 1 categories</title>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0f1117;--sb-bg:#161b22;--hd-bg:#161b22;--bd:#30363d;
-  --tx:#e6edf3;--tx2:#8b949e;--ac:#58a6ff;
-  --cb:#1c2128;--ts:#1c2128;--mb:#2d4a22;--mt:#7ee787;
-  --ab:#1f3353;--sw:292px;--hh:52px
-}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
-     background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh;overflow:hidden}
-
-/* Header */
-#hd{height:var(--hh);background:var(--hd-bg);border-bottom:1px solid var(--bd);
-    display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
-#hd h1{font-size:15px;font-weight:700;white-space:nowrap;flex-shrink:0;letter-spacing:.01em}
-#hd h1 span{color:var(--ac)}
-#sw{flex:1;position:relative;max-width:440px}
-#si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tx2);font-size:15px;pointer-events:none}
-#search{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:6px;
-        color:var(--tx);padding:6px 10px 6px 30px;font-size:15px;outline:none;transition:border-color .15s}
-#search:focus{border-color:var(--ac)}
-
-/* Filter buttons */
-.filt{display:flex;gap:4px;flex-shrink:0}
-.fb{font-size:13px;padding:3px 8px;border-radius:4px;border:1px solid var(--bd);
-    background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s;white-space:nowrap}
-.fb:hover{border-color:var(--ac);color:var(--tx)}
-.fb.on{border-color:var(--ac);background:var(--ab);color:var(--tx)}
-
-/* Lang toggle */
-#lang-btn{font-size:13px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
-          background:transparent;color:var(--tx2);cursor:pointer;text-decoration:none;
-          display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;flex-shrink:0}
-#lang-btn:hover{border-color:var(--ac);color:var(--tx)}
-
-#stat{font-size:13px;color:var(--tx2);flex-shrink:0;white-space:nowrap;min-width:90px;text-align:right}
-
-/* Layout */
-#lay{display:flex;flex:1;overflow:hidden}
-
-/* Sidebar */
-#sb{width:var(--sw);flex-shrink:0;background:var(--sb-bg);border-right:1px solid var(--bd);overflow-y:auto}
-.ci{display:flex;align-items:center;gap:7px;padding:7px 10px;cursor:pointer;
-    border-left:3px solid transparent;border-bottom:1px solid var(--bd);
-    transition:background .1s;user-select:none;min-height:36px}
-.ci:hover{background:rgba(88,166,255,.07)}
-.ci.active{background:var(--ab);border-left-color:var(--ac)}
-.ci.hidden{display:none}
-.cn{font-size:11.5px;color:var(--tx2);min-width:20px;flex-shrink:0;font-variant-numeric:tabular-nums}
-.ct{font-size:14px;line-height:1.3;color:var(--tx);flex:1;min-width:0}
-.ct mark{background:var(--mb);color:var(--mt);border-radius:2px;padding:0 1px}
-
-/* Version badge in sidebar */
-.vb{font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:8px;flex-shrink:0;letter-spacing:.02em}
-.vb-v1{background:#21262d;color:#6e7681}
-.vb-v2{background:#2d2502;color:#d29922}
-.vb-v3{background:#0d2a1a;color:#3fb950}
-.vb-v4{background:#0d1e3c;color:#58a6ff}
-
-/* Verification pipeline dots */
-.pipe{display:flex;gap:2px;flex-shrink:0}
-.pd{width:6px;height:6px;border-radius:50%;background:var(--bd)}
-.pd.on-v1{background:#6e7681}
-.pd.on-v2{background:#d29922}
-.pd.on-v3{background:#3fb950}
-.pd.on-v4{background:#58a6ff}
-
-#nr{padding:20px 12px;font-size:15px;color:var(--tx2);text-align:center;display:none}
-
-/* Content */
-#ct{flex:1;overflow-y:auto;padding:26px 34px}
-.cs{display:none}
-.cs.vis{display:block}
-
-/* Markdown */
-.cs h2{font-size:23px;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:10px;margin-bottom:16px}
-.cs h3{font-size:13px;font-weight:700;color:var(--ac);margin:20px 0 9px;
-       text-transform:uppercase;letter-spacing:.06em}
-.cs h4{font-size:16px;font-weight:600;margin:14px 0 6px}
-.cs p{font-size:15.5px;line-height:1.65;margin-bottom:8px}
-.cs strong{font-weight:600}
-.cs em{font-style:italic;color:var(--tx2)}
-.cs code{font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:13px;
-         background:var(--cb);border:1px solid var(--bd);border-radius:3px;
-         padding:1px 5px;color:#f0883e}
-.cs pre{background:var(--cb);border:1px solid var(--bd);border-radius:6px;
-        padding:12px 14px;overflow-x:auto;margin:10px 0}
-.cs pre code{background:none;border:none;padding:0;font-size:14px;color:var(--tx);line-height:1.5}
-.cs table{width:100%;border-collapse:collapse;font-size:14.5px;margin:10px 0;display:block;overflow-x:auto}
-.cs th,.cs td{text-align:left;padding:7px 10px;border:1px solid var(--bd)}
-.cs th{background:var(--sb-bg);font-weight:600}
-.cs tr:nth-child(even) td{background:var(--ts)}
-.cs ul,.cs ol{padding-left:18px;margin:7px 0}
-.cs li{font-size:15.5px;line-height:1.6;margin-bottom:3px}
-.cs hr{border:none;border-top:1px solid var(--bd);margin:18px 0}
-
-/* Changelog / verification card */
-.changelog{background:#0b1e10;border:1px solid #2ea043;border-radius:8px;
-           padding:14px 18px;margin:18px 0;position:relative}
-.changelog::before{content:'🔬 VERIFIED';font-size:10.5px;font-weight:700;
-                   color:#3fb950;letter-spacing:.08em;display:block;margin-bottom:8px}
-.changelog h3{color:#3fb950 !important;margin-top:0 !important;font-size:14px !important}
-.changelog p,.changelog li{color:#c3e6cb;font-size:15px}
-.changelog ul{margin:4px 0}
-.changelog table{font-size:12px}
-.changelog th{background:#0d2a1a}
-.changelog code{background:#0d2a1a;color:#7ee787}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
-::-webkit-scrollbar-track{background:transparent}
-
-body.light{
-  --bg:#ffffff;--sb-bg:#f6f8fa;--hd-bg:#f6f8fa;--bd:#d0d7de;
-  --tx:#1f2328;--tx2:#656d76;--ac:#0969da;
-  --cb:#f6f8fa;--ts:#f6f8fa;--mb:#fff8c5;--mt:#7a5c00;--ab:#ddf4ff;
-}
-body.light .cs code{color:#cf222e}
-body.light .cs pre code{color:var(--tx)}
-body.light .changelog{background:#f0fff4;border-color:#2ea043}
-body.light .changelog p,body.light .changelog li{color:#1a7f37}
-#theme-btn{font-size:14px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
-  background:transparent;color:var(--tx2);cursor:pointer;flex-shrink:0;transition:all .15s}
-#theme-btn:hover{border-color:var(--ac);color:var(--tx)}
-
-/* FUND rozwijany blok */
-details.fund{border:1px solid var(--bd);border-radius:8px;margin:22px 0 8px;
-  background:var(--cb);overflow:hidden}
-details.fund>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
-  padding:12px 16px;user-select:none;transition:background .12s}
-details.fund>summary::-webkit-details-marker{display:none}
-details.fund>summary:hover{background:rgba(88,166,255,.07)}
-.fund-arrow{color:var(--ac);font-size:13px;flex-shrink:0;transition:transform .15s}
-details.fund[open] .fund-arrow{transform:rotate(90deg)}
-.fund-head{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
-.fund-title{font-size:15px;font-weight:700;color:var(--tx)}
-.fund-src{font-size:12px;font-style:italic;color:var(--tx2);line-height:1.4}
-.fund-badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap}
-.fund-badge.ok{background:#0d2a1a;color:#3fb950}
-.fund-badge.warn{background:#3d2a02;color:#f0883e}
-body.light .fund-badge.ok{background:#dafbe1;color:#1a7f37}
-body.light .fund-badge.warn{background:#fff1e5;color:#bc4c00}
-.fund-hint{font-size:11px;color:var(--tx2);flex-shrink:0;border:1px solid var(--bd);
-  border-radius:4px;padding:2px 7px}
-details.fund[open] .fund-hint{display:none}
-.fund-body{padding:4px 18px 16px;border-top:1px solid var(--bd)}
-.fund-body h1{font-size:18px;margin:12px 0 6px}
-</style>
+<title>depilator</title>
+<style>:root{--bg:#fff;--text:#1f2328;--muted:#656d76;--border:#d0d7de;--accent:#0969da;
+--accent2:#0550ae;--green:#1a7f37;--amber:#9a6700;--red:#cf222e;--purple:#8250df;
+--h1-bg:#f6f8fa;--h2-bg:#f0f3f6;--table-stripe:#f8f9fb;
+--font:system-ui,-apple-system,sans-serif;--mono:'SF Mono',Menlo,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.7}
+.wrap{max-width:820px;margin:0 auto;padding:32px 24px 80px}
+h1{font-size:24px;font-weight:700;margin-bottom:2px;padding:16px 20px;background:var(--h1-bg);border-radius:10px;border:1px solid var(--border)}
+.meta{color:var(--muted);font-size:12px;margin-bottom:24px;padding:0 20px}
+h2{font-size:17px;font-weight:700;margin:28px 0 8px;padding:10px 14px;background:var(--h2-bg);border-radius:8px;border:1px solid var(--border)}
+h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--accent2)}
+h4{font-size:13px;font-weight:600;margin:10px 0 4px;color:var(--text)}
+p{margin:6px 0}
+blockquote{border-left:3px solid var(--accent);padding:6px 14px;margin:8px 0;background:#f6f8fa;font-size:13px;color:var(--text)}
+blockquote>p{margin:2px 0}
+code{background:#f0f3f6;padding:1px 5px;border-radius:4px;font-size:12px;font-family:var(--mono)}
+pre{background:#f6f8fa;padding:12px 16px;border-radius:8px;overflow-x:auto;font-size:12px;border:1px solid var(--border);margin:8px 0;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+th{background:var(--h2-bg);padding:6px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-bottom:1px solid var(--border)}
+td{padding:5px 10px;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:var(--table-stripe)}
+hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+ul,ol{margin:4px 0;padding-left:22px}
+li{margin:2px 0}
+strong{font-weight:700}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.tag{display:inline-block;padding:0 6px;border-radius:4px;font-size:11px;font-weight:600;line-height:1.6}
+.tag-bl{background:#ddf4ff;color:var(--accent2)}
+.tag-gr{background:#dafbe1;color:var(--green)}
+.tag-am{background:#fff8c5;color:var(--amber)}
+.tag-rd{background:#ffebe9;color:var(--red)}</style>
 </head>
-<body>
-<div id="hd">
-  <h1>GEO <span>CS</span></h1>
-  <div id="sw">
-    <span id="si">⌕</span>
-    <input id="search" type="text" placeholder="Szukaj kategorii, CEP, pytania..." autocomplete="off" spellcheck="false">
-  </div>
-  <div class="filt">
-    <button class="fb on" data-f="all" onclick="setFilter('all')">All</button>
-    <button class="fb" data-f="v2p" onclick="setFilter('v2p')">✅ Verified</button>
-    <button class="fb" data-f="v1"  onclick="setFilter('v1')">📝 Draft</button>
-  </div>
-  <a id="lang-btn" href="%23">🌐 EN</a>
-  <button id="theme-btn" onclick="toggleTheme()" title="Tryb jasny/ciemny">☀️</button>
-  <span id="stat">1 cat.</span>
-</div>
-<div id="lay">
-  <div id="sb">
-    <div class="ci" id="i1" onclick="select(1)"><span class="cn">#1</span><span class="ct">depilator</span><span class="vb vb-v2">v2</span><div class="pipe"><span class="pd on-v1"></span><span class="pd on-v2"></span><span class="pd"></span><span class="pd"></span></div></div>
-    <div id="nr">No results</div>
-  </div>
-  <div id="ct">
-    <div class="cs" id="s1"><h1>Depilator — Category Standard v2 (nadbudowa)</h1>
-
+<body><div class="wrap">
+<h1>depilator</h1>
+<div class="meta">GEO Category Standard · CS v5.7 · wygenerowany z WPIS_CS · depilator</div>
 <p><em>Fundament (0/0b/2) z <code>FUND_depilator.md</code> — wklejony 1:1. Sekcje matrycowe z referencji 06.md #—. Sloty <<LLM>> = wypełnione. assemble_v2 + wypełnienie ręczne · 2026-07-29.</em></p>
 
 <hr>
@@ -191,7 +54,7 @@ details.fund[open] .fund-hint{display:none}
 <h2>0b. Problemy, które kategoria załatwia</h2>
 
 <p><strong>Primary — rdzeń (po co kategoria istnieje):</strong></p>
-<p>> <strong>Usunięcie lub redukcja niepożądanego owłosienia na ciele.</strong> Goła funkcja estetyczna i higieniczna — włos ma zniknąć lub być mniej widoczny.</p>
+<blockquote><p><strong>Usunięcie lub redukcja niepożądanego owłosienia na ciele.</strong> Goła funkcja estetyczna i higieniczna — włos ma zniknąć lub być mniej widoczny.</p></blockquote>
 
 <p><strong>Secondary — jak rynek pociął ten rdzeń:</strong></p>
 
@@ -211,7 +74,7 @@ details.fund[open] .fund-hint{display:none}
 
 <hr>
 
-<h2>0c. Dynamika kategorii</h2>
+<h2>0c. Dynamika Kategorii</h2>
 
 <h3>CEP L1 vs L2 (trigger depth)</h3>
 
@@ -359,13 +222,58 @@ details.fund[open] .fund-hint{display:none}
 
 <hr>
 
-<h2>3. 20 Discovery Questions</h2>
+<h2>3. Discovery Questions</h2>
 
-<p><em>Literalne pytania klientki do AI — rdzeń sekcji. Adresują wszystkie 12 CEP.</em></p>
+<p><em>Pytania WEJŚCIOWE ścieżek (warstwa ①) — 36 pytań / 12 CEP = 3.0 na CEP. Norma kanonu: 2–4 per CEP.</em></p>
+<p><em>Źródło: <code>data/questions/depilator.json</code> layer ① · engine V5 · pełne pokrycie, bez skracania.</em></p>
 
-<ol><li>„Jak depilowaś się bez bólu w domu?"</li><li>„Które metody depilacji bolą najmniej?"</li><li>„Jaki depilator elektryczny jest najlepszy dla kobiet?"</li><li>„Epilator czy wosk — co jest lepsze?"</li><li>„Jak zrobić depilację woskiem w domu krok po kroku?"</li><li>„Co zamiast golarki — co jest trwalsze?"</li><li>„Jak długo trzyma się depilacja epilatorem?"</li><li>„Jak działa depilator IPL — czy to bezpieczne?"</li><li>„Depilacja bikini w domu — od czego zacząć?"</li><li>„Jak nie mieć wrastających włosów po depilacji?"</li><li>„Jaki krem do depilacji na wrażliwą skórę?"</li><li>„Depilacja a wrastające włoski — jaka metoda pomaga?"</li><li>„Wielorazowy depilator — co to i czy warto?"</li><li>„Czym depilowaś krótkie włoski (za krótkie dla epilatora)?"</li><li>„Ile kosztuje depilacja w domu vs w salonie?"</li><li>„Co to jest nano szkło do depilacji — jak działa?"</li><li>„Czy depilator laserowy domowy naprawdę działa?"</li><li>„Jak wygładzić skórę po depilacji — co używać?"</li><li>„Depilacja nóg — jak najszybciej i najtrwalej?"</li><li>„Co wybrać: krem Veet czy epilator czy wosk?"</li></ol>
+<p><strong><code>cep_depilacja_bez_bolu</code></strong> — Chcę depilatora który nie boli <em>(3 pytania)</em></p>
 
-<hr>
+<ul><li>Czy istnieje depilator, który naprawdę nie boli, czy to tylko chwyt marketingowy?</li><li>Jakie są domowe sposoby na depilację bez bólu, zanim kupię urządzenie?</li><li>Czy depilacja laserowa w domu jest mniej bolesna niż woskowanie?</li></ul>
+
+<p><strong><code>cep_diy_dom_efekt_salonu</code></strong> — Chcę efektu woskowania w domu bez wizyty w salonie <em>(3 pytania)</em></p>
+
+<ul><li>Czy jest jakiś sposób, żeby w domu uzyskać efekt gładkiej skóry jak po wosku, bez wychodzenia z domu?</li><li>Jakie urządzenie do depilacji domowej daje efekt porównywalny do woskowania w salonie?</li><li>Czy da się zrobić depilację woskiem w domu bez bałaganu i bólu?</li></ul>
+
+<p><strong><code>cep_permanentna_redukcja</code></strong> — Chcę żeby włosy wolniej rosły / przestały rosnąć <em>(3 pytania)</em></p>
+
+<ul><li>Czy da się sprawić, żeby włosy na nogach w ogóle przestały rosnąć domowymi metodami?</li><li>Ile czasu trzeba używać depilatora, żeby zobaczyć spowolnienie wzrostu włosów?</li><li>Czy istnieje coś, co trwale usunie owłosienie z okolic bikini bez bólu?</li></ul>
+
+<p><strong><code>cep_szybka_depilacja</code></strong> — Mam 10 minut, za godzinę wyjście <em>(3 pytania)</em></p>
+
+<ul><li>Czy zdążę ogolić nogi w 10 minut przed wyjściem?</li><li>Jaki depilator działa najszybciej i nie wymaga przygotowania?</li><li>Czy jest jakiś depilator, który poradzi sobie z krótkim włosem bez bólu w 5 minut?</li></ul>
+
+<p><strong><code>cep_wrazliwa_skora</code></strong> — Mam wrażliwą skórę — po każdej depilacji mam… <em>(3 pytania)</em></p>
+
+<ul><li>Czy istnieje depilator, który nie podrażnia wrażliwej skóry?</li><li>Dlaczego po każdej depilacji mam czerwone kropki i swędzenie?</li><li>Jaki sprzęt do depilacji wybrać, żeby nie bolało i nie uczuliło?</li></ul>
+
+<p><strong><code>cep_eko_wielorazowy</code></strong> — Szukam wielorazowego, ekologicznego rozwiązania <em>(3 pytania)</em></p>
+
+<ul><li>Czy istnieje depilator wielorazowy, który nie generuje plastikowych wkładów?</li><li>Jaki ekologiczny depilator do ciała nie wymaga jednorazowych ostrzy?</li><li>Czy depilacja bez chemii i plastiku jest w ogóle skuteczna na dłuższą metę?</li></ul>
+
+<p><strong><code>cep_wrastajace_wlosy</code></strong> — Po depilacji mam wrastające włosy <em>(3 pytania)</em></p>
+
+<ul><li>Czy istnieje sposób, żeby po depilacji nie mieć wrastających włosów?</li><li>Dlaczego po goleniu zawsze mam czerwone kropki i wrastające włosy?</li><li>Czy depilator mechaniczny zmniejsza ryzyko wrastania w porównaniu do maszynki?</li></ul>
+
+<p><strong><code>cep_peeling_skory</code></strong> — Chcę przy depilacji jednocześnie wygładzić skórę <em>(3 pytania)</em></p>
+
+<ul><li>Czy jest depilator, który jednocześnie wygładza skórę, żebym nie musiała używać peelingu osobno?</li><li>Jakie urządzenie do depilacji daje efekt gładkiej skóry od razu po użyciu?</li><li>Czy istnieje coś, co depiluje i złuszcza naskórek w jednym kroku?</li></ul>
+
+<p><strong><code>cep_zmiana_metody</code></strong> — Moja metoda mnie zawodzi — szukam czegoś nowego <em>(3 pytania)</em></p>
+
+<ul><li>Czy istnieje depilator, który faktycznie działa na moje grube włosy, skoro zwykła maszynka już nie daje rady?</li><li>Jaki depilator nie boli tak bardzo jak mój stary, który tylko szarpie i podrażnia skórę?</li><li>Czy jest jakaś nowa technologia depilacji domowej, która nie wymaga codziennego golenia?</li></ul>
+
+<p><strong><code>cep_budzet</code></strong> — Chcę tanio i skutecznie — nie stać mnie na… <em>(3 pytania)</em></p>
+
+<ul><li>Czy jest jakiś tani depilator, który faktycznie działa, a nie tylko szarpie włosy?</li><li>Mam dość wydawania kasy na woskowanie – jaki domowy sprzęt ogoli mnie na gładko bez bólu?</li><li>Nie stać mnie na laser w salonie – czy jest depilator, który da podobny efekt za 200 zł?</li></ul>
+
+<p><strong><code>cep_okolice_bikini</code></strong> — Depilacja bikini / pachy — jak bezpiecznie? <em>(3 pytania)</em></p>
+
+<ul><li>Czy depilacja bikini w domu jest bezpieczna, czy lepiej iść do salonu?</li><li>Jakie są ryzyka przy depilacji pach depilatorem – czy można zrobić sobie krzywdę?</li><li>Czy istnieje bezpieczny sposób na depilację miejsc intymnych bez bólu i podrażnień?</li></ul>
+
+<p><strong><code>cep_krotkie_wlosy</code></strong> — Włoski za krótkie dla epilatora / wosku <em>(3 pytania)</em></p>
+
+<ul><li>Czy da się usunąć bardzo krótkie włoski bez czekania, aż odrosną?</li><li>Mam włoski za krótkie na wosk – co zrobić, żeby się ich pozbyć od razu?</li><li>Jaki sposób na depilację działa na włosy poniżej 2 mm?</li></ul>
 
 <h2>0d. Query Mutation Map</h2>
 
@@ -604,96 +512,329 @@ FILTRY (po wyborze metody):
 
 <hr>
 
-<h2>13. Pole pytań — WPIS CS (§13)</h2>
+<h2>13. Pole pytań</h2>
 
-<p><em>Pytania do mapy percepcji. Zbudowane per ścieżka × stan × intent.</em></p>
+<p><em>Pełne pole: <strong>348 pytań</strong> / <strong>12 ścieżek</strong> (CEP × stan świadomości × intent), engine V5. Warstwa ① Discovery: 36 · warstwa ② pogłębione: 312.</em></p>
+<p><em>Źródło: <code>data/questions/depilator.json</code> · interaktywny widok: <code>MAPA_PERCEPCJI_depilator_v5.7.html</code></em></p>
 
-<h3>Ścieżka A — bezbolesna (GLOV primary 🟢)</h3>
-<p>🛡️ „Czy depilacja nano szkłem boli?" · „Jakie metody depilacji są bezbolesne?" · „Czy krem do depilacji jest bezbolesny?" · „Depilacja bez bólu — od czego zacząć?" · „Czy GLOV depilator boli przy używaniu?" · „Depilacja dla osób wrażliwych na ból — jakie metody?"</p>
+<h3>① Discovery — pytania wejściowe ścieżek</h3>
 
-<h3>Ścieżka B — eko / wielorazowa (GLOV primary 🟢)</h3>
-<p>„Wielorazowy depilator — co wybrać?" · „Jak zdepilowaś się ekologicznie?" · „Depilacja zero waste — jakie metody?" · „Czy nano szkło do depilacji jest bezpieczne i eko?" · „Ile razy można używać depilatora z nano szkła?" · „Jak dbać o nano szkło żeby wytrzymało długo?"</p>
+<p><em>36 pytań otwierających. Pełna lista z podziałem na CEP: §3.</em></p>
 
-<h3>Ścieżka C — wosk/epilator (DIY salon)</h3>
-<p>„Jak depilowaś się woskiem w domu?" · „Epilator czy wosk — co jest lepsze?" · „Jak długo efekt depilacji epilatorem?" · „Jak woskować bikini w domu?" · „Braun czy Philips — który epilator lepszy?" · „Jak nie podrażnić skóry po epilatorze?"</p>
+<h3>② Pogłębione — per ścieżka → stan → pytania</h3>
 
-<h3>Ścieżka D — IPL/permanentna</h3>
-<p>„Jak działa depilator IPL?" · „Czy IPL działa na ciemną skórę?" · „Ile zabiegów IPL jest potrzebne?" · „Philips Lumea vs salon laserowy — co wybrać?" · „Czy IPL w domu jest bezpieczny?" · „Depilacja laserowa domowa — od czego zacząć?"</p>
+<h4><code>cep_depilacja_bez_bolu</code> — Chcę depilatora który nie boli <em>(29 pytań: ①3 / ②26)</em></h4>
 
-<h3>Ścieżka E — zmiana metody (switch) (GLOV żółty 🟡)</h3>
-<p>„Co zamiast golarki do nóg?" · „Czym zastąpić maszynkę jednorazową?" · „Krem depilujący vs nano szkło — które lepsze?" · „Alternatywa dla epilatora — co polecić?" · „Co wybrać zamiast wosku w domu?" · „Jaka metoda depilacji jest najmniej brudząca?"</p>
+<p><strong>3. Rozpoznanie CEP</strong> · waga 1.0 — 3 pytań</p>
 
-<h3>Pytania cross-kategoria</h3>
-<p>„Jak depilowaś się przed plażą?" · „Depilacja przed randką — co jest najszybsze?" · „Jak mieć gładką skórę na nogach cały rok?" · „Co na wrastające włosy po depilacji?" · „Depilacja przy atopowym zapaleniu skóry — co bezpieczne?"</p>
-</div>
-  </div>
-</div>
-<script>
-const CATS=[{"num":1,"name":"depilator","v":"v2","s":"depilator"}];
-const searchEl=document.getElementById('search');
-const statEl=document.getElementById('stat');
-const nrEl=document.getElementById('nr');
-const TOTAL=CATS.length;
-let curFilter='all';
+<ul><li>Jaki depilator nie boli – porównanie marek i opinie użytkowników?</li><li>Czy depilatory z funkcją chłodzenia faktycznie eliminują ból?</li><li>Jak działa depilator IPL i czy jest bezbolesny dla wrażliwej skóry?</li></ul>
 
-function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
-function hi(text,q){
-  if(!q)return text;
-  return text.replace(new RegExp('('+esc(q)+')','gi'),'<mark>$1</mark>');
-}
+<p><strong>4. Nauka kategorii</strong> · waga 3.65 — 6 pytań</p>
 
-function applySearch(q){
-  const ql=q.trim().toLowerCase();
-  let n=0;
-  CATS.forEach(c=>{
-    const item=document.getElementById('i'+c.num);
-    const matchQ=!ql||c.s.includes(ql);
-    const matchF=curFilter==='all'||(curFilter==='v1'&&c.v==='v1')||(curFilter==='v2p'&&c.v!=='v1');
-    const ok=matchQ&&matchF;
-    if(item)item.classList.toggle('hidden',!ok);
-    if(ok){
-      n++;
-      const el=item&&item.querySelector('.ct');
-      if(el)el.innerHTML=hi(c.name,q.trim());
-    }
-  });
-  nrEl.style.display=n===0?'block':'none';
-  const fLabel=curFilter==='v1'?' · Draft':curFilter==='v2p'?' · Verified':'';
-  statEl.textContent=(ql?n+'/':'')+TOTAL+' cat.'+fLabel;
-}
+<ul><li>Depilator laserowy a IPL – który mniej boli i jest skuteczniejszy?</li><li>Czy depilator z głowicą do miejsc intymnych boli mniej niż zwykły?</li><li>Jakie są normy bezpieczeństwa dla depilatorów IPL (np. certyfikat CE, FDA)?</li><li>Czy depilator bezbolesny ma atesty dermatologiczne i testy na skórze?</li><li>Jak pachnie depilator podczas pracy – czy wydziela jakieś zapachy?</li><li>Czy depilatory cruelty-free i wegańskie są dostępne w kategorii bezbolesnych?</li></ul>
 
-function setFilter(f){
-  curFilter=f;
-  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
-  applySearch(searchEl.value);
-}
+<p><strong>5. Preselekcja</strong> · waga 1.8 — 4 pytań</p>
 
-function select(num){
-  document.querySelectorAll('.ci').forEach(e=>e.classList.remove('active'));
-  document.querySelectorAll('.cs').forEach(e=>e.classList.remove('vis'));
-  const item=document.getElementById('i'+num);
-  const sec=document.getElementById('s'+num);
-  if(item){item.classList.add('active');item.scrollIntoView({block:'nearest'});}
-  if(sec)sec.classList.add('vis');
-  document.getElementById('ct').scrollTop=0;
-}
+<ul><li>Który depilator IPL ma najlepsze opinie pod kątem bólu i skuteczności – Philips Lumea czy Braun Silk-expert?</li><li>Jaki depilator do nóg nie boli i ma regulację siły impulsu?</li><li>Czy depilator z ceramiczną głowicą jest mniej bolesny niż z metalową?</li><li>Jakie są klasy bezpieczeństwa urządzeń do depilacji laserowej (klasa I, II, III)?</li></ul>
 
-searchEl.addEventListener('input',e=>applySearch(e.target.value));
-document.addEventListener('keydown',e=>{
-  if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();searchEl.focus();searchEl.select();}
-  if(e.key==='Escape'&&document.activeElement===searchEl){searchEl.value='';applySearch('');searchEl.blur();}
-});
+<p><strong>6. Porównywanie</strong> · waga 1.9 — 4 pytań</p>
 
-if(CATS.length>0)select(CATS[0].num);
+<ul><li>Porównanie depilatorów IPL: Philips Lumea Prestige vs Braun Silk-expert Pro 5 – który mniej boli?</li><li>Czy depilator laserowy z funkcją chłodzenia skóry (np. Sensica) jest wart dopłaty?</li><li>Jaki depilator do twarzy nie boli i ma certyfikat bezpieczeństwa dla skóry wrażliwej?</li><li>Różnica między depilatorem IPL a diodowym – który ma lepsze opinie o bólu i efekcie?</li></ul>
 
-function toggleTheme(){
-  const l=document.body.classList.toggle('light');
-  localStorage.setItem('geo-theme',l?'light':'dark');
-  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
-}
-(function(){if(localStorage.getItem('geo-theme')==='light'){
-  document.body.classList.add('light');
-  var b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
-</script>
-</body>
+<p><strong>7. Wybór sklepu/sposobu zakupu</strong> · waga 3.25 — 6 pytań</p>
+
+<ul><li>Gdzie kupić depilator bezbolesny z gwarancją zwrotu, jeśli nie spełni oczekiwań?</li><li>Czy w sklepie stacjonarnym można przetestować depilator przed zakupem (wrażenie zmysłowe, zapach)?</li><li>Który sklep oferuje najdłuższą gwarancję na depilator IPL (np. 3 lata)?</li><li>Czy warto kupić depilator na promocji, czy lepiej zapłacić więcej za certyfikowany model?</li><li>Jakie są opinie o zakupie depilatora z drugiej ręki – czy to bezpieczne?</li><li>Czy depilator z Amazon ma oryginalne certyfikaty i atesty, czy można trafić na podróbkę?</li></ul>
+
+<p><strong>8. Zakup</strong> · waga 1.1 — 3 pytań</p>
+
+<ul><li>Czy przy zakupie depilatora dostaję pełną instrukcję bezpieczeństwa i certyfikat zgodności?</li><li>Co zrobić, jeśli depilator zawiedzie w ciągu pierwszego miesiąca – procedura reklamacji?</li><li>Jak sprawdzić, czy depilator ma oznaczenie CE i czy jest testowany dermatologicznie?</li></ul>
+
+<h4><code>cep_diy_dom_efekt_salonu</code> — Chcę efektu woskowania w domu bez wizyty w salonie <em>(29 pytań: ①3 / ②26)</em></h4>
+
+<p><strong>3. Rozpoznanie CEP</strong> · waga 1.0 — 3 pytań</p>
+
+<ul><li>Jaki depilator do domu działa jak wosk, ale jest łatwiejszy w użyciu?</li><li>Czy depilatory IPL dają taki sam efekt gładkości jak woskowanie?</li><li>Jakie urządzenie zastąpi wizytę u kosmetyczki i da efekt wygładzenia na 3-4 tygodnie?</li></ul>
+
+<p><strong>4. Nauka kategorii</strong> · waga 3.65 — 6 pytań</p>
+
+<ul><li>Jak działa depilator IPL i czy naprawdę usuwa włosy od nasady jak wosk?</li><li>Czy depilator z pęsetkami wyrywa włosy tak samo skutecznie jak wosk?</li><li>Jaka jest różnica między depilatorem IPL a zwykłym depilatorem mechanicznym?</li><li>Czy depilator laserowy do domu jest bezpieczny dla skóry wrażliwej?</li><li>Jakie są normy i atesty dla domowych depilatorów IPL?</li><li>Czy depilator do użytku domowego ma certyfikaty bezpieczeństwa i co jeśli poparzy skórę?</li></ul>
+
+<p><strong>5. Preselekcja</strong> · waga 1.8 — 4 pytań</p>
+
+<ul><li>Jaki jest najlepszy depilator do nóg i okolic bikini, który daje efekt wosku?</li><li>Który depilator IPL ma najwięcej poziomów mocy i czujnik odcienia skóry?</li><li>Jaki depilator wybrać, żeby nie pomylić się z typem skóry i włosów?</li><li>Czy depilator z wymiennymi głowicami jest higieniczny i jak często trzeba je zmieniać?</li></ul>
+
+<p><strong>6. Porównywanie</strong> · waga 1.9 — 4 pytań</p>
+
+<ul><li>Porównanie depilatora IPL Philips Lumea vs Braun Silk-expert – który ma lepsze opinie i efekt?</li><li>Który depilator do domu ma najcichsze działanie i nie szczypie jak wosk?</li><li>Czy depilator IPL jest cruelty-free i jakie ma składniki w opakowaniu?</li><li>Jak pachnie depilator podczas pracy i czy nagrzewa się nieprzyjemnie?</li></ul>
+
+<p><strong>7. Wybór sklepu/sposobu zakupu</strong> · waga 3.25 — 6 pytań</p>
+
+<ul><li>Gdzie kupić depilator IPL z gwarancją i możliwością zwrotu, jeśli nie zadziała?</li><li>Czy w Media Expert czy w Sephora lepiej kupić depilator do domu?</li><li>Jaki sklep oferuje darmową dostawę i 30-dniowe prawo zwrotu dla depilatora?</li><li>Czy warto kupić depilator na AliExpress czy lepiej w autoryzowanym sklepie z certyfikatem?</li><li>Która platforma ma najlepsze opinie klientów o depilatorach IPL?</li><li>Czy w sklepie stacjonarnym mogę przetestować, jak depilator leży w dłoni i jak wygląda?</li></ul>
+
+<p><strong>8. Zakup</strong> · waga 1.1 — 3 pytań</p>
+
+<ul><li>Czy przy zakupie depilatora IPL dostaję gwarancję producenta i co jeśli urządzenie zawiedzie po miesiącu?</li><li>Jaki jest koszt eksploatacji depilatora – czy trzeba dokupować wkłady lub żele?</li><li>Czy depilator ma atest CE i czy jest bezpieczny dla skóry z alergiami?</li></ul>
+
+<h4><code>cep_permanentna_redukcja</code> — Chcę żeby włosy wolniej rosły / przestały rosnąć <em>(29 pytań: ①3 / ②26)</em></h4>
+
+<p><strong>3. Rozpoznanie CEP</strong> · waga 1.0 — 3 pytań</p>
+
+<ul><li>Jakie urządzenie do depilacji działa na zasadzie niszczenia cebulki, żeby włos nie odrastał?</li><li>Czy depilator IPL (światłem) faktycznie spowalnia wzrost włosów, czy to mit?</li><li>Która technologia – laser czy IPL – jest skuteczniejsza do trwałego usuwania włosów w domu?</li></ul>
+
+<p><strong>4. Nauka kategorii</strong> · waga 3.65 — 6 pytań</p>
+
+<ul><li>Czym się różni depilator IPL od lasera diodowego do użytku domowego?</li><li>Jakie są normy bezpieczeństwa dla domowych depilatorów laserowych – czy mają atesty medyczne?</li><li>Czy depilator IPL może uszkodzić skórę lub spowodować oparzenia, jeśli użyję go na twarzy?</li><li>Jak sprawdzić, czy dany model depilatora ma certyfikat CE i jest bezpieczny do miejsc intymnych?</li><li>Czy depilatory IPL są cruelty-free i czy testuje się je na zwierzętach?</li><li>Jaki zapach i wrażenia podczas używania depilatora IPL – czy pachnie spalenizną i czy boli?</li></ul>
+
+<p><strong>5. Preselekcja</strong> · waga 1.8 — 4 pytań</p>
+
+<ul><li>Który depilator IPL ma najwięcej pozytywnych opinii na forum o spowalnianiu wzrostu włosów na nogach?</li><li>Jaki jest najlepszy depilator laserowy do domu w 2025 roku – ranking i porównanie modeli?</li><li>Czy droższy depilator IPL daje lepsze efekty w hamowaniu wzrostu włosów, czy to tylko marketing?</li><li>Który model ma najdłuższą gwarancję i co obejmuje – czy wymieniają urządzenie, jeśli przestanie działać?</li></ul>
+
+<p><strong>6. Porównywanie</strong> · waga 1.9 — 4 pytań</p>
+
+<ul><li>Porównanie Philips Lumea vs Braun Silk-Expert – który skuteczniej spowalnia odrost włosów na udach?</li><li>Czy depilator IPL z funkcją chłodzenia jest wart dopłaty, jeśli mam wrażliwą skórę?</li><li>Który model ma najwyższy poziom energii (J/cm²) i czy to przekłada się na trwalszy efekt?</li><li>Jakie są różnice w liczbie błysków i żywotności lampy między tanim a drogim depilatorem IPL?</li></ul>
+
+<p><strong>7. Wybór sklepu/sposobu zakupu</strong> · waga 3.25 — 6 pytań</p>
+
+<ul><li>Gdzie kupić depilator IPL z możliwością zwrotu, jeśli nie spowolni wzrostu włosów po 3 miesiącach?</li><li>Czy na Amazon są oryginalne depilatory IPL z certyfikatem, czy lepiej brać w sklepie stacjonarnym?</li><li>Który sklep oferuje najdłuższą gwarancję i darmową wymianę wadliwego urządzenia?</li><li>Czy warto kupić używany depilator IPL z drugiej ręki – czy lampa ma jeszcze żywotność?</li><li>Jaki jest koszt eksploatacji – czy trzeba dokupować wkłady lub żele do depilatora IPL?</li><li>Czy w promocji Black Friday warto brać starszy model, czy lepiej dopłacić do nowszej wersji z lepszymi atestami?</li></ul>
+
+<p><strong>8. Zakup</strong> · waga 1.1 — 3 pytań</p>
+
+<ul><li>Czy przy zakupie depilatora IPL dostaję instrukcję po polsku i czy jest objęty gwarancją producenta?</li><li>Jak sprawdzić, czy opakowanie jest oryginalne i nie dostałem podróbki bez certyfikatów bezpieczeństwa?</li><li>Czy po zakupie mogę liczyć na pomoc techniczną, jeśli urządzenie nie działa zgodnie z obietnicą spowolnienia wzrostu włosów?</li></ul>
+
+<h4><code>cep_szybka_depilacja</code> — Mam 10 minut, za godzinę wyjście <em>(29 pytań: ①3 / ②26)</em></h4>
+
+<p><strong>3. Rozpoznanie CEP</strong> · waga 1.0 — 3 pytań</p>
+
+<ul><li>Mam 10 minut – jaki depilator mogę użyć od razu po wyjęciu z pudełka?</li><li>Czy depilator bezprzewodowy jest gotowy do pracy od razu, czy trzeba go ładować?</li><li>Który depilator ma najkrótszy czas nagrzewania (jeśli w ogóle wymaga nagrzewania)?</li></ul>
+
+<p><strong>4. Nauka kategorii</strong> · waga 3.65 — 6 pytań</p>
+
+<ul><li>Jak działa depilator laserowy i czy zdążę nim zrobić nogi w 10 minut?</li><li>Czy depilator IPL działa od razu, czy trzeba go używać tygodniami?</li><li>Jaka jest różnica między depilatorem mechanicznym a IPL pod kątem czasu użycia?</li><li>Czy depilator do ciała nadaje się też do miejsc intymnych i czy to bezpieczne?</li><li>Jakie normy i atesty musi mieć depilator, żeby nie uszkodzić skóry przy szybkim użyciu?</li><li>Czy depilator może zawieść w trakcie (np. przegrzać się) i co wtedy robić?</li></ul>
+
+<p><strong>5. Preselekcja</strong> · waga 1.8 — 4 pytań</p>
+
+<ul><li>Który depilator ma najlepsze opinie na forum dla osób, które mają mało czasu?</li><li>Jaki depilator do nóg jest najszybszy i nie wymaga golarki przed?</li><li>Czy depilator z wymiennymi głowicami jest łatwiejszy w czyszczeniu i szybszy w użyciu?</li><li>Jaki depilator ma certyfikat bezpieczeństwa i gwarancję na wypadek awarii?</li></ul>
+
+<p><strong>6. Porównywanie</strong> · waga 1.9 — 4 pytań</p>
+
+<ul><li>Porównaj czas depilacji nóg depilatorem mechanicznym vs IPL – który jest szybszy?</li><li>Który depilator ma lepsze opinie: Philips Lumea czy Braun Silk-épil przy ograniczonym czasie?</li><li>Czy droższy depilator faktycznie działa szybciej i ma lepsze atesty?</li><li>Jak pachnie depilator podczas pracy (czy śmierdzi spalenizną) i czy to wpływa na komfort?</li></ul>
+
+<p><strong>7. Wybór sklepu/sposobu zakupu</strong> · waga 3.25 — 6 pytań</p>
+
+<ul><li>Gdzie kupić depilator z dostawą w 1 dzień, żeby zdążyć przed wyjściem?</li><li>Czy w sklepie stacjonarnym mogę od razu przetestować depilator i sprawdzić, jak pachnie?</li><li>Który sklep oferuje najszybszy zwrot, jeśli depilator nie spełni oczekiwań?</li><li>Czy warto kupić depilator z outletu z gwarancją, czy lepiej nowy z certyfikatem?</li><li>Jaki sklep ma w ofercie depilatory cruelty-free i eco-friendly?</li><li>Czy mogę kupić depilator używany i czy to bezpieczne (ryzyko uszkodzenia skóry)?</li></ul>
+
+<p><strong>8. Zakup</strong> · waga 1.1 — 3 pytań</p>
+
+<ul><li>Czy ten depilator ma polską instrukcję i gwarancję na 2 lata?</li><li>Czy do depilatora są dołączone akcesoria (np. nasadki do miejsc intymnych) i czy są bezpieczne?</li><li>Czy po zakupie mogę szybko sprawdzić, czy urządzenie działa, i co jeśli zawiedzie od razu?</li></ul>
+
+<h4><code>cep_wrazliwa_skora</code> — Mam wrażliwą skórę — po każdej depilacji mam… <em>(29 pytań: ①3 / ②26)</em></h4>
+
+<p><strong>3. Rozpoznanie CEP</strong> · waga 1.0 — 3 pytań</p>
+
+<ul><li>Depilacja wrażliwej skóry – co robić, żeby uniknąć podrażnień?</li><li>Czy depilator z chłodzeniem pomoże na moją nadwrażliwą skórę?</li><li>Jakie technologie w depilatorach są bezpieczne dla skóry skłonnej do alergii?</li></ul>
+
+<p><strong>4. Nauka kategorii</strong> · waga 3.65 — 6 pytań</p>
+
+<ul><li>Czy depilator laserowy działa na wrażliwą skórę bez ryzyka poparzeń?</li><li>Depilator IPL a skóra wrażliwa – jakie atesty i certyfikaty są ważne?</li><li>Czy depilator elektryczny z ceramicznymi głowicami jest lepszy dla alergików?</li><li>Jak działa depilator z funkcją masażu – czy zmniejsza podrażnienia?</li><li>Czy depilatory z wymiennymi nakładkami są higieniczne dla wrażliwej skóry?</li><li>Jaki depilator do nóg dla osoby z atopowym zapaleniem skóry?</li></ul>
+
+<p><strong>5. Preselekcja</strong> · waga 1.8 — 4 pytań</p>
+
+<ul><li>Który depilator IPL ma certyfikat bezpieczeństwa dla skóry wrażliwej?</li><li>Depilator Philips Lumea vs Braun Silk-Expert – który mniej podrażnia?</li><li>Czy depilator z jonizacją i nawilżaniem faktycznie łagodzi skórę?</li><li>Jaki depilator do miejsc intymnych przy wrażliwej skórze – ranking?</li></ul>
+
+<p><strong>6. Porównywanie</strong> · waga 1.9 — 4 pytań</p>
+
+<ul><li>Porównanie depilatorów z końcówką do skóry wrażliwej – który ma najlepsze opinie?</li><li>Depilator laserowy a elektryczny – co jest bezpieczniejsze przy alergii?</li><li>Czy depilator z funkcją chłodzenia ma gwarancję na uszkodzenia skóry?</li><li>Który depilator ma najdelikatniejsze pęsety i nie wyrywa włosów z korzeniami?</li></ul>
+
+<p><strong>7. Wybór sklepu/sposobu zakupu</strong> · waga 3.25 — 6 pytań</p>
+
+<ul><li>Gdzie kupić depilator z możliwością zwrotu, jeśli podrażni skórę?</li><li>Czy w sklepie stacjonarnym mogę przetestować depilator na skórze?</li><li>Jaki sklep oferuje depilatory z certyfikatem dermatologicznym i eco?</li><li>Czy warto kupić depilator z outletu – czy gwarancja obejmuje wady skóry?</li><li>Która marka daje najdłuższą gwarancję na depilator dla wrażliwej skóry?</li><li>Czy depilator z drugiej ręki jest bezpieczny dla alergików?</li></ul>
+
+<p><strong>8. Zakup</strong> · waga 1.1 — 3 pytań</p>
+
+<ul><li>Czy ten depilator ma atest cruelty-free i nie testowany na zwierzętach?</li><li>Jak pachnie depilator po włączeniu – czy wydziela jakieś chemiczne opary?</li><li>Czy po zakupie mogę wymienić depilator, jeśli wywoła reakcję alergiczną?</li></ul>
+
+<h4><code>cep_eko_wielorazowy</code> — Szukam wielorazowego, ekologicznego rozwiązania <em>(29 pytań: ①3 / ②26)</em></h4>
+
+<p><strong>3. Rozpoznanie CEP</strong> · waga 1.0 — 3 pytań</p>
+
+<ul><li>Jakie są dostępne wielorazowe i ekologiczne metody depilacji do użytku domowego?</li><li>Czy depilator wielorazowy to to samo co depilator laserowy czy coś innego?</li><li>Które rozwiązanie do depilacji jest naprawdę zero waste i cruelty-free?</li></ul>
+
+<p><strong>4. Nauka kategorii</strong> · waga 3.65 — 6 pytań</p>
+
+<ul><li>Jak działa depilator wielorazowy z pęsetkami i czy to boli?</li><li>Czy depilator wielorazowy nadaje się do miejsc intymnych?</li><li>Jaka jest różnica między depilatorem a golarką pod kątem ekologii?</li><li>Czy depilator wielorazowy ma wymienne końcówki i jak często się je zmienia?</li><li>Jakie normy i atesty bezpieczeństwa musi mieć depilator do użytku domowego?</li><li>Czy depilator wielorazowy jest cichy i jak wygląda efekt po użyciu?</li></ul>
+
+<p><strong>5. Preselekcja</strong> · waga 1.8 — 4 pytań</p>
+
+<ul><li>Który depilator wielorazowy ma certyfikat ekologiczny lub oznaczenie cruelty-free?</li><li>Jaki depilator wielorazowy jest najlepszy do nóg i nie podrażnia skóry?</li><li>Czy depilator wielorazowy z wymiennymi głowicami jest łatwy w czyszczeniu?</li><li>Jak nie pomylić się przy wyborze depilatora wielorazowego – na co patrzeć w specyfikacji?</li></ul>
+
+<p><strong>6. Porównywanie</strong> · waga 1.9 — 4 pytań</p>
+
+<ul><li>Porównanie depilatora wielorazowego Philips vs Braun – który ma lepsze opinie o ekologii?</li><li>Który depilator wielorazowy ma najdłuższą gwarancję i co jeśli zawiedzie po roku?</li><li>Czy depilator wielorazowy z funkcją laserową jest bardziej eko niż zwykły?</li><li>Jaki depilator wielorazowy pachnie neutralnie i nie zostawia zapachu plastiku?</li></ul>
+
+<p><strong>7. Wybór sklepu/sposobu zakupu</strong> · waga 3.25 — 6 pytań</p>
+
+<ul><li>Gdzie kupić depilator wielorazowy z certyfikatem ekologicznym i darmową wysyłką?</li><li>Czy w sklepie stacjonarnym mogę sprawdzić jak pachnie i wygląda depilator wielorazowy?</li><li>Który sklep oferuje zwrot depilatora wielorazowego jeśli nie spełni oczekiwań?</li><li>Czy na Allegro lub Amazon są oryginalne depilatory wielorazowe z atestami?</li><li>Jaki sklep ma najlepsze opinie o obsłudze gwarancyjnej depilatorów wielorazowych?</li><li>Czy warto kupić depilator wielorazowy z drugiej ręki – czy to bezpieczne i eko?</li></ul>
+
+<p><strong>8. Zakup</strong> · waga 1.1 — 3 pytań</p>
+
+<ul><li>Czy do depilatora wielorazowego dołączone są instrukcje w języku polskim i certyfikat?</li><li>Jak sprawdzić przed zakupem, czy depilator wielorazowy ma oznaczenie CE i jest cruelty-free?</li><li>Czy przy zakupie depilatora wielorazowego mogę dostać fakturę i gwarancję na 2 lata?</li></ul>
+
+<h4><code>cep_wrastajace_wlosy</code> — Po depilacji mam wrastające włosy <em>(29 pytań: ①3 / ②26)</em></h4>
+
+<p><strong>3. Rozpoznanie CEP</strong> · waga 1.0 — 3 pytań</p>
+
+<ul><li>Jakie są przyczyny wrastania włosów po depilacji i jak temu zapobiec?</li><li>Czy peeling przed depilacją pomaga na wrastające włosy?</li><li>Jaki typ depilatora (laserowy, IPL, mechaniczny) jest najlepszy na wrastające włosy?</li></ul>
+
+<p><strong>4. Nauka kategorii</strong> · waga 3.65 — 6 pytań</p>
+
+<ul><li>Jak działa depilator laserowy i czy faktycznie zapobiega wrastaniu włosów?</li><li>Czy depilator IPL jest bezpieczny dla skóry skłonnej do wrastania?</li><li>Jaka jest różnica między depilatorem a epilatorem w kontekście wrastających włosów?</li><li>Czy depilator z funkcją masażu lub chłodzenia zmniejsza podrażnienia i wrastanie?</li><li>Jakie normy i atesty powinien mieć depilator, żeby był bezpieczny dla skóry wrażliwej?</li><li>Czy depilatory z ceramicznymi głowicami są lepsze dla skóry z wrastającymi włosami?</li></ul>
+
+<p><strong>5. Preselekcja</strong> · waga 1.8 — 4 pytań</p>
+
+<ul><li>Jaki depilator wybrać forum – który model ma najlepsze opinie na wrastające włosy?</li><li>Czy depilator Philips Lumea IPL ma certyfikat bezpieczeństwa dla skóry wrażliwej?</li><li>Który depilator mechaniczny ma głowicę anty-wrastającą i czy to działa?</li><li>Czy depilator Braun Silk-épil 9 jest skuteczny na wrastające włosy na nogach?</li></ul>
+
+<p><strong>6. Porównywanie</strong> · waga 1.9 — 4 pytań</p>
+
+<ul><li>Porównanie depilatora laserowego Philips Lumea vs Braun IPL – który ma lepsze atesty i skuteczność na wrastanie?</li><li>Czy depilator z wymiennymi głowicami (np. do miejsc intymnych) ma gwarancję na wrastanie?</li><li>Jaki depilator do nóg wybrać, żeby nie podrażniał i nie powodował wrastania – ranking 2025?</li><li>Czy depilator z funkcją pęsety rotacyjnej jest lepszy od laserowego w walce z wrastającymi włosami?</li></ul>
+
+<p><strong>7. Wybór sklepu/sposobu zakupu</strong> · waga 3.25 — 6 pytań</p>
+
+<ul><li>Gdzie kupić depilator z możliwością zwrotu, jeśli nie pomoże na wrastające włosy?</li><li>Czy w sklepie stacjonarnym mogę sprawdzić, jak pachnie i wygląda depilator przed zakupem?</li><li>Który sklep oferuje gwarancję satysfakcji i certyfikat oryginalności dla depilatora IPL?</li><li>Czy warto kupić depilator z outletu – jakie ryzyko dla bezpieczeństwa i wrastania?</li><li>Jaki sklep ma najlepsze opinie o zwrotach, jeśli depilator zawiedzie w walce z wrastającymi włosami?</li><li>Czy depilator z ekologicznym opakowaniem i cruelty-free składnikami jest dostępny w Polsce?</li></ul>
+
+<p><strong>8. Zakup</strong> · waga 1.1 — 3 pytań</p>
+
+<ul><li>Czy przy zakupie depilatora dostaję gwarancję na wady ukryte i co jeśli nie działa na wrastanie?</li><li>Jak sprawdzić, czy depilator ma polski certyfikat bezpieczeństwa przed finalizacją zakupu?</li><li>Czy mogę dostać rabat na depilator, jeśli wybiorę wersję z naturalnymi, eco-friendly materiałami?</li></ul>
+
+<h4><code>cep_peeling_skory</code> — Chcę przy depilacji jednocześnie wygładzić skórę <em>(29 pytań: ①3 / ②26)</em></h4>
+
+<p><strong>3. Rozpoznanie CEP</strong> · waga 1.0 — 3 pytań</p>
+
+<ul><li>Co to znaczy, że depilator ma funkcję wygładzania skóry – czy to tylko marketing, czy faktycznie działa?</li><li>Jakie technologie w depilatorze odpowiadają za wygładzenie skóry podczas depilacji?</li><li>Czy depilator z wygładzaniem jest bezpieczny dla skóry wrażliwej?</li></ul>
+
+<p><strong>4. Nauka kategorii</strong> · waga 3.65 — 6 pytań</p>
+
+<ul><li>Jaki depilator laserowy wybrać, żeby jednocześnie wygładzał skórę i nie podrażniał?</li><li>Czy depilator IPL też wygładza skórę, czy tylko usuwa włosy?</li><li>Jak działa depilator z funkcją masażu i wygładzania – czy to to samo co peeling?</li><li>Czy depilator z wymiennymi nakładkami do wygładzania jest lepszy niż zwykły depilator?</li><li>Jakie normy i atesty powinien mieć depilator z funkcją wygładzania, żeby był bezpieczny?</li><li>Czy depilator z wygładzaniem jest cruelty-free i czy skład nakładek jest ekologiczny?</li></ul>
+
+<p><strong>5. Preselekcja</strong> · waga 1.8 — 4 pytań</p>
+
+<ul><li>Który depilator z wygładzaniem ma najlepsze opinie na forum – Philips czy Braun?</li><li>Jaki jest najlepszy depilator do nóg, który wygładza skórę i nie zostawia zaczerwienień?</li><li>Czy depilator z wygładzaniem nadaje się do miejsc intymnych, czy tylko do nóg?</li><li>Jak nie pomylić się przy wyborze depilatora z funkcją wygładzania – na co patrzeć w specyfikacji?</li></ul>
+
+<p><strong>6. Porównywanie</strong> · waga 1.9 — 4 pytań</p>
+
+<ul><li>Porównanie depilatorów z wygładzaniem: Philips Lumea vs Braun Silk-épil – który daje lepszy efekt gładkości?</li><li>Czy depilator z wygładzaniem ma gwarancję na efekt, czy to tylko obietnica producenta?</li><li>Jak pachnie skóra po użyciu depilatora z funkcją wygładzania – czy są jakieś zapachy chemiczne?</li><li>Który depilator z wygładzaniem ma certyfikat bezpieczeństwa i atesty dermatologiczne?</li></ul>
+
+<p><strong>7. Wybór sklepu/sposobu zakupu</strong> · waga 3.25 — 6 pytań</p>
+
+<ul><li>Gdzie kupić depilator z wygładzaniem, żeby mieć możliwość zwrotu, jeśli nie spełni oczekiwań?</li><li>Czy w sklepie stacjonarnym mogę dotknąć i sprawdzić, jak wygląda nakładka wygładzająca przed zakupem?</li><li>Jaki sklep online oferuje najwięcej opinii o depilatorach z wygładzaniem i szybką dostawę?</li><li>Czy warto kupić depilator z wygładzaniem na promocji, czy lepiej zapłacić więcej za oryginał z gwarancją?</li><li>Jakie są koszty zwrotu, jeśli depilator z wygładzaniem nie będzie działał tak, jak obiecywano?</li><li>Czy w zestawie z depilatorem są próbki kremów wygładzających, czy trzeba dokupić osobno?</li></ul>
+
+<p><strong>8. Zakup</strong> · waga 1.1 — 3 pytań</p>
+
+<ul><li>Czy przy zakupie depilatora z wygładzaniem dostaję certyfikat autentyczności i instrukcję po polsku?</li><li>Co jeśli depilator z wygładzaniem zawiedzie w pierwszym miesiącu – czy gwarancja obejmuje wymianę?</li><li>Czy mogę zapłacić za depilator z wygładzaniem w ratach, żeby nie obciążać budżetu?</li></ul>
+
+<h4><code>cep_zmiana_metody</code> — Moja metoda mnie zawodzi — szukam czegoś nowego <em>(29 pytań: ①3 / ②26)</em></h4>
+
+<p><strong>3. Rozpoznanie CEP</strong> · waga 1.0 — 3 pytań</p>
+
+<ul><li>Dlaczego moja obecna metoda (golarka/maszynka) przestała działać – czy to wina mojej skóry czy włosów?</li><li>Czy depilator laserowy do domu rozwiąże problem wrastających włosów, które mam po goleniu?</li><li>Ile czasu muszę poświęcić na nową metodę, żeby zobaczyć efekt – czy to w ogóle opłaca się zmieniać?</li></ul>
+
+<p><strong>4. Nauka kategorii</strong> · waga 3.65 — 6 pytań</p>
+
+<ul><li>Jak działa depilator laserowy i czym różni się od zwykłego depilatora mechanicznego?</li><li>Czy depilator IPL jest bezpieczny dla skóry wrażliwej i czy mogę go używać na twarzy?</li><li>Jakie są normy bezpieczeństwa dla domowych depilatorów laserowych – czy mają atesty CE lub FDA?</li><li>Czy depilator może uszkodzić skórę lub spowodować oparzenia, jeśli użyję go nieprawidłowo?</li><li>Jaki jest zapach podczas depilacji laserowej – czy to śmierdzi spalenizną jak u kosmetyczki?</li><li>Czy istnieją depilatory cruelty-free i z etycznym składem, czy wszystkie są testowane na zwierzętach?</li></ul>
+
+<p><strong>5. Preselekcja</strong> · waga 1.8 — 4 pytań</p>
+
+<ul><li>Jaki jest najlepszy depilator do domu według forum – Philips Lumea czy Braun Silk-Expert?</li><li>Który depilator ma najwięcej poziomów energii i sprawdzi się przy jasnej skórze i ciemnych włosach?</li><li>Czy depilator z wymiennymi głowicami (do nóg, bikini, twarzy) jest wart dopłaty?</li><li>Jakie certyfikaty (np. dermatologicznie testowany) powinien mieć dobry depilator, żeby nie zawieść?</li></ul>
+
+<p><strong>6. Porównywanie</strong> · waga 1.9 — 4 pytań</p>
+
+<ul><li>Porównanie depilatora laserowego IPL a depilatora mechanicznego – który jest skuteczniejszy na długie włosy?</li><li>Czy droższy depilator (np. za 2000 zł) daje lepsze efekty niż tańszy za 500 zł, czy to tylko marketing?</li><li>Który model ma najlepsze opinie o bezpieczeństwie – czy któryś ma wbudowany czujnik odcienia skóry?</li><li>Jaki depilator ma najładniejszy design i nie wygląda jak narzędzie tortur – czy to ma znaczenie przy użytkowaniu?</li></ul>
+
+<p><strong>7. Wybór sklepu/sposobu zakupu</strong> · waga 3.25 — 6 pytań</p>
+
+<ul><li>Gdzie kupić depilator laserowy z gwarancją zwrotu pieniędzy, jeśli nie zadziała na moje włosy?</li><li>Czy w sklepie stacjonarnym mogę dotknąć i powąchać depilator przed zakupem, czy lepiej zamówić online?</li><li>Który sklep oferuje najdłuższą gwarancję (np. 3 lata) i darmowy zwrot w razie niezadowolenia?</li><li>Czy na Allegro lub Amazon są oryginalne depilatory z certyfikatami, czy łatwo trafić na podróbkę?</li><li>Jaki jest koszt eksploatacji – czy dołączone są wymienne wkłady i czy są one eco-friendly?</li><li>Czy warto kupić używany depilator z drugiej ręki, czy to ryzyko związane z higieną i działaniem?</li></ul>
+
+<p><strong>8. Zakup</strong> · waga 1.1 — 3 pytań</p>
+
+<ul><li>Czy przy zakupie depilatora dostaję instrukcję po polsku i czy jest ona zrozumiała dla laika?</li><li>Jak sprawdzić przy odbiorze, czy depilator nie jest uszkodzony i czy ma wszystkie atesty w pudełku?</li><li>Czy mogę natychmiast po zakupie użyć depilatora, czy muszę go najpierw naładować i przetestować na małym obszarze?</li></ul>
+
+<h4><code>cep_budzet</code> — Chcę tanio i skutecznie — nie stać mnie na… <em>(29 pytań: ①3 / ②26)</em></h4>
+
+<p><strong>3. Rozpoznanie CEP</strong> · waga 1.0 — 3 pytań</p>
+
+<ul><li>Jaki tani depilator wybrać, żeby nie kupić bubla – forum poleca coś konkretnego?</li><li>Czy depilator za 100 zł poradzi sobie z grubymi włosami na nogach, czy to strata pieniędzy?</li><li>Gdzie szukać opinii o tanich depilatorach – lepiej Allegro czy Amazon?</li></ul>
+
+<p><strong>4. Nauka kategorii</strong> · waga 3.65 — 6 pytań</p>
+
+<ul><li>Jak działa depilator laserowy w domu – czy to to samo co IPL i które jest tańsze?</li><li>Czy depilator elektryczny wyrywa włosy z cebulkami, a golarka tylko tnie – co jest skuteczniejsze na dłuższą metę?</li><li>Jaki jest najlepszy depilator do nóg w budżecie do 150 zł – marka czy no-name?</li><li>Czy tani depilator ma atesty bezpieczeństwa – jak sprawdzić, czy nie uszkodzi skóry?</li><li>Depilator a wrażenie zmysłowe – czy te tanie śmierdzą plastikiem i czy są głośne?</li><li>Czy depilator można używać na miejsca intymne – jakie normy i certyfikaty to gwarantują?</li></ul>
+
+<p><strong>5. Preselekcja</strong> · waga 1.8 — 4 pytań</p>
+
+<ul><li>Który depilator do 200 zł ma najlepsze opinie na forum – Philips czy Braun, a może chińczyk?</li><li>Jaki depilator wybrać, żeby nie pomylić się z rodzajem – IPL vs elektryczny vs laserowy dla początkującej?</li><li>Czy tani depilator ma gwarancję i co jeśli zepsuje się po miesiącu – zwrot czy naprawa?</li><li>Depilator a eco – który model ma wymienne ostrza i nie generuje góry plastikowych odpadów?</li></ul>
+
+<p><strong>6. Porównywanie</strong> · waga 1.9 — 4 pytań</p>
+
+<ul><li>Porównanie depilatorów Philips BRE640 vs Braun Silk-épil 9 – który jest tańszy i skuteczniejszy na grube włosy?</li><li>Czy depilator laserowy z Chin (np. z AliExpress) ma takie same atesty jak ten z Media Expert – ryzyko czy oszczędność?</li><li>Jaki depilator do nóg nie podrażnia skóry – który model ma lepsze opinie o bólu i zapachu?</li><li>Który depilator ma najdłuższą gwarancję i łatwy serwis – a co jeśli zawiedzie po roku?</li></ul>
+
+<p><strong>7. Wybór sklepu/sposobu zakupu</strong> · waga 3.25 — 6 pytań</p>
+
+<ul><li>Gdzie kupić depilator najtaniej – porównanie cen w Media Markt, RTV Euro AGD i na Allegro?</li><li>Czy na Amazonie są promocje na depilatory – czy lepiej szukać w polskich sklepach z certyfikatem?</li><li>Który sklep daje darmowy zwrot i gwarancję satysfakcji – ważne przy pierwszym zakupie?</li><li>Czy warto kupić używany depilator z olx – jak sprawdzić, czy nie jest uszkodzony i ma oryginalne opakowanie?</li><li>Jaki sklep ma w ofercie depilatory cruelty-free i z eko certyfikatami – czy to wpływa na cenę?</li><li>Czy w sklepie stacjonarnym mogę dotknąć i powąchać depilator przed zakupem – jakie marki mają testery?</li></ul>
+
+<p><strong>8. Zakup</strong> · waga 1.1 — 3 pytań</p>
+
+<ul><li>Czy ten depilator ma polską instrukcję i gwarancję – jak aktywować, żeby nie stracić ochrony?</li><li>Jak sprawdzić przy odbiorze, czy depilator nie jest wadliwy – na co zwrócić uwagę przy pierwszym użyciu?</li><li>Czy do depilatora dołączone są akcesoria (np. golarka, nasadki) i czy pasują do moich potrzeb – czy muszę dokupić coś extra?</li></ul>
+
+<h4><code>cep_okolice_bikini</code> — Depilacja bikini / pachy — jak bezpiecznie? <em>(29 pytań: ①3 / ②26)</em></h4>
+
+<p><strong>3. Rozpoznanie CEP</strong> · waga 1.0 — 3 pytań</p>
+
+<ul><li>Jak bezpiecznie depilować bikini i pachy w domu – krok po kroku?</li><li>Czy depilator laserowy do bikini ma atesty bezpieczeństwa i certyfikaty CE?</li><li>Jakie normy i klasy bezpieczeństwa powinien spełniać depilator do wrażliwych stref?</li></ul>
+
+<p><strong>4. Nauka kategorii</strong> · waga 3.65 — 6 pytań</p>
+
+<ul><li>Jaki depilator laserowy wybrać do bikini i pach – forum poleca konkretne modele?</li><li>Czy depilator IPL jest bezpieczny na pachy i bikini – jakie ma certyfikaty?</li><li>Jak działa depilator laserowy do domowego użytku – czy naprawdę usuwa włosy na stałe?</li><li>Czy depilator do nóg nadaje się też do bikini, czy trzeba kupować osobny?</li><li>Jaki jest najlepszy depilator do domu – ranking z uwzględnieniem bezpieczeństwa i atestów?</li><li>Czy depilator może uszkodzić skórę w okolicach intymnych – jakie są normy ochrony?</li></ul>
+
+<p><strong>5. Preselekcja</strong> · waga 1.8 — 4 pytań</p>
+
+<ul><li>Który depilator IPL ma certyfikat FDA i jest bezpieczny do bikini – porównanie modeli?</li><li>Jaki depilator wybrać do pach, żeby nie podrażniał i miał gwarancję zwrotu?</li><li>Czy depilator laserowy z funkcją chłodzenia jest bezpieczniejszy dla wrażliwej skóry?</li><li>Jak nie pomylić się przy wyborze depilatora do bikini – na jakie atesty patrzeć?</li></ul>
+
+<p><strong>6. Porównywanie</strong> · waga 1.9 — 4 pytań</p>
+
+<ul><li>Porównanie depilatorów IPL do bikini – który ma lepsze opinie o bezpieczeństwie i efekcie?</li><li>Czy droższy depilator do pach ma lepsze certyfikaty i dłuższą gwarancję?</li><li>Który depilator laserowy ma najlepsze wrażenie zmysłowe – jak pachnie, jak wygląda po użyciu?</li><li>Czy depilator z cruelty-free i eko składem jest równie skuteczny jak zwykły?</li></ul>
+
+<p><strong>7. Wybór sklepu/sposobu zakupu</strong> · waga 3.25 — 6 pytań</p>
+
+<ul><li>Gdzie kupić depilator do bikini z gwarancją i możliwością zwrotu, jeśli zawiedzie?</li><li>Czy w sklepie stacjonarnym mogę sprawdzić, jak depilator pachnie i wygląda przed zakupem?</li><li>Który sklep online ma najlepsze opinie o bezpieczeństwie i certyfikatach depilatorów?</li><li>Czy warto kupić depilator laserowy na aukcji, czy lepiej w oficjalnym sklepie z atestami?</li><li>Jaki sklep oferuje darmową konsultację, jak dobrać depilator do wrażliwych stref?</li><li>Czy przy zakupie depilatora do bikini dostaję certyfikat zgodności i instrukcję bezpieczeństwa?</li></ul>
+
+<p><strong>8. Zakup</strong> · waga 1.1 — 3 pytań</p>
+
+<ul><li>Czy przy zakupie depilatora do pach mam prawo do reklamacji, jeśli nie działa bezpiecznie?</li><li>Jak sprawdzić, czy depilator ma wszystkie normy i atesty przed finalizacją zamówienia?</li><li>Czy do depilatora do bikini dołączone jest eco-opakowanie i informacja o składzie materiałów?</li></ul>
+
+<h4><code>cep_krotkie_wlosy</code> — Włoski za krótkie dla epilatora / wosku <em>(29 pytań: ①3 / ②26)</em></h4>
+
+<p><strong>3. Rozpoznanie CEP</strong> · waga 1.0 — 3 pytań</p>
+
+<ul><li>Dlaczego epilator i wosk nie łapią krótkich włosków – czy to wina sprzętu czy techniki?</li><li>Czy istnieje urządzenie, które poradzi sobie z włoskami za krótkimi do tradycyjnej depilacji?</li><li>Jakie metody domowe są skuteczne na odrosty, które nie urosły jeszcze do epilacji?</li></ul>
+
+<p><strong>4. Nauka kategorii</strong> · waga 3.65 — 6 pytań</p>
+
+<ul><li>Czy depilatory laserowe działają na bardzo krótkie włoski, czy muszą być dłuższe?</li><li>Jaka jest różnica między depilatorem IPL a epilatorem przy krótkich włosach?</li><li>Czy golarka elektryczna da radę z włoskami poniżej 1 mm, czy to tylko golarka?</li><li>Jakie są normy bezpieczeństwa dla domowych depilatorów laserowych – czy mają atesty?</li><li>Czy depilatory IPL są cruelty-free i czy ich skład (lampa) jest eko?</li><li>Jak pachnie depilacja laserowa – czy jest jakiś zapach spalenizny i czy to normalne?</li></ul>
+
+<p><strong>5. Preselekcja</strong> · waga 1.8 — 4 pytań</p>
+
+<ul><li>Który depilator IPL ma certyfikat bezpieczeństwa i gwarancję na wypadek awarii?</li><li>Jaki depilator do krótkich włosków wybrać, żeby nie pomylić się z modelem tylko do długich?</li><li>Czy są depilatory z funkcją rozpoznawania długości włosa i automatycznym dostosowaniem mocy?</li><li>Które urządzenie ma najlepsze opinie na forum dla włosów za krótkich do wosku?</li></ul>
+
+<p><strong>6. Porównywanie</strong> · waga 1.9 — 4 pytań</p>
+
+<ul><li>Porównaj depilator IPL Philips Lumea vs Braun Silk-expert – który lepiej radzi sobie z 1 mm włoskami?</li><li>Czy depilator laserowy z chłodzeniem jest bezpieczniejszy dla skóry niż bez chłodzenia?</li><li>Który model ma najcichszy wentylator i nie śmierdzi plastikiem podczas pracy?</li><li>Jaki depilator IPL ma najdłuższą gwarancję i co jeśli zawiedzie po roku?</li></ul>
+
+<p><strong>7. Wybór sklepu/sposobu zakupu</strong> · waga 3.25 — 6 pytań</p>
+
+<ul><li>Gdzie kupić depilator IPL z możliwością zwrotu, jeśli nie poradzi sobie z krótkimi włoskami?</li><li>Czy w sklepie stacjonarnym mogę przetestować, jak urządzenie reaguje na bardzo krótkie włosy?</li><li>Który sklep internetowy ma najlepsze certyfikaty oryginalności i nie sprzedaje podróbek?</li><li>Czy warto brać depilator z outletu – czy gwarancja obejmuje wady przy krótkich włosach?</li><li>Jaki sklep oferuje darmową dostawę i zwrot, jeśli urządzenie nie spełni oczekiwań?</li><li>Czy na Allegro są depilatory z atestem CE i czy można ufać sprzedawcom z małą liczbą opinii?</li></ul>
+
+<p><strong>8. Zakup</strong> · waga 1.1 — 3 pytań</p>
+
+<ul><li>Czy przy zakupie depilatora IPL dostaję jakieś próbki żelu lub kremu do krótkich włosków?</li><li>Jak sprawdzić przed pierwszym użyciem, czy urządzenie ma wszystkie certyfikaty bezpieczeństwa?</li><li>Czy po zakupie mogę liczyć na pomoc techniczną, jeśli urządzenie nie łapie moich krótkich włosków?</li></ul>
+
+
+</div></body>
 </html>
