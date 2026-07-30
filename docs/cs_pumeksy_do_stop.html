@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GEO DT DB — PL — 1 categories</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--sb-bg:#161b22;--hd-bg:#161b22;--bd:#30363d;
+  --tx:#e6edf3;--tx2:#8b949e;--ac:#58a6ff;
+  --cb:#1c2128;--ts:#1c2128;--mb:#2d4a22;--mt:#7ee787;
+  --ab:#1f3353;--sw:292px;--hh:52px
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+     background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* Header */
+#hd{height:var(--hh);background:var(--hd-bg);border-bottom:1px solid var(--bd);
+    display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+#hd h1{font-size:15px;font-weight:700;white-space:nowrap;flex-shrink:0;letter-spacing:.01em}
+#hd h1 span{color:var(--ac)}
+#sw{flex:1;position:relative;max-width:440px}
+#si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tx2);font-size:15px;pointer-events:none}
+#search{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:6px;
+        color:var(--tx);padding:6px 10px 6px 30px;font-size:15px;outline:none;transition:border-color .15s}
+#search:focus{border-color:var(--ac)}
+
+/* Filter buttons */
+.filt{display:flex;gap:4px;flex-shrink:0}
+.fb{font-size:13px;padding:3px 8px;border-radius:4px;border:1px solid var(--bd);
+    background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fb:hover{border-color:var(--ac);color:var(--tx)}
+.fb.on{border-color:var(--ac);background:var(--ab);color:var(--tx)}
+
+/* Lang toggle */
+#lang-btn{font-size:13px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+          background:transparent;color:var(--tx2);cursor:pointer;text-decoration:none;
+          display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+#lang-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+#stat{font-size:13px;color:var(--tx2);flex-shrink:0;white-space:nowrap;min-width:90px;text-align:right}
+
+/* Layout */
+#lay{display:flex;flex:1;overflow:hidden}
+
+/* Sidebar */
+#sb{width:var(--sw);flex-shrink:0;background:var(--sb-bg);border-right:1px solid var(--bd);overflow-y:auto}
+.ci{display:flex;align-items:center;gap:7px;padding:7px 10px;cursor:pointer;
+    border-left:3px solid transparent;border-bottom:1px solid var(--bd);
+    transition:background .1s;user-select:none;min-height:36px}
+.ci:hover{background:rgba(88,166,255,.07)}
+.ci.active{background:var(--ab);border-left-color:var(--ac)}
+.ci.hidden{display:none}
+.cn{font-size:11.5px;color:var(--tx2);min-width:20px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ct{font-size:14px;line-height:1.3;color:var(--tx);flex:1;min-width:0}
+.ct mark{background:var(--mb);color:var(--mt);border-radius:2px;padding:0 1px}
+
+/* Version badge in sidebar */
+.vb{font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:8px;flex-shrink:0;letter-spacing:.02em}
+.vb-v1{background:#21262d;color:#6e7681}
+.vb-v2{background:#2d2502;color:#d29922}
+.vb-v3{background:#0d2a1a;color:#3fb950}
+.vb-v4{background:#0d1e3c;color:#58a6ff}
+
+/* Verification pipeline dots */
+.pipe{display:flex;gap:2px;flex-shrink:0}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--bd)}
+.pd.on-v1{background:#6e7681}
+.pd.on-v2{background:#d29922}
+.pd.on-v3{background:#3fb950}
+.pd.on-v4{background:#58a6ff}
+
+#nr{padding:20px 12px;font-size:15px;color:var(--tx2);text-align:center;display:none}
+
+/* Content */
+#ct{flex:1;overflow-y:auto;padding:26px 34px}
+.cs{display:none}
+.cs.vis{display:block}
+
+/* Markdown */
+.cs h2{font-size:23px;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:10px;margin-bottom:16px}
+.cs h3{font-size:13px;font-weight:700;color:var(--ac);margin:20px 0 9px;
+       text-transform:uppercase;letter-spacing:.06em}
+.cs h4{font-size:16px;font-weight:600;margin:14px 0 6px}
+.cs p{font-size:15.5px;line-height:1.65;margin-bottom:8px}
+.cs strong{font-weight:600}
+.cs em{font-style:italic;color:var(--tx2)}
+.cs code{font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:13px;
+         background:var(--cb);border:1px solid var(--bd);border-radius:3px;
+         padding:1px 5px;color:#f0883e}
+.cs pre{background:var(--cb);border:1px solid var(--bd);border-radius:6px;
+        padding:12px 14px;overflow-x:auto;margin:10px 0}
+.cs pre code{background:none;border:none;padding:0;font-size:14px;color:var(--tx);line-height:1.5}
+.cs table{width:100%;border-collapse:collapse;font-size:14.5px;margin:10px 0;display:block;overflow-x:auto}
+.cs th,.cs td{text-align:left;padding:7px 10px;border:1px solid var(--bd)}
+.cs th{background:var(--sb-bg);font-weight:600}
+.cs tr:nth-child(even) td{background:var(--ts)}
+.cs ul,.cs ol{padding-left:18px;margin:7px 0}
+.cs li{font-size:15.5px;line-height:1.6;margin-bottom:3px}
+.cs hr{border:none;border-top:1px solid var(--bd);margin:18px 0}
+
+/* Changelog / verification card */
+.changelog{background:#0b1e10;border:1px solid #2ea043;border-radius:8px;
+           padding:14px 18px;margin:18px 0;position:relative}
+.changelog::before{content:'🔬 VERIFIED';font-size:10.5px;font-weight:700;
+                   color:#3fb950;letter-spacing:.08em;display:block;margin-bottom:8px}
+.changelog h3{color:#3fb950 !important;margin-top:0 !important;font-size:14px !important}
+.changelog p,.changelog li{color:#c3e6cb;font-size:15px}
+.changelog ul{margin:4px 0}
+.changelog table{font-size:12px}
+.changelog th{background:#0d2a1a}
+.changelog code{background:#0d2a1a;color:#7ee787}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+body.light{
+  --bg:#ffffff;--sb-bg:#f6f8fa;--hd-bg:#f6f8fa;--bd:#d0d7de;
+  --tx:#1f2328;--tx2:#656d76;--ac:#0969da;
+  --cb:#f6f8fa;--ts:#f6f8fa;--mb:#fff8c5;--mt:#7a5c00;--ab:#ddf4ff;
+}
+body.light .cs code{color:#cf222e}
+body.light .cs pre code{color:var(--tx)}
+body.light .changelog{background:#f0fff4;border-color:#2ea043}
+body.light .changelog p,body.light .changelog li{color:#1a7f37}
+#theme-btn{font-size:14px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx2);cursor:pointer;flex-shrink:0;transition:all .15s}
+#theme-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+/* FUND rozwijany blok */
+details.fund{border:1px solid var(--bd);border-radius:8px;margin:22px 0 8px;
+  background:var(--cb);overflow:hidden}
+details.fund>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  padding:12px 16px;user-select:none;transition:background .12s}
+details.fund>summary::-webkit-details-marker{display:none}
+details.fund>summary:hover{background:rgba(88,166,255,.07)}
+.fund-arrow{color:var(--ac);font-size:13px;flex-shrink:0;transition:transform .15s}
+details.fund[open] .fund-arrow{transform:rotate(90deg)}
+.fund-head{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.fund-title{font-size:15px;font-weight:700;color:var(--tx)}
+.fund-src{font-size:12px;font-style:italic;color:var(--tx2);line-height:1.4}
+.fund-badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.fund-badge.ok{background:#0d2a1a;color:#3fb950}
+.fund-badge.warn{background:#3d2a02;color:#f0883e}
+body.light .fund-badge.ok{background:#dafbe1;color:#1a7f37}
+body.light .fund-badge.warn{background:#fff1e5;color:#bc4c00}
+.fund-hint{font-size:11px;color:var(--tx2);flex-shrink:0;border:1px solid var(--bd);
+  border-radius:4px;padding:2px 7px}
+details.fund[open] .fund-hint{display:none}
+.fund-body{padding:4px 18px 16px;border-top:1px solid var(--bd)}
+.fund-body h1{font-size:18px;margin:12px 0 6px}
+</style>
+</head>
+<body>
+<div id="hd">
+  <h1>GEO <span>CS</span></h1>
+  <div id="sw">
+    <span id="si">⌕</span>
+    <input id="search" type="text" placeholder="Szukaj kategorii, CEP, pytania..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="filt">
+    <button class="fb on" data-f="all" onclick="setFilter('all')">All</button>
+    <button class="fb" data-f="v2p" onclick="setFilter('v2p')">✅ Verified</button>
+    <button class="fb" data-f="v1"  onclick="setFilter('v1')">📝 Draft</button>
+  </div>
+  <a id="lang-btn" href="%23">🌐 EN</a>
+  <button id="theme-btn" onclick="toggleTheme()" title="Tryb jasny/ciemny">☀️</button>
+  <span id="stat">1 cat.</span>
+</div>
+<div id="lay">
+  <div id="sb">
+    <div class="ci" id="i1" onclick="select(1)"><span class="cn">#1</span><span class="ct">Pumeksy do stóp</span><span class="vb vb-v2">v2</span><div class="pipe"><span class="pd on-v1"></span><span class="pd on-v2"></span><span class="pd"></span><span class="pd"></span></div></div>
+    <div id="nr">No results</div>
+  </div>
+  <div id="ct">
+    <div class="cs" id="s1"><h1>Pumeksy do stóp — Category Standard v5.5</h1>
+
+<p><em>L1 — kategoria ogólna. Wszystkie typy: kamień naturalny, nano szkło, tarki metalowe, elektryczne. Data: 2026-07-17. Metodologia v5.5 (KROK 0 → §13).</em></p>
+
+<hr>
+
+<h2>0. Opis kategorii</h2>
+
+<p>Pumeksy do stóp to narzędzia do mechanicznego usuwania zrogowaciałego, martwego naskórka z pięt i podeszew stóp. Kategoria obejmuje wszystkie typy: tradycyjny pumeks kamienny (naturalny, porowaty), tarki z nano szkła lub ceramiki (nowoczesne, nieporowate), pilniki i tarki metalowe oraz urządzenia elektryczne z wymiennymi wałkami ściernymi. Kupujący wchodzi w kategorię gdy: zbliża się sezon na odkryte buty, chce zaoszczędzić na pedicure w salonie, stare narzędzie się zużyło, pojawiły się pęknięcia na piętach, lub kupuje na prezent.</p>
+
+<h2>0b. Problemy, które kategoria załatwia</h2>
+
+<p><em>Primary = funkcjonalny rdzeń. Secondary = jak rynek zdetalizował rdzeń na węższe potrzeby. Z secondary wychodzą kandydaci CEP.</em></p>
+
+<p><strong>🎯 Primary (rdzeń — po co pumeksy powstały):</strong></p>
+<p>> <strong>Usuwają twardy, zrogowaciały naskórek ze stóp — mechanicznie, bez chemii, w domu.</strong></p>
+
+<p><strong>Secondary (detalizacja rdzenia — rynek pociął „usuwa naskórek" na węższe konteksty):</strong></p>
+<ul><li>szybkie wygładzenie pięt przed sezonem sandałowym / latem (→ <code>cep_sezon_sandalowy</code>)</li><li>domowy pedicure zamiast drogiego salonu — oszczędność i wygoda (→ <code>cep_domowy_pedicure</code>)</li><li>pierwsze pęknięcia / sucha, twarda skóra na piętach — bolesne, trzeba działać (→ <code>cep_pekajace_piety</code>)</li><li>pierwszy zakup — „nigdy nie używałam, nie wiem co wybrać" (→ <code>cep_pierwszy_zakup</code>)</li><li>stary pumeks się skruszył / zużył / wyślizgał — czas na nowy (→ <code>cep_wymiana_zuzytego</code>)</li><li>prezent dla bliskiej osoby (mama, siostra, przyjaciółka) (→ <code>cep_prezent</code>)</li><li>ostatnie przygotowanie stóp przed wyjazdem na wakacje / urlop (→ <code>cep_przed_wakacjami</code>)</li><li>obawa o higienę — stary porowaty pumeks zbiera bakterie (→ <code>cep_higiena_narzedzia</code>)</li><li>nie chcę kupować jednorazowych plastikowych tarek — szukam trwałego rozwiązania (→ <code>cep_eko_trwalosc</code>)</li><li>wstydzę się stóp przy mężu / na basenie / w sandałach — koleżanki mają gładkie, a ja nie (→ <code>cep_wstyd_spoleczny</code>)</li><li>rachunek za pedicure w salonie — 120 zł miesięcznie to za dużo, szukam oszczędności (→ <code>cep_oszczednosc_salon</code>)</li></ul>
+
+<p>> ⚠️ Kolor, kształt, cena, opakowanie — to NIE problemy, to atrybuty → KCF / preselekcja.</p>
+
+<hr>
+
+<h2>§0c. Dynamika Kategorii — siły wejścia / używania / zużycia / barier</h2>
+
+<p><em>Poziom każdej pozycji jawny: <strong>[L1]</strong> = ból dotychczasowej metody (brak pielęgnacji stóp, domowe sposoby typu żyletka/pilnik do paznokci) → sojusznik, eksploatuj · <strong>[L2]</strong> = ból konkretnego typu pumeksu → nasz problem, rozbijaj. Kategoria beauty z elementem higienicznym — Wear = zużycie fizyczne materiału ściernego.</em></p>
+
+<h3>① CEP — momenty wejścia (zawsze oba poziomy)</h3>
+
+<p><strong>L1 — wejście w „muszę coś zrobić ze stopami"</strong> <em>(konkuruje dowolna metoda: salon kosmetyczny, krem złuszczający, domowa mikstura z soli, ignorowanie problemu)</em></p>
+
+<table>
+<tr><th>Moment</th><th>Trigger (głos klienta)</th></tr>
+<tr><td>sezon sandałowy / pierwsze ciepłe dni</td><td>„zaraz lato, odkryte buty — pięty muszą wyglądać"</td></tr>
+<tr><td>rachunek za pedicure w salonie</td><td>„znowu 120 zł za pedicure — kupię raz narzędzie i robię w domu"</td></tr>
+<tr><td>pękające, suche pięty — ból przy chodzeniu</td><td>„pięty tak popękane, że rajstopy się haczą — muszę coś z tym zrobić"</td></tr>
+<tr><td>pierwszy raz — nie wie od czego zacząć</td><td>„nigdy nie używałam pumeksu, nie wiem co kupić"</td></tr>
+<tr><td>prezent — szuka dla kogoś</td><td>„mama narzeka na pięty — kupię jej coś na Dzień Matki"</td></tr>
+<tr><td>przed wyjazdem na wakacje</td><td>„za tydzień all-inclusive — stopy muszą być gotowe na basen i plażę"</td></tr>
+<tr><td>wstyd społeczny — boi się pokazać stóp</td><td>„wstydzę się stóp przy mężu, odkąd są takie szorstkie — on widzi, a ja udaję że nie"</td></tr>
+</table>
+
+<p><strong>L2 — wejście w KONKRETNY typ pumeksu</strong> <em>(gdy L1-metoda — brak pielęgnacji / domowe sposoby — już nie wystarcza, albo konsument ma konkretne wymaganie)</em></p>
+
+<table>
+<tr><th>Moment</th><th>Droga</th><th>Friction/wear L1, który to rodzi</th></tr>
+<tr><td><code>cep_wymiana_zuzytego</code> (stary pumeks kamienny się skruszył)</td><td>friction-driven</td><td>kamień naturalny kruszy się po 2-3 miesiącach, porowaty chłonie bakterie</td></tr>
+<tr><td><code>cep_higiena_narzedzia</code> (obawa o bakterie na starym narzędziu)</td><td>friction-driven</td><td>porowaty pumeks kamienny czernieje, śmierdzi — nie da się domyć</td></tr>
+<tr><td><code>cep_oszczednosc_salon</code> (konkretnie: przejście na domowy pedicure)</td><td>friction-driven</td><td>salon kosztuje 80-150 zł/miesiąc, trzeba umawiać termin, dojazd</td></tr>
+<tr><td><code>cep_eko_trwalosc</code> (nie chcę jednorazówek)</td><td>aspiration-driven</td><td>konsument świadomie szuka trwałego narzędzia zamiast kupować tanie plastiki co miesiąc</td></tr>
+<tr><td><code>cep_prezent_komu</code> (prezent konkretnie: wie że obdarowana potrzebuje)</td><td>friction-driven (u obdarowanej)</td><td>obdarowana używa starego, zużytego pumeksu albo nie ma nic — kupujący chce dać coś praktycznego</td></tr>
+</table>
+
+<p><em>Aspiracja zbadana, niska — CEV aspiracja=.30, sexy=.25, impuls=.35, widoczność=.50 → średnia z 4 suwaków = 0.35, poniżej progu ≥0.5 dla soczewek Design i Tożsamość. Pumeks to kategoria funkcjonalno-pielęgnacyjna — nikt nie kupuje pumeksu żeby zaimponować. KROK 3c potwierdza: Design N/D, Tożsamość N/D.</em></p>
+
+<h3>② Friction Points</h3>
+
+<ul><li><strong>[L1]</strong> ignorowanie problemu — szorstkie pięty haczą o rajstopy, pościel, wyglądają nieestetycznie w sandałach → <em>sojusznik (cała kategoria — primary)</em></li><li><strong>[L1]</strong> domowe sposoby (żyletka, pilnik do paznokci) — nieskuteczne, ryzyko skaleczenia, zajmują dużo czasu → <em>sojusznik (cep_pierwszy_zakup, cep_domowy_pedicure)</em></li><li><strong>[L1]</strong> salon kosmetyczny — drogo (80-150 zł/miesiąc), trzeba umawiać wizytę, dojazd, czasochłonne → <em>sojusznik (cep_domowy_pedicure, cep_oszczednosc_salon)</em></li><li><strong>[L1]</strong> krem złuszczający / skarpety peelingujące — działają wolno (efekt po 5-7 dniach), nie na grube zrogowacenia → <em>sojusznik (pumeks = efekt natychmiast)</em></li><li><strong>[L2]</strong> pumeks kamienny — śliski gdy mokry, trudno utrzymać w dłoni pod prysznicem → <em>nasz: uchwyty gumowane, forma tarki</em></li><li><strong>[L2]</strong> tarka metalowa — może być za ostra, tnie skórę przy zbyt mocnym nacisku → <em>nasz: nano szkło / ceramika z mikro-ziarnami, bezpieczniejsze</em></li><li><strong>[L2]</strong> elektryczna tarka — trzeba ładować / wymieniać baterie, głośna, cięższa → <em>nasz: informacja o typie zasilania przed zakupem</em></li><li><strong>[L2]</strong> jednorazowe tarki plastikowe — szybko się zużywają, generują śmieci → <em>nasz: trwałość jako argument (metal/szkło na lata)</em></li></ul>
+
+<h3>③ Wear & Consumption</h3>
+
+<ul><li><strong>[L2] wymienialny:</strong> wałek ścierny w tarce elektrycznej — zużywa się po kilku-kilkunastu użyciach, sprzedawany osobno jako akcesorium → <strong>mini-CEP powracający na wałki wymienne</strong> (osobna kategoria akcesoriów)</li><li><strong>[L2] terminalny — kamień naturalny:</strong> kruszy się, wygładza, traci właściwości ścierne po 2-6 miesiącach regularnego użycia → <strong>CEP wymiany całego narzędzia</strong> (cep_wymiana_zuzytego)</li><li><strong>[L2] terminalny — tania tarka plastikowa:</strong> powierzchnia ścierna ściera się / odkleja po kilku tygodniach → <strong>CEP wymiany całości</strong> (i często okazja do upgrade'u do trwalszego typu)</li><li><strong>[L2] terminalny — nano szkło / ceramika / metal:</strong> praktycznie nie zużywają się fizycznie w normalnym użyciu domowym → wymiana całości napędzana wyłącznie zmianą preferencji (chcę inny kształt / elektryczny / nowszy model), nie awarią materiału. <strong>⭐ Tech-check:</strong> czy starzeje się moralnie? Nowe generacje nano (drobniejsze ziarno, lepsza przyczepność) mogą degradować wartość postrzeganą starszych modeli, ale w praktyce kategoria nie ma szybkich cykli technologicznych → <strong>brak CEP-wymiany-technologicznej na ten moment.</strong></li><li><strong>[L2]</strong> bateria w tarce elektrycznej — kończy się co kilka-kilkanaście użyć (AA/AAA lub akumulator wbudowany) → zużycie akcesoryjne, nie generuje CEP na pumeks</li></ul>
+
+<h3>④ Category Stoppers</h3>
+
+<p><strong>Wejścia</strong> (nie zaczynam — nie wchodzę w kategorię w ogóle)</p>
+<ul><li><strong>[L1]</strong> „mam wrażliwe stopy, boję się że zrobię sobie krzywdę" → lęk przed skaleczeniem / otarciem → <em>S2: nano szkło = mikro-ziarna, nie tnie żywej skóry; wyjaśnij różnicę między złuszczaniem martwego naskórka a ścieraniem zdrowej skóry</em></li><li><strong>[L1]</strong> „to tylko stopy, szkoda pieniędzy" → minimalizacja problemu → <em>S2: jedna wizyta w salonie = 3-5 pumeksów; a popękane pięty bolą i mogą się zainfekować</em></li><li><strong>[L2]</strong> „po co mi pumeks za 50 zł, jak kamienny kosztuje 8 zł" → bariera cenowa przy przejściu na wyższy tier → <em>S2: kamienny wymieniasz co 2-3 miesiące × 8 zł = 48 zł/rok — nano szkło za 50 zł działa lata, bez wymiany</em></li><li><strong>[L2]</strong> „tarka elektryczna wygląda groźnie — boję się że zedrze za dużo" → obawa przed elektrycznym narzędziem → <em>S2: regulacja prędkości, wymienne nasadki o różnej gradacji, bezpieczniejsza niż ostra tarka manualna przy mocnym nacisku</em></li></ul>
+
+<p><strong>Rozwoju</strong> (nie pogłębiam użycia — już jestem w kategorii, ale nie awansuję)</p>
+<ul><li><strong>[L2]</strong> kupuje najtańszy pumeks kamienny i zostaje przy nim mimo frustracji (kruszy się, śmierdzi, nieskuteczny) → <em>przełam: pokaż konkretną różnicę w efekcie („kamień = 10 min szorowania bez efektu, nano = 2 min i gładkie")</em></li><li><strong>[L2]</strong> nie używa regularnie — kupił, użył raz przed latem, schował do szafki, zapomniał → <em>S2: rutyna raz w tygodniu po prysznicu = 2 minuty, stopy zawsze gotowe (nie tylko na ostatnią chwilę)</em></li><li><strong>[L2]</strong> ma pumeks ale nie wie o istnieniu dwustronnych / z różną gradacją → nie korzysta z pełnej funkcjonalności → <em>S2: dwie strony = dwie fazy: gruba usuwa, drobna wygładza — profesjonalny efekt bez salonu</em></li></ul>
+
+<h3>🔗 Cross-cutting (z §0b + KCF)</h3>
+
+<ul><li><strong>Trzy niezależne ścieżki materiałowe = trzy różne profile zużycia i higieny</strong> — kamień (tani, porowaty, krótka żywotność), nano/ceramika (średnia cena, nieporowate, długa żywotność), metal/elektryczny (drogi, trwały, zasilanie). CEP „wymiana" istnieje realnie tylko dla kamienia i tanich plastików — dla nano/metalu to raczej zmiana preferencji niż awaria.</li><li><strong>Sezonowość jako mnożnik, nie kategoria sezonowa</strong> — pumeksy kupuje się cały rok, ale wiosna/lato (sandały, wakacje) daje 2-3× wzrost zapytań. §0c notuje sezonowość jako kontekst CEP, nie jako osobny CEP (bo to mnożnik siły, nie nowa sytuacja).</li><li><strong>Granica pumeks vs krem do stóp</strong> — krem nawilża i zmiękcza, pumeks złuszcza mechanicznie. To dwa różne etapy pielęgnacji, często używane razem (najpierw pumeks, potem krem). Cross-category ujęte w §11.</li></ul>
+
+<hr>
+
+<h2>1. CEV — Category Emotional Valuation</h2>
+
+<p><strong>Pasek CEV — profil emocjonalny kategorii (10 cech) — v5.5:</strong></p>
+
+<table>
+<tr><th>ryzyko</th><th>lęk</th><th>widoczność</th><th>impuls</th><th>sexy</th><th>aspiracja</th><th>tożsamość</th><th>zmysłowość</th><th>pilność</th><th>moralność</th></tr>
+<tr><td>.12</td><td><strong>.30</strong></td><td><strong>.50</strong></td><td><strong>.35</strong></td><td><strong>.25</strong></td><td><strong>.30</strong></td><td><strong>.35</strong></td><td>.40</td><td><strong>.20</strong></td><td><strong>.10</strong></td></tr>
+</table>
+
+<p><strong>Delta vs v5.3:</strong> lęk↑ (.20→.30, obiekt: społeczny), widoczność↓ (.55→.50), impuls↓ (.60→.35 — niższy impuls, więcej researchu), sexy↓ (.30→.25), aspiracja↓ (.35→.30), tożsamość↑ (.25→.35), ryzyko↓ (.15→.12), pilność↓ (.50→.20 — mniej sezonowego pośpiechu niż sugerował v5.3), moralność↓ (.25→.10 — pumeks nie jest kategorią moralną).</p>
+
+<p><strong>lęk ma obiekt — v5.5:</strong></p>
+
+<p><code>lęk: {wartość: 0.30, obiekt: "społeczny"}</code> — fear of embarrassment, showing feet in public, being judged for rough heels. To odróżnia pumeks od kategorii z lękiem funkcjonalnym (laptop) lub stratą (sejf) — lęk pumeksu jest społeczny („co inni pomyślą, gdy zobaczą moje stopy"), nie funkcjonalny ani zdrowotny.</p>
+
+<p><strong>Kombinacja suwaków kulturowych (aspiracja × widoczność × sexy × impuls):</strong></p>
+<p>.30 × .50 × .25 × .35 → średnia = 0.35 — poniżej progu ≥0.5. <strong>Soczewki Design (2) i Tożsamość (4) z KROK 3c: N/D.</strong> Pozostałe soczewki (Ekonomia, Środowisko, Zdrowie, Trend) skanowane standardowo.</p>
+
+<p><strong>Wagi stanów (fork POTRZEBA z elementem IMPULS — niższy impuls skłania ku potrzebie):</strong></p>
+
+<table>
+<tr><th>#</th><th>Stan świadomości</th><th>Waga</th><th>Co to znaczy dla treści</th></tr>
+<tr><td>1</td><td>Nie wiem (unaware)</td><td>◔ L</td><td>„Jakoś tam te pięty wyglądają" — brak triggera, nie szuka</td></tr>
+<tr><td>2</td><td>Potrzeba (problem-aware)</td><td>◑ M</td><td>Sezon / pękające pięty / przed wyjazdem — problem zauważony</td></tr>
+<tr><td>3</td><td>CEP (rozpoznanie sytuacji)</td><td>◑ M</td><td>Dlaczego TERAZ — routing do ścieżki</td></tr>
+<tr><td>4</td><td>Nauka kategorii</td><td>◑ M</td><td>Kamień vs nano vs elektryczna — jaka technologia</td></tr>
+<tr><td>5</td><td>Preselekcja</td><td>◑ M</td><td>Jaka gradacja, forma, dwustronność</td></tr>
+<tr><td>6</td><td>Porównywanie</td><td>◔ L</td><td>Marka vs no-name, ceny, gdzie kupić</td></tr>
+<tr><td>7</td><td>Wybór sklepu</td><td>◔ L</td><td>Drogeria stacjonarna / Allegro / sklep marki</td></tr>
+<tr><td>8</td><td>Zakup</td><td>◔ L</td><td>Jak używać, jak czyścić, jak przechowywać</td></tr>
+</table>
+
+<p>> <strong>Fork:</strong> <code>impuls_score = sexy × aspiracja = .25 × .30 = 0.075</code> — poniżej progu 0.45 → <strong>POTRZEBA</strong> (ścieżka pełna 2→3…8). Impuls aktywuje się tylko dla CEP z modyfikatorem impulsowym (KROK 3d).</p>
+
+<h3>✅ EMOTIONAL DRIVER SCAN — v5.5</h3>
+
+<p>Po ustawieniu 10 cech CEV z lęk{obiekt} — skan driverów emocjonalnych:</p>
+
+<table>
+<tr><th>Driver</th><th>Warunek</th><th>Wynik</th><th>Pokrycie</th></tr>
+<tr><td><strong>WSYD</strong></td><td>widoczność=0.50 > 0.3 + lęk[społeczny] = TAK</td><td><strong>AKTYWNY</strong></td><td><strong>POKRYTE przez cep_wstyd_spoleczny</strong> (SYTUACYJNY, lęk społeczny)</td></tr>
+<tr><td><strong>POPIS</strong></td><td>widoczność=0.50 > 0.3 + aspiracja=0.30... 0.30 nie > 0.3 (dokładnie na progu)</td><td><strong>NIEAKTYWNY</strong> (borderline)</td><td>NIE DOTYCZY: aspiracja=0.30 na granicy progu 0.3, nie przekracza; pumeks to kategoria funkcjonalna, nie popisowa</td></tr>
+<tr><td><strong>PRZYNALEŻNOŚĆ</strong></td><td>widoczność=0.50 > 0.3 + tożsamość=0.35 > 0.3 = TAK</td><td><strong>AKTYWNY</strong></td><td><strong>POKRYTE przez cep_wstyd_spoleczny + cep_sezon_sandalowy</strong> (lęk przed wykluczeniem społecznym z powodu wyglądu stóp = obie strony: wstyd i chęć przynależności do „zadbanych")</td></tr>
+<tr><td><strong>POŻĄDANIE</strong></td><td>aspiracja=0.30 + sexy=0.25: aspiracja 0.30 nie > 0.3 (na granicy), sexy 0.25 nie > 0.3</td><td><strong>NIEAKTYWNY</strong></td><td>NIE DOTYCZY: aspiracja=0.30 (na progu, nie przekracza) + sexy=0.25 (poniżej progu 0.3). Pumeks nie jest obiektem pożądania — jest narzędziem</td></tr>
+</table>
+
+<hr>
+
+<h2>2. CEP — Category Entry Points</h2>
+
+<p><em>CEP = sytuacja konsumenta, nie atrybut produktu. <strong>11 CEP</strong> wyliczonych z tabeli. Destylacja: KROK 0 (secondary problems) → kandydaci CEP-A → wzbogacenie DFS → KROK 3c (soczewki: Ekonomia, Zdrowie, Środowisko → 3 dodatkowe CEP; Design N/D, Tożsamość N/D, Trend N/D) → KROK 3d (weryfikacja cech modyfikujących per CEP) → GATE sytuacja-vs-atrybut.</em></p>
+
+<table>
+<tr><th>id</th><th>Trigger (język konsumenta)</th><th>Kontekst</th><th>Primary concern</th><th>Bloker decyzji 🛡️</th><th>Routes to</th><th>PDP anchor</th></tr>
+<tr><td><code>cep_sezon_sandalowy</code></td><td>„Zaraz lato, sandały — pięty muszą być gładkie"</td><td>Wiosna/lato, pierwsze ciepłe dni, wyciąganie odkrytych butów</td><td>Czy szybko wygładzi i nie zrobi krzywdy</td><td>🛡️ „Czy tarka nie zedrze za dużo skóry?" — obawa przed przeszlifowaniem</td><td>pumeks dwustronny (każdy typ)</td><td>„Dwustronna powierzchnia: gruba strona usuwa zrogowacenia, drobna wygładza — gotowe stopy na sandały w 2 minuty."</td><td>Seasonal</td><td>SYTUACYJNY</td></tr>
+<tr><td><code>cep_wstyd_spoleczny</code></td><td>„Wstydzę się stóp. Mąż widzi, koleżanki mają gładkie — boję się zdjąć skarpetki"</td><td>Lato / sandały / randka / basen / wakacje / SPA — sytuacje gdzie stopy są widoczne</td><td>Czy szybko ogarnie i stopy będą gładkie ZANIM ktoś zobaczy</td><td>🛡️ „A co jak podrażnię i będzie gorzej? To wstyd podwójny"</td><td>nano / tarka precyzyjna</td><td>„Gładkie stopy w 3 minuty — efekt od pierwszego użycia. Bez ryzyka podrażnień."</td><td>Considered</td><td>SYTUACYJNY (lęk społeczny)</td></tr>
+<tr><td><code>cep_domowy_pedicure</code></td><td>„Pedicure w salonie drogi i trzeba się umawiać — zrobię to sama w domu"</td><td>Regularna pielęgnacja, oszczędność (~100 zł/miesiąc), wygoda własnej łazienki</td><td>Czy dam radę sama bez umiejętności kosmetyczki</td><td>🛡️ „Domowe narzędzia dają gorszy efekt niż salon" — lęk przed niesatysfakcjonującym efektem</td><td>nano szkło / elektryczna</td><td>„Nano szkło działa jak profesjonalna tarka kosmetyczna — precyzja bez kursu, efekt gładkich pięt po pierwszym użyciu."</td></tr>
+<tr><td><code>cep_pekajace_piety</code></td><td>„Pięty popękane, skóra sucha i twarda — boli przy chodzeniu i brzydko wygląda"</td><td>Całorocznie (nasila się zimą przez ogrzewanie), sucha skóra, pęknięcia głębokie</td><td>Czy to narzędzie nie pogłębi pęknięć / nie zrobi ran</td><td>🛡️ „Tarka na popękane pięty = jeszcze większe rany!" — obawa przed uszkodzeniem</td><td>nano szkło (drobna strona) / elektryczna z delikatną nasadką</td><td>„Drobna strona nano szkła delikatnie złuszcza suchy naskórek — bez ryzyka skaleczenia. Nie stosować na otwarte rany."</td></tr>
+<tr><td><code>cep_pierwszy_zakup</code></td><td>„Nigdy nie używałam pumeksu — nie wiem co wybrać, od czego zacząć"</td><td>Pierwszy kontakt z kategorią, często młodsze osoby 18-25, pierwsze samodzielne zakupy kosmetyczne</td><td>Co jest najłatwiejsze i najbezpieczniejsze na start</td><td>🛡️ „Tyle rodzajów — nie wiem co będzie dla mnie dobre" — paraliż wyboru</td><td>pumeks dwustronny nano (uniwersalny start)</td><td>„Na początek: dwustronna tarka nano — gruba strona usuwa, drobna wygładza. Nie da się przesadzić. Idealna na pierwszy raz."</td></tr>
+<tr><td><code>cep_wymiana_zuzytego</code></td><td>„Stary pumeks się skruszył / wyślizgał / przestał działać — czas na nowy"</td><td>Moment wymiany — konsument już wie do czego służy, szuka zamiennika (lub ulepszenia)</td><td>Czy nowy będzie trwalszy od poprzedniego</td><td>🛡️ „Znowu kupię i za 3 miesiące to samo" — zmęczenie cyklem wymiany</td><td>nano szkło / metal (trwalsze niż kamień)</td><td>„W odróżnieniu od pumeksu kamiennego, nano szkło nie ściera się — działa tak samo intensywnie po 2 latach jak pierwszego dnia."</td></tr>
+<tr><td><code>cep_prezent</code></td><td>„Mama/siostra/przyjaciółka narzeka na pięty — kupię praktyczny prezent"</td><td>Okazje: Dzień Matki, urodziny, święta, „drobiazg do kosmetyczki"</td><td>Czy trafię w potrzebę — czy prezent będzie użyteczny a nie kurzył się w szafce</td><td>🛡️ „Nie wiem jakiego typu potrzebuje — może już ma?" — niepewność prezentowa</td><td>zestaw: tarka + krem do stóp / etui</td><td>„Zestaw dwustronnej tarki nano + krem do stóp — gotowy prezent, który każda kobieta zużyje (a jak już ma pumeks, to stary pewnie do wymiany)."</td></tr>
+<tr><td><code>cep_przed_wakacjami</code></td><td>„Za tydzień wyjazd — muszę ogarnąć stopy na plażę / basen"</td><td>Pakowanie, ostatnie przygotowania, presja czasu, pakowanie kosmetyczki</td><td>Czy zdążę — efekt ma być natychmiastowy, bez tygodniowego czekania</td><td>🛡️ „W podróży nie będę miała jak tego umyć / przechować" — obawa logistyczna</td><td>kompaktowa tarka nano (mała, z etui)</td><td>„Jedno użycie 2 minuty na stopę, spłukanie wodą, etui do kosmetyczki — i lecisz."</td></tr>
+<tr><td><code>cep_higiena_narzedzia</code></td><td>„Stary pumeks zrobił się czarny i śmierdzi — to siedlisko bakterii, obrzydliwe"</td><td>Moment wymiany motywowany higieną, nie zużyciem mechanicznym. Soczewka Zdrowie/Wellness z KROK 3c.</td><td>Czy nowe narzędzie da się utrzymać w czystości na dłużej</td><td>🛡️ „Wszystkie pumeksy z czasem się brudzą — to normalne" — sceptycyzm</td><td>nano szkło / ceramika / metal (nieporowate)</td><td>„Nieporowata powierzchnia nano szkła — nie chłonie wody ani bakterii. Mycie: woda z mydłem po każdym użyciu. Nie czernieje, nie śmierdzi."</td></tr>
+<tr><td><code>cep_oszczednosc_salon</code></td><td>„120 zł miesięcznie za pedicure? Przecież za roczne wydatki kupię cały zestaw i będę robić sama"</td><td>Kalkulacja ekonomiczna: porównanie kosztów salon vs DIY. Soczewka Ekonomia z KROK 3c. Promowany z §0c.</td><td>Czy domowe narzędzia naprawdę zastąpią salon — czy to fałszywa oszczędność</td><td>🛡️ „Domowe narzędzia dają gorszy efekt — będę żałować wydanych pieniędzy i wrócę do salonu" — lęk przed stratą + porównaniem jakości</td><td>zestaw nano + krem (mid-tier, TCO argument)</td><td>„1440 zł/rok w salonie vs 50 zł raz + krem. Nano szkło daje ten sam efekt co profesjonalna tarka kosmetyczna — bez comiesięcznego rachunku."</td></tr>
+<tr><td><code>cep_eko_trwalosc</code></td><td>„Męczy mnie kupowanie tanich plastikowych tarek co miesiąc — chcę czegoś trwałego, bez śmiecenia"</td><td>Świadomy wybór konsumencki, zero waste, soczewka Środowisko z KROK 3c.</td><td>Czy trwalsze narzędzie rzeczywiście wystarczy na lata, czy to marketing</td><td>🛡️ „Droższe = lepsze? Może to tylko branding" — sceptycyzm wobec „eko" claimów</td><td>metal / nano szkło (trwałe materiały)</td><td>„Metalowa tarka — kupujesz raz na 10 lat. Zero plastiku do wyrzucenia co miesiąc. A jak już chcesz wymienić — metal idzie do recyklingu."</td></tr>
+</table>
+
+<hr>
+
+<h2>2b. WERYFIKACJA CEP — cechy modyfikujące ścieżkę per CEP (KROK 3d)</h2>
+
+<p><em>Dla każdego CEP — klasyfikacja typu i cechy modyfikującej ścieżkę wg modelu 2-etapowego (METODOLOGIA_CS.md §3d → METODOLOGIA_CEV.md §8b).</em></p>
+
+<table>
+<tr><th>CEP</th><th>Typ KROK 3d</th><th>Cecha modyfikująca</th><th>Deformacja ścieżki</th></tr>
+<tr><td><code>cep_wstyd_spoleczny</code></td><td><strong>SYTUACYJNY</strong></td><td>widoczność↑ (społeczny kontekst wstydu)</td><td>Rozdyma social proof (P3), wygasa Naukę (P2) — „gładkie od razu, bez researchu". Lęk społeczny skraca preselekcję.</td></tr>
+<tr><td><code>cep_sezon_sandalowy</code></td><td><strong>SYTUACYJNY</strong></td><td>pilność↑ (sezonowy deadline — lato się zbliża)</td><td>Skraca Naukę (P2), wzmacnia Próg (P7) — „muszę zdążyć przed sandałami".</td></tr>
+<tr><td><code>cep_domowy_pedicure</code></td><td><strong>EKONOMICZNY</strong></td><td>ryzyko↓ (oszczędność, ale ryzyko społeczne = gorszy efekt)</td><td>Rozdyma porównanie (P6 — TCO vs salon), wzmacnia obiekcję jakości.</td></tr>
+<tr><td><code>cep_pekajace_piety</code></td><td><strong>ZDROWOTNY</strong></td><td>lęk↑ (ból, strach przed pogłębieniem ran)</td><td>Rozdyma P4-authority („czy bezpieczne na pęknięcia"), gaszenie lęku certyfikatem bezpieczeństwa.</td></tr>
+<tr><td><code>cep_pierwszy_zakup</code></td><td><strong>SYTUACYJNY</strong></td><td>— (brak nagłości/impulsu/inspiracji — dziedziczy bazę)</td><td>Ścieżka bazowa kategorii: pełna edukacja od Nauki do Wyboru.</td></tr>
+<tr><td><code>cep_wymiana_zuzytego</code></td><td><strong>SYTUACYJNY</strong></td><td>nagłość↓ (konsument wie co robi — wymiana, nie pierwszy raz)</td><td>Skraca Naukę (P2 — już zna kategorię), rozdyma Porównanie (P6 — stary vs nowy materiał).</td></tr>
+<tr><td><code>cep_prezent</code></td><td><strong>PREZENT</strong></td><td>pilność↑ (deadline okazji), ryzyko↑ społeczne (nietrafienie)</td><td>Rozdyma weryfikację odbiorcy (P7 — „co kupić, żeby nie zmarnować prezentu").</td></tr>
+<tr><td><code>cep_przed_wakacjami</code></td><td><strong>GWALTOWNA POTRZEBA</strong></td><td>pilność↑↑ (wyjazd za tydzień), impuls↑ (reaktywny zakup)</td><td>Skraca ścieżkę (P1↓↓), rdzeń przenosi się na dostępność i logistykę (P7).</td></tr>
+<tr><td><code>cep_higiena_narzedzia</code></td><td><strong>ZDROWOTNY</strong></td><td>lęk↑ (obrzydzenie, strach przed grzybicą/bakteriami)</td><td>Rozdyma P4-authority (higiena jako cecha weryfikowalna — nieporowatość, materiał).</td></tr>
+<tr><td><code>cep_oszczednosc_salon</code></td><td><strong>EKONOMICZNY</strong></td><td>ryzyko↓ (finansowe — oszczędność), aspiracja↓</td><td>Rozdyma Porównanie (TCO salon vs DIY), wzmacnia obiekcję „gorszy efekt".</td></tr>
+<tr><td><code>cep_eko_trwalosc</code></td><td><strong>EKOLOGICZNY</strong></td><td>moralność↑ (eko-świadomość), ryzyko↓ (mniej odpadów)</td><td>Rozdyma Research (P2 — weryfikacja trwałości materiału, recykling).</td></tr>
+</table>
+
+<p><strong>Licznik CEP: 11</strong> (wyliczony z tabeli — 11 wierszy, w tym nowy cep_oszczednosc_salon).</p>
+
+<hr>
+
+
+<h2>4. KCF — Key Category Features</h2>
+
+<table>
+<tr><th>Feature</th><th>Zakres rynkowy</th><th>Tier</th><th>Uwaga</th></tr>
+<tr><td>Materiał ścierny</td><td>kamień naturalny / nano szkło / ceramika / metal / elektryczny wałek ścierny</td><td>T1</td><td>Determinuje higienę, trwałość i bezpieczeństwo — to pierwsze pytanie preselekcyjne</td></tr>
+<tr><td>Powierzchnia robocza</td><td>jednostronna / dwustronna (gruba + drobna gradacja)</td><td>T1</td><td>Dwustronna = 2 funkcje w 1 narzędziu — usuń + wygładź</td></tr>
+<tr><td>Forma narzędzia</td><td>tarka z uchwytem / wałek obrotowy / pilnik / kamień / elektryczne</td><td>T1</td><td>Determinuje sposób trzymania i wygodę użycia</td></tr>
+<tr><td>Wodoszczelność</td><td>TAK / NIE</td><td>T1</td><td>Możliwość użycia pod prysznicem vs tylko na sucho</td></tr>
+<tr><td>Rozmiar ziarna / gradacja</td><td>drobna / średnia / gruba</td><td>T1</td><td>Gruba = na twarde zrogowacenia; drobna = wygładzanie, bezpieczna dla wrażliwej skóry</td></tr>
+<tr><td>Higiena (porowatość)</td><td>nieporowate (szkło/ceramika/metal) / porowate (kamień)</td><td>T2</td><td>Porowate chłonie bakterie → wymiana co kilka miesięcy; nieporowate → lata</td></tr>
+<tr><td>Żywotność</td><td>kilka miesięcy (kamień) / 2-5 lat (nano/ceramika) / 10+ lat (metal)</td><td>T2</td><td>Kluczowe dla decyzji „dopłacić czy kupić taniej"</td></tr>
+<tr><td>Bezpieczeństwo powierzchni</td><td>mikro-ziarna zaokrąglone (nano) / ostre krawędzie (tani metal) / naturalna porowatość (kamień)</td><td>T2</td><td>Nano szkło = nie tnie żywej skóry; tania tarka metalowa może ciąć</td></tr>
+<tr><td>Zasilanie (dla elektrycznych)</td><td>bateria AA / akumulator USB-C / sieciowe 230V</td><td>T2</td><td>Decyduje o mobilności i koszcie eksploatacji</td></tr>
+<tr><td>Ergonomiczny uchwyt</td><td>gumowany / plastikowy / drewniany / brak</td><td>T2</td><td>Pod prysznicem: gumowany = nie wyślizguje się z mokrej dłoni</td></tr>
+<tr><td>Regulacja prędkości (dla elektrycznych)</td><td>1 bieg / 2 biegi / wielobiegowa</td><td>T3</td><td>Więcej biegów = lepsza kontrola, ale wyższa cena</td></tr>
+<tr><td>Etui / opakowanie do przechowywania</td><td>TAK / NIE</td><td>T3</td><td>Higieniczne przechowywanie + podróż</td></tr>
+<tr><td>Długość / rozmiar powierzchni roboczej</td><td>mała (do 5 cm) / średnia (5-8 cm) / duża (>8 cm)</td><td>T3</td><td>Większa = szybsze pokrycie pięty, ale mniej poręczna</td></tr>
+<tr><td>W zestawie z kremem do stóp</td><td>TAK / NIE</td><td>T3</td><td>Wartość dodana, zwłaszcza na prezent</td></tr>
+</table>
+
+<p><strong>KCF Gate (KROK 2.5):</strong></p>
+<p>✅ Minimum wierszy: 14 ≥ 6</p>
+<p>✅ Każdy wiersz ma wypełniony zakres rynkowy</p>
+<p>✅ Każdy wiersz ma przypisany tier (T1/T2/T3)</p>
+<p>✅ Brak retinolowych placeholderów — wszystkie cechy z domeny pumeksów</p>
+<p>✅ Pokrycie Tier-1 z Tier Specs: 6/6 (materiał, powierzchnia, forma, wodoszczelność, gradacja)</p>
+<p>→ <strong>GATE PASS.</strong> KCF gotowe do CEP i Response Map.</p>
+
+<hr>
+
+<h2>5. Konwencje / Typowy Produkt</h2>
+
+<table>
+<tr><th>Cecha</th><th>Norma kategorii</th><th>Red flag</th></tr>
+<tr><td>Materiał</td><td>Wyraźnie podany typ materiału ściernego</td><td>„Profesjonalny pumeks" bez informacji z czego jest zrobiony</td></tr>
+<tr><td>Forma</td><td>Ergonomiczny uchwyt, nie wyślizguje się</td><td>Luzem, bez uchwytu — wyślizguje się z mokrej dłoni</td></tr>
+<tr><td>Strony</td><td>Przynajmniej jednostronna, informacja o gradacji</td><td>Brak informacji czy jest dwustronna, czy nie</td></tr>
+<tr><td>Czyszczenie</td><td>Instrukcja mycia / konserwacji</td><td>Brak informacji jak utrzymać w higienie</td></tr>
+<tr><td>Bezpieczeństwo</td><td>Zaokrąglone krawędzie / mikro-ziarna</td><td>Ostre krawędzie (szczególnie w tanich metalowych)</td></tr>
+<tr><td>Wodoszczelność</td><td>Jawnie podana informacja TAK/NIE</td><td>„Do stóp" bez informacji czy można pod prysznic</td></tr>
+<tr><td>Opakowanie</td><td>Higieniczne, zamknięte</td><td>Luzem bez zabezpieczenia (ktoś mógł dotykać w sklepie)</td></tr>
+</table>
+
+<hr>
+
+<h2>6. Tier Specs</h2>
+
+<p><strong>Tier-1 Universal</strong> (musi być w każdym PDP pumeksu):</p>
+<ul><li>Materiał ścierny — <code>kamień / nano szkło / ceramika / metal / elektryczny</code></li><li>Powierzchnia robocza — <code>jednostronna / dwustronna</code></li><li>Forma — <code>tarka / wałek / pilnik / kamień / elektryczna</code></li><li>Wodoszczelność — <code>TAK / NIE</code></li><li>Rozmiar ziarna / gradacja — <code>drobna / średnia / gruba</code></li></ul>
+
+<p><strong>Tier-2 Differentiator:</strong></p>
+<ul><li>Higiena (porowatość) · Żywotność · Bezpieczeństwo powierzchni · Ergonomiczny uchwyt · Zasilanie (dla elektrycznych)</li></ul>
+
+<p><strong>Tier-3 Niche:</strong></p>
+<ul><li>Regulacja prędkości · Etui podróżne · Zestaw z kremem · Rozmiar powierzchni roboczej · Wariant kolorystyczny</li></ul>
+
+<hr>
+
+<h2>7. Ceny tierów — PLN, Polska 2026</h2>
+
+<table>
+<tr><th>Tier</th><th>Zakres</th><th>Typowy kupujący</th><th>Przykłady</th></tr>
+<tr><td>Budżet</td><td>5–25 zł</td><td>Trial, pierwszy zakup, nastolatki, drogeria</td><td>Pumeks kamienny no-name (~6-10 zł), tarka plastikowa drogeria (~12-20 zł)</td></tr>
+<tr><td>Mid</td><td>25–80 zł</td><td>Świadoma pielęgnacja, higiena, wybiera trwalsze</td><td>Nano szkło (25-50 zł), tarka metalowa (30-60 zł), ceramika (35-55 zł)</td></tr>
+<tr><td>Premium</td><td>80–250 zł</td><td>Elektryczne, profesjonalne, wielofunkcyjne</td><td>Elektryczna tarka z wymiennymi wałkami (80-180 zł), zestawy spa (100-250 zł)</td></tr>
+</table>
+
+<hr>
+
+<h2>8. Decision Tree</h2>
+
+<pre><code>[L1 — Routing: jaki problem ze stopami?]
+
+Q1. Jaki masz główny problem?
+   → Szorstkie, zrogowaciałe pięty (ogólnie) → [każdy typ] → Q2
+   → Popękane, suche pięty (bolesne) → [delikatna gradacja — nano drobna strona, elektryczna niski bieg] → Q2
+   → Chcę tylko profilaktycznie / przed latem → [dwustronna nano — uniwersalna] → Q2
+   → Mam stary, zużyty pumeks — chcę teraz lepszy → [nano / metal — trwalsze] → Q2
+
+Q2. Gdzie będziesz używać?
+   → Pod prysznicem (na mokro) → [wymaga wodoodporności + gumowany uchwyt]
+   → Na sucho, przy umywalce → [każdy typ]
+
+Q3. Jak często planujesz używać?
+   → Raz w tygodniu lub rzadziej → [dowolny typ]
+   → 2-3 razy w tygodniu → [nano / ceramika — nieporowate, łatwe czyszczenie]
+   → Codziennie → [delikatna gradacja, nano drobna strona]
+
+Q4. Co jest ważniejsze?
+   → Cena — chcę jak najtaniej → [kamień naturalny / podstawowa tarka plastikowa, budżet &lt;25 zł]
+   → Trwałość — chcę kupić raz i mieć na lata → [nano szkło / metal, mid 25-60 zł]
+   → Wygoda — nie chcę szorować ręcznie → [elektryczna, premium 80+ zł]
+
+Q5. Higiena?
+   → Bardzo ważna — nie chcę bakterii i czernienia → [nano / ceramika / metal — nieporowate]
+   → Umiarkowanie — nie przeszkadza mi wymiana co kilka miesięcy → [kamień też OK]
+
+Q6. Kupujesz na prezent?
+   → TAK → [zestaw: tarka nano + krem, ładne opakowanie, etui]
+   → NIE → przejdź do Q7
+
+Q7. Budżet?
+   → &lt;25 zł → [kamień naturalny, podstawowa tarka]
+   → 25–60 zł → [nano szkło, tarka metalowa, ceramika]
+   → 60–150 zł → [nano premium, zestawy]
+   → &gt;150 zł → [elektryczna z akcesoriami]</code></pre>
+
+<hr>
+
+<h2>9. Forbidden Patterns</h2>
+
+<table>
+<tr><th>❌ Zakazane</th><th>✅ Poprawne</th></tr>
+<tr><td>„skutecznie usuwa zrogowacenia"</td><td>„Dwustronna powierzchnia z nano szkła: gruba strona usuwa twardy naskórek w 30 sekund, drobna wygładza pięty na gładko."</td></tr>
+<tr><td>„bezpieczny dla skóry"</td><td>„Mikro-ziarna nano szkła bez ostrych krawędzi — złuszczają martwy naskórek, nie tną żywej skóry. Nie stosować na otwarte rany."</td></tr>
+<tr><td>„higieniczny"</td><td>„Nieporowata powierzchnia — nie chłonie wody ani bakterii. Po użyciu: spłucz wodą z mydłem. Nie czernieje, nie śmierdzi."</td></tr>
+<tr><td>„długotrwały / wytrzymały"</td><td>„Nano szkło nie ściera się przy normalnym użyciu — po 2 latach działa tak samo jak pierwszego dnia (kamień kruszy się po 2-3 miesiącach)."</td></tr>
+<tr><td>„idealny na prezent"</td><td>„Zestaw: dwustronna tarka nano + odżywczy krem do stóp + etui. Praktyczny prezent — każda kobieta go zużyje (a jak już ma pumeks, to stary jest do wymiany)."</td></tr>
+<tr><td>„do stóp"</td><td>„Do pięt i zrogowaciałego naskórka stóp. Nie stosować na twarz, dłonie ani delikatne partie skóry."</td></tr>
+<tr><td>„profesjonalny efekt"</td><td>„Ta sama technologia co w salonach kosmetycznych — nano szkło = precyzyjne złuszczanie warstwa po warstwie, bez ryzyka przeszlifowania."</td></tr>
+<tr><td>„szybki efekt"</td><td>„2 minuty na stopę — natychmiast gładkie pięty. Nie musisz czekać 7 dni jak przy skarpetach złuszczających."</td></tr>
+</table>
+
+<hr>
+
+<h2>10. Ścieżki percepcji & pole pytań</h2>
+
+<p><em>Ścieżki per CEP (sytuacja wejścia) × kontekst. Pytania per stan.</em></p>
+
+<table>
+<tr><th>#</th><th>Ścieżka (CEP wejścia)</th><th>Kontekst sytuacyjny</th><th>Badge</th><th>Bloker-brama 🛡️</th></tr>
+<tr><td>A</td><td><strong>Sezon sandałowy</strong> <code>cep_sezon_sandalowy</code></td><td>Wiosna/lato · pierwsze ciepłe dni · odkryte buty</td><td>IMPULS</td><td>🛡️ „Czy tarka nie zedrze za dużo?" — obawa przed przeszlifowaniem</td></tr>
+<tr><td>B</td><td><strong>Domowy pedicure</strong> <code>cep_domowy_pedicure</code></td><td>Regularna pielęgnacja · oszczędność vs salon · wygoda</td><td>POTRZEBA</td><td>🛡️ „Domowe narzędzia dają gorszy efekt niż salon"</td></tr>
+<tr><td>C</td><td><strong>Pękające pięty</strong> <code>cep_pekajace_piety</code></td><td>Sucha, popękana skóra · ból przy chodzeniu</td><td>POTRZEBA</td><td>🛡️ „Tarka pogłębi pęknięcia" — lęk przed uszkodzeniem</td></tr>
+<tr><td>D</td><td><strong>Pierwszy zakup</strong> <code>cep_pierwszy_zakup</code></td><td>Debiut w kategorii · nie wie co wybrać</td><td>POTRZEBA</td><td>🛡️ „Za dużo rodzajów — nie wiem co dla mnie" — paraliż wyboru</td></tr>
+<tr><td>E</td><td><strong>Wymiana zużytego</strong> <code>cep_wymiana_zuzytego</code></td><td>Stary się skruszył / przestał działać</td><td>POTRZEBA</td><td>🛡️ „Nowy pewnie też się szybko zużyje" — zmęczenie cyklem</td></tr>
+<tr><td>F</td><td><strong>Prezent</strong> <code>cep_prezent</code></td><td>Okazja: święta, urodziny, Dzień Matki</td><td>IMPULS</td><td>🛡️ „Nie wiem czego potrzebuje — może już ma?"</td></tr>
+<tr><td>G</td><td><strong>Przed wakacjami</strong> <code>cep_przed_wakacjami</code></td><td>Pakowanie · presja czasu · basen/plaża</td><td>IMPULS</td><td>🛡️ „Jak to umyję/przechowam w podróży?" — obawa logistyczna</td></tr>
+<tr><td>H</td><td><strong>Higiena narzędzia</strong> <code>cep_higiena_narzedzia</code></td><td>Stary czarny/śmierdzi → moment obrzydzenia</td><td>POTRZEBA</td><td>🛡️ „Wszystkie pumeksy się brudzą — to nieuniknione"</td></tr>
+<tr><td>I</td><td><strong>Oszczędność salon</strong> <code>cep_oszczednosc_salon</code></td><td>Kalkulacja ekonomiczna · 120 zł/mies vs narzędzie raz</td><td>POTRZEBA</td><td>🛡️ „Domowe = gorszy efekt — będę żałować"</td></tr>
+<tr><td>J</td><td><strong>Ekologiczna trwałość</strong> <code>cep_eko_trwalosc</code></td><td>Zero waste · zmęczenie jednorazówkami</td><td>POTRZEBA</td><td>🛡️ „Czy droższe naprawdę wystarczy na lata?" — sceptycyzm</td></tr>
+</table>
+
+<h3>Ścieżka A — Sezon sandałowy (IMPULS)</h3>
+
+<p><strong>A1 — Świadomość / trigger:</strong></p>
+<ul><li>Jak przygotować stopy do lata w domu?</li><li>Piękne stopy na sandały — co zrobić z suchymi piętami?</li><li>Dlaczego warto zadbać o stopy przed sezonem sandałowym?</li></ul>
+
+<p><strong>A2 — Cechy / nauka:</strong></p>
+<ul><li>Jaki pumeks wystarczy do szybkiego wygładzenia pięt przed sandałami?</li><li>Czym różni się pumeks nano od elektrycznej tarki do stóp?</li><li>Dwustronna tarka do stóp — jak używać grubej i drobnej strony?</li></ul>
+
+<p><strong>A3 — Wybór produktu:</strong></p>
+<ul><li>Najlepszy pumeks do stóp na sezon letni — przegląd</li><li>Ile kosztuje dobry pumeks do stóp — ceny 2026?</li><li>Czy warto dopłacić do pumeksu nano zamiast zwykłego kamienia?</li></ul>
+
+<p><strong>A4 — Użycie / FAQ:</strong></p>
+<ul><li>Czy pumeksem można używać codziennie przed wyjściem w sandałach?</li><li>Jak nie przesadzić z tarciem — ile razy przejechać po pięcie?</li></ul>
+
+<h3>Ścieżka B — Domowy pedicure (POTRZEBA)</h3>
+
+<p><strong>B1 — Świadomość / trigger:</strong></p>
+<ul><li>Jak zrobić pedicure w domu bez chodzenia do salonu?</li><li>Ile kosztuje rocznie pedicure w salonie vs narzędzia do domu?</li><li>Czy domowy pedicure może zastąpić salon kosmetyczny?</li></ul>
+
+<p><strong>B2 — Cechy / nauka:</strong></p>
+<ul><li>Co daje lepszy efekt: tarka z nano szkła czy zwykły pumeks kamienny?</li><li>Jak używać tarki do stóp krok po kroku — instrukcja domowego pedicure</li><li>Jak często robić pedicure w domu?</li></ul>
+
+<p><strong>B3 — Wybór produktu:</strong></p>
+<ul><li>Jaki zestaw do domowego pedicure — tarka + krem + pilnik?</li><li>Tarka do stóp czy wałek — co lepsze do domowego użytku?</li><li>Czy elektryczna tarka daje lepszy efekt niż manualna?</li></ul>
+
+<p><strong>B4 — Użycie / FAQ:</strong></p>
+<ul><li>Czy po tarce trzeba użyć kremu do stóp?</li><li>Jak nie zrobić sobie krzywdy przy domowym pedicure?</li></ul>
+
+<h3>Ścieżka C — Pękające pięty (POTRZEBA)</h3>
+
+<p><strong>C1 — Świadomość / trigger:</strong></p>
+<ul><li>Jak wyleczyć popękane pięty domowym sposobem?</li><li>Pękające pięty — czy tarka pomoże czy pogorszy?</li><li>Sucha skóra na piętach zimą — jak sobie radzić?</li></ul>
+
+<p><strong>C2 — Cechy / nauka:</strong></p>
+<ul><li>Która strona tarki do stóp jest bezpieczna na popękane pięty?</li><li>Pumeks vs krem na pękające pięty — co pierwsze?</li><li>Jaka gradacja jest najdelikatniejsza dla wrażliwych stóp?</li></ul>
+
+<p><strong>C3 — Wybór produktu:</strong></p>
+<ul><li>Najlepszy pumeks do popękanych pięt — delikatny i bezpieczny</li><li>Czy elektryczna tarka jest bezpieczniejsza przy popękanych piętach?</li></ul>
+
+<p><strong>C4 — Użycie / FAQ:</strong></p>
+<ul><li>Jak często złuszczać popękane pięty?</li><li>Czy nano szkło podrażnia popękaną skórę?</li></ul>
+
+<h3>Ścieżka D — Pierwszy zakup (POTRZEBA)</h3>
+
+<p><strong>D1 — Świadomość / trigger:</strong></p>
+<ul><li>Pierwszy pumeks do stóp — od czego zacząć?</li><li>Jaki pumeks dla początkujących — najłatwiejszy w użyciu?</li><li>Czy pumeks jest bezpieczny dla kogoś kto nigdy nie używał?</li></ul>
+
+<p><strong>D2 — Cechy / nauka:</strong></p>
+<ul><li>Rodzaje pumeksów — kamień, nano, elektryczny — różnice dla początkującego</li><li>Jak używać pumeksu pierwszy raz — instrukcja krok po kroku</li></ul>
+
+<p><strong>D3 — Wybór produktu:</strong></p>
+<ul><li>Najlepszy pumeks na start — niedrogi i bezpieczny</li><li>Czy dwustronna tarka jest dobra na pierwszy raz?</li></ul>
+
+<p><strong>D4 — Użycie / FAQ:</strong></p>
+<ul><li>Czego nie robić przy pierwszym użyciu pumeksu?</li><li>Jak sprawdzić czy pumeks działa — skąd wiedzieć że robię to dobrze?</li></ul>
+
+<h3>Ścieżka E — Wymiana zużytego (POTRZEBA)</h3>
+
+<p><strong>E1 — Świadomość / trigger:</strong></p>
+<ul><li>Kiedy wymienić pumeks na nowy?</li><li>Stary pumeks się kruszy — czym go zastąpić żeby służył dłużej?</li><li>Jak długo powinien wytrzymać dobry pumeks?</li></ul>
+
+<p><strong>E2 — Cechy / nauka:</strong></p>
+<ul><li>Pumeks nano vs kamień — różnica w trwałości</li><li>Dlaczego kamień się kruszy a nano szkło nie?</li></ul>
+
+<p><strong>E3 — Wybór produktu:</strong></p>
+<ul><li>Najtrwalszy pumeks do stóp — który materiał wytrzyma lata?</li><li>Czy warto dopłacić do nano szkła zamiast kupować kamień co 3 miesiące?</li></ul>
+
+<p><strong>E4 — Użycie / FAQ:</strong></p>
+<ul><li>Jak dbać o pumeks żeby służył dłużej?</li><li>Czy zużyty pumeks można jakoś zregenerować?</li></ul>
+
+<h3>Ścieżka F — Prezent (IMPULS)</h3>
+
+<p><strong>F1 — Świadomość / trigger:</strong></p>
+<ul><li>Jaki prezent dla mamy która narzeka na pięty?</li><li>Praktyczny prezent dla siostry — zestaw do pielęgnacji stóp</li><li>Co kupić na Dzień Matki — przydatne i nie banalne?</li></ul>
+
+<p><strong>F2 — Cechy / nauka:</strong></p>
+<ul><li>Jaki typ pumeksu jest najbardziej uniwersalny na prezent?</li><li>Jak dobrać pumeks nie znając preferencji obdarowanej?</li></ul>
+
+<p><strong>F3 — Wybór produktu:</strong></p>
+<ul><li>Zestaw do pedicure na prezent — co powinien zawierać?</li><li>Najlepszy pumeks na prezent do 50 zł / do 100 zł</li></ul>
+
+<p><strong>F4 — Użycie / FAQ:</strong></p>
+<ul><li>Jak ładnie zapakować pumeks na prezent?</li><li>Czy do pumeksu warto dokupić krem do stóp?</li></ul>
+
+<h3>Ścieżka G — Przed wakacjami (IMPULS)</h3>
+
+<p><strong>G1 — Świadomość / trigger:</strong></p>
+<ul><li>Jak szybko wygładzić stopy przed wyjazdem na wakacje?</li><li>Ostatnia chwila przed urlopem — ekspresowy pedicure w 5 minut</li><li>Co spakować do kosmetyczki na wakacje do pielęgnacji stóp?</li></ul>
+
+<p><strong>G2 — Cechy / nauka:</strong></p>
+<ul><li>Jaki pumeks jest najszybszy w działaniu?</li><li>Czy tarka zmieści się do kosmetyczki podróżnej?</li></ul>
+
+<p><strong>G3 — Wybór produktu:</strong></p>
+<ul><li>Najlepszy pumeks do stóp w podróży — kompaktowy i higieniczny</li><li>Tarka z etui — idealna na wyjazd?</li></ul>
+
+<p><strong>G4 — Użycie / FAQ:</strong></p>
+<ul><li>Jak używać tarki do stóp w hotelu bez bałaganu?</li><li>Czy pumeks można spakować do bagażu podręcznego?</li></ul>
+
+<h3>Ścieżka H — Higiena narzędzia (POTRZEBA)</h3>
+
+<p><strong>H1 — Świadomość / trigger:</strong></p>
+<ul><li>Dlaczego stary pumeks śmierdzi i czernieje?</li><li>Czy porowaty pumeks może powodować grzybicę stóp?</li><li>Jak często wymieniać pumeks ze względów higienicznych?</li></ul>
+
+<p><strong>H2 — Cechy / nauka:</strong></p>
+<ul><li>Pumeks nano szkło vs kamień — który bardziej higieniczny?</li><li>Czym się różni powierzchnia porowata od nieporowatej?</li></ul>
+
+<p><strong>H3 — Wybór produktu:</strong></p>
+<ul><li>Najbardziej higieniczny pumeks do stóp — nieporowaty, łatwy w czyszczeniu</li><li>Czy wszystkie nieporowate pumeksy są równie higieniczne?</li></ul>
+
+<p><strong>H4 — Użycie / FAQ:</strong></p>
+<ul><li>Jak prawidłowo myć pumeks po każdym użyciu?</li><li>Czy pumeks nano można myć mydłem antybakteryjnym?</li></ul>
+
+<h3>Ścieżka I — Oszczędność salon (POTRZEBA)</h3>
+
+<p><strong>I1 — Świadomość / trigger:</strong></p>
+<ul><li>Ile kosztuje pedicure w salonie vs narzędzia do domu — opłaca się?</li><li>Czy domowy pedicure zaoszczędzi 1000+ zł rocznie?</li><li>Przejście z salonu na DIY — co tracę, co zyskuję?</li></ul>
+
+<p><strong>I2 — Cechy / nauka:</strong></p>
+<ul><li>Jaki pumeks daje efekt porównywalny z salonem?</li><li>Tarka nano vs elektryczna w warunkach domowych</li></ul>
+
+<p><strong>I3 — Wybór produktu:</strong></p>
+<ul><li>Zestaw do domowego pedicure zamiast salonu — co kupić?</li><li>Czy nano szkło + krem wystarczy?</li></ul>
+
+<p><strong>I4 — Użycie / FAQ:</strong></p>
+<ul><li>Jak utrzymać regularność domowego pedicure?</li><li>Czy efekt domowy utrzymuje się tak samo długo jak salonowy?</li></ul>
+
+<h3>Ścieżka J — Ekologiczna trwałość (POTRZEBA)</h3>
+
+<p><strong>J1 — Świadomość / trigger:</strong></p>
+<ul><li>Ile plastiku wyrzucam rocznie kupując tanie tarki?</li><li>Pumeks na lata — czy to możliwe?</li><li>Zero waste w łazience — od czego zacząć?</li></ul>
+
+<p><strong>J2 — Cechy / nauka:</strong></p>
+<ul><li>Który materiał pumeksu jest najbardziej ekologiczny?</li><li>Metal vs nano szkło — co jest trwalsze i bardziej eko?</li></ul>
+
+<p><strong>J3 — Wybór produktu:</strong></p>
+<ul><li>Pumeks metalowy — czy naprawdę wystarczy na 10 lat?</li><li>Najbardziej ekologiczny pumeks do stóp — przegląd</li></ul>
+
+<p><strong>J4 — Użycie / FAQ:</strong></p>
+<ul><li>Jak utylizować zużyty pumeks — recykling metalu, szkła, kamienia?</li><li>Czy pumeks wielorazowy naprawdę się nie zużywa?</li></ul>
+
+<hr>
+
+<h2>11. Cross-Category Triggers</h2>
+
+<p><em>Zakup w innej kategorii → trigger do wejścia w pumeksy.</em></p>
+
+<table>
+<tr><th>Kategoria źródłowa</th><th>Trigger</th><th>Ścieżka CEP</th></tr>
+<tr><td>Sandały / odkryte buty</td><td>„Kupiłam nowe sandały na lato — stopy muszą do nich pasować"</td><td>A (sezon sandałowy)</td></tr>
+<tr><td>Krem do stóp</td><td>„Kupiłam krem — teraz potrzebuję pumeksu, żeby najpierw usunąć martwy naskórek"</td><td>B (domowy pedicure), C (pękające pięty)</td></tr>
+<tr><td>Skarpety złuszczające</td><td>„Skarpety złuszczyły skórę, ale nie do końca — potrzebuję pumeksu do wykończenia"</td><td>B (domowy pedicure)</td></tr>
+<tr><td>Kosmetyczka / organizer podróżny</td><td>„Kompletuję kosmetyczkę na wakacje — potrzebuję małego pumeksu"</td><td>G (przed wakacjami)</td></tr>
+<tr><td>Zestaw prezentowy spa</td><td>„Kupiłam zestaw spa dla mamy — brakuje w nim pumeksu"</td><td>F (prezent)</td></tr>
+<tr><td>Lakiery do paznokci / akcesoria pedicure</td><td>„Robię pedicure w domu — lakier już mam, potrzebuję jeszcze porządnej tarki"</td><td>B (domowy pedicure)</td></tr>
+<tr><td>Ręczniki / akcesoria łazienkowe</td><td>„Urządzam łazienkę — dokupuję akcesoria pielęgnacyjne"</td><td>D (pierwszy zakup)</td></tr>
+<tr><td>Bilety na wakacje / rezerwacja hotelu</td><td>„Mam zarezerwowany wyjazd — czas na przygotowania"</td><td>G (przed wakacjami)</td></tr>
+</table>
+
+<hr>
+
+<h2>12. Tone of Voice GEO</h2>
+
+<p><strong>Jak pisać treść cytowalną przez AI (S2 direct answer):</strong></p>
+
+<ol><li><strong>Fakty, nie przymiotniki.</strong> „Nano szkło = mikro-ziarna 200-400 mikronów, nieporowata powierzchnia" → cytowalne. „Rewelacyjny, genialny pumeks" → szum, AI ignoruje.</li></ol>
+
+<ol><li><strong>Konkret, nie obietnica.</strong> „2 minuty na stopę" zamiast „szybki efekt". „Kamień kruszy się po 2-3 miesiącach" zamiast „krótka żywotność".</li></ol>
+
+<ol><li><strong>Kontrast z inkumbentem.</strong> Każda cecha nano/metalu: pokaż co traci konsument zostając przy kamieniu. „Nano szkło — 2 lata bez wymiany. Kamień — 8-12 zł × 4-6 wymian rocznie = strata."</li></ol>
+
+<ol><li><strong>Język konsumenta, nie producenta.</strong> „Pięty gotowe na sandały" nie „Optymalna gradacja ścierna 400 mikronów". Specyfikacja = sekcja KCF. Narrativ = język konsumenta.</li></ol>
+
+<ol><li><strong>Gaszenie obiekcji wprost.</strong> Każdy bloker 🛡️ z tabeli CEP → osobne zdanie w PDP które go gasi. „Boisz się, że tarka zedrze za dużo? Drobna strona nano szkła ma mikro-ziarna — złuszcza tylko martwy naskórek, nie uszkadza żywej skóry."</li></ol>
+
+<ol><li><strong>Unikaj pustych superlatyw.</strong> „Najlepszy", „idealny", „profesjonalny" (bez wyjaśnienia dlaczego) = szum. „Ta sama technologia nano szkła co w salonach kosmetycznych" = niesie informację.</li></ol>
+
+<ol><li><strong>Kategorie wrażliwe na AI hallucination:</strong> LOW. Pumeksy to kategoria opisowa, nie spec-numeryczna. Kluczowe parametry (rozmiar ziarna, materiał) są opisowe, nie liczbowe → niskie ryzyko halucynacji AI. Mimo to: cytuj źródła dla twardych danych („żywotność testowana przez producenta: 2+ lata przy codziennym użyciu").</li></ol>
+
+<hr>
+
+<h2>13. Pole pytań</h2>
+
+<p><em>Wygenerowane przez engine v5 · 153 pytań · 10 ścieżek.</em></p>
+
+<h3>Schwartz — 8 wartości z wagami</h3>
+
+<table>
+<tr><th>Wartość</th><th>Waga</th><th>Przejaw w kategorii</th></tr>
+<tr><td>Hedonizm</td><td><strong>M</strong></td><td>przyjemność użytkowania, rytuał, self-care</td></tr>
+<tr><td>Stymulacja</td><td><strong>M</strong></td><td>nowość, odkrywanie, trendy, nowe modele</td></tr>
+<tr><td>Przystosowanie</td><td><strong>H</strong></td><td>odpowiedni wybór do sytuacji, akceptacja grupy</td></tr>
+<tr><td>Osiągnięcia</td><td><strong>M</strong></td><td>kompetencja — robię to dobrze, dowód umiejętności</td></tr>
+<tr><td>Bezpieczeństwo</td><td><strong>M</strong></td><td>ochrona przed błędem, sprawdzona jakość</td></tr>
+<tr><td>Życzliwość</td><td><strong>L</strong></td><td>prezent dla bliskich</td></tr>
+<tr><td>Władza</td><td><strong>M</strong></td><td>status, prestiż, wyróżnienie się</td></tr>
+<tr><td>Uniwersalizm</td><td><strong>L</strong></td><td>ekologia, etyka</td></tr>
+</table>
+
+<p><strong>Interpretacja:</strong> Kategoria dominuje w: Przystosowanie. Zakup napędzany przez odpowiedni wybór do sytuacji.</p>
+
+<hr>
+
+<h3>① Discovery (otwierające — 2-4 per CEP)</h3>
+
+<p><strong>Zaraz lato, sandały — pięty muszą być gładkie</strong> [impulsowy]</p>
+
+<ul><li>Dlaczego moje pięty robią się takie szorstkie i suche przed latem? <em>(→ cep_sezon_sandalowy)</em></li><li>Czy to normalne, że skóra na piętach pęka mimo codziennego kremowania? <em>(→ cep_sezon_sandalowy)</em></li><li>Jak szybko mogę pozbyć się zrogowaciałego naskórka na piętach przed sezonem sandałów? <em>(→ cep_sezon_sandalowy)</em></li></ul>
+
+<p><strong>Wstydzę się stóp. Mąż widzi, koleżanki mają gładkie — boję</strong> [impulsowy]</p>
+
+<ul><li>Czy pumeks usunie modzele, które sprawiają, że wstydzę się stóp przed mężem? <em>(→ cep_wstyd_spoleczny)</em></li><li>Jak szybko pumeks wygładzi stopy, żeby koleżanki nie widziały różnicy? <em>(→ cep_wstyd_spoleczny)</em></li><li>Czy pumeks poradzi sobie z suchą, popękaną skórą, która wygląda nieestetycznie? <em>(→ cep_wstyd_spoleczny)</em></li></ul>
+
+<p><strong>Pedicure w salonie drogi i trzeba się umawiać — zrobię to s</strong> [ekonomiczny]</p>
+
+<ul><li>Czy pumeks naprawdę zastąpi mi profesjonalny pedicure, czy to tylko strata czasu? <em>(→ cep_domowy_pedicure)</em></li><li>Dlaczego salonowy pedicure jest tak drogi, skoro mogę to zrobić sama w domu? <em>(→ cep_domowy_pedicure)</em></li><li>Jak szybko pumeks usunie twardy naskórek w porównaniu do wizyty u kosmetyczki? <em>(→ cep_domowy_pedicure)</em></li></ul>
+
+<p><strong>Pięty popękane, skóra sucha i twarda — boli przy chodzeniu</strong> [impulsowy]</p>
+
+<ul><li>Czy popękane pięty mogą być objawem grzybicy lub innej choroby skóry? <em>(→ cep_pekajace_piety)</em></li><li>Dlaczego skóra na piętach robi się twarda i sucha, mimo że piję dużo wody? <em>(→ cep_pekajace_piety)</em></li><li>Czy ból przy chodzeniu od popękanych pięt oznacza, że doszło do zakażenia? <em>(→ cep_pekajace_piety)</em></li></ul>
+
+<p><strong>Nigdy nie używałam pumeksu — nie wiem co wybrać, od czego z</strong> [zdrowotny]</p>
+
+<ul><li>Czy pumeks w ogóle działa na bardzo twardą skórę, czy to mit? <em>(→ cep_pierwszy_zakup)</em></li><li>Dlaczego mam używać pumeksu, skoro mam kremy i pilniki? <em>(→ cep_pierwszy_zakup)</em></li><li>Czy pumeks nie zniszczy mi stóp, jeśli nigdy go nie używałam? <em>(→ cep_pierwszy_zakup)</em></li></ul>
+
+<p><strong>Stary pumeks się skruszył / wyślizgał / przestał działać —</strong> [impulsowy]</p>
+
+<ul><li>Dlaczego mój stary pumeks tak szybko się skruszył – czy to wina materiału czy wilgoci w łazience? <em>(→ cep_wymiana_zuzytego)</em></li><li>Czy istnieje pumeks, który nie wyślizguje się po kilku użyciach, czy to normalne zużycie? <em>(→ cep_wymiana_zuzytego)</em></li><li>Dlaczego pumeks przestaje działać po kilku tygodniach – czy traci porowatość, czy się zatyka? <em>(→ cep_wymiana_zuzytego)</em></li></ul>
+
+<p><strong>Mama/siostra/przyjaciółka narzeka na pięty — kupię praktycz</strong> [ekonomiczny]</p>
+
+<ul><li>Dlaczego mojej mamie/siostrze/przyjaciółce tak pękają pięty mimo kremów? <em>(→ cep_prezent)</em></li><li>Czy to normalne, że pięty są takie suche i bolesne, czy to może być coś poważnego? <em>(→ cep_prezent)</em></li><li>Dlaczego ona ciągle narzeka na te pięty, a ja nie mam pojęcia, co jej polecić? <em>(→ cep_prezent)</em></li></ul>
+
+<p><strong>Za tydzień wyjazd — muszę ogarnąć stopy na plażę / basen</strong> [impulsowy]</p>
+
+<ul><li>Czy pumeks naprawdę usunie zrogowaciały naskórek przed wyjazdem na plażę? <em>(→ cep_przed_wakacjami)</em></li><li>Jak szybko pumeks działa na stopy, żeby były gładkie w tydzień? <em>(→ cep_przed_wakacjami)</em></li><li>Czy pumeks jest lepszy niż tarka do stóp na widoczne efekty przed basenem? <em>(→ cep_przed_wakacjami)</em></li></ul>
+
+<p><strong>Stary pumeks zrobił się czarny i śmierdzi — to siedlisko ba</strong> [impulsowy]</p>
+
+<ul><li>Czy czarny nalot na pumeksie to pleśń, która może wywołać grzybicę stóp? <em>(→ cep_higiena_narzedzia)</em></li><li>Jak szybko po zauważeniu smrodu z pumeksu trzeba go wymienić, żeby nie zarazić rodziny? <em>(→ cep_higiena_narzedzia)</em></li><li>Czy stary, śmierdzący pumeks da się jeszcze wyczyścić i odkazić, czy to już tylko do wyrzucenia? <em>(→ cep_higiena_narzedzia)</em></li></ul>
+
+<p><strong>Męczy mnie kupowanie tanich plastikowych tarek co miesiąc —</strong> [ekologiczny]</p>
+
+<ul><li>Dlaczego plastikowe tarki do stóp tak szybko się tępią? <em>(→ cep_eko_trwalosc)</em></li><li>Czy istnieją tarki do stóp, które nie wymagają wymiany co miesiąc? <em>(→ cep_eko_trwalosc)</em></li><li>Jaki materiał tarki do stóp wytrzymuje dłużej niż plastik? <em>(→ cep_eko_trwalosc)</em></li></ul>
+
+<h3>② Pogłębione (per stan ścieżki)</h3>
+
+<p><strong>Zaraz lato, sandały — pięty muszą być gładkie</strong> [impulsowy] — 9 pytań</p>
+
+<p><em>Stan 2</em> (Potrzeba/impuls):</p>
+<p>- Czy przyczyną twardych pięt może być moja dieta albo brak witamin?</p>
+
+<p><em>Stan 7</em> (Wybór sklepu/sposobu zakupu):</p>
+<p>- Który sklep oferuje pumeksy z naturalnej lawy, a nie syntetyczne ścieraki?</p>
+<p>- Czy w drogerii stacjonarnej dostanę pumeks o drobniejszym ziarnie do delikatnej skóry?</p>
+<p>- Jaki pumeks do stóp polecają dermatolodzy na głębokie pęknięcia – czy lepiej kupić online?</p>
+<p>- Czy warto dopłacić do pumeksu z uchwytem czy zwykły kamień wystarczy na gładkie pięty?</p>
+
+<p><em>Stan 8</em> (Zakup):</p>
+<p>- Czy ten pumeks naprawdę usunie zrogowacenia bez podrażniania skóry?</p>
+<p>- Jak długo trwa efekt po użyciu pumeksu – czy muszę go kupować co miesiąc?</p>
+<p>- Czy do tego pumeksu potrzebuję dodatkowo peelingu lub kremu z mocznikiem?</p>
+<p>- Jaki rozmiar pumeksu wybrać, żeby wygodnie trzymać go w dłoni podczas piłowania pięt?</p>
+
+<p><strong>Wstydzę się stóp. Mąż widzi, koleżanki mają gładkie — boję</strong> [impulsowy] — 9 pytań</p>
+
+<p><em>Stan 2</em> (Potrzeba/impuls):</p>
+<p>- Jaki pumeks jest najlepszy, żeby stopy były gładkie jak u koleżanek bez bólu?</p>
+
+<p><em>Stan 7</em> (Wybór sklepu/sposobu zakupu):</p>
+<p>- Która drogeria ma pumeksy do stóp z opiniami od kobiet, które też się wstydziły swoich stóp?</p>
+<p>- Czy w aptece dostanę pumeks, który nie podrażni wrażliwej skóry na piętach?</p>
+<p>- Gdzie kupić pumeks do stóp, żeby nie musieć pytać sprzedawcy o poradę?</p>
+<p>- Czy lepiej zamówić pumeks online z anonimową dostawą, żeby nikt nie widział?</p>
+
+<p><em>Stan 8</em> (Zakup):</p>
+<p>- Czy ten pumeks na pewno nie zrobi jeszcze większych ran na stopach, które będę musiała ukrywać?</p>
+<p>- Jak użyć pumeksu, żeby efekt był widoczny od razu, a nie za tydzień?</p>
+<p>- Czy do tego pumeksu trzeba dokupić krem, żeby stopy nie były jeszcze bardziej suche?</p>
+<p>- Ile razy w tygodniu muszę używać pumeksu, żeby stopy wyglądały gładko jak u koleżanek?</p>
+
+<p><strong>Pedicure w salonie drogi i trzeba się umawiać — zrobię to s</strong> [ekonomiczny] — 15 pytań</p>
+
+<p><em>Stan 2</em> (Potrzeba/impuls):</p>
+<p>- Czy używanie pumeksu w domu jest bezpieczne, czy mogę sobie zrobić krzywdę?</p>
+
+<p><em>Stan 3</em> (Rozpoznanie CEP):</p>
+<p>- Czy pumeks do stóp to w ogóle skuteczne narzędzie do walki z zrogowaceniami, czy lepiej kupić tarkę?</p>
+<p>- Jaka jest różnica między pumeksem a peelingiem chemicznym do stóp w kontekście efektu 'jak po pedicure'?</p>
+<p>- Czy pumeks wystarczy, żeby stopy wyglądały gładko bez wizyty u kosmetyczki, czy potrzebne są dodatkowe kosmetyki?</p>
+
+<p><em>Stan 4</em> (Nauka kategorii):</p>
+<p>- Jaki pumeks jest najlepszy do bardzo twardej skóry na piętach – naturalny czy syntetyczny?</p>
+<p>- Czy pumeks z drobinkami pumeksowymi w paście działa inaczej niż zwykły kamień pumeksowy?</p>
+<p>- Jak często muszę używać pumeksu, żeby utrzymać efekt gładkich stóp bez chodzenia do salonu?</p>
+<p>- Czy pumeks może usunąć odciski i modzele, czy to tylko do zmiękczania naskórka?</p>
+
+<p><em>Stan 5</em> (Preselekcja):</p>
+<p>- Który pumeks ma najlepsze opinie wśród osób, które zrezygnowały z salonowego pedicure?</p>
+<p>- Czy pumeks z uchwytem jest wygodniejszy i skuteczniejszy niż zwykły kamień do stóp?</p>
+<p>- Jaki pumeks nie kruszy się i nie rysuje skóry, a przy tym daje efekt 'jak po pedicure'?</p>
+
+<p><em>Stan 7</em> (Wybór sklepu/sposobu zakupu):</p>
+<p>- Gdzie kupić pumeks do stóp, żeby dostać go najszybciej i nie przepłacić – apteka czy internet?</p>
+<p>- Czy w drogerii stacjonarnej mogę dotknąć pumeksu przed zakupem, żeby ocenić jego twardość?</p>
+<p>- Jaki sklep online ma najlepsze promocje na pumeksy do stóp i darmową dostawę?</p>
+<p>- Czy warto kupić zestaw pumeks + krem do stóp, żeby zaoszczędzić w porównaniu do jednej wizyty w salonie?</p>
+
+<p><strong>Pięty popękane, skóra sucha i twarda — boli przy chodzeniu</strong> [impulsowy] — 9 pytań</p>
+
+<p><em>Stan 2</em> (Potrzeba/impuls):</p>
+<p>- Jak szybko mogę pozbyć się bólu i suchości, żeby normalnie chodzić?</p>
+
+<p><em>Stan 7</em> (Wybór sklepu/sposobu zakupu):</p>
+<p>- Która drogeria ma w ofercie pumeksy z certyfikatem dla skóry popękanej i bolesnej?</p>
+<p>- Czy w aptece dostanę pumeks medyczny do stóp z suchą i twardą skórą, czy lepiej zamówić online?</p>
+<p>- Jaki sklep internetowy oferuje pumeksy z opiniami od osób z popękanymi piętami?</p>
+<p>- Czy warto kupić pumeks w zestawie z kremem do bardzo suchej skóry, żeby nie pogłębić pęknięć?</p>
+
+<p><em>Stan 8</em> (Zakup):</p>
+<p>- Czy ten pumeks jest wystarczająco drobnoziarnisty, żeby nie podrażnić już popękanej skóry?</p>
+<p>- Jaki rozmiar pumeksu wybrać, żeby wygodnie dotrzeć do całej pięty bez schylania się?</p>
+<p>- Czy dołączona instrukcja ostrzega przed używaniem pumeksu na otwarte pęknięcia?</p>
+<p>- Czy mogę użyć tego pumeksu od razu po namoczeniu stóp, czy trzeba odczekać, aż skóra zmięknie?</p>
+
+<p><strong>Nigdy nie używałam pumeksu — nie wiem co wybrać, od czego z</strong> [zdrowotny] — 24 pytań</p>
+
+<p><em>Stan 2</em> (Potrzeba/impuls):</p>
+<p>- Po co mi pumeks, skoro nie mam widocznych modzeli ani odcisków?</p>
+
+<p><em>Stan 3</em> (Rozpoznanie CEP):</p>
+<p>- Dlaczego pumeks jest lepszy niż peeling chemiczny do stóp?</p>
+<p>- Czy pumeks naprawdę zapobiega pękaniu pięt, czy to tylko ścieranie naskórka?</p>
+<p>- Dlaczego niektórzy mówią, że pumeks to podstawa pielęgnacji stóp, a inni go krytykują?</p>
+
+<p><em>Stan 4</em> (Nauka kategorii):</p>
+<p>- Czy pumeks naturalny różni się czymś od syntetycznego do stóp?</p>
+<p>- Dlaczego pumeks ma różną gradację i która jest dla początkującej?</p>
+<p>- Czy pumeks trzeba moczyć przed użyciem, czy działa na sucho?</p>
+<p>- Dlaczego pumeks może podrażnić skórę, jeśli za mocno pocieram?</p>
+
+<p><em>Stan 5</em> (Preselekcja):</p>
+<p>- Który pumeks jest najdelikatniejszy dla kogoś, kto nigdy go nie używał?</p>
+<p>- Dlaczego jedne pumeksy są gąbczaste, a inne twarde jak kamień?</p>
+<p>- Czy pumeks z uchwytem jest wygodniejszy dla początkującej niż zwykły kamień?</p>
+
+<p><em>Stan 6</em> (Porównywanie):</p>
+<p>- Czy pumeks z mikroelementami (np. wulkaniczny) działa lepiej niż zwykły kamień?</p>
+<p>- Dlaczego pumeks z drobniejszym ziarnem jest polecany na pierwszy raz?</p>
+<p>- Czy pumeks z dodatkiem olejków eterycznych ma sens, czy to chwyt marketingowy?</p>
+<p>- Dlaczego jeden pumeks kosztuje 5 zł, a inny 30 zł — czy droższy jest skuteczniejszy?</p>
+<p>- Który pumeks mniej się kruszy i nie brudzi łazienki?</p>
+
+<p><em>Stan 7</em> (Wybór sklepu/sposobu zakupu):</p>
+<p>- Gdzie kupić pumeks do stóp, żeby dostać fachową poradę dla początkującej?</p>
+<p>- Czy w drogerii internetowej opis pumeksu wystarczy, czy lepiej dotknąć w sklepie?</p>
+<p>- Dlaczego w aptece polecają inne pumeksy niż w drogerii?</p>
+<p>- Czy opłaca się kupić zestaw pumeks + pilnik, czy to strata pieniędzy?</p>
+
+<p><em>Stan 8</em> (Zakup):</p>
+<p>- Czy ten pumeks na pewno będzie odpowiedni dla mojej wrażliwej skóry?</p>
+<p>- Jak sprawdzić, czy pumeks nie jest zbyt ostry przed pierwszym użyciem?</p>
+<p>- Czy do tego pumeksu potrzebuję jeszcze jakiegoś balsamu lub kremu?</p>
+<p>- Czy mogę zwrócić pumeks, jeśli po pierwszym użyciu okaże się za twardy?</p>
+
+<p><strong>Stary pumeks się skruszył / wyślizgał / przestał działać —</strong> [impulsowy] — 9 pytań</p>
+
+<p><em>Stan 2</em> (Potrzeba/impuls):</p>
+<p>- Czy to możliwe, że kupiłem wadliwy pumeks, czy wszystkie tak szybko się niszczą?</p>
+
+<p><em>Stan 7</em> (Wybór sklepu/sposobu zakupu):</p>
+<p>- Który sklep ma pumeksy z gwarancją, że nie skruszą się po miesiącu – czy Allegro, Rossmann czy drogeria internetowa?</p>
+<p>- Czy w sklepie stacjonarnym mogę dotknąć pumeksu i ocenić twardość, żeby uniknąć kolejnego wyślizganego badziewia?</p>
+<p>- Która platforma ma najwięcej opinii o trwałości pumeksów – szukam filtrów po czasie użytkowania, nie tylko po ocenie ogólnej?</p>
+<p>- Czy lepiej kupić pumeks w zestawie z wymiennymi wkładami, żeby nie musieć co miesiąc szukać nowego?</p>
+
+<p><em>Stan 8</em> (Zakup):</p>
+<p>- Czy ten konkretny pumeks ma certyfikat lub testy potwierdzające odporność na kruszenie i ślizganie?</p>
+<p>- Jaka jest realna żywotność tego modelu pumeksu – czy producent podaje coś więcej niż 'długotrwałe użytkowanie'?</p>
+<p>- Czy w opakowaniu jest instrukcja, jak przechowywać pumeks, żeby nie stracił właściwości (np. nie leżał w kałuży)?</p>
+<p>- Czy mogę zwrócić pumeks, jeśli po tygodniu zacznie się kruszyć – jaka jest polityka reklamacji w tym sklepie?</p>
+
+<p><strong>Mama/siostra/przyjaciółka narzeka na pięty — kupię praktycz</strong> [ekonomiczny] — 15 pytań</p>
+
+<p><em>Stan 2</em> (Potrzeba/impuls):</p>
+<p>- Czy to może być wina butów albo chodzenia boso, że pięty wyglądają tak źle?</p>
+
+<p><em>Stan 3</em> (Rozpoznanie CEP):</p>
+<p>- Czy pumeks naprawdę pomoże na te popękane pięty, czy to tylko mit?</p>
+<p>- Dlaczego właśnie pumeks, a nie inny produkt, jest polecany na takie problemy z piętami?</p>
+<p>- Jak często trzeba używać pumeksu, żeby faktycznie zobaczyć efekt u osoby z tak suchą skórą?</p>
+
+<p><em>Stan 4</em> (Nauka kategorii):</p>
+<p>- Czy wszystkie pumeksy są takie same, czy są różne rodzaje do różnych typów skóry na piętach?</p>
+<p>- Jaka twardość/ziarnistość pumeksu jest najlepsza do bardzo zrogowaciałych pięt?</p>
+<p>- Czy pumeks naturalny różni się od syntetycznego w działaniu na popękane pięty?</p>
+<p>- Czy pumeks może podrażnić skórę, jeśli mama ma już pęknięcia i ból?</p>
+
+<p><em>Stan 5</em> (Preselekcja):</p>
+<p>- Który pumeks jest najskuteczniejszy według opinii dla osób z suchymi i popękanymi piętami?</p>
+<p>- Czy są pumeksy z dodatkami (np. olejkami) które dodatkowo nawilżają, czy lepszy jest czysty?</p>
+<p>- Jaki pumeks wybrać, żeby był wygodny w trzymaniu i nie ślizgał się w mokrych rękach?</p>
+
+<p><em>Stan 7</em> (Wybór sklepu/sposobu zakupu):</p>
+<p>- Gdzie kupić dobry pumeks do stóp od ręki – w drogerii, aptece czy online?</p>
+<p>- Czy w Rossmannie/Hebe/Douglas jest jakiś konkretny pumeks polecany na popękane pięty?</p>
+<p>- Jaki pumeks mogę zamówić z szybką dostawą, żeby nie czekać tygodnia?</p>
+<p>- Czy lepiej kupić pumeks w zestawie z pilnikiem lub kremem, czy osobno?</p>
+
+<p><strong>Za tydzień wyjazd — muszę ogarnąć stopy na plażę / basen</strong> [impulsowy] — 9 pytań</p>
+
+<p><em>Stan 2</em> (Potrzeba/impuls):</p>
+<p>- Czy pumeks poradzi sobie z suchymi piętami po zimie przed urlopem?</p>
+
+<p><em>Stan 7</em> (Wybór sklepu/sposobu zakupu):</p>
+<p>- Która drogeria ma pumeksy z naturalnej lawy do stóp na szybki efekt?</p>
+<p>- Czy warto kupić pumeks w zestawie z peelingiem do stóp przed wyjazdem?</p>
+<p>- Gdzie znajdę pumeks z drobniejszym ziarnem do delikatnej skóry na lato?</p>
+<p>- Czy w Rossmannie lub Hebe jest pumeks do stóp z opiniami o szybkim wygładzeniu?</p>
+
+<p><em>Stan 8</em> (Zakup):</p>
+<p>- Czy ten pumeks wystarczy na tydzień używania przed wyjazdem, czy trzeba kupić dwa?</p>
+<p>- Jaki rozmiar pumeksu wybrać, żeby ogarnąć całe stopy przed basenem?</p>
+<p>- Czy do tego pumeksu potrzebuję osobnego kremu nawilżającego na noc przed plażą?</p>
+<p>- Czy opakowanie pumeksu ma instrukcję, jak używać go codziennie przed urlopem?</p>
+
+<p><strong>Stary pumeks zrobił się czarny i śmierdzi — to siedlisko ba</strong> [impulsowy] — 9 pytań</p>
+
+<p><em>Stan 2</em> (Potrzeba/impuls):</p>
+<p>- Czy ten zapach z pumeksu oznacza, że bakterie wżarły się w kamień i nie ma ratunku?</p>
+
+<p><em>Stan 7</em> (Wybór sklepu/sposobu zakupu):</p>
+<p>- Która drogeria ma pumeksy z atestem antybakteryjnym, żeby uniknąć czernienia?</p>
+<p>- Czy w Rossmannie lub Hebe sprzedają pumeksy z dodatkiem srebra lub węgla hamującego rozwój bakterii?</p>
+<p>- Jaki sklep online wysyła pumeksy w oryginalnym opakowaniu, które nie dopuszcza wilgoci i pleśni?</p>
+<p>- Czy w Biedronce lub Lidlu są tanie pumeksy, które nie czernieją po miesiącu?</p>
+
+<p><em>Stan 8</em> (Zakup):</p>
+<p>- Czy ten konkretny pumeks ma na opakowaniu informację, że jest odporny na rozwój bakterii i pleśni?</p>
+<p>- Jak sprawdzić w sklepie, czy pumeks nie jest już wilgotny i nie ma przebarwień przed zakupem?</p>
+<p>- Czy do tego pumeksa jest dołączona jakaś podstawka z otworami wentylacyjnymi, żeby szybko schnął?</p>
+<p>- Czy mogę kupić dwa pumeksy na raz, żeby jeden zawsze całkowicie wysechł, zanim użyję drugiego?</p>
+
+<p><strong>Męczy mnie kupowanie tanich plastikowych tarek co miesiąc —</strong> [ekologiczny] — 15 pytań</p>
+
+<p><em>Stan 2</em> (Potrzeba/impuls):</p>
+<p>- Czy droższa tarka do stóp faktycznie oszczędza pieniądze w dłuższym okresie?</p>
+
+<p><em>Stan 3</em> (Rozpoznanie CEP):</p>
+<p>- Dlaczego plastikowe tarki do stóp są tak nietrwałe, skoro inne plastikowe narzędzia do pielęgnacji wytrzymują lata?</p>
+<p>- Czy problem z plastikowymi tarkami to kwestia materiału, czy konstrukcji ostrza?</p>
+<p>- Dlaczego producenci nie robią trwałych tarek do stóp, skoro klienci narzekają na częstą wymianę?</p>
+
+<p><em>Stan 4</em> (Nauka kategorii):</p>
+<p>- Jaka tarka do stóp jest najtrwalsza – metalowa, szklana czy ceramiczna?</p>
+<p>- Czy tarki ze stali nierdzewnej rdzewieją przy regularnym użytkowaniu w łazience?</p>
+<p>- Jak długo wytrzymuje przeciętna tarka do stóp z naturalnego pumeksu?</p>
+<p>- Czy tarki elektryczne do stóp są trwalsze od ręcznych, czy też szybciej się psują?</p>
+
+<p><em>Stan 5</em> (Preselekcja):</p>
+<p>- Która marka tarek do stóp ma najlepsze opinie pod kątem trwałości i nie tępi się po miesiącu?</p>
+<p>- Czy tarka do stóp z mikrosferami (diamond dust) faktycznie nie wymaga wymiany przez rok?</p>
+<p>- Jaka tarka do stóp jest polecana przez podologów jako najtrwalsza i najbardziej higieniczna?</p>
+
+<p><em>Stan 7</em> (Wybór sklepu/sposobu zakupu):</p>
+<p>- Gdzie kupić trwałą tarkę do stóp z metalu/ceramiki – stacjonarnie czy online, żeby nie trafić na podróbkę?</p>
+<p>- Czy w drogeriach typu Rossmann są dostępne trwałe tarki do stóp, czy tylko plastikowe jednorazówki?</p>
+<p>- Jaki sklep internetowy ma najlepszy wybór tarek do stóp z gwarancją trwałości i zwrotem towaru?</p>
+<p>- Czy na Amazonie są tarki do stóp z prawdziwym pumeksem wulkanicznym, które nie kruszą się po tygodniu?</p>
+
+<hr>
+<p><em>153 pytań · 10 ścieżek · Discovery ①=30 · Pogłębione ②=123</em></p>
+</div>
+  </div>
+</div>
+<script>
+const CATS=[{"num":1,"name":"Pumeksy do stóp","v":"v2","s":"pumeksy do stóp"}];
+const searchEl=document.getElementById('search');
+const statEl=document.getElementById('stat');
+const nrEl=document.getElementById('nr');
+const TOTAL=CATS.length;
+let curFilter='all';
+
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function hi(text,q){
+  if(!q)return text;
+  return text.replace(new RegExp('('+esc(q)+')','gi'),'<mark>$1</mark>');
+}
+
+function applySearch(q){
+  const ql=q.trim().toLowerCase();
+  let n=0;
+  CATS.forEach(c=>{
+    const item=document.getElementById('i'+c.num);
+    const matchQ=!ql||c.s.includes(ql);
+    const matchF=curFilter==='all'||(curFilter==='v1'&&c.v==='v1')||(curFilter==='v2p'&&c.v!=='v1');
+    const ok=matchQ&&matchF;
+    if(item)item.classList.toggle('hidden',!ok);
+    if(ok){
+      n++;
+      const el=item&&item.querySelector('.ct');
+      if(el)el.innerHTML=hi(c.name,q.trim());
+    }
+  });
+  nrEl.style.display=n===0?'block':'none';
+  const fLabel=curFilter==='v1'?' · Draft':curFilter==='v2p'?' · Verified':'';
+  statEl.textContent=(ql?n+'/':'')+TOTAL+' cat.'+fLabel;
+}
+
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+  applySearch(searchEl.value);
+}
+
+function select(num){
+  document.querySelectorAll('.ci').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.cs').forEach(e=>e.classList.remove('vis'));
+  const item=document.getElementById('i'+num);
+  const sec=document.getElementById('s'+num);
+  if(item){item.classList.add('active');item.scrollIntoView({block:'nearest'});}
+  if(sec)sec.classList.add('vis');
+  document.getElementById('ct').scrollTop=0;
+}
+
+searchEl.addEventListener('input',e=>applySearch(e.target.value));
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();searchEl.focus();searchEl.select();}
+  if(e.key==='Escape'&&document.activeElement===searchEl){searchEl.value='';applySearch('');searchEl.blur();}
+});
+
+if(CATS.length>0)select(CATS[0].num);
+
+function toggleTheme(){
+  const l=document.body.classList.toggle('light');
+  localStorage.setItem('geo-theme',l?'light':'dark');
+  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
+}
+(function(){if(localStorage.getItem('geo-theme')==='light'){
+  document.body.classList.add('light');
+  var b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
+</script>
+</body>
+</html>

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GEO DT DB — PL — 1 categories</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--sb-bg:#161b22;--hd-bg:#161b22;--bd:#30363d;
+  --tx:#e6edf3;--tx2:#8b949e;--ac:#58a6ff;
+  --cb:#1c2128;--ts:#1c2128;--mb:#2d4a22;--mt:#7ee787;
+  --ab:#1f3353;--sw:292px;--hh:52px
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+     background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* Header */
+#hd{height:var(--hh);background:var(--hd-bg);border-bottom:1px solid var(--bd);
+    display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+#hd h1{font-size:15px;font-weight:700;white-space:nowrap;flex-shrink:0;letter-spacing:.01em}
+#hd h1 span{color:var(--ac)}
+#sw{flex:1;position:relative;max-width:440px}
+#si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tx2);font-size:15px;pointer-events:none}
+#search{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:6px;
+        color:var(--tx);padding:6px 10px 6px 30px;font-size:15px;outline:none;transition:border-color .15s}
+#search:focus{border-color:var(--ac)}
+
+/* Filter buttons */
+.filt{display:flex;gap:4px;flex-shrink:0}
+.fb{font-size:13px;padding:3px 8px;border-radius:4px;border:1px solid var(--bd);
+    background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fb:hover{border-color:var(--ac);color:var(--tx)}
+.fb.on{border-color:var(--ac);background:var(--ab);color:var(--tx)}
+
+/* Lang toggle */
+#lang-btn{font-size:13px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+          background:transparent;color:var(--tx2);cursor:pointer;text-decoration:none;
+          display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+#lang-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+#stat{font-size:13px;color:var(--tx2);flex-shrink:0;white-space:nowrap;min-width:90px;text-align:right}
+
+/* Layout */
+#lay{display:flex;flex:1;overflow:hidden}
+
+/* Sidebar */
+#sb{width:var(--sw);flex-shrink:0;background:var(--sb-bg);border-right:1px solid var(--bd);overflow-y:auto}
+.ci{display:flex;align-items:center;gap:7px;padding:7px 10px;cursor:pointer;
+    border-left:3px solid transparent;border-bottom:1px solid var(--bd);
+    transition:background .1s;user-select:none;min-height:36px}
+.ci:hover{background:rgba(88,166,255,.07)}
+.ci.active{background:var(--ab);border-left-color:var(--ac)}
+.ci.hidden{display:none}
+.cn{font-size:11.5px;color:var(--tx2);min-width:20px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ct{font-size:14px;line-height:1.3;color:var(--tx);flex:1;min-width:0}
+.ct mark{background:var(--mb);color:var(--mt);border-radius:2px;padding:0 1px}
+
+/* Version badge in sidebar */
+.vb{font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:8px;flex-shrink:0;letter-spacing:.02em}
+.vb-v1{background:#21262d;color:#6e7681}
+.vb-v2{background:#2d2502;color:#d29922}
+.vb-v3{background:#0d2a1a;color:#3fb950}
+.vb-v4{background:#0d1e3c;color:#58a6ff}
+
+/* Verification pipeline dots */
+.pipe{display:flex;gap:2px;flex-shrink:0}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--bd)}
+.pd.on-v1{background:#6e7681}
+.pd.on-v2{background:#d29922}
+.pd.on-v3{background:#3fb950}
+.pd.on-v4{background:#58a6ff}
+
+#nr{padding:20px 12px;font-size:15px;color:var(--tx2);text-align:center;display:none}
+
+/* Content */
+#ct{flex:1;overflow-y:auto;padding:26px 34px}
+.cs{display:none}
+.cs.vis{display:block}
+
+/* Markdown */
+.cs h2{font-size:23px;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:10px;margin-bottom:16px}
+.cs h3{font-size:13px;font-weight:700;color:var(--ac);margin:20px 0 9px;
+       text-transform:uppercase;letter-spacing:.06em}
+.cs h4{font-size:16px;font-weight:600;margin:14px 0 6px}
+.cs p{font-size:15.5px;line-height:1.65;margin-bottom:8px}
+.cs strong{font-weight:600}
+.cs em{font-style:italic;color:var(--tx2)}
+.cs code{font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:13px;
+         background:var(--cb);border:1px solid var(--bd);border-radius:3px;
+         padding:1px 5px;color:#f0883e}
+.cs pre{background:var(--cb);border:1px solid var(--bd);border-radius:6px;
+        padding:12px 14px;overflow-x:auto;margin:10px 0}
+.cs pre code{background:none;border:none;padding:0;font-size:14px;color:var(--tx);line-height:1.5}
+.cs table{width:100%;border-collapse:collapse;font-size:14.5px;margin:10px 0;display:block;overflow-x:auto}
+.cs th,.cs td{text-align:left;padding:7px 10px;border:1px solid var(--bd)}
+.cs th{background:var(--sb-bg);font-weight:600}
+.cs tr:nth-child(even) td{background:var(--ts)}
+.cs ul,.cs ol{padding-left:18px;margin:7px 0}
+.cs li{font-size:15.5px;line-height:1.6;margin-bottom:3px}
+.cs hr{border:none;border-top:1px solid var(--bd);margin:18px 0}
+
+/* Changelog / verification card */
+.changelog{background:#0b1e10;border:1px solid #2ea043;border-radius:8px;
+           padding:14px 18px;margin:18px 0;position:relative}
+.changelog::before{content:'🔬 VERIFIED';font-size:10.5px;font-weight:700;
+                   color:#3fb950;letter-spacing:.08em;display:block;margin-bottom:8px}
+.changelog h3{color:#3fb950 !important;margin-top:0 !important;font-size:14px !important}
+.changelog p,.changelog li{color:#c3e6cb;font-size:15px}
+.changelog ul{margin:4px 0}
+.changelog table{font-size:12px}
+.changelog th{background:#0d2a1a}
+.changelog code{background:#0d2a1a;color:#7ee787}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+body.light{
+  --bg:#ffffff;--sb-bg:#f6f8fa;--hd-bg:#f6f8fa;--bd:#d0d7de;
+  --tx:#1f2328;--tx2:#656d76;--ac:#0969da;
+  --cb:#f6f8fa;--ts:#f6f8fa;--mb:#fff8c5;--mt:#7a5c00;--ab:#ddf4ff;
+}
+body.light .cs code{color:#cf222e}
+body.light .cs pre code{color:var(--tx)}
+body.light .changelog{background:#f0fff4;border-color:#2ea043}
+body.light .changelog p,body.light .changelog li{color:#1a7f37}
+#theme-btn{font-size:14px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx2);cursor:pointer;flex-shrink:0;transition:all .15s}
+#theme-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+/* FUND rozwijany blok */
+details.fund{border:1px solid var(--bd);border-radius:8px;margin:22px 0 8px;
+  background:var(--cb);overflow:hidden}
+details.fund>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  padding:12px 16px;user-select:none;transition:background .12s}
+details.fund>summary::-webkit-details-marker{display:none}
+details.fund>summary:hover{background:rgba(88,166,255,.07)}
+.fund-arrow{color:var(--ac);font-size:13px;flex-shrink:0;transition:transform .15s}
+details.fund[open] .fund-arrow{transform:rotate(90deg)}
+.fund-head{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.fund-title{font-size:15px;font-weight:700;color:var(--tx)}
+.fund-src{font-size:12px;font-style:italic;color:var(--tx2);line-height:1.4}
+.fund-badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.fund-badge.ok{background:#0d2a1a;color:#3fb950}
+.fund-badge.warn{background:#3d2a02;color:#f0883e}
+body.light .fund-badge.ok{background:#dafbe1;color:#1a7f37}
+body.light .fund-badge.warn{background:#fff1e5;color:#bc4c00}
+.fund-hint{font-size:11px;color:var(--tx2);flex-shrink:0;border:1px solid var(--bd);
+  border-radius:4px;padding:2px 7px}
+details.fund[open] .fund-hint{display:none}
+.fund-body{padding:4px 18px 16px;border-top:1px solid var(--bd)}
+.fund-body h1{font-size:18px;margin:12px 0 6px}
+</style>
+</head>
+<body>
+<div id="hd">
+  <h1>GEO <span>CS</span></h1>
+  <div id="sw">
+    <span id="si">⌕</span>
+    <input id="search" type="text" placeholder="Szukaj kategorii, CEP, pytania..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="filt">
+    <button class="fb on" data-f="all" onclick="setFilter('all')">All</button>
+    <button class="fb" data-f="v2p" onclick="setFilter('v2p')">✅ Verified</button>
+    <button class="fb" data-f="v1"  onclick="setFilter('v1')">📝 Draft</button>
+  </div>
+  <a id="lang-btn" href="%23">🌐 EN</a>
+  <button id="theme-btn" onclick="toggleTheme()" title="Tryb jasny/ciemny">☀️</button>
+  <span id="stat">1 cat.</span>
+</div>
+<div id="lay">
+  <div id="sb">
+    <div class="ci" id="i1" onclick="select(1)"><span class="cn">#1</span><span class="ct">depilator</span><span class="vb vb-v2">v2</span><div class="pipe"><span class="pd on-v1"></span><span class="pd on-v2"></span><span class="pd"></span><span class="pd"></span></div></div>
+    <div id="nr">No results</div>
+  </div>
+  <div id="ct">
+    <div class="cs" id="s1"><h1>Depilator — Category Standard v2 (nadbudowa)</h1>
+
+<p><em>Fundament (0/0b/2) z <code>FUND_depilator.md</code> — wklejony 1:1. Sekcje matrycowe z referencji 06.md #—. Sloty <<LLM>> = wypełnione. assemble_v2 + wypełnienie ręczne · 2026-07-29.</em></p>
+
+<hr>
+
+<h2>0. Opis kategorii</h2>
+
+<p>Kategoria produktów do usuwania lub redukcji niepożądanego owłosienia ciała. Klientka wchodzi w kategorię gdy owłosienie staje się widocznym problemem estetycznym lub higienicznym — motywator: wygląd, komfort, okazja, nowa metoda. Kategoria podzielona na metody o fundamentalnie różnych mechanizmach i kompromisach (ból, trwałość, koszt, dostępność).</p>
+
+<hr>
+
+<h2>0b. Problemy, które kategoria załatwia</h2>
+
+<p><strong>Primary — rdzeń (po co kategoria istnieje):</strong></p>
+<p>> <strong>Usunięcie lub redukcja niepożądanego owłosienia na ciele.</strong> Goła funkcja estetyczna i higieniczna — włos ma zniknąć lub być mniej widoczny.</p>
+
+<p><strong>Secondary — jak rynek pociął ten rdzeń:</strong></p>
+
+<table>
+<tr><th>#</th><th>Problem</th><th>Mechanizm</th><th>Produkt</th></tr>
+<tr><td>S1</td><td><strong>Trwała depilacja bez salonu</strong> — chcę efektu woskowania, ale sama w domu</td><td>Wyrwanie włosa z cebulką (epilator elektryczny / wosk)</td><td>epilatory, zestawy woskowe</td></tr>
+<tr><td>S2</td><td><strong>Depilacja bez bólu</strong> — epilacja boli, golarki podrażniają, wosk pali</td><td>Brak bodźca bólowego lub minimalizacja</td><td>kremy, nano szkło, golarki</td></tr>
+<tr><td>S3</td><td><strong>Trwałe wyeliminowanie odrostu (permanentna)</strong> — zmęczenie powtarzaniem co tydzień</td><td>Niszczenie cebulki (IPL/laser)</td><td>urządzenia IPL/laserowe domowe</td></tr>
+<tr><td>S4</td><td><strong>Szybka depilacja — nie mam czasu</strong> — muszę teraz, za godzinę event</td><td>Szybkość zabiegu (krem 2 min, golarka 3 min)</td><td>kremy, golarki, nano szkło</td></tr>
+<tr><td>S5</td><td><strong>Depilacja wrażliwych stref</strong> — bikini, pachy, twarz — ból + ryzyko podrażnienia</td><td>Precyzja + delikatność</td><td>zestawy woskowe, kremy, epilatory z głowicą do bikini</td></tr>
+<tr><td>S6</td><td><strong>Zero plastiku / ekologiczne</strong> — zmęczenie jednorazówkami (maszynki, plastry)</td><td>Wielorazowość, brak chemii</td><td>nano szkło, epilatory elektryczne</td></tr>
+<tr><td>S7</td><td><strong>Bez wrastania</strong> — po golarce / wosku włoski wrastają i bolą</td><td>Metoda nie tworzy ostrych końcówek</td><td>depilatory elektryczne (wyrwanie przy korzeniu), kremy (brak ostrego cięcia)</td></tr>
+<tr><td>S8</td><td><strong>Pielęgnacja skóry przy depilacji</strong> — chcę efektu wygładzenia nie tylko depilacji</td><td>Efekt złuszczający przy usuwaniu włosa</td><td>nano szkło (peeling + depilacja 2w1), woski (usuwają martwy naskórek)</td></tr>
+<tr><td>S9</td><td><strong>Depilacja przy ograniczonym budżecie</strong> — salony drogie, epilator elektryczny 300+ zł</td><td>Niska cena wejścia</td><td>kremy Veet ~20 zł, plastry woskowe, nano szkło ~40 zł</td></tr>
+<tr><td>S10</td><td><strong>Zmiana metody — poprzednia mnie zawodzi</strong> — golarki = za często, epilator = ból, wosk = bałagan</td><td>Alternatywa do dotychczasowej metody</td><td>każda metoda będąca alternatywą dla aktualnej</td></tr>
+</table>
+
+<hr>
+
+<h2>0c. Dynamika kategorii</h2>
+
+<h3>CEP L1 vs L2 (trigger depth)</h3>
+
+<table>
+<tr><th>CEP</th><th>Tier</th><th>Charakter triggera</th><th>Generuje →</th></tr>
+<tr><td><code>cep_depilacja_bez_bolu</code></td><td>L1</td><td>Reaktywny — boli, natychmiast szuka alternatywy</td><td>DQ: mechanizm bezbolesny, FAQ ból</td></tr>
+<tr><td><code>cep_diy_dom_efekt_salonu</code></td><td>L1</td><td>Reaktywny — salon drogi/daleko, decyzja po kosztach</td><td>DQ: step-by-step, trwałość</td></tr>
+<tr><td><code>cep_szybka_depilacja</code></td><td>L1</td><td>Okazjonalny — przed eventem, trigger: czas</td><td>DQ: czas zabiegu, opcje bez setupu</td></tr>
+<tr><td><code>cep_wrazliwa_skora</code></td><td>L1</td><td>Problemowy — podrażnienie po poprzedniej metodzie</td><td>DQ: bezpieczeństwo składu, brak chemii</td></tr>
+<tr><td><code>cep_zmiana_metody</code></td><td>L1</td><td>Switch — dotychczasowa metoda zawodzi</td><td>DQ: „co zamiast X", tabela porównawcza</td></tr>
+<tr><td><code>cep_wrastajace_wlosy</code></td><td>L1</td><td>Problemowy — ból wrastających, chroniczny</td><td>DQ: mechanizm wrastania, metody bez ostrego cięcia</td></tr>
+<tr><td><code>cep_okolice_bikini</code></td><td>L1</td><td>Sezonowy — lato, plaża, basen</td><td>DQ: bezpieczeństwo stref intymnych</td></tr>
+<tr><td><code>cep_budzet</code></td><td>L1</td><td>Barierowy — cena jako bloker premium</td><td>DQ: koszt per użycie, break-even vs salon</td></tr>
+<tr><td><code>cep_permanentna_redukcja</code></td><td>L2</td><td>Aspiracyjny — zmęczenie cyklem, rozważa inwestycję</td><td>DQ: mechanizm IPL, seria zabiegów, ROI</td></tr>
+<tr><td><code>cep_eko_wielorazowy</code></td><td>L2</td><td>Wartościowy — zero-waste lifestyle, decyzja rozważona</td><td>DQ: trwałość sprzętu, materiały, opakowanie</td></tr>
+<tr><td><code>cep_peeling_skory</code></td><td>L2</td><td>Bonusowy — przy okazji depilacji</td><td>DQ: efekt 2w1, opis zabiegu nano szkło</td></tr>
+<tr><td><code>cep_krotkie_wlosy</code></td><td>L1</td><td>Techniczny — włos za krótki dla epilatora</td><td>DQ: minimalna długość per metoda</td></tr>
+</table>
+
+<h3>Friction Points (bariery wejścia w kategorię — NIE CEP)</h3>
+
+<table>
+<tr><th>Bariera</th><th>CEP</th><th>Mechanizm</th></tr>
+<tr><td>Ból zabiegu</td><td><code>cep_depilacja_bez_bolu</code></td><td>Poprzednie doświadczenie = trauma; strach przed powtórzeniem</td></tr>
+<tr><td>Strach przed podrażnieniem</td><td><code>cep_wrazliwa_skora</code></td><td>Zaczerwienienia / reakcja chemiczna = awersja do nowych metod</td></tr>
+<tr><td>Wysoki koszt wejścia (IPL)</td><td><code>cep_permanentna_redukcja</code></td><td>1000–2000 zł jako bariera — wymaga długiego okresu rozważań</td></tr>
+<tr><td>Bałagan i setup</td><td><code>cep_diy_dom_efekt_salonu</code></td><td>Wosk ciepły = podgrzewanie + czyszczenie + plastry = bariera convenience</td></tr>
+<tr><td>Brak zaufania do DIY</td><td><code>cep_diy_dom_efekt_salonu</code></td><td>„A co jeśli nie wyjdzie jak u kosmetyczki?" — presja błędu estetycznego</td></tr>
+</table>
+
+<h3>Wear & Consumption (cykl zużycia)</h3>
+
+<table>
+<tr><th>Metoda</th><th>Cykl odrostu / zabiegu</th><th>Typ zaangażowania</th></tr>
+<tr><td>Golarka / maszynka</td><td>3–5 dni</td><td>Codzienna rutyna, wysokie zaangażowanie czasowe</td></tr>
+<tr><td>Krem depilatujący</td><td>5–14 dni</td><td>Niska bariera wejścia, niskie zaangażowanie</td></tr>
+<tr><td>Epilator elektryczny</td><td>3–4 tygodnie</td><td>Inwestycja jednorazowa, zaangażowanie sezonowe</td></tr>
+<tr><td>Wosk ciepły/zimny</td><td>3–6 tygodni</td><td>Regularne zakupy (wkłady/plastry), rytuał</td></tr>
+<tr><td>Nano szkło GLOV</td><td>5–14 dni (narastający efekt)</td><td>Wieloletnia żywotność produktu, krótki cykl zabiegu</td></tr>
+<tr><td>IPL/laser domowy</td><td>Seria 8–12 × co 2 tyg → potem 1 × co 2 mies.</td><td>Duża inwestycja → malejące zaangażowanie z czasem</td></tr>
+</table>
+
+<h3>Category Stoppers (zatrzymuje zakup — nie CEP)</h3>
+
+<table>
+<tr><th>Stopper</th><th>Gdzie uderza</th><th>Odpowiedź contentowa</th></tr>
+<tr><td>„Boi się że będzie bolało"</td><td>Przed pierwszym zakupem metody bolesnej</td><td>Edukacja mechanizmu + skala bólu per metoda</td></tr>
+<tr><td>„Nie wiem czy to działa na mój fototyp/włos"</td><td>IPL segment</td><td>Tabela fototyp × metoda + kalkulator</td></tr>
+<tr><td>„Za drogo" (IPL/epilator premium)</td><td>T3/Ultra segment</td><td>Kalkulacja ROI vs salon (break-even 3–6 mies.)</td></tr>
+<tr><td>„Za trudne / zrobię sobie krzywdę"</td><td>Wosk ciepły, okolice bikini</td><td>Step-by-step video + ostrzeżenia guardrail</td></tr>
+<tr><td>„Moja sąsiadka miała reakcję alergiczną"</td><td><code>cep_wrazliwa_skora</code></td><td>Social proof skóra wrażliwa + instrukcja patch test</td></tr>
+</table>
+
+<hr>
+
+<h2>1. CEV — Category Emotional Valuation (Schwartz z wagami)</h2>
+
+<h3>Pasek 10 cech (0–1)</h3>
+
+<table>
+<tr><th>Cecha</th><th>Ocena</th><th>Uzasadnienie</th></tr>
+<tr><td>Ryzyko/lęk</td><td>0.65</td><td>Silny przy pierwszym użyciu (ból?), przy strefach intymnych (bikini), przy skórze wrażliwej — lęk przed podrażnieniem, zaczerwienieniem, wrastaniem</td></tr>
+<tr><td>Widoczność</td><td>0.85</td><td>Owłosienie jest bardzo widoczne (nogi, pachy) — wynik zabiegu natychmiast oceniany przez innych i siebie w lustrze</td></tr>
+<tr><td>Impuls</td><td>0.45</td><td>Mniej impulsywna niż kosmetyki kolorowe — decyzja często poprzedzona porównaniem metod, nie jednorazowym scrollem</td></tr>
+<tr><td>Sexy/atrakcyjność</td><td>0.80</td><td>Gładka skóra = atrakcyjność, pewność siebie, intymność — silny motyw przed wakacjami, randką, plażą</td></tr>
+<tr><td>Aspiracja</td><td>0.55</td><td>„Efekt salonu w domu" — chcę profesjonalnego wyniku bez wydatku 200 zł i wizyty co 4 tygodnie</td></tr>
+<tr><td>Tożsamość</td><td>0.50</td><td>Mniejsza niż kosmetyki — ale rośnie w segmencie eko/zero-waste (wielorazowy = wyraz wartości)</td></tr>
+<tr><td>Zmysłowość</td><td>0.60</td><td>Dotyk gładkiej skóry po zabiegu, rytuał pielęgnacyjny — szczególnie silne przy woskach i nano szkle (peeling)</td></tr>
+<tr><td>Pilność</td><td>0.75</td><td>Wysoka przed okazją (wakacje, event, randka) — depilacja to często task przed wyjściem, nie planowy rytuał</td></tr>
+<tr><td>Moralność/etyka</td><td>0.45</td><td>Rośnie w segmencie eko — wielorazowy vs jednorazowe maszynki, cruelty-free, brak chemii. Segment mały ale rosnący</td></tr>
+<tr><td>Przyjemność/relaks</td><td>0.35</td><td>Niska — depilacja to zadanie, nie rytuał. Wyjątek: wosk z masażem, nano szkło jako peeling (efekt uboczny relaksu)</td></tr>
+</table>
+
+<h3>Schwartz — 8 stanów z wagami</h3>
+
+<table>
+<tr><th>Stan Schwartza</th><th>Wartość</th><th>Waga</th><th>Przejaw w kategorii</th></tr>
+<tr><td>Bezpieczeństwo</td><td>Ochrona, unikanie szkody</td><td><strong>H</strong></td><td>Strach przed bólem, podrażnieniem, wrastaniem, reakcją alergiczną — to #1 driver decyzji między metodami</td></tr>
+<tr><td>Hedonizm</td><td>Przyjemność dla siebie</td><td><strong>H</strong></td><td>Gładka skóra = nagroda, pewność siebie na plaży, w łóżku, w sukience bez rajstop</td></tr>
+<tr><td>Osiągnięcia</td><td>Demonstracja kompetencji</td><td><strong>M</strong></td><td>„Zrobiłam sama i wyszło jak z salonu" — DIY pride, efekt bez wizyty</td></tr>
+<tr><td>Przystosowanie</td><td>Akceptacja przez grupę</td><td><strong>M</strong></td><td>Norma społeczna (gładkie nogi = dbałość o siebie), presja sezonowa (lato, wakacje)</td></tr>
+<tr><td>Transcendencja</td><td>Wartości wyższe</td><td><strong>M</strong></td><td>Eko/zero-waste segment — „nie dokładam do plastiku", cruelty-free — motyw rośnie, zwłaszcza Gen Z</td></tr>
+<tr><td>Stymulacja</td><td>Nowość, podniecenie</td><td><strong>L</strong></td><td>„Wypróbuję nową metodę" — trigger zmiany (switch-CEP), ale nie dominujący motyw</td></tr>
+<tr><td>Dobrobyt</td><td>Status, prestiż</td><td><strong>L</strong></td><td>Laser IPL domowy jako sygnał premium; niski dla masowej depilacji</td></tr>
+<tr><td>Życzliwość</td><td>Dbałość o bliskich</td><td><strong>L</strong></td><td>Depilacja córki (nastolatki), zakup bezpiecznej metody dla wrażliwej skóry bliskiej osoby</td></tr>
+</table>
+
+<p><strong>Interpretacja:</strong> Kategoria dominuje w bezpieczeństwie i hedonizmie — klientka nie szuka przyjemności zabiegu (zazwyczaj boli lub nudzi), szuka efektu (gładkości) i braku szkody (ból, podrażnienie, wrastanie). Treści powinny PIERWSZE uderzyć w lęk (czy to bezpieczne? czy nie będzie boleć?) — gasić S2 przed argumentem o efekcie. Wyjątek: segment eko (Transcendencja M) — tam argument wartości (zero plastiku) jest primary, efekt secondary.</p>
+
+<h3>EDS — 4 drivery behawioralne</h3>
+
+<p><em>WINA i PILNOŚĆ wypadają z EDS (są Stopperem i cechą kategorii §9), nie są driverem zakupu.</em></p>
+
+<table>
+<tr><th>Driver EDS</th><th>Siła</th><th>Przejaw w kategorii depilator</th></tr>
+<tr><td><strong>WSTYD</strong></td><td><strong>H</strong></td><td>Widoczne owłosienie = stygmat na plaży, basenie, w sytuacjach intymnych. „Wstydziłam się rękawa na weselu." Dominuje NA WEJŚCIU ścieżki — motyw pierwotny, rzadko artykułowany wprost. Treści nie używają słowa „wstyd" — odpowiadają na sytuację (randka, plaża, sukienka).</td></tr>
+<tr><td><strong>POŻĄDANIE</strong></td><td><strong>H</strong></td><td>Gładka skóra = atrakcyjność seksualna i pewność siebie. Silnie skorelowane z <code>cep_szybka_depilacja</code> (przed wyjściem) i <code>cep_depilacja_bez_bolu</code> (skóra jako nagroda zmysłowa). Reklama: modelka w sukience, nie urządzenie samo w sobie.</td></tr>
+<tr><td><strong>PRZYNALEŻNOŚĆ</strong></td><td><strong>M</strong></td><td>Norma społeczna — gładkie nogi/pachy = „kobieta dbająca o siebie". Presja sezonowa (lato = wszyscy mają gładkie nogi). Segment eko odwraca driver: przynależność do grupy zero-waste.</td></tr>
+<tr><td><strong>POPIS</strong></td><td><strong>M</strong></td><td>„Efekt jak z salonu — sama w domu." DIY pride. Rośnie przy IPL (inwestycja do pochwalenia): „mam Lumea". Motyw wtórny do WSTYD/POŻĄDANIA, ale silnie cytowalny w recenzjach i unboxingach.</td></tr>
+</table>
+
+<hr>
+
+<h2>2. CEP — Consumer Entry Points</h2>
+
+<p><em>Tabela: problem (0.3) × trigger sytuacyjny. Każdy secondary ≥1 CEP. Gate: CEP = sytuacja, nie atrybut.</em></p>
+
+<table>
+<tr><th>CEP</th><th>Trigger (język klientki)</th><th>Konsekwencja dla opisu</th><th>Frazy</th></tr>
+<tr><td><code>cep_depilacja_bez_bolu</code> [L1]</td><td><strong>„Chcę depilatora który nie boli"</strong> — epilator / wosk boli, golarka drażni, szuka alternatywy</td><td>Eksponuj mechanizm (brak wyrwania, brak chemii), dowód brak bólu</td><td>„bezbolesna depilacja", „depilacja bez bólu" ~5k/mc</td></tr>
+<tr><td><code>cep_diy_dom_efekt_salonu</code> [L1]</td><td><strong>„Chcę efektu woskowania w domu bez wizyty w salonie"</strong> — salon drogi lub daleko, chce powtarzalnego efektu</td><td>Efekt trwałości, łatwość zabiegu, step-by-step</td><td>„depilacja woskiem w domu", „zestaw do depilacji w domu" ~8k/mc</td></tr>
+<tr><td><code>cep_permanentna_redukcja</code> [L2]</td><td><strong>„Chcę żeby włosy wolniej rosły / przestały rosnąć"</strong> — zmęczona powtarzaniem co tydzień</td><td>Mechanizm IPL (cebulka) lub nano szkło (redukcja wzrostu przez mikroabrazję)</td><td>„trwała depilacja w domu", „depilacja laserowa domowa" ~12k/mc</td></tr>
+<tr><td><code>cep_szybka_depilacja</code> [L1]</td><td><strong>„Mam 10 minut, za godzinę wyjście"</strong> — pilność, event, wakacje</td><td>Czas zabiegu (krem 2 min, golarka natychmiast, nano szkło kilka minut), zero setupu</td><td>„szybka depilacja", „depilacja przed wyjściem" ~2k/mc</td></tr>
+<tr><td><code>cep_wrazliwa_skora</code> [L1]</td><td><strong>„Mam wrażliwą skórę — po każdej depilacji mam zaczerwienienia/podrażnienia"</strong> — skóra atopowa, reakcja na chemię lub tarcie</td><td>Eksponuj łagodność, brak chemii, brak podrażnień</td><td>„depilacja dla skóry wrażliwej", „łagodna depilacja" ~3k/mc</td></tr>
+<tr><td><code>cep_eko_wielorazowy</code> [L2]</td><td><strong>„Szukam wielorazowego, ekologicznego rozwiązania"</strong> — zero waste, zmęczona jednorazówkami</td><td>Zero plastiku, wielorazowość, brak wkładów/chemii</td><td>„wielorazowy depilator", „ekologiczna depilacja" ~1k/mc</td></tr>
+<tr><td><code>cep_wrastajace_wlosy</code> [L1]</td><td><strong>„Po depilacji mam wrastające włosy"</strong> — ból, estetyka, stały problem po golarce/wosku</td><td>Mechanizm który nie tworzy ostrego cięcia (wyrwanie z korzeniem, nano-ścieranie)</td><td>„depilacja bez wrastania", „jak uniknąć wrastania" ~4k/mc</td></tr>
+<tr><td><code>cep_peeling_skory</code> [L2]</td><td><strong>„Chcę przy depilacji jednocześnie wygładzić skórę"</strong></td><td>Efekt 2w1: depilacja + złuszczenie naskórka</td><td>„depilacja i peeling", „wygładzona skóra po depilacji" ~800/mc</td></tr>
+<tr><td><code>cep_zmiana_metody</code> [L1]</td><td><strong>„Moja metoda mnie zawodzi — szukam czegoś nowego"</strong></td><td>Porównanie metod, switch-trigger, argument „dlaczego warto spróbować"</td><td>„zamiast golarki", „alternatywa dla epilatora", „co zamiast wosku" ~5k/mc</td></tr>
+<tr><td><code>cep_budzet</code> [L1]</td><td><strong>„Chcę tanio i skutecznie — nie stać mnie na laser/epilator 300+"</strong></td><td>Cena wejścia niska, koszt per zabieg, oszczędność vs salon</td><td>„tani depilator", „depilacja w domu tanio" ~3k/mc</td></tr>
+<tr><td><code>cep_okolice_bikini</code> [L1]</td><td><strong>„Depilacja bikini / pachy — jak bezpiecznie?"</strong></td><td>Strefa ciała, precyzja, ból/podrażnienie w strefie</td><td>„depilacja bikini w domu", „depilacja pach" ~6k/mc</td></tr>
+<tr><td><code>cep_krotkie_wlosy</code> [L1]</td><td><strong>„Włoski za krótkie dla epilatora / wosku"</strong> — muszą urosnąć do 3mm, nienawidzi czekać</td><td>Nano szkło / krem — działa na każdej długości</td><td>„jak depilowaś krótkie włosy" ~1k/mc</td></tr>
+</table>
+
+<hr>
+
+<h2>3d. Weryfikacja CEP — cechy deformujące ścieżkę</h2>
+
+<p><em>Per CEP: 4 cechy modyfikujące ścieżkę bazową (wg METODOLOGIA_CEV.md §8b).</em></p>
+
+<table>
+<tr><th>CEP</th><th>Nagłość</th><th>Impulsowość</th><th>Inspiracyjność</th><th>Delegowanie</th></tr>
+<tr><td><code>cep_depilacja_bez_bolu</code></td><td>Niska (problem chroniczny, decyzja przemyślana)</td><td>Niska (porównuje metody)</td><td>Średnia (content edu → konwersja)</td><td>Niska</td></tr>
+<tr><td><code>cep_diy_dom_efekt_salonu</code></td><td>Niska (planowa zmiana nawyku)</td><td>Niska</td><td>Wysoka (video how-to, unboxing)</td><td>Niska</td></tr>
+<tr><td><code>cep_permanentna_redukcja</code></td><td>Bardzo niska (inwestycja rozważana miesiącami)</td><td>Brak</td><td>Niska (edukacja > inspiracja)</td><td>Średnia (rekomendacja kosmetyczki)</td></tr>
+<tr><td><code>cep_szybka_depilacja</code></td><td><strong>Bardzo wysoka</strong> (event za godzinę)</td><td><strong>Wysoka</strong> (impuls przed wyjściem)</td><td>Brak</td><td>Brak</td></tr>
+<tr><td><code>cep_wrazliwa_skora</code></td><td>Niska–średnia (chroniczny problem)</td><td>Niska</td><td>Niska</td><td>Średnia (forum, dermatolog)</td></tr>
+<tr><td><code>cep_eko_wielorazowy</code></td><td>Brak (wartościowa decyzja)</td><td>Brak</td><td>Wysoka (lifestyle content)</td><td>Niska</td></tr>
+<tr><td><code>cep_wrastajace_wlosy</code></td><td>Niska (chroniczny problem)</td><td>Niska</td><td>Niska</td><td>Średnia (forum, komentarze)</td></tr>
+<tr><td><code>cep_okolice_bikini</code></td><td>Średnia (sezonowa + przed eventem)</td><td>Średnia</td><td>Niska</td><td>Niska</td></tr>
+<tr><td><code>cep_zmiana_metody</code></td><td>Niska (po negatywnym doświadczeniu)</td><td>Niska</td><td>Wysoka (porównywarka, tabela)</td><td>Niska</td></tr>
+<tr><td><code>cep_budzet</code></td><td>Niska</td><td>Niska</td><td>Niska</td><td>Niska (solo research, najtańsze)</td></tr>
+<tr><td><code>cep_wrastajace_wlosy</code></td><td>Niska</td><td>Niska</td><td>Niska</td><td>Średnia</td></tr>
+<tr><td><code>cep_peeling_skory</code></td><td>Niska</td><td>Niska</td><td>Średnia</td><td>Niska</td></tr>
+</table>
+
+<hr>
+
+<h2>3. 20 Discovery Questions</h2>
+
+<p><em>Literalne pytania klientki do AI — rdzeń sekcji. Adresują wszystkie 12 CEP.</em></p>
+
+<ol><li>„Jak depilowaś się bez bólu w domu?"</li><li>„Które metody depilacji bolą najmniej?"</li><li>„Jaki depilator elektryczny jest najlepszy dla kobiet?"</li><li>„Epilator czy wosk — co jest lepsze?"</li><li>„Jak zrobić depilację woskiem w domu krok po kroku?"</li><li>„Co zamiast golarki — co jest trwalsze?"</li><li>„Jak długo trzyma się depilacja epilatorem?"</li><li>„Jak działa depilator IPL — czy to bezpieczne?"</li><li>„Depilacja bikini w domu — od czego zacząć?"</li><li>„Jak nie mieć wrastających włosów po depilacji?"</li><li>„Jaki krem do depilacji na wrażliwą skórę?"</li><li>„Depilacja a wrastające włoski — jaka metoda pomaga?"</li><li>„Wielorazowy depilator — co to i czy warto?"</li><li>„Czym depilowaś krótkie włoski (za krótkie dla epilatora)?"</li><li>„Ile kosztuje depilacja w domu vs w salonie?"</li><li>„Co to jest nano szkło do depilacji — jak działa?"</li><li>„Czy depilator laserowy domowy naprawdę działa?"</li><li>„Jak wygładzić skórę po depilacji — co używać?"</li><li>„Depilacja nóg — jak najszybciej i najtrwalej?"</li><li>„Co wybrać: krem Veet czy epilator czy wosk?"</li></ol>
+
+<hr>
+
+<h2>0d. Query Mutation Map</h2>
+
+<p><em>Jak AI rozpakowuje pytanie użytkownika → co serwuje na wyjściu. 3 typy mutacji (po Discovery Questions, przed Decision Tree).</em></p>
+
+<table>
+<tr><th>Zapytanie wejściowe</th><th>Typ mutacji AI</th><th>Co AI rozumie</th><th>Serwuje →</th></tr>
+<tr><td>„Jak depilowaś się bez bólu?"</td><td>Intent expansion</td><td>Alternatywa bezbolesna vs epilator/wosk</td><td>Tabela metod z kolumną bólu + rekomendacja nano szkło / krem</td></tr>
+<tr><td>„Depilator elektryczny — który wybrać"</td><td>Comparative</td><td>Ranking epilatorów wg parametrów</td><td>Tabela Braun vs Philips + cena/funkcje</td></tr>
+<tr><td>„Co zamiast golarki"</td><td>Switch trigger</td><td>Niezadowolona z golarki → szuka alternatywy</td><td>Przegląd metod z trade-off (trwałość/ból/koszt)</td></tr>
+<tr><td>„Jak długo trzyma się depilacja epilatorem"</td><td>Fact-lookup</td><td>Liczba dni/tygodni trwałości</td><td>„3–4 tygodnie" + czynniki skracające (gęstość, strefa)</td></tr>
+<tr><td>„Czy IPL działa na ciemną skórę"</td><td>Safety/eligibility</td><td>Sprawdza przeciwwskazania</td><td>Tabela fototyp → rekomendacja + guardrail</td></tr>
+<tr><td>„Depilacja bikini w domu krok po kroku"</td><td>How-to procedural</td><td>Instrukcja zabiegu</td><td>Step-by-step z ostrzeżeniami + guardrail strefa</td></tr>
+<tr><td>„Ile kosztuje depilacja w domu vs salon"</td><td>TCO comparison</td><td>Kalkulator kosztów per metodę</td><td>Tabela: cena wejścia + koszt per zabieg + break-even</td></tr>
+<tr><td>„Wielorazowy depilator bez plastiku"</td><td>Value-driven filter</td><td>Eko persona → filtruje po cesze wielorazowości</td><td>Lista wielorazowych metod z oceną plastiku + GLOV</td></tr>
+<tr><td>„Co to nano szkło do depilacji i jak działa?"</td><td>Explanation</td><td>Niezna metody, chce mechanizm</td><td>Wyjaśnienie mikroabrazji + kompromisy (trwałość 5–14 dni)</td></tr>
+<tr><td>„Jak nie mieć wrastających włosów"</td><td>Problem-solution</td><td>Szuka mechanizmu prewencji</td><td>Wyjaśnienie cięcia vs wyrwania vs ścierania + rekomendacja metody</td></tr>
+</table>
+
+<hr>
+
+<h2>4. KCF — Key Category Features</h2>
+
+<table>
+<tr><th>Feature</th><th>Zakres / warianty</th><th>Tier</th></tr>
+<tr><td><strong>Metoda usuwania włosa</strong></td><td>Elektryczna (epilator) / IPL-laser / Wosk ciepły / Wosk zimny (plastry) / Krem chemiczny / Nano szkło (mikroabrazja) / Golarka</td><td>Preselekcja #1 — decyduje przed wszystkimi innymi parametrami</td></tr>
+<tr><td><strong>Trwałość efektu</strong></td><td>1–3 dni (golarka, nano szkło) / 3–6 tyg (wosk, epilator) / permanentna redukcja po serii (IPL, laser)</td><td>KCF kluczowy — różnica między metodami do 10×</td></tr>
+<tr><td><strong>Poziom bólu</strong></td><td>Bezbolesny (krem, nano szkło, golarka) / Umiarkowany (wosk zimny, epilator z masażem) / Wysoki (epilator klasyczny, wosk gorący)</td><td>Bloker zakupowy dla segmentu wrażliwego</td></tr>
+<tr><td><strong>Strefa ciała</strong></td><td>Nogi / Pachy / Bikini / Twarz / Ciało pełne</td><td>Określa wymaganą precyzję i typ urządzenia</td></tr>
+<tr><td><strong>Skóra</strong></td><td>Normalna / Wrażliwa / Atopowa / Ciemna (IPL-uwaga)</td><td>Eliminuje niektóre metody (IPL → przeciwwskazania dla ciemnej skóry)</td></tr>
+<tr><td><strong>Kolor/grubość włosa</strong></td><td>Cienkie/jasne (IPL działa gorzej) / Ciemne grube (IPL optimum) / Krótkie <3mm (epilator nie chwyta)</td><td>Kluczowy dla efektywności</td></tr>
+<tr><td><strong>Prędkość zabiegu</strong></td><td>Błyskawiczny (golarka, nano szkło) / Szybki (krem 2–10 min) / Standardowy (epilator 15–30 min) / Długi (wosk ciepły z setupem)</td><td>CEP szybkości</td></tr>
+<tr><td><strong>Wielorazowość</strong></td><td>Jednorazowe (plastry woskowe) / Sezonowe (krem, wkłady) / Długoterminowe (epilator, nano szkło, IPL)</td><td>CEP eko + koszt per użycie</td></tr>
+<tr><td><strong>Cena wejścia PLN</strong></td><td>Budżet <50 zł / Średni 50–200 zł / Premium 200–800 zł / Ultra (IPL 800+)</td><td>KCF cenowy — przełącznik segmentów</td></tr>
+<tr><td><strong>Setup i wymagania</strong></td><td>Zero setup (nano szkło, golarka) / Podgrzewanie (wosk) / Ładowanie (epilator) / Seria zabiegów (IPL)</td><td>Bariera wejścia praktyczna</td></tr>
+</table>
+
+<p><strong>Atrybuty-filtry (nie CEP):</strong> bezprzewodowy / mokra+sucha depilacja / czas ładowania / liczba pinset / głowica do twarzy / kabel vs bateria / kolor urządzenia</p>
+
+<hr>
+
+<h2>5. Typowy Produkt</h2>
+
+<table>
+<tr><th>Cecha</th><th>Norma kategorii</th><th>Red flag</th></tr>
+<tr><td>Metoda opisana wprost</td><td>„epilator elektryczny", „wosk ciepły", „nano szkło" — mechanizm wytłumaczony</td><td>Brak mechanizmu — „depilator który działa" bez specyfikacji metody</td></tr>
+<tr><td>Trwałość podana realnie</td><td>„do 4 tygodni", „1–3 dni", „redukcja po serii 8 tygodni"</td><td>„trwały efekt" bez liczby — czerwona flaga (co to znaczy?)</td></tr>
+<tr><td>Ból adresowany</td><td>Poziom bólu lub jego brak z uzasadnieniem mechanizmu</td><td>Milczenie o bólu przy metodzie bolesnej = złe zaufanie</td></tr>
+<tr><td>Strefa ciała</td><td>Jasno które strefy, osobno jeśli ograniczenia</td><td>„cały obszar ciała" bez wyjątków = podejrzane</td></tr>
+<tr><td>Skóra wrażliwa</td><td>Test na małym obszarze, skład, dermatologicznie testowany</td><td>Brak ostrzeżeń przy silnych chemikaliach lub abrazji</td></tr>
+<tr><td>Zdjęcia efektu</td><td>Przed/po lub efekt na skórze, realistyczne</td><td>Zdjęcia tylko urządzenia, brak efektu na skórze</td></tr>
+</table>
+
+<hr>
+
+<h2>6. Tier Specs</h2>
+
+<table>
+<tr><th>Tier</th><th>Co zawiera</th><th>Typowe produkty</th><th>Dla kogo</th></tr>
+<tr><td><strong>T1 — Podstawowy</strong></td><td>Golarki elektryczne / Kremy depilatujące / Nano szkło / Plastry woskowe zimne</td><td>Veet krem, GLOV nano szkło, Braun golarki</td><td>Pierwsza depilacja, szybkie rozwiązanie, ograniczony budżet, wrażliwa na ból</td></tr>
+<tr><td><strong>T2 — Efektywny</strong></td><td>Epilatory elektryczne (mokre+suche, masaż) / Zestawy woskowe ciepłe domowe</td><td>Braun Silk-épil 5/7, Veet EasyWax, Gillette Venus Smooth</td><td>Chce trwałości 3–6 tygodni, potrafi tolerować ból, regularna praktykantka</td></tr>
+<tr><td><strong>T3 — Premium</strong></td><td>Epilatory premium (z SensoSmart, świetlne) / Zestawy woskowe profesjonalne / IPL domowe</td><td>Braun Silk-épil 9, Philips Lumea IPL</td><td>Chce najtrwalszego efektu, inwestycja długoterminowa, budżet nie jest przeszkodą</td></tr>
+</table>
+
+<hr>
+
+<h2>7. Tier Pricing — PLN, Polska 2026</h2>
+
+<table>
+<tr><th>Tier</th><th>Widełki</th><th>Co dostajesz</th></tr>
+<tr><td><strong>Budżet</strong></td><td>10–60 zł</td><td>Kremy depilatujące Veet (20–30 zł), plastry woskowe (15–30 zł), nano szkło GLOV (40 zł), prosty epilator przewodowy. Efekt: 1 dzień–kilka tygodni</td></tr>
+<tr><td><strong>Średni</strong></td><td>60–250 zł</td><td>Epilator bezprzewodowy mokry+suchy (Braun SE5, Philips BRE600, 80–180 zł), zestaw woskowy elektryczny Veet EasyWax (~100 zł). Efekt: do 4 tygodni</td></tr>
+<tr><td><strong>Premium</strong></td><td>250–500 zł</td><td>Epilator top-end z SensoSmart + smart light + Spa kit (Braun SE9 ~300–400 zł). Efekt: do 4 tygodni, najwydajniejszy</td></tr>
+<tr><td><strong>Ultra</strong></td><td>800–3000+ zł</td><td>Domowe IPL (Philips Lumea 8000, ~1500 zł) / laser. Efekt: trwała redukcja po 8–12 zabiegach</td></tr>
+<tr><td><strong>Salon</strong></td><td>80–300 zł / zabieg</td><td>Woskowanie, sugaring, laser profesjonalny — punkt odniesienia dla DIY</td></tr>
+</table>
+
+<hr>
+
+<h2>8. Consumer Decision Tree</h2>
+
+<pre><code>START: Chcę się zdepilowaś
+
+Q1: Jak bardzo boli Cię ból przy depilacji?
+├─ Bardzo / absolutnie nie mogę → Q2a (bezbolesne)
+└─ Toleruję dla efektu → Q2b (efektywne)
+
+Q2a (bezbolesne):
+├─ Chcę też wygładzić skórę → NANO SZKŁO (GLOV) — peeling + depilacja 2w1
+├─ Chcę szybko i nie mam czasu → KREM do depilacji (Veet 2–10 min)
+└─ Ekologiczna/wielorazowa → NANO SZKŁO (GLOV) — zero plastiku
+
+Q2b (efektywne, toleruję ból):
+├─ Chcę efekt na tygodnie → Q3 (trwałość)
+└─ Chcę permanentnie zmniejszyć odrost → IPL/LASER domowy (seria 8+ zabiegów)
+
+Q3 (trwałość):
+├─ Do 4 tygodni, DIY → EPILATOR ELEKTRYCZNY (mokry lub suchy)
+│   ├─ Budżet &lt;200 zł → Braun Silk-épil 5, Philips BRE600
+│   └─ Premium, mokry+suchy → Braun Silk-épil 9
+└─ Efekt jak z salonu, lubię rytuał → WOSK CIEPŁY domowy (Veet EasyWax)
+
+FILTRY (po wyborze metody):
+- Strefa bikini/twarz → sprawdź głowicę lub dedykowaną metodę
+- Skóra ciemna → UWAGA: IPL wymaga sprawdzenia fototypu
+- Włosy &lt;3mm → epilator odpada → krem, nano szkło, golarka
+- Budżet → T1/T2/T3 (patrz Tier Pricing)</code></pre>
+
+<hr>
+
+<h2>9. Forbidden Patterns</h2>
+
+<table>
+<tr><th>❌ Vague</th><th>✅ Konkret z normą</th></tr>
+<tr><td>„Trwały efekt depilacji"</td><td>„Gładka skóra do 4 tygodni (epilator), 1–3 dni (golarka), trwała redukcja po 8 tygodniach serii IPL"</td></tr>
+<tr><td>„Delikatna dla skóry"</td><td>„Brak środków chemicznych — samo nano szkło bez substancji czynnych; przetestuj na ramieniu przed pierwszym użyciem"</td></tr>
+<tr><td>„Szybka i skuteczna"</td><td>„Czas zabiegu: 2 min (krem), 3–5 min (nano szkło, nogi), 15–25 min (epilator, nogi pełne)"</td></tr>
+<tr><td>„Polecana dla wrażliwej skóry"</td><td>„Bez ostrzy, bez chemii, działa na sucho — brak bodźca bólowego przy prawidłowym ruchu okrężnym"</td></tr>
+<tr><td>„Innowacyjna technologia"</td><td>„Powierzchnia z nano-szkła działa przez mikroabrazję — ściera owłosienie przy skórze bez wyrywania z korzenia"</td></tr>
+</table>
+
+<hr>
+
+<h2>10. Ścieżki percepcji & persony</h2>
+
+<h3>Ścieżka A — <code>cep_depilacja_bez_bolu</code> · GLOV primary</h3>
+<p><strong>Persona: Natalia, 28 lat, pierwsze doświadczenie z epilatorem = trauma bólu</strong></p>
+
+<table>
+<tr><th>Stan</th><th>Pytania w tej fazie</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>S1 Trigger</td><td>„Czy depilacja musi boleć?" / „Czy istnieje bezbolesna depilacja?"</td><td>Informacyjna</td><td>Blog/AI: mechanizm metod vs ból</td></tr>
+<tr><td>S2 Ocena</td><td>„Nano szkło depilacja — jak to działa?" / „GLOV depilator opinie"</td><td>Odkrywcza</td><td>PDP z wyjaśnieniem mechanizmu, recenzje</td></tr>
+<tr><td>S3 Porównanie</td><td>„Nano szkło vs krem do depilacji — co lepsze?" / „Czy nano szkło zastąpi golarkę?"</td><td>Porównawcza</td><td>Artykuł porównawczy, FAQ</td></tr>
+<tr><td>S4 Decyzja</td><td>„Czy GLOV depilator jest dobry?" / „Jak używać depilatora z nano szkła?"</td><td>Transakcyjna</td><td>PDP z instrukcją, video how-to</td></tr>
+<tr><td>S5 Po zakupie</td><td>„Jak często używać nano szkła?" / „Dlaczego nie wszystkie włosy zniknęły?"</td><td>Pielęgnacyjna</td><td>FAQ na PDP, blog</td></tr>
+</table>
+
+<p><strong>Pytania ścieżkowe A (do mapy):</strong></p>
+<ul><li>„Czy depilacja nano szkłem boli?"</li><li>„Jak działa depilator z nano szkła GLOV?"</li><li>„Depilator nano szkło czy krem — co bardziej bezbolesne?"</li><li>„Jak długo stosować GLOV żeby zobaczyć efekty?"</li><li>„Czy nano szkło można używać na bikini?"</li><li>„GLOV depilator opinie — czy warto?"</li></ul>
+
+<hr>
+
+<h3>Ścieżka B — <code>cep_eko_wielorazowy</code> · GLOV primary</h3>
+<p><strong>Persona: Zofia, 32 lata, zero waste lifestyle, szuka alternatywy dla plastikowych maszynek</strong></p>
+
+<table>
+<tr><th>Stan</th><th>Pytania</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>S1 Trigger</td><td>„Jak zdepilowaś się bez jednorazówek?" / „Wielorazowy depilator zero waste"</td><td>Informacyjna</td><td>Blog/AI o metodach eko</td></tr>
+<tr><td>S2 Ocena</td><td>„Czy nano szkło do depilacji jest ekologiczne?" / „GLOV nano szkło — co to?"</td><td>Odkrywcza</td><td>PDP z wyróżnieniem eko-aspektów, packaging</td></tr>
+<tr><td>S3 Porównanie</td><td>„Nano szkło vs epilator — co bardziej eko?" / „Czy nano szkło wystarczy bez innych kosmetyków?"</td><td>Porównawcza</td><td>Artykuł niszowy: prawdziwy koszt maszynki vs wielorazowy</td></tr>
+<tr><td>S4 Decyzja</td><td>„GLOV nano szkło cena — ile kosztuje?" / „Gdzie kupić GLOV depilator?"</td><td>Transakcyjna</td><td>PDP z ceną, dostępność Rossmann/online</td></tr>
+<tr><td>S5 Lojalność</td><td>„Jak dbać o depilator nano szkło?" / „Jak długo wytrzymuje?"</td><td>Retencja</td><td>Content pielęgnacyjny, durability claims</td></tr>
+</table>
+
+<p><strong>Pytania ścieżkowe B:</strong></p>
+<ul><li>„Czy istnieje wielorazowy depilator bez plastiku?"</li><li>„Depilator bez wkładów — co polecić?"</li><li>„Nano szkło do depilacji — ile razy można używać?"</li><li>„Jak myć depilator z nano szkła?"</li><li>„Zero waste depilacja nóg — jak?"</li><li>„Czy GLOV zastępuje maszynki jednorazowe?"</li></ul>
+
+<hr>
+
+<h3>Ścieżka C — <code>cep_diy_dom_efekt_salonu</code> · Epilator/Wosk (nie GLOV)</h3>
+<p><strong>Persona: Kasia, 35 lat, regularnie chodzi do salonu woskowania, szuka DIY</strong></p>
+
+<table>
+<tr><th>Stan</th><th>Pytania</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>S1</td><td>„Jak depilowaś się woskiem w domu?" / „Zestawy do woskowania w domu"</td><td>Informacyjna</td><td>Tutorial woskowania DIY</td></tr>
+<tr><td>S2</td><td>„Veet EasyWax opinie" / „Jaki zestaw do wosku wybrać"</td><td>Oceniająca</td><td>Ranking/recenzje</td></tr>
+<tr><td>S3</td><td>„Epilator czy wosk — co trwalsze?" / „Epilator jak poprawnie używać?"</td><td>Porównawcza</td><td>Artykuł porównawczy</td></tr>
+<tr><td>S4</td><td>„Braun Silk-épil gdzie kupić" / „Veet EasyWax cena"</td><td>Transakcyjna</td><td>Karty produktów</td></tr>
+<tr><td>S5</td><td>„Jak nie dopuścić do wrastania po epilacji?"</td><td>Pielęgnacyjna</td><td>Blog/FAQ</td></tr>
+</table>
+
+<hr>
+
+<h3>Ścieżka D — <code>cep_permanentna_redukcja</code> · IPL/Laser</h3>
+<p><strong>Persona: Monika, 40 lat, zmęczona cotygodniową goliną, myśli o inwestycji w IPL</strong></p>
+
+<table>
+<tr><th>Stan</th><th>Pytania</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>S1</td><td>„Czy można trwale zdepilowaś się w domu?" / „Jak działa laser IPL"</td><td>Informacyjna</td><td>Edukacja IPL</td></tr>
+<tr><td>S2</td><td>„Philips Lumea vs salon laserowy — co lepsze?"</td><td>Porównawcza</td><td>Deep article</td></tr>
+<tr><td>S3</td><td>„Czy IPL boli?" / „Jak długo trwa seria IPL w domu?"</td><td>Obiekcyjna</td><td>FAQ, testimonials</td></tr>
+<tr><td>S4</td><td>„Philips Lumea 8000 cena" / „IPL dla fototypu 3"</td><td>Transakcyjna</td><td>Karta produktu</td></tr>
+<tr><td>S5</td><td>„Ile zabiegów IPL żeby przestały rosnąć?"</td><td>Wynikowa</td><td>Harmonogram sesji</td></tr>
+</table>
+
+<hr>
+
+<h3>Ścieżka E — <code>cep_zmiana_metody</code> · Switch trigger · GLOV yellow</h3>
+<p><strong>Persona: Ewa, 25 lat, golarka drażni skórę, szuka czegoś nowego ale nie epilatora</strong></p>
+
+<table>
+<tr><th>Stan</th><th>Pytania</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>S1</td><td>„Co zamiast golarki do nóg?" / „Alternatywa dla golarki elektrycznej"</td><td>Switch</td><td>Artykuł porównawczy</td></tr>
+<tr><td>S2</td><td>„Krem do depilacji vs nano szkło vs epilator"</td><td>Odkrywcza</td><td>Tabela porównawcza metod</td></tr>
+<tr><td>S3</td><td>„Czy nano szkło GLOV jest lepsze od golarki?"</td><td>Oceniająca</td><td>Recenzje, FAQ</td></tr>
+<tr><td>S4</td><td>„GLOV depilator kupić"</td><td>Transakcyjna</td><td>PDP</td></tr>
+</table>
+
+<hr>
+
+<h2>3b. Potencjalne subkategorie (routes_to z CEP-ów)</h2>
+
+<p><em>Rejestr potencjalnych wydzieleń — bez decyzji o osobnych CS na ten moment.</em></p>
+
+<table>
+<tr><th>Subkategoria</th><th>CEP źródłowy</th><th>Delta CEV (suwaki per L2 vs L1)</th><th>Uwaga</th></tr>
+<tr><td>IPL/laser domowy</td><td><code>cep_permanentna_redukcja</code></td><td>Ryzyko ↑↑ (fototyp, błąd kosztuje), Aspiracja ↑↑, Impuls ↓↓</td><td>Uzasadnia osobny CS gdy portfolio ma IPL</td></tr>
+<tr><td>Depilacja dla skóry wrażliwej/atopowej</td><td><code>cep_wrazliwa_skora</code></td><td>Ryzyko ↑↑↑, Moralność ↑ (derm. testowane)</td><td>Fork: składy, brak chemii, patch test</td></tr>
+<tr><td>Zero-waste depilacja</td><td><code>cep_eko_wielorazowy</code></td><td>Tożsamość ↑↑, Moralność ↑↑, Sexy ↓ (drugorz.)</td><td>Rośnie z Gen Z/Millennial eko-segment</td></tr>
+<tr><td>Depilacja okolic intymnych (bikini/pachy)</td><td><code>cep_okolice_bikini</code></td><td>Ryzyko ↑↑↑, Zmysłowość ↑, Pilność ↑</td><td>Specjalistyczne narzędzia + guardrails</td></tr>
+<tr><td>Depilacja dla nastolatek</td><td>—</td><td>Ryzyko ↑ (rodzic jako współdecydent)</td><td>Trigger: matka → „bezpieczne dla córki"</td></tr>
+</table>
+
+<hr>
+
+<h2>11. Cross-Category Triggers</h2>
+
+<table>
+<tr><th>Kategoria źródłowa</th><th>Trigger</th><th>CEP docelowy</th><th>Fraza w AI</th></tr>
+<tr><td>Bikini / stroje kąpielowe</td><td>Zakup kostiumu kąpielowego przed wakacjami</td><td><code>cep_okolice_bikini</code> + <code>cep_szybka_depilacja</code></td><td>„jak depilowaś się przed plażą"</td></tr>
+<tr><td>Pielęgnacja ciała / balsamy</td><td>Poszukiwanie gładkości skóry</td><td><code>cep_peeling_skory</code></td><td>„jak mieć gładką skórę na nogach"</td></tr>
+<tr><td>Kosmetyki naturalne / zero-waste</td><td>Ograniczanie plastiku, skąd zero-waste</td><td><code>cep_eko_wielorazowy</code></td><td>„eko depilacja w domu"</td></tr>
+<tr><td>Ubrania (sukienki, szorty)</td><td>Ekspozycja nóg w ciepłym sezonie</td><td><code>cep_szybka_depilacja</code> + <code>cep_depilacja_bez_bolu</code></td><td>„jak szybko zdepilowaś nogi przed imprezą"</td></tr>
+<tr><td>Skóra wrażliwa / atopia</td><td>Szukanie bezpiecznych kosmetyków</td><td><code>cep_wrazliwa_skora</code></td><td>„depilacja atopowe zapalenie skóry"</td></tr>
+<tr><td>Fitness / sport</td><td>Ochrona skóry przy regularnym ruchu</td><td><code>cep_wrastajace_wlosy</code></td><td>„depilacja dla aktywnych, bez podrażnień"</td></tr>
+<tr><td>Recenzje / porównywarki</td><td>Research przed zakupem dużego AGD (epilator IPL)</td><td><code>cep_permanentna_redukcja</code></td><td>„Philips Lumea opinie forum"</td></tr>
+</table>
+
+<hr>
+
+<h2>12. Tone of Voice for GEO</h2>
+
+<p><strong>Kategoria: depilacja ciała. Persona: kobieta 18–45 lat. Bariera: ból + bałagan + stałe powtarzanie.</strong></p>
+
+<ol><li><strong>Zacznij od sedna bólu</strong> — pierwsze zdanie odpowiedzi AI musi gasić dominant lęk (ból / podrażnienie). Nie zaczynaj od „depilacja to proces…"</li><li><strong>Mechanizm, nie etykieta</strong> — „mikroabrazja nano-szkłem ściera włos przy skórze bez wyrywania" > „innowacyjna technologia"</li><li><strong>Liczby trwałości</strong> — zawsze konkretna liczba dni/tygodni. „gładka skóra przez 4 tygodnie" > „długotrwały efekt"</li><li><strong>Nie kłam o trwałości nano szkła</strong> — nano szkło ≠ epilator. Tygodniowy efekt, nie miesięczny. Uczciwy claim = cytowany przez AI</li><li><strong>Porównuj metody uczciwie</strong> — AI lubi tabelki z kompromisami. Powiedz co każda metoda daje i czego jej brakuje</li><li><strong>Strefa ciała = konkret</strong> — „na nogi, pachy, przedramiona — NIE na twarz przy pierwszym użyciu" > „na cały obszar ciała"</li><li><strong>Instrukcja zabiegu</strong> — AI chętnie cytuje step-by-step. 4–6 kroków z konkretem (sucha skóra, okrężne ruchy, czas)</li><li><strong>Cena per użycie</strong> — „40 zł / wielorazowy = kilkadziesiąt groszy per zabieg" jest cytowalny. Cena sama bez kontekstu — nie</li><li><strong>Lęk S2 — gasić pierwszym zdaniem</strong> — pytanie „czy to boli?" → odpowiedź: „Nano szkło działa przez tarcie, nie wyrwanie — brak bodźca bólowego charakterystycznego dla epilatora"</li><li><strong>Nie używaj <code>elektryczny</code></strong> dla nano szkła — to nie elektryczny. Nano szkło = mechaniczny (ręczny). Błąd = zły routing AI</li><li><strong>Zero abstrakcji</strong> — „wygładzająco-depilujące działanie" = śmietnik. „Ściera włos + złuszcza naskórek w jednym ruchu" = OK</li><li><strong>Pytania retoryczne = czerwona flaga</strong> — AI nie cytuje retoryki. Cytuje fakty i listy</li><li><strong>Dla eko-persony: liczby pakowania</strong> — „zero plastiku, opakowanie ekologiczne, brak jednorazowych wkładów" — dosłowne fakty</li><li><strong>Recenzje jako S2</strong> — jeśli 74% pozytywne: „74% kupujących ocenia pozytywnie" jest cytowalny przez AI</li><li><strong>Skin type = personalny</strong> — wymień typy skóry wprost: „przy skórze wrażliwej — test na ramieniu przed pierwszym użyciem"</li><li><strong>Czas zabiegu na piśmie</strong> — „nano szkło: 3–5 minut na nogi, ruch okrężny" — AI chętnie to poda w odpowiedzi na pytanie o czas</li><li><strong>Nie rywalizuj bezpośrednio</strong> — „GLOV vs Veet" jako nagłówek = suboptymalne. „Jaką metodę wybrać" → tabela z GLOV jako jeden z opcji = lepsze</li><li><strong>Guardrail stref</strong> — zawsze ostrzeż: „na bikini i twarz — skrócona sesja, wyższa ostrożność" zamiast „wszędzie!"</li><li><strong>Call-to-action wynika z mechanizmu</strong> — „Wypróbuj przez 2 tygodnie — efekt mikroabrazji kumuluje się z każdym zabiegiem" > „Sprawdź już teraz!"</li><li><strong>Packaging claim AI-ready</strong> — „opakowanie biodegradowalne, koperta ze skrobi" = fakt cytowalny dla eko-pytań</li></ol>
+
+<hr>
+
+<h2>13. Pole pytań — WPIS CS (§13)</h2>
+
+<p><em>Pytania do mapy percepcji. Zbudowane per ścieżka × stan × intent.</em></p>
+
+<h3>Ścieżka A — bezbolesna (GLOV primary 🟢)</h3>
+<p>🛡️ „Czy depilacja nano szkłem boli?" · „Jakie metody depilacji są bezbolesne?" · „Czy krem do depilacji jest bezbolesny?" · „Depilacja bez bólu — od czego zacząć?" · „Czy GLOV depilator boli przy używaniu?" · „Depilacja dla osób wrażliwych na ból — jakie metody?"</p>
+
+<h3>Ścieżka B — eko / wielorazowa (GLOV primary 🟢)</h3>
+<p>„Wielorazowy depilator — co wybrać?" · „Jak zdepilowaś się ekologicznie?" · „Depilacja zero waste — jakie metody?" · „Czy nano szkło do depilacji jest bezpieczne i eko?" · „Ile razy można używać depilatora z nano szkła?" · „Jak dbać o nano szkło żeby wytrzymało długo?"</p>
+
+<h3>Ścieżka C — wosk/epilator (DIY salon)</h3>
+<p>„Jak depilowaś się woskiem w domu?" · „Epilator czy wosk — co jest lepsze?" · „Jak długo efekt depilacji epilatorem?" · „Jak woskować bikini w domu?" · „Braun czy Philips — który epilator lepszy?" · „Jak nie podrażnić skóry po epilatorze?"</p>
+
+<h3>Ścieżka D — IPL/permanentna</h3>
+<p>„Jak działa depilator IPL?" · „Czy IPL działa na ciemną skórę?" · „Ile zabiegów IPL jest potrzebne?" · „Philips Lumea vs salon laserowy — co wybrać?" · „Czy IPL w domu jest bezpieczny?" · „Depilacja laserowa domowa — od czego zacząć?"</p>
+
+<h3>Ścieżka E — zmiana metody (switch) (GLOV żółty 🟡)</h3>
+<p>„Co zamiast golarki do nóg?" · „Czym zastąpić maszynkę jednorazową?" · „Krem depilujący vs nano szkło — które lepsze?" · „Alternatywa dla epilatora — co polecić?" · „Co wybrać zamiast wosku w domu?" · „Jaka metoda depilacji jest najmniej brudząca?"</p>
+
+<h3>Pytania cross-kategoria</h3>
+<p>„Jak depilowaś się przed plażą?" · „Depilacja przed randką — co jest najszybsze?" · „Jak mieć gładką skórę na nogach cały rok?" · „Co na wrastające włosy po depilacji?" · „Depilacja przy atopowym zapaleniu skóry — co bezpieczne?"</p>
+</div>
+  </div>
+</div>
+<script>
+const CATS=[{"num":1,"name":"depilator","v":"v2","s":"depilator"}];
+const searchEl=document.getElementById('search');
+const statEl=document.getElementById('stat');
+const nrEl=document.getElementById('nr');
+const TOTAL=CATS.length;
+let curFilter='all';
+
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function hi(text,q){
+  if(!q)return text;
+  return text.replace(new RegExp('('+esc(q)+')','gi'),'<mark>$1</mark>');
+}
+
+function applySearch(q){
+  const ql=q.trim().toLowerCase();
+  let n=0;
+  CATS.forEach(c=>{
+    const item=document.getElementById('i'+c.num);
+    const matchQ=!ql||c.s.includes(ql);
+    const matchF=curFilter==='all'||(curFilter==='v1'&&c.v==='v1')||(curFilter==='v2p'&&c.v!=='v1');
+    const ok=matchQ&&matchF;
+    if(item)item.classList.toggle('hidden',!ok);
+    if(ok){
+      n++;
+      const el=item&&item.querySelector('.ct');
+      if(el)el.innerHTML=hi(c.name,q.trim());
+    }
+  });
+  nrEl.style.display=n===0?'block':'none';
+  const fLabel=curFilter==='v1'?' · Draft':curFilter==='v2p'?' · Verified':'';
+  statEl.textContent=(ql?n+'/':'')+TOTAL+' cat.'+fLabel;
+}
+
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+  applySearch(searchEl.value);
+}
+
+function select(num){
+  document.querySelectorAll('.ci').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.cs').forEach(e=>e.classList.remove('vis'));
+  const item=document.getElementById('i'+num);
+  const sec=document.getElementById('s'+num);
+  if(item){item.classList.add('active');item.scrollIntoView({block:'nearest'});}
+  if(sec)sec.classList.add('vis');
+  document.getElementById('ct').scrollTop=0;
+}
+
+searchEl.addEventListener('input',e=>applySearch(e.target.value));
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();searchEl.focus();searchEl.select();}
+  if(e.key==='Escape'&&document.activeElement===searchEl){searchEl.value='';applySearch('');searchEl.blur();}
+});
+
+if(CATS.length>0)select(CATS[0].num);
+
+function toggleTheme(){
+  const l=document.body.classList.toggle('light');
+  localStorage.setItem('geo-theme',l?'light':'dark');
+  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
+}
+(function(){if(localStorage.getItem('geo-theme')==='light'){
+  document.body.classList.add('light');
+  var b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
+</script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GEO DT DB — PL — 1 categories</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--sb-bg:#161b22;--hd-bg:#161b22;--bd:#30363d;
+  --tx:#e6edf3;--tx2:#8b949e;--ac:#58a6ff;
+  --cb:#1c2128;--ts:#1c2128;--mb:#2d4a22;--mt:#7ee787;
+  --ab:#1f3353;--sw:292px;--hh:52px
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+     background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* Header */
+#hd{height:var(--hh);background:var(--hd-bg);border-bottom:1px solid var(--bd);
+    display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+#hd h1{font-size:15px;font-weight:700;white-space:nowrap;flex-shrink:0;letter-spacing:.01em}
+#hd h1 span{color:var(--ac)}
+#sw{flex:1;position:relative;max-width:440px}
+#si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tx2);font-size:15px;pointer-events:none}
+#search{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:6px;
+        color:var(--tx);padding:6px 10px 6px 30px;font-size:15px;outline:none;transition:border-color .15s}
+#search:focus{border-color:var(--ac)}
+
+/* Filter buttons */
+.filt{display:flex;gap:4px;flex-shrink:0}
+.fb{font-size:13px;padding:3px 8px;border-radius:4px;border:1px solid var(--bd);
+    background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fb:hover{border-color:var(--ac);color:var(--tx)}
+.fb.on{border-color:var(--ac);background:var(--ab);color:var(--tx)}
+
+/* Lang toggle */
+#lang-btn{font-size:13px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+          background:transparent;color:var(--tx2);cursor:pointer;text-decoration:none;
+          display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+#lang-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+#stat{font-size:13px;color:var(--tx2);flex-shrink:0;white-space:nowrap;min-width:90px;text-align:right}
+
+/* Layout */
+#lay{display:flex;flex:1;overflow:hidden}
+
+/* Sidebar */
+#sb{width:var(--sw);flex-shrink:0;background:var(--sb-bg);border-right:1px solid var(--bd);overflow-y:auto}
+.ci{display:flex;align-items:center;gap:7px;padding:7px 10px;cursor:pointer;
+    border-left:3px solid transparent;border-bottom:1px solid var(--bd);
+    transition:background .1s;user-select:none;min-height:36px}
+.ci:hover{background:rgba(88,166,255,.07)}
+.ci.active{background:var(--ab);border-left-color:var(--ac)}
+.ci.hidden{display:none}
+.cn{font-size:11.5px;color:var(--tx2);min-width:20px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ct{font-size:14px;line-height:1.3;color:var(--tx);flex:1;min-width:0}
+.ct mark{background:var(--mb);color:var(--mt);border-radius:2px;padding:0 1px}
+
+/* Version badge in sidebar */
+.vb{font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:8px;flex-shrink:0;letter-spacing:.02em}
+.vb-v1{background:#21262d;color:#6e7681}
+.vb-v2{background:#2d2502;color:#d29922}
+.vb-v3{background:#0d2a1a;color:#3fb950}
+.vb-v4{background:#0d1e3c;color:#58a6ff}
+
+/* Verification pipeline dots */
+.pipe{display:flex;gap:2px;flex-shrink:0}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--bd)}
+.pd.on-v1{background:#6e7681}
+.pd.on-v2{background:#d29922}
+.pd.on-v3{background:#3fb950}
+.pd.on-v4{background:#58a6ff}
+
+#nr{padding:20px 12px;font-size:15px;color:var(--tx2);text-align:center;display:none}
+
+/* Content */
+#ct{flex:1;overflow-y:auto;padding:26px 34px}
+.cs{display:none}
+.cs.vis{display:block}
+
+/* Markdown */
+.cs h2{font-size:23px;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:10px;margin-bottom:16px}
+.cs h3{font-size:13px;font-weight:700;color:var(--ac);margin:20px 0 9px;
+       text-transform:uppercase;letter-spacing:.06em}
+.cs h4{font-size:16px;font-weight:600;margin:14px 0 6px}
+.cs p{font-size:15.5px;line-height:1.65;margin-bottom:8px}
+.cs strong{font-weight:600}
+.cs em{font-style:italic;color:var(--tx2)}
+.cs code{font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:13px;
+         background:var(--cb);border:1px solid var(--bd);border-radius:3px;
+         padding:1px 5px;color:#f0883e}
+.cs pre{background:var(--cb);border:1px solid var(--bd);border-radius:6px;
+        padding:12px 14px;overflow-x:auto;margin:10px 0}
+.cs pre code{background:none;border:none;padding:0;font-size:14px;color:var(--tx);line-height:1.5}
+.cs table{width:100%;border-collapse:collapse;font-size:14.5px;margin:10px 0;display:block;overflow-x:auto}
+.cs th,.cs td{text-align:left;padding:7px 10px;border:1px solid var(--bd)}
+.cs th{background:var(--sb-bg);font-weight:600}
+.cs tr:nth-child(even) td{background:var(--ts)}
+.cs ul,.cs ol{padding-left:18px;margin:7px 0}
+.cs li{font-size:15.5px;line-height:1.6;margin-bottom:3px}
+.cs hr{border:none;border-top:1px solid var(--bd);margin:18px 0}
+
+/* Changelog / verification card */
+.changelog{background:#0b1e10;border:1px solid #2ea043;border-radius:8px;
+           padding:14px 18px;margin:18px 0;position:relative}
+.changelog::before{content:'🔬 VERIFIED';font-size:10.5px;font-weight:700;
+                   color:#3fb950;letter-spacing:.08em;display:block;margin-bottom:8px}
+.changelog h3{color:#3fb950 !important;margin-top:0 !important;font-size:14px !important}
+.changelog p,.changelog li{color:#c3e6cb;font-size:15px}
+.changelog ul{margin:4px 0}
+.changelog table{font-size:12px}
+.changelog th{background:#0d2a1a}
+.changelog code{background:#0d2a1a;color:#7ee787}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+body.light{
+  --bg:#ffffff;--sb-bg:#f6f8fa;--hd-bg:#f6f8fa;--bd:#d0d7de;
+  --tx:#1f2328;--tx2:#656d76;--ac:#0969da;
+  --cb:#f6f8fa;--ts:#f6f8fa;--mb:#fff8c5;--mt:#7a5c00;--ab:#ddf4ff;
+}
+body.light .cs code{color:#cf222e}
+body.light .cs pre code{color:var(--tx)}
+body.light .changelog{background:#f0fff4;border-color:#2ea043}
+body.light .changelog p,body.light .changelog li{color:#1a7f37}
+#theme-btn{font-size:14px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx2);cursor:pointer;flex-shrink:0;transition:all .15s}
+#theme-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+/* FUND rozwijany blok */
+details.fund{border:1px solid var(--bd);border-radius:8px;margin:22px 0 8px;
+  background:var(--cb);overflow:hidden}
+details.fund>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  padding:12px 16px;user-select:none;transition:background .12s}
+details.fund>summary::-webkit-details-marker{display:none}
+details.fund>summary:hover{background:rgba(88,166,255,.07)}
+.fund-arrow{color:var(--ac);font-size:13px;flex-shrink:0;transition:transform .15s}
+details.fund[open] .fund-arrow{transform:rotate(90deg)}
+.fund-head{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.fund-title{font-size:15px;font-weight:700;color:var(--tx)}
+.fund-src{font-size:12px;font-style:italic;color:var(--tx2);line-height:1.4}
+.fund-badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.fund-badge.ok{background:#0d2a1a;color:#3fb950}
+.fund-badge.warn{background:#3d2a02;color:#f0883e}
+body.light .fund-badge.ok{background:#dafbe1;color:#1a7f37}
+body.light .fund-badge.warn{background:#fff1e5;color:#bc4c00}
+.fund-hint{font-size:11px;color:var(--tx2);flex-shrink:0;border:1px solid var(--bd);
+  border-radius:4px;padding:2px 7px}
+details.fund[open] .fund-hint{display:none}
+.fund-body{padding:4px 18px 16px;border-top:1px solid var(--bd)}
+.fund-body h1{font-size:18px;margin:12px 0 6px}
+</style>
+</head>
+<body>
+<div id="hd">
+  <h1>GEO <span>CS</span></h1>
+  <div id="sw">
+    <span id="si">⌕</span>
+    <input id="search" type="text" placeholder="Szukaj kategorii, CEP, pytania..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="filt">
+    <button class="fb on" data-f="all" onclick="setFilter('all')">All</button>
+    <button class="fb" data-f="v2p" onclick="setFilter('v2p')">✅ Verified</button>
+    <button class="fb" data-f="v1"  onclick="setFilter('v1')">📝 Draft</button>
+  </div>
+  <a id="lang-btn" href="%23">🌐 EN</a>
+  <button id="theme-btn" onclick="toggleTheme()" title="Tryb jasny/ciemny">☀️</button>
+  <span id="stat">1 cat.</span>
+</div>
+<div id="lay">
+  <div id="sb">
+    <div class="ci" id="i1" onclick="select(1)"><span class="cn">#1</span><span class="ct">Samochody osobowe — nabywca biznesowy</span><span class="vb vb-v2">v2</span><div class="pipe"><span class="pd on-v1"></span><span class="pd on-v2"></span><span class="pd"></span><span class="pd"></span></div></div>
+    <div id="nr">No results</div>
+  </div>
+  <div id="ct">
+    <div class="cs" id="s1"><h1>Samochody osobowe — nabywca biznesowy — Category Standard v1.0</h1>
+
+<p><em>Budowa wg <code>METODOLOGIA_CS_v3.1_RICH.md</code> + format 16 sekcji wzorzec <code>WPIS_CS_samochody_osobowe_prywatny_V2.md</code>. Projekt: Audi_Plichta / CS-Automotive. Źródła FAZY 0: badanie VW PHD (24 IDI, 2020) + VW Customer Journey Updated + wiedza podatkowa PL 2026. Oś nadrzędna: nabywca BIZNESOWY (B2B/JDG) — właściciel firmy, prezes JDG, flota firmowa. CS-3 z architektury 6 CS-ów automotive.</em></p>
+
+<hr>
+
+<h2>0. Opis kategorii</h2>
+
+<p>Samochód osobowy jako aktywo firmowe to pojazd nabywany lub leasingowany przez podmiot gospodarczy (JDG, spółka) z przeznaczeniem do działalności. Kluczowe różnice vs nabywca prywatny: możliwość odliczenia VAT (50% — użytek mieszany, 100% — wyłącznie firmowy), wliczenie rat leasingowych lub odpisów amortyzacyjnych w KUP, limit amortyzacyjny 150 000 PLN (225 000 PLN dla elektryków od 2024), wybór między leasingiem operacyjnym, finansowym a zakupem. Decyzja zakupowa podejmowana jest na przecięciu potrzeb wizerunkowych (reprezentacja klienta), operacyjnych (mobilność, flota) i podatkowych (optymalizacja). <strong>To nie jest „auto do pracy" — to narzędzie finansowe, wizerunkowe i podatkowe jednocześnie.</strong> Kategoria podlega silnemu wpływowi zmian przepisów podatkowych (Nowy Ład, estoński CIT) i rosnącemu zainteresowaniu elektrykami firmowymi (ulgi, 100% VAT przy wyłącznie firmowym użytku).</p>
+
+<h2>0b. Problemy, które kategoria załatwia</h2>
+
+<p><strong>🎯 Primary (rdzeń):</strong> <em>Mobilność i reprezentacja dla działalności — z optymalizacją podatkową i minimalizacją TCO firmowego.</em></p>
+
+<p><strong>Secondary — rozbite na sytuację firmową (każda = zalążek CEP):</strong></p>
+
+<ul><li>zakładam JDG/spółkę, zastanawiam się czy wziąć auto „na firmę" → <code>cep_jdg_pierwszy_samochod_firmowy</code></li><li>moje stare auto firmowe jest zamortyzowane lub koniec leasingu → <code>cep_zmiana_auta_firmowego</code></li><li>dowiedziałem się że mogę odliczyć VAT na auto firmowe → <code>cep_vat_odliczenie_odkrycie</code></li><li>moje auto kosztuje powyżej limitu 150k — problematyczna amortyzacja → <code>cep_limit_150k_problem</code></li><li>rozbudowuję firmę, pracownicy potrzebują aut służbowych → <code>cep_flota_pierwsze_rozszerzenie</code></li><li>zastanawiam się leasing operacyjny vs zakup za gotówkę/kredyt → <code>cep_leasing_vs_zakup_firmowy</code></li><li>przyjmuję klientów, potrzebuję auta adekwatnego do wizerunku firmy → <code>cep_samochod_reprezentacyjny</code></li><li>słyszałem o ulgach na elektryki firmowe, VAT 100% → <code>cep_elektryk_firmowy_ulgi</code></li></ul>
+
+<p>> ⚠️ Moc silnika, kolor, wyposażenie premium — to NIE problemy biznesowe, to atrybuty → KCF/preselekcja, nie CEP. CEP = SYTUACJA FIRMOWA.</p>
+
+<hr>
+
+<h2>1. CEV — Category Emotional Valuation</h2>
+
+<p><strong>Pasek profilu emocjonalnego kategorii (10 cech) — nabywca biznesowy:</strong></p>
+
+<table>
+<tr><th>ryzyko</th><th>lęk</th><th>widoczność</th><th>impuls</th><th>sexy</th><th>aspiracja</th><th>tożsamość</th><th>zmysłowość</th><th>pilność</th><th>moralność</th></tr>
+<tr><td>.60</td><td>.65</td><td>.75</td><td>.05</td><td>.50</td><td>.70</td><td>.80</td><td>.30</td><td>.60</td><td>.25</td></tr>
+</table>
+
+<ul><li><strong>ryzyko .60</strong> — niższe niż u prywatnego (auto firmowe = narzędzie, koszt kontrolowany przez KUP; błąd podatkowy = ryzyko skarbówki, ale jest doradca). Ryzyko przesuwa się z „czy to dobra decyzja życiowa" na „czy to optymalna decyzja podatkowa". Dodatkowe ryzyko: skarbówka zakwestionuje „wyłączny użytek firmowy" → wymuszony zwrot VAT.</li><li><strong>lęk .65</strong> — wielowarstwowy biznesowy: (1) czy nie przepłacam vs leasing/zakup — co lepsze, (2) czy przy kontroli skarbowej moje rozliczenie jest ok, (3) czy limit amortyzacyjny mnie nie ogranicza, (4) przy flocie — jak ogarnąć ubezpieczenie i serwis dla wielu aut. Pik lęku przy pierwszym aucie na firmę (nie zna zasad) i przy aucie >150k (limit).</li><li><strong>tożsamość .80</strong> — właściciel firmy = auto jako sygnał statusu biznesowego. „Jakim autem przyjeżdżasz do klienta?" = pierwsze wrażenie o firmie. Segment auta = deklaracja poziomu biznesu. Silniejsze niż u prywatnego — tu wchodzi firma jako marka.</li><li><strong>widoczność .75</strong> — auto przed siedzibą, na spotkaniach, przy kliencie. Segment D/E (Audi, BMW, MB) = standard dla firm konsultingowych, kancelarii, przedstawicielstw. Odstępstwo od normy = czytane jako signal.</li><li><strong>aspiracja .70</strong> — „na czym pojechać do klienta, żeby mnie traktował serio" + „w końcu firma generuje na tyle, żeby odliczyć leasing na Audi". Aspiracja biznesowa różna od prywatnej — tu chodzi o wiarygodność, nie próżność.</li><li><strong>lęk .65</strong> — patrz wyżej (szczegóły VAT, KUP, limit 150k, skarbówka).</li><li><strong>pilność .60</strong> — umiarkowana. Trigger: koniec leasingu (data), koniec roku podatkowego (optymalizacja), szybki wzrost firmy (potrzeba auta natychmiastowa). Wyższa niż u prywatnego planowego zakupu.</li><li><strong>sexy .50</strong> — ograniczone vs prywatny. Biznesmen wybiera auto racjonalnie (TCO, prestiż biznesowy), ale emocja jest — premium auto = nagroda i sygnał sukcesu firmy.</li><li><strong>zmysłowość .30</strong> — niższa niż prywatny. Decyzja bardziej finansowa, mniej zmysłowa. Ale jazda próbna wciąż ma znaczenie dla aut reprezentacyjnych (Q5, A6).</li><li><strong>impuls .05</strong> — zero impulsu. Decyzja firmowa wymaga konsultacji z księgowym, często z doradcą leasingowym, kalkulacji podatkowej.</li><li><strong>moralność .25</strong> — elektryki firmowe wchodzą przez ulgę podatkową (nie przez ekologię). Ale 100% VAT na BEV to realny driver. ESG = coraz częstszy argument w firmach.</li></ul>
+
+<p>→ Fork <strong>RACJONALNY + TOŻSAMOŚCIOWY</strong>, research <strong>wysoki (VAT/KUP/leasing)</strong>. Garby: <strong>Leasing operacyjny vs zakup</strong>, <strong>VAT 50/100%</strong>, <strong>Limit 150k amortyzacja</strong>, <strong>Użytek firmowy vs mieszany</strong>, <strong>Flota vs pojedyncze auto</strong>.</p>
+
+<hr>
+
+<h2>2. CEP — Consumer Entry Points <em>(weryfikator: sytuacja-nie-atrybut / realny verbatim / nie-sierota)</em></h2>
+
+<table>
+<tr><th>id</th><th>Trigger (język właściciela/JDG, verbatim)</th><th>Kontekst</th><th>Primary concern</th><th>Bloker decyzji</th><th>Routes to</th><th>Anchor content</th></tr>
+<tr><td><code>cep_jdg_pierwszy_samochod_firmowy</code></td><td>„zakładam JDG — czy opłaca się wziąć auto na firmę od razu?" / „mam działalność od 3 miesięcy, chcę auto — jak to ugryźć podatkowo?"</td><td>pierwsze miesiące JDG, brak doświadczenia z „autem na firmę", często samochód prywatny przekształcany</td><td>czy to się opłaca podatkowo? jak to wogóle działa z VAT i KUP?</td><td><strong>brak wiedzy o zasadach firmowego auta</strong> (co wolno odliczyć, co trzeba udowodnić, co z prywatnym autem)</td><td>leasing operacyjny mid-range lub wprowadzenie prywatnego do firmy</td><td>„auto na JDG — VAT, KUP, leasing — jak to działa krok po kroku"</td></tr>
+<tr><td><code>cep_zmiana_auta_firmowego</code></td><td>„moje leasing kończy się za 6 miesięcy, czas się rozglądać" / „auto jest zamortyzowane — mogę teraz wziąć nowe i wrzucić w koszty?"</td><td>koniec leasingu lub pełna amortyzacja, firma już doświadczona z autem firmowym</td><td>co teraz: nowy leasing, odkup po wartości rezydualnej, nowe auto? jakie warunki leasingu w 2026?</td><td><strong>wartość rezydualna vs rynek</strong> + nowe warunki leasingu + decyzja czy segment up</td><td>nowy leasing operacyjny lub segment wyżej (jeśli firma rośnie)</td><td>„koniec leasingu firmowego — co zrobić: odkup, zwrot, nowe?"</td></tr>
+<tr><td><code>cep_vat_odliczenie_odkrycie</code></td><td>„kolega mi powiedział że od auta firmowego odlicza 50% VAT — czy ja też mogę?" / „właśnie dowiedziałem się o VAT na auto służbowe — co mogę odliczyć?"</td><td>właściciel firmy który wcześniej nie korzystał z odliczenia VAT lub dopiero zaczyna</td><td>ile dokładnie VAT mogę odliczyć? co muszę spełnić żeby odliczyć 100%?</td><td><strong>50% vs 100% VAT — warunki i ryzyko</strong> (ewidencja przebiegu, weryfikacja KAS)</td><td>auto z jasnym podziałem użytku lub auto wyłącznie firmowe (BEV lub z ewidencją)</td><td>„VAT na samochód firmowy 2026 — 50% vs 100%, warunki, ewidencja"</td></tr>
+<tr><td><code>cep_limit_150k_problem</code></td><td>„chcę Audi Q5 za 200k — jak to wpisać w koszty firmy?" / „słyszałem o limicie 150 000 PLN na amortyzację — co to znaczy dla mojego auta?"</td><td>przedsiębiorca który chce auto powyżej limitu, nie wie jak rozliczyć nadwyżkę</td><td>co mogę odliczyć od auta za 200k / 250k PLN? jak działa limit amortyzacyjny?</td><td><strong>limit amortyzacyjny 150 000 PLN</strong> — niepełny odpis, co z nadwyżką, opcja leasing jako alternatywa</td><td>leasing operacyjny (obchodzi limit amortyzacyjny — rata = KUP w całości) lub zakup z częściową amortyzacją</td><td>„limit 150 000 PLN samochód firmowy 2026 — jak rozliczyć auto droższe niż limit?"</td></tr>
+<tr><td><code>cep_flota_pierwsze_rozszerzenie</code></td><td>„mam 4 handlowców, wszyscy jeżdżą prywatnymi — muszę coś z tym zrobić" / „firma rośnie, potrzebuję 3 auta służbowe dla pracowników — jak to ogarnąć?"</td><td>firma w fazie wzrostu, pierwsze skalowanie floty, brak doświadczenia z fleet management</td><td>jak kupić/leasingować kilka aut naraz? ubezpieczenie flotowe? pracownik z autem służbowym — ZUS i podatek?</td><td><strong>złożoność flotowa</strong> (umowy, ubezpieczenie fleet, samochód służbowy dla pracownika = przychód? ZUS?)</td><td>flotowy leasing operacyjny + pakiet ubezpieczeniowy + umowy użytkowania</td><td>„samochód służbowy dla pracownika — ZUS, podatek, zasady 2026"</td></tr>
+<tr><td><code>cep_leasing_vs_zakup_firmowy</code></td><td>„mam kasę w firmie — czy wziąć leasing operacyjny czy kupić za gotówkę?" / „leasing operacyjny vs finansowy — co się bardziej opłaca podatkowo?"</td><td>firma z płynnością, stoi przed wyborem formy finansowania</td><td>co jest tańsze podatkowo i cashflowowo? kiedy zakup się opłaci bardziej niż leasing?</td><td><strong>leasing operacyjny vs finansowy vs zakup gotówką</strong> — różne skutki podatkowe, płynność, własność</td><td>decyzja zależna od rentowności firmy, stawki VAT, formy opodatkowania</td><td>„leasing operacyjny vs zakup auta na firmę — porównanie podatkowe 2026"</td></tr>
+<tr><td><code>cep_samochod_reprezentacyjny</code></td><td>„spotykam się z klientami, jeżdżę do Warszawy — potrzebuję auta które robi wrażenie, nie żeby się wstydzić" / „moi klienci to prezesi — muszę przyjechać czymś, co buduje zaufanie"</td><td>firma B2B, spotkania z klientami premium, kontekst reprezentacyjny</td><td>jakie auto „pasuje" do mojej branży/pozycji bez przepłacania? jak to odliczyć?</td><td><strong>co jest „odpowiednim" autem do reprezentacji</strong> (branżowe normy: prawnik vs budowlaniec) + limit 150k</td><td>segment premium (D/E): Audi A6/Q5, BMW 5/X3, leasing operacyjny</td><td>„samochód reprezentacyjny dla firmy — co wybrać i jak odliczyć?"</td></tr>
+<tr><td><code>cep_elektryk_firmowy_ulgi</code></td><td>„słyszałem że elektryk na firmie = 100% VAT i wyższy limit amortyzacji — czy to prawda?" / „chcę BEV na firmę — jakie ulgi mi przysługują w 2026?"</td><td>przedsiębiorca zainteresowany elektrykiem, słyszał o ulgach, chce zweryfikować</td><td>co konkretnie zyskuję na elektryku firmowym vs spalinowy? jaki elektryk wziąć?</td><td><strong>warunki 100% VAT i limit 225k</strong> (musi być wyłącznie firmowy) + sieć ładowania + koszt infrastruktury w firmie</td><td>leasing operacyjny BEV (Audi e-tron, BMW iX, Tesla, BYD Han)</td><td>„elektryk firmowy ulgi 2026 — VAT 100%, limit 225k, leasing BEV"</td></tr>
+</table>
+
+<hr>
+
+<h2>3. Discovery Questions (floor 22, biznesowe — konkretne, z liczbami 2026)</h2>
+
+<ol><li>Auto na firmę czy na siebie — co bardziej się opłaca podatkowo w 2026?</li><li>Leasing operacyjny na samochód — co można odliczyć od podatku?</li><li>Ile VAT-u mogę odliczyć od samochodu firmowego — 50% czy 100%?</li><li>Samochód firmowy dla JDG — jak to działa z KUP i VAT?</li><li>Limit amortyzacji samochodu osobowego w firmie 2026 — 150 000 PLN nadal?</li><li>Leasing operacyjny vs zakup auta na firmę — co się bardziej opłaca?</li><li>Jak wziąć auto na leasing firmowy — procedura i wymagania?</li><li>Samochód służbowy dla pracownika — podatek i ZUS 2026?</li><li>Elektryk na firmę — ulgi, VAT 100%, limit 225 000 PLN?</li><li>Ewidencja przebiegu pojazdu firmowego — kiedy wymagana i jak prowadzić?</li><li>Co to jest użytek mieszany samochodu — kiedy mam 50% a kiedy 100% VAT?</li><li>Jak rozliczyć auto droższe niż 150 000 PLN w kosztach firmy?</li><li>Leasing operacyjny vs finansowy — różnica podatkowa dla firmy?</li><li>Samochód reprezentacyjny dla firmy — jakie auto wybrać i jak odliczyć?</li><li>Flota firmowa — leasing pakietowy dla kilku aut naraz?</li><li>GAP w leasingu firmowym — co to jest i czy warto?</li><li>Ubezpieczenie flotowe samochodów firmowych — jak działa?</li><li>Amortyzacja samochodu osobowego w firmie — stawka, metoda, zasady 2026?</li><li>Czy mogę wprowadzić prywatne auto do firmy i odliczać koszty?</li><li>Rata leasingowa w całości w KUP — kiedy możliwe?</li><li>Auto po leasingu firmowym — odkup, wartość rezydualna, podatek?</li><li>Kiedy skarbówka może zakwestionować 100% VAT na auto firmowe?</li><li>Jak skonfigurować auto Q5 / BMW X3 na leasing firmowy — kalkulator 2026?</li><li>Samochód elektryczny firmowy — czy warto przy obecnych cenach energii?</li></ol>
+
+<p>> ⭐ Każdy <code>bloker_decyzji</code> z §2 → ≥1 Discovery + zaplanowana treść S2 gasząca. „Limit 150k" → Q6/Q12/Q18. „VAT 50 vs 100%" → Q3/Q11/Q22.</p>
+
+<hr>
+
+<h2>4. KCF — Key Category Features <em>(waga per segment: Biznesowy=●●●, Opcja=●●, Niszowy=●)</em></h2>
+
+<table>
+<tr><th>Feature</th><th>Zakres rynkowy</th><th>Tier</th><th>Waga Biz.</th><th>Uwaga</th></tr>
+<tr><td>Forma finansowania (leasing oper./fin./zakup)</td><td>leasing operacyjny (dominant), finansowy, gotówka, kredyt</td><td>T1</td><td>●●●</td><td><strong>DETERMINUJE całą optymalizację podatkową</strong> — to pierwsze pytanie, nie ostatnie</td></tr>
+<tr><td>Odliczenie VAT (50%/100%)</td><td>zależne od użytku: mieszany 50% / wyłącznie firmowy 100%</td><td>T1</td><td>●●●</td><td>Kluczowy driver wyboru auta i struktury użytkowania</td></tr>
+<tr><td>KUP / amortyzacja i limit</td><td>limit 150 000 PLN (225 000 BEV) — raty/odpisy w kosztach</td><td>T1</td><td>●●●</td><td>Wpływa na wybór segmentu cenowego auta (czy brać powyżej limitu?)</td></tr>
+<tr><td>Segment / pozycjonowanie wizerunkowe</td><td>B (flota hand.) / C (firmowy codzienny) / D-E (reprezentacyjny)</td><td>T1</td><td>●●●</td><td>Inny segment dla handlowca, inny dla prezesa — decyzja wizerunkowa+podatkowa</td></tr>
+<tr><td>TCO firmowy (rata + ubezp. + serwis + paliwo)</td><td>all-in miesięcznie z uwzględnieniem KUP</td><td>T1</td><td>●●●</td><td>Prawdziwy koszt firmy = rata leasingowa po korekcie podatkowej</td></tr>
+<tr><td>Dostępność / czas dostawy</td><td>od ręki vs 8–20 tyg. custom</td><td>T1</td><td>●●●</td><td>Koniec leasingu = deadline — nie ma miejsca na 6 miesięcy czekania</td></tr>
+<tr><td>Użytek firmowy vs mieszany</td><td>dokumentacja, ewidencja przebiegu, ryzyko KAS</td><td>T2</td><td>●●</td><td>Prawna poprawność = ochrona przy kontroli</td></tr>
+<tr><td>Wartość rezydualna leasingowa</td><td>po 2–4 latach: wykup lub zwrot</td><td>T2</td><td>●●</td><td>Kluczowa przy planowaniu cyklu wymiany auta</td></tr>
+<tr><td>Ubezpieczenie firmowe / flotowe</td><td>OC/AC/GAP/assistance (pakiety fleet)</td><td>T2</td><td>●●</td><td>Flotowe korzystniejsze przy 3+ autach</td></tr>
+<tr><td>Wyposażenie biznesowe</td><td>navi / comfort seats / parking sensors / phone connectivity</td><td>T2</td><td>●●</td><td>Standard dla reprezentacyjnego — klient ocenia wnętrze</td></tr>
+<tr><td>Gwarancja producenta / ASO</td><td>3–5 lat / umowy serwisowe all-inclusive</td><td>T2</td><td>●●</td><td>Firma nie chce niespodzianek kosztowych w trakcie leasingu</td></tr>
+<tr><td>Napęd / segment EV</td><td>BEV: 100% VAT + limit 225k; PHEV: korzyści mieszane</td><td>T3</td><td>●</td><td>Rosnące znaczenie — nie dominuje jeszcze</td></tr>
+<tr><td>Samochód dla pracownika</td><td>zasady użytkowania, przychód pracownika, ZUS</td><td>T3</td><td>●</td><td>Komplikuje flotę — wymaga regulaminu</td></tr>
+</table>
+
+<hr>
+
+<h2>5. Typowy produkt — konwencje kategorii</h2>
+
+<table>
+<tr><th>Cecha</th><th>Norma kategorii</th><th>Red flag</th></tr>
+<tr><td>Forma leasingu</td><td>operacyjny — raty w KUP w 100%; własność leasingodawcy</td><td>„leasing finansowy" bez wyjaśnienia różnicy podatkowej</td></tr>
+<tr><td>VAT na ratę</td><td>50% odliczenia (użytek mieszany) lub 100% (wyłącznie firmowy + ewidencja)</td><td>„pełny VAT" bez spełnienia warunków ewidencji/użytku</td></tr>
+<tr><td>Limit amortyzacji</td><td>150 000 PLN (ICE/PHEV) / 225 000 PLN (BEV)</td><td>zakup >150k bez informacji o ograniczonym odpisie</td></tr>
+<tr><td>Ewidencja przebiegu</td><td>wymagana dla 100% VAT + KUP mieszany</td><td>„możesz odliczyć wszystko" bez wspomnienia ewidencji</td></tr>
+<tr><td>Ubezpieczenie</td><td>OC/AC + GAP w leasingu obowiązkowy / assistance opcja</td><td>leasing bez GAP = ryzyko przy wypadku totalnym</td></tr>
+<tr><td>Serwis ASO</td><td>required dla gwarancji; opcja all-inclusive (abonament serwisowy)</td><td>brak info o wymaganiach serwisowych przy leasingu</td></tr>
+<tr><td>Koniec leasingu</td><td>wartość rezydualna znana na wejściu; opcja wykupu</td><td>„porozmawiamy bliżej końca" bez konkretnej RV</td></tr>
+<tr><td>Pracownik z autem</td><td>przychód pracownika: 250/400 PLN/mies. wartości ryczałtowej (2026)</td><td>„dasz pracownikowi auto" bez wspomnienia ZUS/PIT</td></tr>
+</table>
+
+<hr>
+
+<h2>6. Tier Specs</h2>
+
+<p><strong>Tier-1 Universal</strong> (musi być przy każdym modelu/ofercie firmowej): forma finansowania (leasing oper./zakup) · napęd/kategoria · cena netto PLN · VAT odliczalny (%) · rata leasingowa netto/mies. · limit KUP (czy przekracza 150k?) · czas dostawy.</p>
+
+<p><strong>Tier-2 Differentiator:</strong> wartość rezydualna [%/PLN] · gwarancja [lata] + serwis all-inclusive dostępność · wyposażenie biznesowe lista · ubezpieczenie (wstępna wycena lub fleet rate).</p>
+
+<p><strong>Tier-3 Niche:</strong> opcje customizacji / lakier · parametry silnika · konfiguracja online · trade-in / odkup poprzedniego auta.</p>
+
+<hr>
+
+<h2>7. Tier Pricing — PLN netto, Polska 2026 <em>(nabywca biznesowy, leasing operacyjny)</em></h2>
+
+<table>
+<tr><th>Tier</th><th>Cena netto</th><th>Przykłady</th><th>Rata leas. netto</th><th>Typowy klient biznesowy</th></tr>
+<tr><td>Flota pracownicza (B/C)</td><td>60 000–130 000 PLN netto</td><td>Skoda Octavia, Toyota Corolla, VW Passat, Kia K5</td><td>900–1 500 PLN netto/mies.</td><td>handlowcy, kurierzy, montażyści — auto robocze</td></tr>
+<tr><td>Segment firmowy standard (C/D)</td><td>130 000–200 000 PLN netto</td><td>Audi A4, BMW Seria 3, Volvo S60/V60, MB C-klasa</td><td>1 500–2 500 PLN netto/mies.</td><td>właściciel JDG/spółki do codziennych spotkań</td></tr>
+<tr><td>Reprezentacyjny premium (D/E)</td><td>200 000–350 000 PLN netto</td><td>Audi A6/Q5, BMW 5/X3, MB E-klasa, Volvo XC60</td><td>2 500–4 000 PLN netto/mies.</td><td>prezes, partner kancelarii, dyrektor — reprezentacja</td></tr>
+<tr><td>Prestiż / ultra premium (E/F)</td><td>350 000+ PLN netto</td><td>Audi Q7/Q8/A8, BMW X5/7, Porsche Cayenne</td><td>4 000+ PLN netto/mies.</td><td>właściciele dużych firm, zarządy</td></tr>
+<tr><td>BEV firmowy</td><td>150 000–350 000 PLN netto</td><td>Audi Q4 e-tron, BMW iX3/i4, Tesla M3/MY, BYD Han</td><td>1 800–4 500 PLN netto/mies.</td><td>firmy pro-ESG, właściciele z PV, optymalizacja 100% VAT</td></tr>
+</table>
+
+<p>> ⚠️ Przy cenie >150 000 PLN netto: limit amortyzacji ogranicza KUP — leasing operacyjny pozwala wrzucić pełną ratę netto w koszty niezależnie od wartości auta.</p>
+
+<hr>
+
+<h2>8. Consumer Decision Tree</h2>
+
+<p><em>Oś: nabywca biznesowy, auto jako aktywo firmowe. CDT: Q1=cel użytkowania (reprezentacja/flota/codzienny), Q2=forma finansowania (SORTUJĄCE!), Q3=VAT i KUP analiza, Q4=segment cenowy vs limit 150k, Q5=napęd (EV fork biznesowy).</em></p>
+
+<h3>Drzewo — kanał [NABYWCA BIZNESOWY]</h3>
+
+<p><strong>L1 — routing: sytuacja firmowa (CEP) → typ decyzji</strong></p>
+
+<table>
+<tr><th>Sytuacja firmowa (CEP)</th><th>→ Typ / pierwszy krok</th></tr>
+<tr><td>Pierwsze auto na JDG / nie wiem jak to działa</td><td>edukacja podatkowa najpierw: VAT 50/100, KUP, leasing oper.</td></tr>
+<tr><td>Kończy mi się leasing lub auto zamortyzowane</td><td>nowy leasing lub zmiana segmentu — najpierw RV vs rynek</td></tr>
+<tr><td>Dowiedziałem się o VAT i chcę odliczyć</td><td>analiza użytku: mieszany vs wyłącznie firmowy — decyzja o ewidencji</td></tr>
+<tr><td>Auto kosztuje >150k — jak to rozliczyć</td><td>leasing operacyjny (rata = pełny KUP) vs zakup (limit amortyzacji)</td></tr>
+<tr><td>Firma rośnie, potrzebuję 3–5 aut dla pracowników</td><td>fleet leasing + umowy + pracownik = przychód (ZUS/PIT)</td></tr>
+<tr><td>Leasing czy zakup gotówką — co lepsze podatkowo</td><td>analiza: rentowność firmy × stawka VAT × cashflow</td></tr>
+<tr><td>Przyjmuję klientów — potrzebuję auta do reprezentacji</td><td>segment D/E — najpierw norma branżowa + limit 150k</td></tr>
+<tr><td>Słyszałem o ulgach na elektryki firmowe</td><td>BEV: 100% VAT + limit 225k — warunki i dostępność infrastruktury</td></tr>
+</table>
+
+<p><strong>L2 — sekwencja pytań decyzyjnych:</strong></p>
+
+<ol><li><strong>Cel użytkowania</strong> — wyłącznie firmowe (100% VAT) vs mieszane (50% VAT) → determinuje ewidencję i strukturę kosztów</li><li><strong>Forma finansowania</strong> ← SORTUJĄCE: leasing operacyjny (rata=KUP, VAT od raty) / leasing finansowy (amortyzacja+odsetki) / zakup (amortyzacja, limit 150k) / kredyt firmowy</li><li><strong>VAT analiza</strong> — 50% (mieszany, łatwiejszy) vs 100% (tylko firmowy + ewidencja km + ryzyko KAS) → zmienia całą ekonomikę</li><li><strong>KUP i limit</strong> — czy auto mieści się w 150 000 PLN? Jeśli nie → leasing operacyjny = ratownik (pełna rata w KUP bez limitu amortyzacji)</li><li><strong>Segment auta</strong> — flota pracownicza (B/C, koszty) / firmowy standard (C/D) / reprezentacyjny (D/E) / BEV (ulgi)</li></ol>
+<p>- <strong>Fork BEV</strong> → 100% VAT + limit 225k + ewidencja obowiązkowa + infrastruktura ładowania + wyższe TCO</p>
+<p>- Sub-węzeł obiekcja BEV firmowy: czy mam ładowarkę w firmie/domu? zasięg do klientów? serwis?</p>
+
+<p><strong>L3 — optymalizacja podatkowa:</strong></p>
+<ul><li>Leasing operacyjny: rata netto w 100% KUP + VAT od raty (50 lub 100%) — <strong>najczęstszy wybór</strong></li><li>Zakup gotówką <150k: amortyzacja 20%/rok (5 lat) + VAT jednorazowo — dobre przy pełnym cashflow</li><li>Zakup gotówką >150k: limit — tylko 150k PLN amortyzowane → nadwyżka nie wchodzi w KUP → <strong>leasing operacyjny korzystniejszy</strong></li><li>Elektryk (BEV): limit 225k, 100% VAT możliwy, jednorazowa amortyzacja do 100k (estoński CIT osobny temat)</li></ul>
+
+<p><strong>L4 — ubezpieczenie i serwis:</strong></p>
+<ul><li>1 auto: standardowe OC/AC + GAP w leasingu</li><li>3+ auta: flotowe — niższe stawki, jeden broker, jedna polisa</li><li>Serwis all-inclusive (abonament) dostępny przy nowym + gwarancja ASO — redukuje zaskoczenia kosztowe</li></ul>
+
+<p><strong>L5 — pracownik z autem:</strong></p>
+<ul><li>Auto służbowe wyłącznie firmowe → brak przychodu pracownika</li><li>Auto służbowe z prywatnym użytkiem → ryczałt 250 PLN/mies. (do 125 kW) / 400 PLN/mies. (powyżej 125 kW) = przychód pracownika → ZUS + PIT</li><li>Wymaga regulaminu użytkowania</li></ul>
+
+<p><strong>Kluczowe info wyjścia (mandatory w treści/PDP):</strong> forma finansowania · cena netto PLN · VAT odliczalny [%] · rata leasingowa netto/mies. · limit KUP (przekracza 150k?) · ewidencja wymagana (tak/nie) · czas dostawy.</p>
+
+<hr>
+
+<h2>9. Forbidden Patterns</h2>
+
+<table>
+<tr><th>❌ Zakazane</th><th>✅ Poprawne</th></tr>
+<tr><td>„kup auto na firmę i odlicz 100% VAT"</td><td>„100% VAT możliwe wyłącznie przy udowodnionym użytku firmowym + ewidencja przebiegu; bez ewidencji: 50% VAT"</td></tr>
+<tr><td>„leasing to zawsze najlepsza opcja"</td><td>„Leasing operacyjny korzystny gdy firma chce pełne raty w KUP; zakup gotówką korzystny gdy auto <150k i firma ma wysoką rentowność"</td></tr>
+<tr><td>„auto za 200k odliczysz w całości w kosztach"</td><td>„Auto za 200k PLN netto: limit amortyzacji 150k PLN → 50k PLN netto NIE wejdzie w KUP. Przy leasingu operacyjnym: pełna rata w KUP bez limitu wartości auta"</td></tr>
+<tr><td>„rata od 1 500 PLN/mies."</td><td>„Rata leasingowa 1 840 PLN netto/mies. (48 mies., wpłata 10%, wartość rezydualna 30%, RRSO 7,2%) — przy 50% VAT: efektywna rata po podatku ok. 1 490 PLN netto"</td></tr>
+<tr><td>„Szybka dostawa samochodu firmowego"</td><td>„Dostępność: 2 sztuki na placu / zamówienie indywidualne: ok. 10–14 tygodni (stan 2026-07) — istotne przy końcu leasingu"</td></tr>
+<tr><td>„elektryk to przyszłość firm"</td><td>„Elektryk firmowy opłaca się gdy: roczny przebieg >15 000 km + ładowarka w firmie/domu + firma płatnik VAT z możliwością 100% odliczenia + limit BEV 225 000 PLN nie przekroczony"</td></tr>
+<tr><td>„samochód do reprezentacji"</td><td>„Samochód reprezentacyjny dla firmy: segment D/E (Audi A6, BMW 5, MB E-klasa); limit amortyzacji 150 000 PLN — przy zakupie za 250 000 PLN netto: 100 000 PLN bez odliczenia → leasing operacyjny korzystniejszy"</td></tr>
+<tr><td>„pracownik dostanie auto służbowe"</td><td>„Udostępnienie auta pracownikowi do celów prywatnych = przychód pracownika: 250 PLN/mies. (do 125 kW) lub 400 PLN/mies. (>125 kW). Wymagany regulamin użytkowania pojazdu służbowego."</td></tr>
+</table>
+
+<hr>
+
+<h2>10. Ścieżki percepcji & pole pytań</h2>
+
+<p><strong>Tyle ścieżek ile CEP</strong> (każda = osobna ścieżka etapy świadomości × pytania). Etapy wg CEV (fork RACJONALNY+TOŻSAMOŚCIOWY, garby na VAT/KUP/finansowaniu). 🛡️ = bloker decyzji. Intent: ⚪ info · 🔵 komerc · 🟢 transakc.</p>
+
+<h3>[NABYWCA BIZNESOWY]</h3>
+
+<p><strong>Ścieżka A — <code>cep_jdg_pierwszy_samochod_firmowy</code></strong> (pierwsze auto na JDG)</p>
+<ul><li><em>Świadomość:</em> Auto na firmę czy prywatnie — co się bardziej opłaca? ⚪ · Jak działa samochód na JDG — VAT, KUP, leasing? ⚪</li><li><em>Orientacja:</em> Leasing operacyjny na pierwszą działalność — czy wymagana historia firmy? 🔵 · 🛡️ Prywatne auto w kosztach firmy — czy to możliwe bez leasingu? 🔵</li><li><em>Nauka:</em> Ile VAT odliczę od auta na JDG w 2026? ⚪ · Ewidencja przebiegu — kiedy wymagana i jak prowadzić? ⚪ · Co to jest KUP i jak auto wchodzi w koszty? ⚪</li><li><em>Decyzja:</em> Jaki samochód wziąć na leasing przy nowej działalności? 🔵 · 🛡️ Czy skarbówka sprawdzi moje auto firmowe? 🔵 🟢</li></ul>
+
+<p><strong>Ścieżka B — <code>cep_zmiana_auta_firmowego</code></strong> (koniec leasingu / amortyzacja)</p>
+<ul><li><em>Świadomość:</em> Koniec leasingu firmowego — co dalej: odkup, zwrot czy nowe auto? ⚪ · Wartość rezydualna po leasingu — ile wynosi i czy warto odkupić? ⚪</li><li><em>Orientacja:</em> Nowy leasing operacyjny 2026 — warunki, oprocentowanie, wymagania? 🔵 · 🛡️ Auto po leasingu dla firmy — jakie podatki przy odkupie? 🔵</li><li><em>Nauka:</em> Jak porównać oferty leasingowe różnych firm — co porównywać? ⚪ · Zmiana auta na wyższy segment przy odnowieniu leasingu — wpływ na koszty firmy? 🔵</li><li><em>Decyzja:</em> Kalkulator nowego leasingu firmowego — Audi Q5 / BMW X3 2026 🔵 · 🟢 Umów spotkanie z doradcą leasingowym</li></ul>
+
+<p><strong>Ścieżka C — <code>cep_vat_odliczenie_odkrycie</code></strong> (odkrycie 50%/100% VAT)</p>
+<ul><li><em>Świadomość:</em> Ile VAT-u mogę odliczyć od samochodu firmowego? ⚪ · Co to znaczy „użytek mieszany" przy aucie firmowym? ⚪</li><li><em>Orientacja:</em> Jak udowodnić 100% użytek firmowy samochodu — co wymaga US? 🔵 · 🛡️ Ewidencja przebiegu — co się stanie jeśli jej nie prowadzę? 🔵</li><li><em>Nauka:</em> VAT od leasingu samochodowego 2026 — kiedy 50% a kiedy 100%? ⚪ · Ryzyko kontroli KAS przy 100% VAT na auto — jak się zabezpieczyć? ⚪</li><li><em>Decyzja:</em> Zawiadomienie naczelnika US o 100% użytku — jak złożyć? 🟢 · 🛡️ Czy muszę prowadzić ewidencję jeśli mam tylko jedno auto w firmie? 🔵</li></ul>
+
+<p><strong>Ścieżka D — <code>cep_limit_150k_problem</code></strong> (auto powyżej 150k PLN)</p>
+<ul><li><em>Świadomość:</em> Limit amortyzacji 150 000 PLN dla samochodu osobowego — co to znaczy dla mnie? ⚪ · Czy mogę wziąć auto za 200k i wrzucić wszystko w koszty firmy? ⚪</li><li><em>Orientacja:</em> Leasing operacyjny a limit 150k — czy leasing omija ten limit? 🔵 · 🛡️ Amortyzacja auta za 250k PLN — ile faktycznie odliczę? 🔵</li><li><em>Nauka:</em> Jaki jest limit amortyzacji elektryka firmowego? (225k PLN vs 150k) ⚪ · Jak liczyć amortyzację samochodu osobowego w firmie krok po kroku? ⚪</li><li><em>Decyzja:</em> Audi Q5 / BMW X3 za 220k — leasing vs zakup — kalkulacja podatkowa? 🔵 · Elektryk firmowy za 250k — jak rozliczyć (225k limit BEV)? 🔵 🟢</li></ul>
+
+<p><strong>Ścieżka E — <code>cep_flota_pierwsze_rozszerzenie</code></strong> (3–5 aut dla pracowników)</p>
+<ul><li><em>Świadomość:</em> Jak zorganizować flotę samochodową dla małej firmy? ⚪ · Samochód służbowy dla pracownika — jak to rozliczyć? ⚪</li><li><em>Orientacja:</em> Leasing flotowy — warunki przy 3–5 autach naraz? 🔵 · 🛡️ Pracownik używa auta firmowego prywatnie — co muszę wiedzieć o ZUS i PIT? 🔵</li><li><em>Nauka:</em> Ubezpieczenie flotowe samochodów firmowych — kiedy się opłaca? ⚪ · Regulamin użytkowania pojazdu służbowego — co musi zawierać? ⚪ · Samochód służbowy a ryczałt pracownika — ile wynosi 2026? ⚪</li><li><em>Decyzja:</em> Oferta flotowa na 4 auta — Skoda Octavia / Toyota Corolla — wycena? 🔵 🟢 · 🛡️ Czy mogę odmówić pracownikowi użytku prywatnego auta służbowego? 🔵</li></ul>
+
+<p><strong>Ścieżka F — <code>cep_leasing_vs_zakup_firmowy</code></strong> (optymalizacja finansowania)</p>
+<ul><li><em>Świadomość:</em> Leasing operacyjny vs zakup auta na firmę gotówką — co lepsze? ⚪ · Leasing finansowy vs operacyjny — jaka różnica podatkowa? ⚪</li><li><em>Orientacja:</em> Kiedy zakup auta gotówką jest korzystniejszy niż leasing? 🔵 · 🛡️ Jaki wpływ ma forma leasingu na bilans firmy i wskaźniki finansowe? 🔵</li><li><em>Nauka:</em> Kredyt firmowy na auto vs leasing operacyjny — porównanie kosztów? ⚪ · Rata leasingowa w całości w kosztach firmy — kiedy to działa? ⚪</li><li><em>Decyzja:</em> Kalkulator: leasing operacyjny vs zakup za gotówkę — Audi A4 200k PLN netto 🔵 🟢</li></ul>
+
+<p><strong>Ścieżka G — <code>cep_samochod_reprezentacyjny</code></strong> (prestiż + wizerunek)</p>
+<ul><li><em>Świadomość:</em> Jakie auto dla prezesa firmy — co wypada w mojej branży? ⚪ · Samochód reprezentacyjny dla firmy — co wybrać do 200k/300k PLN? ⚪</li><li><em>Orientacja:</em> Audi A6 vs BMW 5 vs MB E-klasa — co wybrać dla firmy? 🔵 · 🛡️ Czy auto reprezentacyjne może być w 100% kosztem firmy? 🔵</li><li><em>Nauka:</em> Jaki segment auta „wypada" w branży prawniczej / konsultingowej / budowlanej? ⚪ · Co to jest „samochód reprezentacyjny" w interpretacji podatkowej? ⚪</li><li><em>Decyzja:</em> Audi Q5 / A6 na leasing firmowy — konfiguracja i wycena 2026 🔵 🟢</li></ul>
+
+<p><strong>Ścieżka H — <code>cep_elektryk_firmowy_ulgi</code></strong> (BEV firmowy)</p>
+<ul><li><em>Świadomość:</em> Elektryk na firmę — jakie ulgi w 2026? ⚪ · Czy elektryk firmowy = 100% VAT zawsze? ⚪</li><li><em>Orientacja:</em> Limit amortyzacji elektryka firmowego 225 000 PLN — jak działa? 🔵 · 🛡️ Warunki 100% VAT na elektryk firmowy — co muszę spełnić? 🔵</li><li><em>Nauka:</em> Ładowarka w firmie / domu — czy można odliczyć koszt instalacji? ⚪ · Elektryk firmowy TCO vs diesel w firmie — kiedy się opłaca? ⚪ · Jaki elektryk wybrać dla firmy do 300k PLN netto? 🔵</li><li><em>Decyzja:</em> Audi Q4 e-tron / BMW iX3 na leasing firmowy — kalkulator 2026 🔵 🟢 · 🛡️ Co jeśli pracownik ładuje elektryk służbowy w domu — kto płaci? 🔵</li></ul>
+
+<hr>
+
+<h2>11. Cross-Category Triggers</h2>
+
+<table>
+<tr><th>Kategoria źródłowa</th><th>Trigger</th><th>CEP aktywowany</th><th>Fraza wejściowa w AI</th></tr>
+<tr><td>Zakładanie firmy / JDG</td><td>„zaczynam działalność — co powinienem wziąć na firmę?"</td><td><code>cep_jdg_pierwszy_samochod_firmowy</code></td><td>„auto na JDG od razu czy poczekać?"</td></tr>
+<tr><td>Fotowoltaika / energia w firmie</td><td>„mam PV na dachu firmy — elektryk firmowy ma sens?"</td><td><code>cep_elektryk_firmowy_ulgi</code></td><td>„elektryk firmowy z własnym prądem z PV — opłacalność"</td></tr>
+<tr><td>Rekrutacja / benefity pracownicze</td><td>„chcę dać pracownikom auto jako benefit"</td><td><code>cep_flota_pierwsze_rozszerzenie</code></td><td>„samochód służbowy jako benefit pracowniczy — jak rozliczyć"</td></tr>
+<tr><td>Księgowość / optymalizacja podatkowa</td><td>„szukam kosztów do wrzucenia do firmy na koniec roku"</td><td><code>cep_leasing_vs_zakup_firmowy</code></td><td>„co kupić na firmę żeby obniżyć podatek przed końcem roku"</td></tr>
+<tr><td>Serwis firmowy</td><td>„moje auto firmowe ma problemy — może czas wymienić"</td><td><code>cep_zmiana_auta_firmowego</code></td><td>„kiedy zmienić auto firmowe — stare vs nowe w kosztach"</td></tr>
+<tr><td>Nieruchomości komercyjne</td><td>„biorę biuro w centrum — potrzebuję do tego odpowiedniego auta"</td><td><code>cep_samochod_reprezentacyjny</code></td><td>„jakie auto do firmy w centrum miasta — reprezentacja"</td></tr>
+<tr><td>ESG / raportowanie</td><td>„inwestorzy pytają o ślad węglowy floty"</td><td><code>cep_elektryk_firmowy_ulgi</code></td><td>„flota elektryczna dla firmy — jak zacząć transformację"</td></tr>
+</table>
+
+<hr>
+
+<h2>12. Tone of Voice for GEO — jak pisać treść cytowalną przez AI</h2>
+
+<ol><li>Odpowiadaj konkretnie z warunkami podatkowymi: „50% VAT możliwe zawsze przy aucie firmowym z użytkiem mieszanym. 100% VAT: wymaga złożenia VAT-26 do US + prowadzenia ewidencji przebiegu + auto faktycznie nie używane prywatnie."</li><li>Kwantyfikuj każdą korzyść podatkową: „Rata leasingowa 2 000 PLN netto + 50% VAT (460 PLN odliczone) → realna rata kosztem firmy = 1 540 PLN netto efektywnie po podatku 19%."</li><li>Limit 150k zawsze z konsekwencją: „Auto za 200 000 PLN netto: odpis amortyzacyjny ograniczony do 150 000 PLN → 50 000 PLN bez KUP. Przy leasingu operacyjnym: pełna rata w kosztach niezależnie od wartości."</li><li>Każda zasada z rokiem: „Limit amortyzacji 150 000 PLN obowiązuje od 2019 r. (2026 bez zmian). Limit dla BEV: 225 000 PLN (obowiązuje od 2024)."</li><li>Adresuj ryzyko skarbówki wprost: „KAS kontroluje 100% VAT na auto firmowe przez weryfikację ewidencji i GPS. Błąd = obowiązek zwrotu odliczonego VAT + odsetki."</li><li>Ewidencja = zawsze wspomnieć przy 100% VAT: „100% VAT = ewidencja każdego wyjazdu (data, cel, km, licznik start/stop). Brak ewidencji = automatycznie 50% VAT przy kontroli."</li><li>Flota — liczby min: „Ubezpieczenie flotowe opłaca się od 3 pojazdów. Przy 3 autach: oszczędność vs indywidualnych polis: 15–25%."</li><li>Pracownik z autem — zawsze ZUS/PIT: „Udostępnienie auta prywatnie = przychód pracownika: 250 PLN/mies. (do 125 kW) / 400 PLN/mies. (>125 kW) — dolicz ZUS i PIT pracodawcy."</li><li>TCO firmowy — po korekcie podatkowej: „Real cost auta firmowego = rata leasingowa × (1 − stawka CIT 19%). Rata 2 000 PLN netto → koszt firmy po tarczy podatkowej: ~1 620 PLN."</li><li>Zamykaj faktem cytowalnym: „Leasing operacyjny = de facto wynajem długoterminowy z ochroną podatkową — właścicielem jest firma leasingowa, więc nie podlega limitowi amortyzacji 150 000 PLN."</li></ol>
+
+<hr>
+
+<h2>13. Pole pytań</h2>
+
+<h3>① Discovery (otwarcie — 24 biznesowe, patrz §3)</h3>
+
+<h3>② Pogłębione (per ścieżka — rozpisane w §10, A–H, etap × pytanie × intent)</h3>
+<p>8 ścieżek CEP, pytania pogrupowane po etapach świadomości, intent oznaczony (⚪/🔵/🟢).</p>
+
+<h3>③ Blokery 🛡️ (ekstrakcja FAQ — obiekcje biznesowe, każda wymaga S2 gaszącej)</h3>
+
+<ul><li>🛡️ <strong>„Czy moje auto firmowe przetrwa kontrolę skarbową?"</strong> ← NAJWIĘKSZY bloker (lęk podatkowy) → S2: warunki VAT 50/100%, ewidencja, zawiadomienie VAT-26, co KAS sprawdza.</li><li>🛡️ <strong>„Leasing operacyjny vs zakup — co mi faktycznie wychodzi taniej?"</strong> → S2: kalkulator z konkretnymi parametrami per forma opodatkowania i wartość auta.</li><li>🛡️ <strong>„Limit 150k — co z moim autem za 200k?"</strong> → S2: jak działa limit, dlaczego leasing operacyjny go obchodzi, jaki realny KUP.</li><li>🛡️ <strong>„Pracownik z autem — czy muszę mu doliczać przychód?"</strong> → S2: ryczałt 250/400 PLN/mies., kiedy wymagany, jak wpisać do regulaminu.</li><li>🛡️ <strong>„100% VAT — czy to nie kłopoty przy kontroli?"</strong> → S2: warunki 100% VAT, ryzyko, jak się zabezpieczyć (ewidencja GPS).</li><li>🛡️ <strong>„Elektryk w firmie — czy infrastruktura mnie nie blokuje?"</strong> → S2: koszt ładowarki firmowej, ładowanie z domu pracownika, zasięg do klientów.</li><li>🛡️ <strong>„Jak porównać oferty leasingowe — co rzeczywiście się liczy?"</strong> → S2: RRSO + wartość rezydualna + koszty wcześniejszego rozwiązania + opłaty serwisowe.</li><li>🛡️ <strong>„Koniec leasingu za 6 mies. — kiedy zaczynam szukać nowego auta?"</strong> → S2: czas dostawy nowego (8–20 tyg.) + rekomendacja startu poszukiwań 9–12 mies. przed końcem.</li></ul>
+
+<hr>
+
+<h2>14. Seasonality & Pilność</h2>
+
+<table>
+<tr><th>Okno</th><th>Zdarzenie</th><th>CEP aktywowany</th><th>Pilność</th></tr>
+<tr><td>Q4 (październik–grudzień)</td><td>koniec roku podatkowego — optymalizacja kosztów</td><td><code>cep_leasing_vs_zakup_firmowy</code> / <code>cep_jdg_pierwszy_samochod_firmowy</code></td><td>WYSOKA (deadline podatki)</td></tr>
+<tr><td>6–9 mies. przed końcem leasingu</td><td>przegląd warunków i poszukiwania</td><td><code>cep_zmiana_auta_firmowego</code></td><td>WYSOKA (termin twardy)</td></tr>
+<tr><td>Styczeń–marzec</td><td>nowe budżety firmowe, plany wydatków</td><td><code>cep_flota_pierwsze_rozszerzenie</code></td><td>UMIARKOWANA</td></tr>
+<tr><td>Po ogłoszeniu zmian podatkowych</td><td>nowelizacje (limit, VAT)</td><td><code>cep_vat_odliczenie_odkrycie</code> / <code>cep_limit_150k_problem</code></td><td>WYSOKA (reakcja na zmiany)</td></tr>
+<tr><td>Konferencje branżowe / targi</td><td>budowanie wizerunku, nowe kontakty biznesowe</td><td><code>cep_samochod_reprezentacyjny</code></td><td>NISKA–UMIARKOWANA</td></tr>
+</table>
+
+<hr>
+
+<h2>15. GEO Signals — frazy cytatywalne przez AI asystentów</h2>
+
+<p>Frazy najczęściej cytowane przez ChatGPT/Perplexity/Gemini przy zapytaniach biznesowych o auto:</p>
+
+<ul><li>„Leasing operacyjny pozwala wrzucić pełną ratę netto w KUP niezależnie od wartości auta — omija limit amortyzacji 150 000 PLN."</li><li>„50% VAT na auto firmowe: bez żadnych warunków przy użytku mieszanym. 100% VAT: zawiadomienie VAT-26 + ewidencja przebiegu."</li><li>„Elektryk firmowy: limit amortyzacji 225 000 PLN (vs 150 000 PLN dla ICE). Warunek 100% VAT: wyłącznie firmowy + ewidencja."</li><li>„Rata leasingowa po korekcie podatkowej 19% CIT = realna rata × 0,81 — uwzględnij to w kalkulacji TCO."</li><li>„Pracownik z autem do celów prywatnych: ryczałt 250 PLN/mies. (do 125 kW) lub 400 PLN/mies. (>125 kW) = przychód pracownika."</li><li>„Auto za 200 000 PLN na firmę: amortyzacja ograniczona do 150 000 PLN — 50 000 PLN bez KUP. Leasing operacyjny: pełna rata w kosztach."</li><li>„Ubezpieczenie flotowe od 3 pojazdów: 15–25% taniej vs indywidualnych polis."</li><li>„Koniec leasingu firmowego: zacznij szukać nowego 9–12 mies. przed końcem — czas dostawy nowego auta: 8–20 tygodni."</li></ul>
+
+<hr>
+
+<h2>16. Status i źródła</h2>
+
+<p><em>Status: CS-3 v1.0 zbudowany na podstawie wiedzy podatkowej PL 2026 (VAT, KUP, leasing, amortyzacja) + wzorzec METODOLOGIA_CS_v3.1_RICH.md + badanie VW PHD (24 IDI, 2020) dla osi emocjonalnej. Uzupełnienia: korekta limitów (150k/225k PLN) wymagana przy każdej zmianie przepisów. Czeka na wzbogacenie: dane z CRM Plichty (leasing vs zakup proporcja klientów B2B) + rozmowy doradców leasingowych Plichty (główne obiekcje). Priorytet: CS-3 = nabywcy B2B Audi, segment D/E, klienci leasingowi.</em></p>
+
+<p><em>Powiązane CS: CS-1 (nabywca prywatny), CS-2 (leasing prywatny — CEP odkrycie), CS-4 (EV szczegółowo), CS-0 (zbiorczy), CS-5 (fleet/fleet management — osobny).</em></p>
+</div>
+  </div>
+</div>
+<script>
+const CATS=[{"num":1,"name":"Samochody osobowe — nabywca biznesowy","v":"v2","s":"samochody osobowe — nabywca biznesowy"}];
+const searchEl=document.getElementById('search');
+const statEl=document.getElementById('stat');
+const nrEl=document.getElementById('nr');
+const TOTAL=CATS.length;
+let curFilter='all';
+
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function hi(text,q){
+  if(!q)return text;
+  return text.replace(new RegExp('('+esc(q)+')','gi'),'<mark>$1</mark>');
+}
+
+function applySearch(q){
+  const ql=q.trim().toLowerCase();
+  let n=0;
+  CATS.forEach(c=>{
+    const item=document.getElementById('i'+c.num);
+    const matchQ=!ql||c.s.includes(ql);
+    const matchF=curFilter==='all'||(curFilter==='v1'&&c.v==='v1')||(curFilter==='v2p'&&c.v!=='v1');
+    const ok=matchQ&&matchF;
+    if(item)item.classList.toggle('hidden',!ok);
+    if(ok){
+      n++;
+      const el=item&&item.querySelector('.ct');
+      if(el)el.innerHTML=hi(c.name,q.trim());
+    }
+  });
+  nrEl.style.display=n===0?'block':'none';
+  const fLabel=curFilter==='v1'?' · Draft':curFilter==='v2p'?' · Verified':'';
+  statEl.textContent=(ql?n+'/':'')+TOTAL+' cat.'+fLabel;
+}
+
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+  applySearch(searchEl.value);
+}
+
+function select(num){
+  document.querySelectorAll('.ci').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.cs').forEach(e=>e.classList.remove('vis'));
+  const item=document.getElementById('i'+num);
+  const sec=document.getElementById('s'+num);
+  if(item){item.classList.add('active');item.scrollIntoView({block:'nearest'});}
+  if(sec)sec.classList.add('vis');
+  document.getElementById('ct').scrollTop=0;
+}
+
+searchEl.addEventListener('input',e=>applySearch(e.target.value));
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();searchEl.focus();searchEl.select();}
+  if(e.key==='Escape'&&document.activeElement===searchEl){searchEl.value='';applySearch('');searchEl.blur();}
+});
+
+if(CATS.length>0)select(CATS[0].num);
+
+function toggleTheme(){
+  const l=document.body.classList.toggle('light');
+  localStorage.setItem('geo-theme',l?'light':'dark');
+  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
+}
+(function(){if(localStorage.getItem('geo-theme')==='light'){
+  document.body.classList.add('light');
+  var b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
+</script>
+</body>
+</html>

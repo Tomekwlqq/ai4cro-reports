@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GEO DT DB — PL — 1 categories</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--sb-bg:#161b22;--hd-bg:#161b22;--bd:#30363d;
+  --tx:#e6edf3;--tx2:#8b949e;--ac:#58a6ff;
+  --cb:#1c2128;--ts:#1c2128;--mb:#2d4a22;--mt:#7ee787;
+  --ab:#1f3353;--sw:292px;--hh:52px
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+     background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* Header */
+#hd{height:var(--hh);background:var(--hd-bg);border-bottom:1px solid var(--bd);
+    display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+#hd h1{font-size:15px;font-weight:700;white-space:nowrap;flex-shrink:0;letter-spacing:.01em}
+#hd h1 span{color:var(--ac)}
+#sw{flex:1;position:relative;max-width:440px}
+#si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tx2);font-size:15px;pointer-events:none}
+#search{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:6px;
+        color:var(--tx);padding:6px 10px 6px 30px;font-size:15px;outline:none;transition:border-color .15s}
+#search:focus{border-color:var(--ac)}
+
+/* Filter buttons */
+.filt{display:flex;gap:4px;flex-shrink:0}
+.fb{font-size:13px;padding:3px 8px;border-radius:4px;border:1px solid var(--bd);
+    background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fb:hover{border-color:var(--ac);color:var(--tx)}
+.fb.on{border-color:var(--ac);background:var(--ab);color:var(--tx)}
+
+/* Lang toggle */
+#lang-btn{font-size:13px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+          background:transparent;color:var(--tx2);cursor:pointer;text-decoration:none;
+          display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+#lang-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+#stat{font-size:13px;color:var(--tx2);flex-shrink:0;white-space:nowrap;min-width:90px;text-align:right}
+
+/* Layout */
+#lay{display:flex;flex:1;overflow:hidden}
+
+/* Sidebar */
+#sb{width:var(--sw);flex-shrink:0;background:var(--sb-bg);border-right:1px solid var(--bd);overflow-y:auto}
+.ci{display:flex;align-items:center;gap:7px;padding:7px 10px;cursor:pointer;
+    border-left:3px solid transparent;border-bottom:1px solid var(--bd);
+    transition:background .1s;user-select:none;min-height:36px}
+.ci:hover{background:rgba(88,166,255,.07)}
+.ci.active{background:var(--ab);border-left-color:var(--ac)}
+.ci.hidden{display:none}
+.cn{font-size:11.5px;color:var(--tx2);min-width:20px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ct{font-size:14px;line-height:1.3;color:var(--tx);flex:1;min-width:0}
+.ct mark{background:var(--mb);color:var(--mt);border-radius:2px;padding:0 1px}
+
+/* Version badge in sidebar */
+.vb{font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:8px;flex-shrink:0;letter-spacing:.02em}
+.vb-v1{background:#21262d;color:#6e7681}
+.vb-v2{background:#2d2502;color:#d29922}
+.vb-v3{background:#0d2a1a;color:#3fb950}
+.vb-v4{background:#0d1e3c;color:#58a6ff}
+
+/* Verification pipeline dots */
+.pipe{display:flex;gap:2px;flex-shrink:0}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--bd)}
+.pd.on-v1{background:#6e7681}
+.pd.on-v2{background:#d29922}
+.pd.on-v3{background:#3fb950}
+.pd.on-v4{background:#58a6ff}
+
+#nr{padding:20px 12px;font-size:15px;color:var(--tx2);text-align:center;display:none}
+
+/* Content */
+#ct{flex:1;overflow-y:auto;padding:26px 34px}
+.cs{display:none}
+.cs.vis{display:block}
+
+/* Markdown */
+.cs h2{font-size:23px;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:10px;margin-bottom:16px}
+.cs h3{font-size:13px;font-weight:700;color:var(--ac);margin:20px 0 9px;
+       text-transform:uppercase;letter-spacing:.06em}
+.cs h4{font-size:16px;font-weight:600;margin:14px 0 6px}
+.cs p{font-size:15.5px;line-height:1.65;margin-bottom:8px}
+.cs strong{font-weight:600}
+.cs em{font-style:italic;color:var(--tx2)}
+.cs code{font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:13px;
+         background:var(--cb);border:1px solid var(--bd);border-radius:3px;
+         padding:1px 5px;color:#f0883e}
+.cs pre{background:var(--cb);border:1px solid var(--bd);border-radius:6px;
+        padding:12px 14px;overflow-x:auto;margin:10px 0}
+.cs pre code{background:none;border:none;padding:0;font-size:14px;color:var(--tx);line-height:1.5}
+.cs table{width:100%;border-collapse:collapse;font-size:14.5px;margin:10px 0;display:block;overflow-x:auto}
+.cs th,.cs td{text-align:left;padding:7px 10px;border:1px solid var(--bd)}
+.cs th{background:var(--sb-bg);font-weight:600}
+.cs tr:nth-child(even) td{background:var(--ts)}
+.cs ul,.cs ol{padding-left:18px;margin:7px 0}
+.cs li{font-size:15.5px;line-height:1.6;margin-bottom:3px}
+.cs hr{border:none;border-top:1px solid var(--bd);margin:18px 0}
+
+/* Changelog / verification card */
+.changelog{background:#0b1e10;border:1px solid #2ea043;border-radius:8px;
+           padding:14px 18px;margin:18px 0;position:relative}
+.changelog::before{content:'🔬 VERIFIED';font-size:10.5px;font-weight:700;
+                   color:#3fb950;letter-spacing:.08em;display:block;margin-bottom:8px}
+.changelog h3{color:#3fb950 !important;margin-top:0 !important;font-size:14px !important}
+.changelog p,.changelog li{color:#c3e6cb;font-size:15px}
+.changelog ul{margin:4px 0}
+.changelog table{font-size:12px}
+.changelog th{background:#0d2a1a}
+.changelog code{background:#0d2a1a;color:#7ee787}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+body.light{
+  --bg:#ffffff;--sb-bg:#f6f8fa;--hd-bg:#f6f8fa;--bd:#d0d7de;
+  --tx:#1f2328;--tx2:#656d76;--ac:#0969da;
+  --cb:#f6f8fa;--ts:#f6f8fa;--mb:#fff8c5;--mt:#7a5c00;--ab:#ddf4ff;
+}
+body.light .cs code{color:#cf222e}
+body.light .cs pre code{color:var(--tx)}
+body.light .changelog{background:#f0fff4;border-color:#2ea043}
+body.light .changelog p,body.light .changelog li{color:#1a7f37}
+#theme-btn{font-size:14px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx2);cursor:pointer;flex-shrink:0;transition:all .15s}
+#theme-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+/* FUND rozwijany blok */
+details.fund{border:1px solid var(--bd);border-radius:8px;margin:22px 0 8px;
+  background:var(--cb);overflow:hidden}
+details.fund>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  padding:12px 16px;user-select:none;transition:background .12s}
+details.fund>summary::-webkit-details-marker{display:none}
+details.fund>summary:hover{background:rgba(88,166,255,.07)}
+.fund-arrow{color:var(--ac);font-size:13px;flex-shrink:0;transition:transform .15s}
+details.fund[open] .fund-arrow{transform:rotate(90deg)}
+.fund-head{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.fund-title{font-size:15px;font-weight:700;color:var(--tx)}
+.fund-src{font-size:12px;font-style:italic;color:var(--tx2);line-height:1.4}
+.fund-badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.fund-badge.ok{background:#0d2a1a;color:#3fb950}
+.fund-badge.warn{background:#3d2a02;color:#f0883e}
+body.light .fund-badge.ok{background:#dafbe1;color:#1a7f37}
+body.light .fund-badge.warn{background:#fff1e5;color:#bc4c00}
+.fund-hint{font-size:11px;color:var(--tx2);flex-shrink:0;border:1px solid var(--bd);
+  border-radius:4px;padding:2px 7px}
+details.fund[open] .fund-hint{display:none}
+.fund-body{padding:4px 18px 16px;border-top:1px solid var(--bd)}
+.fund-body h1{font-size:18px;margin:12px 0 6px}
+</style>
+</head>
+<body>
+<div id="hd">
+  <h1>GEO <span>CS</span></h1>
+  <div id="sw">
+    <span id="si">⌕</span>
+    <input id="search" type="text" placeholder="Szukaj kategorii, CEP, pytania..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="filt">
+    <button class="fb on" data-f="all" onclick="setFilter('all')">All</button>
+    <button class="fb" data-f="v2p" onclick="setFilter('v2p')">✅ Verified</button>
+    <button class="fb" data-f="v1"  onclick="setFilter('v1')">📝 Draft</button>
+  </div>
+  <a id="lang-btn" href="%23">🌐 EN</a>
+  <button id="theme-btn" onclick="toggleTheme()" title="Tryb jasny/ciemny">☀️</button>
+  <span id="stat">1 cat.</span>
+</div>
+<div id="lay">
+  <div id="sb">
+    <div class="ci" id="i1" onclick="select(1)"><span class="cn">#1</span><span class="ct">SUV premium — nabywca prywatny</span><span class="vb vb-v2">v2</span><div class="pipe"><span class="pd on-v1"></span><span class="pd on-v2"></span><span class="pd"></span><span class="pd"></span></div></div>
+    <div id="nr">No results</div>
+  </div>
+  <div id="ct">
+    <div class="cs" id="s1"><h1>CS-6. SUV premium — nabywca prywatny · Category Standard v2</h1>
+
+<p><em>Baza: research Audi Plichta + VW PHD IDI 2020 + DCJ qual/quant. Nowe warstwy: opis + Problemy kategorii · CEV (Schwartz+wagi) · Tone of Voice GEO. Format aparat/sejfy V2 ze ścieżkami. cs_series: CS-6 z 6.</em></p>
+
+<hr>
+
+<h2>0. Opis kategorii</h2>
+
+<p>SUV premium to nadwozie crossover/off-road w segmencie D lub E (i pochodnych coupé-SUV) sprzedawane przez prestiżowe marki europejskie: Audi (Q5, Q7, Q8), BMW (X5, X7, X6), Mercedes-Benz (GLE, GLS, GLC), Volvo (XC90, XC60), Porsche (Cayenne) i inne. Ceny nowych egzemplarzy plasują się w przedziale <strong>200 000–500 000+ PLN</strong>. Nabywca prywatny kupuje SUV-a premium jako połączenie przestrzeni rodzinnej, prestiżu społecznego i jakości prowadzenia — przy czym te trzy funkcje różnie ważą w zależności od CEP wejścia. Kategoria jest wysoce aspiracyjna i tożsamościowa: wybór marki (Audi vs BMW vs Mercedes) to często decyzja o tym, kim się jest, a nie tylko czego się potrzebuje.</p>
+
+<h2>0b. Problemy, które kategoria załatwia</h2>
+
+<p><em>Primary = funkcjonalny rdzeń, po co kategoria powstała. Secondary = jak rynek zdetalizował rdzeń na węższe potrzeby.</em></p>
+
+<p><strong>🎯 Primary (rdzeń — po co SUV premium powstał):</strong></p>
+<p>> <strong>Łączy prestiż marki z praktyczną przestrzenią dla rodziny lub stylu życia poza miastem — bez kompromisu jakości prowadzenia.</strong></p>
+<p>Goła funkcja: duże auto premium, które nie wstydzi się pod restauracją ani na polnej drodze.</p>
+
+<p><strong>Secondary (detalizacja rdzenia — rynek pociął „premium + przestrzeń" na węższe konteksty):</strong></p>
+<ul><li>przestrzeń dla <strong>dużej rodziny</strong> (3 dzieci + pies + wózek → 7 miejsc) (→ <code>cep_rodzina_przestrzen</code>)</li><li><strong>nagroda dla siebie</strong> (awans, premia, zmiana pracy → czas na coś premium) (→ <code>cep_awans_selfgift_premium</code>)</li><li><strong>przejście z sedana na SUV</strong> (wieloletni użytkownik BMW 5 / Audi A6 odkrywa SUV-y) (→ <code>cep_zamiana_z_sedana</code>)</li><li><strong>dom na wsi / polne drogi</strong> — realny 4×4 i dobre zawieszenie (→ <code>cep_dojazd_poza_miasto</code>)</li><li><strong>EV bez kompromisu przestrzeni</strong> — e-tron, iX, EQS SUV (→ <code>cep_ev_suv_luksusy</code>)</li><li><strong>lojalność marki</strong> — od Audi A6 do Q7, pozostać w marce (→ <code>cep_prestige_marka</code>)</li><li><strong>porównanie marek</strong> — Q5 vs X5 vs GLE, decyzja zawieszona (→ <code>cep_porownanie_marek</code>)</li><li><strong>PHEV jako kompromis</strong> — SUV z wtyczką, spokojne sumienie (→ <code>cep_hybryda_suv_plug</code>)</li></ul>
+
+<p>> ⚠️ <strong>„Lubię SUV-y" / „Chcę duże auto" — to NIE CEP.</strong> CEP = sytuacja życiowa (rodzina, awans, zmiana stylu), nie atrybut.</p>
+
+<hr>
+
+<h2>0c. Dynamika Kategorii — siły wejścia / używania / zużycia / barier</h2>
+
+<p><em>Poziom: <strong>[L1]</strong> = ból dotychczasowej kategorii (sedan, SUV niższy segment, van) → sojusznik · <strong>[L2]</strong> = ból samego SUV-a premium → nasz problem, rozbijaj.</em></p>
+
+<h3>① CEP — momenty wejścia</h3>
+
+<p><strong>L1 — wejście w „czas na duże auto premium"</strong> <em>(konkuruje: przedłużenie leasingu dotychczasowego auta, upgrade do executive sedan, minivan, „może wystarczy Tiguan")</em></p>
+
+<table>
+<tr><th>Moment</th><th>Trigger (głos klienta)</th></tr>
+<tr><td>narodziny 3. dziecka / powiększenie rodziny</td><td>„Passat już za mały, trzeba coś z 7 miejscami i dużym bagażnikiem"</td></tr>
+<tr><td>awans / duża premia / zmiana pracy</td><td>„Zarabiam więcej, jeżdżę od 10 lat Audi A4 — czas na coś lepszego"</td></tr>
+<tr><td>przeprowadzka poza miasto</td><td>„Dom na wsi, drogi polne, potrzebuję 4×4 i dobrego klirensu"</td></tr>
+<tr><td>zakończenie umowy leasingowej</td><td>„Leasing BMW X3 minął, czy brać X5, Q7 czy zostać przy X3?"</td></tr>
+<tr><td>presja społeczna / środowisko zawodowe</td><td>„Klienci i partnerzy przyjeżdżają Q7-ami, może czas się dostosować"</td></tr>
+</table>
+
+<p><strong>L2 — wejście w KONKRETNY SUV premium (marka/segment/napęd)</strong></p>
+
+<table>
+<tr><th>Moment</th><th>Droga</th><th>Friction/wear L1, który to rodzi</th></tr>
+<tr><td><code>cep_rodzina_przestrzen</code></td><td>C-SUV za mały dla rodziny 5+ → D-SUV/7-miejsc</td><td>Tiguan/Q3 nie mieści 3 dzieci + wózek spacerowy</td></tr>
+<tr><td><code>cep_zamiana_z_sedana</code></td><td>sedan niekomfortowy na wybojach/parkowaniu</td><td>A6/5 Series nisko, ciasny wjazd, problemy z widocznością</td></tr>
+<tr><td><code>cep_ev_suv_luksusy</code></td><td>dotychczasowy dieselowy SUV kosztowny / strefa niskoemisyjna</td><td>diesel Q5 = koszty w mieście, Niemcy strefy</td></tr>
+<tr><td><code>cep_hybryda_suv_plug</code></td><td>full EV to za duże ryzyko zasięgu → PHEV jako krok pośredni</td><td>BEV zasięg zimą niepewny, brak szybkiej sieci</td></tr>
+</table>
+
+<h3>② Friction Points</h3>
+<ul><li><strong>[L1]</strong> sedan w korku i na polnych drogach → niski klirens, słaba widoczność → <em>sojusznik <code>cep_zamiana_z_sedana</code></em></li><li><strong>[L1]</strong> C-SUV za mały dla rodziny 5+ osób z bagażem → <em>sojusznik <code>cep_rodzina_przestrzen</code></em></li><li><strong>[L1]</strong> diesel kosztowny w strefach niskoemisyjnych (DE/PL planowane) → <em>sojusznik <code>cep_ev_suv_luksusy</code>, <code>cep_hybryda_suv_plug</code></em></li><li><strong>[L2]</strong> cena podstawowa vs bogato wyposażony niższy segment — „Q7 base vs Q5 Full" → <em>nasz: pełna kalkulacja TCO + wyposażenie bazowe</em></li><li><strong>[L2]</strong> wartość rezydualna niepewna przy BEV → <em>nasz: dane historyczne RV premium BEV</em></li><li><strong>[L2]</strong> czas oczekiwania na nowy (4–12 mies.) → <em>nasz: demo/CPO jako alternatywa</em></li><li><strong>[L2]</strong> decyzja marka-tożsamość: „co powiedzą znajomi jeśli zmienię z Audi na BMW?" → <em>nasz: transparentne porównanie</em></li></ul>
+
+<h3>③ Wear & Consumption</h3>
+<ul><li><strong>[L2] terminalny:</strong> cykl wymiany auta (leasing 3 lata / własność 5-7 lat) → powrót do CEP z nową sytuacją</li><li><strong>[L2] konsumpcja paliwa:</strong> diesel/benzyna → realny koszt vs PHEV (mini-CEP: „ile naprawdę oszczędza PHEV")</li><li><strong>[L2] bateria PHEV:</strong> degradacja po 5+ latach (zdolność elektryczna ↓) → argument za BEV lub diesel</li><li><strong>[L2] wartość rezydualna:</strong> Q5 zachowuje ~55% po 3 latach, Q7 ~50%, Cayenne ~60% → kluczowy argument leasingu</li></ul>
+
+<h3>④ Category Stoppers</h3>
+<p><strong>Wejścia</strong> (nie zaczynam)</p>
+<ul><li><strong>[L2]</strong> cena (300k+ PLN gotówka) → <em>S2: kalkulator leasingu/kredytu, rata vs ownership cost</em></li><li><strong>[L2]</strong> „czy Q7 jest za duży do mojego garażu?" → <em>S2: wymiary z klarownymi porównaniami</em></li><li><strong>[L2]</strong> niepewność napędu: diesel vs PHEV vs BEV → <em>S2: decision tree napędu wg profilu jazdy</em></li><li><strong>[L2]</strong> „nie wiem co wybrać Audi vs BMW" → <em>S2: transparentna tabela porównawcza bez korporacyjnego szumu</em></li></ul>
+
+<p><strong>Rozwoju</strong> (nie pogłębiam)</p>
+<ul><li><strong>[L2]</strong> wybiera Q5 bazowy zamiast lepiej skonfigurowanego → żal po zakupie przy porównaniu z kolegą który wziął S-line</li><li><strong>[L2]</strong> leasing bez ubezpieczenia GAP → strata przy szkodzie totalnej</li></ul>
+
+<h3>🔗 Cross-cutting</h3>
+<ul><li><strong>Prestiż marki × tożsamość</strong> — przy SUV premium kupujący nie tylko wybiera auto, wybiera do której grupy przynależy (Audi = technologiczny intelektualista / BMW = dynamiczny / Mercedes = klasyczny elegancja). Treść PDP musi to adresować bez korporacyjnego blurbowania.</li><li><strong>Napęd = osobna ścieżka decyzji</strong> — diesel/MHEV vs PHEV vs BEV to 3 różne profile kupujących; nigdy nie wrzucaj do jednej taktyki.</li><li><strong>Leasing premium</strong> — przy 300k+ leasing jest bardziej racjonalny niż zakup gotówkowy; RV i rata = kluczowe liczby.</li></ul>
+
+<hr>
+
+<h2>1. CEV — Category Emotional Valuation (Schwartz + wagi)</h2>
+
+<p><strong>Pasek CEV — profil emocjonalny kategorii (10 cech):</strong></p>
+
+<table>
+<tr><th>ryzyko</th><th>lęk</th><th>widoczność</th><th>impuls</th><th>sexy</th><th>aspiracja</th><th>tożsamość</th><th>zmysłowość</th><th>pilność</th><th>moralność</th></tr>
+<tr><td>.55</td><td>.50</td><td>.90</td><td>.10</td><td>.80</td><td>.95</td><td>.90</td><td>.75</td><td>.35</td><td>.20</td></tr>
+</table>
+
+<p>Bardzo wysokie <strong>aspiracja .95</strong> + <strong>tożsamość .90</strong> + <strong>widoczność .90</strong> → kategoria aspiracyjno-tożsamościowa klasy A. Sexy .80 + zmysłowość .75 = silny komponent hedonistyczny (prowadzenie, wnętrze). <code>apply_physics</code> przekłada na wagi etapów ↓.</p>
+
+<p><strong>Schwartz — stany świadomości + wagi:</strong></p>
+
+<p>Fork <strong>EMOCJA</strong>, research <strong>~5.0</strong> (intensywny — marka, model, napęd, wyposażenie, finansowanie), pole pytań ~<strong>160+</strong>, emocja +0.9 (aspiracja/prestiż).</p>
+
+<table>
+<tr><th>#</th><th>Stan świadomości</th><th>Waga</th><th>Co to znaczy dla treści</th></tr>
+<tr><td>1</td><td>Nie wiem (unaware)</td><td>◔ L</td><td>Myśl o wymianie auta dopiero kiełkuje. Mało treści.</td></tr>
+<tr><td>2</td><td>Potrzeba / trigger</td><td>◑ M</td><td>Rodzina, awans, zmiana pracy — CEP aktywowany.</td></tr>
+<tr><td>3</td><td>CEP (sytuacja)</td><td>◑ M</td><td>Routing do ścieżki: rodzina/awans/zamiana/dojazd/EV/marka.</td></tr>
+<tr><td>4</td><td><strong>Nauka kategorii</strong></td><td>●● <strong>VH</strong></td><td>Napędy, segmenty (C/D/E-SUV), marki, wyposażenie, finansowanie — najcięższy etap.</td></tr>
+<tr><td>5</td><td>Preselekcja</td><td>● <strong>H</strong></td><td>Które modele pasują? Q5 vs Q7 vs Q8? PHEV vs diesel?</td></tr>
+<tr><td>6</td><td><strong>Porównywanie marek</strong></td><td>●● <strong>VH</strong></td><td>Audi vs BMW vs Mercedes vs Porsche — etap tożsamościowy, kluczowy.</td></tr>
+<tr><td>7</td><td>Wybór dealera</td><td>◑ M</td><td>Gdzie kupić, czas oczekiwania, demo/CPO vs nowe.</td></tr>
+<tr><td>8</td><td>Zakup / finalizacja</td><td>● <strong>H</strong></td><td>Konfiguracja, leasing, ubezpieczenie, odbiór.</td></tr>
+</table>
+
+<p><strong>Kształt:</strong> EMOCJA aspiracyjna z podwójnym szczytem na <strong>Nauce (E4)</strong> i <strong>Porównaniu marek (E6)</strong>. Impuls płaski (nikt nie kupuje Q7 pod wpływem chwili). Treść GEO musi obsłużyć głębokie porównania marek i transparentną kalkulację finansowania.</p>
+
+<hr>
+
+<h2>2. CEP — Consumer Entry Points</h2>
+
+<table>
+<tr><th>id</th><th>Trigger (język konsumenta)</th><th>Kontekst</th><th>Primary concern</th><th>Routes to</th><th>PDP anchor</th></tr>
+<tr><td><code>cep_rodzina_przestrzen</code></td><td>„Troje dzieci + pies + wózek — potrzebuję przynajmniej 7 miejsc"</td><td>Rodzina 5-7 osób, bagaż, zwierzę</td><td>Praktyczna przestrzeń + bezpieczeństwo</td><td>D-SUV 7-miejscowy (Q7, X7, GLS)</td><td>„Pojemność bagażnika + 7 miejsc + ISOFIX + NCAP"</td></tr>
+<tr><td><code>cep_awans_selfgift_premium</code></td><td>„Dostałem dużą premię / zmieniłem pracę — czas na coś premium"</td><td>Nagroda dla siebie, gotówka/leasing</td><td>Jakość, prestiż, „na to zasługuję"</td><td>D/E-SUV premium, pełne wyposażenie</td><td>„Wyposażenie S-line / M-Sport + wrażenie z jazdy"</td></tr>
+<tr><td><code>cep_zamiana_z_sedana</code></td><td>„Jeżdżę od lat BMW 5 (sedan) — czas spróbować SUV-a"</td><td>Wieloletni użytkownik sedana w tej marce</td><td>Czy SUV to regres? Jak prowadzi?</td><td>C/D-SUV tej samej marki (Q5 dla A4/A6, X3/X5 dla 5S)</td><td>„Prowadzenie + suspension + vs sedan benchmark"</td></tr>
+<tr><td><code>cep_dojazd_poza_miasto</code></td><td>„Dom na wsi / przedmieściach, polne drogi — potrzebuję 4×4"</td><td>Dojazd do pracy z obszaru wiejskiego</td><td>Realny 4×4 vs AWD marketingowy</td><td>D-SUV z quattro/xDrive + dobry klirens</td><td>„System 4×4 + klirens + zawieszenie pneumatyczne"</td></tr>
+<tr><td><code>cep_ev_suv_luksusy</code></td><td>„Chcę przejść na elektryczny ale bez kompromisu przestrzeni"</td><td>Poszukiwacz BEV w segmencie premium</td><td>Zasięg + sieć ładowania + czas ładowania</td><td>BEV-SUV (Q8 e-tron, iX, EQS SUV, Taycan Cross Turismo)</td><td>„Zasięg WLTP + realna trasa + czas ładowania DC"</td></tr>
+<tr><td><code>cep_prestige_marka</code></td><td>„Przez lata Audi A6, teraz czas na Q7 — zostać w marce, przejść na SUV"</td><td>Loyalista marki, upgrade segmentu</td><td>Tożsamość marki + wiarygodność</td><td>Q7/Q8 (Audi), GLE/GLS (MB)</td><td>„Ekosystem marki + wartość rezydualna + serwis"</td></tr>
+<tr><td><code>cep_porownanie_marek</code></td><td>„Stoję między Audi Q5 a BMW X5 — nie wiem co wybrać i dlaczego"</td><td>Kupujący po raz pierwszy premium</td><td>Który wybór jest „właściwy" dla mnie?</td><td>Q5 vs X5 vs GLE vs XC90 — tabela</td><td>„Tabela porównawcza + test drive + różnice charakteru"</td></tr>
+<tr><td><code>cep_hybryda_suv_plug</code></td><td>„Chcę SUV-a ale trochę myślę o środowisku — PHEV to dobry kompromis?"</td><td>Kupujący z mieszanymi potrzebami</td><td>Realna oszczędność PHEV vs diesel vs BEV</td><td>PHEV-SUV (Q5 45 TFSI e, X5 45e, GLE 350 de)</td><td>„Elektryczny zasięg PHEV + realne spalanie + kalkulator"</td></tr>
+</table>
+
+<hr>
+
+<h2>3. 20 Discovery Questions</h2>
+
+<p><em>Wspólny punkt startu — adresują wszystkie CEP-y, zanim klient wejdzie w konkretną personę.</em></p>
+
+<ol><li>Jaki SUV premium wybrać w 2026 — ranking Audi / BMW / Mercedes / Porsche?</li><li>Audi Q7 czy BMW X7 — co wybrać dla rodziny 5 osób?</li><li>Co to znaczy „SUV premium" i czym różni się od zwykłego SUV-a?</li><li>SUV klasy D vs klasy E — różnice praktyczne i co wybrać?</li><li>Leasing Audi Q5 vs zakup gotówką — co się opłaca przy 250k?</li><li>Audi Q5 vs BMW X5 2026 — pełne porównanie cech i ceny.</li><li>PHEV SUV — czy naprawdę oszczędza paliwo? Realny zasięg.</li><li>Najlepszy 7-miejscowy SUV premium do 400k PLN — ranking.</li><li>Wartość rezydualna Audi Q5 vs BMW X5 po 3 latach — ile procentowo?</li><li>Audi Q8 e-tron zasięg 2026 — ile realnie przejadę trasą zimą?</li><li>Diesel vs benzyna vs PHEV w SUV premium — co wybrać w Polsce?</li><li>Czy SUV premium kosztuje dużo w utrzymaniu? Serwis, opony, ubezpieczenie.</li><li>Audi Q7 vs Mercedes GLS — różnice, który większy, który lepszy?</li><li>Porsche Cayenne vs Audi Q8 — co daje więcej prestiżu i co taniej w utrzymaniu?</li><li>Jak długo czekać na nowy Audi Q7 z salonu w Polsce 2026?</li><li>Audi quattro vs BMW xDrive vs Mercedes 4MATIC — który lepszy off-road?</li><li>SUV premium dla rodziny z psem i dziećmi — co zmieści wszystko?</li><li>Czy warto kupić demo / użytkowany SUV premium z salonu (CPO)?</li><li>Jak skonfigurować Audi Q5 — jakie opcje są kluczowe, czego nie brać?</li><li>Test drive SUV premium — na co zwrócić uwagę, żeby nie żałować wyboru?</li></ol>
+
+<hr>
+
+<h2>4. KCF — Key Category Features</h2>
+
+<table>
+<tr><th>Feature</th><th>Zakres rynkowy</th><th>Tier</th><th>Uwaga</th></tr>
+<tr><td>Segment / rozmiar (C/D/E-SUV)</td><td>Q3/XC60 vs Q5/X5/XC90 vs Q7/X7/GLS</td><td>T1</td><td>Długość i rozstaw osi = przestrzeń tylna, 7 miejsc opcja tylko D-SUV+</td></tr>
+<tr><td>Napęd</td><td>2.0 diesel MHEV / 3.0 V6 / PHEV / BEV</td><td>T1</td><td>Profil jazdy (miasto/trasa) determinuje optymalny napęd</td></tr>
+<tr><td>System 4×4</td><td>quattro / xDrive / 4MATIC / AWD</td><td>T1</td><td>Stały vs on-demand — różnica przy polnej drodze</td></tr>
+<tr><td>Moc (KM)</td><td>204–680 KM</td><td>T1</td><td>Premium: min. 250 KM dla komfortu podróży</td></tr>
+<tr><td>Wyposażenie bazowe vs pakiety</td><td>podstawa / S-line / M-Sport / AMG Line / Inscription</td><td>T2</td><td>Bazowe premium = bardzo ubogie; S-line/M-Sport = standard rynkowy</td></tr>
+<tr><td>Zawieszenie</td><td>standardowe / pneumatyczne (air suspension)</td><td>T2</td><td>Pneumatyczne = komfort OFF + regulacja klirensu</td></tr>
+<tr><td>Ładowność bagażnika</td><td>500–2000 l (z rozłożonymi siedzeniami)</td><td>T2</td><td>7-miejsc: bagażnik może być minimalny przy pełnym składzie</td></tr>
+<tr><td>Wartość rezydualna (RV)</td><td>45–65% po 36 mies.</td><td>T2</td><td>Kluczowy przy leasingu; Porsche najwyższe, BEV niepewne</td></tr>
+<tr><td>Zasięg elektryczny (PHEV/BEV)</td><td>40–600 km</td><td>T2</td><td>PHEV: realny 30-50 km AER; BEV: realny zasięg tras ÷ WLTP ~0.75</td></tr>
+<tr><td>Bezpieczeństwo NCAP</td><td>5 gwiazdek (standard segmentu)</td><td>T3</td><td>Wszystkie warto weryfikować dla aktualnego roku modelowego</td></tr>
+<tr><td>Connectivity / software</td><td>MMI/iDrive/MBUX + OTA updates</td><td>T3</td><td>Kupujący premium wymagają aktualności systemu</td></tr>
+</table>
+
+<hr>
+
+<h2>5. Typowy Produkt — konwencje kategorii</h2>
+
+<table>
+<tr><th>Cecha</th><th>Norma kategorii</th><th>Red flag</th></tr>
+<tr><td>Segment</td><td>min. D-SUV (dł. >4,7 m) przy zakupie premiumowym</td><td>C-SUV (Q5) sprzedawany jako „rodzinny 7-miejscowy" — 7 miejsc tylko w Q7/X7/GLS</td></tr>
+<tr><td>Napęd</td><td>min. mild-hybrid 48V lub PHEV; diesel 2.0 wychodzi</td><td>Diesel bez MHEV w 2026 = przestarzały; silnik 1.4 TSI w Q5 = nie jest premium</td></tr>
+<tr><td>Wykończenie</td><td>skóra Nappa / Alcantara, podgrzewane fotele, szklany dach</td><td>tkanina w bazowym premium = poniżej oczekiwań; okna bez panoramy = poczucie klatki</td></tr>
+<tr><td>Systemy</td><td>full ADAS (ACC, Lane Assist, Parking sensors+kamera 360)</td><td>brak ACC w segmencie premium = defect dla tej półki</td></tr>
+<tr><td>4×4</td><td>trwały 4×4 (nie na żądanie) w wersji terenowej</td><td>etykieta „4×4" bez stałego przeniesienia napędu na polnych drogach</td></tr>
+<tr><td>Gwarancja</td><td>3-5 lat producenta + roczna na akumulator PHEV/BEV</td><td>gwarancja 2 lata = minimum, nie przewaga</td></tr>
+</table>
+
+<hr>
+
+<h2>6. Tier Specs</h2>
+
+<p><strong>Tier-1 Universal</strong> (musi być w PDP każdego SUV-a premium):</p>
+<ul><li>Segment i długość — <code>C-SUV (4,5 m) / D-SUV (4,7–5,0 m) / E-SUV (5,0+ m)</code></li><li>Silnik i napęd — <code>2.0 TDI / 3.0 TDI / 2.0 TFSI / PHEV 45 / BEV; KM; Nm</code></li><li>Układ napędowy — <code>quattro stały / xDrive / 4MATIC / FWD</code></li><li>Liczba miejsc — <code>5 / 7 (opcja)</code></li><li>Bagażnik — <code>XX l (5 miejsc) / XX l (7 miejsc)</code></li><li>Cena PLN — <code>od XX 000 PLN (konfiguracja testowa)</code></li></ul>
+
+<p><strong>Tier-2 Differentiator:</strong> zawieszenie pneumatyczne (opcja/standard) · pakiet S-line/Avus/M-Sport (co zawiera) · zasięg elektryczny PHEV/BEV (WLTP + estymacja realna) · wartość rezydualna 36 mies. (%).</p>
+<p><strong>Tier-3 Niche:</strong> systemy off-road (terrain modes) · systemy dźwiękowe (B&O, Harman, Bose) · head-up display (standard/opcja) · OTA update support.</p>
+
+<hr>
+
+<h2>7. Tier Pricing — PLN, Polska 2026</h2>
+
+<table>
+<tr><th>Tier</th><th>Zakres (PLN)</th><th>Typowy kupujący</th><th>Przykłady</th></tr>
+<tr><td>Wejście w premium</td><td>200 000–280 000</td><td>Pierwszy SUV premium, z leasingu Tiguana/X1</td><td>Audi Q5 40 TDI, BMW X3 xDrive20d, Mercedes GLC 220d</td></tr>
+<tr><td>Premium mid</td><td>280 000–380 000</td><td>Upgrade z C-SUV, rodzina 5+, awans</td><td>Audi Q5 PHEV, BMW X5 xDrive40i, Volvo XC90 B5</td></tr>
+<tr><td>Premium high</td><td>380 000–500 000</td><td>D-SUV 7-miejscowy, lojalista marki</td><td>Audi Q7 55 TFSI, BMW X7 xDrive40i, Mercedes GLS 400d</td></tr>
+<tr><td>Ultra premium</td><td>500 000+</td><td>Porsche, Bentley, Range Rover, Lamborghini Urus</td><td>Porsche Cayenne Turbo, Range Rover Autobiography</td></tr>
+</table>
+
+<hr>
+
+<h2>8. Consumer Decision Tree</h2>
+
+<pre><code>[L1 — Routing: po co SUV premium i jaka sytuacja życiowa?]
+
+Q1. Ile osób regularnie podróżuje?
+   → max 4-5 osób (para + dzieci) → C-SUV lub D-SUV 5-miejsc → Q2
+   → 6-7 osób lub pies/sprzęt → D-SUV 7-miejsc → Q2b
+
+Q2. Co jest ważniejsze: prestiż marki / technologia czy przestrzeń / terenowość?
+   → Prestiż + technologia → [ścieżka marka] → Q3
+   → Przestrzeń + terenowość → [ścieżka użyteczność] → Q3
+
+Q3. Jakie trasy dominują?
+   → Miasto + trasy → diesel MHEV / PHEV → Q4
+   → Dom na wsi, drogi polne → stały 4×4 + zawieszenie pneumatyczne → Q4
+   → Miasto 80% → PHEV (AER 40+ km) → Q4
+   → Pełne EV OK → BEV (Q8 e-tron / iX / EQS) → Q4
+
+Q4. Napęd i budżet:
+   → &lt;250k → Q5 40 TDI / X3 / GLC entry
+   → 250–350k → Q5 PHEV / X5 / XC90
+   → 350–500k → Q7 / X7 / GLS
+   → 500k+ → Cayenne / Range Rover
+
+Q5. Marka (tożsamość):
+   → „Jestem od zawsze w Audi&quot; → Q5/Q7/Q8
+   → „BMW to sport&quot; → X5/X6/X7
+   → „Mercedes to elegancja&quot; → GLE/GLS
+   → „Porsche to prestiż&quot; → Cayenne
+   → „Niezależny / Skandynawski&quot; → Volvo XC90
+
+→ Kluczowe info: SEGMENT+DŁUGOŚĆ · NAPĘD · 4×4 typ · BAGAŻNIK · MIEJSCA · CENA · WYPOSAŻENIE</code></pre>
+
+<hr>
+
+<h2>9. Forbidden Patterns</h2>
+
+<table>
+<tr><th>❌ Zakazane</th><th>✅ Poprawne</th></tr>
+<tr><td>„luksusowe wnętrze premium"</td><td>„Tapicerka skóra Nappa, podgrzewane fotele przód+tył, panoramiczny szklany dach, ambient lighting 30 kolorów."</td></tr>
+<tr><td>„doskonałe prowadzenie"</td><td>„Zawieszenie pneumatyczne (opcja): regulacja klirensu od 80 do 215 mm; tryby Comfort/Auto/Dynamic/Allroad."</td></tr>
+<tr><td>„ogromny bagażnik dla rodziny"</td><td>„Bagażnik 702 l (5-miejsc) / 325 l przy rozłożonych 7 miejscach — zmieści wózek i 2 torby podróżne."</td></tr>
+<tr><td>„prawdziwy SUV z 4×4"</td><td>„quattro stały — 100% momentu obrotowego dostępne dla osi tylnej przy pełzaniu po błocie; nie system na żądanie."</td></tr>
+<tr><td>„oszczędny PHEV"</td><td>„Q5 45 TFSI e: zasięg elektryczny 40 km WLTP (realny ~28-35 km). Przy ładowaniu codziennym: ~4-5 l/100 km. Bez ładowania: 7,5 l/100 km."</td></tr>
+<tr><td>„topowy w klasie"</td><td>„Audi Q7 zajmuje 3. miejsce w kategorii 7-miejscowych SUV premium w Polsce pod względem sprzedaży (2025, dane SAMAR)."</td></tr>
+</table>
+
+<hr>
+
+<h2>10. Ścieżki percepcji & pole pytań</h2>
+
+<p><em>7 ścieżek głównych + ścieżki napędowe. Każda z CEP wejścia, personą i szacunkową liczbą pytań.</em></p>
+
+<table>
+<tr><th>Ścieżka</th><th>CEP wejścia</th><th>Persona / kontekst</th><th>Pytań</th></tr>
+<tr><td>A — Rodzina potrzebuje miejsca</td><td><code>cep_rodzina_przestrzen</code></td><td>Katarzyna, 38, dwoje dzieci + pies + plany na trzecie</td><td>25</td></tr>
+<tr><td>B — Awans/selfgift</td><td><code>cep_awans_selfgift_premium</code></td><td>Marek, 44, dyrektor finansowy, Audi A6 → Q7</td><td>18</td></tr>
+<tr><td>C — Zmiana z sedana na SUV</td><td><code>cep_zamiana_z_sedana</code></td><td>Piotr, 51, od lat BMW 5 Series, pierwszy SUV</td><td>20</td></tr>
+<tr><td>D — Dom na wsi / terenowość</td><td><code>cep_dojazd_poza_miasto</code></td><td>Tomasz, 42, dom za miastem, droga polna 10 km</td><td>18</td></tr>
+<tr><td>E — EV-SUV premium</td><td><code>cep_ev_suv_luksusy</code></td><td>Anna, 40, chce BEV ale z przestrzenią rodzinną</td><td>16</td></tr>
+<tr><td>F — Lojalista marki Audi</td><td><code>cep_prestige_marka</code></td><td>Krzysztof, 56, A8 → Q8, zostaje w marce</td><td>14</td></tr>
+<tr><td>G — Porównanie marek, pierwszy raz premium</td><td><code>cep_porownanie_marek</code></td><td>Michał, 35, pierwszy zakup premium, stoi między Q5 a X5</td><td>22</td></tr>
+<tr><td>H — PHEV SUV</td><td><code>cep_hybryda_suv_plug</code></td><td>Joanna, 39, myśli o środowisku, nie gotowa na full EV</td><td>15</td></tr>
+</table>
+
+<h3>Ścieżka A — Rodzina potrzebuje miejsca (25)</h3>
+<p><strong>A1 — Świadomość / trigger:</strong></p>
+<ul><li>7-miejscowy SUV premium — jaki wybrać dla rodziny 5 osób?</li><li>Audi Q7 vs BMW X7 — który większy i lepszy dla rodziny?</li><li>Mercedes GLS vs Audi Q7 — różnice praktyczne dla dużej rodziny</li><li>Czy Q7 ma prawdziwe 7 miejsc dla dorosłych czy tylko dla dzieci?</li><li>Bagażnik przy 7 miejscach — ile zostaje w Q7/X7/GLS?</li></ul>
+
+<p><strong>A2 — Nauka / orientacja:</strong></p>
+<ul><li>D-SUV vs E-SUV — różnice rozmiarowe i co wybrać?</li><li>ISOFIX w SUV premium — które miejsca mają system mocowania?</li><li>Bezpieczeństwo NCAP Audi Q7 2025/2026 — aktualne wyniki</li><li>Czy SUV premium jest bezpieczniejszy niż sedan klasy D?</li><li>Minimalne wymiary garażu dla Q7 / X7 / GLS</li></ul>
+
+<p><strong>A3 — Porównanie modeli:</strong></p>
+<ul><li>Audi Q7 vs BMW X7 — tabela porównawcza 2026</li><li>Q7 vs GLS — kto ma więcej miejsca z tyłu i większy bagażnik?</li><li>Volvo XC90 7 miejsc vs Audi Q7 — który lepszy dla rodziny?</li><li>Land Rover Discovery vs Audi Q7 — off-road i wnętrze porównanie</li></ul>
+
+<p><strong>A4 — Decyzja/zakup:</strong></p>
+<ul><li>Leasing Audi Q7 rata miesięczna 2026 — kalkulator i warunki</li><li>Opcje 7 miejsc w Q7 — jaka dopłata i co ogranicza?</li><li>Konfiguracja Q7 dla rodziny — jakie pakiety wziąć?</li></ul>
+
+<p><strong>A5 — Blokery:</strong></p>
+<ul><li>🛡️ Czy Q7 zmieści się w typowym garażu polskiego domu?</li><li>🛡️ Ile kosztuje ubezpieczenie AC/OC Audi Q7 rocznie?</li><li>🛡️ Q7 czy Q5 — który ma więcej bagażnika przy 2 fotelikach?</li><li>🛡️ Czy Q7 z 7 miejscami to kompromis — może lepiej minivan?</li><li>🛡️ Jak długo czekać na Q7 z salonu — jest demo pod Warszawą?</li></ul>
+
+<h3>Ścieżka B — Awans / selfgift premium (18)</h3>
+<p><strong>B1 — Trigger aspiracyjny:</strong></p>
+<ul><li>Jaki SUV premium kupić za premię 300 000 PLN — ranking</li><li>Audi Q8 czy Q7 — różnice i dla kogo każde?</li><li>BMW X6 M vs Audi Q8 — coupe-SUV, który lepszy?</li><li>SUV za 350k PLN — co jest absolutnie najlepsze?</li></ul>
+
+<p><strong>B2 — Wyposażenie i doznania:</strong></p>
+<ul><li>Audi Q7 S-line vs podstawowy — co zawiera pakiet i czy warto?</li><li>Bang & Olufsen vs Bang & Olufsen Premium Audi — różnice brzmienia</li><li>Head-up display w Audi Q7 — co wyświetla i czy niezbędny?</li><li>Masaż foteli w SUV premium — Audi vs BMW vs Mercedes</li></ul>
+
+<p><strong>B3 — Porównanie marek (tożsamościowe):</strong></p>
+<ul><li>Audi Q7 vs Porsche Cayenne — prestiż, prowadzenie, cena</li><li>Co daje wyższy prestiż: Audi Q8 czy Porsche Cayenne bazowy?</li><li>Jak jeżdżą menedżerowie — Audi Q7 czy Mercedes GLE?</li></ul>
+
+<p><strong>B4 — Zakup/finansowanie:</strong></p>
+<ul><li>Leasing Q8 vs gotówka — co bardziej prestiżowe i opłacalne?</li><li>Czy warto dopłacić do Porsche Cayenne zamiast Q8?</li><li>🛡️ Co zrobi Q7 z wartością rezydualną za 3 lata?</li><li>🛡️ Czy niższy segment dobrze wyposażony to lepszy wybór niż Q7 w podstawie?</li></ul>
+
+<h3>Ścieżka C — Zamiana z sedana na SUV (20)</h3>
+<p><strong>C1 — Świadomość:</strong></p>
+<ul><li>BMW 5 Series vs BMW X5 — co zmienia się po przesiadce?</li><li>Audi A6 vs Audi Q7 — różnice prowadzenia i komfortu</li><li>Czy przesiadka z sedana na SUV to regres? Co tracę?</li><li>Jazda SUV-em vs sedan — jak się różni prowadzenie na autostradzie?</li></ul>
+
+<p><strong>C2 — Nauka:</strong></p>
+<ul><li>SUV vs sedan zużycie paliwa — ile więcej pali Q7 niż A6?</li><li>Zawieszenie pneumatyczne w SUV — czy eliminuje kołysanie?</li><li>Wysokość siedzenia w SUV — za wysoka czy komfortowa dla seniora?</li><li>Parking SUV premium w mieście — czy to problem z Q7/X7?</li></ul>
+
+<p><strong>C3 — Porównanie:</strong></p>
+<ul><li>Audi Q5 vs Audi A6 — czy Q5 to równoważna alternatywa sedana?</li><li>BMW X5 vs BMW 5 Series — który ma lepsze prowadzenie?</li><li>Mercedes GLE vs Mercedes E-Klasse — co wybrać po 10 latach E-klasy?</li><li>Volvo XC90 vs S90 — kombi czy SUV dla rodziny 4-osobowej?</li></ul>
+
+<p><strong>C4 — Decyzja:</strong></p>
+<ul><li>Test drive Q7 vs A6 — na co zwrócić uwagę żeby nie żałować?</li><li>Konfiguracja Q5 dla byłego użytkownika A4 — co zabrać?</li><li>🛡️ Czy Q5 jest wystarczającą nagrodą po latach Audi A4?</li><li>🛡️ Mam A6 na leasing — czy opłaca mi się zerwać umowę na Q7?</li><li>🛡️ Spalanie Q7 3.0 TDI w cyklu mieszanym — realne vs WLTP?</li></ul>
+
+<h3>Ścieżka D — Dom poza miastem / terenowość (18)</h3>
+<p><strong>D1 — Trigger:</strong></p>
+<ul><li>SUV 4×4 do domu na wsi — co wybrać w 2026?</li><li>Audi Q7 vs Land Rover Discovery — który lepszy na polnych drogach?</li><li>Jaki klirens w SUV premium? Q7 vs Cayenne vs GLS — tabela</li></ul>
+
+<p><strong>D2 — Nauka 4×4:</strong></p>
+<ul><li>quattro stały vs xDrive on-demand — różnice w błocie i śniegu?</li><li>Zawieszenie pneumatyczne w SUV — czy podnosi klirens na polne drogi?</li><li>Audi quattro ultra vs pełne quattro — której wersji szukać?</li><li>4MATIC Mercedes — stały czy adaptacyjny? Różnica praktyczna</li></ul>
+
+<p><strong>D3 — Porównanie:</strong></p>
+<ul><li>Audi Q7 vs Porsche Cayenne w terenie — kto lepszy?</li><li>Volvo XC90 T8 PHEV na wsi — terenowość i spalanie</li><li>BMW X7 xDrive na szutrze — realna zdolność terenowa?</li></ul>
+
+<p><strong>D4 — Decyzja:</strong></p>
+<ul><li>Opony all-terrain w SUV premium — które marki i czy warto?</li><li>Czy Q7/X7 ma tryby terenowe? Co uruchamiają?</li><li>Serwis SUV premium na wsi — ile km do ASO, koszty</li><li>🛡️ Czy Q7 to SUV do lasu czy tylko do miasta?</li><li>🛡️ Land Rover vs Audi Q7 — niezawodność i koszty serwisu po 3 latach</li><li>🛡️ Spalanie Q7 na trasie ze wsi do miasta — realne przy 150 km/dzień?</li></ul>
+
+<h3>Ścieżka E — EV-SUV premium (16)</h3>
+<p><strong>E1 — Trigger:</strong></p>
+<ul><li>Audi Q8 e-tron vs BMW iX — który lepszy dla rodziny?</li><li>SUV elektryczny premium — ranking 2026 (zasięg + komfort)</li><li>Mercedes EQS SUV vs Audi Q8 e-tron — różnice i cena</li></ul>
+
+<p><strong>E2 — Nauka:</strong></p>
+<ul><li>Zasięg realny Q8 e-tron 2026 — trasa Warszawa-Kraków zimą?</li><li>Czas ładowania Audi Q8 e-tron DC 150 kW — od 10 do 80%?</li><li>BEV vs PHEV SUV — co wybrać przy 200 km dziennie?</li><li>Infrastruktura ładowania premium SUV w Polsce — Ionity vs Orlen?</li></ul>
+
+<p><strong>E3 — Porównanie:</strong></p>
+<ul><li>Q8 e-tron vs Porsche Taycan Cross Turismo — prestiż i zasięg</li><li>BMW iX vs Mercedes EQS SUV vs Audi Q8 e-tron — tabela</li></ul>
+
+<p><strong>E4 — Decyzja:</strong></p>
+<ul><li>Wartość rezydualna BEV SUV po 3 latach — ryzyko?</li><li>🛡️ Zasięg Q8 e-tron zimą -10°C — ile realnie?</li><li>🛡️ Czy dom na wsi wyklucza BEV? Ładowanie 11 kW AC wystarczy?</li><li>🛡️ Q8 e-tron vs Q7 TDI — całkowity koszt posiadania (TCO) 3 lata?</li><li>🛡️ Bateria BEV SUV po 5 latach — ile procent pojemności zostaje?</li></ul>
+
+<h3>Ścieżka F — Lojalista marki Audi (14)</h3>
+<p><strong>F1 — Trigger:</strong></p>
+<ul><li>Audi Q8 vs Q7 — który wybrać po latach A8/A6?</li><li>Audi Q8 sportback vs Q7 — coupe-SUV czy 7-miejscowy?</li><li>Jak zmienił się Q7 od 2016 do 2026? Co nowego?</li></ul>
+
+<p><strong>F2 — Nauka:</strong></p>
+<ul><li>Ekosystem Audi — myQ, e-tron Charging, serwis ASO w Polsce</li><li>Audi S-line vs Audi Sport — różnica wizualna i techniczna</li><li>Gwarancja Audi 2026 — co obejmuje i przez ile lat?</li></ul>
+
+<p><strong>F3 — Decyzja:</strong></p>
+<ul><li>Leasing Audi Select — warunki odkupu Q7 po 3 latach</li><li>Wartość rezydualna Audi Q7 vs Q8 — który traci mniej?</li><li>🛡️ Czy Audi Q8 to lepsza inwestycja niż Q7?</li><li>🛡️ Audi Q7 facelift 2025 — czy warto czekać czy brać teraz?</li><li>🛡️ Jak skonfigurować Q7 żeby stracić jak najmniej na sprzedaży?</li></ul>
+
+<h3>Ścieżka G — Pierwszy raz premium, porównanie marek (22)</h3>
+<p><strong>G1 — Orientacja:</strong></p>
+<ul><li>Audi Q5 vs BMW X5 — pełne porównanie 2026 (cena, prowadzenie, wnętrze)</li><li>Mercedes GLE vs Audi Q5 vs BMW X5 — który lepszy?</li><li>Volvo XC90 vs Audi Q7 — niezawodność, komfort, cena</li><li>SUV premium — jak wybrać markę? Audi vs BMW vs Mercedes vs Porsche</li></ul>
+
+<p><strong>G2 — Nauka marki:</strong></p>
+<ul><li>Czym różni się Audi od BMW — filozofia marki i jak prowadzą?</li><li>Dlaczego niektórzy zawsze wracają do BMW a inni do Audi?</li><li>Mercedes GLE — dla kogo i co wyróżnia?</li><li>Audi vs BMW — który ma lepszy system multimedialny 2026?</li></ul>
+
+<p><strong>G3 — Test drive:</strong></p>
+<ul><li>Co sprawdzić na test drive Q5 vs X5 — lista pytań do handlowca</li><li>Na co zwrócić uwagę podczas jazdy próbnej SUV premium?</li></ul>
+
+<p><strong>G4 — Porównania szczegółowe:</strong></p>
+<ul><li>Audi MMI vs iDrive 9 vs MBUX — który system jest najlepszy?</li><li>Q5 S-line vs BMW X5 M-Sport — różnice w wyposażeniu seryjnym</li><li>Niezawodność Audi Q5 vs BMW X5 po 100 000 km — opinie warsztatów</li><li>Koszty serwisu Audi Q5 vs BMW X5 — co droższe w 3 lata?</li><li>Dealer Audi vs BMW — obsługa posprzedażowa w Polsce</li></ul>
+
+<p><strong>G5 — Decyzja/blokery:</strong></p>
+<ul><li>🛡️ Jaki SUV premium wybrać jeśli nie wiem nic o markach?</li><li>🛡️ Czy kupując Q5 zamiast X5 popełniam błąd?</li><li>🛡️ Co zrobi moja żona/partner jeśli wezmę BMW zamiast Audi co zawsze?</li><li>🛡️ Audi Q5 bazowy vs BMW X3 dobrze wyposażony — co lepsze za te same pieniądze?</li></ul>
+
+<h3>Ścieżka H — PHEV SUV (15)</h3>
+<p><strong>H1 — Trigger:</strong></p>
+<ul><li>Audi Q5 PHEV 45 TFSI e — czy to dobry wybór w 2026?</li><li>PHEV vs diesel SUV — co wybrać przy 80% jazdy w mieście?</li><li>BMW X5 45e PHEV vs Audi Q7 55 TFSI e — porównanie</li></ul>
+
+<p><strong>H2 — Nauka PHEV:</strong></p>
+<ul><li>Jak działa PHEV w SUV premium — kiedy jedzie elektrycznie?</li><li>Realne spalanie Q5 PHEV bez ładowania — ile litrów?</li><li>Zasięg elektryczny Q5 PHEV zimą — ile realnie przy -10°C?</li><li>Ładowanie PHEV w garażu — jakie złącze, ile czasu?</li></ul>
+
+<p><strong>H3 — Decyzja:</strong></p>
+<ul><li>Leasing Q5 PHEV vs diesel — rat różnica i co się opłaca?</li><li>🛡️ PHEV to greenwashing? Czy naprawdę oszczędza?</li><li>🛡️ Q5 PHEV bagażnik — mniejszy niż diesel?</li><li>🛡️ Serwis Q5 PHEV po gwarancji — dużo droższe?</li><li>🛡️ Bateria Q5 PHEV po 5 latach — ile % pojemności zostaje?</li><li>🛡️ Q5 PHEV vs Q7 diesel — co realnie sensowniejsze dla 200 km/tydzień?</li><li>🛡️ Czy PHEV SUV da mi zniżkę na ubezpieczenie lub parkowanie w Warszawie?</li></ul>
+
+<hr>
+
+<h2>11. Cross-Category Triggers</h2>
+
+<table>
+<tr><th>Kategoria źródłowa</th><th>Trigger zakupu</th><th>CEP aktywowany</th><th>Fraza wejściowa w AI</th></tr>
+<tr><td>Dziecko / rozszerzenie rodziny</td><td>„Trzecie dziecko, Peugeot 3008 za mały"</td><td><code>cep_rodzina_przestrzen</code></td><td>„jaki 7-miejscowy SUV premium do 400k"</td></tr>
+<tr><td>Awans / zmiana pracy</td><td>„Dostałem podwyżkę, jeżdżę A4, czas na coś lepszego"</td><td><code>cep_awans_selfgift_premium</code></td><td>„jaki SUV premium na awans firmowy"</td></tr>
+<tr><td>Zakup domu poza miastem</td><td>„Nieruchomość 30 km od miasta, droga leśna"</td><td><code>cep_dojazd_poza_miasto</code></td><td>„SUV 4×4 do domu na wsi premium"</td></tr>
+<tr><td>Stacja ładowania domowa</td><td>„Instaluję ładowarkę 11 kW — jaki EV-SUV?"</td><td><code>cep_ev_suv_luksusy</code></td><td>„audi e-tron zasięg 2026 porównanie"</td></tr>
+<tr><td>Firma / leasing firmowy</td><td>„Spółka pozwala na 300k leasingu — co wybrać"</td><td><code>cep_awans_selfgift_premium</code></td><td>„jaki SUV premium na leasing firmowy 300k"</td></tr>
+<tr><td>Nieruchomości premium</td><td>„Nowi sąsiedzi parkują Q7-ami i X7-ami"</td><td><code>cep_prestige_marka</code></td><td>„audi Q7 vs BMW X7 prestiż i wartość"</td></tr>
+</table>
+
+<hr>
+
+<h2>12. Tone of Voice for GEO — jak pisać treść SUV premium pod AI search</h2>
+
+<p><em>20 reguł pisania PDP/artykułów pod cytowalność — kategoria aspiracyjno-tożsamościowa.</em></p>
+
+<p><strong>Struktura passage'a (cytowalność):</strong></p>
+<ol><li>Odpowiadaj na pytanie w PIERWSZYM zdaniu. Źle: „Audi Q7 to elegancki SUV…". Dobrze: „Audi Q7 2026 mierzy 5,06 m długości, bagażnik 770 l (5-miejsc) / 295 l (7-miejsc), dostępny w napędach: 45 TDI (231 KM), 55 TFSI e PHEV (381 KM), 60 TFSI e PHEV (462 KM)."</li><li>Jeden akapit = jedna kompletna odpowiedź. Nie mieszaj „dla kogo Q7" z „jak działa quattro".</li><li>Liczby zawsze z jednostkami i kontekstem: „770 l" → „bagażnik 770 l — mieści wózek dziecięcy + 2 duże walizki 30 l".</li><li>Porównanie zawsze z wnioskiem: „Q7 długość 5,06 m vs X7 5,15 m → X7 szersze tylne siedzenie (+3 cm ramię w ramię)".</li><li>Konkretne modele: „Q7 45 TDI 231 KM" cytuje się; „solidny diesel" nie.</li></ol>
+
+<p><strong>Język konsumenta (nie katalogu):</strong></p>
+<ol><li>Adresuj lęk wprost: „Czy Q7 zmieści się w garażu?" → „Q7: szerokość 2,00 m (z lusterkami 2,21 m), długość 5,06 m. Standard garaż 5,5×3,0 m: Q7 wchodzi bez lusterek."</li><li>Marka = tożsamość: nie pisz „oba modele oferują podobne osiągi" — różnicuj charakter: „Audi Q7 = technologiczny spokój; BMW X7 = sportowa prezencja; GLS = klasyczny autorytet".</li><li>PHEV: podawaj ZAWSZE dwa scenariusze: z ładowaniem (AER) i bez (zużycie silnika spalinowego).</li><li>Wartość rezydualna: konkretna liczba+źródło: „Q5 zachowuje ~55% wartości po 36 mies./60 000 km (Eurotax Glass's, Q4 2025)".</li><li>Odpowiadaj na „co powiedzą inni": „Q7 to auto, które identyfikuje właściciela jako «kogoś, kto dotarł» — wybór, gdy marka jest świadomą deklaracją, nie przypadkiem".</li></ol>
+
+<p><strong>Struktura pod AI parsing:</strong></p>
+<ol><li>Tabele dla porównań marek — AI ekstrahuje tabelę (marka, model, długość, bagażnik, napęd, cena) lepiej niż prozę.</li><li>Nagłówki = pytania klienta: „Ile bagażnika w Q7 przy 7 miejscach?" nie „Specyfikacja przestrzeni ładunkowej".</li><li>Napęd = osobna sekcja z wyborem: „DIESEL — jeśli: trasy 70%+, brak garażu, 180+ km/dzień. PHEV — jeśli: garaż 11 kW, miasto 60%, do 80 km dziennie. BEV — jeśli: garaż, głównie miasto, wyjazdy planowane."</li><li>Każdy parametr z konsekwencją: „klirens 213 mm (pneumatyczne) → wystarczy na szutrową drogę; standard 195 mm → ostrożnie na głębokiej kolei".</li><li>Blokery: jako osobna sekcja FAQ, każdy z konkretną odpowiedzią liczbową lub warunkiem.</li></ol>
+
+<p><strong>Zaufanie i kontekst:</strong></p>
+<ol><li>Podawaj „dla kogo NIE": „Q7 to NIE wybór jeśli > 50% jazdy po centrum dużego miasta — Q5 PHEV jest wtedy sensowniejszy".</li><li>Dowód zamiast przymiotnika: „Audi Q7 5 gwiazdek NCAP (2024)" zamiast „bezpieczny".</li><li>Finansowanie: rata + wpłata + RV — zawsze trójka razem. Rata bez RV i wpłaty = niepełna informacja.</li><li>Czas oczekiwania: konkretny (3-12 mies. dla nowego; demo dostępne od ręki).</li><li>Zamknij sekcję cytatem-faktem (liczba/ranking/test), nie CTA sprzedażowym.</li></ol>
+
+<hr>
+
+<h2>13. Pole pytań</h2>
+
+<h3>① Discovery Questions (20 — patrz sekcja 3)</h3>
+
+<hr>
+
+<p><em>Źródło treści: research Audi Plichta + VW PHD + DCJ + rynek PL 2026. Format: WPIS_CS_sejfy_domowe_V2.md (16 sekcji). cs_series: CS-6 z 6.</em></p>
+</div>
+  </div>
+</div>
+<script>
+const CATS=[{"num":1,"name":"SUV premium — nabywca prywatny","v":"v2","s":"suv premium — nabywca prywatny"}];
+const searchEl=document.getElementById('search');
+const statEl=document.getElementById('stat');
+const nrEl=document.getElementById('nr');
+const TOTAL=CATS.length;
+let curFilter='all';
+
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function hi(text,q){
+  if(!q)return text;
+  return text.replace(new RegExp('('+esc(q)+')','gi'),'<mark>$1</mark>');
+}
+
+function applySearch(q){
+  const ql=q.trim().toLowerCase();
+  let n=0;
+  CATS.forEach(c=>{
+    const item=document.getElementById('i'+c.num);
+    const matchQ=!ql||c.s.includes(ql);
+    const matchF=curFilter==='all'||(curFilter==='v1'&&c.v==='v1')||(curFilter==='v2p'&&c.v!=='v1');
+    const ok=matchQ&&matchF;
+    if(item)item.classList.toggle('hidden',!ok);
+    if(ok){
+      n++;
+      const el=item&&item.querySelector('.ct');
+      if(el)el.innerHTML=hi(c.name,q.trim());
+    }
+  });
+  nrEl.style.display=n===0?'block':'none';
+  const fLabel=curFilter==='v1'?' · Draft':curFilter==='v2p'?' · Verified':'';
+  statEl.textContent=(ql?n+'/':'')+TOTAL+' cat.'+fLabel;
+}
+
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+  applySearch(searchEl.value);
+}
+
+function select(num){
+  document.querySelectorAll('.ci').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.cs').forEach(e=>e.classList.remove('vis'));
+  const item=document.getElementById('i'+num);
+  const sec=document.getElementById('s'+num);
+  if(item){item.classList.add('active');item.scrollIntoView({block:'nearest'});}
+  if(sec)sec.classList.add('vis');
+  document.getElementById('ct').scrollTop=0;
+}
+
+searchEl.addEventListener('input',e=>applySearch(e.target.value));
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();searchEl.focus();searchEl.select();}
+  if(e.key==='Escape'&&document.activeElement===searchEl){searchEl.value='';applySearch('');searchEl.blur();}
+});
+
+if(CATS.length>0)select(CATS[0].num);
+
+function toggleTheme(){
+  const l=document.body.classList.toggle('light');
+  localStorage.setItem('geo-theme',l?'light':'dark');
+  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
+}
+(function(){if(localStorage.getItem('geo-theme')==='light'){
+  document.body.classList.add('light');
+  var b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
+</script>
+</body>
+</html>

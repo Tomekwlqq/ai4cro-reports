@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GEO DT DB — PL — 1 categories</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--sb-bg:#161b22;--hd-bg:#161b22;--bd:#30363d;
+  --tx:#e6edf3;--tx2:#8b949e;--ac:#58a6ff;
+  --cb:#1c2128;--ts:#1c2128;--mb:#2d4a22;--mt:#7ee787;
+  --ab:#1f3353;--sw:292px;--hh:52px
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+     background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* Header */
+#hd{height:var(--hh);background:var(--hd-bg);border-bottom:1px solid var(--bd);
+    display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+#hd h1{font-size:15px;font-weight:700;white-space:nowrap;flex-shrink:0;letter-spacing:.01em}
+#hd h1 span{color:var(--ac)}
+#sw{flex:1;position:relative;max-width:440px}
+#si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tx2);font-size:15px;pointer-events:none}
+#search{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:6px;
+        color:var(--tx);padding:6px 10px 6px 30px;font-size:15px;outline:none;transition:border-color .15s}
+#search:focus{border-color:var(--ac)}
+
+/* Filter buttons */
+.filt{display:flex;gap:4px;flex-shrink:0}
+.fb{font-size:13px;padding:3px 8px;border-radius:4px;border:1px solid var(--bd);
+    background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fb:hover{border-color:var(--ac);color:var(--tx)}
+.fb.on{border-color:var(--ac);background:var(--ab);color:var(--tx)}
+
+/* Lang toggle */
+#lang-btn{font-size:13px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+          background:transparent;color:var(--tx2);cursor:pointer;text-decoration:none;
+          display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+#lang-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+#stat{font-size:13px;color:var(--tx2);flex-shrink:0;white-space:nowrap;min-width:90px;text-align:right}
+
+/* Layout */
+#lay{display:flex;flex:1;overflow:hidden}
+
+/* Sidebar */
+#sb{width:var(--sw);flex-shrink:0;background:var(--sb-bg);border-right:1px solid var(--bd);overflow-y:auto}
+.ci{display:flex;align-items:center;gap:7px;padding:7px 10px;cursor:pointer;
+    border-left:3px solid transparent;border-bottom:1px solid var(--bd);
+    transition:background .1s;user-select:none;min-height:36px}
+.ci:hover{background:rgba(88,166,255,.07)}
+.ci.active{background:var(--ab);border-left-color:var(--ac)}
+.ci.hidden{display:none}
+.cn{font-size:11.5px;color:var(--tx2);min-width:20px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ct{font-size:14px;line-height:1.3;color:var(--tx);flex:1;min-width:0}
+.ct mark{background:var(--mb);color:var(--mt);border-radius:2px;padding:0 1px}
+
+/* Version badge in sidebar */
+.vb{font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:8px;flex-shrink:0;letter-spacing:.02em}
+.vb-v1{background:#21262d;color:#6e7681}
+.vb-v2{background:#2d2502;color:#d29922}
+.vb-v3{background:#0d2a1a;color:#3fb950}
+.vb-v4{background:#0d1e3c;color:#58a6ff}
+
+/* Verification pipeline dots */
+.pipe{display:flex;gap:2px;flex-shrink:0}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--bd)}
+.pd.on-v1{background:#6e7681}
+.pd.on-v2{background:#d29922}
+.pd.on-v3{background:#3fb950}
+.pd.on-v4{background:#58a6ff}
+
+#nr{padding:20px 12px;font-size:15px;color:var(--tx2);text-align:center;display:none}
+
+/* Content */
+#ct{flex:1;overflow-y:auto;padding:26px 34px}
+.cs{display:none}
+.cs.vis{display:block}
+
+/* Markdown */
+.cs h2{font-size:23px;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:10px;margin-bottom:16px}
+.cs h3{font-size:13px;font-weight:700;color:var(--ac);margin:20px 0 9px;
+       text-transform:uppercase;letter-spacing:.06em}
+.cs h4{font-size:16px;font-weight:600;margin:14px 0 6px}
+.cs p{font-size:15.5px;line-height:1.65;margin-bottom:8px}
+.cs strong{font-weight:600}
+.cs em{font-style:italic;color:var(--tx2)}
+.cs code{font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:13px;
+         background:var(--cb);border:1px solid var(--bd);border-radius:3px;
+         padding:1px 5px;color:#f0883e}
+.cs pre{background:var(--cb);border:1px solid var(--bd);border-radius:6px;
+        padding:12px 14px;overflow-x:auto;margin:10px 0}
+.cs pre code{background:none;border:none;padding:0;font-size:14px;color:var(--tx);line-height:1.5}
+.cs table{width:100%;border-collapse:collapse;font-size:14.5px;margin:10px 0;display:block;overflow-x:auto}
+.cs th,.cs td{text-align:left;padding:7px 10px;border:1px solid var(--bd)}
+.cs th{background:var(--sb-bg);font-weight:600}
+.cs tr:nth-child(even) td{background:var(--ts)}
+.cs ul,.cs ol{padding-left:18px;margin:7px 0}
+.cs li{font-size:15.5px;line-height:1.6;margin-bottom:3px}
+.cs hr{border:none;border-top:1px solid var(--bd);margin:18px 0}
+
+/* Changelog / verification card */
+.changelog{background:#0b1e10;border:1px solid #2ea043;border-radius:8px;
+           padding:14px 18px;margin:18px 0;position:relative}
+.changelog::before{content:'🔬 VERIFIED';font-size:10.5px;font-weight:700;
+                   color:#3fb950;letter-spacing:.08em;display:block;margin-bottom:8px}
+.changelog h3{color:#3fb950 !important;margin-top:0 !important;font-size:14px !important}
+.changelog p,.changelog li{color:#c3e6cb;font-size:15px}
+.changelog ul{margin:4px 0}
+.changelog table{font-size:12px}
+.changelog th{background:#0d2a1a}
+.changelog code{background:#0d2a1a;color:#7ee787}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+body.light{
+  --bg:#ffffff;--sb-bg:#f6f8fa;--hd-bg:#f6f8fa;--bd:#d0d7de;
+  --tx:#1f2328;--tx2:#656d76;--ac:#0969da;
+  --cb:#f6f8fa;--ts:#f6f8fa;--mb:#fff8c5;--mt:#7a5c00;--ab:#ddf4ff;
+}
+body.light .cs code{color:#cf222e}
+body.light .cs pre code{color:var(--tx)}
+body.light .changelog{background:#f0fff4;border-color:#2ea043}
+body.light .changelog p,body.light .changelog li{color:#1a7f37}
+#theme-btn{font-size:14px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx2);cursor:pointer;flex-shrink:0;transition:all .15s}
+#theme-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+/* FUND rozwijany blok */
+details.fund{border:1px solid var(--bd);border-radius:8px;margin:22px 0 8px;
+  background:var(--cb);overflow:hidden}
+details.fund>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  padding:12px 16px;user-select:none;transition:background .12s}
+details.fund>summary::-webkit-details-marker{display:none}
+details.fund>summary:hover{background:rgba(88,166,255,.07)}
+.fund-arrow{color:var(--ac);font-size:13px;flex-shrink:0;transition:transform .15s}
+details.fund[open] .fund-arrow{transform:rotate(90deg)}
+.fund-head{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.fund-title{font-size:15px;font-weight:700;color:var(--tx)}
+.fund-src{font-size:12px;font-style:italic;color:var(--tx2);line-height:1.4}
+.fund-badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.fund-badge.ok{background:#0d2a1a;color:#3fb950}
+.fund-badge.warn{background:#3d2a02;color:#f0883e}
+body.light .fund-badge.ok{background:#dafbe1;color:#1a7f37}
+body.light .fund-badge.warn{background:#fff1e5;color:#bc4c00}
+.fund-hint{font-size:11px;color:var(--tx2);flex-shrink:0;border:1px solid var(--bd);
+  border-radius:4px;padding:2px 7px}
+details.fund[open] .fund-hint{display:none}
+.fund-body{padding:4px 18px 16px;border-top:1px solid var(--bd)}
+.fund-body h1{font-size:18px;margin:12px 0 6px}
+</style>
+</head>
+<body>
+<div id="hd">
+  <h1>GEO <span>CS</span></h1>
+  <div id="sw">
+    <span id="si">⌕</span>
+    <input id="search" type="text" placeholder="Szukaj kategorii, CEP, pytania..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="filt">
+    <button class="fb on" data-f="all" onclick="setFilter('all')">All</button>
+    <button class="fb" data-f="v2p" onclick="setFilter('v2p')">✅ Verified</button>
+    <button class="fb" data-f="v1"  onclick="setFilter('v1')">📝 Draft</button>
+  </div>
+  <a id="lang-btn" href="%23">🌐 EN</a>
+  <button id="theme-btn" onclick="toggleTheme()" title="Tryb jasny/ciemny">☀️</button>
+  <span id="stat">1 cat.</span>
+</div>
+<div id="lay">
+  <div id="sb">
+    <div class="ci" id="i1" onclick="select(1)"><span class="cn">#1</span><span class="ct">Samochody osobowe — nabywca prywatny</span><span class="vb vb-v2">v2</span><div class="pipe"><span class="pd on-v1"></span><span class="pd on-v2"></span><span class="pd"></span><span class="pd"></span></div></div>
+    <div id="nr">No results</div>
+  </div>
+  <div id="ct">
+    <div class="cs" id="s1"><h1>Samochody osobowe — nabywca prywatny — Category Standard v1.0</h1>
+
+<p><em>Budowa wg <code>METODOLOGIA_CS_v3.1_RICH.md</code> + format 16 sekcji wzorzec <code>WPIS_CS_pompa_ciepla_V2.md</code>. Projekt: Audi_Plichta / CS-Automotive. Źródła FAZY 0: badanie VW PHD (24 IDI, 2020) + VW Customer Journey Updated + VW DCJ qual+quant. Oś nadrzędna: nabywca PRYWATNY (B2C), wszystkie marki — CS-1 z planowanej architektury 5 CS-ów automotive. CS-2 (Biznes/JDG), CS-3 (Leasing CEP), CS-4 (EV), CS-0 (Zbiorczy) — osobne dokumenty.</em></p>
+
+<hr>
+
+<h2>0. Opis kategorii</h2>
+
+<p>Samochód osobowy to pojazd mechaniczny przeznaczony do przewozu max. 8 osób, kupowany przez osoby prywatne do użytku osobistego, rodzinnego lub codziennego. Zakup odbywa się przez salon dealerski (nowe) lub rynek wtórny (używane/CPO). W Polsce nowe auto kosztuje 60 000–400 000+ PLN; używane 20 000–200 000+ PLN. Cykl decyzji wynosi 2–6 miesięcy dla prywatnych nabywców — dłuższy przy finansowaniu pozagotówkowym i wyższym zaangażowaniu emocjonalnym. <strong>To nie jest zakup e-commerce: wymaga jazdy próbnej, negocjacji, weryfikacji finansowania, często trade-in'u istniejącego auta.</strong> Kategoria podlega silnemu zakłóceniu ze strony chińskich marek elektrycznych (BYD, MG, OMODA, Xpeng) oferujących bogate wyposażenie w segmencie 90–140k PLN — tradycyjnie zarezerwowanym dla europejskich marek mid-range.</p>
+
+<h2>0b. Problemy, które kategoria załatwia</h2>
+
+<p><strong>🎯 Primary (rdzeń):</strong> <em>Bezpieczne, niezawodne i odpowiednie dla stylu życia przemieszczanie się — z poczuciem spokoju, kontroli i (często) statusu.</em></p>
+
+<p><strong>Secondary — rozbite na sytuację (każda = zalążek CEP):</strong></p>
+
+<ul><li>frustracja awaryjnym / drogim w utrzymaniu autem → <code>cep_awaria_frustracja</code></li><li>zmiana sytuacji rodzinnej (dziecko, rozwód, puste gniazdo, nowa praca) → <code>cep_zmiana_zyciowa</code></li><li>odkrycie że leasing = nowe auto za ratę jak czynsz → <code>cep_leasing_odkrycie</code></li><li>rosnące koszty eksploatacji (paliwo, przeglądy, naprawy) → <code>cep_koszty_eksploatacji</code></li><li>nagroda dla siebie / zmiana modelu na nowszy (awans, premium) → <code>cep_self_gift_awans</code></li><li>ciekawość elektryka i rynek tanieje (chińskie EV) → <code>cep_elektryk_ciekawostka</code></li><li>koniec umowy leasingowej / wynajmu → <code>cep_koniec_leasingu</code> <em>(bridge do CS-2 Biznes)</em></li><li>pierwsze auto po prawie jazdy → <code>cep_pierwsze_auto</code></li></ul>
+
+<p>> ⚠️ Moc silnika, skrzynia biegów, pojemność bagażnika, kolor — to NIE problemy, to atrybuty → KCF/preselekcja, nie CEP.</p>
+
+<hr>
+
+<h2>1. CEV — Category Emotional Valuation</h2>
+
+<p><strong>Pasek profilu emocjonalnego kategorii (10 cech) — nabywca prywatny:</strong></p>
+
+<table>
+<tr><th>ryzyko</th><th>lęk</th><th>widoczność</th><th>impuls</th><th>sexy</th><th>aspiracja</th><th>tożsamość</th><th>zmysłowość</th><th>pilność</th><th>moralność</th></tr>
+<tr><td>.90</td><td>.80</td><td>.85</td><td>.05</td><td>.75</td><td>.85</td><td>.80</td><td>.75</td><td>.50</td><td>.30</td></tr>
+</table>
+
+<ul><li><strong>ryzyko .90</strong> — DRUGIE NAJWIĘKSZE RYZYKO PO NIERUCHOMOŚCI. Błąd zakupowy = 30–400k PLN stracone + 3–7 lat życia ze złą decyzją + brak wyjścia bez dużej straty (resale, utrata kaucji leasingowej). Wyjątkowość: commitowanie z odroczoną możliwością korekty (nie jak ubranie, które oddasz).</li><li><strong>lęk .80</strong> — wielowarstwowy: (1) czy nie przepłacam vs rynek, (2) czy dealer mnie nie kręci (presja salonu, opcje które nie są worth it), (3) czy finansowanie to nie pułapka, (4) przy używanym — co ukryli, (5) czy wybór marki/modelu nie okaże się żenujący za 3 lata. Pik lęku przy podpisywaniu umowy.</li><li><strong>widoczność .85</strong> — samochód to NAJWIĘKSZY widzialny wyraz statusu w Polsce (mieszkanie/dom schowany za bramą, auto widać codziennie: praca, szkoła, rodzina, sąsiedzi). Szczególnie silne w miastach gdzie auto = wizytówka i pierwszy sygnał statusowy.</li><li><strong>aspiracja .85</strong> — „w końcu na to stać" jest RDZENIEM kategorialnym dla mid/premium. Samochód jako materializacja osiągnięcia życiowego (awans, własna firma, spłata kredytu, dorosłe dzieci). Silniejszy niż dla większości kategorii — nie ma analogu „aspirować do pralki".</li><li><strong>tożsamość .80</strong> — marka = deklaracja tożsamości. Audi = profesjonalizm/sukces. BMW = dynamika/sport. VW = rozsądek/solidność. Tesla/BYD = nowoczesność/postawa ekologiczna. Pytanie „jakim autem jeździsz" = pytanie „kim jesteś". Zmiana marki = deklaracja zmiany tożsamości.</li><li><strong>sexy .75</strong> — samochód jako obiekt pragnienia (design zewnętrzny, wnętrze premium, dźwięk silnika, osiągi). Szczególnie silny przy segmencie E/F i sportowych wariantach. Test drive jest RYTUAŁEM inicjacji — „sprzedaje" ten wymiar.</li><li><strong>zmysłowość .75</strong> — multisensoryczny: zapach nowego auta (ikonicznie silny, punkt sprzedaży), faktura skóry, dźwięk zamykania drzwi (BMW inżynieruje go latami), dźwięk silnika (exhaust note w sportowych), wibracje fotela. Jeden z nielicznych zakupów gdzie zmysłowość jest jawna i oczekiwana.</li><li><strong>pilność .50</strong> — zmienna: niska przy planowanym zakupie premiumowym (3-6 mies. research), wysoka przy trigger <code>cep_awaria_frustracja</code> (stary się psuje → musisz mieć transport już). Asymetria per CEP.</li><li><strong>impuls .05</strong> — faktycznie zero impulsu. Nawet „okazja" (koniec roku, promocja) wymaga tygodnia deliberacji. To planowana, rozciągnięta w czasie decyzja z punktem wejścia (CEP) ale długim łukiem.</li><li><strong>moralność .30</strong> — rosnące: ekologia jako motywacja przy EV. Silne u millenialsów + Gen Z. Ale w Polsce 2026 wciąż mniejszościowy driver vs ekonomia/status.</li></ul>
+
+<p>→ Fork <strong>EMOCJA + POTRZEBA</strong>, research <strong>wysoki (3–5 mies.)</strong>. Garby: <strong>Nowy vs Używany</strong>, <strong>Finansowanie</strong>, <strong>Wybór marki/modelu</strong>, <strong>Negocjacja/Trade-in</strong>, <strong>Oczekiwanie na dostawę</strong>.</p>
+
+<hr>
+
+<h2>2. CEP — Consumer Entry Points <em>(weryfikator: sytuacja-nie-atrybut / realny verbatim / nie-sierota)</em></h2>
+
+<table>
+<tr><th>id</th><th>Trigger (język konsumenta, verbatim)</th><th>Kontekst</th><th>Primary concern</th><th>Bloker decyzji</th><th>Routes to</th><th>Anchor content</th></tr>
+<tr><td><code>cep_awaria_frustracja</code></td><td>„ten samochód miał po prostu 17 lat. Zaczął się mocno psuć i stwierdziłem, że za chwilę wartość napraw przekroczy wartość samochodu" / „nie chcę mieć niespodzianek jak w Nubirze"</td><td>stary samochód 10–20 lat, rosnące koszty napraw, coraz mniej zaufania do auta</td><td>spokój, niezawodność, koniec stresu z naprawami</td><td><strong>bariera wejścia nowy vs używany</strong> (używany = znowu ryzyko niespodzianek)</td><td>nowe auto gwarancja 3–5 lat lub CPO z gwarancją</td><td>„gwarancja = spokój na 4 lata bez kosztów" + test drive</td></tr>
+<tr><td><code>cep_zmiana_zyciowa</code></td><td>„żeby właśnie było wygodniej przy dziecku" / „mam szkolenia, często wyjazdowe — samochód bardzo pomoże" / „nowe samochody pojawiły się, jak córki zaczęły kończyć studia — już nie miałem takich obciążeń finansowych"</td><td>narodziny dziecka, zmiana pracy, wyprowadzka dzieci, rozwód, nowa praca z dojazdami</td><td>dopasowanie auta do nowej sytuacji życiowej</td><td><strong>czy przy nowej sytuacji życiowej stać mnie na nowe z gwarancją, czy CPO — i jak szybko muszę decydować?</strong></td><td>segment zależny od zmiany: SUV/kombi (dziecko), hatchback (single/city), sedan (praca)</td><td>konfiguracja per sytuacja + kalkulator TCO</td></tr>
+<tr><td><code>cep_leasing_odkrycie</code></td><td>„a można mieć nowe auto za 1200 zł miesięcznie?" / „nie wiedziałem, że leasing jest dostępny dla osób prywatnych"</td><td>osoba wcześniej niekupująca nowego, odkrywa że rata leasingowa = dostępna finansowo</td><td>czy mnie stać na nowe? czy leasing to nie kredyt pułapka?</td><td><strong>brak wiedzy o leasingu prywatnym</strong> (warunki, koszty całkowite, wartość rezydualna)</td><td>mid-range auto leasing 48–60 mies.</td><td>„co to jest leasing prywatny — raty, wartość rezydualna, własność"</td></tr>
+<tr><td><code>cep_koszty_eksploatacji</code></td><td>„benzyna po 7,50 PLN/L, miesięcznie wychodzi mi 900 zł — zaczynam liczyć czy cokolwiek nowszego nie wyszłoby taniej" / „dołożyłem 3000 PLN w przegląd, to może jednak nowe"</td><td>rosnące koszty paliwa / serwisu, kalkulacja TCO bez emocji awarii</td><td>kiedy opłaca się zmienić auto z powodów ekonomicznych</td><td><strong>payback i TCO</strong> (kiedy nowe jest tańsze niż utrzymanie starego)</td><td>hybryda / mild hybrid / diesel zależnie od przebiegu</td><td>„kalkulacja kosztu przejazdu 100 km stare vs nowe (spalanie + serwis)"</td></tr>
+<tr><td><code>cep_self_gift_awans</code></td><td>„no z takiej właśnie próżności — chcę trochę pójść do przodu" / „jak córki skończyły studia i nie miałem już takich obciążeń — czas pomyśleć o sobie" / „w końcu mogę sobie pozwolić na coś lepszego"</td><td>awans zawodowy, spłacony kredyt, dzieci usamodzielnione, spadek, jubileusz</td><td>nagroda dla siebie, upgrade stylu życia, status</td><td><strong>czy wydanie 280k na auto to nie rozrzutność / czy zasługuję na to</strong> (permission-to-splurge) + <strong>co konkretnie daje droższy model</strong></td><td>segment premium lub wyższy tier dotychczasowej marki</td><td>konfiguracja opcji + test drive (emocja przed ceną)</td></tr>
+<tr><td><code>cep_elektryk_ciekawostka</code></td><td>„kolega kupił BYD Seal za 130k, policzył koszty vs diesel — zaczynam brać to na poważnie" / „mam PV w domu, ładuję za 0 — zacząłem patrzeć na elektryki. Ale serwis gdzie?"</td><td>prywatny nabywca który do tej pory uważał EV za „za drogi / za mały zasięg", i odkrywa że chiński elektryk przekroczył jego próg cenowy (130–140k PLN) LUB że PV/ładowarka domowa zmienia rachunek kosztów</td><td>czy EV to sensowny wybór dla mnie TERAZ? Czy chiński elektryk nie zostawi mnie bez serwisu?</td><td><strong>chińskie EV vs europejskie</strong> (zasięg, serwis, gwarancja, wstydu test) + infrastruktura ładowania PL</td><td>premium EV (Audi Q4/etron, BMW i4) vs chiński EV (BYD, MG, OMODA)</td><td>„EV w Polsce 2026 — zasięg, ładowanie, koszty vs spalinowe" + porównanie TCO</td></tr>
+<tr><td><code>cep_koniec_leasingu</code></td><td>„kończy mi się leasing za 8 miesięcy, zaczynam się rozglądać" / „co robię z autem po leasingu — odkupuję czy zmieniam?"</td><td>koniec umowy leasingowej (prywatnej lub firmowej), zaplanowana zmiana</td><td>optymalny scenariusz po leasingu: odkup / zwrot / nowy leasing</td><td><strong>wartość rezydualna vs cena rynkowa</strong> + nowe warunki</td><td>bridge do CS-2 Biznes, albo nowy leasing prywatny</td><td>„co zrobić z autem po leasingu — wykup, zwrot, nowa umowa"</td></tr>
+<tr><td><code>cep_pierwsze_auto</code></td><td>„zrobiłam prawo jazdy na Aygo i przyzwyczaiłam się — chcę kupić takie samo" / „świeży kierowca — używane żeby nie stresować, czy nowe z gwarancją?"</td><td>niedawno zdobyte prawo jazdy, pierwsza samodzielna decyzja zakupowa</td><td>niezawodność + niski stres prowadzenia + niewielkie rozmiary</td><td><strong>nowe i bać się każdego zarysowania vs używane i nie boleć</strong> (nowe zbyt cenne = stres zamiast radości)</td><td>small segment A/B (nowe lub certyfikowane używane)</td><td>„pierwsze auto dla nowego kierowcy — co wziąć pod uwagę"</td></tr>
+</table>
+
+<hr>
+
+<h2>3. Discovery Questions (floor 22, kategoryczne — nie brandowe)</h2>
+
+<ol><li>Nowy czy używany samochód — co wybrać w 2026? Kiedy warto nowy, kiedy używany?</li><li>Jak długo czeka się na nowy samochód z salonu?</li><li>Leasing prywatny na samochód — jak działa? Czy warto?</li><li>Ile wynosi rata leasingowa na nowe auto 2026? Kalkulator.</li><li>Co sprawdzić przed zakupem używanego samochodu? Lista kontrolna.</li><li>Samochód elektryczny czy spalinowy — co wybrać w Polsce 2026?</li><li>Czy chińskie samochody elektryczne są bezpieczne / godne zaufania?</li><li>BYD vs Audi / BMW — co wybrać? Porównanie elektrycznych.</li><li>Ile kosztuje utrzymanie samochodu miesięcznie (paliwo + ubezpieczenie + serwis)?</li><li>Jakie auto dla rodziny z dziećmi — ranking 2026?</li><li>Samochód do 100 000 / 150 000 / 200 000 PLN — co najlepszego?</li><li>Jak negocjować cenę samochodu w salonie? Ile można wynegocjować?</li><li>Czy warto kupować samochód na koniec roku / rocznik?</li><li>Trade-in w salonie — ile dostanę za stare auto?</li><li>Test drive — na co zwrócić uwagę? Jak go zorganizować?</li><li>CPO / certified pre-owned — co to jest? Czy warto?</li><li>Jak sprawdzić historię samochodu używanego (CARFAX, AutoDNA)?</li><li>Samochód hybryda czy pełny elektryk — co wybrać?</li><li>Zasięg elektryczny w Polsce — czy to problem zimą?</li><li>Gdzie ładować elektryk w Polsce — infrastruktura 2026?</li><li>Ubezpieczenie nowego auta — ile kosztuje OC/AC dla nowego?</li><li>Samochód na leasing a kredyt bankowy — różnice, co się opłaca?</li><li>Co zrobić z autem po leasingu — odkupić, zwrócić czy zmienić?</li><li>Jak długo służy nowy samochód? Ile lat opłaca się trzymać?</li></ol>
+
+<p>> ⭐ Każdy <code>bloker_decyzji</code> z §2 → ≥1 Discovery + zaplanowana treść S2 gasząca. „Czy EV sensowny w Polsce" → Q6/Q18/Q19/Q20. „Nowy vs używany" → Q1/Q5/Q16/Q17.</p>
+
+<hr>
+
+<h2>4. KCF — Key Category Features <em>(waga per segment: Prywatny=●●●, Opcja=●●, Niszowy=●)</em></h2>
+
+<table>
+<tr><th>Feature</th><th>Zakres rynkowy</th><th>Tier</th><th>Waga Pryw.</th><th>Uwaga</th></tr>
+<tr><td>Niezawodność / gwarancja</td><td>3–5 lat fabryczna + ASO</td><td>T1</td><td>●●●</td><td><strong>Rdzeń emotional value: spokój, bezpieczeństwo, #brakproblemów</strong></td></tr>
+<tr><td>Napęd</td><td>benzyna/diesel/mild hybrid/PHEV/BEV</td><td>T1</td><td>●●●</td><td>Determinuje TCO, zakres użycia, wizerunek</td></tr>
+<tr><td>Forma finansowania</td><td>gotówka / leasing prywatny / kredyt / wynajem</td><td>T1</td><td>●●●</td><td>Zmienia całą logikę decyzji i treść argumentacji</td></tr>
+<tr><td>Segment/rozmiar</td><td>A (city) / B (hatchback) / C (kompakt) / D (sedan/SUV) / E (premium SUV)</td><td>T1</td><td>●●●</td><td>Dopasowanie do sytuacji życiowej + garażu</td></tr>
+<tr><td>TCO — całkowity koszt posiadania</td><td>paliwo + ubezpieczenie + serwis + amortyzacja</td><td>T1</td><td>●●●</td><td>Często ignorowany przy zakupie, kluczowy post-purchase</td></tr>
+<tr><td>Czas oczekiwania / dostępność</td><td>od ręki vs 3–18 miesięcy (custom order)</td><td>T1</td><td>●●●</td><td>Bariera przy pilnym zakupie, argument sprzedażowy</td></tr>
+<tr><td>Historia serwisowa / przebieg</td><td>dla używanych: ASO, km, accidents</td><td>T1</td><td>●●●</td><td>Blok lęku przy CPO/używany</td></tr>
+<tr><td>Bezpieczeństwo NCAP</td><td>5-star / asystent hamowania / lanekeeper</td><td>T2</td><td>●●</td><td>Kluczowe dla rodzin z dziećmi, rośnie jako standard</td></tr>
+<tr><td>Wyposażenie bazowe</td><td>klimatyzacja / navi / asystent parkowania / kamera cofania</td><td>T2</td><td>●●</td><td>Chiński EV tu wygrywa w mid-range (dużo w cenie)</td></tr>
+<tr><td>Wartość rezydualna</td><td>po 3–4 latach: procent wartości nowego</td><td>T2</td><td>●●</td><td>Ważne dla leasingobiorców i planujących dalszą sprzedaż</td></tr>
+<tr><td>Trade-in / odkup od dealera</td><td>wartość oferowana za stare auto</td><td>T2</td><td>●●</td><td>Lubricant zakupu — zmniejsza próg wejścia</td></tr>
+<tr><td>Zasięg EV / infrastruktura ładowania</td><td>km WLTP / dostęp do szybkich ładowarek PL</td><td>T2</td><td>●●</td><td>Blok lęku dla EV (range anxiety)</td></tr>
+<tr><td>Customizacja / czas dostawy</td><td>kolory, opcje, konfiguracja vs stock</td><td>T3</td><td>●</td><td>Ważna dla segmentu SERCE/premium</td></tr>
+<tr><td>Dealer lokalny / serwis ASO</td><td>proximity, opinia, kontakt z handlowcem</td><td>T3</td><td>●</td><td>Kluczowa dla retencji i trust — lokalny dealer > brand national</td></tr>
+</table>
+
+<hr>
+
+<h2>5. Typowy produkt — konwencje kategorii</h2>
+
+<table>
+<tr><th>Cecha</th><th>Norma kategorii</th><th>Red flag</th></tr>
+<tr><td>Gwarancja</td><td>min. 3 lata producent; CPO 1–2 lata na używanym</td><td>brak gwarancji na używanym z salonu</td></tr>
+<tr><td>Przegląd serwisowy</td><td>ASO co 12 mies. / 15 000 km</td><td>„serwisowany" bez dokumentów ASO</td></tr>
+<tr><td>Badanie techniczne</td><td>ważne przez 2 lata od zakupu nowego</td><td>przeterminowane = ukryta bariera</td></tr>
+<tr><td>Historia</td><td>raport AutoDNA / CARFAX lub certyfikat CPO</td><td>brak raportu na używanym od dealera</td></tr>
+<tr><td>Finansowanie</td><td>jasne warunki leasingu: rata netto, wartość rezydualna, RRSO</td><td>„niska rata" bez podania wartości rezydualnej</td></tr>
+<tr><td>Test drive</td><td>dostępny przed zakupem na każdy model</td><td>brak testdrive na model który chcesz kupić</td></tr>
+<tr><td>Handlowanie</td><td>cena zawiera realne rabaty modelowe + opcje promocje</td><td>„cena na fakturze" bez rozbicia</td></tr>
+<tr><td>Czas dostawy</td><td>jasna informacja: od ręki / termin produkcji</td><td>„około 3 miesięcy" bez daty</td></tr>
+</table>
+
+<hr>
+
+<h2>6. Tier Specs</h2>
+
+<p><strong>Tier-1 Universal</strong> (musi być przy każdym modelu): napęd · moc [KM] · zużycie paliwa [l/100km] lub zasięg EV [km WLTP] · gwarancja [lata] · segment · cena brutto PLN · dostępność (od ręki/data dostawy).</p>
+<p><strong>Tier-2 Differentiator:</strong> NCAP stars · wyposażenie bazowe lista · opcje leasingowe (rata/mies, parametry) · wartość rezydualna · TCO szacunkowy.</p>
+<p><strong>Tier-3 Niche:</strong> kolory/customizacja · historia serwisowa (CPO) · technologie bezpieczeństwa szczegółowe · połączenia smart (Apple CarPlay, OTA updates).</p>
+
+<hr>
+
+<h2>7. Tier Pricing — PLN, Polska 2026 <em>(prywatny nabywca, nowe auto)</em></h2>
+
+<table>
+<tr><th>Tier</th><th>Cena zakupu (nowe)</th><th>Przykłady</th><th>Finansowanie</th><th>Typowy kupujący</th></tr>
+<tr><td>Entry (A/B segment)</td><td>60 000–110 000 PLN</td><td>VW Polo, Skoda Fabia, Toyota Yaris, Dacia Sandero</td><td>gotówka / kredyt / leasing ~700–1100 zł/mies</td><td>pierwsze auto, city, budżet napięty</td></tr>
+<tr><td>Mid (C segment)</td><td>110 000–180 000 PLN</td><td>VW Golf, Toyota Corolla, Skoda Octavia, Hyundai Tucson</td><td>leasing ~1100–1800 zł/mies</td><td>rodziny, praca z dojazdami</td></tr>
+<tr><td>Premium (D/E segment)</td><td>180 000–320 000 PLN</td><td>Audi A4/Q5, BMW 3/X3, Volvo XC60, MB C-klasa</td><td>leasing/gotówka ~1800–3200 zł/mies</td><td>awans, samoreward, biznes</td></tr>
+<tr><td>Ultra Premium (E/F+)</td><td>320 000+ PLN</td><td>Audi Q7/Q8/e-tron, BMW X5/7, Porsche</td><td>gotówka / leasing flotowy</td><td>zamożni prywatni, management</td></tr>
+<tr><td>Chiński EV (disruptor)</td><td>90 000–160 000 PLN</td><td>BYD Seal/Atto3, MG4, OMODA 5 EV, Xpeng G6</td><td>leasing ~900–1600 zł/mies</td><td>tech-savvy, ECO-minded, Value hunters</td></tr>
+</table>
+
+<hr>
+
+<h2>8. Consumer Decision Tree</h2>
+
+<p><em>Oś: nabywca prywatny, nowe auto (kanał primary). CDT wg stratega werdykt (2026-07-23): Q1=nowy/CPO, Q2=finansowanie (sort!), Q3=priorytet/budżet, Q4=napęd (tu EV fork z chińską konkurencją), Q5=lokalność/dostępność.</em></p>
+
+<h3>Drzewo — kanał [PRYWATNY NABYWCA]</h3>
+
+<p><strong>L1 — routing: sytuacja (CEP) → typ decyzji</strong></p>
+
+<table>
+<tr><th>Sytuacja (CEP)</th><th>→ Typ / pierwszy krok</th></tr>
+<tr><td>Mój stary się psuje i kosztuje za dużo / stwierdziłem że nowe</td><td>CPO z gwarancją lub nowe mid — najpierw gwarancja</td></tr>
+<tr><td>Zmieniła mi się sytuacja rodzinna / zawodowa / potrzebuję innego</td><td>segment per sytuacja — najpierw rozmiar/typ</td></tr>
+<tr><td>Odkryłem że mogę mieć nowe za ratę jak czynsz</td><td>leasing prywatny — najpierw zdolność kredytowa</td></tr>
+<tr><td>Koszty eksploatacji są za duże / liczy mi się oszczędność</td><td>hybryda/diesel — najpierw kalkulator TCO</td></tr>
+<tr><td>Chcę się nagrodzić / stać mnie na więcej</td><td>premium segment — najpierw test drive</td></tr>
+<tr><td>Interesuję się elektrykiem / zastanawiam się nad chińskim EV</td><td>EV fork — najpierw zasięg + infrastruktura + porównanie marek</td></tr>
+<tr><td>Kończy mi się leasing, co dalej</td><td>→ CS-2 Biznes lub nowy leasing prywatny</td></tr>
+<tr><td>Pierwsze auto po prawie jazdy</td><td>small segment / CPO — bezpieczeństwo + niskie koszty</td></tr>
+</table>
+
+<p><strong>L2 — sekwencja pytań decyzyjnych:</strong></p>
+
+<ol><li><strong>Nowy vs CPO/Używany</strong> — nowe: gwarancja/spokój/cena; CPO: kompromis; używane: ryzyko lęku</li><li><strong>Forma finansowania</strong> — gotówka: zamożni/tradycjonaliści (posiadanie); leasing: rata/nie-moje; kredyt: własność+raty → <strong>zmienia całą argumentację contentową</strong></li><li><strong>Priorytet/Budżet</strong> — rata mies. / całkowity budżet / TCO na 4 lata</li><li><strong>Napęd</strong> — benzyna/diesel / mild hybrid / PHEV / BEV</li></ol>
+<p>- <strong>Fork EV → sub-węzeł: Premium EV (Audi/BMW/Volvo 150k+) vs Chiński EV (BYD/MG 90–140k)</strong></p>
+<p>- Sub-węzeł obiekcja chiński: serwis PL? gwarancja? wstydu test? zasięg zimą?</p>
+<ol><li><strong>Segment/rozmiar</strong> — A-B (city/pierwsze) / C (family/kompakt) / D-E (premium/SUV)</li><li><strong>Dostępność/czas</strong> — od ręki vs termin produkcji (pilność zakupu determinuje wybór)</li></ol>
+
+<p><strong>Kluczowe info wyjścia (mandatory w treści/PDP):</strong> napęd · cena brutto · gwarancja [lata] · rata leasingowa [PLN/mies] · czas dostawy/dostępność · wyposażenie bazowe · zasięg [EV: km WLTP]</p>
+
+<hr>
+
+<h2>9. Forbidden Patterns</h2>
+
+<table>
+<tr><th>❌ Zakazane</th><th>✅ Poprawne</th></tr>
+<tr><td>„niezawodne i ekonomiczne auto"</td><td>„Gwarancja 5 lat ASO + bezpłatne przeglądy do 100 000 km — 4 lata bez nieplanowanych kosztów"</td></tr>
+<tr><td>„niska rata od 999 zł"</td><td>„Rata leasingowa 1 190 PLN/mies. netto (48 mies., wpłata 10%, wartość rezydualna 35%, RRSO 6,9%)"</td></tr>
+<tr><td>„szybka dostawa"</td><td>„Dostępność: 3 sztuki na placu / zamówienie indywidualne: ok. 14 tygodni (stan 2026-07)"</td></tr>
+<tr><td>„bogate wyposażenie w standardzie"</td><td>Lista funkcji bazowych: klimatyzacja automatyczna / Apple CarPlay / kamera cofania / asystent hamowania awaryjnego"</td></tr>
+<tr><td>„najlepsze auto w klasie"</td><td>„5 gwiazdek Euro NCAP 2025 + wynik Adult Occupant Protection 87%"</td></tr>
+<tr><td>„chiński elektryk gorszej jakości"</td><td>„BYD Seal: bateria CATL 82 kWh / zasięg 570 km WLTP / gwarancja 8 lat na baterię / serwis: [X] punktów w PL"</td></tr>
+<tr><td>„EV to przyszłość"</td><td>„Elektryk opłaca się gdy: roczny przebieg >15 000 km + dostęp do ładowania w domu/pracy + cena energii <1,0 PLN/kWh"</td></tr>
+<tr><td>„test drive możliwy do umówienia"</td><td>„Test drive: umów online w 2 minuty — wybierz datę i model, potwierdzenie SMS w 1h"</td></tr>
+</table>
+
+<hr>
+
+<h2>10. Ścieżki percepcji & pole pytań</h2>
+
+<p><strong>Tyle ścieżek ile CEP</strong> (każda = osobna ścieżka etapy świadomości × pytania). Etapy wg CEV (fork EMOCJA+POTRZEBA, garby na Finansowaniu/Wyborze modelu/Negocjacji). 🛡️ = bloker decyzji. Intent: ⚪ info · 🔵 komerc · 🟢 transakc.</p>
+
+<h3>[PRYWATNY NABYWCA]</h3>
+
+<p><strong>Ścieżka A — <code>cep_awaria_frustracja</code></strong> (stare auto się psuje)</p>
+<ul><li><em>Świadomość:</em> Kiedy opłaca się kupić nowe auto zamiast naprawiać stare? ⚪ · Mój samochód ciągle się psuje — nowy czy remont? ⚪</li><li><em>Orientacja:</em> Nowy samochód gwarancja — ile lat i co obejmuje? 🔵 · 🛡️ Nowe auto vs CPO/używane — który spokojniejszy? 🔵</li><li><em>Nauka:</em> Co to jest CPO (Certified Pre-Owned) i czy warto? ⚪ · Koszty utrzymania nowego vs używanego w pierwszych 4 latach? ⚪</li><li><em>Decyzja:</em> Test drive przed zakupem — jak umówić w salonie? 🔵 🟢 · 🛡️ Jak negocjować cenę i czy warto handlować? 🔵</li></ul>
+
+<p><strong>Ścieżka B — <code>cep_zmiana_zyciowa</code></strong> (dziecko, nowa praca, rozstanie)</p>
+<ul><li><em>Świadomość:</em> Jakie auto dla rodziny z dziećmi — co jest najważniejsze? ⚪</li><li><em>Orientacja:</em> SUV czy kombi dla rodziny — różnice praktyczne? 🔵 · Samochód z dużym bagażnikiem — ranking 2026? 🔵</li><li><em>Nauka:</em> Bezpieczeństwo NCAP — jak porównywać wyniki? ⚪ · Asystenty bezpieczeństwa — co jest w standardzie? ⚪</li><li><em>Decyzja:</em> 🛡️ Czy stać mnie na nowe z gwarancją czy lepiej używane? 🔵 · 🟢 Konfiguracja + rezerwacja przez salon online</li></ul>
+
+<p><strong>Ścieżka C — <code>cep_leasing_odkrycie</code></strong> (leasing = nowe za ratę)</p>
+<ul><li><em>Świadomość:</em> Leasing prywatny na samochód — jak działa? ⚪ · Czy osoba prywatna może wziąć leasing na auto? ⚪</li><li><em>Orientacja:</em> Ile kosztuje leasing na nowe auto 2026 — kalkulator? 🔵 · 🛡️ Leasing vs kredyt — co bardziej opłaca przy prywatnym zakupie? 🔵</li><li><em>Nauka:</em> Co to jest wartość rezydualna leasingu? ⚪ · Czy po leasingu mogę odkupić auto? ⚪</li><li><em>Decyzja:</em> Jaka rata leasingowa na [model]? 🔵 · Jakie dokumenty do leasingu prywatnego? 🟢</li></ul>
+
+<p><strong>Ścieżka D — <code>cep_koszty_eksploatacji</code></strong> (ekonomika TCO)</p>
+<ul><li><em>Świadomość:</em> Ile kosztuje utrzymanie samochodu miesięcznie? ⚪ · Czy hybryda jest tańsza w utrzymaniu niż diesel? ⚪</li><li><em>Orientacja:</em> 🛡️ Kiedy opłaca się zmienić stare auto na nowe (TCO kalkulacja)? 🔵 · Kalkulator kosztów leasingowych vs gotówkowych? 🔵</li><li><em>Nauka:</em> Hybryda vs diesel — kiedy hybryda się opłaca? ⚪ · Ile prądu zużywa elektryk vs litrów benzyny 100 km? ⚪</li><li><em>Decyzja:</em> Samochód hybrydowy — ranking ekonomiczny 2026? 🔵 🟢</li></ul>
+
+<p><strong>Ścieżka E — <code>cep_self_gift_awans</code></strong> (nagroda, premium)</p>
+<ul><li><em>Świadomość:</em> Na jakie auto mogę sobie pozwolić po awansie / kiedy mnie stać? ⚪</li><li><em>Orientacja:</em> Różnica między Audi A4 a BMW 3 — co wybrać? 🔵 · Co daje wyższy segment — czy warto dopłacać? 🔵</li><li><em>Nauka:</em> Wartość rezydualna auta premium — czy traci mniej? ⚪ · Jakie opcje warto dokupić a jakie przepłacać? ⚪</li><li><em>Decyzja:</em> Test drive premium — jak zarezerwować + co sprawdzić? 🔵 · 🛡️ Konfiguracja vs auto dostępne — ile czekam na custom? 🟢</li></ul>
+
+<p><strong>Ścieżka F — <code>cep_elektryk_ciekawostka</code></strong> (EV fork, kluczowy disruptor)</p>
+<ul><li><em>Świadomość:</em> Czy warto kupić elektryka w Polsce 2026? ⚪ · BYD vs Audi / BMW elektryczne — co wybrać? ⚪</li><li><em>Orientacja:</em> 🛡️ Zasięg elektryka zimą w Polsce — ile realnie? ⚪ · Gdzie ładować elektryk — infrastruktura 2026? ⚪ · Chiński elektryk — czy bezpieczny / godny zaufania? ⚪</li><li><em>Nauka:</em> TCO elektryk vs benzyna — kiedy się opłaca? 🔵 · Serwis chińskiego auta elektrycznego w Polsce — gdzie? ⚪ · 🛡️ Gwarancja na baterię elektryczną — ile lat? ⚪</li><li><em>Decyzja:</em> Który elektryk do 150 000 PLN — porównanie BYD/MG/Audi/BMW? 🔵 · 🟢 Test drive elektryka + jazda autostradowa</li></ul>
+
+<p><strong>Ścieżka G — <code>cep_pierwsze_auto</code></strong> (nowy kierowca)</p>
+<ul><li><em>Świadomość:</em> Jakie pierwsze auto dla nowego kierowcy? ⚪ · Nowe czy używane jako pierwsze auto? ⚪</li><li><em>Orientacja:</em> 🛡️ Małe auto do miasta — ranking bezpiecznych dla początkujących? 🔵 · Ubezpieczenie pierwszego auta — ile kosztuje OC/AC? 🔵</li><li><em>Nauka:</em> Czy można wziąć leasing jako młody kierowca? ⚪ · Co sprawdzić przy odbiorze nowego auta z salonu? ⚪</li><li><em>Decyzja:</em> 🟢 Konfiguracja entry + OC kalkulacja + rezerwacja jazdy próbnej</li></ul>
+
+<hr>
+
+<h2>11. Cross-Category Triggers</h2>
+
+<table>
+<tr><th>Kategoria źródłowa</th><th>Trigger</th><th>CEP aktywowany</th><th>Fraza wejściowa w AI</th></tr>
+<tr><td>Fotowoltaika / energia</td><td>„mam PV, może elektryk i ładuję za darmo?"</td><td><code>cep_elektryk_ciekawostka</code></td><td>„elektryk z fotowoltaiką — oszczędności"</td></tr>
+<tr><td>Ubezpieczenia</td><td>„muszę ubezpieczyć nowe auto — ile kosztuje?"</td><td><code>cep_zmiana_zyciowa</code></td><td>„ubezpieczenie nowego samochodu OC AC"</td></tr>
+<tr><td>Kredyt / finanse osobiste</td><td>„mam zdolność kredytową — czy brać kredyt czy leasing?"</td><td><code>cep_leasing_odkrycie</code></td><td>„leasing prywatny vs kredyt samochodowy"</td></tr>
+<tr><td>Nieruchomości / przeprowadzka</td><td>„kupuję dom z garażem — może czas na większe auto?"</td><td><code>cep_zmiana_zyciowa</code></td><td>„jakie auto przy domu na przedmieściach"</td></tr>
+<tr><td>Rynek pracy / awans</td><td>„dostałem podwyżkę — co zmieniam: mieszkanie, auto?"</td><td><code>cep_self_gift_awans</code></td><td>„na co wydać premię / podwyżkę — auto premium"</td></tr>
+<tr><td>Serwis samochodowy</td><td>„dałem 5000 do serwisu — może czas na zmianę?"</td><td><code>cep_awaria_frustracja</code></td><td>„kiedy lepiej kupić nowe niż naprawiać stare"</td></tr>
+</table>
+
+<hr>
+
+<h2>12. Tone of Voice for GEO — jak pisać treść cytowalną przez AI</h2>
+
+<ol><li>Odpowiadaj w pierwszym zdaniu, konkretnie z warunkiem: „Nowe auto opłaca się zamiast napraw gdy suma napraw w roku przekroczy 20–30% wartości auta lub gdy auto ma >15 lat."</li><li>Rozbrajaj emocjonalne blokery wprost faktem: „Chiński elektryk nie oznacza gorszej jakości — BYD używa baterii CATL (ten sam dostawca co Tesla), gwarancja 8 lat na baterię."</li><li>Leasingowe parametry ZAWSZE kompletnie: rata · okres · wpłata własna · wartość rezydualna · RRSO. Sama rata bez kontekstu = manipulacja.</li><li>Każdy parametr z konsekwencją: „Gwarancja 5 lat ASO → serwis w autoryzowanej sieci → brak ryzyka utraty gwarancji."</li><li>Czas oczekiwania zawsze z datą lub zakresem — „ok. 3 miesiące" to nie informacja.</li><li>Tłumacz terminologię językiem klienta: „wartość rezydualna = ile auto jest warte po leasingu = ile zapłacisz żeby je odkupić."</li><li>TCO zawsze jako porównanie roczne: „Diesel: paliwo 7 000 PLN/rok + serwis 2 500 PLN = 9 500 PLN. Hybryda: 4 200 PLN + 1 800 PLN = 6 000 PLN."</li><li>Mapuj cechę na lęk: „Gwarancja 5 lat" → „4 lata spokoju bez rachunków za naprawy."</li><li>Adresuj porównania które klient zrobi i tak: EV vs spalinowe, chiński vs europejski, nowe vs CPO — tabelą.</li><li>Zamykaj sekcję faktem do zacytowania (liczba/norma/warunek), nie CTA.</li></ol>
+
+<hr>
+
+<h2>13. Pole pytań</h2>
+
+<h3>① Discovery (otwarcie — 24 kategoryczne, patrz §3)</h3>
+
+<h3>② Pogłębione (per ścieżka — rozpisane w §10, A–G, etap × pytanie × intent)</h3>
+<p>7 ścieżek CEP, pytania pogrupowane po etapach świadomości, intent oznaczony (⚪/🔵/🟢).</p>
+
+<h3>③ Blokery 🛡️ (ekstrakcja FAQ — obiekcje, każda wymaga S2 gaszącej)</h3>
+
+<ul><li>🛡️ <strong>„Nowy czy używany — co lepsze dla mnie?"</strong> ← NAJWIĘKSZY bloker kategorii (bifurkacja CEP) → S2: warunki kiedy nowe ma sens (gwarancja, TCO, spokój) vs CPO (certyfikat, sprawdzona historia).</li><li>🛡️ <strong>„Chiński elektryk — czy warto mu zaufać?"</strong> ← NOWY KRYTYCZNY BLOKER (2025–2026) → S2: bateria CATL, gwarancja 8 lat, sieć serwisowa w PL, porównanie TCO.</li><li>🛡️ <strong>„Leasing — czy to nie pułapka? Czy na końcu nic nie mam?"</strong> → S2: wartość rezydualna jako opcja wykupu, nie obowiązek; porównanie kosztów z kredytem.</li><li>🛡️ <strong>„Zasięg elektryka zimą — czy mnie nie zostawi na drodze?"</strong> → S2: realne dane zimowe -20°C, sieć szybkich ładowarek PL, backup planowanie.</li><li>🛡️ <strong>„Jak sprawdzić czy używane auto nie jest powypadkowe?"</strong> → S2: AutoDNA/CARFAX + certyfikat CPO + co sprawdzić okiem.</li><li>🛡️ <strong>„Ile faktycznie można wynegocjować w salonie?"</strong> → S2: realistyczne rabaty (3–10% przy nowym, wyższe przy demonstracyjnym), kiedy pytać.</li><li>🛡️ <strong>„Ile faktycznie czekam na nowe auto?"</strong> → S2: modele dostępne vs zamówienie (aktualny czas produkcji per producent).</li><li>🛡️ <strong>„Co mi się bardziej opłaci — gotówka czy leasing?"</strong> → S2: kalkulator z konkretnymi parametrami, warunki każdego scenariusza.</li></ul>
+
+<p>> Render docelowy: widok łączony CS + mapa percepcji (3-tab: mapa / CS / łączony). Pipeline: <code>python3 render_cs_mapa.py samochody_osobowe_prywatny --all</code></p>
+
+<hr>
+
+<p><em>Status: CS-1 v1.0 zbudowany na podstawie VW PHD research (24 IDI, 2020) + VW Customer Journey Updated + werdyktu audi-strateg (2026-07-23). Czeka na wzbogacenie: dane GA4 Plichty (proporcje segmentów, top queries) + dane CRM (leasing vs gotówka proporcja) + rozmowy handlowców Plichty (główne obiekcje z salonu). Chińskie EV (§9 + Ścieżka F) = nowa zmienna 2025–2026 — wymaga monitoring co 6 mies.</em></p>
+</div>
+  </div>
+</div>
+<script>
+const CATS=[{"num":1,"name":"Samochody osobowe — nabywca prywatny","v":"v2","s":"samochody osobowe — nabywca prywatny"}];
+const searchEl=document.getElementById('search');
+const statEl=document.getElementById('stat');
+const nrEl=document.getElementById('nr');
+const TOTAL=CATS.length;
+let curFilter='all';
+
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function hi(text,q){
+  if(!q)return text;
+  return text.replace(new RegExp('('+esc(q)+')','gi'),'<mark>$1</mark>');
+}
+
+function applySearch(q){
+  const ql=q.trim().toLowerCase();
+  let n=0;
+  CATS.forEach(c=>{
+    const item=document.getElementById('i'+c.num);
+    const matchQ=!ql||c.s.includes(ql);
+    const matchF=curFilter==='all'||(curFilter==='v1'&&c.v==='v1')||(curFilter==='v2p'&&c.v!=='v1');
+    const ok=matchQ&&matchF;
+    if(item)item.classList.toggle('hidden',!ok);
+    if(ok){
+      n++;
+      const el=item&&item.querySelector('.ct');
+      if(el)el.innerHTML=hi(c.name,q.trim());
+    }
+  });
+  nrEl.style.display=n===0?'block':'none';
+  const fLabel=curFilter==='v1'?' · Draft':curFilter==='v2p'?' · Verified':'';
+  statEl.textContent=(ql?n+'/':'')+TOTAL+' cat.'+fLabel;
+}
+
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+  applySearch(searchEl.value);
+}
+
+function select(num){
+  document.querySelectorAll('.ci').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.cs').forEach(e=>e.classList.remove('vis'));
+  const item=document.getElementById('i'+num);
+  const sec=document.getElementById('s'+num);
+  if(item){item.classList.add('active');item.scrollIntoView({block:'nearest'});}
+  if(sec)sec.classList.add('vis');
+  document.getElementById('ct').scrollTop=0;
+}
+
+searchEl.addEventListener('input',e=>applySearch(e.target.value));
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();searchEl.focus();searchEl.select();}
+  if(e.key==='Escape'&&document.activeElement===searchEl){searchEl.value='';applySearch('');searchEl.blur();}
+});
+
+if(CATS.length>0)select(CATS[0].num);
+
+function toggleTheme(){
+  const l=document.body.classList.toggle('light');
+  localStorage.setItem('geo-theme',l?'light':'dark');
+  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
+}
+(function(){if(localStorage.getItem('geo-theme')==='light'){
+  document.body.classList.add('light');
+  var b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
+</script>
+</body>
+</html>
