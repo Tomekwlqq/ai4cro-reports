@@ -819,7 +819,7 @@ function decodeArt(b64){ try{ return decodeURIComponent(escape(atob(b64))); }cat
 const ARTICLES={};
 for(var aid in ART_RAW){ ARTICLES[aid]={title:ART_RAW[aid].t, html:decodeArt(ART_RAW[aid].b)}; }
 const ORIG_BASE="https://tomekwlqq.github.io/eel-reports/sejfzone-blog/";
-const ORIG_FILES={30:"art_30_certyfikat_s1_szafa.html",31:"art_31_ranking_szaf_na_bron.html",34:"art_34_rozmiar_szafy_na_bron.html",38:"art_38_zamek_szafa_na_bron.html",40:"art_40_montaz_szafy_na_bron.html"};
+const ORIG_FILES={"11": "snap_11_rodzaje-sejfow-domowych-jaki-wybrac.html", "11_dom": "snap_11_klasy-bezpieczenstwa-sejfow.html", "1_dom": "snap_1_czy-warto-miec-sejf-w-domu.html", "8_dom": "snap_8_jak-zamontowac-sejf-w-domu-montaz-sejfu-wolnostojacego.html", "28_bron": "snap_28_klasa-s1-wg-en-14450-co-oznacza-i-dlaczego-jest-wymagana-dla.html", "4_dom": "snap_4_przed-czym-chroni-sejf-ognioodporny-zalety-sejfow-ogniotrwal.html", "12_dom": "snap_12_co-warto-przechowywac-w-sejfie.html", "16_dom": "snap_16_jak-zamontowac-sejf-w-szafie.html", "25_bron": "snap_25_dostales-pozwolenie-na-bron-co-teraz-kompletny-przewodnik-po.html", "2_dom": "snap_2_ile-kosztuje-sejf-domowy-co-wplywa-na-jego-cene.html", "9_dom": "snap_9_jak-ukryc-sejf-w-domu.html", "17_bron": "snap_17_jak-ukryc-sejf-w-domu.html", "2_bron": "snap_2_rozladowana-bateria-w-zamku-elektronicznym.html", "14_dom": "snap_14_czy-zamek-kluczowy-jest-bezpieczny.html", "9_bron": "snap_9_przed-czym-chroni-sejf-ognioodporny-zalety-sejfow-ogniotrwal.html", "5_dom": "snap_5_rodzaje-sejfow-domowych-jaki-wybrac.html", "18_dom": "snap_18_najlepsze-sejfy-domowe-2026-ranking-i-porownanie.html", "22_bron": "snap_22_sejf-elektroniczny-czy-kluczowy.html", "5_bron": "snap_5_czy-warto-miec-sejf-w-domu.html", "10_bron": "snap_10_jaki-sejf-na-bron-mysliwska-wybrac-najlepsze-szafy-na-bron-d.html", "20_bron": "snap_20_klasy-bezpieczenstwa-sejfow.html", "1_bron": "snap_1_siegen-max-vs-siegen-max-kombi.html", "7_bron": "snap_7_ile-kosztuje-sejf-domowy-co-wplywa-na-jego-cene.html", "14_bron": "snap_14_jak-zamontowac-sejf-w-domu-montaz-sejfu-wolnostojacego.html", "16_bron": "snap_16_rodzaje-sejfow-na-bron-szafy-na-bron-dluga-i-sejfy-na-bron-k.html", "18_bron": "snap_18_czy-mozna-przechowywac-bron-i-amunicje-w-tym-samym-sejfie.html", "24_bron": "snap_24_co-warto-przechowywac-w-sejfie.html", "4_bron": "snap_4_jak-zamontowac-sejf-w-szafie.html", "6_bron": "snap_6_czy-zamek-kluczowy-jest-bezpieczny.html", "8_bron": "snap_8_czy-tani-sejf-to-dobry-pomysl.html", "11_bron": "snap_11_rodzaje-sejfow-domowych-jaki-wybrac.html", "12_bron": "snap_12_co-powinien-miec-dobry-sejf-domowy.html", "15_bron": "snap_15_jakie-cechy-sejfu-na-bron-naprawde-sie-licza.html", "23_bron": "snap_23_nie-pamietasz-kodu-do-sejfu.html", "21_bron": "snap_21_najdrozsze-sejfy-na-swiecie-luksus-i-bezpieczenstwo-w-jednym.html", "3_dom": "snap_3_czy-tani-sejf-to-dobry-pomysl.html", "6_dom": "snap_6_co-powinien-miec-dobry-sejf-domowy.html", "17_dom": "snap_17_sejf-elektroniczny-czy-kluczowy.html", "231_dom": "snap_231_najlepsze-sejfy-domowe-2026-ranking-i-porownanie.html"};
 
 /* ===== INDEKS WYNIKÓW SKANU (scan_links.py → DATA) ===== */
 const DATA_SCAN={};
@@ -1900,7 +1900,7 @@ function render(){
       +'<td><b>'+r.ind+'</b></td>'
       +'<td>'+rCellT(r)+'</td>'+'<td>'+rCellB(r)+'</td>'+'<td>'+rLinkBadge(r)+'</td>'
       +'<td style="font-size:12px;color:#667">'+resc(r.sc)+'</td>'
-      +'<td style="width:130px;text-align:center;vertical-align:middle;padding:6px 4px">'+((r.lk&&r.lk.blog_url)?(r.lk&&r.lk.thumb_url?'<a href="'+r.lk.blog_url+'" target="_blank"><img src="'+r.lk.thumb_url+'" style="width:88px;height:55px;object-fit:cover;border-radius:3px;display:block;margin:0 auto 5px" loading="lazy"></a>':'')+'<a href="'+r.lk.blog_url+'" target="_blank" style="font-size:11px;font-weight:700;color:#1A6EF4;text-decoration:none;white-space:nowrap">sejfzone →</a>':'')+(ORIG_FILES[+r.nr]?((r.lk&&r.lk.blog_url)?' ·&nbsp;':'')+' <a href="'+ORIG_BASE+ORIG_FILES[+r.nr]+'" target="_blank" style="font-size:11px;font-weight:600;color:#888;text-decoration:none;white-space:nowrap">oryginał</a>':'')+'</td>'
+      +'<td style="width:130px;text-align:center;vertical-align:middle;padding:6px 4px">'+((r.lk&&r.lk.blog_url)?(r.lk&&r.lk.thumb_url?'<a href="'+r.lk.blog_url+'" target="_blank"><img src="'+r.lk.thumb_url+'" style="width:88px;height:55px;object-fit:cover;border-radius:3px;display:block;margin:0 auto 5px" loading="lazy"></a>':'')+'<a href="'+r.lk.blog_url+'" target="_blank" style="font-size:11px;font-weight:700;color:#1A6EF4;text-decoration:none;white-space:nowrap">sejfzone →</a>':'')+(ORIG_FILES[r.nr+"_"+r.kl]?((r.lk&&r.lk.blog_url)?' ·&nbsp;':'')+' <a href="'+ORIG_BASE+ORIG_FILES[r.nr+"_"+r.kl]+'" target="_blank" style="font-size:11px;font-weight:600;color:#888;text-decoration:none;white-space:nowrap">oryginał</a>':'')+'</td>'
       +'<td class="ttl">'+ttl+'</td>'
       +'<td><button class="bgbtn" data-id="'+resc(r.id)+'" title="Brief graficzny">🖼️</button></td></tr>';
   }).join('') || '<tr><td colspan="11" style="color:var(--mut);padding:16px">Brak wyników.</td></tr>';
@@ -2058,7 +2058,7 @@ function renderArticles(){
   function card(r,extra){
     const f=FILES[String(r.nr)];
     const klp='<span class="kl '+(r.kl==="bron"?"kl-bron":"kl-dom")+'">'+(r.kl==="bron"?"broń":"dom")+'</span>';
-    const origLink=ORIG_FILES[+r.nr]?'<div style="margin-top:6px"><a href="'+ORIG_BASE+ORIG_FILES[+r.nr]+'" target="_blank" style="font-size:11px;font-weight:600;color:#888;text-decoration:none">📄 oryginał</a></div>':'';
+    const origLink=ORIG_FILES[r.nr+"_"+r.kl]?'<div style="margin-top:6px"><a href="'+ORIG_BASE+ORIG_FILES[r.nr+"_"+r.kl]+'" target="_blank" style="font-size:11px;font-weight:600;color:#888;text-decoration:none">📄 oryginał</a></div>':'';
     return '<div style="border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-bottom:8px;background:#fff">'
       +'<div style="font-size:12.5px;font-weight:600;line-height:1.35;margin-bottom:5px">#'+r.nr+' '+esc(r.t)+'</div>'
       +'<div style="font-size:11px;color:#789;margin-bottom:7px">'+klp+' '+esc(r.sc)+(r.wk>0?' · T'+r.wk:'')+'</div>'
@@ -2073,7 +2073,7 @@ function renderArticles(){
     return card(r,'<div style="display:flex;flex-direction:column;gap:6px;margin-top:6px">'
       +'<button class="minibtn ok artprev" data-nr="'+r.nr+'" data-kl="'+r.kl+'" style="width:100%">👁 Podgląd HTML</button>'
       +'<button class="minibtn ok artcopy" data-nr="'+r.nr+'" data-kl="'+r.kl+'" style="width:100%">📋 Kopiuj do wklejenia</button>'
-      +(ORIG_FILES[+r.nr]?'<a href="'+ORIG_BASE+ORIG_FILES[+r.nr]+'" target="_blank" class="minibtn ok" style="width:100%;display:block;text-align:center;text-decoration:none;color:#456;font-weight:600">📄 Oryginał engine</a>':'')
+      +(ORIG_FILES[r.nr+"_"+r.kl]?'<a href="'+ORIG_BASE+ORIG_FILES[r.nr+"_"+r.kl]+'" target="_blank" class="minibtn ok" style="width:100%;display:block;text-align:center;text-decoration:none;color:#456;font-weight:600">📄 Oryginał engine</a>':'')
       +'</div>');
   });
   const cAkc=col("✅ Do akceptu",doAkceptu,"#1A6EF4",r=>{
@@ -2088,7 +2088,7 @@ function renderArticles(){
     const d=deployDate(r,fromRows);
     return card(r,(d?'<div style="font-size:10.5px;color:#667;margin-bottom:4px">wdrożony: '+d+'</div>':'')
       +(burl?'<a href="'+burl+'" target="_blank" style="display:inline-block;font-size:11px;font-weight:700;color:#1A6EF4;text-decoration:none;white-space:nowrap">sejfzone →</a>':'<span style="font-size:11px;color:#aab">brak linku</span>')
-      +(ORIG_FILES[+r.nr]?' <a href="'+ORIG_BASE+ORIG_FILES[+r.nr]+'" target="_blank" style="font-size:11px;font-weight:600;color:#888;text-decoration:none;white-space:nowrap">· oryginał</a>':''));
+      +(ORIG_FILES[r.nr+"_"+r.kl]?' <a href="'+ORIG_BASE+ORIG_FILES[r.nr+"_"+r.kl]+'" target="_blank" style="font-size:11px;font-weight:600;color:#888;text-decoration:none;white-space:nowrap">· oryginał</a>':''));
   });
   document.getElementById("kanban").innerHTML=cLive+cWdr+cAkc+cNext;
   // generator paczki
