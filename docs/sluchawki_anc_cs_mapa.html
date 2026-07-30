@@ -6,35 +6,73 @@
 <title>Słuchawki z ANC — CS + Mapa Percepcji</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,Segoe UI,sans-serif;background:#f6f8fa;color:#1f2328}
-.tabs{display:flex;background:#fff;border-bottom:2px solid #d0d7de;position:sticky;top:0;z-index:100}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,Segoe UI,sans-serif;background:#f6f8fa;color:#1f2328;display:flex;flex-direction:column}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #d0d7de;flex-shrink:0}
 .tab{padding:12px 28px;cursor:pointer;font-size:14px;font-weight:600;color:#57606a;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
 .tab:hover{color:#0969da}
 .tab.active{color:#0969da;border-bottom-color:#0969da}
-.panel{display:none}
+.panel{display:none;flex:1;overflow:auto;background:#fff}
 .panel.active{display:block}
-iframe{width:100%;border:none;height:calc(100vh - 48px)}
+.combined{display:none;flex:1;overflow:hidden}
+.combined.active{display:flex}
+.combined-half{flex:1;overflow:auto;background:#fff}
+.combined-half:first-child{border-right:1px solid #d0d7de}
+.spinner{display:flex;align-items:center;justify-content:center;height:60px;color:#8c959f;font-size:13px;gap:8px}
 </style>
 </head>
 <body>
 <div class="tabs">
-  <button class="tab active" onclick="switchTab(this,'mapa')">🗺️ Mapa percepcji</button>
-  <button class="tab" onclick="switchTab(this,'cs')">📄 Category Standards</button>
-  <button class="tab" onclick="switchTab(this,'combined')">🔗 Łączny widok</button>
+  <button class="tab active" onclick="sw(this,'mapa')">🗺️ Mapa percepcji</button>
+  <button class="tab" onclick="sw(this,'cs')">📄 Category Standards</button>
+  <button class="tab" onclick="sw(this,'combined')">🔗 Łączny widok</button>
 </div>
-<div id="tab-mapa" class="panel active"><iframe src="MAPA_PERCEPCJI_sluchawki_anc_v5.5.html"></iframe></div>
-<div id="tab-cs" class="panel"><iframe src="cs_sluchawki_anc.html"></iframe></div>
-<div id="tab-combined" class="panel" style="display:flex;height:calc(100vh - 48px)">
-  <iframe src="MAPA_PERCEPCJI_sluchawki_anc_v5.5.html" style="width:50%;height:100%;border-right:1px solid #d0d7de"></iframe>
-  <iframe src="cs_sluchawki_anc.html" style="width:50%;height:100%"></iframe>
+<div id="tab-mapa" class="panel active"><div class="spinner">⏳ Ładowanie mapy...</div></div>
+<div id="tab-cs" class="panel"><div class="spinner">⏳ Ładowanie CS...</div></div>
+<div id="tab-combined" class="combined">
+  <div id="comb-mapa" class="combined-half"><div class="spinner">⏳ Mapa...</div></div>
+  <div id="comb-cs" class="combined-half"><div class="spinner">⏳ CS...</div></div>
 </div>
 <script>
-function switchTab(btn, id){
+const SRC={mapa:'MAPA_PERCEPCJI_sluchawki_anc_v5.5.html',cs:'cs_sluchawki_anc.html'};
+const cache={};
+async function fetchHTML(url){
+  if(cache[url]) return cache[url];
+  const r=await fetch(url);
+  if(!r.ok) throw new Error(r.status+' '+url);
+  cache[url]=await r.text();
+  return cache[url];
+}
+function inject(htmlStr, container){
+  const dp=new DOMParser().parseFromString(htmlStr,'text/html');
+  container.innerHTML='';
+  dp.querySelectorAll('style,link[rel="stylesheet"]').forEach(s=>{
+    container.appendChild(document.importNode(s,true));
+  });
+  Array.from(dp.body.childNodes).forEach(n=>container.appendChild(document.importNode(n,true)));
+  container.querySelectorAll('script').forEach(old=>{
+    const ns=document.createElement('script');
+    if(old.src){ns.src=old.src;}else{ns.textContent=old.textContent;}
+    old.replaceWith(ns);
+  });
+}
+const done={};
+async function ensure(key,targetId){
+  if(done[targetId]) return;
+  done[targetId]=true;
+  try{inject(await fetchHTML(SRC[key]),document.getElementById(targetId));}
+  catch(e){document.getElementById(targetId).innerHTML='<div class="spinner" style="color:#cf222e">❌ '+e.message+'</div>';}
+}
+async function sw(btn,id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.panel,.combined').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('tab-'+id).classList.add('active');
+  if(id==='mapa') await ensure('mapa','tab-mapa');
+  else if(id==='cs') await ensure('cs','tab-cs');
+  else{await Promise.all([ensure('mapa','comb-mapa'),ensure('cs','comb-cs')]);}
 }
+ensure('mapa','tab-mapa');
 </script>
 </body>
 </html>
