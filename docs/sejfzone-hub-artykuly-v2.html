@@ -1165,7 +1165,7 @@ function renderTopicList(){
                : (val==="uwaga" ? '<span style="font-size:11px;color:#d9821a">→ uwaga zgłoszona, wstrzymany</span>'
                : '<span style="font-size:11px;color:#889">→ niezatwierdzony idzie do pisania wg planu</span>');
     return '<div class="topicrow">'
-      +'<div class="tt">'+segPill(r.seg)+' <b style="color:#1A6EF4">T'+r.wk+'</b> '+esc(r.t)+'<br>'+flow+'</div>'
+      +'<div class="tt">'+segPill(r.seg)+' <b style="color:#1A6EF4">'+rWkLabel(r.wk)+'</b> '+esc(r.t)+'<br>'+flow+'</div>'
       +'<div class="acts">'
       +'<button class="minibtn '+(val==="ok"?"act-ok":"ok")+'" data-uid="'+esc(r.uid)+'" data-v="ok">'+(val==="ok"?"✓ Zatwierdzony":"Zatwierdzam temat")+'</button>'
       +'<button class="minibtn '+(val==="uwaga"?"act-warn":"warn")+'" data-uid="'+esc(r.uid)+'" data-v="uwaga">'+(val==="uwaga"?"⚑ Mam uwagę":"Mam uwagę")+'</button>'
@@ -1826,7 +1826,8 @@ el.innerHTML=wks.map(w=>{
 const R_PILL={NOWY:"p-back","NIE-BLOG":"p-zbr",NAPISANY:"p-pis",LIVE:"p-wdr"};
 function resc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function rKlPill(kl){var c=kl==='bron'?'kl-bron':'kl-dom';var lbl=kl==='bron'?'broń':'domowe';return '<span class="kl '+c+'">'+lbl+'</span>';}
-function rWkLabel(wk){ if(wk>0) return 'T'+wk; if(wk===0) return 'live'; return '—'; }
+function wkTier(wk){ return Math.ceil(wk/2); }
+function rWkLabel(wk){ if(wk>0) return 'T'+wkTier(wk); if(wk===0) return 'live'; return '—'; }
 /* klucz sortowania tygodnia: nowe (T1..) najpierw, potem live(0), potem nie-blog(-1/null) */
 function rWkKey(wk){ if(wk>0) return wk; if(wk===0) return 100000; return 200000; }
 
@@ -1839,7 +1840,8 @@ function initFilters(){ if(rTabFilled) return; rTabFilled=true;
   // Tydzień: T1..Tmax + live + nie-blog
   const maxWk=ROWS.reduce((m,r)=>(r.wk||0)>m?(r.wk||0):m,0);
   const wkOpts=[];
-  for(let n=1;n<=maxWk;n++){ if(ROWS.some(r=>r.wk===n)) wkOpts.push({v:'T'+n,l:'T'+n}); }
+  const seenTiers=new Set();
+  for(let n=1;n<=maxWk;n++){ if(ROWS.some(r=>r.wk===n)){ const t='T'+wkTier(n); if(!seenTiers.has(t)){ seenTiers.add(t); wkOpts.push({v:t,l:t}); } } }
   if(ROWS.some(r=>r.wk===0)) wkOpts.push({v:'live',l:'live'});
   if(ROWS.some(r=>(r.wk===-1||r.wk==null))) wkOpts.push({v:'nieblog',l:'nie-blog'});
   fill(document.getElementById("rfWk"), wkOpts);
@@ -1875,7 +1877,7 @@ function render(){
     if(fw){
       if(fw==='live'){ if(r.wk!==0) return false; }
       else if(fw==='nieblog'){ if(!(r.wk===-1||r.wk==null)) return false; }
-      else { if(('T'+r.wk)!==fw) return false; }
+      else { if(rWkLabel(r.wk)!==fw) return false; }
     }
     if(onlyFix && !(r.lk&&r.lk.fix>0)) return false;
     return true;
@@ -1938,7 +1940,7 @@ function openBrief(id, tr){
   // --- sekcja: konkretne cele linków (ze ścieżek) ---
   if(r.typ!=='nieblog' && r.lk){
     const L=r.lk;
-    function tgtLine(x){ var wkl=(x.wk===0?'<span style="color:#1f9e6e">live</span>':(x.wk>0?'T'+x.wk:'—')); return '• '+resc(x.t)+' <span style="color:#889;font-size:11px">('+(x.kl==='bron'?'broń':'dom')+' #'+x.nr+' · '+wkl+')</span>'; }
+    function tgtLine(x){ var wkl=(x.wk===0?'<span style="color:#1f9e6e">live</span>':(x.wk>0?rWkLabel(x.wk):'—')); return '• '+resc(x.t)+' <span style="color:#889;font-size:11px">('+(x.kl==='bron'?'broń':'dom')+' #'+x.nr+' · '+wkl+')</span>'; }
     let th='<div class="bgcard" style="margin-top:10px"><div class="bgh">🔗 Linki wyprowadzone ze ścieżki '+resc(r.sc)+'</div>';
     th+='<div class="lkfixrow"><b>W treści — 2 blogowe:</b><br>'+(L.inA&&L.inA.length?L.inA.map(tgtLine).join('<br>'):'—')+'</div>';
     if(L.inP){ th+='<div class="lkfixrow"><b>W treści — 1 produkt (zawsze żywy):</b><br>• '+resc(L.inP.name)+'</div>'; }
@@ -2061,7 +2063,7 @@ function renderArticles(){
     const origLink=ORIG_FILES[r.nr+"_"+r.kl]?'<div style="margin-top:6px"><a href="'+ORIG_BASE+ORIG_FILES[r.nr+"_"+r.kl]+'" target="_blank" style="font-size:11px;font-weight:600;color:#888;text-decoration:none">📄 oryginał</a></div>':'';
     return '<div style="border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-bottom:8px;background:#fff">'
       +'<div style="font-size:12.5px;font-weight:600;line-height:1.35;margin-bottom:5px">#'+r.nr+' '+esc(r.t)+'</div>'
-      +'<div style="font-size:11px;color:#789;margin-bottom:7px">'+klp+' '+esc(r.sc)+(r.wk>0?' · T'+r.wk:'')+'</div>'
+      +'<div style="font-size:11px;color:#789;margin-bottom:7px">'+klp+' '+esc(r.sc)+(r.wk>0?' · '+rWkLabel(r.wk):'')+'</div>'
       +(extra||'')+origLink+'</div>';
   }
   function col(title,arr,color,builder){
@@ -2080,7 +2082,7 @@ function renderArticles(){
     const a=accOf(r);
     return card(r,'<span style="font-size:11px;color:#888">'+(a?("akcept: "+a):"czeka na akceptację (zakładka Do recenzji)")+'</span>');
   });
-  const cNext=col("📅 Najbliższe 2 tygodnie",nextWk,"#d9821a",r=>card(r,'<span style="font-size:11px;color:#b5751a">zaplanowany na T'+r.wk+' — do napisania</span>'));
+  const cNext=col("📅 Najbliższe 2 tygodnie",nextWk,"#d9821a",r=>card(r,'<span style="font-size:11px;color:#b5751a">zaplanowany na '+rWkLabel(r.wk)+' — do napisania</span>'));
   const allLive=[...live, ...liveWdrCMS];
   const cLive=col("🌐 Live",allLive,"#1f9e6e",r=>{
     const burl=r.lk&&r.lk.blog_url;
