@@ -553,6 +553,30 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
   </a>
 </div>
 
+<!-- BACKLOG — odłożone tematy do powrotu -->
+<div class="instr-section" style="margin-top:20px;border-left-color:#f0ad4e">
+  <div class="ih">📌 Backlog — wrócimy za ~2 tygodnie</div>
+  <div class="instr-grid">
+    <div class="instr-card" style="cursor:default">
+      <div class="ico">🔗</div>
+      <div>
+        <h4>Pełna atrybucja Advantage+ — projekt UTM ID-based</h4>
+        <p>Problem: Advantage+ generuje dynamiczne nazwy kreacji → utm_content ≠ ad.name w Meta → 2003 sesji/tydz. bez matchu w GA4 (konwencja <code>nieznana</code>).</p>
+        <p style="margin-top:6px"><b>Plan (4 kroki):</b></p>
+        <ol style="margin:4px 0 0 16px;font-size:12px;line-height:1.7">
+          <li><b>Meta Ads Manager</b> — URL parameters na poziomie kampanii (nie kreacji): <code>utm_content={{adset.id}}&amp;utm_term={{ad.id}}</code>. Usunąć UTM z URL-ów kreacji. Wszystkie kampanie, w tym Rossmann geo. <em>~15 min.</em></li>
+          <li><b>merge_3levels.py</b> — dodać ID-based matching w <code>resolve_ga_row()</code> jako primary path (name-based zostaje jako fallback dla historii). <em>~2h.</em></li>
+          <li><b>Nowy GA4 pull</b> — po wdrożeniu Kroku 1, odpalić <code>rebuild_from_proxy()</code> ze świeżym query 4-wymiarowym. JSON przebuduje się bez re-scraping Meta.</li>
+          <li><b>Shopify CAPI</b> (opcjonalne, osobna sesja) — Customer Events → server-side → odzysk ~15–25% zakupów bez UTM w Meta.</li>
+        </ol>
+        <p style="margin-top:8px"><b>Oczekiwany efekt:</b> adset match 28% → ~88% · nieznana 2003 sess/tydz. → &lt;300 · Rossmann geo 0 → 17 adsetów widocznych.</p>
+        <div class="tags"><span class="t acc">Meta Ads UTM</span><span class="t">merge_3levels.py</span><span class="t">GA4 matching</span><span class="t">Advantage+</span></div>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:11px;color:#999;margin-top:10px;padding:0 4px">Odłożone 2026-07-31 · powrót ~2026-08-14</div>
+</div>
+
 <div class="foot">
   <b>glov.hub</b> — jeden punkt wejścia do analiz glov.co · wszystkie raporty INTERNAL<br>
   GA4 342844459 (proton.me) · Shopify ShopifyQL · Microsoft Clarity · GTM-PQ9JFT2 · Phenicoptere Sp. z o.o.
