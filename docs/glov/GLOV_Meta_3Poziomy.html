@@ -4277,7 +4277,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <script>
-const META_URL  = 'https://tomekwlqq.github.io/eel-reports/glov/glov_hub_meta_daily.json';
+const META_URL  = 'https://tomekwlqq.github.io/eel-reports/glov/glov_meta_timeseries.json';
 const LIVE2_URL = 'https://tomekwlqq.github.io/eel-reports/glov/glov_live2.json';
 const SALES_URL = 'https://tomekwlqq.github.io/eel-reports/glov_hub_sales.json';
 
@@ -4315,17 +4315,82 @@ function dlt(cur, prev){
 
 /* ===== LIVE SECTION: Toggle Dziś / Wczoraj ===== */
 
+/* ===== AGGREGACJA ZAKRESU Z TIMESERIES ===== */
+function aggregateRange(fromDate, toDate){
+  const TS = window.META_TS;
+  if(!TS || !TS.days) return null;
+  const total = {spend:0,impressions:0,clicks:0,reach:0,purchases:0,revenue:0};
+  const campMap = {};
+  Object.entries(TS.days).forEach(([d,day])=>{
+    if(d < fromDate || d > toDate) return;
+    const t = day.total||{};
+    total.spend      += t.spend||0;
+    total.impressions+= t.impressions||0;
+    total.clicks     += t.clicks||0;
+    total.reach      += t.reach||0;
+    total.purchases  += t.purchases||0;
+    total.revenue    += t.revenue||0;
+    (day.campaigns||[]).forEach(c=>{
+      if(!campMap[c.id]) campMap[c.id] = {id:c.id,name:c.name,spend:0,impressions:0,clicks:0,reach:0,purchases:0,revenue:0};
+      const cm = campMap[c.id];
+      cm.spend       += c.spend||0;
+      cm.impressions += c.impressions||0;
+      cm.clicks      += c.clicks||0;
+      cm.reach       += c.reach||0;
+      cm.purchases   += c.purchases||0;
+      cm.revenue     += c.revenue||0;
+    });
+  });
+  total.spend   = Math.round(total.spend*100)/100;
+  total.revenue = Math.round(total.revenue*100)/100;
+  total.ctr     = total.impressions>0 ? Math.round(total.clicks/total.impressions*10000)/100 : 0;
+  total.roas    = total.spend>0 && total.revenue>0 ? Math.round(total.revenue/total.spend*100)/100 : 0;
+  const campaigns = Object.values(campMap).map(c=>{
+    c.spend   = Math.round(c.spend*100)/100;
+    c.revenue = Math.round(c.revenue*100)/100;
+    c.ctr     = c.impressions>0 ? Math.round(c.clicks/c.impressions*10000)/100 : 0;
+    c.roas    = c.spend>0 && c.revenue>0 ? Math.round(c.revenue/c.spend*100)/100 : 0;
+    c.cost_per_purchase = c.purchases>0 ? Math.round(c.spend/c.purchases*100)/100 : null;
+    return c;
+  }).sort((a,b)=>b.spend-a.spend);
+  return {total, campaigns};
+}
+
+/* Helper: pobierz daty z pickera */
+function getPickerDates(){
+  const f = document.getElementById('picker-from').value;
+  const t = document.getElementById('picker-to').value;
+  if(f && t) return {from: f, to: t};
+  /* fallback: ostatni dostępny dzień */
+  const TS = window.META_TS;
+  const days = TS ? Object.keys(TS.days) : [];
+  const latest = days.length ? days[0] : new Date().toISOString().slice(0,10);
+  return {from: latest, to: latest};
+}
+
 function setDay(key){
   currentDay = key;
   document.getElementById('dbtn-today').classList.toggle('active', key==='today');
   document.getElementById('dbtn-yesterday').classList.toggle('active', key==='yesterday');
-  /* Reset presetu do today gdy user wraca do widoku dziennego */
-  if(currentPreset==='last_7d' || currentPreset==='last_30d'){
+  /* Ustaw daty w pickerze odpowiadające wyborowi */
+  const TS = window.META_TS;
+  if(TS && TS.days){
+    const days = Object.keys(TS.days);
+    const latest = days[0]||'';
+    const prev   = days[1]||latest;
+    if(key==='today'){
+      document.getElementById('picker-from').value = latest;
+      document.getElementById('picker-to').value   = latest;
+    } else {
+      document.getElementById('picker-from').value = prev;
+      document.getElementById('picker-to').value   = prev;
+    }
+  }
+  /* Reset presetu jeśli był 7d/30d/mtd */
+  if(['last_7d','last_30d','mtd'].includes(currentPreset)){
     currentPreset = 'today';
-    const keyMap = {'today':'today','last_7d':'7d','last_30d':'30d'};
-    Object.keys(keyMap).forEach(k=>{
-      const el = document.getElementById('prst-'+keyMap[k]);
-      if(el) el.classList.toggle('active', k==='today');
+    ['prst-yday','prst-7d','prst-30d','prst-mtd'].forEach(id=>{
+      const el = document.getElementById(id); if(el) el.classList.remove('active');
     });
   }
   renderDayCampanel();
@@ -4359,24 +4424,22 @@ function cloneEtlToDay(panelId, sourceId){
 }
 
 function renderPeriodKpi(){
-  const M = window.META_DAILY;
   const L = window.LIVE2;
   const S = window.SALES;
   const bar = document.getElementById('period-kpi-bar');
-  if(!M || !bar) return;
+  if(!window.META_TS || !bar) return;
 
-  const p = currentPreset;
-  /* preset 'today' → używamy M.yesterday (ostatni zamknięty dzień) */
-  const presetData = {
-    'today':    M.yesterday,
-    'last_7d':  M.last_7d,
-    'last_30d': M.last_30d
-  };
-  const md = (presetData[p] && presetData[p].total) ? presetData[p].total : null;
+  const {from, to} = getPickerDates();
+  const agg = aggregateRange(from, to);
+  const md = agg ? agg.total : null;
 
-  /* GA4 — dostępne tylko gdy live2.today.date === M.yesterday_date (1d lag) */
+  /* GA4 — dostępne tylko gdy single-day = yesterday (1d lag) */
+  const TS = window.META_TS;
+  const days = TS && TS.days ? Object.keys(TS.days) : [];
+  const latest = days[0]||'';
+  const prevDay = days[1]||latest;
   let lv = null;
-  if(p==='today' && L && L.today && L.today.date === M.yesterday_date) lv = L.today;
+  if(from===to && from===prevDay && L && L.today && L.today.date === prevDay) lv = L.today;
 
   /* GA4: płatne sesje Meta (source=meta, medium=cpc) + atrybucja */
   let paidSess=null, zestSess=null, reklSess=null;
@@ -4390,13 +4453,13 @@ function renderPeriodKpi(){
   const zestPct = (paidSess && zestSess!=null) ? (zestSess/paidSess*100).toFixed(1)+'%' : null;
   const reklPct = (paidSess && reklSess!=null) ? (reklSess/paidSess*100).toFixed(1)+'%' : null;
 
-  /* BL — dla yesterday: live2.today.shopify; dla 7d/30d: brak */
+  /* BL — dla single-day (yesterday): live2.today.shopify */
   let blOrders=null, blRev=null, blChannels=null, blChStr='';
   if(lv && lv.shopify && lv.shopify.kpi){
     blOrders = lv.shopify.kpi.orders;
     blRev    = lv.shopify.kpi.net_sales;
   }
-  if(p==='today' && S && S.today_d){
+  if(from===to && from===prevDay && S && S.today_d){
     const chActive = Object.entries(S.today_d).filter(([,v])=>v.orders>0);
     blChannels = chActive.length;
     blChStr = chActive.map(([k,v])=>`${k} ${v.orders}`).join(', ');
@@ -4450,56 +4513,22 @@ function renderPeriodKpi(){
 }
 
 function renderDayCampanel(){
-  const M = window.META_DAILY;
-  const L = window.LIVE2;
   const panel = document.getElementById('day-panel-kampanie');
-  if(!M){ panel.innerHTML='<div class="meta-loading">Brak danych</div>'; return; }
-  const dk = currentDay;
-  const dayData = M[dk];
-  if(!dayData||!dayData.campaigns){
-    panel.innerHTML='<div class="meta-loading">Brak kampanii dla tego zakresu</div>'; return;
+  const {from, to} = getPickerDates();
+  const agg = aggregateRange(from, to);
+  if(!agg || !agg.campaigns || agg.campaigns.length===0){
+    panel.innerHTML='<div class="meta-loading">Brak danych dla wybranego zakresu</div>'; return;
   }
 
-  /* GA4 lookup — dostępne tylko dla 'yesterday' przez live2.today */
-  const ga4Map = {};
-  const isToday = dk==='today';
-  const isMultiDay = (dk==='last_7d' || dk==='last_30d');
-  if(!isToday && !isMultiDay && L && L.today && L.today.ga4 && L.today.ga4.channels){
-    L.today.ga4.channels.forEach(ch=>{
-      if(ch.campaign) ga4Map[ch.campaign.toLowerCase()] = ch;
-    });
-  }
+  const dateLabel = from===to ? from : from+' – '+to;
+  const isMultiDay = from !== to;
 
-  const dateLabel = dk==='today' ? (M.today_date||'Dziś')
-    : dk==='yesterday' ? (M.yesterday_date||'Wczoraj')
-    : dk==='last_7d'   ? (M.week_range||'7 dni')
-    : (M.month_range||'30 dni');
-
-  const rows = dayData.campaigns.map(c=>{
+  const rows = agg.campaigns.map(c=>{
     const rpCls = c.roas>=2?'rp-ok':c.roas>0?'rp-bad':'rp-na';
     const rpTxt = c.roas>0?c.roas.toFixed(2)+'×':'—';
-    const badge = c.status==='ACTIVE'
-      ? '<span class="badge-active">ACTIVE</span>'
-      : '<span class="badge-paused">PAUSED</span>';
-
-    const ga4 = (!isToday && !isMultiDay) ? (ga4Map[c.name.toLowerCase()]||null) : null;
-    const ga4sess = ga4 ? ga4.sessions : null;
-    const ga4txn  = ga4 ? (ga4.purchases??null) : null;
-    const ga4rev  = ga4 ? (ga4.revenue??null) : null;
-    const ga4roas = (ga4rev!=null && c.spend>0) ? (ga4rev/c.spend) : null;
-
-    const ga4cells = isToday
-      ? `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">brak (lag 1d)</td>`
-      : isMultiDay
-      ? `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">n/d dla okresu</td>`
-      : `<td class="ga4 num">${ga4sess!=null?fmt(ga4sess,'n'):'—'}</td>
-         <td class="ga4 num">—</td>
-         <td class="ga4 num">—</td>
-         <td class="ga4 num">${ga4txn!=null?ga4txn:'—'}</td>
-         <td class="ga4 num">${ga4rev!=null?fmt(ga4rev,'zl'):'—'}</td>
-         <td class="ga4 num">${ga4roas!=null?fmt(ga4roas,'roas'):'—'}</td>`;
-
-    return `<tr class="row-match" data-status="${c.status}">
+    const badge = '<span class="badge-active">ACTIVE</span>';
+    const ga4cells = `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">${isMultiDay?'sumowane':'n/d'}</td>`;
+    return `<tr class="row-match" data-status="ACTIVE">
       <td class="name-cell"><span class="camp-name">${c.name||c.id}</span></td>
       <td>${badge}</td>
       <td class="muted">—</td>
@@ -4524,7 +4553,7 @@ function renderDayCampanel(){
           <th rowspan="2">Status</th>
           <th rowspan="2">Cel</th>
           <th colspan="7" class="grp-meta">Meta · ${dateLabel}</th>
-          <th colspan="6" class="grp-ga4">GA4 · ${isToday?'lag 1d':dateLabel}</th>
+          <th colspan="6" class="grp-ga4">GA4 · n/d</th>
           <th colspan="2" class="grp-bl">BL · n/d per kampania</th>
         </tr>
         <tr>
@@ -4554,67 +4583,76 @@ function renderDayCampanel(){
 
 function setPreset(p){
   currentPreset = p;
-  const keyMap = {'today':'today','last_7d':'7d','last_30d':'30d'};
-  Object.keys(keyMap).forEach(k=>{
-    const el = document.getElementById('prst-'+keyMap[k]);
-    if(el) el.classList.toggle('active', k===p);
+  ['prst-yday','prst-7d','prst-30d','prst-mtd'].forEach(id=>{
+    const el = document.getElementById(id); if(el) el.classList.remove('active');
   });
-  const M = window.META_DAILY;
-  if(!M) return;
-  if(p==='today'){
-    document.getElementById('picker-from').value = M.today_date||'';
-    document.getElementById('picker-to').value   = M.today_date||'';
+  const presetIdMap = {'yesterday':'prst-yday','last_7d':'prst-7d','last_30d':'prst-30d','mtd':'prst-mtd'};
+  const el = document.getElementById(presetIdMap[p]); if(el) el.classList.add('active');
+
+  const TS = window.META_TS;
+  if(!TS || !TS.days) return;
+  const days = Object.keys(TS.days).sort();  /* rosnąco */
+  const latest = days[days.length-1]||'';
+
+  let fromDate='', toDate=latest;
+  if(p==='yesterday'){
+    const idx = days.indexOf(latest);
+    fromDate = idx>0 ? days[idx-1] : latest;
+    toDate   = fromDate;
   } else if(p==='last_7d'){
-    const pts = (M.week_range||'').split(' – ');
-    document.getElementById('picker-from').value = pts[0]||'';
-    document.getElementById('picker-to').value   = pts[1]||'';
+    const d = new Date(latest); d.setDate(d.getDate()-6);
+    fromDate = d.toISOString().slice(0,10);
   } else if(p==='last_30d'){
-    const pts = (M.month_range||'').split(' – ');
-    document.getElementById('picker-from').value = pts[0]||'';
-    document.getElementById('picker-to').value   = pts[1]||'';
+    const d = new Date(latest); d.setDate(d.getDate()-29);
+    fromDate = d.toISOString().slice(0,10);
+  } else if(p==='mtd'){
+    fromDate = latest.slice(0,7)+'-01';
+  } else {
+    /* today lub nieznany — latest */
+    fromDate = latest;
   }
-  /* Synchronizuj tabelę kampanii z presetem */
-  if(p==='last_7d' || p==='last_30d'){
-    currentDay = p;
-    /* Odznacz przyciski Dziś/Wczoraj */
-    const db = document.getElementById('dbtn-today');
-    const dy = document.getElementById('dbtn-yesterday');
-    if(db) db.classList.remove('active');
-    if(dy) dy.classList.remove('active');
-  } else if(p==='today'){
-    /* Preset "today" → tabela kampanii: dziś */
-    currentDay = 'today';
-    const db = document.getElementById('dbtn-today');
-    if(db) db.classList.add('active');
-    const dy = document.getElementById('dbtn-yesterday');
-    if(dy) dy.classList.remove('active');
+
+  document.getElementById('picker-from').value = fromDate;
+  document.getElementById('picker-to').value   = toDate;
+
+  /* Odznacz Dziś/Wczoraj jeśli preset wielodniowy */
+  if(['last_7d','last_30d','mtd'].includes(p)){
+    document.getElementById('dbtn-today')?.classList.remove('active');
+    document.getElementById('dbtn-yesterday')?.classList.remove('active');
+    currentDay = '';
   }
+
   renderDayCampanel();
   renderPeriodKpi();
 }
 
 function generateReport(){
-  const M = window.META_DAILY;
+  const TS = window.META_TS;
   const compEl  = document.getElementById('comp-kpi');
   const rangeEl = document.getElementById('comp-range-lbl');
-  if(!M){ compEl.style.display='none'; rangeEl.style.display='none'; return; }
+  if(!TS){ compEl.style.display='none'; rangeEl.style.display='none'; return; }
 
-  const p = currentPreset;
   const doCompare = document.getElementById('compare-chk').checked;
+  const {from, to} = getPickerDates();
+  const agg = aggregateRange(from, to);
+  const cur = agg ? agg.total : null;
 
-  const periodMap = {
-    'today':    { data: M.today,   label: M.today_date||'Dziś',     prev: M.yesterday,   prevLabel: M.yesterday_date||'Wczoraj' },
-    'last_7d':  { data: M.last_7d, label: M.week_range||'7 dni',    prev: null,           prevLabel: 'brak danych' },
-    'last_30d': { data: M.last_30d,label: M.month_range||'30 dni',  prev: null,           prevLabel: 'brak danych' },
-  };
-  const pm = periodMap[p] || periodMap['today'];
-  const cur  = pm.data ? pm.data.total : null;
-  const prev = doCompare ? (pm.prev ? pm.prev.total : null) : null;
+  /* Poprzedni analogiczny okres do porównania */
+  let prev = null;
+  if(doCompare && cur){
+    const dayCount = Math.round((new Date(to)-new Date(from))/(86400000))+1;
+    const prevTo   = new Date(from); prevTo.setDate(prevTo.getDate()-1);
+    const prevFrom = new Date(prevTo); prevFrom.setDate(prevFrom.getDate()-(dayCount-1));
+    const prevAgg  = aggregateRange(prevFrom.toISOString().slice(0,10), prevTo.toISOString().slice(0,10));
+    prev = prevAgg ? prevAgg.total : null;
+  }
+
+  const label = from===to ? from : from+' – '+to;
 
   if(!cur){ compEl.style.display='none'; rangeEl.style.display='none'; return; }
 
   rangeEl.style.display = 'block';
-  rangeEl.textContent   = doCompare ? `${pm.label} vs ${pm.prevLabel}` : pm.label;
+  rangeEl.textContent   = doCompare ? `${label} vs poprzedni okres` : label;
 
   const metrics = [
     {key:'spend',       lbl:'Wydatek',   fmt:'zl'},
@@ -4645,20 +4683,28 @@ async function refreshAllData(force=false){
   const updEl = document.getElementById('live-meta-updated');
   if(updEl) updEl.textContent = 'Ładowanie…';
   try {
-    const [M, L, S] = await Promise.all([
+    const [TS, L, S] = await Promise.all([
       fetchJson(META_URL, force),
       fetchJson(LIVE2_URL, force).catch(()=>null),
       fetchJson(SALES_URL, force).catch(()=>null),
     ]);
-    window.META_DAILY = M;
+    window.META_TS = TS;
     window.LIVE2 = L;
     window.SALES = S;
 
-    const td = document.getElementById('lbl-today-date');
-    const yd = document.getElementById('lbl-yesterday-date');
-    if(td) td.textContent = M.today_date ? '('+M.today_date.slice(5)+')' : '';
-    if(yd) yd.textContent = M.yesterday_date ? '('+M.yesterday_date.slice(5)+')' : '';
-    if(updEl) updEl.textContent = 'Aktualizacja: '+(M.updated||'');
+    /* Ustaw datepicker na ostatni dostępny dzień */
+    if(TS && TS.days){
+      const days = Object.keys(TS.days);
+      const latest = days[0]||'';
+      const td = document.getElementById('lbl-today-date');
+      if(td) td.textContent = latest ? '('+latest.slice(5)+')' : '';
+      /* picker-from/to jeśli puste → ustaw na latest */
+      const pf = document.getElementById('picker-from');
+      const pt = document.getElementById('picker-to');
+      if(pf && !pf.value) pf.value = latest;
+      if(pt && !pt.value) pt.value = latest;
+    }
+    if(updEl) updEl.textContent = 'Aktualizacja: '+(TS._meta?.updated||'');
 
     renderDayCampanel();
     setPreset(currentPreset);
@@ -4667,6 +4713,13 @@ async function refreshAllData(force=false){
   }
 }
 
+/* Picker change → re-render */
+document.addEventListener('DOMContentLoaded', ()=>{
+  const pf = document.getElementById('picker-from');
+  const pt = document.getElementById('picker-to');
+  if(pf) pf.addEventListener('change', ()=>{ currentPreset=''; renderDayCampanel(); renderPeriodKpi(); });
+  if(pt) pt.addEventListener('change', ()=>{ currentPreset=''; renderDayCampanel(); renderPeriodKpi(); });
+});
 
 refreshAllData();
 </script>
