@@ -2,77 +2,1240 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Leasing prywatny — finansowanie samochodu — CS + Mapa Percepcji</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Leasing prywatny — Mapa + CS</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow:hidden}
-body{font-family:-apple-system,Segoe UI,sans-serif;background:#f6f8fa;color:#1f2328;display:flex;flex-direction:column}
-.tabs{display:flex;background:#fff;border-bottom:2px solid #d0d7de;flex-shrink:0}
-.tab{padding:12px 28px;cursor:pointer;font-size:14px;font-weight:600;color:#57606a;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
-.tab:hover{color:#0969da}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #d0d7de;height:48px;align-items:center;flex-shrink:0}
+.tab{padding:0 20px;height:100%;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;color:#57606a;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
 .tab.active{color:#0969da;border-bottom-color:#0969da}
-.panel{display:none;flex:1;overflow:auto;background:#fff}
-.panel.active{display:block}
-.combined{display:none;flex:1;overflow:hidden}
-.combined.active{display:flex}
-.combined-half{flex:1;overflow:auto;background:#fff}
-.combined-half:first-child{border-right:1px solid #d0d7de}
-.spinner{display:flex;align-items:center;justify-content:center;height:60px;color:#8c959f;font-size:13px;gap:8px}
+.tab:hover:not(.active){color:#24292f;background:#f6f8fa}
+#panel-mapa{overflow:hidden;height:calc(100vh - 48px)}
+#panel-cs{display:none;overflow:auto;height:calc(100vh - 48px);background:#fff}
+</style>
+<style id="mapa-styles">
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+#panel-mapa{ font-family: -apple-system, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; display: flex; height: calc(100vh - 48px); overflow: hidden; }
+
+/* SIDEBAR */
+#sidebar {
+  width: 220px; min-width: 220px; background: #fff; border-right: 1px solid #e2e8f0;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.brand {
+  padding: 14px 16px 10px;
+  font-weight: 700; font-size: 13px; color: #1e293b;
+  border-bottom: 1px solid #e2e8f0; line-height: 1.3;
+}
+.brand small { display: block; font-weight: 400; font-size: 11px; color: #64748b; margin-top: 2px; }
+.total-badge {
+  margin: 8px 12px; background: #f1f5f9; border-radius: 6px;
+  padding: 5px 10px; font-size: 11px; color: #475569; font-weight: 500;
+}
+.paths-header { padding: 10px 16px 4px; font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .6px; }
+.paths-list { overflow-y: auto; flex: 1; }
+.path-all {
+  display: flex; align-items: center; gap: 8px; padding: 7px 12px;
+  cursor: pointer; border-radius: 6px; margin: 2px 8px;
+  font-size: 12px; font-weight: 600; color: #334155;
+}
+.path-all.active, .path-all:hover { background: #f1f5f9; }
+.path-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+  cursor: pointer; border-radius: 6px; margin: 1px 8px;
+  font-size: 12px; color: #475569; transition: background .1s;
+}
+.path-item:hover, .path-item.active { background: #f1f5f9; color: #1e293b; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.plabel { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pcount { font-size: 11px; font-weight: 600; color: #94a3b8; min-width: 20px; text-align: right; }
+
+.legend { padding: 10px 12px; border-top: 1px solid #e2e8f0; }
+.legend-title { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+.legend-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #475569; margin: 2px 0; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* MAIN */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* TOPBAR */
+#topbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  padding: 8px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 4px; }
+.filter-label { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-right: 2px; }
+.fbtn {
+  font-size: 11px; padding: 3px 8px; border: 1px solid #e2e8f0; border-radius: 4px;
+  background: #fff; cursor: pointer; color: #475569; transition: all .1s;
+}
+.fbtn:hover { border-color: #94a3b8; }
+.fbtn.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+.search-wrap { margin-left: auto; }
+#search { border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 10px; font-size: 12px; width: 180px; outline: none; }
+#search:focus { border-color: #3b82f6; }
+.counter { font-size: 12px; color: #64748b; white-space: nowrap; }
+
+/* STATS BAR */
+#statsbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  display: flex; gap: 0; overflow-x: auto;
+}
+.stat { flex: 1; padding: 10px 16px; border-right: 1px solid #e2e8f0; min-width: 120px; }
+.stat:last-child { border-right: none; }
+.stat .val { font-size: 24px; font-weight: 700; color: #1e293b; }
+.stat .val.green { color: #10b981; }
+.stat .val.red { color: #ef4444; }
+.stat-lbl { font-size: 11px; color: #64748b; margin-top: 1px; }
+
+/* BOARD */
+#board { flex: 1; overflow-x: auto; overflow-y: auto; padding: 12px; }
+.state-block { margin-bottom: 16px; }
+.state-header {
+  font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase;
+  letter-spacing: .5px; padding: 6px 0 8px; display: flex; align-items: center; gap: 8px;
+}
+.state-code { background: #e2e8f0; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: #64748b; }
+.state-cnt { color: #94a3b8; font-weight: 400; font-size: 11px; }
+.cards-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.card {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 10px 12px; width: 280px; flex-shrink: 0;
+  cursor: default; transition: box-shadow .15s;
+}
+.card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.card .nr { font-size: 10px; color: #94a3b8; margin-bottom: 4px; }
+.card .qt { font-size: 13px; line-height: 1.45; color: #1e293b; margin-bottom: 8px; }
+.card .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600;
+  border: 1px solid; letter-spacing: .2px;
+}
+.tag-p1 { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-p2 { color: #f97316; border-color: #fdba74; background: #fff7ed; }
+.tag-p3 { color: #d97706; border-color: #fcd34d; background: #fffbeb; }
+.tag-p4 { color: #94a3b8; border-color: #cbd5e1; background: #f8fafc; }
+.tag-info  { color: #3b82f6; border-color: #93c5fd; background: #eff6ff; }
+.tag-komerc { color: #8b5cf6; border-color: #c4b5fd; background: #f5f3ff; }
+.tag-trans { color: #14b8a6; border-color: #5eead4; background: #f0fdfa; }
+.tag-brak { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-istnieje { color: #10b981; border-color: #6ee7b7; background: #ecfdf5; }
+.card.hidden { display: none; }
+
+/* TABS */
+#tabs { display: flex; border-bottom: 2px solid #e2e8f0; background: #fff; }
+.tab { padding: 8px 20px; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.tab.active { color: #1e293b; border-bottom-color: #3b82f6; }
+.tab-panel { display: none; }
+.tab-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+/* LIST VIEW */
+#list-panel { overflow-y: auto; padding: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 8px 12px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; position: sticky; top: 0; }
+td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; }
+tr:hover td { background: #f8fafc; }
+tr.hidden { display: none; }
+
+/* INFO */
+#info-panel { overflow: hidden; display: flex; flex-direction: column; font-size: 13px; line-height: 1.6; }
+.info-section { margin-bottom: 16px; }
+.info-section h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #64748b; margin-bottom: 8px; }
+.info-section ul { padding-left: 16px; color: #475569; }
+.info-section li { margin: 3px 0; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin: 2px; }
+
+</style>
+<style id="cs-styles">
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+#panel-cs{
+  --bg:#0f1117;--sb-bg:#161b22;--hd-bg:#161b22;--bd:#30363d;
+  --tx:#e6edf3;--tx2:#8b949e;--ac:#58a6ff;
+  --cb:#1c2128;--ts:#1c2128;--mb:#2d4a22;--mt:#7ee787;
+  --ab:#1f3353;--sw:292px;--hh:52px
+}
+#panel-cs{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+     background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* Header */
+#hd{height:var(--hh);background:var(--hd-bg);border-bottom:1px solid var(--bd);
+    display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+#hd h1{font-size:15px;font-weight:700;white-space:nowrap;flex-shrink:0;letter-spacing:.01em}
+#hd h1 span{color:var(--ac)}
+#sw{flex:1;position:relative;max-width:440px}
+#si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tx2);font-size:15px;pointer-events:none}
+#search{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:6px;
+        color:var(--tx);padding:6px 10px 6px 30px;font-size:15px;outline:none;transition:border-color .15s}
+#search:focus{border-color:var(--ac)}
+
+/* Filter buttons */
+.filt{display:flex;gap:4px;flex-shrink:0}
+.fb{font-size:13px;padding:3px 8px;border-radius:4px;border:1px solid var(--bd);
+    background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fb:hover{border-color:var(--ac);color:var(--tx)}
+.fb.on{border-color:var(--ac);background:var(--ab);color:var(--tx)}
+
+/* Lang toggle */
+#lang-btn{font-size:13px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+          background:transparent;color:var(--tx2);cursor:pointer;text-decoration:none;
+          display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+#lang-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+#stat{font-size:13px;color:var(--tx2);flex-shrink:0;white-space:nowrap;min-width:90px;text-align:right}
+
+/* Layout */
+#lay{display:flex;flex:1;overflow:hidden}
+
+/* Sidebar */
+#sb{width:var(--sw);flex-shrink:0;background:var(--sb-bg);border-right:1px solid var(--bd);overflow-y:auto}
+.ci{display:flex;align-items:center;gap:7px;padding:7px 10px;cursor:pointer;
+    border-left:3px solid transparent;border-bottom:1px solid var(--bd);
+    transition:background .1s;user-select:none;min-height:36px}
+.ci:hover{background:rgba(88,166,255,.07)}
+.ci.active{background:var(--ab);border-left-color:var(--ac)}
+.ci.hidden{display:none}
+.cn{font-size:11.5px;color:var(--tx2);min-width:20px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ct{font-size:14px;line-height:1.3;color:var(--tx);flex:1;min-width:0}
+.ct mark{background:var(--mb);color:var(--mt);border-radius:2px;padding:0 1px}
+
+/* Version badge in sidebar */
+.vb{font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:8px;flex-shrink:0;letter-spacing:.02em}
+.vb-v1{background:#21262d;color:#6e7681}
+.vb-v2{background:#2d2502;color:#d29922}
+.vb-v3{background:#0d2a1a;color:#3fb950}
+.vb-v4{background:#0d1e3c;color:#58a6ff}
+
+/* Verification pipeline dots */
+.pipe{display:flex;gap:2px;flex-shrink:0}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--bd)}
+.pd.on-v1{background:#6e7681}
+.pd.on-v2{background:#d29922}
+.pd.on-v3{background:#3fb950}
+.pd.on-v4{background:#58a6ff}
+
+#nr{padding:20px 12px;font-size:15px;color:var(--tx2);text-align:center;display:none}
+
+/* Content */
+#ct{flex:1;overflow-y:auto;padding:26px 34px}
+.cs{display:none}
+.cs.vis{display:block}
+
+/* Markdown */
+.cs h2{font-size:23px;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:10px;margin-bottom:16px}
+.cs h3{font-size:13px;font-weight:700;color:var(--ac);margin:20px 0 9px;
+       text-transform:uppercase;letter-spacing:.06em}
+.cs h4{font-size:16px;font-weight:600;margin:14px 0 6px}
+.cs p{font-size:15.5px;line-height:1.65;margin-bottom:8px}
+.cs strong{font-weight:600}
+.cs em{font-style:italic;color:var(--tx2)}
+.cs code{font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:13px;
+         background:var(--cb);border:1px solid var(--bd);border-radius:3px;
+         padding:1px 5px;color:#f0883e}
+.cs pre{background:var(--cb);border:1px solid var(--bd);border-radius:6px;
+        padding:12px 14px;overflow-x:auto;margin:10px 0}
+.cs pre code{background:none;border:none;padding:0;font-size:14px;color:var(--tx);line-height:1.5}
+.cs table{width:100%;border-collapse:collapse;font-size:14.5px;margin:10px 0;display:block;overflow-x:auto}
+.cs th,.cs td{text-align:left;padding:7px 10px;border:1px solid var(--bd)}
+.cs th{background:var(--sb-bg);font-weight:600}
+.cs tr:nth-child(even) td{background:var(--ts)}
+.cs ul,.cs ol{padding-left:18px;margin:7px 0}
+.cs li{font-size:15.5px;line-height:1.6;margin-bottom:3px}
+.cs hr{border:none;border-top:1px solid var(--bd);margin:18px 0}
+
+/* Changelog / verification card */
+.changelog{background:#0b1e10;border:1px solid #2ea043;border-radius:8px;
+           padding:14px 18px;margin:18px 0;position:relative}
+.changelog::before{content:'🔬 VERIFIED';font-size:10.5px;font-weight:700;
+                   color:#3fb950;letter-spacing:.08em;display:block;margin-bottom:8px}
+.changelog h3{color:#3fb950 !important;margin-top:0 !important;font-size:14px !important}
+.changelog p,.changelog li{color:#c3e6cb;font-size:15px}
+.changelog ul{margin:4px 0}
+.changelog table{font-size:12px}
+.changelog th{background:#0d2a1a}
+.changelog code{background:#0d2a1a;color:#7ee787}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+body.light{
+  --bg:#ffffff;--sb-bg:#f6f8fa;--hd-bg:#f6f8fa;--bd:#d0d7de;
+  --tx:#1f2328;--tx2:#656d76;--ac:#0969da;
+  --cb:#f6f8fa;--ts:#f6f8fa;--mb:#fff8c5;--mt:#7a5c00;--ab:#ddf4ff;
+}
+body.light .cs code{color:#cf222e}
+body.light .cs pre code{color:var(--tx)}
+body.light .changelog{background:#f0fff4;border-color:#2ea043}
+body.light .changelog p,body.light .changelog li{color:#1a7f37}
+#theme-btn{font-size:14px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx2);cursor:pointer;flex-shrink:0;transition:all .15s}
+#theme-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+/* FUND rozwijany blok */
+details.fund{border:1px solid var(--bd);border-radius:8px;margin:22px 0 8px;
+  background:var(--cb);overflow:hidden}
+details.fund>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  padding:12px 16px;user-select:none;transition:background .12s}
+details.fund>summary::-webkit-details-marker{display:none}
+details.fund>summary:hover{background:rgba(88,166,255,.07)}
+.fund-arrow{color:var(--ac);font-size:13px;flex-shrink:0;transition:transform .15s}
+details.fund[open] .fund-arrow{transform:rotate(90deg)}
+.fund-head{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.fund-title{font-size:15px;font-weight:700;color:var(--tx)}
+.fund-src{font-size:12px;font-style:italic;color:var(--tx2);line-height:1.4}
+.fund-badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.fund-badge.ok{background:#0d2a1a;color:#3fb950}
+.fund-badge.warn{background:#3d2a02;color:#f0883e}
+body.light .fund-badge.ok{background:#dafbe1;color:#1a7f37}
+body.light .fund-badge.warn{background:#fff1e5;color:#bc4c00}
+.fund-hint{font-size:11px;color:var(--tx2);flex-shrink:0;border:1px solid var(--bd);
+  border-radius:4px;padding:2px 7px}
+details.fund[open] .fund-hint{display:none}
+.fund-#panel-cs{padding:4px 18px 16px;border-top:1px solid var(--bd)}
+.fund-body h1{font-size:18px;margin:12px 0 6px}
+
 </style>
 </head>
 <body>
 <div class="tabs">
   <button class="tab active" onclick="sw(this,'mapa')">🗺️ Mapa percepcji</button>
   <button class="tab" onclick="sw(this,'cs')">📄 Category Standards</button>
-  <button class="tab" onclick="sw(this,'combined')">🔗 Łączny widok</button>
 </div>
-<div id="tab-mapa" class="panel active"><div class="spinner">⏳ Ładowanie mapy...</div></div>
-<div id="tab-cs" class="panel"><div class="spinner">⏳ Ładowanie CS...</div></div>
-<div id="tab-combined" class="combined">
-  <div id="comb-mapa" class="combined-half"><div class="spinner">⏳ Mapa...</div></div>
-  <div id="comb-cs" class="combined-half"><div class="spinner">⏳ CS...</div></div>
+<div id="panel-mapa">
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="brand">
+    Leasing prywatny — finansowanie samochodu
+    <small>v5.7 · Analiza CEP i Pytań</small>
+  </div>
+  <div class="total-badge" id="total-badge">120 pytań · 7 ścieżek</div>
+  <div class="paths-header">Ścieżki zakupowe</div>
+  <div class="paths-list">
+    <div class="path-all active" onclick="filterPath(this)" data-path="ALL">
+      <span class="dot" style="background:#64748b"></span>
+      <span class="plabel">Wszystkie ścieżki</span>
+      <span class="pcount" id="cnt-all">0</span>
+    </div>
+    
+        <div class="path-item" data-path="A" onclick="filterPath(this)" title="Odkrycie leasingu prywatnego">
+          <span class="dot" style="background:#3b82f6"></span>
+          <span class="plabel">A · Odkrycie leasingu prywatnego</span>
+          <span class="pcount" id="cnt-A">0</span>
+        </div>
+        <div class="path-item" data-path="B" onclick="filterPath(this)" title="Koniec kredytu samochodowego">
+          <span class="dot" style="background:#8b5cf6"></span>
+          <span class="plabel">B · Koniec kredytu samochodowego</span>
+          <span class="pcount" id="cnt-B">0</span>
+        </div>
+        <div class="path-item" data-path="C" onclick="filterPath(this)" title="Za mało gotówki na nowe auto">
+          <span class="dot" style="background:#ec4899"></span>
+          <span class="plabel">C · Za mało gotówki na nowe auto</span>
+          <span class="pcount" id="cnt-C">0</span>
+        </div>
+        <div class="path-item" data-path="D" onclick="filterPath(this)" title="End-of-Lease: co dalej?">
+          <span class="dot" style="background:#14b8a6"></span>
+          <span class="plabel">D · End-of-Lease: co dalej?</span>
+          <span class="pcount" id="cnt-D">0</span>
+        </div>
+        <div class="path-item" data-path="E" onclick="filterPath(this)" title="Kalkulator TCO: leasing vs reszta">
+          <span class="dot" style="background:#f59e0b"></span>
+          <span class="plabel">E · Kalkulator TCO: leasing vs reszta</span>
+          <span class="pcount" id="cnt-E">0</span>
+        </div>
+        <div class="path-item" data-path="F" onclick="filterPath(this)" title="Strach przed pierwszym leasingiem">
+          <span class="dot" style="background:#10b981"></span>
+          <span class="plabel">F · Strach przed pierwszym leasingiem</span>
+          <span class="pcount" id="cnt-F">0</span>
+        </div>
+        <div class="path-item" data-path="G" onclick="filterPath(this)" title="JDG kontra leasing prywatny">
+          <span class="dot" style="background:#f43f5e"></span>
+          <span class="plabel">G · JDG kontra leasing prywatny</span>
+          <span class="pcount" id="cnt-G">0</span>
+        </div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Statusy</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>BRAK — do stworzenia</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#10b981"></span>ISTNIEJE — opublikowany</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>ROZBUDOWAĆ — wymaga rozbudowy</div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Priorytety</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>P1 — krytyczne (blokery)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>P2 — ważne (decyzja)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#eab308"></span>P3 — standardowe</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#94a3b8"></span>P4 — niski priorytet</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <span class="filter-label">Priorytet</span>
+    <div class="filter-group" id="fg-pr">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="P1">P1</button>
+      <button class="fbtn" data-val="P2">P2</button>
+      <button class="fbtn" data-val="P3">P3</button>
+      <button class="fbtn" data-val="P4">P4</button>
+    </div>
+    <span class="filter-label" style="margin-left:8px">Typ</span>
+    <div class="filter-group" id="fg-typ">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="INFO">INFO</button>
+      <button class="fbtn" data-val="KOMERC">KOMERC</button>
+      <button class="fbtn" data-val="TRANS">TRANS</button>
+    </div>
+    <div class="search-wrap">
+      <input id="search" type="text" placeholder="Szukaj pytania..." oninput="applyFilters()">
+    </div>
+    <div class="counter">Widoczne: <strong id="visibleCount">0</strong> / 120</div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div id="statsbar">
+    <div class="stat"><div class="val" id="stat-total">0</div><div class="stat-lbl">Widocznych pytań</div></div>
+    <div class="stat"><div class="val red" id="stat-p1">0</div><div class="stat-lbl">Priorytet P1 (blokery)</div></div>
+    <div class="stat"><div class="val" id="stat-brak">0</div><div class="stat-lbl">Status BRAK (do stworzenia)</div></div>
+    <div class="stat"><div class="val green" id="stat-istnieje">0</div><div class="stat-lbl">ISTNIEJE + ROZBUDOWAĆ</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div id="tabs">
+    <button class="tab active" onclick="switchTab('mapa')">🗺️ Mapa</button>
+    <button class="tab" onclick="switchTab('lista')">📋 Lista</button>
+    <button class="tab" onclick="switchTab('info')">ℹ️ Info</button>
+  </div>
+
+  <!-- MAPA PANEL -->
+  <div id="mapa-panel" class="tab-panel active">
+    <div id="board"></div>
+  </div>
+
+  <!-- LISTA PANEL -->
+  <div id="lista-panel" class="tab-panel">
+    <div id="list-panel">
+      <table id="list-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Pytanie</th><th>Ścieżka</th><th>Stan</th><th>Priorytet</th><th>Typ</th>
+          </tr>
+        </thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INFO PANEL -->
+  <div id="info-panel" class="tab-panel">
+    <div style="overflow-y:auto;padding:16px;flex:1">
+    <div class="info-section">
+      <h3>Kategoria</h3>
+      <p style="font-size:14px"><strong>Leasing prywatny — finansowanie samochodu</strong></p>
+      <p style="font-size:12px;color:#64748b;margin-top:4px">v5.7 · 120 pytań · 7 ścieżek zakupowych (CEP)</p>
+    </div>
+    <div class="info-section">
+      <h3>Struktura pytań wg stanu</h3>
+      <div id="info-states" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
+    </div>
+    <div class="info-section">
+      <h3>Ścieżki zakupowe — pełne profile CEP</h3>
+      <div id="info-paths" style="margin-top:8px"></div>
+    </div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+<div id="panel-cs">
+<div id="hd">
+  <h1>GEO <span>CS</span></h1>
+  <div id="sw">
+    <span id="si">⌕</span>
+    <input id="search" type="text" placeholder="Szukaj kategorii, CEP, pytania..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="filt">
+    <button class="fb on" data-f="all" onclick="setFilter('all')">All</button>
+    <button class="fb" data-f="v2p" onclick="setFilter('v2p')">✅ Verified</button>
+    <button class="fb" data-f="v1"  onclick="setFilter('v1')">📝 Draft</button>
+  </div>
+  <a id="lang-btn" href="%23">🌐 EN</a>
+  <button id="theme-btn" onclick="toggleTheme()" title="Tryb jasny/ciemny">☀️</button>
+  <span id="stat">1 cat.</span>
+</div>
+<div id="lay">
+  <div id="sb">
+    <div class="ci" id="i1" onclick="select(1)"><span class="cn">#1</span><span class="ct">Leasing prywatny — finansowanie samochodu</span><span class="vb vb-v2">v2</span><div class="pipe"><span class="pd on-v1"></span><span class="pd on-v2"></span><span class="pd"></span><span class="pd"></span></div></div>
+    <div id="nr">No results</div>
+  </div>
+  <div id="ct">
+    <div class="cs" id="s1"><h1>CS-2: Leasing prywatny — finansowanie samochodu — Category Standard v2</h1>
+
+<p><em>Projekt: Audi Plichta. CS-2 z 6. Format: 16 sekcji wg wzorca sejfy (v4.1). Nic nie freestyle — wszystko z modelu zakupowego.</em></p>
+
+<hr>
+
+<h2>0. Opis kategorii</h2>
+
+<p>Leasing prywatny to forma finansowania samochodu dostępna dla osób fizycznych nieprowadzących działalności gospodarczej — konsument płaci miesięczną ratę za użytkowanie auta przez 24–48 miesięcy, a na końcu zwraca pojazd lub wykupuje go za uzgodnioną wartość rezydualną. W Polsce funkcjonuje jako <strong>leasing konsumencki</strong> (regulowany Ustawą o kredycie konsumenckim) lub <strong>wynajem długoterminowy (NLO/RLO)</strong> — oba produkty są dostępne przez sieci dealerskie marek premium (Audi Financial Services, BMW FS, MBFinancial) oraz niezależnych leasingodawców (ALD Automotive, Arval, LeasePlan).</p>
+
+<p>Kupujący wchodzi w kategorię, gdy SYTUACJA wymusza nowe podejście do finansowania — nie gdy „zainteresuje się leasingiem". Trigger to konkretny moment życiowy: koniec kredytu, koniec poprzedniej umowy, liczba na kalkulatorze TCO, odkrycie że leasing prywatny w ogóle istnieje.</p>
+
+<hr>
+
+<h2>0b. Problemy, które kategoria załatwia</h2>
+
+<p><em>Fundament — rzeczy powstają Z POWODU. Primary = rdzeń. Secondary = jak rynek pociął rdzeń na węższe przypadki.</em></p>
+
+<p><strong>🎯 Primary (rdzeń):</strong></p>
+<p>> <strong>Umożliwia dostęp do nowego samochodu bez jednorazowego wydatku gotówkowego lub zaciągania klasycznego kredytu.</strong></p>
+<p>Goła funkcja: klient ma auto, płaci ratę miesięczną, nie angażuje dużego kapitału jednorazowo. Nie „daje prestiż", nie „sprawia radość jazdy" — to warstwy wyżej. Rdzeń: zamienia dużą jednorazową kwotę na przewidywalne miesięczne koszty.</p>
+
+<p><strong>Secondary (detalizacja rdzenia — rynek pociął na węższe przypadki):</strong></p>
+<ul><li>dostęp do nowego auta bez gotówki własnej → <code>cep_za_malo_na_nowe_gotowka</code></li><li>rotacja samochodu co 2-4 lata bez ryzyka wartości rezydualnej → <code>cep_koniec_poprzedniego_leasingu</code></li><li>odkrycie nowej możliwości finansowania → <code>cep_odkrycie_leasingu_prywatnego</code></li><li>zamiana kredytu samochodowego na ratę leasingową → <code>cep_koniec_rat_kredytu</code></li><li>racjonalizacja TCO — własność vs użytkowanie → <code>cep_kalkulator_tco_leasing</code></li><li>lęk przed nieznanym produktem → <code>cep_pierwszy_leasing_strach</code></li><li>rozdzielenie leasingu firmowego od prywatnego → <code>cep_biznes_to_prywatny</code></li></ul>
+
+<p>> ⚠️ <strong>Marka, model, silnik, kolor — to NIE problemy tej kategorii.</strong> To atrybuty produktowe → idą do KCF i preselekcji, nie tutaj i nie do CEP.</p>
+
+<hr>
+
+<h2>0c. Dynamika Kategorii</h2>
+
+<p><em>Poziom jawny: <strong>[L1]</strong> = ból dotychczasowej metody finansowania auta (kredyt/gotówka) → sojusznik · <strong>[L2]</strong> = ból samego leasingu → nasz problem. Kategoria finansowa — L1/L2 działają na osi koszt/ryzyko/elastyczność; Wear = koniec umowy (nie zużycie auta); Stopper = lęk + complexity finansowania.</em></p>
+
+<h3>① CEP — momenty wejścia</h3>
+
+<p><strong>L1 — wejście w „muszę inaczej sfinansować auto"</strong> <em>(konkuruje każda metoda: kredyt bankowy, gotówka własna, wynajem krótkoterminowy, firmowy leasing operacyjny, nierobienie nic)</em></p>
+
+<table>
+<tr><th>Moment</th><th>Trigger (głos klienta)</th></tr>
+<tr><td>Odkrycie leasingu prywatnego</td><td>„nie wiedziałem że mogę wziąć leasing jako osoba prywatna, myślałem że to tylko dla firm"</td></tr>
+<tr><td>Koniec rat kredytu</td><td>„za miesiąc płacę ostatnią ratę kredytu — co teraz? może coś nowego?"</td></tr>
+<tr><td>Zbyt mała gotówka na nowe auto</td><td>„mam odłożone 30 tys., nowe Audi Q5 kosztuje 280 tys. — nie wchodzi w grę jednorazowo"</td></tr>
+<tr><td>Koniec poprzedniego leasingu</td><td>„za 6 miesięcy oddaję auto z leasingu — co dalej, zostać z marką czy zmienić?"</td></tr>
+</table>
+
+<p><strong>L2 — wejście w KONKRETNĄ umowę leasingową</strong> <em>(gdy L1-metoda zawodzi lub jest jawnie droższa)</em></p>
+
+<table>
+<tr><th>Moment</th><th>Droga</th><th>Friction/wear L1</th></tr>
+<tr><td><code>cep_kalkulator_tco_leasing</code></td><td>kalkulacja-driven</td><td>TCO gotówki/kredytu wyższe niż raty + TK leasingu przy amortyzacji auta</td></tr>
+<tr><td><code>cep_pierwszy_leasing_strach</code></td><td>edukacja-driven</td><td>lęk przed nieznanym — klient boi się pułapek, warunków końcowych, limitu km</td></tr>
+<tr><td><code>cep_biznes_to_prywatny</code></td><td>routing-driven</td><td>posiadacz firmy nie wie czy prywatne auto może leasingować prywatnie</td></tr>
+</table>
+
+<h3>② Friction Points</h3>
+
+<ul><li><strong>[L1]</strong> kredyt bankowy wymaga wysokiej zdolności kredytowej i angażuje historię BIK → sojusznik (<code>cep_odkrycie_leasingu_prywatnego</code> — leasing ma inną ocenę creditworthiness)</li><li><strong>[L1]</strong> gotówka na nowe auto to 150–350 tys. PLN jednorazowo → sojusznik (<code>cep_za_malo_na_nowe_gotowka</code>)</li><li><strong>[L1]</strong> po kredycie klient zostaje z deprecjonującym aktywem, ryzyko wartości na wyjściu → sojusznik (<code>cep_kalkulator_tco_leasing</code>)</li><li><strong>[L2]</strong> limit kilometrów w umowie — klient nie wie ile jeździ → nasz: kalkulator km + wycena nadprzebiegu</li><li><strong>[L2]</strong> wartość rezydualna — abstrakcyjny koncept, klient boi się pułapki → nasz: transparentny wykres deprecjacji, jasna opcja wykupu</li><li><strong>[L2]</strong> wcześniejsze zakończenie umowy — „co jeśli stracę pracę?" → nasz: warunki rozwiązania, gap insurance</li><li><strong>[L2]</strong> ubezpieczenie obowiązkowe AC — leasingodawca wymaga, klient nie wie ile to kosztuje → nasz: oferta AC w pakiecie</li></ul>
+
+<h3>③ Wear & Consumption <em>(kategoria finansowa — Wear = cykl umowy)</em></h3>
+
+<ul><li><strong>[L1]</strong> kredyt bankowy — 5 lat spłaty, wartość auta spada 40–60% → terminuje się po spłacie z aktywem niskiej wartości → sojusznik: kontrast z oddaniem auta po leasingu</li><li><strong>[L2] terminalny (umowy):</strong> koniec 24/36/48-miesięcznej umowy → <strong>kluczowy mini-CEP nawrotu</strong> (decyzja: oddać/wykupić/zmienić) — rotacja co 2-4 lata jest modelem biznesowym dealera i mechanizmem powrotu klienta</li><li><strong>[L2] wear eksploatacyjny:</strong> stan techniczny auta przy zwrocie — normalne zużycie vs uszkodzenia (szacowane wg protokołu ACRISS) → realny lęk, adresuj w FAQ przed-transakcyjnym</li></ul>
+
+<h3>④ Category Stoppers</h3>
+
+<p><strong>Wejścia</strong> (nie zaczynam)</p>
+<ul><li><strong>[L2]</strong> „po leasingu nie mam nic" — lęk przed brakiem własności na końcu umowy → S2: wyjaśnij opcję wykupu, porównaj TCO z kredytem który też kończy się bez zysku</li><li><strong>[L2]</strong> „nie wiem czy mam zdolność" — lęk przed odmową → S2: kalkulator wstępny, próg dochodowy, czas akceptacji</li><li><strong>[L2]</strong> „za dużo małego druku" — kompleksowość umowy, strach przed ukrytymi kosztami → S2: lista wszystkich opłat wprost (czynsz inicjalny, opłata za km, opłata za wcześniejsze zakończenie)</li><li><strong>[L2]</strong> „co jeśli auto mi ukradną lub będzie szkoda całkowita?" — brak wiedzy o gap insurance → S2: gap insurance jako standardowe zabezpieczenie</li></ul>
+
+<p><strong>Rozwoju</strong> (nie pogłębiam)</p>
+<ul><li><strong>[L2]</strong> klient bierze minimalny czynsz inicjalny (0%) bez rozumienia że wyższa rata = większy koszt całkowity → edukuj: kalkulator różnych wariantów wpłaty własnej</li><li><strong>[L2]</strong> klient nie odświeża auto na koniec leasingu i przechodzi na kredyt → utrata klienta dealera → S2: program pre-end-of-lease 3-6 mies. przed końcem umowy</li></ul>
+
+<hr>
+
+<h2>1. CEV — Category Emotional Valuation</h2>
+
+<p><strong>Pasek CEV — profil emocjonalny kategorii:</strong></p>
+
+<table>
+<tr><th>ryzyko</th><th>lęk</th><th>widoczność</th><th>impuls</th><th>sexy</th><th>aspiracja</th><th>tożsamość</th><th>zmysłowość</th><th>pilność</th><th>moralność</th></tr>
+<tr><td>.75</td><td>.80</td><td>.40</td><td>.10</td><td>.30</td><td>.55</td><td>.35</td><td>.20</td><td>.70</td><td>.10</td></tr>
+</table>
+
+<p>Wysokie <strong>lęk .80</strong> (strach przed pułapkami, skomplikowanymi warunkami, utratą kontroli nad finansami) + <strong>ryzyko .75</strong> (zobowiązanie na lata, co jeśli zmieni się sytuacja życiowa) → kategoria research-owa, klient MUSI się edukować zanim podpisze. <strong>Pilność .70</strong> — trigger ma deadline (koniec kredytu, koniec leasingu). <strong>Aspiracja .55</strong> — premium auto które można mieć nawet bez 300 tys. gotówki. <strong>Widoczność .40</strong> — samochód widzą sąsiedzi, leasing to sygnał statusu (mam nowe auto co kilka lat).</p>
+
+<p><strong>Schwartz — stany świadomości + wagi:</strong></p>
+
+<p>Fork <strong>EMOCJA+POTRZEBA mieszana</strong> (trigger sytuacyjny jak POTRZEBA, ale lęk i aspiracja jak EMOCJA), research <strong>~4.0</strong> (wyższy niż sejfy — produkt finansowy wymaga więcej edukacji i porównań), pole pytań ~<strong>120</strong>+.</p>
+
+<table>
+<tr><th>#</th><th>Stan świadomości</th><th>Waga</th><th>Co to znaczy dla treści</th></tr>
+<tr><td>1</td><td>Nie wiem (unaware)</td><td>◔ L</td><td>„Leasing to coś dla firm." Nie myśli o leasingu prywatnym. Mało treści.</td></tr>
+<tr><td>2</td><td>Potrzeba (problem-aware)</td><td>◑ M</td><td>Sytuacja wymusza decyzję finansową — koniec rat, brak gotówki. Trigger aktywny.</td></tr>
+<tr><td>3</td><td>CEP (routing)</td><td>◑ M</td><td>Który z 7 scenariuszy — routing do ścieżki edukacyjnej.</td></tr>
+<tr><td>4</td><td><strong>Nauka kategorii</strong></td><td>● <strong>H</strong></td><td>Rata vs RRSO, wartość rezydualna, czynsz inicjalny, limit km, gap insurance — etap najcięższy.</td></tr>
+<tr><td>5</td><td>Preselekcja</td><td>◑ M</td><td>Budżet miesięczny → model → czas umowy → wpłata własna.</td></tr>
+<tr><td>6</td><td>Porównywanie</td><td>● <strong>H</strong></td><td>Leasing vs kredyt vs gotówka, różne oferty dealerów — duże tarcie.</td></tr>
+<tr><td>7</td><td>Wybór sklepu / podpisanie</td><td>◑ M</td><td>Dokumenty, warunki, co jest w zestawie (ubezpieczenie, serwis).</td></tr>
+<tr><td>8</td><td>Zakup</td><td>◔ L</td><td>Podpisanie umowy — niskie tarcie, ale follow-up ważny (odbiór, protokół).</td></tr>
+</table>
+
+<p><strong>Kształt:</strong> EMOCJA/POTRZEBA research-owa z podwójnym garbem na <strong>Nauce (L4 — produkt finansowy)</strong> i <strong>Porównywaniu (L6 — leasing vs kredyt vs gotówka)</strong>. Impuls płaski — nikt nie podpisuje leasingu pod wpływem chwili. Treść GEO musi obsłużyć lęk i edukację finansową głęboko.</p>
+
+<hr>
+
+<h2>2. CEP — Consumer Entry Points</h2>
+
+<p><em>7 CEP-ów dla leasingu prywatnego. CEP = sytuacja/trigger, NIE atrybut produktu.</em></p>
+
+<table>
+<tr><th>id</th><th>Trigger (język konsumenta, verbatim)</th><th>Kontekst</th><th>Primary concern</th><th>Bloker decyzji</th><th>Routing</th></tr>
+<tr><td><code>cep_odkrycie_leasingu_prywatnego</code></td><td>„Kolega powiedział że wziął leasing jako osoba prywatna. Myślałem że to tylko dla firm — jak to działa?"</td><td>Rozmowa, reklama, social media — pierwsze zetknięcie z produktem</td><td>Czy mam do tego prawo, czy mnie stać, czy nie wpadnę w pułapkę</td><td>„A co po leasingu zostaje? Nic?"</td><td>Edukacja podstawowa → kalkulator wstępny → oferta dealera</td></tr>
+<tr><td><code>cep_koniec_rat_kredytu</code></td><td>„Za 2 miesiące płacę ostatnią ratę kredytu na stare Audi. Chcę nowe — co teraz? Kredyt znowu czy coś innego?"</td><td>42–55 lat, stały dochód, chce nowe auto regularnie, nie wie o leasingu prywatnym</td><td>Czy leasing jest tańszy/prostszy niż nowy kredyt</td><td>„Kredyt to moje — leasing to cudze auto"</td><td>Porównanie kredyt vs leasing TCO → oferta z kalkulatorem raty</td></tr>
+<tr><td><code>cep_za_malo_na_nowe_gotowka</code></td><td>„Stare auto mi pada, nowe Q5 kosztuje 280 tys. Mam 40 tys. z używanego — nie dociągam jednorazowo. Mogę wziąć leasing?"</td><td>35–50 lat, aspiracyjny segment premium, dostępny dochód miesięczny ale brak jednorazowej gotówki</td><td>Czy rata leasing zmieści się w miesięcznym budżecie</td><td>„Czy po leasingu cokolwiek zostaje?"</td><td>Kalkulator raty od budżetu miesięcznego → modele w tym budżecie</td></tr>
+<tr><td><code>cep_koniec_poprzedniego_leasingu</code></td><td>„Mam jeszcze 6 miesięcy do końca leasingu Audi A4. Co z tym autem teraz robię? Odkupuję, oddaję czy biorę nowe?"</td><td>Obecny klient leasingu (często prywatny leasing firmowy), decyzja end-of-lease</td><td>Co jest finansowo najlepsze: wykup vs oddanie vs nowy leasing</td><td>„Zostałem z wartością rezydualną której nie chcę płacić"</td><td>EOL decision tree → nowy leasing na następny model</td></tr>
+<tr><td><code>cep_kalkulator_tco_leasing</code></td><td>„Policzyłem że auto na kredyt kosztuje mnie 3 200 zł/mc przez 5 lat plus deprecjacja. Leasing 36 mc to 2 800 zł/mc bez ryzyka wartości rezydualnej — ile faktycznie oszczędzam?"</td><td>Analityczny typ, 38–52 lat, zdecydowany że chce Audi, kalkuluje finansowanie</td><td>Pełny TCO porównanie — co jest droższe w 5-letnim oknie</td><td>„Czy moje wyliczenia są prawidłowe? Czego nie wliczam?"</td><td>Kalkulator TCO → konkretna oferta leasingowa z parametrami</td></tr>
+<tr><td><code>cep_pierwszy_leasing_strach</code></td><td>„Słyszałem tyle o leasingu prywatnym że to komplikowane — co z tym limitem km? Co jak przekroczę? Co jak uszkodzę? Jak wychodzę z umowy wcześniej?"</td><td>30–45 lat, pierwsze podejście do leasingu, duży lęk przed ukrytymi kosztami i utratą kontroli</td><td>Czy rozumiem wszystkie warunki zanim podpiszę — czy nie wpakuję się w pułapkę</td><td>„Przeczytałem umowę i nie rozumiem połowy"</td><td>Edukacja FAQ → simulator umowy → rozmowa z doradcą dealera</td></tr>
+<tr><td><code>cep_biznes_to_prywatny</code></td><td>„Prowadzę JDG, ale to auto biorę prywatnie — żona będzie głównym użytkownikiem. Czy mogę wziąć leasing prywatny jako JDG-owiec? Czy muszę przez firmę?"</td><td>35–55 lat, przedsiębiorca, rozdziela finanse firmowe od prywatnych, auto „rodzinne"</td><td>Czy jest produkt dla mojego statusu (prywatny mimo że ma firmę)</td><td>„Leasing przez firmę daje VAT — a prywatny nie. Czy się opłaca?"</td><td>Routing: leasing konsumencki vs operacyjny → doradztwo podatkowe → oferta</td></tr>
+</table>
+
+<hr>
+
+<h2>3. 20 Discovery Questions</h2>
+
+<p><em>Punkt startu ścieżki — adresują wszystkie CEP-y, zanim klient wejdzie w konkretny scenariusz.</em></p>
+
+<ol><li>Leasing prywatny na samochód — jak działa i czy osoba prywatna może wziąć? <em>(→ odkrycie)</em></li><li>Ile wynosi rata leasingowa na nowe Audi Q5 / A4 w 2026? Przykłady.</li><li>Leasing czy kredyt samochodowy — co jest tańsze w 5-letnim rozliczeniu?</li><li>Co to jest wartość rezydualna w leasingu prywatnym i jak wpływa na ratę?</li><li>Ile muszę zarobić żeby dostać leasing na auto za 200 000 zł?</li><li>Czy leasing prywatny wlicza się do zdolności kredytowej?</li><li>Co zrobić z autem po leasingu — zwrócić, odkupić czy brać nowe?</li><li>Limit kilometrów w leasingu — ile zwykle i co jeśli przekroczę?</li><li>Leasing prywatny a BIK — czy leasing sprawdza zdolność kredytową?</li><li>Wpłata własna w leasingu — ile powinienem wpłacić: 0%, 10% czy 20%?</li><li>Co to jest czynsz inicjalny i czym różni się od wpłaty własnej?</li><li>Gap insurance w leasingu — czym jest i czy warto dokupić?</li><li>Czy mogę wcześniej zakończyć leasing? Jakie są koszty?</li><li>Kto ubezpiecza auto w leasingu prywatnym — ja czy leasingodawca?</li><li>Leasing konsumencki vs wynajem długoterminowy — jaka różnica dla osoby prywatnej?</li><li>Leasing Audi przez salon vs bank — kto daje lepszą ofertę?</li><li>Jakie dokumenty potrzebne do leasingu prywatnego 2026?</li><li>Co sprawdzić w umowie leasingowej zanim podpiszę? Lista punktów.</li><li>Czy leasing prywatny się opłaca jeśli mam firmę i mógłbym wziąć przez JDG?</li><li>Jak wygląda odbiór auta i protokół zdania leasingowanego samochodu?</li></ol>
+
+<hr>
+
+<h2>4. KCF — Key Category Features</h2>
+
+<table>
+<tr><th>Feature</th><th>Zakres rynkowy</th><th>Tier</th><th>Uwaga</th></tr>
+<tr><td>Rata miesięczna netto/brutto</td><td>800–8 000 PLN/mc zależnie od modelu</td><td>T1</td><td>Zawsze podaj oba: rata netto (bez ubezpieczenia AC) i łączny koszt miesięczny</td></tr>
+<tr><td>Okres umowy</td><td>24 / 36 / 48 miesięcy</td><td>T1</td><td>Dłużej = niższa rata, ale więcej całkowitego kosztu — zawsze pokazuj TCO</td></tr>
+<tr><td>Wartość rezydualna (RV)</td><td>30–55% wartości nowej (zależnie od modelu i czasu)</td><td>T1</td><td>Wyższe RV = niższa rata; Audi utrzymuje wartość lepiej niż średnia rynku</td></tr>
+<tr><td>Czynsz inicjalny / wpłata własna</td><td>0% do 30% wartości auta</td><td>T1</td><td>0% = wyższa rata; 20–30% = niższa rata, ale wyższy jednorazowy koszt na starcie</td></tr>
+<tr><td>Limit kilometrów</td><td>10 000 – 30 000 km/rok</td><td>T1</td><td>Standard 15 000–20 000; nadprzebieg 0,15–0,50 PLN/km zależnie od marki</td></tr>
+<tr><td>RRSO / całkowity koszt</td><td>% i łączna kwota przez okres umowy</td><td>T2</td><td>Jedyna miara pozwalająca porównać leasing z kredytem uczciwie</td></tr>
+<tr><td>Opcja wykupu</td><td>tak / nie + kwota</td><td>T2</td><td>Wartość wykupu = wartość rezydualna; określona w umowie od początku</td></tr>
+<tr><td>Gap insurance</td><td>opcja / wbudowane / osobna polisa</td><td>T2</td><td>Różnica między wartością auta a pozostałym zadłużeniem przy szkodzie całkowitej</td></tr>
+<tr><td>Pakiet serwisowy</td><td>opcja / wbudowane / brak</td><td>T2</td><td>Dealerskie leasingi często oferują serwis w racie — unifikuje TCO</td></tr>
+<tr><td>Wymagania ubezpieczeniowe</td><td>AC obowiązkowe przez leasingodawcę</td><td>T3</td><td>Leasingodawca wskazuje ubezpieczyciela lub akceptuje własny wybór klienta</td></tr>
+<tr><td>Czas akceptacji</td><td>24–72h</td><td>T3</td><td>Czas od wniosku do decyzji = pain point przy ograniczonej dostępności modeli</td></tr>
+</table>
+
+<hr>
+
+<h2>5. Typowy Produkt — konwencje kategorii</h2>
+
+<table>
+<tr><th>Cecha</th><th>Norma kategorii</th><th>Red flag</th></tr>
+<tr><td>Produkt</td><td>Umowa leasingu konsumenckiego na nowy samochód (najczęściej)</td><td>„Leasing na używane" bez informacji o wymaganiach wiekowych/przebiegu auta</td></tr>
+<tr><td>Rata</td><td>Prezentowana jako „rata netto" bez ubezpieczenia AC i serwisu</td><td>Rata miesięczna bez ujawnienia czynszu inicjalnego i wartości rezydualnej</td></tr>
+<tr><td>RRSO</td><td>Podawane obok raty (wymóg ustawy o kredycie konsumenckim)</td><td>Brak RRSO lub RRSO 0% (niemożliwe — wskazuje na ukryte koszty)</td></tr>
+<tr><td>Dokumentacja</td><td>Umowa leasingu + harmonogram + OWU</td><td>Warunki zmiany limitu km, wcześniejszego zakończenia — nieujawnione</td></tr>
+<tr><td>Ubezpieczenie</td><td>AC obowiązkowe, OC może być w pakiecie dealera</td><td>Brak informacji o wymaganiach ubezpieczeniowych przed podpisaniem</td></tr>
+<tr><td>Protokół zdania</td><td>Standardowy (ACRISS lub własny leasingodawcy)</td><td>Brak informacji co jest „normalnym zużyciem" a co karana uszkodzeniem</td></tr>
+</table>
+
+<hr>
+
+<h2>6. Tier Specs</h2>
+
+<p><strong>Tier-1 Universal</strong> (musi być w każdej prezentacji oferty leasingowej):</p>
+<ul><li>Rata miesięczna — <code>XX PLN brutto (z VAT) / netto</code></li><li>Czynsz inicjalny / wpłata własna — <code>XX PLN (YY% wartości)</code></li><li>Okres umowy — <code>XX miesięcy</code></li><li>Limit kilometrów — <code>XX 000 km/rok</code></li><li>Wartość rezydualna — <code>XX PLN (ZZ% wartości nowej)</code></li><li>RRSO — <code>XX%</code></li></ul>
+
+<p><strong>Tier-2 Differentiator:</strong> całkowity koszt umowy PLN · opcja wykupu (tak/nie + kwota) · gap insurance (tak/nie) · pakiet serwisowy (tak/nie) · czas oczekiwania na akceptację.</p>
+
+<p><strong>Tier-3 Niche:</strong> możliwość zmiany limitu km w trakcie umowy · ubezpieczenie AC z ubezpieczycielem klienta vs dealera · warunki wcześniejszego zakończenia (konkretna kwota/formuła).</p>
+
+<hr>
+
+<h2>7. Tier Pricing — PLN, Polska 2026</h2>
+
+<table>
+<tr><th>Tier</th><th>Rata miesięczna</th><th>Model</th><th>Parametry standardowe</th></tr>
+<tr><td>Entry premium</td><td>1 500 – 2 200 PLN</td><td>Audi A3, Q2</td><td>36 mc, 15 000 km/rok, 10% wpłaty</td></tr>
+<tr><td>Mid premium</td><td>2 200 – 3 500 PLN</td><td>Audi A4, A5, Q3</td><td>36 mc, 20 000 km/rok, 10-15% wpłaty</td></tr>
+<tr><td>Upper premium</td><td>3 500 – 5 500 PLN</td><td>Audi Q5, A6, A7</td><td>36 mc, 20 000 km/rok, 15-20% wpłaty</td></tr>
+<tr><td>Ultra premium</td><td>5 500 – 9 000 PLN</td><td>Audi Q7, Q8, e-tron GT</td><td>36 mc, 20 000 km/rok, 20% wpłaty</td></tr>
+</table>
+
+<p><em>Raty orientacyjne, zależne od wartości rezydualnej obowiązującej w miesiącu zawarcia umowy i aktualnych promocji Audi Financial Services.</em></p>
+
+<hr>
+
+<h2>8. Consumer Decision Tree</h2>
+
+<pre><code>[L1 — Routing: jakie mam źródło finansowania i jaką sytuację?]
+
+Q1. Jak trafiłem do leasingu?
+   → Szukam alternatywy dla kredytu → [porównanie kredyt vs leasing] → Q2
+   → Kończy mi się poprzedni leasing → [EOL decision] → Q3
+   → Nie mam gotówki na nowe → [kalkulator przystępności] → Q2
+   → Chcę liczyć TCO → [kalkulator 5-letni] → Q2
+
+Q2. Jaki budżet miesięczny?
+   → do 2 000 PLN → segment A3/Q2 → Q4
+   → 2 000–3 500 PLN → segment A4/A5/Q3 → Q4
+   → 3 500–5 500 PLN → segment Q5/A6 → Q4
+   → 5 500+ PLN → segment Q7/Q8/e-tron → Q4
+
+Q3. End-of-Lease: co z aktualnym autem?
+   → Odkupuję za wartość rezydualną → [wycena RV vs rynek]
+   → Oddaję i biorę nowe → Q2
+   → Zawieszam użytkowanie (brak decyzji) → edukacja EOL
+
+Q4. Czas umowy?
+   → 24 mc → najniższa RV, najwyższa rata, maksymalna świeżość modeli
+   → 36 mc → złoty środek — najczęściej wybierany (≈70% umów)
+   → 48 mc → najniższa rata, ryzyko RV na dłuższym horyzoncie
+
+Q5. Wpłata własna?
+   → 0% → wyższa rata, zero gotówki na starcie
+   → 10–15% → rata obniżona o ~12–18%, rekomendowana do zbalansowania TCO
+   → 20–30% → najniższa rata, najwyższy jednorazowy koszt — sensowne przy nadwyżce cash
+
+Q6. Wymagania dodatkowe?
+   → Gap insurance → tak: auto ≥ 150 000 PLN lub wysoki LTV
+   → Pakiet serwisowy → tak: budżetowe planowanie, firma serwisowa dealera
+   → Zmiana limitu km → sprawdzić OWU leasingodawcy
+
+→ Kluczowe info: RATA BRUTTO · CZYNSZ INICJALNY · RRSO · WARTOŚĆ REZYDUALNA · LIMIT KM · OPCJA WYKUPU</code></pre>
+
+<hr>
+
+<h2>9. Forbidden Patterns</h2>
+
+<table>
+<tr><th>❌ Zakazane</th><th>✅ Poprawne</th></tr>
+<tr><td>„Niska rata" bez parametrów</td><td>„Rata 2 890 PLN/mc brutto przy czynszcie inicjalnym 15% (42 000 PLN), 36 mc, 20 000 km/rok, wartość rezydualna 38%, RRSO 8,4%."</td></tr>
+<tr><td>„Leasing dostępny dla każdego"</td><td>„Leasing konsumencki wymaga dochodów miesięcznych min. 3–4× raty + pozytywnej historii BIK. Czas akceptacji 24–48h."</td></tr>
+<tr><td>„Możesz mieć nowe Audi za 1 500 zł"</td><td>„Q2 35 TFSI przy wkładzie 25% i umowie 48 mc osiąga ratę od ok. 1 600 PLN — sprawdź aktualny kalkulator Audi Financial Services."</td></tr>
+<tr><td>„Po leasingu nie tracisz nic"</td><td>„Po leasingu masz opcję wykupu za wartość rezydualną (X PLN, ustalona na starcie) lub oddania auta bez dopłat przy zachowaniu limitu km i protokołu zdania."</td></tr>
+<tr><td>„Leasing to jak wynajem"</td><td>„Leasing konsumencki i wynajem długoterminowy różnią się: leasing daje opcję wykupu, wynajem jej nie daje; obydwa przenosią ryzyko wartości rezydualnej na leasingodawcę."</td></tr>
+<tr><td>„Żadnych ukrytych kosztów"</td><td>Zamiast deklaracji: lista wszystkich opłat w umowie — opłata za nadprzebieg (X PLN/km), wcześniejsze zakończenie (Y PLN + Z%), uszkodzenia poza normą ACRISS.</td></tr>
+<tr><td>„Łatwy i szybki leasing"</td><td>„Decyzja kredytowa 24–72h po dostarczeniu: dowód osobisty, 3 ostatnie wyciągi bankowe, [gdy wymagane] zaświadczenie o dochodach. Wniosek online lub w salonie."</td></tr>
+</table>
+
+<hr>
+
+<h2>10. Ścieżki percepcji & pole pytań</h2>
+
+<p><em>7 ścieżek dla 7 CEP-ów. Pytania per etap = pole pytań GEO (cytowalne przez AI).</em></p>
+
+<table>
+<tr><th>Ścieżka</th><th>CEP wejścia</th><th>Persona / kontekst</th><th>Pytań</th></tr>
+<tr><td>A — Odkrycie leasingu prywatnego</td><td><code>cep_odkrycie_leasingu_prywatnego</code></td><td>Piotr, 44, project manager — kolega wspomniał o leasingu, Piotr myślał że to tylko dla firm</td><td>18</td></tr>
+<tr><td>B — Koniec kredytu samochodowego</td><td><code>cep_koniec_rat_kredytu</code></td><td>Anna, 48, menadżer sprzedaży — płaci ostatnią ratę kredytu, chce nowe Audi, szuka alternatyw</td><td>17</td></tr>
+<tr><td>C — Za mało gotówki na nowe premium</td><td><code>cep_za_malo_na_nowe_gotowka</code></td><td>Marcin, 37, senior developer — marzy o Q5, ma 50 tys. odłożone, nie wyobraża sobie 280 tys. jednorazowo</td><td>17</td></tr>
+<tr><td>D — End-of-Lease: co dalej?</td><td><code>cep_koniec_poprzedniego_leasingu</code></td><td>Katarzyna, 41, dyrektorka marketingu — za 5 mc koniec leasingu A4, ocenia opcje EOL</td><td>17</td></tr>
+<tr><td>E — Kalkulator TCO</td><td><code>cep_kalkulator_tco_leasing</code></td><td>Tomasz, 46, CFO w małej firmie — kalkuluje każde wydatki, chce porównać wszystkie formy finansowania</td><td>17</td></tr>
+<tr><td>F — Strach przed leasingiem</td><td><code>cep_pierwszy_leasing_strach</code></td><td>Marta, 33, lekarka — stać ją na Audi A3, ale leasing to dla niej terra incognita, boi się podpisać</td><td>17</td></tr>
+<tr><td>G — JDG kontra leasing prywatny</td><td><code>cep_biznes_to_prywatny</code></td><td>Krzysztof, 42, właściciel agencji — żona będzie jeździć autem, ma JDG, nie wie przez kogo brać</td><td>17</td></tr>
+</table>
+
+<h3>Ścieżka A — Odkrycie leasingu prywatnego (18)</h3>
+
+<p><strong>A1 — Świadomość / trigger:</strong></p>
+<ul><li>Czy osoba prywatna może wziąć leasing na samochód?</li><li>Leasing prywatny na auto — jak działa? Tłumaczenie po ludzku.</li><li>Myślałem że leasing to tylko dla firm — skąd się wzięło leasing prywatny?</li></ul>
+
+<p><strong>A2 — Orientacja / opcje:</strong></p>
+<ul><li>Leasing konsumencki vs leasing operacyjny — różnica dla osoby fizycznej</li><li>Leasing prywatny vs wynajem długoterminowy — co wybrać w 2026?</li><li>Leasing prywatny vs kredyt samochodowy — porównanie kosztów i ryzyk</li><li>Kto oferuje leasing prywatny w Polsce? Dealer vs bank vs pośrednik</li></ul>
+
+<p><strong>A3 — Nauka:</strong></p>
+<ul><li>Co to jest wartość rezydualna i dlaczego ma znaczenie dla wysokości raty?</li><li>Co to jest czynsz inicjalny w leasingu prywatnym? Ile powinienem wpłacić?</li><li>Jak oblicza się ratę leasingową? Wzór krok po kroku.</li><li>RRSO w leasingu — jak sprawdzić czy oferta jest dobra?</li><li>Jakie dokumenty są potrzebne do leasingu prywatnego 2026?</li></ul>
+
+<p><strong>A4 — Decyzja:</strong></p>
+<ul><li>Jak złożyć wniosek o leasing prywatny w salonie Audi? Co po kolei?</li><li>Ile trwa akceptacja wniosku o leasing prywatny?</li><li>Kalkulator leasingu prywatnego — jak liczyć całkowity koszt umowy?</li><li>Leasing prywatny Audi Financial Services — warunki i oferta aktualna</li></ul>
+
+<p><strong>A5 — Bloker:</strong></p>
+<ul><li>🛡️ Co zostaje po leasingu? Czy płacę i nic nie mam?</li><li>🛡️ Czy leasing prywatny to pułapka? Na co uważać?</li></ul>
+
+<hr>
+
+<h3>Ścieżka B — Koniec kredytu samochodowego (17)</h3>
+
+<p><strong>B1 — Świadomość:</strong></p>
+<ul><li>Kończy mi się kredyt samochodowy — co dalej? Nowy kredyt czy leasing?</li><li>Czy leasing prywatny jest tańszy niż kredyt bankowy na auto?</li></ul>
+
+<p><strong>B2 — Orientacja:</strong></p>
+<ul><li>Leasing vs kredyt samochodowy — co wychodzi taniej w 5-letnim rozliczeniu?</li><li>Kredyt bankowy a leasing prywatny — różnice w zdolności i wymaganiach</li><li>Jak zmienić kredyt samochodowy na leasing? Czy można przepiąć?</li></ul>
+
+<p><strong>B3 — Nauka:</strong></p>
+<ul><li>Jak porównać RRSO kredytu z RRSO leasingu? Kalkulator 2026.</li><li>Co to jest TCO (Total Cost of Ownership) i dlaczego to właściwa miara?</li><li>Deprecjacja auta w kredycie vs leasing — jak to wpływa na całkowity koszt?</li><li>Czy leasing wlicza się do zdolności kredytowej? Co z BIK?</li></ul>
+
+<p><strong>B4 — Decyzja:</strong></p>
+<ul><li>Ile rata leasingowa na Audi A4 36 miesięcy przy 15% wpłacie własnej?</li><li>Czy mogę negocjować ratę leasingową w salonie Audi?</li><li>Jak wygląda umowa leasingu prywatnego — co muszę wiedzieć przed podpisaniem?</li></ul>
+
+<p><strong>B5 — Bloker:</strong></p>
+<ul><li>🛡️ Kredyt to moje auto — leasing to cudze. Czy to naprawdę ma znaczenie?</li><li>🛡️ Co jeśli stracę pracę i nie będę mógł płacić rat leasingowych?</li><li>🛡️ Czy leasing prywatny psuje zdolność kredytową na inne cele (np. hipoteka)?</li></ul>
+
+<hr>
+
+<h3>Ścieżka C — Za mało gotówki na nowe premium (17)</h3>
+
+<p><strong>C1 — Świadomość:</strong></p>
+<ul><li>Ile muszę zarobić żeby wziąć leasing na Audi Q5 w 2026?</li><li>Czy osoba bez gotówki może mieć nowe Audi? Leasing prywatny 0% wpłaty.</li></ul>
+
+<p><strong>C2 — Orientacja:</strong></p>
+<ul><li>Leasing prywatny bez wkładu własnego — czy to możliwe i co traci?</li><li>Jaka rata leasingowa na Audi Q5 55 TFSI e przy różnych opcjach wpłaty?</li><li>Co wybrać: 0% wpłaty i wyższe raty, czy 20% i niższe raty?</li></ul>
+
+<p><strong>C3 — Nauka:</strong></p>
+<ul><li>Jak wpłata własna wpływa na wysokość raty leasingowej? Kalkulator 2026.</li><li>Czy leasing prywatny na używane Audi jest możliwy?</li><li>Co z ubezpieczeniem AC przy leasingu premium — kto płaci i ile?</li></ul>
+
+<p><strong>C4 — Decyzja:</strong></p>
+<ul><li>Jaki model Audi dostanę za 2 500 PLN/mc raty leasingowej?</li><li>Jak zoptymalizować ratę leasingową — czas umowy, wpłata, model?</li><li>Ile trwa dostawa nowego Audi zamówionego na leasing?</li></ul>
+
+<p><strong>C5 — Bloker:</strong></p>
+<ul><li>🛡️ Czy nie wydaję więcej na leasing niż gdybym kupił na kredyt?</li><li>🛡️ Czy stać mnie na leasing premium — kalkulator minimalnych dochodów.</li><li>🛡️ Co jak wartość auta spadnie więcej niż planowałem — czy dopłacam?</li></ul>
+
+<hr>
+
+<h3>Ścieżka D — End-of-Lease (17)</h3>
+
+<p><strong>D1 — Świadomość:</strong></p>
+<ul><li>Co zrobić z autem po skończonym leasingu? Opcje krok po kroku.</li><li>Koniec leasingu prywatnego — odkupić czy oddać auto?</li></ul>
+
+<p><strong>D2 — Orientacja:</strong></p>
+<ul><li>Wartość rezydualna po leasingu — czy to dobra czy zła cena za odkup?</li><li>Jak sprawdzić wartość rynkową auta vs wartość wykupu na końcu leasingu?</li><li>Kiedy lepiej odkupić auto po leasingu, a kiedy oddać i brać nowe?</li></ul>
+
+<p><strong>D3 — Nauka:</strong></p>
+<ul><li>Protokół zdania auta po leasingu — co jest normalne a co oznacza dopłatę?</li><li>Jak wygląda wycena stanu technicznego przy zdawaniu auta z leasingu?</li><li>Jak działa opcja trade-in przy końcu leasingu — dealer odkupuje stary leasing?</li><li>Czy mogę sprzedać opcję wykupu komuś innemu zamiast sam odkupywać?</li></ul>
+
+<p><strong>D4 — Decyzja:</strong></p>
+<ul><li>Jak negocjować nowy leasing przy oddawaniu starego? Co dealer może zaproponować?</li><li>Jak zaplanować nową umowę leasingową 3-6 mc przed końcem aktualnej?</li><li>Co z płatnościami jeśli za auto w leasingu jest jeszcze ubezpieczenie OC/AC?</li></ul>
+
+<p><strong>D5 — Bloker:</strong></p>
+<ul><li>🛡️ Czy przekroczenie limitu km na końcu leasingu jest bardzo kosztowne?</li><li>🛡️ Boję się protokołu zdania auta — co jeśli ocenią uszkodzenia jako moje?</li><li>🛡️ Co jeśli wartość rezydualna jest wyższa niż wartość rynkowa auta?</li></ul>
+
+<hr>
+
+<h3>Ścieżka E — Kalkulator TCO (17)</h3>
+
+<p><strong>E1 — Świadomość:</strong></p>
+<ul><li>TCO samochodu — co to jest i dlaczego kredyt vs leasing to nie tylko rata?</li><li>Ile naprawdę kosztuje własność samochodu przez 5 lat? Pełny koszt.</li></ul>
+
+<p><strong>E2 — Orientacja:</strong></p>
+<ul><li>Leasing prywatny vs kredyt vs gotówka — pełne porównanie TCO 2026</li><li>Jak policzyć TCO leasingu prywatnego? Wzór i kalkulator.</li><li>Deprecjacja Audi Q5 — ile straci przez 3 lata? Dane rynkowe.</li></ul>
+
+<p><strong>E3 — Nauka:</strong></p>
+<ul><li>Co wliczać do TCO auta na leasingu: rata + ubezpieczenie + serwis + nadprzebieg?</li><li>Jak leasing chroni przed ryzykiem deprecjacji? Kto ponosi ryzyko wartości rezydualnej?</li><li>Różnica między leasingiem a wynajmem w kalkulacji TCO dla osoby prywatnej.</li><li>Jak liczyć koszt pieniądza przy zakupie za gotówkę vs leasing? Koszt alternatywny.</li></ul>
+
+<p><strong>E4 — Decyzja:</strong></p>
+<ul><li>Kalkulator: leasing 36 mc Audi Q5 vs kredyt 60 mc vs gotówka — co wychodzi taniej?</li><li>Kiedy zakup za gotówkę jest lepszy niż leasing? Przy jakiej stopie zwrotu?</li><li>Jak uwzględnić wartość rezydualną w kalkulacji TCO leasingu?</li></ul>
+
+<p><strong>E5 — Bloker:</strong></p>
+<ul><li>🛡️ Czy moje wyliczenia TCO są poprawne? Czego zapomnieli?</li><li>🛡️ Czy wyższe RRSO leasingu vs kredytu zawsze oznacza że leasing jest droższy?</li><li>🛡️ Co jeśli stopy procentowe zmienią się w trakcie umowy leasingowej?</li></ul>
+
+<hr>
+
+<h3>Ścieżka F — Strach przed leasingiem (17)</h3>
+
+<p><strong>F1 — Świadomość:</strong></p>
+<ul><li>Jak działa leasing prywatny krok po kroku? Prosty przewodnik od zera.</li><li>Na co uważać przy podpisywaniu umowy leasingowej? Czerwone flagi.</li></ul>
+
+<p><strong>F2 — Orientacja:</strong></p>
+<ul><li>Leasing prywatny — najczęstsze pułapki i jak ich uniknąć (2026)</li><li>Co to są OWU leasingu i na co zwrócić uwagę przed podpisaniem?</li><li>Czym się różni Audi Financial Services od bankowego leasingu prywatnego?</li></ul>
+
+<p><strong>F3 — Nauka:</strong></p>
+<ul><li>Co to jest limit kilometrów w leasingu i jak go obliczyć dla siebie?</li><li>Nadprzebieg w leasingu — ile kosztuje jeden km powyżej limitu?</li><li>Co to jest gap insurance i kiedy jest absolutnie konieczny?</li><li>Uszkodzenia przy zdaniu auta — co zalicza się jako normalne zużycie?</li><li>Czy mogę wcześniej zakończyć leasing? Jakie są realne koszty wyjścia?</li></ul>
+
+<p><strong>F4 — Decyzja:</strong></p>
+<ul><li>Lista pytań do zadania doradcy przed podpisaniem leasingu prywatnego.</li><li>Co sprawdzić w harmonogramie leasingu zanim podpiszę?</li><li>Jak wygląda protokół zdania auta po leasingu — co muszę wiedzieć wcześniej?</li></ul>
+
+<p><strong>F5 — Bloker:</strong></p>
+<ul><li>🛡️ Boję się że nie rozumiem umowy leasingowej — gdzie szukać pomocy?</li><li>🛡️ Co jeśli w trakcie leasingu moja sytuacja finansowa się pogorszy?</li></ul>
+
+<hr>
+
+<h3>Ścieżka G — JDG kontra leasing prywatny (17)</h3>
+
+<p><strong>G1 — Świadomość:</strong></p>
+<ul><li>Mam JDG — czy mogę wziąć leasing prywatny na auto dla żony?</li><li>Leasing firmowy vs prywatny dla przedsiębiorcy — co wybrać?</li></ul>
+
+<p><strong>G2 — Orientacja:</strong></p>
+<ul><li>Leasing prywatny kontra leasing operacyjny dla JDG — różnice podatkowe 2026</li><li>Czy jako JDG mogę wziąć leasing konsumencki jako osoba fizyczna?</li><li>Odliczenie VAT z leasingu auta używanego prywatnie — 50% czy 0%?</li></ul>
+
+<p><strong>G3 — Nauka:</strong></p>
+<ul><li>Leasing konsumencki a ustawa o kredycie konsumenckim — co przysługuje osobie fizycznej?</li><li>Co to jest leasing konsumencki dla JDG? Kiedy ma rację bytu?</li><li>Podatek PIT a rata leasingu prywatnego — czy można cokolwiek odliczyć?</li><li>Jak rozdzielić użytkowanie auta firmowego od prywatnego przy leasingu?</li></ul>
+
+<p><strong>G4 — Decyzja:</strong></p>
+<ul><li>Kiedy dla JDG-owca leasing prywatny wychodzi lepiej niż firmowy?</li><li>Jakie dokumenty potrzebne do leasingu prywatnego gdy mam JDG?</li><li>Czy mogę wziąć leasing prywatny przez Audi Financial Services mając zarejestrowaną JDG?</li></ul>
+
+<p><strong>G5 — Bloker:</strong></p>
+<ul><li>🛡️ Czy warto rezygnować z VAT-u przy leasingu firmowym na rzecz leasingu prywatnego?</li><li>🛡️ Co jeśli urząd skarbowy zakwestionuje leasing prywatny używany przez firmę?</li><li>🛡️ Jak udokumentować że auto jest prywatne a nie firmowe przy kontroli?</li></ul>
+
+<hr>
+
+<h2>11. Cross-Category Triggers</h2>
+
+<table>
+<tr><th>Kategoria źródłowa</th><th>Trigger zakupu</th><th>CEP aktywowany</th><th>Fraza wejściowa w AI</th></tr>
+<tr><td>Samochody osobowe — nabywca prywatny</td><td>„Zdecydowałem się na Audi Q5 — jak to sfinansować?"</td><td><code>cep_za_malo_na_nowe_gotowka</code></td><td>„jak sfinansować Audi Q5 leasing prywatny?"</td></tr>
+<tr><td>Kredyt samochodowy</td><td>„Mój bank proponuje kredyt 8% na auto — czy leasing jest tańszy?"</td><td><code>cep_koniec_rat_kredytu</code></td><td>„leasing czy kredyt samochodowy co tańsze 2026"</td></tr>
+<tr><td>Ubezpieczenia komunikacyjne</td><td>„Kupuję nowe auto — ile kosztuje AC przy leasingu?"</td><td><code>cep_pierwszy_leasing_strach</code></td><td>„obowiązkowe AC w leasingu prywatnym koszt"</td></tr>
+<tr><td>Samochody elektryczne / EV</td><td>„Chcę Audi e-tron — czy leasing prywatny to najlepszy sposób na elektryk?"</td><td><code>cep_kalkulator_tco_leasing</code></td><td>„leasing prywatny elektryk Audi e-tron vs zakup"</td></tr>
+<tr><td>JDG / Księgowość</td><td>„Jak rozliczać auto prywatne używane przez firmę?"</td><td><code>cep_biznes_to_prywatny</code></td><td>„leasing prywatny a firmowy różnica dla JDG"</td></tr>
+</table>
+
+<hr>
+
+<h2>12. Tone of Voice for GEO — jak pisać treść pod AI search</h2>
+
+<p><em>20 reguł pisania pod cytowalność przez AI (Perplexity, AI Overviews, ChatGPT). Kategoria-specyficzne dla leasingu prywatnego.</em></p>
+
+<p><strong>Struktura passage'a (cytowalność):</strong></p>
+<ol><li>Odpowiadaj na pytanie w PIERWSZYM zdaniu. Źle: „Leasing prywatny to ciekawa opcja finansowania..." Dobrze: „Leasing konsumencki dla osoby prywatnej wymaga minimum dochodów na poziomie 3–4× raty miesięcznej i pozytywnej historii BIK."</li><li>Jeden akapit = jedna kompletna odpowiedź na jedno pytanie.</li><li>Liczby zawsze z kontekstem: „8,4% RRSO" → „8,4% RRSO to poziom porównywalny z kredytem bankowym przy podobnym LTV — sprawdź aktualną stopę na stronie Audi Financial Services."</li><li>Każdy parametr z konsekwencją: „wartość rezydualna 38%" → „RV 38% oznacza, że po 36 mc płacisz ratę tylko od 62% wartości auta — stąd niższa rata niż w kredycie na pełną kwotę."</li><li>Konkretna marka+produkt zamiast „leasing": „Audi Financial Services Leasing Plus" cytuje się; „dobry leasing od dealera" nie.</li></ol>
+
+<p><strong>Język konsumenta:</strong></p>
+<ol><li>Używaj słów z pytań klienta: „co zostaje po leasingu" → odpowiedź wprost, nie definicja prawna.</li><li>Tłumacz każdy skrót: „RRSO (Rzeczywista Roczna Stopa Oprocentowania — całkowity koszt kredytu/leasingu w skali roku, uwzględnia wszystkie opłaty)".</li><li>Mapuj cechę na sytuację: nie „limit 20 000 km/rok", lecz „20 000 km/rok to ~55 km/dzień — jeśli jeździsz codziennie do pracy 30 km i robisz 2 trasy w roku, zmieścisz się."</li><li>Odpowiadaj na lęk wprost: „Co zostaje po leasingu?" → „Opcja wykupu za wartość rezydualną X PLN (ustalona przed podpisaniem) lub oddanie auta — bez dopłat jeśli zachowałeś limit km i protokół zdania."</li><li>Adresuj porównania: „Leasing vs kredyt: kredyt daje własność natychmiast, leasing — opcjonalną własność na końcu; kredyt angażuje zdolność kredytową bardziej; leasing chroni przed ryzykiem deprecjacji."</li></ol>
+
+<p><strong>Struktura pod AI parsing:</strong></p>
+<ol><li>Tabele dla parametrów porównywalnych (rata, RRSO, wartość rezydualna, limit km) — AI ekstrahuje tabelę lepiej niż prozę.</li><li>Nagłówki = pytania klienta: „Ile rata leasingowa Audi Q5 przy 36 mc?" zamiast „Parametry umowy".</li><li>Listy kryteriów wyboru: „Przed podpisaniem sprawdź: (1) RRSO vs oferty konkurencji, (2) dokładny limit km, (3) opłatę za nadprzebieg, (4) warunki wcześniejszego zakończenia, (5) wymagania ubezpieczeniowe."</li><li>Każdą normę/regulator podawaj wprost: „ustawa o kredycie konsumenckim", „Audi Financial Services SA", „BIK (Biuro Informacji Kredytowej)" — AI cytuje konkretne instytucje.</li><li>Wariant finansowania = osobne zdanie-odpowiedź: „Kredyt: własność od dnia 1, rata od całej kwoty, ryzyko deprecjacji twoje. Leasing: rata od różnicy ceny i RV, ryzyko deprecjacji leasingodawcy, opcja wykupu na końcu."</li></ol>
+
+<p><strong>Zaufanie i kontekst:</strong></p>
+<ol><li>Podawaj „dla kogo NIE": „Leasing prywatny nie jest korzystny jeśli: masz gotówkę i oczekujesz stopu zwrotu <5%, planujesz auto przez 10+ lat, masz nieregularne dochody" — buduje wiarygodność.</li><li>Dowód zamiast przymiotnika: „Aktualny cennik Audi Financial Services Q5 na 36 mc, stan 07.2026" zamiast „korzystna oferta leasingowa".</li><li>Dla scenariusza JDG: osobna sekcja z rozróżnieniem podatkowym (leasing konsumencki przez osobę fizyczną vs operacyjny przez firmę).</li><li>Budżet jako oś: klient myśli ratą miesięczną, nie ceną auta — prezentuj modele przez pryzmat raty, nie ceny katalogowej.</li><li>Zamknij każdą sekcję faktem do zacytowania (liczba/instytucja/regulacja), nie zachętą sprzedażową — „Formularz wniosku online: wynik w 24–48h roboczych, decyzja bez wizyty w salonie."</li></ol>
+
+<hr>
+
+<h2>13. Pole pytań</h2>
+
+<h3>① Discovery Questions (20 — patrz sekcja §3)</h3>
+
+<p><em>→ patrz sekcja 3 powyżej — 20 pytań discovery stanowiących wspólny punkt startowy przed rozgałęzieniem na ścieżki CEP.</em></p>
+
+<h3>② Pogłębione per ścieżka CEP (patrz §10)</h3>
+
+<p><em>→ 7 ścieżek × 17-18 pytań = 119+ pytań per-CEP pokrywających stany świadomości/orientacji/nauki/decyzji/blokera.</em></p>
+
+<p><em>Pełna baza pytań: <code>data/questions/leasing_prywatny_finansowanie.json</code></em></p>
+
+<hr>
+
+<p><em>Źródło: model zakupowy Audi Plichta, VW Customer Journey research, METODOLOGIA_CS.md v3.1 RICH. CS-2 z 6 serii Audi Plichta.</em></p>
+</div>
+  </div>
+</div>
+
 </div>
 <script>
-const SRC={mapa:'MAPA_PERCEPCJI_leasing_prywatny_finansowanie_v5.7.html',cs:'cs_leasing_prywatny_finansowanie.html'};
-const cache={};
-async function fetchHTML(url){
-  if(cache[url]) return cache[url];
-  const r=await fetch(url);
-  if(!r.ok) throw new Error(r.status+' '+url);
-  cache[url]=await r.text();
-  return cache[url];
-}
-function inject(htmlStr, container){
-  const dp=new DOMParser().parseFromString(htmlStr,'text/html');
-  container.innerHTML='';
-  dp.querySelectorAll('style,link[rel="stylesheet"]').forEach(s=>{
-    container.appendChild(document.importNode(s,true));
-  });
-  Array.from(dp.body.childNodes).forEach(n=>container.appendChild(document.importNode(n,true)));
-  container.querySelectorAll('script').forEach(old=>{
-    const ns=document.createElement('script');
-    if(old.src){ns.src=old.src;}else{ns.textContent=old.textContent;}
-    old.replaceWith(ns);
-  });
-}
-const done={};
-async function ensure(key,targetId){
-  if(done[targetId]) return;
-  done[targetId]=true;
-  try{inject(await fetchHTML(SRC[key]),document.getElementById(targetId));}
-  catch(e){document.getElementById(targetId).innerHTML='<div class="spinner" style="color:#cf222e">❌ '+e.message+'</div>';}
-}
-async function sw(btn,id){
+function sw(btn,id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.panel,.combined').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tab-'+id).classList.add('active');
-  if(id==='mapa') await ensure('mapa','tab-mapa');
-  else if(id==='cs') await ensure('cs','tab-cs');
-  else{await Promise.all([ensure('mapa','comb-mapa'),ensure('cs','comb-cs')]);}
+  var pm=document.getElementById('panel-mapa'),pc=document.getElementById('panel-cs');
+  if(id==='mapa'){pc.style.display='none';pm.style.display='';}
+  else{pm.style.display='none';pc.style.display='block';}
 }
-ensure('mapa','tab-mapa');
+</script>
+<script>
+// ── DANE ──────────────────────────────────────────────────────────────────────
+const A = [
+{nr:1,t:"Czy osoba prywatna może wziąć leasing na samochód w Polsce 2026?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:2,t:"Leasing prywatny na auto — jak działa dla osoby nieprowadzącej firmy?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:3,t:"Myślałem że leasing to tylko dla firm — kiedy pojawił się leasing prywatny w Polsce?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:4,t:"Leasing konsumencki vs leasing operacyjny — różnica dla osoby fizycznej w 2026",p:"A",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:5,t:"Leasing prywatny vs wynajem długoterminowy — co wybrać dla osoby prywatnej?",p:"A",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:6,t:"Leasing prywatny vs kredyt samochodowy — porównanie kosztów i ryzyk 2026",p:"A",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:7,t:"Kto oferuje leasing prywatny w Polsce — dealer, bank czy pośrednik?",p:"A",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:8,t:"Co to jest wartość rezydualna w leasingu i dlaczego wpływa na wysokość raty?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:9,t:"Co to jest czynsz inicjalny w leasingu prywatnym? Ile powinienem wpłacić?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:10,t:"Jak oblicza się ratę leasingową prywatną? Wzór krok po kroku.",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:11,t:"RRSO w leasingu prywatnym — jak sprawdzić czy oferta jest dobra?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:12,t:"Jakie dokumenty potrzebne do leasingu prywatnego w 2026?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:13,t:"Jak złożyć wniosek o leasing prywatny w salonie Audi? Krok po kroku.",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:14,t:"Ile trwa akceptacja wniosku o leasing prywatny w Audi Financial Services?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:15,t:"Kalkulator leasingu prywatnego Audi — jak liczyć całkowity koszt umowy?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:16,t:"🛡️ Co zostaje po leasingu prywatnym — czy płacę przez lata i nic nie mam?",p:"A",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:17,t:"🛡️ Czy leasing prywatny to pułapka? Na co uważać w umowie?",p:"A",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:18,t:"🛡️ Czy leasing prywatny jest bezpieczny — co chroni konsumenta w Polsce?",p:"A",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:19,t:"Kończy mi się kredyt samochodowy — co teraz? Nowy kredyt czy leasing prywatny?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:20,t:"Czy leasing prywatny jest tańszy niż kredyt bankowy na nowe auto 2026?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:21,t:"Leasing vs kredyt samochodowy — co wychodzi taniej w 5-letnim rozliczeniu?",p:"B",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:22,t:"Kredyt bankowy a leasing prywatny — różnice w wymaganiach i zdolności kredytowej",p:"B",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:23,t:"Jak zmienić finansowanie z kredytu samochodowego na leasing przy nowym aucie?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:24,t:"Leasing Audi Financial Services vs kredyt samochodowy PKO/mBank — porównanie ofert",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:25,t:"Jak porównać RRSO kredytu z RRSO leasingu? Kalkulator 2026.",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:26,t:"Co to jest TCO (Total Cost of Ownership) i dlaczego to właściwa miara przy wyborze finansowania?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:27,t:"Deprecjacja Audi po 3 latach — ile traci na wartości? Dane rynkowe 2026.",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:28,t:"Czy leasing prywatny wlicza się do historii BIK i zdolności kredytowej?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:29,t:"Ile rata leasingowa na Audi A4 40 TFSI, 36 miesięcy, 15% wpłaty — kalkulator 2026",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:30,t:"Czy mogę negocjować ratę leasingową w salonie Audi?",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:31,t:"Co muszę wiedzieć przed podpisaniem umowy leasingu prywatnego?",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:32,t:"🛡️ Kredyt to moje auto od razu — leasing to cudze. Czy to naprawdę ma znaczenie finansowe?",p:"B",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:33,t:"🛡️ Co jeśli stracę pracę i nie będę mógł płacić rat leasingowych?",p:"B",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:34,t:"🛡️ Czy leasing prywatny psuje zdolność kredytową na inne cele jak hipoteka?",p:"B",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:35,t:"Ile muszę zarobić żeby wziąć leasing prywatny na Audi Q5 w 2026?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:36,t:"Czy mogę mieć nowe Audi bez dużej gotówki — leasing prywatny 0% wpłaty?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:37,t:"Nowe Audi Q5 kosztuje 280 000 PLN — czy leasing prywatny to realne wyjście?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:38,t:"Leasing prywatny bez wpłaty własnej — czy to możliwe i co się traci?",p:"C",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:39,t:"Jaka rata leasingowa na Audi Q5 55 TFSI e przy 0%, 10% i 20% wpłacie własnej?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:40,t:"Co wybrać: 0% wpłaty i wyższa rata, czy 20% wpłaty i niższa rata — co się bardziej opłaca?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:41,t:"Jak wpłata własna wpływa na wysokość raty leasingowej? Kalkulator 2026.",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:42,t:"Czy leasing prywatny na używane Audi jest możliwy i na jakich warunkach?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:43,t:"Obowiązkowe AC przy leasingu premium — kto płaci i ile to kosztuje miesięcznie?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:44,t:"Minimalny dochód do leasingu prywatnego — jak leasingodawca sprawdza zdolność?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:45,t:"Jaki model Audi dostanę za 2 500 PLN miesięcznie raty leasingowej?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:46,t:"Jak zoptymalizować ratę leasingową — czas umowy, wpłata, model?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:47,t:"Ile trwa dostawa nowego Audi zamówionego na leasing z salonu?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:48,t:"🛡️ Czy nie wydaję więcej na leasing niż gdybym kupił na kredyt?",p:"C",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:49,t:"🛡️ Czy stać mnie na leasing Audi premium — kalkulator minimalnych dochodów",p:"C",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:50,t:"🛡️ Co jeśli wartość auta spadnie bardziej niż wartość rezydualna — czy dopłacam?",p:"C",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:51,t:"Co zrobić z autem po skończonym leasingu prywatnym? Opcje krok po kroku.",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:52,t:"Koniec leasingu prywatnego — odkupić czy oddać auto i wziąć nowe?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:53,t:"Wartość rezydualna po leasingu — czy to dobra cena za odkup auta?",p:"D",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:54,t:"Jak sprawdzić wartość rynkową auta vs wartość wykupu na końcu leasingu Audi?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:55,t:"Kiedy lepiej odkupić auto po leasingu, a kiedy oddać i wziąć nowe?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:56,t:"Jak działa program pre-end-of-lease w Audi — kiedy zacząć rozmawiać o nowym?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:57,t:"Protokół zdania auta po leasingu — co jest normalnym zużyciem a co oznacza dopłatę?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:58,t:"Jak wygląda wycena stanu technicznego przy zdawaniu auta z leasingu w Audi?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:59,t:"Jak działa trade-in przy końcu leasingu — dealer odkupuje stary leasing?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:60,t:"Czy mogę sprzedać opcję wykupu komuś innemu zamiast sam odkupywać auto po leasingu?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:61,t:"Jak negocjować nowy leasing przy oddawaniu starego w salonie Audi?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:62,t:"Jak zaplanować nową umowę leasingową 3-6 mc przed końcem aktualnej?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:63,t:"Co z ubezpieczeniem OC/AC auta gdy kończy mi się leasing — kiedy je przenieść?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:64,t:"🛡️ Przekroczyłem limit km w leasingu — ile muszę dopłacić przy zdaniu auta?",p:"D",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:65,t:"🛡️ Boję się protokołu zdania auta — co jeśli ocenią uszkodzenia jako moje wina?",p:"D",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:66,t:"🛡️ Co jeśli wartość rezydualna w umowie jest wyższa niż rynkowa wartość auta?",p:"D",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:67,t:"TCO samochodu — co to jest i dlaczego kredyt vs leasing to nie tylko rata miesięczna?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:68,t:"Ile naprawdę kosztuje posiadanie samochodu przez 5 lat? Pełny koszt 2026.",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:69,t:"Leasing prywatny vs kredyt vs gotówka — pełne porównanie TCO 2026",p:"E",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:70,t:"Jak policzyć TCO leasingu prywatnego? Wzór i kalkulator online.",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:71,t:"Deprecjacja Audi Q5 — ile straci na wartości przez 3 lata? Dane historyczne.",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:72,t:"Co wliczać do TCO auta na leasingu: rata + ubezpieczenie + serwis + nadprzebieg?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:73,t:"Jak leasing chroni przed ryzykiem deprecjacji? Kto ponosi ryzyko wartości rezydualnej?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:74,t:"Różnica między leasingiem a wynajmem w kalkulacji TCO dla osoby prywatnej.",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:75,t:"Koszt alternatywny gotówki przy zakupie auta vs leasing — jak uwzględnić w kalkulacji?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:76,t:"Kalkulator: leasing 36 mc Audi Q5 vs kredyt 60 mc vs gotówka — co wychodzi taniej?",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:77,t:"Kiedy zakup za gotówkę jest lepszy niż leasing? Przy jakiej stopie zwrotu?",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:78,t:"Jak uwzględnić wartość rezydualną przy kalkulacji TCO leasingu prywatnego?",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:79,t:"🛡️ Czy moje wyliczenia TCO leasingu są prawidłowe? Czego typowo się nie wlicza?",p:"E",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:80,t:"🛡️ Wyższe RRSO leasingu vs kredytu zawsze oznacza że leasing jest droższy?",p:"E",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:81,t:"🛡️ Co jeśli stopy procentowe wzrosną w trakcie umowy leasingowej — czy rata się zmienia?",p:"E",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:82,t:"Jak działa leasing prywatny krok po kroku? Prosty przewodnik od zera.",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:83,t:"Na co uważać przy podpisywaniu umowy leasingowej? Czerwone flagi i pułapki.",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:84,t:"Leasing prywatny — najczęstsze pułapki i jak ich uniknąć 2026",p:"F",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:85,t:"Co to są OWU leasingu konsumenckiego i co sprawdzić przed podpisaniem?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:86,t:"Czym się różni Audi Financial Services od bankowego leasingu prywatnego dla konsumenta?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:87,t:"Co to jest limit kilometrów w leasingu i jak go dobrze obliczyć dla siebie?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:88,t:"Nadprzebieg w leasingu prywatnym — ile kosztuje jeden km powyżej limitu?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:89,t:"Co to jest gap insurance i kiedy jest absolutnie konieczny przy leasingu?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:90,t:"Uszkodzenia przy zdaniu auta po leasingu — co zalicza się jako normalne zużycie?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:91,t:"Czy mogę wcześniej zakończyć leasing prywatny? Jakie są realne koszty wyjścia?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:92,t:"Lista pytań do zadania doradcy przed podpisaniem leasingu prywatnego.",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:93,t:"Co sprawdzić w harmonogramie leasingu zanim podpiszę umowę?",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:94,t:"Jak wygląda protokół zdania auta po leasingu — co muszę wiedzieć zanim podpiszę?",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:95,t:"🛡️ Nie rozumiem połowy umowy leasingowej — gdzie szukać pomocy i czy mogę się wycofać?",p:"F",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:96,t:"🛡️ Co jeśli w trakcie leasingu moja sytuacja finansowa się pogorszy — opcje wyjścia?",p:"F",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:97,t:"🛡️ Co jeśli ukradną mi auto w trakcie leasingu — gap insurance a ubezpieczenie AC?",p:"F",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:98,t:"Mam JDG — czy mogę wziąć leasing prywatny na auto dla żony jako osoba fizyczna?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:99,t:"Leasing firmowy vs prywatny dla właściciela JDG — co wybrać w 2026?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:100,t:"Leasing prywatny kontra leasing operacyjny dla JDG — różnice podatkowe 2026",p:"G",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:101,t:"Czy jako JDG mogę wziąć leasing konsumencki jako osoba fizyczna — czy leasingodawca to zaakceptuje?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:102,t:"Odliczenie VAT z leasingu auta używanego prywatnie przez JDG — 50% czy 0%?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:103,t:"Czy warto rezygnować z leasingu firmowego na rzecz prywatnego jako JDG?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:104,t:"Leasing konsumencki a ustawa o kredycie konsumenckim — jakie prawa ma osoba fizyczna?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:105,t:"Co to jest leasing konsumencki dla JDG? Kiedy ma rację bytu finansową?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:106,t:"Podatek PIT a rata leasingu prywatnego — czy można cokolwiek odliczyć od dochodu?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:107,t:"Jak udokumentować że auto na leasing prywatny jest używane prywatnie, nie przez firmę?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:108,t:"Kiedy dla JDG-owca leasing prywatny wychodzi lepiej niż firmowy?",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:109,t:"Jakie dokumenty potrzebne do leasingu prywatnego gdy mam zarejestrowaną JDG?",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:110,t:"Czy Audi Financial Services umożliwia leasing konsumencki dla osoby prowadzącej JDG?",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:111,t:"🛡️ Czy warto rezygnować z odliczenia VAT przy leasingu firmowym na rzecz prywatnego?",p:"G",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:112,t:"🛡️ Co jeśli urząd skarbowy zakwestionuje leasing prywatny przy JDG — jak się zabezpieczyć?",p:"G",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:113,t:"🛡️ Jak formalnie udowodnić że auto na leasing prywatny nie jest używane przez firmę?",p:"G",s:"bloker",sn:"🛡️ Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:114,t:"Leasing Audi A6 prywatny — jak wygląda oferta Audi Financial Services 2026?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:115,t:"Jak wygląda ocena creditworthiness przy leasingu prywatnym vs kredycie bankowym?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:116,t:"Czy można zmienić model w trakcie oczekiwania na dostawę auta w leasingu?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:117,t:"Jakie są pełne koszty pakietu serwisowego przy leasingu Audi na 36 mc?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:118,t:"Czy mogę zmienić limit kilometrów w trakcie trwania umowy leasingowej?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:119,t:"Jak przebiega procedura zwrotu auta do leasingodawcy — co po kolei w dniu zdania?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:120,t:"Jak wygląda wniosek o leasing konsumencki dla osoby prowadzącej JDG — co podaje?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"}
+];
+
+const PATHS = [{"letter": "A", "label": "Odkrycie leasingu prywatnego", "cep_id": "cep_odkrycie_leasingu_prywatnego", "typ": "EMOCJA", "color": "#3b82f6", "count": 19, "verbatim": "„Kolega powiedział że wziął leasing jako osoba prywatna. Myślałem że to tylko dla firm — jak to działa?\"", "kontekst": "Rozmowa, reklama, social media — pierwsze zetknięcie z produktem", "concern": "Czy mam do tego prawo, czy mnie stać, czy nie wpadnę w pułapkę", "bloker": "„A co po leasingu zostaje? Nic?\""}, {"letter": "B", "label": "Koniec kredytu samochodowego", "cep_id": "cep_koniec_rat_kredytu", "typ": "POTRZEBA", "color": "#8b5cf6", "count": 17, "verbatim": "„Za 2 miesiące płacę ostatnią ratę kredytu na stare Audi. Chcę nowe — co teraz? Kredyt znowu czy coś innego?\"", "kontekst": "42–55 lat, stały dochód, chce nowe auto regularnie, nie wie o leasingu prywatnym", "concern": "Czy leasing jest tańszy/prostszy niż nowy kredyt", "bloker": "„Kredyt to moje — leasing to cudze auto\""}, {"letter": "C", "label": "Za mało gotówki na nowe auto", "cep_id": "cep_za_malo_na_nowe_gotowka", "typ": "POTRZEBA", "color": "#ec4899", "count": 17, "verbatim": "„Stare auto mi pada, nowe Q5 kosztuje 280 tys. Mam 40 tys. z używanego — nie dociągam jednorazowo. Mogę wziąć leasing?\"", "kontekst": "35–50 lat, aspiracyjny segment premium, dostępny dochód miesięczny ale brak jednorazowej gotówki", "concern": "Czy rata leasing zmieści się w miesięcznym budżecie", "bloker": "„Czy po leasingu cokolwiek zostaje?\""}, {"letter": "D", "label": "End-of-Lease: co dalej?", "cep_id": "cep_koniec_poprzedniego_leasingu", "typ": "POTRZEBA", "color": "#14b8a6", "count": 17, "verbatim": "„Mam jeszcze 6 miesięcy do końca leasingu Audi A4. Co z tym autem teraz robię? Odkupuję, oddaję czy biorę nowe?\"", "kontekst": "Obecny klient leasingu (często prywatny leasing firmowy), decyzja end-of-lease", "concern": "Co jest finansowo najlepsze: wykup vs oddanie vs nowy leasing", "bloker": "„Zostałem z wartością rezydualną której nie chcę płacić\""}, {"letter": "E", "label": "Kalkulator TCO: leasing vs reszta", "cep_id": "cep_kalkulator_tco_leasing", "typ": "EMOCJA", "color": "#f59e0b", "count": 16, "verbatim": "„Policzyłem że auto na kredyt kosztuje mnie 3 200 zł/mc przez 5 lat plus deprecjacja. Leasing 36 mc to 2 800 zł/mc bez ryzyka wartości rezydualnej — ile faktycznie oszczędzam?\"", "kontekst": "Analityczny typ, 38–52 lat, zdecydowany że chce Audi, kalkuluje finansowanie", "concern": "Pełny TCO porównanie — co jest droższe w 5-letnim oknie", "bloker": "„Czy moje wyliczenia są prawidłowe? Czego nie wliczam?\""}, {"letter": "F", "label": "Strach przed pierwszym leasingiem", "cep_id": "cep_pierwszy_leasing_strach", "typ": "EMOCJA", "color": "#10b981", "count": 17, "verbatim": "„Słyszałem tyle o leasingu prywatnym że to komplikowane — co z tym limitem km? Co jak przekroczę? Co jak uszkodzę? Jak wychodzę z umowy wcześniej?\"", "kontekst": "30–45 lat, pierwsze podejście do leasingu, duży lęk przed ukrytymi kosztami i utratą kontroli", "concern": "Czy rozumiem wszystkie warunki zanim podpiszę — czy nie wpakuję się w pułapkę", "bloker": "„Przeczytałem umowę i nie rozumiem połowy\""}, {"letter": "G", "label": "JDG kontra leasing prywatny", "cep_id": "cep_biznes_to_prywatny", "typ": "POTRZEBA", "color": "#f43f5e", "count": 17, "verbatim": "„Prowadzę JDG, ale to auto biorę prywatnie — żona będzie głównym użytkownikiem. Czy mogę wziąć leasing prywatny jako JDG-owiec? Czy muszę przez firmę?\"", "kontekst": "35–55 lat, przedsiębiorca, rozdziela finanse firmowe od prywatnych, auto „rodzinne\"", "concern": "Czy jest produkt dla mojego statusu (prywatny mimo że ma firmę)", "bloker": "„Leasing przez firmę daje VAT — a prywatny nie. Czy się opłaca?\""}];
+const STATE_ORDER = ["swiadomosc", "orientacja", "nauka", "decyzja", "bloker"];
+const STATE_LABELS = {"swiadomosc": "Świadomość", "orientacja": "Orientacja", "nauka": "Nauka", "decyzja": "Decyzja", "bloker": "Bloker"};
+
+// ── STAN FILTRÓW ──────────────────────────────────────────────────────────────
+let activePath = 'ALL';
+let activePr   = 'ALL';
+let activeTyp  = 'ALL';
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildBoard();
+  buildList();
+  buildInfoPaths();
+  buildInfoStates();
+  applyFilters();
+});
+
+function buildBoard() {
+  const board = document.getElementById('board');
+  // Zbierz stany wg kolejności
+  const stateGroups = {};
+  for (const a of A) {
+    if (!stateGroups[a.s]) stateGroups[a.s] = [];
+    stateGroups[a.s].push(a);
+  }
+  const orderedStates = STATE_ORDER.filter(s => stateGroups[s]);
+  for (const sid of orderedStates) {
+    const label = STATE_LABELS[sid] || sid;
+    const arts = stateGroups[sid];
+    const block = document.createElement('div');
+    block.className = 'state-block';
+    block.dataset.state = sid;
+    block.innerHTML = `<div class="state-header">
+      <span class="state-code">${sid.toUpperCase()}</span>
+      <span>${label}</span>
+      <span class="state-cnt" id="scnt-${sid}"></span>
+    </div><div class="cards-row" id="cards-${sid}"></div>`;
+    board.appendChild(block);
+    const row = document.getElementById('cards-' + sid);
+    for (const a of arts) {
+      const tagPr  = `<span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span>`;
+      const tagTyp = `<span class="tag tag-${a.y.toLowerCase()}">${a.y}</span>`;
+      const tagSt  = `<span class="tag tag-${a.st.toLowerCase()}">${a.st}</span>`;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.nr = a.nr;
+      card.dataset.p  = a.p;
+      card.dataset.s  = a.s;
+      card.dataset.pr = a.pr;
+      card.dataset.y  = a.y;
+      card.dataset.st = a.st;
+      card.dataset.t  = a.t.toLowerCase();
+      card.innerHTML = `<div class="nr">#${a.nr} · ${a.p}</div>
+        <div class="qt">${a.t}</div>
+        <div class="tags">${tagPr}${tagTyp}${tagSt}</div>`;
+      row.appendChild(card);
+    }
+  }
+}
+
+function buildList() {
+  const tbody = document.getElementById('list-body');
+  for (const a of A) {
+    const tr = document.createElement('tr');
+    tr.dataset.nr = a.nr;
+    tr.dataset.p  = a.p;
+    tr.dataset.s  = a.s;
+    tr.dataset.pr = a.pr;
+    tr.dataset.y  = a.y;
+    tr.dataset.st = a.st;
+    tr.dataset.t  = a.t.toLowerCase();
+    tr.innerHTML = `<td>${a.nr}</td>
+      <td>${a.t}</td>
+      <td>${a.p}</td>
+      <td>${STATE_LABELS[a.s] || a.s}</td>
+      <td><span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span></td>
+      <td><span class="tag tag-${a.y.toLowerCase()}">${a.y}</span></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function buildInfoPaths() {
+  const wrap = document.getElementById('info-paths');
+  for (const p of PATHS) {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:12px;border-left:4px solid '+p.color;
+    // Składowe HTML karty CEP
+    const typBadge = p.typ
+      ? `<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-left:6px">${p.typ}</span>`
+      : '';
+    const verbHTML = p.verbatim
+      ? `<div style="margin-top:8px;font-size:12px;color:#374151;background:#f8fafc;border-radius:6px;padding:8px 10px;border-left:3px solid ${p.color};line-height:1.5;font-style:italic">${p.verbatim}</div>`
+      : '';
+    const detailRows = [];
+    if (p.kontekst) detailRows.push(['Kontekst', p.kontekst]);
+    if (p.concern)  detailRows.push(['Główna troska', p.concern]);
+    if (p.bloker)   detailRows.push(['Bloker decyzji', p.bloker]);
+    const detailHTML = detailRows.length
+      ? `<table style="margin-top:8px;width:100%;border-collapse:collapse;font-size:12px">` +
+        detailRows.map(([k,v]) =>
+          `<tr><td style="width:120px;color:#94a3b8;font-weight:600;padding:3px 8px 3px 0;vertical-align:top;white-space:nowrap">${k}</td>` +
+          `<td style="color:#334155;padding:3px 0;line-height:1.5">${v}</td></tr>`
+        ).join('') + `</table>`
+      : '';
+    // Rozkład pytań per stan
+    const statCnts = {};
+    for (const a of A) if (a.p === p.letter) statCnts[a.s] = (statCnts[a.s]||0)+1;
+    const stateBar = STATE_ORDER.filter(s=>statCnts[s]).map(s=>
+      `<span style="font-size:10px;padding:1px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-right:4px">${STATE_LABELS[s]||s} ${statCnts[s]}</span>`
+    ).join('');
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="width:26px;height:26px;border-radius:50%;background:${p.color};color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${p.letter}</span>
+        <strong style="font-size:14px;color:#1e293b">${p.label}</strong>
+        ${typBadge}
+        <span style="margin-left:auto;font-size:11px;color:#94a3b8">${p.count} pytań</span>
+      </div>
+      <div style="font-size:10px;color:#64748b;margin-top:4px;font-family:monospace">${p.cep_id||''}</div>
+      ${verbHTML}
+      ${detailHTML}
+      <div style="margin-top:8px">${stateBar}</div>`;
+    wrap.appendChild(card);
+  }
+}
+
+function buildInfoStates() {
+  const wrap = document.getElementById('info-states');
+  const counts = {};
+  for (const a of A) counts[a.s] = (counts[a.s]||0)+1;
+  for (const s of STATE_ORDER) {
+    if (!counts[s]) continue;
+    const el = document.createElement('div');
+    el.style.cssText = 'background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 14px;text-align:center;min-width:100px';
+    el.innerHTML = `<div style="font-size:20px;font-weight:700;color:#1e293b">${counts[s]}</div><div style="font-size:11px;color:#64748b;margin-top:2px">${STATE_LABELS[s]||s}</div>`;
+    wrap.appendChild(el);
+  }
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+function filterPath(el) {
+  document.querySelectorAll('.path-item, .path-all').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  activePath = el.dataset.path;
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  let vis = 0, p1 = 0, brak = 0, istnieje = 0;
+  const pathCounts = {};
+
+  const allEls = [...document.querySelectorAll('.card, #list-body tr')];
+  for (const el of allEls) {
+    const match =
+      (activePath === 'ALL' || el.dataset.p === activePath) &&
+      (activePr   === 'ALL' || el.dataset.pr === activePr) &&
+      (activeTyp  === 'ALL' || el.dataset.y  === activeTyp) &&
+      (!q || el.dataset.t.includes(q));
+    el.classList.toggle('hidden', !match);
+    if (match) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pathCounts[el.dataset.p] = (pathCounts[el.dataset.p] || 0) + 1;
+    }
+  }
+  // Odejmij duplikaty (card + tr)
+  vis = Math.round(vis / (document.querySelector('#list-body tr') ? 2 : 1));
+  if (document.querySelector('#list-body tr')) vis = Math.round(vis / 2);
+  // Policz raz — cards only
+  vis = 0; p1 = 0; brak = 0; istnieje = 0;
+  const pcounts2 = {};
+  document.querySelectorAll('.card').forEach(el => {
+    if (!el.classList.contains('hidden')) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pcounts2[el.dataset.p] = (pcounts2[el.dataset.p] || 0) + 1;
+    }
+  });
+
+  document.getElementById('stat-total').textContent   = vis;
+  document.getElementById('stat-p1').textContent      = p1;
+  document.getElementById('stat-brak').textContent    = brak;
+  document.getElementById('stat-istnieje').textContent = istnieje;
+  document.getElementById('visibleCount').textContent  = vis;
+
+  // Aktualizuj liczniki ścieżek
+  let allCnt = 0;
+  for (const p of PATHS) {
+    const cnt = pcounts2[p.letter] || 0;
+    const el = document.getElementById('cnt-' + p.letter);
+    if (el) el.textContent = cnt;
+    allCnt += cnt;
+  }
+  const cntAll = document.getElementById('cnt-all');
+  if (cntAll) cntAll.textContent = allCnt;
+
+  // State block counts (tylko mapa)
+  for (const sid of STATE_ORDER) {
+    const el = document.getElementById('scnt-' + sid);
+    if (el) {
+      const cnt = document.querySelectorAll(`#cards-${sid} .card:not(.hidden)`).length;
+      el.textContent = cnt ? cnt + ' art.' : '';
+    }
+  }
+}
+
+// Filtry przyciski
+document.getElementById('fg-pr').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-pr .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activePr = e.target.dataset.val;
+  applyFilters();
+});
+document.getElementById('fg-typ').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-typ .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeTyp = e.target.dataset.val;
+  applyFilters();
+});
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['mapa','lista','info'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(name + '-panel').classList.add('active');
+  applyFilters();
+}
+</script>
+<script>
+const CATS=[{"num":1,"name":"Leasing prywatny — finansowanie samochodu","v":"v2","s":"leasing prywatny — finansowanie samochodu"}];
+const searchEl=document.getElementById('search');
+const statEl=document.getElementById('stat');
+const nrEl=document.getElementById('nr');
+const TOTAL=CATS.length;
+let curFilter='all';
+
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function hi(text,q){
+  if(!q)return text;
+  return text.replace(new RegExp('('+esc(q)+')','gi'),'<mark>$1</mark>');
+}
+
+function applySearch(q){
+  const ql=q.trim().toLowerCase();
+  let n=0;
+  CATS.forEach(c=>{
+    const item=document.getElementById('i'+c.num);
+    const matchQ=!ql||c.s.includes(ql);
+    const matchF=curFilter==='all'||(curFilter==='v1'&&c.v==='v1')||(curFilter==='v2p'&&c.v!=='v1');
+    const ok=matchQ&&matchF;
+    if(item)item.classList.toggle('hidden',!ok);
+    if(ok){
+      n++;
+      const el=item&&item.querySelector('.ct');
+      if(el)el.innerHTML=hi(c.name,q.trim());
+    }
+  });
+  nrEl.style.display=n===0?'block':'none';
+  const fLabel=curFilter==='v1'?' · Draft':curFilter==='v2p'?' · Verified':'';
+  statEl.textContent=(ql?n+'/':'')+TOTAL+' cat.'+fLabel;
+}
+
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+  applySearch(searchEl.value);
+}
+
+function select(num){
+  document.querySelectorAll('.ci').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.cs').forEach(e=>e.classList.remove('vis'));
+  const item=document.getElementById('i'+num);
+  const sec=document.getElementById('s'+num);
+  if(item){item.classList.add('active');item.scrollIntoView({block:'nearest'});}
+  if(sec)sec.classList.add('vis');
+  document.getElementById('ct').scrollTop=0;
+}
+
+searchEl.addEventListener('input',e=>applySearch(e.target.value));
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();searchEl.focus();searchEl.select();}
+  if(e.key==='Escape'&&document.activeElement===searchEl){searchEl.value='';applySearch('');searchEl.blur();}
+});
+
+if(CATS.length>0)select(CATS[0].num);
+
+function toggleTheme(){
+  const l=document.body.classList.toggle('light');
+  localStorage.setItem('geo-theme',l?'light':'dark');
+  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
+}
+(function(){if(localStorage.getItem('geo-theme')==='light'){
+  document.body.classList.add('light');
+  var b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
 </script>
 </body>
 </html>

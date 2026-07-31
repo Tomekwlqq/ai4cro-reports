@@ -305,27 +305,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <button class="filter-pill p3" data-f="prio" data-v="P3" onclick="setF('prio','P3',this)">P3</button>
       <button class="filter-pill p4" data-f="prio" data-v="P4" onclick="setF('prio','P4',this)">P4</button>
     </div>
-    <div class="topbar-sep"></div>
-    <div class="filter-group">
-      <span class="filter-label">Typ zapytania</span>
-      <button class="filter-pill active all" data-f="typ" data-v="all" onclick="setF('typ','all',this)">Wszystkie</button>
-      <button class="filter-pill tn" data-f="typ" data-v="INFO" onclick="setF('typ','INFO',this)">INFO</button>
-      <button class="filter-pill tf" data-f="typ" data-v="KOMERC" onclick="setF('typ','KOMERC',this)">KOMERC</button>
-      <button class="filter-pill ts" data-f="typ" data-v="TRANS" onclick="setF('typ','TRANS',this)">TRANS</button>
-    </div>
-    <div class="topbar-sep"></div>
-    <div class="filter-group">
-      <span class="filter-label">Status</span>
-      <button class="filter-pill active all" data-f="status" data-v="all" onclick="setF('status','all',this)">Wszystkie</button>
-      <button class="filter-pill sb" data-f="status" data-v="BRAK" onclick="setF('status','BRAK',this)">BRAK</button>
-      <button class="filter-pill si" data-f="status" data-v="ISTNIEJE" onclick="setF('status','ISTNIEJE',this)">ISTNIEJE</button>
-      <button class="filter-pill sr" data-f="status" data-v="ROZBUDOWAĆ" onclick="setF('status','ROZBUDOWAĆ',this)">ROZBUDOWAĆ</button>
-    </div>
-    <div class="topbar-right">
-      <input class="search-input" type="text" placeholder="Szukaj artykułu..." id="searchInput" oninput="applyFilters()">
-      <div class="counter">Widoczne: <strong id="visibleCount">194</strong> / 194</div>
-    </div>
-  </div>
 
   <div class="statsbar">
     <div class="stat-card"><div class="val" id="stat-total">194</div><div class="lbl">Widocznych pytań</div></div>
@@ -588,6 +567,7 @@ function render(){
   }
   if(!html)html='<div class="empty-state"><div style="font-size:32px;margin-bottom:12px">&#128269;</div><p>Brak artykułów spełniających kryteria.</p></div>';
   content.innerHTML=html;
+  let idx=0;content.querySelectorAll('.article-card').forEach(function(c){var el=c.querySelector('.card-nr');if(el&&!(c.parentElement&&c.parentElement.classList.contains('hidden')))el.textContent='#'+(++idx);});
   document.getElementById('visibleCount').textContent=total;
   updateStats(total);
 }

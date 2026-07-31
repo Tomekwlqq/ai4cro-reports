@@ -2,77 +2,1088 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Samochody używane i CPO — nabywca prywatny — CS + Mapa Percepcji</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Samochody używane i CPO — Mapa + CS</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow:hidden}
-body{font-family:-apple-system,Segoe UI,sans-serif;background:#f6f8fa;color:#1f2328;display:flex;flex-direction:column}
-.tabs{display:flex;background:#fff;border-bottom:2px solid #d0d7de;flex-shrink:0}
-.tab{padding:12px 28px;cursor:pointer;font-size:14px;font-weight:600;color:#57606a;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
-.tab:hover{color:#0969da}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #d0d7de;height:48px;align-items:center;flex-shrink:0}
+.tab{padding:0 20px;height:100%;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;color:#57606a;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
 .tab.active{color:#0969da;border-bottom-color:#0969da}
-.panel{display:none;flex:1;overflow:auto;background:#fff}
-.panel.active{display:block}
-.combined{display:none;flex:1;overflow:hidden}
-.combined.active{display:flex}
-.combined-half{flex:1;overflow:auto;background:#fff}
-.combined-half:first-child{border-right:1px solid #d0d7de}
-.spinner{display:flex;align-items:center;justify-content:center;height:60px;color:#8c959f;font-size:13px;gap:8px}
+.tab:hover:not(.active){color:#24292f;background:#f6f8fa}
+#panel-mapa{overflow:hidden;height:calc(100vh - 48px)}
+#panel-cs{display:none;overflow:auto;height:calc(100vh - 48px);background:#fff}
+</style>
+<style id="mapa-styles">
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+#panel-mapa{ font-family: -apple-system, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; display: flex; height: calc(100vh - 48px); overflow: hidden; }
+
+/* SIDEBAR */
+#sidebar {
+  width: 220px; min-width: 220px; background: #fff; border-right: 1px solid #e2e8f0;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.brand {
+  padding: 14px 16px 10px;
+  font-weight: 700; font-size: 13px; color: #1e293b;
+  border-bottom: 1px solid #e2e8f0; line-height: 1.3;
+}
+.brand small { display: block; font-weight: 400; font-size: 11px; color: #64748b; margin-top: 2px; }
+.total-badge {
+  margin: 8px 12px; background: #f1f5f9; border-radius: 6px;
+  padding: 5px 10px; font-size: 11px; color: #475569; font-weight: 500;
+}
+.paths-header { padding: 10px 16px 4px; font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .6px; }
+.paths-list { overflow-y: auto; flex: 1; }
+.path-all {
+  display: flex; align-items: center; gap: 8px; padding: 7px 12px;
+  cursor: pointer; border-radius: 6px; margin: 2px 8px;
+  font-size: 12px; font-weight: 600; color: #334155;
+}
+.path-all.active, .path-all:hover { background: #f1f5f9; }
+.path-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+  cursor: pointer; border-radius: 6px; margin: 1px 8px;
+  font-size: 12px; color: #475569; transition: background .1s;
+}
+.path-item:hover, .path-item.active { background: #f1f5f9; color: #1e293b; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.plabel { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pcount { font-size: 11px; font-weight: 600; color: #94a3b8; min-width: 20px; text-align: right; }
+
+.legend { padding: 10px 12px; border-top: 1px solid #e2e8f0; }
+.legend-title { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+.legend-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #475569; margin: 2px 0; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* MAIN */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* TOPBAR */
+#topbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  padding: 8px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 4px; }
+.filter-label { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-right: 2px; }
+.fbtn {
+  font-size: 11px; padding: 3px 8px; border: 1px solid #e2e8f0; border-radius: 4px;
+  background: #fff; cursor: pointer; color: #475569; transition: all .1s;
+}
+.fbtn:hover { border-color: #94a3b8; }
+.fbtn.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+.search-wrap { margin-left: auto; }
+#search { border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 10px; font-size: 12px; width: 180px; outline: none; }
+#search:focus { border-color: #3b82f6; }
+.counter { font-size: 12px; color: #64748b; white-space: nowrap; }
+
+/* STATS BAR */
+#statsbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  display: flex; gap: 0; overflow-x: auto;
+}
+.stat { flex: 1; padding: 10px 16px; border-right: 1px solid #e2e8f0; min-width: 120px; }
+.stat:last-child { border-right: none; }
+.stat .val { font-size: 24px; font-weight: 700; color: #1e293b; }
+.stat .val.green { color: #10b981; }
+.stat .val.red { color: #ef4444; }
+.stat-lbl { font-size: 11px; color: #64748b; margin-top: 1px; }
+
+/* BOARD */
+#board { flex: 1; overflow-x: auto; overflow-y: auto; padding: 12px; }
+.state-block { margin-bottom: 16px; }
+.state-header {
+  font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase;
+  letter-spacing: .5px; padding: 6px 0 8px; display: flex; align-items: center; gap: 8px;
+}
+.state-code { background: #e2e8f0; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: #64748b; }
+.state-cnt { color: #94a3b8; font-weight: 400; font-size: 11px; }
+.cards-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.card {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 10px 12px; width: 280px; flex-shrink: 0;
+  cursor: default; transition: box-shadow .15s;
+}
+.card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.card .nr { font-size: 10px; color: #94a3b8; margin-bottom: 4px; }
+.card .qt { font-size: 13px; line-height: 1.45; color: #1e293b; margin-bottom: 8px; }
+.card .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600;
+  border: 1px solid; letter-spacing: .2px;
+}
+.tag-p1 { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-p2 { color: #f97316; border-color: #fdba74; background: #fff7ed; }
+.tag-p3 { color: #d97706; border-color: #fcd34d; background: #fffbeb; }
+.tag-p4 { color: #94a3b8; border-color: #cbd5e1; background: #f8fafc; }
+.tag-info  { color: #3b82f6; border-color: #93c5fd; background: #eff6ff; }
+.tag-komerc { color: #8b5cf6; border-color: #c4b5fd; background: #f5f3ff; }
+.tag-trans { color: #14b8a6; border-color: #5eead4; background: #f0fdfa; }
+.tag-brak { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-istnieje { color: #10b981; border-color: #6ee7b7; background: #ecfdf5; }
+.card.hidden { display: none; }
+
+/* TABS */
+#tabs { display: flex; border-bottom: 2px solid #e2e8f0; background: #fff; }
+.tab { padding: 8px 20px; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.tab.active { color: #1e293b; border-bottom-color: #3b82f6; }
+.tab-panel { display: none; }
+.tab-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+/* LIST VIEW */
+#list-panel { overflow-y: auto; padding: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 8px 12px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; position: sticky; top: 0; }
+td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; }
+tr:hover td { background: #f8fafc; }
+tr.hidden { display: none; }
+
+/* INFO */
+#info-panel { overflow: hidden; display: flex; flex-direction: column; font-size: 13px; line-height: 1.6; }
+.info-section { margin-bottom: 16px; }
+.info-section h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #64748b; margin-bottom: 8px; }
+.info-section ul { padding-left: 16px; color: #475569; }
+.info-section li { margin: 3px 0; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin: 2px; }
+
+</style>
+<style id="cs-styles">
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+#panel-cs{
+  --bg:#0f1117;--sb-bg:#161b22;--hd-bg:#161b22;--bd:#30363d;
+  --tx:#e6edf3;--tx2:#8b949e;--ac:#58a6ff;
+  --cb:#1c2128;--ts:#1c2128;--mb:#2d4a22;--mt:#7ee787;
+  --ab:#1f3353;--sw:292px;--hh:52px
+}
+#panel-cs{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+     background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* Header */
+#hd{height:var(--hh);background:var(--hd-bg);border-bottom:1px solid var(--bd);
+    display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+#hd h1{font-size:15px;font-weight:700;white-space:nowrap;flex-shrink:0;letter-spacing:.01em}
+#hd h1 span{color:var(--ac)}
+#sw{flex:1;position:relative;max-width:440px}
+#si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tx2);font-size:15px;pointer-events:none}
+#search{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:6px;
+        color:var(--tx);padding:6px 10px 6px 30px;font-size:15px;outline:none;transition:border-color .15s}
+#search:focus{border-color:var(--ac)}
+
+/* Filter buttons */
+.filt{display:flex;gap:4px;flex-shrink:0}
+.fb{font-size:13px;padding:3px 8px;border-radius:4px;border:1px solid var(--bd);
+    background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fb:hover{border-color:var(--ac);color:var(--tx)}
+.fb.on{border-color:var(--ac);background:var(--ab);color:var(--tx)}
+
+/* Lang toggle */
+#lang-btn{font-size:13px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+          background:transparent;color:var(--tx2);cursor:pointer;text-decoration:none;
+          display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+#lang-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+#stat{font-size:13px;color:var(--tx2);flex-shrink:0;white-space:nowrap;min-width:90px;text-align:right}
+
+/* Layout */
+#lay{display:flex;flex:1;overflow:hidden}
+
+/* Sidebar */
+#sb{width:var(--sw);flex-shrink:0;background:var(--sb-bg);border-right:1px solid var(--bd);overflow-y:auto}
+.ci{display:flex;align-items:center;gap:7px;padding:7px 10px;cursor:pointer;
+    border-left:3px solid transparent;border-bottom:1px solid var(--bd);
+    transition:background .1s;user-select:none;min-height:36px}
+.ci:hover{background:rgba(88,166,255,.07)}
+.ci.active{background:var(--ab);border-left-color:var(--ac)}
+.ci.hidden{display:none}
+.cn{font-size:11.5px;color:var(--tx2);min-width:20px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ct{font-size:14px;line-height:1.3;color:var(--tx);flex:1;min-width:0}
+.ct mark{background:var(--mb);color:var(--mt);border-radius:2px;padding:0 1px}
+
+/* Version badge in sidebar */
+.vb{font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:8px;flex-shrink:0;letter-spacing:.02em}
+.vb-v1{background:#21262d;color:#6e7681}
+.vb-v2{background:#2d2502;color:#d29922}
+.vb-v3{background:#0d2a1a;color:#3fb950}
+.vb-v4{background:#0d1e3c;color:#58a6ff}
+
+/* Verification pipeline dots */
+.pipe{display:flex;gap:2px;flex-shrink:0}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--bd)}
+.pd.on-v1{background:#6e7681}
+.pd.on-v2{background:#d29922}
+.pd.on-v3{background:#3fb950}
+.pd.on-v4{background:#58a6ff}
+
+#nr{padding:20px 12px;font-size:15px;color:var(--tx2);text-align:center;display:none}
+
+/* Content */
+#ct{flex:1;overflow-y:auto;padding:26px 34px}
+.cs{display:none}
+.cs.vis{display:block}
+
+/* Markdown */
+.cs h2{font-size:23px;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:10px;margin-bottom:16px}
+.cs h3{font-size:13px;font-weight:700;color:var(--ac);margin:20px 0 9px;
+       text-transform:uppercase;letter-spacing:.06em}
+.cs h4{font-size:16px;font-weight:600;margin:14px 0 6px}
+.cs p{font-size:15.5px;line-height:1.65;margin-bottom:8px}
+.cs strong{font-weight:600}
+.cs em{font-style:italic;color:var(--tx2)}
+.cs code{font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:13px;
+         background:var(--cb);border:1px solid var(--bd);border-radius:3px;
+         padding:1px 5px;color:#f0883e}
+.cs pre{background:var(--cb);border:1px solid var(--bd);border-radius:6px;
+        padding:12px 14px;overflow-x:auto;margin:10px 0}
+.cs pre code{background:none;border:none;padding:0;font-size:14px;color:var(--tx);line-height:1.5}
+.cs table{width:100%;border-collapse:collapse;font-size:14.5px;margin:10px 0;display:block;overflow-x:auto}
+.cs th,.cs td{text-align:left;padding:7px 10px;border:1px solid var(--bd)}
+.cs th{background:var(--sb-bg);font-weight:600}
+.cs tr:nth-child(even) td{background:var(--ts)}
+.cs ul,.cs ol{padding-left:18px;margin:7px 0}
+.cs li{font-size:15.5px;line-height:1.6;margin-bottom:3px}
+.cs hr{border:none;border-top:1px solid var(--bd);margin:18px 0}
+
+/* Changelog / verification card */
+.changelog{background:#0b1e10;border:1px solid #2ea043;border-radius:8px;
+           padding:14px 18px;margin:18px 0;position:relative}
+.changelog::before{content:'🔬 VERIFIED';font-size:10.5px;font-weight:700;
+                   color:#3fb950;letter-spacing:.08em;display:block;margin-bottom:8px}
+.changelog h3{color:#3fb950 !important;margin-top:0 !important;font-size:14px !important}
+.changelog p,.changelog li{color:#c3e6cb;font-size:15px}
+.changelog ul{margin:4px 0}
+.changelog table{font-size:12px}
+.changelog th{background:#0d2a1a}
+.changelog code{background:#0d2a1a;color:#7ee787}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+body.light{
+  --bg:#ffffff;--sb-bg:#f6f8fa;--hd-bg:#f6f8fa;--bd:#d0d7de;
+  --tx:#1f2328;--tx2:#656d76;--ac:#0969da;
+  --cb:#f6f8fa;--ts:#f6f8fa;--mb:#fff8c5;--mt:#7a5c00;--ab:#ddf4ff;
+}
+body.light .cs code{color:#cf222e}
+body.light .cs pre code{color:var(--tx)}
+body.light .changelog{background:#f0fff4;border-color:#2ea043}
+body.light .changelog p,body.light .changelog li{color:#1a7f37}
+#theme-btn{font-size:14px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx2);cursor:pointer;flex-shrink:0;transition:all .15s}
+#theme-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+/* FUND rozwijany blok */
+details.fund{border:1px solid var(--bd);border-radius:8px;margin:22px 0 8px;
+  background:var(--cb);overflow:hidden}
+details.fund>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  padding:12px 16px;user-select:none;transition:background .12s}
+details.fund>summary::-webkit-details-marker{display:none}
+details.fund>summary:hover{background:rgba(88,166,255,.07)}
+.fund-arrow{color:var(--ac);font-size:13px;flex-shrink:0;transition:transform .15s}
+details.fund[open] .fund-arrow{transform:rotate(90deg)}
+.fund-head{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.fund-title{font-size:15px;font-weight:700;color:var(--tx)}
+.fund-src{font-size:12px;font-style:italic;color:var(--tx2);line-height:1.4}
+.fund-badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.fund-badge.ok{background:#0d2a1a;color:#3fb950}
+.fund-badge.warn{background:#3d2a02;color:#f0883e}
+body.light .fund-badge.ok{background:#dafbe1;color:#1a7f37}
+body.light .fund-badge.warn{background:#fff1e5;color:#bc4c00}
+.fund-hint{font-size:11px;color:var(--tx2);flex-shrink:0;border:1px solid var(--bd);
+  border-radius:4px;padding:2px 7px}
+details.fund[open] .fund-hint{display:none}
+.fund-#panel-cs{padding:4px 18px 16px;border-top:1px solid var(--bd)}
+.fund-body h1{font-size:18px;margin:12px 0 6px}
+
 </style>
 </head>
 <body>
 <div class="tabs">
   <button class="tab active" onclick="sw(this,'mapa')">🗺️ Mapa percepcji</button>
   <button class="tab" onclick="sw(this,'cs')">📄 Category Standards</button>
-  <button class="tab" onclick="sw(this,'combined')">🔗 Łączny widok</button>
 </div>
-<div id="tab-mapa" class="panel active"><div class="spinner">⏳ Ładowanie mapy...</div></div>
-<div id="tab-cs" class="panel"><div class="spinner">⏳ Ładowanie CS...</div></div>
-<div id="tab-combined" class="combined">
-  <div id="comb-mapa" class="combined-half"><div class="spinner">⏳ Mapa...</div></div>
-  <div id="comb-cs" class="combined-half"><div class="spinner">⏳ CS...</div></div>
+<div id="panel-mapa">
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="brand">
+    Samochody używane i CPO — nabywca prywatny
+    <small>v5.7 · Analiza CEP i Pytań</small>
+  </div>
+  <div class="total-badge" id="total-badge">135 pytań · 8 ścieżek</div>
+  <div class="paths-header">Ścieżki zakupowe</div>
+  <div class="paths-list">
+    <div class="path-all active" onclick="filterPath(this)" data-path="ALL">
+      <span class="dot" style="background:#64748b"></span>
+      <span class="plabel">Wszystkie ścieżki</span>
+      <span class="pcount" id="cnt-all">0</span>
+    </div>
+    
+        <div class="path-item" data-path="A" onclick="filterPath(this)" title="Na nowe mnie nie stać — szukam dobrego używanego">
+          <span class="dot" style="background:#3b82f6"></span>
+          <span class="plabel">A · Na nowe mnie nie stać — szukam dobrego używanego</span>
+          <span class="pcount" id="cnt-A">0</span>
+        </div>
+        <div class="path-item" data-path="B" onclick="filterPath(this)" title="Strach przed 'kotem' — ryzyko zakupu">
+          <span class="dot" style="background:#8b5cf6"></span>
+          <span class="plabel">B · Strach przed 'kotem' — ryzyko zakupu</span>
+          <span class="pcount" id="cnt-B">0</span>
+        </div>
+        <div class="path-item" data-path="C" onclick="filterPath(this)" title="Import z Niemiec — znajomy zaoszczędził 30k">
+          <span class="dot" style="background:#ec4899"></span>
+          <span class="plabel">C · Import z Niemiec — znajomy zaoszczędził 30k</span>
+          <span class="pcount" id="cnt-C">0</span>
+        </div>
+        <div class="path-item" data-path="D" onclick="filterPath(this)" title="Koniec leasingu — odkupić czy szukać używanego?">
+          <span class="dot" style="background:#14b8a6"></span>
+          <span class="plabel">D · Koniec leasingu — odkupić czy szukać używanego?</span>
+          <span class="pcount" id="cnt-D">0</span>
+        </div>
+        <div class="path-item" data-path="E" onclick="filterPath(this)" title="Pierwsze auto, prawo jazdy, budżet 30–50k">
+          <span class="dot" style="background:#f59e0b"></span>
+          <span class="plabel">E · Pierwsze auto, prawo jazdy, budżet 30–50k</span>
+          <span class="pcount" id="cnt-E">0</span>
+        </div>
+        <div class="path-item" data-path="F" onclick="filterPath(this)" title="Odkrycie CPO — używane z gwarancją z salonu">
+          <span class="dot" style="background:#10b981"></span>
+          <span class="plabel">F · Odkrycie CPO — używane z gwarancją z salonu</span>
+          <span class="pcount" id="cnt-F">0</span>
+        </div>
+        <div class="path-item" data-path="G" onclick="filterPath(this)" title="Duża rodzina — nowe za drogie, szukam używanego">
+          <span class="dot" style="background:#f43f5e"></span>
+          <span class="plabel">G · Duża rodzina — nowe za drogie, szukam używanego</span>
+          <span class="pcount" id="cnt-G">0</span>
+        </div>
+        <div class="path-item" data-path="H" onclick="filterPath(this)" title="Klasyk / youngtimer jako inwestycja lub pasja">
+          <span class="dot" style="background:#eab308"></span>
+          <span class="plabel">H · Klasyk / youngtimer jako inwestycja lub pasja</span>
+          <span class="pcount" id="cnt-H">0</span>
+        </div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Statusy</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>BRAK — do stworzenia</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#10b981"></span>ISTNIEJE — opublikowany</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>ROZBUDOWAĆ — wymaga rozbudowy</div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Priorytety</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>P1 — krytyczne (blokery)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>P2 — ważne (decyzja)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#eab308"></span>P3 — standardowe</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#94a3b8"></span>P4 — niski priorytet</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <span class="filter-label">Priorytet</span>
+    <div class="filter-group" id="fg-pr">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="P1">P1</button>
+      <button class="fbtn" data-val="P2">P2</button>
+      <button class="fbtn" data-val="P3">P3</button>
+      <button class="fbtn" data-val="P4">P4</button>
+    </div>
+    <span class="filter-label" style="margin-left:8px">Typ</span>
+    <div class="filter-group" id="fg-typ">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="INFO">INFO</button>
+      <button class="fbtn" data-val="KOMERC">KOMERC</button>
+      <button class="fbtn" data-val="TRANS">TRANS</button>
+    </div>
+    <div class="search-wrap">
+      <input id="search" type="text" placeholder="Szukaj pytania..." oninput="applyFilters()">
+    </div>
+    <div class="counter">Widoczne: <strong id="visibleCount">0</strong> / 135</div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div id="statsbar">
+    <div class="stat"><div class="val" id="stat-total">0</div><div class="stat-lbl">Widocznych pytań</div></div>
+    <div class="stat"><div class="val red" id="stat-p1">0</div><div class="stat-lbl">Priorytet P1 (blokery)</div></div>
+    <div class="stat"><div class="val" id="stat-brak">0</div><div class="stat-lbl">Status BRAK (do stworzenia)</div></div>
+    <div class="stat"><div class="val green" id="stat-istnieje">0</div><div class="stat-lbl">ISTNIEJE + ROZBUDOWAĆ</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div id="tabs">
+    <button class="tab active" onclick="switchTab('mapa')">🗺️ Mapa</button>
+    <button class="tab" onclick="switchTab('lista')">📋 Lista</button>
+    <button class="tab" onclick="switchTab('info')">ℹ️ Info</button>
+  </div>
+
+  <!-- MAPA PANEL -->
+  <div id="mapa-panel" class="tab-panel active">
+    <div id="board"></div>
+  </div>
+
+  <!-- LISTA PANEL -->
+  <div id="lista-panel" class="tab-panel">
+    <div id="list-panel">
+      <table id="list-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Pytanie</th><th>Ścieżka</th><th>Stan</th><th>Priorytet</th><th>Typ</th>
+          </tr>
+        </thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INFO PANEL -->
+  <div id="info-panel" class="tab-panel">
+    <div style="overflow-y:auto;padding:16px;flex:1">
+    <div class="info-section">
+      <h3>Kategoria</h3>
+      <p style="font-size:14px"><strong>Samochody używane i CPO — nabywca prywatny</strong></p>
+      <p style="font-size:12px;color:#64748b;margin-top:4px">v5.7 · 135 pytań · 8 ścieżek zakupowych (CEP)</p>
+    </div>
+    <div class="info-section">
+      <h3>Struktura pytań wg stanu</h3>
+      <div id="info-states" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
+    </div>
+    <div class="info-section">
+      <h3>Ścieżki zakupowe — pełne profile CEP</h3>
+      <div id="info-paths" style="margin-top:8px"></div>
+    </div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+<div id="panel-cs">
+<div id="hd">
+  <h1>GEO <span>CS</span></h1>
+  <div id="sw">
+    <span id="si">⌕</span>
+    <input id="search" type="text" placeholder="Szukaj kategorii, CEP, pytania..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="filt">
+    <button class="fb on" data-f="all" onclick="setFilter('all')">All</button>
+    <button class="fb" data-f="v2p" onclick="setFilter('v2p')">✅ Verified</button>
+    <button class="fb" data-f="v1"  onclick="setFilter('v1')">📝 Draft</button>
+  </div>
+  <a id="lang-btn" href="%23">🌐 EN</a>
+  <button id="theme-btn" onclick="toggleTheme()" title="Tryb jasny/ciemny">☀️</button>
+  <span id="stat">1 cat.</span>
+</div>
+<div id="lay">
+  <div id="sb">
+    <div class="ci" id="i1" onclick="select(1)"><span class="cn">#1</span><span class="ct">Samochody używane i CPO — nabywca prywatny</span><span class="vb vb-v2">v2</span><div class="pipe"><span class="pd on-v1"></span><span class="pd on-v2"></span><span class="pd"></span><span class="pd"></span></div></div>
+    <div id="nr">No results</div>
+  </div>
+  <div id="ct">
+    <div class="cs" id="s1"><h1>Samochody używane i CPO — nabywca prywatny — Category Standard v1.0</h1>
+
+<p><em>Budowa wg <code>METODOLOGIA_CS_v3.1_RICH.md</code> + format 16 sekcji wzorzec <code>WPIS_CS_samochody_osobowe_prywatny_V2.md</code>. Projekt: Audi_Plichta / CS-Automotive. Źródła FAZY 0: badanie VW PHD (24 IDI, 2020) + VW Customer Journey Updated + VW DCJ qual+quant + kontekst rynku wtórnego PL 2026. Oś nadrzędna: nabywca PRYWATNY szukający auta UŻYWANEGO lub CPO — CS-5 z 6 (CS-0 Zbiorczy / CS-1 Prywatny nowe / CS-2 Leasing / CS-3 Biznes / CS-4 EV / CS-5 Używane+CPO).</em></p>
+
+<hr>
+
+<h2>0. Opis kategorii</h2>
+
+<p>Samochód używany to pojazd z rynku wtórnego kupowany przez osobę prywatną — od innego prywatnego właściciela (OLX, Allegro, AutoTrader) lub przez salon dealerski (CPO — Certified Pre-Owned, czyli używane z certyfikatem i gwarancją). W Polsce rynek wtórny jest 3–4× większy niż rynek nowych aut: szacunkowo 1,2–1,5 mln transakcji rocznie vs ~500 tys. nowych rejestracji. Ceny zaczynają się od 10 000 PLN (stare ryzykowne) przez 30 000–80 000 PLN (główna masa rynku) do 150 000+ PLN (używany premium / CPO). <strong>CPO</strong> (Certified Pre-Owned) to specjalny segment: dealer kupuje auto, przechodzi przez kontrolę wielopunktową, wystawia certyfikat historii i krótką gwarancję (zazwyczaj 12–24 mies.). Droższy niż prywatne, tańszy niż nowe. <strong>Import</strong> z Niemiec, Holandii, Belgii to osobna ścieżka — 40–60% aut na polskim rynku wtórnym pochodzi z importu. <strong>To nie jest e-commerce:</strong> wymaga weryfikacji historii, jazdy próbnej, diagnostyki u niezależnego mechanika, często negocjacji i transferu własności z opłatą skarbową.</p>
+
+<h2>0b. Problemy, które kategoria załatwia</h2>
+
+<p><strong>🎯 Primary (rdzeń):</strong> <em>Bezpieczne i tanie przemieszczanie się bez płacenia ceny nowego — z minimum ryzyka kupna „kota".</em></p>
+
+<p><strong>Secondary — rozbite na sytuację (każda = zalążek CEP):</strong></p>
+
+<ul><li>budżet niepozwala na nowe, ale chcę dobre auto → <code>cep_budzet_ograniczony_uzywane</code></li><li>strach przed zakupem „kota" z Internetu → <code>cep_strach_przed_kotem</code></li><li>znajomy zaoszczędził 30k sprowadzając z Niemiec → <code>cep_import_niemcy_odkrycie</code></li><li>kończy się leasing — odkupić to auto czy szukać używanego? → <code>cep_koniec_leasingu_odkup</code></li><li>pierwsze auto, prawo jazdy świeże, budżet 30–50k PLN → <code>cep_pierwsze_auto_budzet</code></li><li>odkrycie CPO: używane z salonu z gwarancją — nie wiedziałem że to istnieje → <code>cep_cpo_odkrycie</code></li><li>duża rodzina, nowe za drogie, szukam używanego SUV/kombi → <code>cep_duza_rodzina_uzywane</code></li><li>pasja/inwestycja — klasyk lub youngtimer jako lokata/hobby → <code>cep_inwestycja_klasyk</code></li></ul>
+
+<p>> ⚠️ Marka, kolor, rok produkcji, skrzynia biegów — to NIE problemy, to atrybuty → KCF/preselekcja, nie CEP.</p>
+
+<hr>
+
+<h2>1. CEV — Category Emotional Valuation</h2>
+
+<p><strong>Pasek profilu emocjonalnego kategorii (10 cech) — nabywca prywatny, używane:</strong></p>
+
+<table>
+<tr><th>ryzyko</th><th>lęk</th><th>widoczność</th><th>impuls</th><th>sexy</th><th>aspiracja</th><th>tożsamość</th><th>zmysłowość</th><th>pilność</th><th>moralność</th></tr>
+<tr><td>.95</td><td>.90</td><td>.35</td><td>.20</td><td>.35</td><td>.40</td><td>.40</td><td>.45</td><td>.65</td><td>.20</td></tr>
+</table>
+
+<ul><li><strong>ryzyko .95</strong> — NAJWYŻSZE RYZYKO W KATEGORII MOTORYZACYJNEJ. Przy nowym przynajmniej znasz historię (zero). Przy używanym: ukryte wady mechaniczne, wypadek ukryty, cofnięty licznik, zadłużone (zastaw), kradziony (VIN skradziony), import z powodzią. Pomyłka = 20–150k PLN stracone, często bez możliwości odwołania (sprzedaż prywatna = brak gwarancji ustawowej przy konsumencie–konsumentowi).</li><li><strong>lęk .90</strong> — wielowarstwowy: (1) „czy auto jest powypadkowe?", (2) „czy licznik nie jest cofnięty?", (3) „czy dealer czegoś nie ukrywa?", (4) „czy import jest legalny / nieskradziony?", (5) „co jeśli auto się zepsuje tydzień po zakupie — i nie mam żadnej gwarancji?". Lęk nie opada po zakupie — jeszcze przez tygodnie trwa monitorowanie „czy coś wyskoczy".</li><li><strong>widoczność .35</strong> — używane auto jest mniej widocznym sygnałem statusu niż nowe. Jednak przy premium CPO (Audi A6 3 lata / 80 tys. km) aspekt „mam Audi" wciąż obecny. W segmencie 30–60k PLN status marginalny.</li><li><strong>impuls .20</strong> — zdecydowanie wyższy niż przy nowym (okazja z OLX „zniknie jutro"), ale wciąż niewysoky. Mechanizm FOMO generowany przez rynek prywatny: „ogłoszenie już nie ma", „ktoś inny oglądał".</li><li><strong>sexy .35</strong> — niskie. Przy klasykach i youngtimer wyjątkowo wyższe (pasja, emocja obiektu pożądania). Przy typowym używanym A-klasa 2019 — zero.</li><li><strong>aspiracja .40</strong> — umiarkowana. „W końcu mam porządniejsze auto" — ale tańszym torem niż nowe. Dla klasy średniej z ograniczonym budżetem to realne — CPO Audi z gwarancją za 120k PLN zamiast nowego za 220k.</li><li><strong>tożsamość .40</strong> — marka wciąż obecna (Audi/BMW/VW vs Toyota vs no-brand). Mniejsza niż przy nowym — „jakim autem jeździsz" ma wagę, ale „gdzie kupiłeś" mniej.</li><li><strong>zmysłowość .45</strong> — przy CPO salon dbał o auto → zapach, stan wnętrza. Przy prywatnym — losowy. Test drive na używanym = odkrywanie ile naprawdę jest warte.</li><li><strong>pilność .65</strong> — wyraźnie wyższa niż przy nowym. Stare auto się psuje → potrzebuję transportu teraz. Rynek prywatny generuje pilność sztuczną (FOMO). Przy pierwszym aucie — młody kierowca czeka na „ten moment".</li><li><strong>moralność .20</strong> — niska. Wyjątek: import z powodzią / z wypadku jako kwestia etyczna. Część kupujących ma skrupuły kupując „kosy" (auta ze szkodą).</li></ul>
+
+<p>→ Fork <strong>POTRZEBA > EMOCJA</strong>, research <strong>4–8 tygodni</strong> (szybszy niż nowe — rynek płynie). Garby: <strong>weryfikacja historii</strong>, <strong>CPO vs prywatne decyzja</strong>, <strong>negocjacja ceny</strong>, <strong>diagnostyka</strong>.</p>
+
+<hr>
+
+<h2>2. CEP — Consumer Entry Points <em>(weryfikator: sytuacja-nie-atrybut / realny verbatim / nie-sierota)</em></h2>
+
+<table>
+<tr><th>id</th><th>Trigger (język konsumenta, verbatim)</th><th>Kontekst</th><th>Primary concern</th><th>Bloker decyzji</th><th>Routes to</th><th>Anchor content</th></tr>
+<tr><td><code>cep_budzet_ograniczony_uzywane</code></td><td>„na nowe mnie nie stać, ale chcę coś sensownego — co używanego do 60k?" / „mam 40-60k PLN i potrzebuję niezawodnego auta codziennego"</td><td>budżet 30–80k PLN, odrzucony rynek nowych, szuka najlepszego wartości na używanym</td><td>bezpieczna i sensowna opcja w danym budżecie</td><td><strong>jak znaleźć dobre używane bez wpadki przy ograniczonym budżecie?</strong></td><td>CPO lub sprawdzone używane 3–7 lat</td><td>„co kupić do 50k PLN — ranking używanych 2026"</td></tr>
+<tr><td><code>cep_strach_przed_kotem</code></td><td>„boje się kupić auto z Internetu — sprzedawca może coś ukrywać" / „sąsiad kupił z OLX i po tygodniu wysypał się silnik" / „jak mogę sprawdzić że auto nie miało wypadku?"</td><td>historia zakupu z „wpadką" lub opowieść znajomego, czyta straszące artykuły o rynku wtórnym</td><td>eliminacja ryzyka zakupu uszkodzonego / zatajone wady</td><td><strong>jak sprawdzić historię auta / CPO vs prywatne — co bezpieczniejsze?</strong></td><td>CPO z salonu lub sprawdzone prywatne z raportem AutoDNA + mechanik</td><td>„jak bezpiecznie kupić używany samochód — checklista"</td></tr>
+<tr><td><code>cep_import_niemcy_odkrycie</code></td><td>„znajomy sprowadził Passata z Niemiec za 45k i zaoszczędził 30k vs PL" / „na AutoScout24 są auta dużo tańsze — warto?" / „import z Niemiec — jak to działa, czy to legalne?"</td><td>odkrycie dysproporcji cenowej PL vs DE, ktoś z otoczenia zrobił import, ciekawość + strach przed formalnościami</td><td>zaoszczędzić istotnie vs ryzyko importu (historia, formalności, podatki)</td><td><strong>czy import z Niemiec się opłaca — ukryte koszty + ryzyko?</strong></td><td>import samodzielny lub przez firmę importową</td><td>„import używanego samochodu z Niemiec — koszty, formalności, ryzyko"</td></tr>
+<tr><td><code>cep_koniec_leasingu_odkup</code></td><td>„kończy mi się leasing za 3 miesiące — odkupię to auto czy szukam używanego?" / „wartość rezydualna to 55k, a na rynku jest za 70k — odkupuję?"</td><td>koniec umowy leasingowej, decyzja o odkupie vs wyjście na rynek wtórny</td><td>optymalny scenariusz: odkup leasingowy vs nowe vs szukanie podobnego używanego</td><td><strong>czy wartość rezydualna to okazja czy nie — jak to ocenić?</strong></td><td>odkup leasingowy lub nowy leasing / zakup używanego podobnego</td><td>„odkup auta z leasingu — czy to opłacalne?"</td></tr>
+<tr><td><code>cep_pierwsze_auto_budzet</code></td><td>„mam prawo jazdy od miesiąca i 35k PLN — co kupić na pierwsze auto?" / „chcę coś taniego żeby się nie bać zarysowania — ale żeby nie była gruchot"</td><td>18–26 lat, świeży kierowca, ograniczony budżet, rodzice mogą częściowo pomóc</td><td>niezawodność + niski stres prowadzenia + akceptowalny koszt</td><td><strong>nowe (bać się każdego rysu) vs używane (gruchot?) — co pierwsze?</strong></td><td>used A/B segment 3–7 lat z historią ASO lub CPO entry</td><td>„pierwsze auto z prawem jazdy — nowe czy używane 2026"</td></tr>
+<tr><td><code>cep_cpo_odkrycie</code></td><td>„nie wiedziałem że salony sprzedają używane z gwarancją — to nie jest zwykłe używane?" / „czym różni się CPO od zwykłego używanego z salonu?"</td><td>kupujący nie wiedział o segmencie CPO, odkrywa go przez reklamę / polecenie / wyszukiwarkę</td><td>zrozumienie wartości CPO i czy dopłata vs prywatne jest uzasadniona</td><td><strong>ile kosztuje pewność CPO vs ryzyko prywatnego — gdzie ta różnica finansowo?</strong></td><td>CPO dealer (Audi Approved, BMW Premium Selection itp.)</td><td>„CPO samochód — co to jest, co gwarancja obejmuje, czy warto"</td></tr>
+<tr><td><code>cep_duza_rodzina_uzywane</code></td><td>„potrzebuję kombi lub SUV dla 5 osób — nowe za drogie, co sensownego na używanym do 80k?" / „mamy troje dzieci, potrzebujemy dużego auta, ale nie chcemy płacić 200k za nowe"</td><td>rodzina 2+2/3, obecne auto za małe, nowe zbyt drogie, szuka dużego używanego</td><td>dobre duże auto dla rodziny w rozsądnej cenie bez ryzyka ukrytych wad</td><td><strong>które duże używane jest niezawodne i nie pochłonie mnie w naprawach?</strong></td><td>CPO kombi/SUV (Skoda Octavia, VW Passat, Audi Q5 CPO)</td><td>„najlepsze używane kombi i SUV do 80k PLN — ranking niezawodności 2026"</td></tr>
+<tr><td><code>cep_inwestycja_klasyk</code></td><td>„chcę kupić youngtimera / klasyka jako inwestycję lub hobby — gdzie szukać?" / „E39 BMW albo Audi 80 — co bardziej warte kupienia?"</td><td>pasjonat aut, traktuje zakup jako inwestycję wartości lub hobby, nie codzienną mobilność</td><td>wybór właściwego modelu + weryfikacja autentyczności + niszowy rynek</td><td><strong>jak znaleźć dobry klasyk / youngtimer bez przepłacenia i bez wpadki?</strong></td><td>niszowe platformy (Mobile.de, classic car dealers), rzeczoznawca</td><td>„youngtimer jako inwestycja — które modele zyskują na wartości 2026"</td></tr>
+</table>
+
+<hr>
+
+<h2>3. Discovery Questions (floor 22, kategoryczne — nie brandowe)</h2>
+
+<ol><li>Jak bezpiecznie kupić używany samochód — co sprawdzić przed zakupem?</li><li>CPO vs zwykłe używane — co to jest CPO i czy warto dopłacić?</li><li>AutoDNA vs CarVertical — które lepsze do sprawdzenia historii auta?</li><li>Import auta z Niemiec — jak działa, ile kosztuje, czy warto?</li><li>Jak sprawdzić czy samochód nie był w wypadku?</li><li>Jak sprawdzić czy licznik nie jest cofnięty?</li><li>Używane Audi / BMW / VW — na co uważać przy zakupie?</li><li>Co powinno obejmować badanie diagnostyczne przed kupnem używanego auta?</li><li>Ile kosztuje sprawdzenie używanego samochodu u mechanika?</li><li>Czy można wziąć kredyt / leasing na używany samochód?</li><li>Najlepsze używane auto do 30 000 / 50 000 / 80 000 PLN — ranking 2026?</li><li>Jak negocjować cenę używanego samochodu — ile można zejść?</li><li>Co to jest zastaw rejestrowy — jak sprawdzić czy auto jest zadłużone?</li><li>Jak kupić używane auto z OLX / Allegro bezpiecznie?</li><li>Import z Niemiec a podatki — co trzeba zapłacić po przywozie?</li><li>Gwarancja na używany samochód — czy przysługuje mi prawo zwrotu?</li><li>Używane auto z serwisem ASO — dlaczego to ważne?</li><li>Jakie używane auto dla rodziny z dziećmi do 80k PLN?</li><li>Youngtimer / klasyk jako inwestycja — które modele zyskują na wartości?</li><li>Odkup auta z leasingu — czy wartość rezydualna to okazja?</li><li>Pierwsze auto dla nowego kierowcy — używane czy nowe?</li><li>Ile traci używane auto na wartości rocznie — amortyzacja?</li><li>Jak zarejestrować sprowadzone auto z zagranicy?</li><li>Co sprawdzić podczas jazdy próbnej używanym samochodem?</li></ol>
+
+<p>> ⭐ Każdy <code>bloker_decyzji</code> z §2 → ≥1 Discovery + zaplanowana treść S2 gasząca. „Import z Niemiec" → Q4/Q13/Q15/Q23. „Kot / wpadka" → Q2/Q3/Q5/Q6/Q8/Q9.</p>
+
+<hr>
+
+<h2>4. KCF — Key Category Features <em>(waga per segment: Prywatny=●●●, Opcja=●●, Niszowy=●)</em></h2>
+
+<table>
+<tr><th>Feature</th><th>Zakres rynkowy</th><th>Tier</th><th>Waga Pryw.</th><th>Uwaga</th></tr>
+<tr><td>Historia serwisowa / przebieg</td><td>ASO vs prywatny, km zgodny z rokiem, raport</td><td>T1</td><td>●●●</td><td><strong>Rdzeń weryfikacji — bez historii = czarny rynek. Liczba km na rok: ≤15k = dobry.</strong></td></tr>
+<tr><td>Stan techniczny / diagnostyka</td><td>OBD, wielopunktowa inspekcja, stan karoserii</td><td>T1</td><td>●●●</td><td>Najważniejszy filtr przed zakupem prywatnym</td></tr>
+<tr><td>CPO vs prywatne vs import</td><td>typ zakupu determinuje gwarancję, cenę, ryzyko</td><td>T1</td><td>●●●</td><td>Kluczowy fork decyzyjny — zmienia całą argumentację</td></tr>
+<tr><td>Gwarancja / rękojmia</td><td>CPO 12–24 mies; prywatne = brak; dealer = rękojmia 12 mies</td><td>T1</td><td>●●●</td><td>Bloker zakupu — bez gwarancji kupujący czuje się odsłonięty</td></tr>
+<tr><td>Cena / wartość rynkowa</td><td>porównanie z Otomoto / AutoScout24</td><td>T1</td><td>●●●</td><td>Kupujący zawsze porówna — cena musi być uzasadniona</td></tr>
+<tr><td>Financowanie</td><td>gotówka / kredyt samochodowy / leasing na używane</td><td>T1</td><td>●●●</td><td>Leasing na używane dostępny, ale mniej popularny — wciąż istotny</td></tr>
+<tr><td>Wiek auta i generacja</td><td>do 3 lat (CPO zone) / 3–7 (sweet spot) / 7+ (ryzyko)</td><td>T1</td><td>●●●</td><td>Heurystyka kupujących: 3–5 lat = sweet spot niezawodności</td></tr>
+<tr><td>AutoDNA / CARFAX / raport historii</td><td>wypadki, kradzież, cofnięty licznik, skradziony</td><td>T2</td><td>●●</td><td>Standard w CPO; przy prywatnym kupujący musi kupić sam</td></tr>
+<tr><td>Niezawodność modelu</td><td>rankingi TUV, ADAC, Consumer Reports</td><td>T2</td><td>●●</td><td>Kupujący sprawdza przed decyzją o modelu</td></tr>
+<tr><td>Import / rejestracja</td><td>formalności, podatek akcyzowy, homologacja</td><td>T2</td><td>●●</td><td>Bariera przy imporcie — mniej istotna przy CPO PL</td></tr>
+<tr><td>Trade-in istniejącego auta</td><td>wartość starego jako wkład własny</td><td>T2</td><td>●●</td><td>Lubricant zakupu; przy prywatnym wymagana własna sprzedaż</td></tr>
+<tr><td>Ubezpieczenie</td><td>OC/AC na starsze auto — inne koszty niż nowe</td><td>T3</td><td>●</td><td>Koszt AC rosnący przy starszych / po szkodzie</td></tr>
+<tr><td>Części i serwis</td><td>dostępność i cena części modelu</td><td>T3</td><td>●</td><td>Ważne przy imporcie rzadkich modeli</td></tr>
+</table>
+
+<hr>
+
+<h2>5. Typowy produkt — konwencje kategorii</h2>
+
+<table>
+<tr><th>Cecha</th><th>Norma kategorii</th><th>Red flag</th></tr>
+<tr><td>Historia serwisowa</td><td>pełna dokumentacja ASO lub prywatna z paragonami</td><td>brak jakiejkolwiek historii serwisowej</td></tr>
+<tr><td>Raport historii</td><td>AutoDNA / CARFAX / HISTCHECK dostarcza sprzedawca lub kupuje kupujący</td><td>„nie mam raportu, wszystko OK" od prywatnego sprzedawcy</td></tr>
+<tr><td>Przebieg</td><td>zgodny z rokiem i segmentem; ~10–15k km/rok</td><td>nagłe „podskoki" lub luki w serwisowaniu</td></tr>
+<tr><td>CPO certyfikat</td><td>minimum 100-punktowa inspekcja + dokumentacja + gwarancja</td><td>„CPO" bez certyfikatu i gwarancji = marketing</td></tr>
+<tr><td>Gwarancja CPO</td><td>12–24 miesiące na powłokę i mechanikę</td><td>gwarancja tylko na karoserię / „kosmetyczna"</td></tr>
+<tr><td>Diagnostyka przed zakupem</td><td>prywatne = kupujący umawia na OBD u mechanika</td><td>sprzedawca odmawia jazdy do mechanika</td></tr>
+<tr><td>Negocjacja</td><td>5–15% możliwe na prywatnym; CPO 2–5%</td><td>cena „nie do ruszenia" na prywatnym = podejrzane</td></tr>
+<tr><td>Jazda próbna</td><td>obowiązkowa; min. 20 min, trasa miasto+autostrada</td><td>„jazda tylko po parkingu"</td></tr>
+<tr><td>Transfer własności</td><td>umowa kupna-sprzedaży + opłata skarbowa 2%</td><td>brak umowy, „zaufanie"</td></tr>
+</table>
+
+<hr>
+
+<h2>6. Tier Specs</h2>
+
+<p><strong>Tier-1 Universal</strong> (musi być przy każdym ogłoszeniu): rok produkcji · przebieg [km] · stan silnika i skrzyni · historia serwisowa (ASO/prywatna) · wyniki raportu AutoDNA/CARFAX · cena PLN · forma gwarancji (brak/rękojmia/CPO) · miejsce zakupu (prywatny / dealer / import).</p>
+<p><strong>Tier-2 Differentiator:</strong> wynik inspekcji wielopunktowej · NCAP (model) · opcje konfiguracyjne w egzemplarzu · koszt ewentualnych napraw · niezawodność modelu (TUV/ADAC) · warunki finansowania.</p>
+<p><strong>Tier-3 Niche:</strong> historia właścicieli · numer VIN + weryfikacja · możliwość personalizacji / doposażenia · koszty ubezpieczenia · historia importu i kraju pochodzenia.</p>
+
+<hr>
+
+<h2>7. Tier Pricing — PLN, Polska 2026 <em>(prywatny nabywca, rynek wtórny)</em></h2>
+
+<table>
+<tr><th>Tier</th><th>Cena zakupu (używane)</th><th>Typowe modele</th><th>Wiek</th><th>Typowy kupujący</th></tr>
+<tr><td>Entry (ryzykowne)</td><td>10 000–25 000 PLN</td><td>Fiat Punto, Ford Focus I/II, VW Golf IV, Opel Astra G</td><td>15–25 lat</td><td>bardzo napięty budżet, świadomość ryzyka</td></tr>
+<tr><td>Budżet mainstream</td><td>25 000–55 000 PLN</td><td>Skoda Octavia III, VW Passat B8, Toyota Corolla XI, Ford Focus III</td><td>7–12 lat</td><td>primary masa rynku, szuka niezawodności</td></tr>
+<tr><td>Sweet spot</td><td>55 000–100 000 PLN</td><td>Audi A4 B9 CPO, BMW Seria 3 F30, Skoda Kodiaq, VW Tiguan II</td><td>3–7 lat</td><td>family, upgrade, CPO zona</td></tr>
+<tr><td>Premium używane / CPO</td><td>100 000–180 000 PLN</td><td>Audi Q5/A6 CPO, BMW X3/5 CPO, Volvo XC60, MB C-klasa</td><td>1–5 lat CPO</td><td>profesjonaliści, komfort + gwarancja</td></tr>
+<tr><td>Klasyk / youngtimer</td><td>15 000–300 000+ PLN</td><td>BMW E30/E36, VW Golf GTI Mk1, Audi Quattro, porsche 944</td><td>20–40 lat</td><td>pasja, kolekcja, inwestycja</td></tr>
+</table>
+
+<hr>
+
+<h2>8. Consumer Decision Tree</h2>
+
+<p><em>Oś: nabywca prywatny, auto UŻYWANE lub CPO. CDT wg specyfiki rynku wtórnego: Q1=typ zakupu (CPO/prywatny/import), Q2=budżet i wiek auta, Q3=weryfikacja historii, Q4=finansowanie, Q5=test drive + diagnostyka.</em></p>
+
+<h3>Drzewo — kanał [NABYWCA UŻYWANEGO / CPO]</h3>
+
+<p><strong>L1 — routing: sytuacja (CEP) → typ zakupu</strong></p>
+
+<table>
+<tr><th>Sytuacja (CEP)</th><th>→ Typ / pierwszy krok</th></tr>
+<tr><td>Budżet ograniczony, szukam najlepszego do X PLN</td><td>używane prywatne lub CPO — najpierw budżet → model → weryfikacja</td></tr>
+<tr><td>Boję się „kota" / mam złe doświadczenia</td><td>CPO z salonu lub prywatne + obligatoryjnie AutoDNA + mechanik</td></tr>
+<tr><td>Znajomy zaoszczędził importując z Niemiec</td><td>import — najpierw koszty całkowite + ryzyko prawne</td></tr>
+<tr><td>Kończy się leasing, myślę o odkupie</td><td>analiza wartości rezydualnej vs rynek — decyzja matematyczna</td></tr>
+<tr><td>Pierwsze auto, budżet ograniczony</td><td>CPO entry lub sprawdzone prywatne z ASO — bezpieczeństwo + małe</td></tr>
+<tr><td>Nie wiedziałem o CPO / odkryłem w salonie</td><td>wyjaśnienie CPO: co obejmuje, ile kosztuje więcej, kiedy się opłaca</td></tr>
+<tr><td>Duża rodzina, nowe za drogie</td><td>CPO kombi/SUV lub sprawdzone prywatne — rozmiar + historia + koszt</td></tr>
+<tr><td>Klasyk / youngtimer jako pasja lub inwestycja</td><td>niszowy rynek + rzeczoznawca + weryfikacja VIN i oryginalności</td></tr>
+</table>
+
+<p><strong>L2 — budżet i wiek auta:</strong></p>
+
+<ul><li><strong>do 3 lat</strong> → CPO zone (gwarancja fabryczna może jeszcze trwać, CPO dealer)</li><li><strong>3–7 lat</strong> → sweet spot: niezawodność vs cena vs dostępność części</li><li><strong>7–12 lat</strong> → ryzyko rośnie: sprawdzaj niezawodność modelu (TUV report), historia ASO kluczowa</li><li><strong>12+ lat</strong> → bardzo wysokie ryzyko napraw; ROI tylko przy wyjątkowo tanim zakupie lub klasykach</li></ul>
+
+<p><strong>L3 — weryfikacja historii (obligatoryjna dla każdego):</strong></p>
+
+<ol><li>Raport AutoDNA / CARFAX / HISTCHECK — wypadki, cofnięty licznik, kradzież, zastawy</li><li>Historia serwisowa — faktury, pieczątki ASO, ciągłość</li><li>Sprawdzenie VIN (numer podwozia z dokumentami, szyby)</li><li>Inspekcja u niezależnego mechanika (OBD + liftramp) — 150–350 PLN za spokój</li><li>CPO: certyfikat inspekcji + warunki gwarancji (co pokrywa, na ile lat)</li></ol>
+
+<p><strong>L4 — finansowanie używanego:</strong></p>
+
+<ul><li><strong>Gotówka</strong> — najczęstsza forma; niezbędna przy prywatnym i imporcie</li><li><strong>Kredyt samochodowy</strong> — dostępny na używane (większość banków finansuje auta do 10–12 lat)</li><li><strong>Leasing na używane</strong> — możliwy w niektórych firmach leasingowych; wyższe RRSO niż nowe, ograniczone wiek auta</li><li><strong>Przy CPO z salonu</strong> — opcje finansowania dealerskie (raty, kredyt partnerski)</li></ul>
+
+<p><strong>L5 — test drive + diagnostyka (finalizacja):</strong></p>
+
+<ul><li>min. 20 min jazdy (miasto + autostrada + hamowanie + zakręty)</li><li>Sprawdź: klimatyzacja / elektronika / skrzynia biegów / ABS / hamulce / zawieszenie (wyboje)</li><li>Mechanik po jeździe: diagnostyka OBD + sprawdzenie podwozia na podnośniku</li><li>Negocjacja po diagnozie: każda stwierdzona usterka = argument do obniżenia ceny</li></ul>
+
+<p><strong>Kluczowe info wyjścia (mandatory w treści/PDP):</strong> rok produkcji · przebieg · historia serwisowa (ASO tak/nie) · wynik raportu historii · forma gwarancji · cena vs rynek (Otomoto median) · możliwość diagnostyki</p>
+
+<hr>
+
+<h2>9. Forbidden Patterns</h2>
+
+<table>
+<tr><th>❌ Zakazane</th><th>✅ Poprawne</th></tr>
+<tr><td>„bezwypadkowe i zadbane" bez dokumentów</td><td>„Brak szkód wg raportu AutoDNA #PL123456 — raport dostępny do wglądu"</td></tr>
+<tr><td>„jeden właściciel" bez weryfikacji</td><td>„Jeden właściciel wg dokumentacji i raportu historii — potwierdzony 3 wpisami w książce serwisowej ASO"</td></tr>
+<tr><td>„CPO z gwarancją" bez określenia co pokrywa</td><td>„Gwarancja CPO Audi Approved: 12 miesięcy / nieograniczony przebieg / mechanika + elektryka / sieć autoryzowana"</td></tr>
+<tr><td>„serwisowany" bez dat i przebiegu</td><td>„Serwis ASO: 15 000 km / 45 000 km / 75 000 km — faktury w dokumentacji"</td></tr>
+<tr><td>„import z Niemiec, stan idealny" bez historii</td><td>„Import DE: AutoScout24 + raport ADAC + historia Dekra — dokumenty do wglądu"</td></tr>
+<tr><td>„leasing na używane możliwy" bez parametrów</td><td>„Leasing używanego: rata od 890 PLN netto (48 mies., 20% wpłata, max wiek auta 7 lat, RRSO ~9%)"</td></tr>
+<tr><td>„niskie ryzyko zakupu" bez uzasadnienia</td><td>„Ryzyko minimalizowane przez: raport AutoDNA ✓ + inspekcja mechaniczna 120-punktowa ✓ + gwarancja 12 mies. ✓"</td></tr>
+<tr><td>„okazja cenowa" bez porównania rynkowego</td><td>„Cena 58 900 PLN vs mediana Otomoto dla rocznika 2021 / przebieg 80k km = 63 400 PLN — różnica 4 500 PLN"</td></tr>
+</table>
+
+<hr>
+
+<h2>10. Ścieżki percepcji & pole pytań</h2>
+
+<p><strong>Tyle ścieżek ile CEP</strong> (każda = osobna ścieżka etapy świadomości × pytania). Etapy wg CEV (fork POTRZEBA > EMOCJA, garby na Weryfikacji historii / CPO vs prywatne / Negocjacji / Diagnozie). 🛡️ = bloker decyzji. Intent: ⚪ info · 🔵 komerc · 🟢 transakc.</p>
+
+<h3>[NABYWCA UŻYWANEGO / CPO]</h3>
+
+<p><strong>Ścieżka A — <code>cep_budzet_ograniczony_uzywane</code></strong> (na nowe mnie nie stać — szukam sensownego używanego)</p>
+<ul><li><em>Świadomość:</em> Jakie używane auto do 50 000 PLN? ⚪ · Co kupić używanego za 30–60k PLN — ranking wartości 2026? ⚪</li><li><em>Orientacja:</em> Które modele używanych aut są najtańsze w utrzymaniu? 🔵 · 🛡️ Gdzie szukać używanego — salon CPO czy prywatne? 🔵</li><li><em>Nauka:</em> Ile traci używane auto na wartości rocznie? ⚪ · Jaki rok auta kupować — sweet spot niezawodności? ⚪</li><li><em>Decyzja:</em> 🛡️ Jak sprawdzić czy cena używanego jest rynkowa? 🔵 · 🟢 Jak sfinansować zakup używanego — kredyt vs gotówka?</li></ul>
+
+<p><strong>Ścieżka B — <code>cep_strach_przed_kotem</code></strong> (boję się „kota", mam złe doświadczenia)</p>
+<ul><li><em>Świadomość:</em> Jak sprawdzić historię używanego samochodu zanim kupię? ⚪ · Co to jest „kot" w samochodzie — jak rozpoznać? ⚪</li><li><em>Orientacja:</em> AutoDNA vs CarVertical — który raport wybrać? 🔵 · Jak sprawdzić czy samochód był w wypadku? ⚪</li><li><em>Nauka:</em> Co obejmuje inspekcja techniczna przed zakupem używanego? ⚪ · Mechanik przed zakupem — co sprawdza i ile kosztuje? ⚪</li><li><em>Decyzja:</em> 🛡️ Jak nie dać się oszukać przy zakupie używanego auta? 🔵 · 🟢 CPO z salonu vs prywatne z raportem — co bezpieczniejsze?</li></ul>
+
+<p><strong>Ścieżka C — <code>cep_import_niemcy_odkrycie</code></strong> (import z Niemiec, znajomy zaoszczędził)</p>
+<ul><li><em>Świadomość:</em> Import auta z Niemiec — jak działa, czy warto? ⚪ · Ile tańsze są auta w Niemczech niż w Polsce? ⚪</li><li><em>Orientacja:</em> Ukryte koszty importu — podatek, rejestracja, badanie techniczne? 🔵 · 🛡️ Ryzyko importu z zagranicą — jak sprawdzić czy auto nie jest kradzione? ⚪</li><li><em>Nauka:</em> Akcyza przy imporcie samochodu z EU — kiedy trzeba płacić? ⚪ · Jak znaleźć dobre auto na AutoScout24 / Mobile.de? ⚪</li><li><em>Decyzja:</em> 🛡️ Import przez firmę pośredniczącą vs samodzielnie — różnice? 🔵 · 🟢 Co po imporcie — rejestracja, homologacja, OC w Polsce?</li></ul>
+
+<p><strong>Ścieżka D — <code>cep_koniec_leasingu_odkup</code></strong> (kończy się leasing — odkupić czy nie?)</p>
+<ul><li><em>Świadomość:</em> Co zrobić z autem po leasingu — odkupić czy zmienić? ⚪ · Wartość rezydualna leasingu — co to znaczy? ⚪</li><li><em>Orientacja:</em> Jak sprawdzić czy wartość rezydualna to okazja czy przepłata? 🔵 · 🛡️ Kiedy warto odkupić auto z leasingu, a kiedy szukać używanego? 🔵</li><li><em>Nauka:</em> Jak obliczyć czy odkup leasingowy się opłaca? ⚪ · Leasing zwrotny — czy mogę sprzedać to auto po odkupie? ⚪</li><li><em>Decyzja:</em> 🟢 Procedura odkupu auta z leasingu — jak to zrobić?</li></ul>
+
+<p><strong>Ścieżka E — <code>cep_pierwsze_auto_budzet</code></strong> (pierwsze auto, prawo jazdy, budżet 30–50k)</p>
+<ul><li><em>Świadomość:</em> Jakie pierwsze auto dla nowego kierowcy? ⚪ · Używane czy nowe jako pierwsze auto — co się opłaca? ⚪</li><li><em>Orientacja:</em> 🛡️ Małe niezawodne auto do 40k PLN — ranking 2026? 🔵 · Ubezpieczenie pierwszego auta — ile kosztuje OC/AC? 🔵</li><li><em>Nauka:</em> Na co uważać kupując pierwsze auto używane? ⚪ · Jakie błędy robią początkujący kupujący używane? ⚪</li><li><em>Decyzja:</em> 🛡️ Nowe czy używane dla nowego kierowcy — co lepsze? 🔵 · 🟢 Jak ubezpieczyć pierwsze auto po zakupie?</li></ul>
+
+<p><strong>Ścieżka F — <code>cep_cpo_odkrycie</code></strong> (CPO — nie wiedziałem że to istnieje)</p>
+<ul><li><em>Świadomość:</em> Co to jest CPO (Certified Pre-Owned)? ⚪ · Czym różni się CPO od zwykłego używanego z salonu? ⚪</li><li><em>Orientacja:</em> Ile droższe jest CPO vs prywatne tej samej klasy? 🔵 · Co obejmuje gwarancja CPO — mechanika, elektryka, karoseria? 🔵</li><li><em>Nauka:</em> Audi Approved vs BMW Premium Selection — różnice? ⚪ · 🛡️ Czy CPO jest wart dopłaty — kiedy tak, kiedy nie? ⚪</li><li><em>Decyzja:</em> CPO Audi Q5 / A4 — co dostanę za tę cenę? 🔵 · 🟢 Jak kupić CPO w salonie Audi — procedura</li></ul>
+
+<p><strong>Ścieżka G — <code>cep_duza_rodzina_uzywane</code></strong> (duża rodzina, nowe za drogie)</p>
+<ul><li><em>Świadomość:</em> Jakie duże używane auto dla rodziny z dziećmi do 80k PLN? ⚪ · Kombi czy SUV dla 5-6 osób? ⚪</li><li><em>Orientacja:</em> Najlepsze używane kombi / SUV — ranking niezawodności 2026? 🔵 · 🛡️ Które duże używane nie pożre mnie w naprawach? 🔵</li><li><em>Nauka:</em> Koszty utrzymania używanego SUV vs kombi — porównanie? ⚪ · Bezpieczeństwo NCAP dla 5-7 latków — które modele polecane? ⚪</li><li><em>Decyzja:</em> 🟢 Skoda Octavia combi vs VW Passat B8 vs Audi A4 Avant — co kupić używanego?</li></ul>
+
+<p><strong>Ścieżka H — <code>cep_inwestycja_klasyk</code></strong> (youngtimer / klasyk jako pasja lub inwestycja)</p>
+<ul><li><em>Świadomość:</em> Które used cars zyskują na wartości jako youngtimery? ⚪ · Youngtimer jako inwestycja — czy to ma sens? ⚪</li><li><em>Orientacja:</em> BMW E30 / E36 / E46 — który wart zakupu jako youngtimer? 🔵 · Audi 80 / 100 Quattro — stan rynku i ceny 2026? 🔵</li><li><em>Nauka:</em> Jak sprawdzić oryginalność klasyka przed zakupem? ⚪ · Gdzie kupować klasyki — aukcje, importerzy, prywatni? ⚪</li><li><em>Decyzja:</em> 🟢 Jak wycenić youngtimera — rzeczoznawca samochodowy?</li></ul>
+
+<hr>
+
+<h2>11. Cross-Category Triggers</h2>
+
+<table>
+<tr><th>Kategoria źródłowa</th><th>Trigger</th><th>CEP aktywowany</th><th>Fraza wejściowa w AI</th></tr>
+<tr><td>Leasing / finansowanie</td><td>„kończy mi się leasing — co zrobić z autem?"</td><td><code>cep_koniec_leasingu_odkup</code></td><td>„odkup auta z leasingu — opłacalność"</td></tr>
+<tr><td>Import / przeprowadzka z DE</td><td>„wracam z Niemiec, mam auto — co z rejestracją?"</td><td><code>cep_import_niemcy_odkrycie</code></td><td>„rejestracja auta z zagranicy w Polsce"</td></tr>
+<tr><td>Ubezpieczenia OC/AC</td><td>„ile kosztuje OC na 15-letnie auto?"</td><td><code>cep_budzet_ograniczony_uzywane</code></td><td>„ubezpieczenie używanego samochodu"</td></tr>
+<tr><td>Serwis samochodowy</td><td>„mechanik powiedział że naprawa będzie 8 000 PLN..."</td><td><code>cep_strach_przed_kotem</code></td><td>„jak uniknąć kosztownych napraw przy zakupie używanego"</td></tr>
+<tr><td>Pierwsze prawo jazdy</td><td>„zdałam egzamin — potrzebuję auta"</td><td><code>cep_pierwsze_auto_budzet</code></td><td>„jakie auto dla świeżego kierowcy z budżetem 35k"</td></tr>
+<tr><td>Rodzina / dziecko</td><td>„trzecie dziecko w drodze — trzeba coś większego"</td><td><code>cep_duza_rodzina_uzywane</code></td><td>„duże używane auto dla rodziny 5 osób"</td></tr>
+<tr><td>Nieruchomości / działka</td><td>„kupuję dom, potrzebuję większego auta do transportu"</td><td><code>cep_duza_rodzina_uzywane</code></td><td>„używane kombi lub SUV — ranking praktyczności"</td></tr>
+</table>
+
+<hr>
+
+<h2>12. Tone of Voice for GEO — jak pisać treść cytowalną przez AI</h2>
+
+<ol><li>Odpowiadaj w pierwszym zdaniu z konkretnym warunkiem bezpieczeństwa: „Używane auto jest bezpieczne do kupienia gdy: masz raport AutoDNA bez szkód, historię serwisową ASO i potwierdzenie diagnostyki mechanicznej."</li><li>Rozbrajaj lęk „kota" faktem i liczbą: „20–30% aut na Otomoto ma cofnięty licznik wg danych AutoDNA 2025 — raport za 29–79 PLN eliminuje to ryzyko."</li><li>CPO vs prywatne zawsze kwotuj: „CPO Audi A4 2021 80k km = ok. 95 000 PLN. Prywatne tej samej klasy = 75 000–82 000 PLN. Różnica 13–20k PLN kupuje 12–24 mies. gwarancji i certyfikat historii."</li><li>Import — zawsze pełne koszty: „Cena auta w DE + transport (2 000–3 500 PLN) + akcyza (jeśli dotyczy) + rejestracja (200–500 PLN) + ewentualnie dostosowanie do norm PL. Dopiero suma = koszt całkowity."</li><li>Diagnostyka przed zakupem — jako standard, nie opcja: „Mechanik przed zakupem: 150–350 PLN. Naprawa spalonego silnika: 8 000–25 000 PLN. To nie jest opcjonalne."</li><li>Leasing na używane — z ograniczeniami: „Leasing na używane: możliwy (max 7–10 lat auta), RRSO wyższe o 2–4 pp niż na nowe, wpłata min. 20%. Nie każde auto zakwalifikuje się."</li><li>Każde CPO tłumacz co KONKRETNIE obejmuje: „Gwarancja CPO Audi Approved: 12 mies. nieograniczony przebieg, mechanika + elektryka, serwis w każdym ASO PL — NIE obejmuje: uszkodzenia mechaniczne wynikłe z zaniedbania, eksploatacja niezgodna z DTR."</li><li>Zamykaj sekcję faktem do zacytowania: cyfra, zakres, warunek — nie CTA.</li></ol>
+
+<hr>
+
+<h2>13. Pole pytań</h2>
+
+<h3>① Discovery (otwarcie — 24 kategoryczne, patrz §3)</h3>
+
+<h3>② Pogłębione (per ścieżka — rozpisane w §10, A–H, etap × pytanie × intent)</h3>
+<p>8 ścieżek CEP, pytania pogrupowane po etapach świadomości, intent oznaczony (⚪/🔵/🟢).</p>
+
+<h3>③ Blokery 🛡️ (ekstrakcja FAQ — obiekcje, każda wymaga S2 gaszącej)</h3>
+
+<ul><li>🛡️ <strong>„Czy kupuję kota w worku — jak się przed tym zabezpieczyć?"</strong> ← NAJWIĘKSZY bloker (lęk .90) → S2: checklista 5 kroków: raport historii + historia ASO + mechanik OBD + jazda próbna + negocjacja na podstawie diagnostyki.</li><li>🛡️ <strong>„CPO — czy dopłata vs prywatne jest uzasadniona?"</strong> ← kluczowy fork → S2: kalkulacja: różnica ceny vs wartość gwarancji + certyfikat + spokój. Kiedy tak (pierwsze auto, brak wiedzy, premium segment), kiedy nie (z mechanikiem, z historią, tańszy segment).</li><li>🛡️ <strong>„Import z Niemiec — ile naprawdę kosztuje? Czy ukryte koszty?"</strong> → S2: pełna kalkulacja: cena DE + transport + akcyza (jeśli >6 lat lub >2000cc diesel) + rejestracja + dostosowanie. Realna oszczędność vs ryzyko.</li><li>🛡️ <strong>„Jak sprawdzić czy licznik nie jest cofnięty?"</strong> → S2: AutoDNA/CARFAX pokazuje historię przebiegu; historia serwisowa z datami i km; stacja kontroli pojazdów może potwierdzić.</li><li>🛡️ <strong>„Co mi przysługuje jeśli auto po zakupie okaże się wadliwe?"</strong> → S2: prywatny=brak gwarancji (konsument-konsument = brak ustawy konsumenckiej); dealer=rękojmia 12 mies.; CPO=gwarancja dobrowolna. Zapis w umowie kluczowy.</li><li>🛡️ <strong>„Czy leasing na używane samochód ma sens?"</strong> → S2: warunki (max wiek, RRSO wyższe), kiedy warto (nie masz gotówki, CPO w salonie z finansowaniem), kiedy nie (starsze auta = brak leasingu).</li><li>🛡️ <strong>„Ile można negocjować cenę używanego?"</strong> → S2: prywatne = 5–15% realnie; CPO dealer = 2–5%; używany z salonu niemarkowego = 5–10%. Argumenty: wady z diagnostyki, długi czas na rynku, brak dokumentów.</li><li>🛡️ <strong>„Czy auto z zagranicą nie jest skradzione / nie ma zadłużeń?"</strong> → S2: sprawdzenie VIN w Europolu/bazie Interpol + raport historii + sprawdzenie w Centralnej Ewidencji Pojazdów + zaświadczenie o braku zastawu rejestrowego.</li></ul>
+
+<p>> Render docelowy: widok łączony CS + mapa percepcji (3-tab: mapa / CS / łączony). Pipeline: <code>python3 render_cs_mapa.py samochody_uzywane_cpo --all</code></p>
+
+<hr>
+
+<h2>14. Content Gap Analysis</h2>
+
+<table>
+<tr><th>Pytanie (bloker/discovery)</th><th>Typ luki</th><th>Treść S2 do stworzenia</th></tr>
+<tr><td>„AutoDNA vs CarVertical — które lepsze?"</td><td>Porównanie narzędzi</td><td>Tabela: cena, zakres danych, źródła, rekomendacja sytuacyjna</td></tr>
+<tr><td>„CPO Audi vs BMW vs Mercedes — co obejmuje każde?"</td><td>Dealer comparison</td><td>Tabelka: zakres gwarancji, punkty kontroli, cena vs prywatne</td></tr>
+<tr><td>„Import z Niemiec — pełna kalkulacja"</td><td>Kalkulator</td><td>Krok po kroku z konkretnymi kwotami 2026</td></tr>
+<tr><td>„Cofnięty licznik — jak wykryć bez raportu?"</td><td>Edukacja</td><td>5 sygnałów ostrzegawczych (pedały, kierownica, fotele, dokumenty)</td></tr>
+<tr><td>„Leasing na używane — kto oferuje, warunki"</td><td>Porównanie ofert</td><td>Lista firm leasingowych + warunki na używane</td></tr>
+<tr><td>„Najlepsze używane auta do 50k/80k — ranking"</td><td>Rankingowa S2</td><td>Top 5 modeli per budżet z uzasadnieniem (niezawodność, dostępność części)</td></tr>
+</table>
+
+<hr>
+
+<h2>15. Sezonowość i timing</h2>
+
+<ul><li><strong>Wiosna (marzec–maj):</strong> szczyt sprzedaży używanych — rynek najbardziej aktywny, ceny lekko wyższe</li><li><strong>Jesień (wrzesień–październik):</strong> 2. szczyt — przed zimą, sprzedający chcą pozbyć się przed sezonem</li><li><strong>Grudzień–styczeń:</strong> dołek cenowy — mniej kupujących, najlepsza pora na negocjacje</li><li><strong>Import:</strong> najlepsza oferta w Niemczech przed sezonem (luty–marzec), duże aukcje ADESA/BCA</li><li><strong>CPO:</strong> oferty końcówki kwartału (dealerzy zamykają cele sprzedażowe — lepsze rabaty Q1/Q3 koniec)</li></ul>
+
+<hr>
+
+<h2>16. KPIs dla treści GEO (metryki jakości odpowiedzi AI)</h2>
+
+<table>
+<tr><th>Metryka</th><th>Cel</th><th>Sposób pomiaru</th></tr>
+<tr><td>Cytowanie w odpowiedzi Perplexity/ChatGPT na „jak kupić używane"</td><td>≥2 cytowania w top 5</td><td>Monitoring GEO co 2 tygodnie</td></tr>
+<tr><td>Pokrycie blokerów S2</td><td>8/8 blokerów z §13 mają dedykowaną S2</td><td>Audit treści</td></tr>
+<tr><td>Completeness score (CARFAX/AutoDNA/CPO wymienione)</td><td>100% w Q&A</td><td>Automatyczna walidacja</td></tr>
+<tr><td>Czas sesji na stronie z treścią używanych</td><td>>3 min</td><td>GA4</td></tr>
+<tr><td>Discovery via AI search</td><td>Udział zapytań z AI-referred traffic</td><td>GA4 + GSC</td></tr>
+</table>
+
+<hr>
+
+<p><em>Status: CS-5 v1.0 zbudowany na podstawie architektury rynku wtórnego PL 2026 + VW PHD research (kontekst użytkownika PL) + realia rynku: Otomoto / OLX / AutoScout24. Czeka na wzbogacenie: dane dealerskie Plichty (CPO Audi — wolumen, top queries, obiekcje handlowców) + dane GA4 Plichty (ruch na stronach używanych) + dane AutoDNA (stats cofniętych liczników) + research import (konkretne kwoty akcyzowe 2026).</em></p>
+</div>
+  </div>
+</div>
+
 </div>
 <script>
-const SRC={mapa:'MAPA_PERCEPCJI_samochody_uzywane_cpo_v5.7.html',cs:'cs_samochody_uzywane_cpo.html'};
-const cache={};
-async function fetchHTML(url){
-  if(cache[url]) return cache[url];
-  const r=await fetch(url);
-  if(!r.ok) throw new Error(r.status+' '+url);
-  cache[url]=await r.text();
-  return cache[url];
-}
-function inject(htmlStr, container){
-  const dp=new DOMParser().parseFromString(htmlStr,'text/html');
-  container.innerHTML='';
-  dp.querySelectorAll('style,link[rel="stylesheet"]').forEach(s=>{
-    container.appendChild(document.importNode(s,true));
-  });
-  Array.from(dp.body.childNodes).forEach(n=>container.appendChild(document.importNode(n,true)));
-  container.querySelectorAll('script').forEach(old=>{
-    const ns=document.createElement('script');
-    if(old.src){ns.src=old.src;}else{ns.textContent=old.textContent;}
-    old.replaceWith(ns);
-  });
-}
-const done={};
-async function ensure(key,targetId){
-  if(done[targetId]) return;
-  done[targetId]=true;
-  try{inject(await fetchHTML(SRC[key]),document.getElementById(targetId));}
-  catch(e){document.getElementById(targetId).innerHTML='<div class="spinner" style="color:#cf222e">❌ '+e.message+'</div>';}
-}
-async function sw(btn,id){
+function sw(btn,id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.panel,.combined').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tab-'+id).classList.add('active');
-  if(id==='mapa') await ensure('mapa','tab-mapa');
-  else if(id==='cs') await ensure('cs','tab-cs');
-  else{await Promise.all([ensure('mapa','comb-mapa'),ensure('cs','comb-cs')]);}
+  var pm=document.getElementById('panel-mapa'),pc=document.getElementById('panel-cs');
+  if(id==='mapa'){pc.style.display='none';pm.style.display='';}
+  else{pm.style.display='none';pc.style.display='block';}
 }
-ensure('mapa','tab-mapa');
+</script>
+<script>
+// ── DANE ──────────────────────────────────────────────────────────────────────
+const A = [
+{nr:1,t:"Jakie używane auto do 50 000 PLN — co warto wybrać?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:2,t:"Co kupić używanego za 30–60k PLN — ranking wartości 2026?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:3,t:"Nowe czy używane — kiedy używane jest lepszym wyborem?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:4,t:"Ile traci używane auto na wartości rocznie — amortyzacja?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:5,t:"Które modele używanych aut są najtańsze w utrzymaniu?",p:"A",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:6,t:"Gdzie szukać używanego — salon CPO czy prywatne ogłoszenia?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:7,t:"Jaki rok auta kupować — sweet spot niezawodności i ceny?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:8,t:"Ranking niezawodnych używanych aut — TUV / ADAC 2026?",p:"A",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:9,t:"Ile kosztuje utrzymanie używanego auta vs nowego — porównanie roczne?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:10,t:"Jak sprawdzić czy cena używanego jest rynkowa — jak porównać?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:11,t:"Co to jest raport AutoDNA i jak go czytać?",p:"A",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:12,t:"Jakie auta używane mają najtańsze części zamienne?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:13,t:"Ile kosztuje OC na używane auto — jak to obniżyć?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:14,t:"Kredyt samochodowy na używane — jak dostać i na jakich warunkach?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:15,t:"Jak sfinansować zakup używanego — gotówka, kredyt, leasing?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:16,t:"Jak negocjować cenę używanego samochodu — argumenty i ile zejść?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:17,t:"Umowa kupna-sprzedaży używanego auta — co musi zawierać?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:18,t:"Co sprawdzić przy odbiorze używanego auta od sprzedawcy?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:19,t:"🛡️ Co jeśli kupię używane i za tydzień się zepsuje — czy mam jakieś prawa?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:20,t:"🛡️ Jak nie przepłacić za używane — skąd wiedzieć że cena jest uczciwa?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:21,t:"🛡️ Używane najtańsze — czy to ryzyko wpadki na naprawy?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:22,t:"Jak sprawdzić historię używanego samochodu zanim kupię?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:23,t:"Co to jest 'kot' w samochodzie — jak rozpoznać przed zakupem?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:24,t:"Jak sprawdzić czy samochód był w wypadku bez płacenia za raport?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:25,t:"AutoDNA vs CarVertical — który raport historii auta wybrać?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:26,t:"Jak sprawdzić czy licznik samochodu nie jest cofnięty?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:27,t:"CPO z salonu vs prywatne z OLX — co bezpieczniejsze?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:28,t:"Jak sprawdzić czy samochód nie jest zadłużony / zastawiony?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:29,t:"Co obejmuje inspekcja techniczna przed zakupem używanego auta?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:30,t:"Diagnostyka OBD przed zakupem — co można wykryć, ile kosztuje?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:31,t:"5 sygnałów że używane auto ukrywa wypadek — co sprawdzić okiem?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:32,t:"Jak sprawdzić VIN samochodu i co można znaleźć?",p:"B",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:33,t:"Zastaw rejestrowy na samochodzie — jak sprawdzić w rejestrze?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:34,t:"Mechanik przed zakupem używanego — jak umówić i ile zapłacić?",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:35,t:"Checklista przed zakupem używanego samochodu — co sprawdzić krok po kroku?",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:36,t:"Na co zwrócić uwagę podczas jazdy próbnej używanym autem?",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:37,t:"🛡️ Jak nie kupić powypadkowego auta z Allegro lub OLX?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:38,t:"🛡️ Co zrobić jeśli kupiłem wadliwe używane auto — prawa kupującego?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:39,t:"🛡️ Czy sprzedawca prywatny odpowiada za ukryte wady — rękojmia?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:40,t:"🛡️ Raport AutoDNA pokazał 'brak danych' — co to znaczy?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:41,t:"Import auta z Niemiec — jak działa, czy warto?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:42,t:"Ile tańsze są używane auta w Niemczech niż w Polsce?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:43,t:"Import z Holandii / Belgii vs Niemcy — gdzie taniej?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:44,t:"Ukryte koszty importu auta z Niemiec — podatek, rejestracja, transport?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:45,t:"Jak znaleźć dobre auto na AutoScout24 / Mobile.de — poradnik?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:46,t:"Import przez pośrednika vs samodzielnie — różnice, bezpieczeństwo?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:47,t:"Ryzyko importu z zagranicy — jak sprawdzić historię auta z DE?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:48,t:"Akcyza przy imporcie samochodu z EU — kiedy i ile trzeba zapłacić?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:49,t:"Rejestracja importowanego auta w Polsce — krok po kroku?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:50,t:"Jak sprawdzić czy auto z Niemiec nie jest kradzione?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:51,t:"Jakie dokumenty są potrzebne do importu auta z Niemiec?",p:"C",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:52,t:"Pełna kalkulacja importu auta z Niemiec — ile naprawdę oszczędzam?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:53,t:"Transport auta z Niemiec do Polski — firmy, koszt, czas?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:54,t:"Polskie OC na importowane auto — jak ubezpieczyć?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:55,t:"🛡️ Import z Niemiec — co jeśli auto okaże się powypadkowe?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:56,t:"🛡️ Czy import z Niemiec przez pośrednika jest bezpieczny?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:57,t:"🛡️ Auto z powodzią z Niemiec — jak rozpoznać?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:58,t:"Co zrobić z autem po leasingu — odkupić czy zmienić?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:59,t:"Wartość rezydualna leasingu — co to jest i jak działa?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:60,t:"Ile miesięcy przed końcem leasingu zacząć szukać nowego auta?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:61,t:"Jak sprawdzić czy wartość rezydualna to okazja czy przepłata?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:62,t:"Wartość rezydualna vs cena rynkowa — kiedy odkup się opłaca?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:63,t:"Nowy leasing vs odkup starego — co wychodzi taniej?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:64,t:"Odkup auta z leasingu prywatnego — procedura krok po kroku?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:65,t:"Jak obliczyć czy odkup leasingowy się opłaca — kalkulator?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:66,t:"Leasing zwrotny — czy mogę sprzedać odkupione auto od razu?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:67,t:"Podatek przy odkupie auta z leasingu — VAT, PCC?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:68,t:"Co się dzieje jeśli nie odkupię i nie zwrócę — opóźnienie?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:69,t:"Procedura odkupu auta z leasingu Audi Financial Services?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:70,t:"Jak sprzedać odkupione auto po leasingu prywatnym?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:71,t:"Podobne used Audi / BMW na rynku — czy tańsze niż odkup?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:72,t:"🛡️ Wartość rezydualna wyższa niż rynek — czy muszę odkupić?",p:"D",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:73,t:"🛡️ Moje leasingowane auto ma szkodę — jak odkup wpływa na wycenę?",p:"D",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:74,t:"Jakie pierwsze auto dla nowego kierowcy z budżetem 30–50k PLN?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:75,t:"Pierwsze auto — nowe czy używane? Co się opłaca dla nowego kierowcy?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:76,t:"Małe auto do nauki jazdy i codziennego użytku — ranking 2026?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:77,t:"Niezawodne małe auto do 40k PLN — ranking 2026?",p:"E",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:78,t:"Ubezpieczenie pierwszego auta — ile kosztuje OC/AC dla młodego?",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:79,t:"Toyota Yaris używana vs Skoda Fabia vs VW Polo — co wybrać na pierwsze auto?",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:80,t:"Czy rodzice powinni pomagać przy zakupie pierwszego auta?",p:"E",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:81,t:"Na co uważać kupując pierwsze auto używane — typowe błędy?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:82,t:"Jakie auta są najtańsze w ubezpieczeniu dla młodego kierowcy?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:83,t:"Co sprawdzić przy zakupie pierwszego używanego auta — checklista?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:84,t:"Jak zarejestrować kupione auto i zapłacić podatek PCC2?",p:"E",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:85,t:"Jak ubezpieczyć pierwsze auto po zakupie — OC od kiedy obowiązuje?",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:86,t:"Rejestracja kupionego używanego auta — co potrzebne, jak długo czeka?",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:87,t:"Badanie techniczne nowo kupionego używanego — kiedy obowiązek?",p:"E",s:"decyzja",sn:"Decyzja",y:"INFO",pr:"P2",st:"BRAK"},{nr:88,t:"🛡️ Nowe i bać się każdego rysu vs używane i bać się wpadki — co wybrać?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:89,t:"🛡️ Czy moje pierwsze używane auto nie pochłonie mnie w naprawach?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:90,t:"🛡️ Za mało znam się na autach — czy da się kupić bezpiecznie bez wiedzy technicznej?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:91,t:"Co to jest CPO — Certified Pre-Owned? Czym różni się od zwykłego używanego?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:92,t:"Czy CPO to tylko marketing czy realna gwarancja bezpieczeństwa?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:93,t:"CPO samochód z salonu Audi / BMW / VW — co to program?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:94,t:"CPO vs prywatne tej samej klasy — ile droższe i czy warto?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:95,t:"Co obejmuje gwarancja CPO — mechanika, elektryka, karoseria?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:96,t:"Audi Approved vs BMW Premium Selection vs VW Das WeltAuto — porównanie programów CPO?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:97,t:"Ile punktów kontroli przechodzi auto w inspekcji CPO?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:98,t:"CPO — co gwarancja NIE pokrywa? Wyłączenia?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:99,t:"Jak wygląda certyfikat CPO — co powinien zawierać?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:100,t:"CPO Audi A4 2021 80k km — czego mogę oczekiwać za tę cenę?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:101,t:"Czy można sfinansować CPO leasingiem lub kredytem?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:102,t:"Jak kupić CPO w salonie Audi Plichta — procedura?",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:103,t:"Czy można negocjować cenę CPO w salonie?",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:104,t:"Test drive CPO — co sprawdzić podczas jazdy próbnej?",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:105,t:"🛡️ CPO vs nowe — kiedy warto zapłacić więcej za nowe zamiast CPO?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:106,t:"🛡️ Czy CPO dealer musi ujawnić historię szkód?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:107,t:"🛡️ Gwarancja CPO wygasła — czy mogę ją przedłużyć?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:108,t:"Jakie duże używane auto dla rodziny 5 osób do 80k PLN?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:109,t:"Kombi czy SUV dla dużej rodziny — używane, co wybrać?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:110,t:"Nowe duże auto za 150k vs używane za 70k — co bardziej opłacalne?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:111,t:"Ranking niezawodnych używanych kombi i SUV 2026 — które nie psuć?",p:"G",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:112,t:"Skoda Octavia combi vs VW Passat B8 vs Audi A4 Avant — co kupić używanego?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:113,t:"Które duże używane SUV nie pochłoną mnie w naprawach?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:114,t:"Bezpieczeństwo NCAP dla starszych kombi / SUV — jak sprawdzić?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:115,t:"Koszty utrzymania używanego SUV vs kombi — porównanie roczne?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:116,t:"Foteliki i ISOFIX w używanych kombi / SUV — co sprawdzić?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:117,t:"Duże używane auto dla rodziny — na jakie usterki najczęściej uważać?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:118,t:"Test drive rodzinnego używanego SUV — co sprawdzić z dziećmi w środku?",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:119,t:"Finansowanie dużego używanego — kredyt vs gotówka dla rodziny?",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:120,t:"CPO Audi Q5 / VW Tiguan — co dostanę za tę cenę na rynku wtórnym?",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:121,t:"🛡️ Co jeśli duże używane zepsuje się i naprawa wyciągnie 15 000 PLN?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:122,t:"🛡️ Używany SUV z dieslem — czy to ryzyko DPF i turbiny?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:123,t:"Youngtimer jako inwestycja — które modele aut zyskują na wartości?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:124,t:"Klasyk samochodowy jako lokata kapitału — czy to ma sens?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:125,t:"BMW E30 / E36 / E46 — który wart kupna jako youngtimer 2026?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:126,t:"Gdzie kupować klasyki i youngtimery — aukcje, importerzy, prywatni?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:127,t:"Audi Quattro / Audi 80 / 100 — stan rynku i ceny 2026?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:128,t:"VW Golf GTI pierwsze generacje — ceny i dostępność na rynku?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:129,t:"Jak sprawdzić oryginalność klasyka / youngtimera przed zakupem?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:130,t:"Ubezpieczenie klasyka / youngtimera — OC/AC inaczej niż zwykłe?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:131,t:"Koszty utrzymania klasyka — serwis, części, przechowanie?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:132,t:"Rzeczoznawca samochodowy dla klasyka — jak go znaleźć?",p:"H",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:133,t:"Jak wycenić youngtimera przed zakupem — co bierze się pod uwagę?",p:"H",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:134,t:"🛡️ Klasyk wygląda pięknie ale mechanika zardzewiała — co zrobić?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:135,t:"🛡️ Youngtimer jako inwestycja — kiedy to może nie zadziałać?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"}
+];
+
+const PATHS = [{"letter": "A", "label": "Na nowe mnie nie stać — szukam dobrego używanego", "cep_id": "cep_budzet_ograniczony_uzywane", "typ": "POTRZEBA", "color": "#3b82f6", "count": 21, "verbatim": "„na nowe mnie nie stać, ale chcę coś sensownego — co używanego do 60k?\" / „mam 40-60k PLN i potrzebuję niezawodnego auta codziennego\"", "kontekst": "budżet 30–80k PLN, odrzucony rynek nowych, szuka najlepszego wartości na używanym", "concern": "bezpieczna i sensowna opcja w danym budżecie", "bloker": "jak znaleźć dobre używane bez wpadki przy ograniczonym budżecie?"}, {"letter": "B", "label": "Strach przed 'kotem' — ryzyko zakupu", "cep_id": "cep_strach_przed_kotem", "typ": "EMOCJA", "color": "#8b5cf6", "count": 19, "verbatim": "„boje się kupić auto z Internetu — sprzedawca może coś ukrywać\" / „sąsiad kupił z OLX i po tygodniu wysypał się silnik\"", "kontekst": "historia zakupu z „wpadką\" lub opowieść znajomego, czyta straszące artykuły o rynku wtórnym", "concern": "eliminacja ryzyka zakupu uszkodzonego / zatajone wady", "bloker": "jak sprawdzić historię auta / CPO vs prywatne — co bezpieczniejsze?"}, {"letter": "C", "label": "Import z Niemiec — znajomy zaoszczędził 30k", "cep_id": "cep_import_niemcy_odkrycie", "typ": "EMOCJA", "color": "#ec4899", "count": 17, "verbatim": "„znajomy sprowadził Passata z Niemiec za 45k i zaoszczędził 30k vs PL\" / „na AutoScout24 są auta dużo tańsze — warto?\"", "kontekst": "odkrycie dysproporcji cenowej PL vs DE, ktoś z otoczenia zrobił import, ciekawość + strach przed formalnościami", "concern": "zaoszczędzić istotnie vs ryzyko importu (historia, formalności, podatki)", "bloker": "czy import z Niemiec się opłaca — ukryte koszty + ryzyko?"}, {"letter": "D", "label": "Koniec leasingu — odkupić czy szukać używanego?", "cep_id": "cep_koniec_leasingu_odkup", "typ": "POTRZEBA", "color": "#14b8a6", "count": 16, "verbatim": "„kończy mi się leasing za 3 miesiące — odkupię to auto czy szukam używanego?\" / „wartość rezydualna to 55k, a na rynku jest za 70k — odkupuję?\"", "kontekst": "koniec umowy leasingowej, decyzja o odkupie vs wyjście na rynek wtórny", "concern": "optymalny scenariusz: odkup leasingowy vs nowe vs szukanie podobnego używanego", "bloker": "czy wartość rezydualna to okazja czy nie — jak to ocenić?"}, {"letter": "E", "label": "Pierwsze auto, prawo jazdy, budżet 30–50k", "cep_id": "cep_pierwsze_auto_budzet", "typ": "POTRZEBA", "color": "#f59e0b", "count": 17, "verbatim": "„mam prawo jazdy od miesiąca i 35k PLN — co kupić na pierwsze auto?\" / „chcę coś taniego żeby się nie bać zarysowania — ale żeby nie była gruchot\"", "kontekst": "18–26 lat, świeży kierowca, ograniczony budżet, rodzice mogą częściowo pomóc", "concern": "niezawodność + niski stres prowadzenia + akceptowalny koszt", "bloker": "nowe (bać się każdego rysu) vs używane (gruchot?) — co pierwsze?"}, {"letter": "F", "label": "Odkrycie CPO — używane z gwarancją z salonu", "cep_id": "cep_cpo_odkrycie", "typ": "EMOCJA", "color": "#10b981", "count": 17, "verbatim": "„nie wiedziałem że salony sprzedają używane z gwarancją — to nie jest zwykłe używane?\" / „czym różni się CPO od zwykłego używanego z salonu?\"", "kontekst": "kupujący nie wiedział o segmencie CPO, odkrywa go przez reklamę / polecenie / wyszukiwarkę", "concern": "zrozumienie wartości CPO i czy dopłata vs prywatne jest uzasadniona", "bloker": "ile kosztuje pewność CPO vs ryzyko prywatnego — gdzie ta różnica finansowo?"}, {"letter": "G", "label": "Duża rodzina — nowe za drogie, szukam używanego", "cep_id": "cep_duza_rodzina_uzywane", "typ": "POTRZEBA", "color": "#f43f5e", "count": 15, "verbatim": "„potrzebuję kombi lub SUV dla 5 osób — nowe za drogie, co sensownego na używanym do 80k?\" / „mamy troje dzieci, potrzebujemy dużego auta, ale nie chcemy płacić 200k za nowe\"", "kontekst": "rodzina 2+2/3, obecne auto za małe, nowe zbyt drogie, szuka dużego używanego", "concern": "dobre duże auto dla rodziny w rozsądnej cenie bez ryzyka ukrytych wad", "bloker": "które duże używane jest niezawodne i nie pochłonie mnie w naprawach?"}, {"letter": "H", "label": "Klasyk / youngtimer jako inwestycja lub pasja", "cep_id": "cep_inwestycja_klasyk", "typ": "EMOCJA", "color": "#eab308", "count": 13, "verbatim": "„chcę kupić youngtimera / klasyka jako inwestycję lub hobby — gdzie szukać?\" / „E39 BMW albo Audi 80 — co bardziej warte kupienia?\"", "kontekst": "pasjonat aut, traktuje zakup jako inwestycję wartości lub hobby, nie codzienną mobilność", "concern": "wybór właściwego modelu + weryfikacja autentyczności + niszowy rynek", "bloker": "jak znaleźć dobry klasyk / youngtimer bez przepłacenia i bez wpadki?"}];
+const STATE_ORDER = ["swiadomosc", "orientacja", "nauka", "decyzja", "bloker"];
+const STATE_LABELS = {"swiadomosc": "Świadomość", "orientacja": "Orientacja", "nauka": "Nauka", "decyzja": "Decyzja", "bloker": "Bloker"};
+
+// ── STAN FILTRÓW ──────────────────────────────────────────────────────────────
+let activePath = 'ALL';
+let activePr   = 'ALL';
+let activeTyp  = 'ALL';
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildBoard();
+  buildList();
+  buildInfoPaths();
+  buildInfoStates();
+  applyFilters();
+});
+
+function buildBoard() {
+  const board = document.getElementById('board');
+  // Zbierz stany wg kolejności
+  const stateGroups = {};
+  for (const a of A) {
+    if (!stateGroups[a.s]) stateGroups[a.s] = [];
+    stateGroups[a.s].push(a);
+  }
+  const orderedStates = STATE_ORDER.filter(s => stateGroups[s]);
+  for (const sid of orderedStates) {
+    const label = STATE_LABELS[sid] || sid;
+    const arts = stateGroups[sid];
+    const block = document.createElement('div');
+    block.className = 'state-block';
+    block.dataset.state = sid;
+    block.innerHTML = `<div class="state-header">
+      <span class="state-code">${sid.toUpperCase()}</span>
+      <span>${label}</span>
+      <span class="state-cnt" id="scnt-${sid}"></span>
+    </div><div class="cards-row" id="cards-${sid}"></div>`;
+    board.appendChild(block);
+    const row = document.getElementById('cards-' + sid);
+    for (const a of arts) {
+      const tagPr  = `<span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span>`;
+      const tagTyp = `<span class="tag tag-${a.y.toLowerCase()}">${a.y}</span>`;
+      const tagSt  = `<span class="tag tag-${a.st.toLowerCase()}">${a.st}</span>`;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.nr = a.nr;
+      card.dataset.p  = a.p;
+      card.dataset.s  = a.s;
+      card.dataset.pr = a.pr;
+      card.dataset.y  = a.y;
+      card.dataset.st = a.st;
+      card.dataset.t  = a.t.toLowerCase();
+      card.innerHTML = `<div class="nr">#${a.nr} · ${a.p}</div>
+        <div class="qt">${a.t}</div>
+        <div class="tags">${tagPr}${tagTyp}${tagSt}</div>`;
+      row.appendChild(card);
+    }
+  }
+}
+
+function buildList() {
+  const tbody = document.getElementById('list-body');
+  for (const a of A) {
+    const tr = document.createElement('tr');
+    tr.dataset.nr = a.nr;
+    tr.dataset.p  = a.p;
+    tr.dataset.s  = a.s;
+    tr.dataset.pr = a.pr;
+    tr.dataset.y  = a.y;
+    tr.dataset.st = a.st;
+    tr.dataset.t  = a.t.toLowerCase();
+    tr.innerHTML = `<td>${a.nr}</td>
+      <td>${a.t}</td>
+      <td>${a.p}</td>
+      <td>${STATE_LABELS[a.s] || a.s}</td>
+      <td><span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span></td>
+      <td><span class="tag tag-${a.y.toLowerCase()}">${a.y}</span></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function buildInfoPaths() {
+  const wrap = document.getElementById('info-paths');
+  for (const p of PATHS) {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:12px;border-left:4px solid '+p.color;
+    // Składowe HTML karty CEP
+    const typBadge = p.typ
+      ? `<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-left:6px">${p.typ}</span>`
+      : '';
+    const verbHTML = p.verbatim
+      ? `<div style="margin-top:8px;font-size:12px;color:#374151;background:#f8fafc;border-radius:6px;padding:8px 10px;border-left:3px solid ${p.color};line-height:1.5;font-style:italic">${p.verbatim}</div>`
+      : '';
+    const detailRows = [];
+    if (p.kontekst) detailRows.push(['Kontekst', p.kontekst]);
+    if (p.concern)  detailRows.push(['Główna troska', p.concern]);
+    if (p.bloker)   detailRows.push(['Bloker decyzji', p.bloker]);
+    const detailHTML = detailRows.length
+      ? `<table style="margin-top:8px;width:100%;border-collapse:collapse;font-size:12px">` +
+        detailRows.map(([k,v]) =>
+          `<tr><td style="width:120px;color:#94a3b8;font-weight:600;padding:3px 8px 3px 0;vertical-align:top;white-space:nowrap">${k}</td>` +
+          `<td style="color:#334155;padding:3px 0;line-height:1.5">${v}</td></tr>`
+        ).join('') + `</table>`
+      : '';
+    // Rozkład pytań per stan
+    const statCnts = {};
+    for (const a of A) if (a.p === p.letter) statCnts[a.s] = (statCnts[a.s]||0)+1;
+    const stateBar = STATE_ORDER.filter(s=>statCnts[s]).map(s=>
+      `<span style="font-size:10px;padding:1px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-right:4px">${STATE_LABELS[s]||s} ${statCnts[s]}</span>`
+    ).join('');
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="width:26px;height:26px;border-radius:50%;background:${p.color};color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${p.letter}</span>
+        <strong style="font-size:14px;color:#1e293b">${p.label}</strong>
+        ${typBadge}
+        <span style="margin-left:auto;font-size:11px;color:#94a3b8">${p.count} pytań</span>
+      </div>
+      <div style="font-size:10px;color:#64748b;margin-top:4px;font-family:monospace">${p.cep_id||''}</div>
+      ${verbHTML}
+      ${detailHTML}
+      <div style="margin-top:8px">${stateBar}</div>`;
+    wrap.appendChild(card);
+  }
+}
+
+function buildInfoStates() {
+  const wrap = document.getElementById('info-states');
+  const counts = {};
+  for (const a of A) counts[a.s] = (counts[a.s]||0)+1;
+  for (const s of STATE_ORDER) {
+    if (!counts[s]) continue;
+    const el = document.createElement('div');
+    el.style.cssText = 'background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 14px;text-align:center;min-width:100px';
+    el.innerHTML = `<div style="font-size:20px;font-weight:700;color:#1e293b">${counts[s]}</div><div style="font-size:11px;color:#64748b;margin-top:2px">${STATE_LABELS[s]||s}</div>`;
+    wrap.appendChild(el);
+  }
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+function filterPath(el) {
+  document.querySelectorAll('.path-item, .path-all').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  activePath = el.dataset.path;
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  let vis = 0, p1 = 0, brak = 0, istnieje = 0;
+  const pathCounts = {};
+
+  const allEls = [...document.querySelectorAll('.card, #list-body tr')];
+  for (const el of allEls) {
+    const match =
+      (activePath === 'ALL' || el.dataset.p === activePath) &&
+      (activePr   === 'ALL' || el.dataset.pr === activePr) &&
+      (activeTyp  === 'ALL' || el.dataset.y  === activeTyp) &&
+      (!q || el.dataset.t.includes(q));
+    el.classList.toggle('hidden', !match);
+    if (match) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pathCounts[el.dataset.p] = (pathCounts[el.dataset.p] || 0) + 1;
+    }
+  }
+  // Odejmij duplikaty (card + tr)
+  vis = Math.round(vis / (document.querySelector('#list-body tr') ? 2 : 1));
+  if (document.querySelector('#list-body tr')) vis = Math.round(vis / 2);
+  // Policz raz — cards only
+  vis = 0; p1 = 0; brak = 0; istnieje = 0;
+  const pcounts2 = {};
+  document.querySelectorAll('.card').forEach(el => {
+    if (!el.classList.contains('hidden')) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pcounts2[el.dataset.p] = (pcounts2[el.dataset.p] || 0) + 1;
+    }
+  });
+
+  document.getElementById('stat-total').textContent   = vis;
+  document.getElementById('stat-p1').textContent      = p1;
+  document.getElementById('stat-brak').textContent    = brak;
+  document.getElementById('stat-istnieje').textContent = istnieje;
+  document.getElementById('visibleCount').textContent  = vis;
+
+  // Aktualizuj liczniki ścieżek
+  let allCnt = 0;
+  for (const p of PATHS) {
+    const cnt = pcounts2[p.letter] || 0;
+    const el = document.getElementById('cnt-' + p.letter);
+    if (el) el.textContent = cnt;
+    allCnt += cnt;
+  }
+  const cntAll = document.getElementById('cnt-all');
+  if (cntAll) cntAll.textContent = allCnt;
+
+  // State block counts (tylko mapa)
+  for (const sid of STATE_ORDER) {
+    const el = document.getElementById('scnt-' + sid);
+    if (el) {
+      const cnt = document.querySelectorAll(`#cards-${sid} .card:not(.hidden)`).length;
+      el.textContent = cnt ? cnt + ' art.' : '';
+    }
+  }
+}
+
+// Filtry przyciski
+document.getElementById('fg-pr').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-pr .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activePr = e.target.dataset.val;
+  applyFilters();
+});
+document.getElementById('fg-typ').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-typ .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeTyp = e.target.dataset.val;
+  applyFilters();
+});
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['mapa','lista','info'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(name + '-panel').classList.add('active');
+  applyFilters();
+}
+</script>
+<script>
+const CATS=[{"num":1,"name":"Samochody używane i CPO — nabywca prywatny","v":"v2","s":"samochody używane i cpo — nabywca prywatny"}];
+const searchEl=document.getElementById('search');
+const statEl=document.getElementById('stat');
+const nrEl=document.getElementById('nr');
+const TOTAL=CATS.length;
+let curFilter='all';
+
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function hi(text,q){
+  if(!q)return text;
+  return text.replace(new RegExp('('+esc(q)+')','gi'),'<mark>$1</mark>');
+}
+
+function applySearch(q){
+  const ql=q.trim().toLowerCase();
+  let n=0;
+  CATS.forEach(c=>{
+    const item=document.getElementById('i'+c.num);
+    const matchQ=!ql||c.s.includes(ql);
+    const matchF=curFilter==='all'||(curFilter==='v1'&&c.v==='v1')||(curFilter==='v2p'&&c.v!=='v1');
+    const ok=matchQ&&matchF;
+    if(item)item.classList.toggle('hidden',!ok);
+    if(ok){
+      n++;
+      const el=item&&item.querySelector('.ct');
+      if(el)el.innerHTML=hi(c.name,q.trim());
+    }
+  });
+  nrEl.style.display=n===0?'block':'none';
+  const fLabel=curFilter==='v1'?' · Draft':curFilter==='v2p'?' · Verified':'';
+  statEl.textContent=(ql?n+'/':'')+TOTAL+' cat.'+fLabel;
+}
+
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+  applySearch(searchEl.value);
+}
+
+function select(num){
+  document.querySelectorAll('.ci').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.cs').forEach(e=>e.classList.remove('vis'));
+  const item=document.getElementById('i'+num);
+  const sec=document.getElementById('s'+num);
+  if(item){item.classList.add('active');item.scrollIntoView({block:'nearest'});}
+  if(sec)sec.classList.add('vis');
+  document.getElementById('ct').scrollTop=0;
+}
+
+searchEl.addEventListener('input',e=>applySearch(e.target.value));
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();searchEl.focus();searchEl.select();}
+  if(e.key==='Escape'&&document.activeElement===searchEl){searchEl.value='';applySearch('');searchEl.blur();}
+});
+
+if(CATS.length>0)select(CATS[0].num);
+
+function toggleTheme(){
+  const l=document.body.classList.toggle('light');
+  localStorage.setItem('geo-theme',l?'light':'dark');
+  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
+}
+(function(){if(localStorage.getItem('geo-theme')==='light'){
+  document.body.classList.add('light');
+  var b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
 </script>
 </body>
 </html>

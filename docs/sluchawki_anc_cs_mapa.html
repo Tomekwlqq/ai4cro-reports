@@ -2,77 +2,1638 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Słuchawki z ANC — CS + Mapa Percepcji</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Słuchawki z ANC — Mapa + CS</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow:hidden}
-body{font-family:-apple-system,Segoe UI,sans-serif;background:#f6f8fa;color:#1f2328;display:flex;flex-direction:column}
-.tabs{display:flex;background:#fff;border-bottom:2px solid #d0d7de;flex-shrink:0}
-.tab{padding:12px 28px;cursor:pointer;font-size:14px;font-weight:600;color:#57606a;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
-.tab:hover{color:#0969da}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #d0d7de;height:48px;align-items:center;flex-shrink:0}
+.tab{padding:0 20px;height:100%;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;color:#57606a;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
 .tab.active{color:#0969da;border-bottom-color:#0969da}
-.panel{display:none;flex:1;overflow:auto;background:#fff}
-.panel.active{display:block}
-.combined{display:none;flex:1;overflow:hidden}
-.combined.active{display:flex}
-.combined-half{flex:1;overflow:auto;background:#fff}
-.combined-half:first-child{border-right:1px solid #d0d7de}
-.spinner{display:flex;align-items:center;justify-content:center;height:60px;color:#8c959f;font-size:13px;gap:8px}
+.tab:hover:not(.active){color:#24292f;background:#f6f8fa}
+#panel-mapa{overflow:hidden;height:calc(100vh - 48px)}
+#panel-cs{display:none;overflow:auto;height:calc(100vh - 48px);background:#fff}
+</style>
+<style id="mapa-styles">
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f6f8fa;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f3f6;
+  --border: #d0d7de;
+  --border-subtle: #e8ecf0;
+  --text-primary: #1f2328;
+  --text-secondary: #57606a;
+  --text-muted: #8c959f;
+  --accent: #0969da;
+  --p1: #ef4444; --p1-bg: rgba(239,68,68,.12);
+  --p2: #f97316; --p2-bg: rgba(249,115,22,.12);
+  --p3: #eab308; --p3-bg: rgba(234,179,8,.12);
+  --p4: #6b7280; --p4-bg: rgba(107,114,128,.12);
+  --status-brak: #3b82f6;
+  --status-istnieje: #22c55e;
+  --status-rozbudowac: #818cf8;
+  --path-a: #3b82f6; --path-b: #8b5cf6; --path-c: #ec4899; --path-d: #14b8a6;
+  --path-e: #f59e0b; --path-f: #10b981; --path-g: #f43f5e; --path-cross: #94a3b8;
+}
+#panel-mapa{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text-primary); display: flex; min-height: calc(100vh - 48px); overflow: hidden; }
+/* SIDEBAR */
+.sidebar { width: 240px; min-width: 240px; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: calc(100vh - 48px); position: sticky; top: 0; overflow-y: auto; }
+.sidebar-logo { padding: 18px 16px 14px; border-bottom: 1px solid var(--border); }
+.sidebar-logo .brand { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+.sidebar-logo .subtitle { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.sidebar-logo .total-badge { display: inline-flex; align-items: center; background: var(--accent); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-top: 8px; }
+.sidebar-section { padding: 10px 12px 4px; }
+.sidebar-section-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .8px; padding: 0 4px; margin-bottom: 5px; }
+.path-btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 6px; border: none; background: transparent; color: var(--text-secondary); font-size: 12px; cursor: pointer; text-align: left; transition: background .15s, color .15s; margin-bottom: 2px; }
+.path-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.path-btn.active { background: rgba(31,111,235,.15); color: #58a6ff; }
+.path-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.path-label { flex: 1; font-size: 11px; line-height: 1.3; }
+.path-count { font-size: 11px; font-weight: 700; color: var(--text-muted); background: var(--border-subtle); padding: 1px 6px; border-radius: 10px; min-width: 24px; text-align: center; }
+.sidebar-divider { height: 1px; background: var(--border); margin: 6px 12px; }
+.legend-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-secondary); padding: 3px 4px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.sidebar-tabs { display: flex; gap: 4px; padding: 10px 12px 6px; border-top: 1px solid var(--border); margin-top: auto; }
+.stab { flex: 1; padding: 8px 4px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-size: 11px; font-weight: 600; cursor: pointer; text-align: center; transition: all .15s; line-height: 1.3; }
+.stab:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.stab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.stab .stab-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+.sidebar-footer { padding: 8px 12px 12px; border-top: none; }
+.reset-btn { width: 100%; padding: 7px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-size: 12px; cursor: pointer; transition: all .15s; }
+.reset-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+/* LIST TAB */
+.list-view { padding: 16px 20px; }
+.list-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.list-progress { flex: 1; min-width: 180px; }
+.list-progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+.list-progress-fill { height: 100%; background: var(--status-istnieje); border-radius: 3px; transition: width .3s; }
+.list-progress-label { font-size: 11px; color: var(--text-muted); }
+.copy-btn { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-size: 12px; cursor: pointer; transition: all .15s; white-space: nowrap; }
+.copy-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.sort-group { display: flex; gap: 4px; align-items: center; }
+.sort-label { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+.sort-btn { padding: 3px 9px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-size: 11px; cursor: pointer; }
+.sort-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.list-item { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 6px; border: 1px solid transparent; margin-bottom: 3px; cursor: pointer; transition: background .12s; }
+.list-item:hover { background: var(--bg-card); border-color: var(--border); }
+.list-item.checked .list-title { text-decoration: line-through; color: var(--text-muted); }
+.list-cb { width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 3px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all .15s; background: var(--bg-card); }
+.list-item.checked .list-cb { background: var(--status-istnieje); border-color: var(--status-istnieje); color: #fff; }
+.list-nr { font-size: 11px; color: var(--text-muted); min-width: 28px; font-weight: 700; margin-top: 2px; flex-shrink: 0; }
+.list-title { font-size: 13px; color: var(--text-primary); line-height: 1.4; flex: 1; }
+.list-meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+.list-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+.list-section-head { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--text-muted); padding: 10px 10px 4px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 4px; margin-top: 8px; }
+/* INFO TAB */
+.info-view { padding: 24px 32px; max-width: 760px; }
+.info-view h2 { font-size: 20px; font-weight: 700; margin-bottom: 12px; margin-top: 28px; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.info-view h2:first-child { margin-top: 0; }
+.info-view h3 { font-size: 14px; font-weight: 700; margin-top: 18px; margin-bottom: 8px; color: var(--text-primary); }
+.info-view p { font-size: 13px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 10px; }
+.info-view ul { padding-left: 20px; margin-bottom: 12px; }
+.info-view li { font-size: 13px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 4px; }
+.info-view strong { color: var(--text-primary); }
+.info-cep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+.info-cep-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+.info-cep-card .cep-path { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; color: #fff; display: inline-block; margin-bottom: 6px; }
+.info-cep-card .cep-trigger { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.info-cep-card .cep-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.info-tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; margin: 2px; }
+/* MAIN */
+.main { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 48px); overflow: hidden; min-width: 0; }
+/* TOPBAR */
+.topbar { background: var(--bg-sidebar); border-bottom: 1px solid var(--border); padding: 8px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; flex-shrink: 0; }
+.filter-group { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+.filter-label { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-right: 2px; white-space: nowrap; }
+.filter-pill { padding: 3px 9px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-size: 11px; font-weight: 500; cursor: pointer; transition: all .15s; white-space: nowrap; }
+.filter-pill:hover { border-color: var(--text-muted); color: var(--text-primary); }
+.filter-pill.active { border-color: transparent; color: #fff; font-weight: 700; }
+.filter-pill.active.all { background: var(--accent); }
+.filter-pill.active.p1 { background: var(--p1); }
+.filter-pill.active.p2 { background: var(--p2); }
+.filter-pill.active.p3 { background: var(--p3); color: #111; }
+.filter-pill.active.p4 { background: var(--p4); }
+.filter-pill.active.tn { background: #1f6feb; }
+.filter-pill.active.tf { background: #8b5cf6; }
+.filter-pill.active.ts { background: #10b981; }
+.filter-pill.active.te { background: #f59e0b; color: #111; }
+.filter-pill.active.tem { background: #ec4899; }
+.filter-pill.active.tr { background: #14b8a6; color: #111; }
+.filter-pill.active.tst { background: #94a3b8; color: #111; }
+.filter-pill.active.ti { background: #2dd4bf; color: #111; }
+.filter-pill.active.sb { background: var(--status-brak); }
+.filter-pill.active.si { background: var(--status-istnieje); color: #111; }
+.filter-pill.active.sr { background: var(--status-rozbudowac); }
+.topbar-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+.search-input { padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font-size: 12px; width: 180px; outline: none; transition: border-color .15s; }
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text-muted); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.counter { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+.counter strong { color: var(--text-primary); font-size: 14px; }
+/* STATS */
+.statsbar { padding: 10px 16px; display: flex; gap: 10px; flex-shrink: 0; border-bottom: 1px solid var(--border); background: var(--bg); }
+.stat-card { flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; }
+.stat-card .val { font-size: 22px; font-weight: 700; line-height: 1; }
+.stat-card .lbl { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.cv1 { color: var(--p1); } .cv2 { color: var(--status-brak); } .cv3 { color: var(--status-istnieje); }
+/* CONTENT */
+.content { flex: 1; overflow-y: auto; padding: 18px; }
+/* PATH */
+.path-section { margin-bottom: 28px; }
+.path-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border-subtle); }
+.path-badge { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.path-title { font-size: 14px; font-weight: 700; flex: 1; }
+.path-total { font-size: 12px; color: var(--text-muted); background: var(--border-subtle); padding: 2px 8px; border-radius: 10px; }
+/* STATE */
+.state-section { margin-bottom: 16px; }
+.state-header { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 6px; cursor: pointer; transition: background .15s; margin-bottom: 8px; user-select: none; }
+.state-header:hover { background: var(--border-subtle); }
+.state-toggle { font-size: 10px; color: var(--text-muted); width: 14px; transition: transform .2s; flex-shrink: 0; display: inline-block; }
+.state-toggle.collapsed { transform: rotate(-90deg); }
+.state-code { font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 4px; color: #fff; flex-shrink: 0; }
+.state-name { font-size: 13px; font-weight: 600; color: var(--text-secondary); flex: 1; }
+.state-count { font-size: 11px; color: var(--text-muted); background: var(--border-subtle); padding: 1px 7px; border-radius: 10px; }
+.state-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 7px; padding-left: 20px; overflow: hidden; transition: max-height .25s ease, opacity .25s ease; }
+.state-cards.collapsed { max-height: 0 !important; opacity: 0; }
+/* CARD */
+.article-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px 9px 14px; position: relative; cursor: default; transition: background .15s, box-shadow .15s; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
+.article-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 8px 0 0 8px; }
+.article-card.brak { border-color: rgba(59,130,246,.2); } .article-card.brak::before { background: var(--status-brak); }
+.article-card.istnieje { border-color: rgba(34,197,94,.18); } .article-card.istnieje::before { background: var(--status-istnieje); }
+.article-card.rozbudowac { border-color: rgba(129,140,248,.2); } .article-card.rozbudowac::before { background: var(--status-rozbudowac); }
+.article-card:hover { background: var(--bg-card-hover); box-shadow: 0 2px 10px rgba(0,0,0,.25); }
+.card-top { display: flex; align-items: flex-start; gap: 6px; }
+.card-nr { font-size: 10px; font-weight: 700; color: var(--text-muted); min-width: 26px; padding-top: 1px; flex-shrink: 0; }
+.card-title { font-size: 12px; color: var(--text-primary); line-height: 1.4; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.article-card:hover .card-title { -webkit-line-clamp: unset; }
+.card-bottom { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; padding-left: 32px; }
+.badge-path { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; color: #fff; flex-shrink: 0; }
+.badge-prio { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; flex-shrink: 0; }
+.pp1 { background: var(--p1-bg); color: var(--p1); border: 1px solid rgba(239,68,68,.3); }
+.pp2 { background: var(--p2-bg); color: var(--p2); border: 1px solid rgba(249,115,22,.3); }
+.pp3 { background: var(--p3-bg); color: var(--p3); border: 1px solid rgba(234,179,8,.3); }
+.pp4 { background: var(--p4-bg); color: var(--p4); border: 1px solid rgba(107,114,128,.3); }
+.badge-typ { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; letter-spacing: .3px; flex-shrink: 0; }
+.tn { background: rgba(31,111,235,.12); color: #58a6ff; border: 1px solid rgba(31,111,235,.25); }
+.tf { background: rgba(139,92,246,.12); color: #a78bfa; border: 1px solid rgba(139,92,246,.25); }
+.ts { background: rgba(16,185,129,.12); color: #34d399; border: 1px solid rgba(16,185,129,.25); }
+.te { background: rgba(245,158,11,.12); color: #fbbf24; border: 1px solid rgba(245,158,11,.25); }
+.tem { background: rgba(236,72,153,.12); color: #f472b6; border: 1px solid rgba(236,72,153,.25); }
+.tr { background: rgba(20,184,166,.12); color: #2dd4bf; border: 1px solid rgba(20,184,166,.25); }
+.tst { background: rgba(148,163,184,.12); color: #94a3b8; border: 1px solid rgba(148,163,184,.25); }
+.ti { background: rgba(20,184,166,.12); color: #2dd4bf; border: 1px solid rgba(20,184,166,.25); }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-left: auto; }
+.db { background: var(--status-brak); box-shadow: 0 0 4px var(--status-brak); }
+.di { background: var(--status-istnieje); }
+.dr { background: var(--status-rozbudowac); }
+.card-keyword { font-size: 10px; color: var(--text-muted); padding-left: 32px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: none; }
+.article-card:hover .card-keyword { display: block; }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+.hidden { display: none !important; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+</style>
+<style id="cs-styles">
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+#panel-cs{
+  --bg:#0f1117;--sb-bg:#161b22;--hd-bg:#161b22;--bd:#30363d;
+  --tx:#e6edf3;--tx2:#8b949e;--ac:#58a6ff;
+  --cb:#1c2128;--ts:#1c2128;--mb:#2d4a22;--mt:#7ee787;
+  --ab:#1f3353;--sw:292px;--hh:52px
+}
+#panel-cs{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+     background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* Header */
+#hd{height:var(--hh);background:var(--hd-bg);border-bottom:1px solid var(--bd);
+    display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+#hd h1{font-size:15px;font-weight:700;white-space:nowrap;flex-shrink:0;letter-spacing:.01em}
+#hd h1 span{color:var(--ac)}
+#sw{flex:1;position:relative;max-width:440px}
+#si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tx2);font-size:15px;pointer-events:none}
+#search{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:6px;
+        color:var(--tx);padding:6px 10px 6px 30px;font-size:15px;outline:none;transition:border-color .15s}
+#search:focus{border-color:var(--ac)}
+
+/* Filter buttons */
+.filt{display:flex;gap:4px;flex-shrink:0}
+.fb{font-size:13px;padding:3px 8px;border-radius:4px;border:1px solid var(--bd);
+    background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fb:hover{border-color:var(--ac);color:var(--tx)}
+.fb.on{border-color:var(--ac);background:var(--ab);color:var(--tx)}
+
+/* Lang toggle */
+#lang-btn{font-size:13px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+          background:transparent;color:var(--tx2);cursor:pointer;text-decoration:none;
+          display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+#lang-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+#stat{font-size:13px;color:var(--tx2);flex-shrink:0;white-space:nowrap;min-width:90px;text-align:right}
+
+/* Layout */
+#lay{display:flex;flex:1;overflow:hidden}
+
+/* Sidebar */
+#sb{width:var(--sw);flex-shrink:0;background:var(--sb-bg);border-right:1px solid var(--bd);overflow-y:auto}
+.ci{display:flex;align-items:center;gap:7px;padding:7px 10px;cursor:pointer;
+    border-left:3px solid transparent;border-bottom:1px solid var(--bd);
+    transition:background .1s;user-select:none;min-height:36px}
+.ci:hover{background:rgba(88,166,255,.07)}
+.ci.active{background:var(--ab);border-left-color:var(--ac)}
+.ci.hidden{display:none}
+.cn{font-size:11.5px;color:var(--tx2);min-width:20px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ct{font-size:14px;line-height:1.3;color:var(--tx);flex:1;min-width:0}
+.ct mark{background:var(--mb);color:var(--mt);border-radius:2px;padding:0 1px}
+
+/* Version badge in sidebar */
+.vb{font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:8px;flex-shrink:0;letter-spacing:.02em}
+.vb-v1{background:#21262d;color:#6e7681}
+.vb-v2{background:#2d2502;color:#d29922}
+.vb-v3{background:#0d2a1a;color:#3fb950}
+.vb-v4{background:#0d1e3c;color:#58a6ff}
+
+/* Verification pipeline dots */
+.pipe{display:flex;gap:2px;flex-shrink:0}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--bd)}
+.pd.on-v1{background:#6e7681}
+.pd.on-v2{background:#d29922}
+.pd.on-v3{background:#3fb950}
+.pd.on-v4{background:#58a6ff}
+
+#nr{padding:20px 12px;font-size:15px;color:var(--tx2);text-align:center;display:none}
+
+/* Content */
+#ct{flex:1;overflow-y:auto;padding:26px 34px}
+.cs{display:none}
+.cs.vis{display:block}
+
+/* Markdown */
+.cs h2{font-size:23px;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:10px;margin-bottom:16px}
+.cs h3{font-size:13px;font-weight:700;color:var(--ac);margin:20px 0 9px;
+       text-transform:uppercase;letter-spacing:.06em}
+.cs h4{font-size:16px;font-weight:600;margin:14px 0 6px}
+.cs p{font-size:15.5px;line-height:1.65;margin-bottom:8px}
+.cs strong{font-weight:600}
+.cs em{font-style:italic;color:var(--tx2)}
+.cs code{font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:13px;
+         background:var(--cb);border:1px solid var(--bd);border-radius:3px;
+         padding:1px 5px;color:#f0883e}
+.cs pre{background:var(--cb);border:1px solid var(--bd);border-radius:6px;
+        padding:12px 14px;overflow-x:auto;margin:10px 0}
+.cs pre code{background:none;border:none;padding:0;font-size:14px;color:var(--tx);line-height:1.5}
+.cs table{width:100%;border-collapse:collapse;font-size:14.5px;margin:10px 0;display:block;overflow-x:auto}
+.cs th,.cs td{text-align:left;padding:7px 10px;border:1px solid var(--bd)}
+.cs th{background:var(--sb-bg);font-weight:600}
+.cs tr:nth-child(even) td{background:var(--ts)}
+.cs ul,.cs ol{padding-left:18px;margin:7px 0}
+.cs li{font-size:15.5px;line-height:1.6;margin-bottom:3px}
+.cs hr{border:none;border-top:1px solid var(--bd);margin:18px 0}
+
+/* Changelog / verification card */
+.changelog{background:#0b1e10;border:1px solid #2ea043;border-radius:8px;
+           padding:14px 18px;margin:18px 0;position:relative}
+.changelog::before{content:'🔬 VERIFIED';font-size:10.5px;font-weight:700;
+                   color:#3fb950;letter-spacing:.08em;display:block;margin-bottom:8px}
+.changelog h3{color:#3fb950 !important;margin-top:0 !important;font-size:14px !important}
+.changelog p,.changelog li{color:#c3e6cb;font-size:15px}
+.changelog ul{margin:4px 0}
+.changelog table{font-size:12px}
+.changelog th{background:#0d2a1a}
+.changelog code{background:#0d2a1a;color:#7ee787}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+body.light{
+  --bg:#ffffff;--sb-bg:#f6f8fa;--hd-bg:#f6f8fa;--bd:#d0d7de;
+  --tx:#1f2328;--tx2:#656d76;--ac:#0969da;
+  --cb:#f6f8fa;--ts:#f6f8fa;--mb:#fff8c5;--mt:#7a5c00;--ab:#ddf4ff;
+}
+body.light .cs code{color:#cf222e}
+body.light .cs pre code{color:var(--tx)}
+body.light .changelog{background:#f0fff4;border-color:#2ea043}
+body.light .changelog p,body.light .changelog li{color:#1a7f37}
+#theme-btn{font-size:14px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx2);cursor:pointer;flex-shrink:0;transition:all .15s}
+#theme-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+/* FUND rozwijany blok */
+details.fund{border:1px solid var(--bd);border-radius:8px;margin:22px 0 8px;
+  background:var(--cb);overflow:hidden}
+details.fund>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  padding:12px 16px;user-select:none;transition:background .12s}
+details.fund>summary::-webkit-details-marker{display:none}
+details.fund>summary:hover{background:rgba(88,166,255,.07)}
+.fund-arrow{color:var(--ac);font-size:13px;flex-shrink:0;transition:transform .15s}
+details.fund[open] .fund-arrow{transform:rotate(90deg)}
+.fund-head{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.fund-title{font-size:15px;font-weight:700;color:var(--tx)}
+.fund-src{font-size:12px;font-style:italic;color:var(--tx2);line-height:1.4}
+.fund-badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.fund-badge.ok{background:#0d2a1a;color:#3fb950}
+.fund-badge.warn{background:#3d2a02;color:#f0883e}
+body.light .fund-badge.ok{background:#dafbe1;color:#1a7f37}
+body.light .fund-badge.warn{background:#fff1e5;color:#bc4c00}
+.fund-hint{font-size:11px;color:var(--tx2);flex-shrink:0;border:1px solid var(--bd);
+  border-radius:4px;padding:2px 7px}
+details.fund[open] .fund-hint{display:none}
+.fund-#panel-cs{padding:4px 18px 16px;border-top:1px solid var(--bd)}
+.fund-body h1{font-size:18px;margin:12px 0 6px}
+
 </style>
 </head>
 <body>
 <div class="tabs">
   <button class="tab active" onclick="sw(this,'mapa')">🗺️ Mapa percepcji</button>
   <button class="tab" onclick="sw(this,'cs')">📄 Category Standards</button>
-  <button class="tab" onclick="sw(this,'combined')">🔗 Łączny widok</button>
 </div>
-<div id="tab-mapa" class="panel active"><div class="spinner">⏳ Ładowanie mapy...</div></div>
-<div id="tab-cs" class="panel"><div class="spinner">⏳ Ładowanie CS...</div></div>
-<div id="tab-combined" class="combined">
-  <div id="comb-mapa" class="combined-half"><div class="spinner">⏳ Mapa...</div></div>
-  <div id="comb-cs" class="combined-half"><div class="spinner">⏳ CS...</div></div>
+<div id="panel-mapa">
+
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">Słuchawki z ANC v5.5</div>
+    <div class="subtitle">Analiza CEP i Pytań</div>
+    <div class="total-badge">388 pytań · 15 ścieżek</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Ścieżki zakupowe</div>
+    <button class="path-btn active" data-path="all" onclick="filterPath(this,'all')">
+      <span class="path-dot" style="background:#94a3b8"></span>
+      <span class="path-label">Wszystkie ścieżki</span>
+      <span class="path-count" id="cnt-all">388</span>
+    </button>
+    <button class="path-btn" data-path="A" onclick="filterPath(this,'A')">
+      <span class="path-dot" style="background:#3b82f6"></span>
+      <span class="path-label">A · Open space — koncentracja w hałasie</span>
+      <span class="path-count" id="cnt-A">0</span>
+    </button>
+    <button class="path-btn" data-path="B" onclick="filterPath(this,'B')">
+      <span class="path-dot" style="background:#8b5cf6"></span>
+      <span class="path-label">B · Praca zdalna — hałas w domu</span>
+      <span class="path-count" id="cnt-B">0</span>
+    </button>
+    <button class="path-btn" data-path="C" onclick="filterPath(this,'C')">
+      <span class="path-dot" style="background:#ec4899"></span>
+      <span class="path-label">C · Cisza w dojazdach — metro/autobus</span>
+      <span class="path-count" id="cnt-C">0</span>
+    </button>
+    <button class="path-btn" data-path="D" onclick="filterPath(this,'D')">
+      <span class="path-dot" style="background:#14b8a6"></span>
+      <span class="path-label">D · Podróż lotnicza — długie trasy</span>
+      <span class="path-count" id="cnt-D">0</span>
+    </button>
+    <button class="path-btn" data-path="E" onclick="filterPath(this,'E')">
+      <span class="path-dot" style="background:#f59e0b"></span>
+      <span class="path-label">E · Skupienie poza biurem — kawiarnia/coworking</span>
+      <span class="path-count" id="cnt-E">0</span>
+    </button>
+    <button class="path-btn" data-path="F" onclick="filterPath(this,'F')">
+      <span class="path-dot" style="background:#10b981"></span>
+      <span class="path-label">F · Czysty głos na callach — Zoom</span>
+      <span class="path-count" id="cnt-F">0</span>
+    </button>
+    <button class="path-btn" data-path="G" onclick="filterPath(this,'G')">
+      <span class="path-dot" style="background:#f43f5e"></span>
+      <span class="path-label">G · Wymiana starych / upgrade</span>
+      <span class="path-count" id="cnt-G">0</span>
+    </button>
+    <button class="path-btn" data-path="H" onclick="filterPath(this,'H')">
+      <span class="path-dot" style="background:#eab308"></span>
+      <span class="path-label">H · Prezent</span>
+      <span class="path-count" id="cnt-H">0</span>
+    </button>
+    <button class="path-btn" data-path="I" onclick="filterPath(this,'I')">
+      <span class="path-dot" style="background:#6366f1"></span>
+      <span class="path-label">I · Ochrona słuchu</span>
+      <span class="path-count" id="cnt-I">0</span>
+    </button>
+    <button class="path-btn" data-path="J" onclick="filterPath(this,'J')">
+      <span class="path-dot" style="background:#d946ef"></span>
+      <span class="path-label">J · Cisza dla siebie — sanctuary</span>
+      <span class="path-count" id="cnt-J">0</span>
+    </button>
+    <button class="path-btn" data-path="K" onclick="filterPath(this,'K')">
+      <span class="path-dot" style="background:#06b6d4"></span>
+      <span class="path-label">K · Do sportu — bieganie/siłownia</span>
+      <span class="path-count" id="cnt-K">0</span>
+    </button>
+    <button class="path-btn" data-path="L" onclick="filterPath(this,'L')">
+      <span class="path-dot" style="background:#84cc16"></span>
+      <span class="path-label">L · Do gamingu — niskie opóźnienie</span>
+      <span class="path-count" id="cnt-L">0</span>
+    </button>
+    <button class="path-btn" data-path="M" onclick="filterPath(this,'M')">
+      <span class="path-dot" style="background:#a855f7"></span>
+      <span class="path-label">M · Status i marka na uszach</span>
+      <span class="path-count" id="cnt-M">0</span>
+    </button>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Legenda statusów</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--status-brak);box-shadow:0 0 4px var(--status-brak)"></span>BRAK — do stworzenia</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--status-istnieje)"></span>ISTNIEJE — opublikowany</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--status-rozbudowac)"></span>ROZBUDOWAĆ — wymaga rozbudowy</div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Legenda priorytetów</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--p1)"></span>P1 — krytyczne (pilne)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--p2)"></span>P2 — ważne</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--p3)"></span>P3 — standardowe</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--p4)"></span>P4 — niski priorytet</div>
+  </div>
+  <div class="sidebar-tabs">
+    <button class="stab active" id="stab-mapa" onclick="switchTab('mapa')"><span class="stab-icon">🗺️</span>MAPA</button>
+    <button class="stab" id="stab-lista" onclick="switchTab('lista')"><span class="stab-icon">☑️</span>LISTA</button>
+    <button class="stab" id="stab-info" onclick="switchTab('info')"><span class="stab-icon">ℹ️</span>INFO</button>
+  </div>
+  <div class="sidebar-footer">
+    <button class="reset-btn" onclick="resetAll()">↺ Reset filtrów</button>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="topbar">
+    <div class="filter-group">
+      <span class="filter-label">Priorytet</span>
+      <button class="filter-pill active all" data-f="prio" data-v="all" onclick="setF('prio','all',this)">Wszystkie</button>
+      <button class="filter-pill p1" data-f="prio" data-v="P1" onclick="setF('prio','P1',this)">P1</button>
+      <button class="filter-pill p2" data-f="prio" data-v="P2" onclick="setF('prio','P2',this)">P2</button>
+      <button class="filter-pill p3" data-f="prio" data-v="P3" onclick="setF('prio','P3',this)">P3</button>
+      <button class="filter-pill p4" data-f="prio" data-v="P4" onclick="setF('prio','P4',this)">P4</button>
+    </div>
+
+  <div class="statsbar">
+    <div class="stat-card"><div class="val" id="stat-total">388</div><div class="lbl">Widocznych pytań</div></div>
+    <div class="stat-card"><div class="val cv1" id="stat-p1">—</div><div class="lbl">Priorytet P1 (krytyczne)</div></div>
+    <div class="stat-card"><div class="val cv2" id="stat-brak">—</div><div class="lbl">Status BRAK (do stworzenia)</div></div>
+    <div class="stat-card"><div class="val cv3" id="stat-exist">—</div><div class="lbl">ISTNIEJE + ROZBUDOWAĆ</div></div>
+  </div>
+
+  <div class="content" id="contentArea"></div>
+</div>
+
+
+</div>
+<div id="panel-cs">
+<div id="hd">
+  <h1>GEO <span>CS</span></h1>
+  <div id="sw">
+    <span id="si">⌕</span>
+    <input id="search" type="text" placeholder="Szukaj kategorii, CEP, pytania..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="filt">
+    <button class="fb on" data-f="all" onclick="setFilter('all')">All</button>
+    <button class="fb" data-f="v2p" onclick="setFilter('v2p')">✅ Verified</button>
+    <button class="fb" data-f="v1"  onclick="setFilter('v1')">📝 Draft</button>
+  </div>
+  <a id="lang-btn" href="%23">🌐 EN</a>
+  <button id="theme-btn" onclick="toggleTheme()" title="Tryb jasny/ciemny">☀️</button>
+  <span id="stat">1 cat.</span>
+</div>
+<div id="lay">
+  <div id="sb">
+    <div class="ci" id="i1" onclick="select(1)"><span class="cn">#1</span><span class="ct">Słuchawki z ANC</span><span class="vb vb-v2">v2</span><div class="pipe"><span class="pd on-v1"></span><span class="pd on-v2"></span><span class="pd"></span><span class="pd"></span></div></div>
+    <div id="nr">No results</div>
+  </div>
+  <div id="ct">
+    <div class="cs" id="s1"><h1>Słuchawki z ANC — Category Standard v2 (nadbudowa)</h1>
+
+<p><em>Fundament (0/0b/2) + CEV/KCF z <code>data/cs_v2/sluchawki_anc_v2.json</code> (pola <code>kcf</code> + <code>_meta.cev</code> — wklejone 1:1, niezmienione). CEP = świeży zestaw 15 (sytuacja wejścia, nie atrybut). Sekcje matrycowe wg wzorca <code>WPIS_CS_ekspresy_do_kawy_V2.md</code>. Sloty <<LLM>> = myślące. assemble_v2 · 2026-07-21.</em></p>
+
+<hr>
+
+<h2>0. Opis kategorii</h2>
+<p>Słuchawki z ANC (Active Noise Cancelling — aktywna redukcja szumów) — słuchawki, które oprócz odtwarzania dźwięku <strong>elektronicznie wygłuszają hałas otoczenia</strong>: mikrofony nasłuchują dźwięku z zewnątrz, a układ generuje przeciwfalę, która ten hałas kasuje. Kategoria dzieli się na dwie fizycznie różne budowy: <strong>nauszne zamknięte</strong> (over-ear, większe wyciszenie i komfort długiego noszenia) i <strong>dokanałowe True Wireless</strong> (TWS, pchełki w etui — przenośność). Klient wchodzi w kategorię co 2–4 lata (żywotność baterii dokanałowych ~2–3 lata, nausznych ~4–6 lat), przy pierwszym zakupie ANC, wymianie zużytego sprzętu, upgrade z tanich słuchawek bez wyciszenia, albo pod konkretną sytuację (dojazdy, open space, samolot).</p>
+
+<hr>
+
+<h2>0b. Problemy, które kategoria załatwia</h2>
+<p><strong>🎯 Primary (rdzeń — po co kategoria powstała):</strong></p>
+<p>> <strong>Odcina hałas i daje dźwięk do ucha.</strong> Wygłusza świat dookoła (koła metra, turbiny, gadający kolega) i zostawia cię z muzyką albo ciszą. Tyle.</p>
+
+<p><strong>Secondary (rynek pociął rdzeń „wyciszenie + dźwięk" na węższe pod-potrzeby):</strong></p>
+
+<ul><li><strong>skupienie w hałasie</strong> — open space / kawiarnia / dziecko w tle, hałas rozbija myśl → mocne ANC nauszne + długi komfort</li><li><strong>cisza w dojazdach</strong> — codzienne metro/autobus/pociąg, dudnienie kół nie do zniesienia → ANC + przenośność (dokanałowe lub składane nauszne)</li><li><strong>wyciszenie w podróży lotniczej</strong> — 4h turbin to kara → głębokie ANC na niskie częstotliwości + długa bateria + składanie</li><li><strong>czysty głos na callach</strong> — 6 Zoomów dziennie, tło kompromituje przed klientem → mikrofony + ENC (redukcja szumu w moim głosie, nie tylko w moich uszach)</li><li><strong>jakość dźwięku do muzyki</strong> — słucham dużo, chcę scenę i detal, nie tylko wyciszenie → dobry przetwornik + kodeki hi-res (LDAC/aptX)</li><li><strong>jedne do wszystkiego</strong> — praca, muzyka, sport, podróż w jednym → uniwersalność (ANC + tryb przezroczystości + multipoint + IP)</li><li><strong>sport bez wypadania</strong> — bieganie/siłownia, nie mają wypaść ani odpaść od potu → dokanałowe z zaczepem + IPX4+</li><li><strong>gaming z niskim opóźnieniem</strong> — dźwięk musi być zsynchronizowany z obrazem → tryb low-latency / LE Audio + mikrofon</li><li><strong>status / marka na uszach</strong> — wszyscy mają Sony/AirPods, chcę widoczne, „porządne" → rozpoznawalny design + logo + premium finish</li><li><strong>wejście w ANC tanio</strong> — słyszałem że dobre ANC to już 200–300 zł, chcę sprawdzić bez wydawania fortuny → budżet z przyzwoitym wyciszeniem</li><li><strong>upgrade zużytego</strong> — stare padły / bateria trzyma 40 min → wymiana na coś z realnym ANC</li></ul>
+
+<p>> ⚠️ „40 dB wyciszenia", „bateria 30h", „waga 250g", „kodek LDAC" — NIE problemy. To atrybuty. Idą do filtrów/KCF.</p>
+
+<hr>
+
+<h2>1. CEV — Category Emotional Valuation (Schwartz z wagami)</h2>
+<p><strong>Pasek CEV — profil emocjonalny (10 cech):</strong></p>
+
+<table>
+<tr><th>ryzyko</th><th>lęk</th><th>widoczność</th><th>impuls</th><th>sexy</th><th>aspiracja</th><th>tożsamość</th><th>zmysłowość</th><th>pilność</th><th>moralność</th></tr>
+<tr><td>0.45</td><td>0.30</td><td>0.60</td><td>0.30</td><td>0.50</td><td>0.65</td><td>0.55</td><td>0.35</td><td>0.25</td><td>0.10</td></tr>
+</table>
+
+<p><code>apply_physics</code> → fork <strong>ASPIRACJA/WIDOCZNOŚĆ</strong> (aspiracja 0.65 + widoczność 0.60 = najwyższe cechy paska), research <strong>2.7</strong> (średnia-wysoka). Lęk 0.30 jest <strong>funkcjonalny</strong> (obiekt = „czy to naprawdę wyciszy tak jak w opisie / czy nie przepłacę za logo"), nie egzystencjalny.</p>
+
+<p><strong>Schwartz — 8 stanów świadomości + wagi:</strong></p>
+
+<table>
+<tr><th>#</th><th>Stan</th><th>Waga</th><th>Co znaczy dla treści</th></tr>
+<tr><td>1</td><td>Nie wiem</td><td>◔ L</td><td>pomijalny</td></tr>
+<tr><td>2</td><td>Potrzeba</td><td>◑ M</td><td>trigger sytuacji (hałas / call / podróż)</td></tr>
+<tr><td>3</td><td>CEP</td><td>● H</td><td>routing do sytuacji użycia</td></tr>
+<tr><td>4</td><td>Nauka kategorii</td><td>◑ M</td><td>edukacja: ANC hybrydowe, dB, kodeki, nauszne vs dokanałowe</td></tr>
+<tr><td>5</td><td>Preselekcja</td><td>● H</td><td>mój przypadek → budowa (nauszne / TWS)</td></tr>
+<tr><td>6</td><td>Porównywanie</td><td>● H</td><td>Sony vs Bose vs Apple vs budżet — brand war</td></tr>
+<tr><td>7</td><td>Wybór sklepu</td><td>◔ L</td><td>gdzie kupić / gwarancja / zwrot</td></tr>
+<tr><td>8</td><td>Zakup</td><td>◔ L</td><td>raty / stan magazynowy / etui w zestawie</td></tr>
+</table>
+
+<p>Ścieżka zakupowa ma <strong>trzy garby</strong>: <strong>stan 3 (CEP)</strong>, <strong>stan 5 (Preselekcja)</strong> i <strong>stan 6 (Porównywanie)</strong> — wszystkie ● H. To odróżnia ANC od AGD: tu klient nie tylko rozpoznaje sytuację i wybiera budowę, ale toczy realną wojnę marek (Sony WH-1000XM5/XM6 vs Bose QC Ultra vs Apple AirPods Max vs budżet Soundcore/Edifier), bo kategoria jest silnie zbrandowana i porównywalna 1:1 na parametrach. Stąd 55–65% budżetu treści powinno obsługiwać: routing sytuacji (CEP), rozstrzygnięcie <strong>nauszne vs dokanałowe</strong> (Preselekcja) oraz <strong>head-to-head marka vs marka</strong> (Porównywanie). Asymetria wysoka widoczność/aspiracja (0.60/0.65) przy niskiej pilności (0.25) i niskim impulsie (0.30) mówi: to zakup <strong>statusowy, ale przemyślany</strong> — klient chce „porządne, widoczne, nie przepłacone", nie kupi pod presją czasu, kupi gdy poczuje że rozumie różnicę między 300 zł a 2000 zł. Treść ma budować pewność decyzji i uzasadniać cenę różnicą w realnym wyciszeniu, nie CTA-pressure.</p>
+
+<h2>2. CEP — Consumer Entry Points</h2>
+<p><em>Zestaw 15 momentów wejścia (świeżo wygenerowany, niezmienny). CEP = SYTUACJA w której klient wchodzi w kategorię, nie cecha produktu. „Audiofil/jakość/ekosystem" gdyby były atrybutami szłyby do KCF — tu występują wyłącznie jako sytuacja tożsamościowa/ekonomiczna wejścia.</em></p>
+
+<table>
+<tr><th>id</th><th>typ</th><th>label (moment/sytuacja wejścia)</th></tr>
+<tr><td>cep_open_space</td><td>sytuacyjny</td><td>Open space, kolega gada obok — nie mogę dokończyć myśli</td></tr>
+<tr><td>cep_home_office</td><td>sytuacyjny</td><td>Praca zdalna, remont u sąsiada/dziecko w tle — nie skupię się</td></tr>
+<tr><td>cep_dojazdy</td><td>sytuacyjny</td><td>Codzienne 40 min metra — hałas kół nie do zniesienia</td></tr>
+<tr><td>cep_samolot</td><td>sytuacyjny</td><td>Turbiny przez 4h to kara — latam służbowo co 2 tyg</td></tr>
+<tr><td>cep_coworking</td><td>sytuacyjny</td><td>Pracuję w kawiarni/coworkingu, muzyka w tle zabija myśl</td></tr>
+<tr><td>cep_meetings_online</td><td>sytuacyjny</td><td>6 Zoomów dziennie — tło kompromituje mnie przed klientem (mikrofon+ENC)</td></tr>
+<tr><td>cep_wymiana</td><td>sytuacyjny</td><td>Stare padły albo ANC ledwo działa — czas na nowe porządne</td></tr>
+<tr><td>cep_prezent</td><td>sytuacyjny</td><td>Prezent dla kogoś kto podróżuje albo haruje w open space</td></tr>
+<tr><td>cep_ochrona_sluchu</td><td>sytuacyjny</td><td>Po latach hałasu chcę chronić słuch, nie blokując świata</td></tr>
+<tr><td>cep_relaks_cisza</td><td>sytuacyjny</td><td>Po 9h w open space potrzebuję 30 min własnej ciszy</td></tr>
+<tr><td>cep_sport</td><td>sytuacyjny</td><td>Do biegania/siłowni — nie mają wypadać ani przeszkadzać</td></tr>
+<tr><td>cep_gaming</td><td>sytuacyjny</td><td>Do grania — niskie opóźnienie, żeby nie psuć immersji</td></tr>
+<tr><td>cep_prestiz_marka</td><td>tozsamosciowy</td><td>Wszyscy mają Sony/AirPods — chcę w końcu coś porządnego</td></tr>
+<tr><td>cep_demokratyzacja</td><td>ekonomiczny</td><td>Słyszałem że dobre ANC to teraz 200–300 zł — czas sprawdzić</td></tr>
+<tr><td>cep_okazja</td><td>ekonomiczny</td><td>Wyprzedaż -40% na XM5 / dostałem premię — teraz albo nigdy</td></tr>
+</table>
+
+<p><strong>Rozkład typów:</strong> 12 sytuacyjnych · 1 tożsamościowy · 2 ekonomiczne. Dominują momenty „hałas mnie dopadł" (praca/dojazd/podróż) — kategoria napędzana konkretną sytuacją bólu, nie impulsem czy modą. Dwa CEP ekonomiczne (<code>cep_demokratyzacja</code>, <code>cep_okazja</code>) są nowym silnikiem rynku 2026: ANC zeszło poniżej 300 zł, więc bariera wejścia runęła.</p>
+
+<h3>Frazy ATRYBUTOWE → harvest filtrów (NIE CEP)</h3>
+
+<table>
+<tr><th>Atrybut</th><th>Idzie do</th></tr>
+<tr><td>„słuchawki nauszne / dokanałowe z ANC"</td><td>Filter: budowa</td></tr>
+<tr><td>„słuchawki bluetooth z redukcją szumów"</td><td>Filter: typ ANC</td></tr>
+<tr><td>„słuchawki 40h baterii"</td><td>Filter: czas baterii</td></tr>
+<tr><td>„słuchawki z LDAC / aptX"</td><td>Filter: kodeki</td></tr>
+<tr><td>„słuchawki Sony / Bose / Apple / Soundcore"</td><td>Filter: marka</td></tr>
+<tr><td>„słuchawki wodoodporne IPX4"</td><td>Filter: wodoszczelność</td></tr>
+</table>
+
+<p>> ⚠️ „40 dB", „30h", „LDAC", „IPX4", „250 g" — to atrybuty/specy. Nie mieszamy z CEP.</p>
+
+<h2>4. KCF — Key Category Features</h2>
+<p><em>15 atrybutów przepisanych z <code>data/cs_v2/sluchawki_anc_v2.json</code> pole <code>kcf</code> (zakresy rynkowe + tier niezmienione). Uwaga = interpretacja pod treść PDP/GEO.</em></p>
+
+<table>
+<tr><th>Feature</th><th>Zakres rynkowy</th><th>Tier</th><th>Uwaga</th></tr>
+<tr><td>Typ ANC</td><td>Adaptacyjne / Hybrydowe / Passive + Feedback / Feedforward</td><td>T1</td><td>hybrydowe (feedforward + feedback) = najskuteczniejsze; adaptacyjne dopasowuje siłę do otoczenia. Feedforward-only w budżecie łapie mniej niskich tonów</td></tr>
+<tr><td>Głębokość ANC (dB)</td><td>do 35 dB (entry) / do 40 dB (średni) / do 45+ dB (premium)</td><td>T1</td><td>dB to szum tłumiony w wybranym paśmie, nie „o tyle ciszej wszędzie". Sony/Bose ~40–45 dB [web-check]. Konsument myli głębokość ANC z głośnością muzyki</td></tr>
+<tr><td>Budowa</td><td>Nauszne zamknięte / Dokanałowe True Wireless / Douszne otwarte</td><td>T1</td><td><strong>fundament routingu.</strong> Nauszne = lepsze ANC na niskie tony + komfort godzinami. Dokanałowe TWS = przenośność + sport. Douszne otwarte = ANC symboliczne</td></tr>
+<tr><td>Przetwornik</td><td>30–40 mm dynamiczny / Planarny (audiofil) / BA+dynamic (dokanałowe)</td><td>T1</td><td>planarny/magnetostatyczny = detal dla audiofila. W dokanałowych układ BA+dynamik dzieli pasmo. Nie decyduje sam — DSP i tuning ważą więcej</td></tr>
+<tr><td>Kodeki audio</td><td>SBC / AAC / LDAC / aptX HD / aptX Adaptive / LC3</td><td>T1</td><td>LDAC/aptX Adaptive = hi-res dla Androida; AAC = optimum dla iPhone (LDAC bezużyteczny na iOS). SBC = podłoga jakości. To zależność telefon↔słuchawka, nie sam parametr</td></tr>
+<tr><td>Mikrofon + ENC</td><td>2 mikrofony / 4+ mikrofony + ENC + AI noise reduction</td><td>T2</td><td>ENC czyści TWÓJ głos dla rozmówcy (inne niż ANC, które czyści dźwięk DLA ciebie). Klucz dla <code>cep_meetings_online</code>. Konsument myli ENC z ANC</td></tr>
+<tr><td>Czas baterii</td><td>6–12h (dokanałowe + etui 20–30h) / 20–60h (nauszne)</td><td>T2</td><td>z włączonym ANC realnie −20–30% względem deklaracji. Nauszne wygrywają na jednym ładowaniu; TWS nadrabiają etui</td></tr>
+<tr><td>Tryb przezroczystości</td><td>Tak / Nie / Regulowany / Adaptive (Auto)</td><td>T2</td><td>wpuszcza otoczenie bez zdejmowania (kasa, ogłoszenia, rozmowa). Bezpieczeństwo na ulicy/rowerze. Adaptive przełącza sam ANC↔ambient</td></tr>
+<tr><td>Aplikacja / EQ</td><td>Brak / Podstawowy / Zaawansowany EQ + presety</td><td>T2</td><td>app = EQ, siła ANC, aktualizacje firmware, personalizacja. Brak app = zamrożone brzmienie fabryczne. Ważne przy doborze pod jakość dźwięku (atrybut, nie CEP)</td></tr>
+<tr><td>Multipoint</td><td>Brak / 2 urządzenia / 3+ urządzenia</td><td>T2</td><td>jednoczesne połączenie z laptopem i telefonem — połączenie wchodzi bez przełączania. Cichy killer-feature pracy zdalnej</td></tr>
+<tr><td>Kontrola dotykowa</td><td>Przyciski fizyczne / Panel dotykowy / Sensor nacisku</td><td>T3</td><td>panel dotykowy = przypadkowe dotknięcia (czapka, mokra ręka). Sensor nacisku (pchełki) i fizyczne przyciski pewniejsze w ruchu/sporcie</td></tr>
+<tr><td>Waga</td><td>150–250 g (dokanałowe z etui) / 200–330 g (nauszne)</td><td>T3</td><td>powyżej ~300 g nauszne uwierają po 2–3h — realny czynnik dla <code>cep_samolot</code>. TWS liczą się w gramach na ucho</td></tr>
+<tr><td>Kodek gamingowy</td><td>aptX Low Latency / LE Audio / Brak</td><td>T3</td><td>opóźnienie <40 ms = dźwięk zsynchronizowany z obrazem. Bluetooth klasyczny bez trybu = zauważalny lag w grach/FPS</td></tr>
+<tr><td>Składanie/etui</td><td>Składane / Nieskładane / Sztywne etui</td><td>T3</td><td>składane + sztywne etui = realna przenośność do plecaka/podróży. Nieskładane nauszne = kłopot w bagażu</td></tr>
+<tr><td>Wodoszczelność</td><td>Brak / IPX4 (pot) / IPX5 / IPX7</td><td>T3</td><td>IPX4 minimum na pot do sportu; nauszne premium często BEZ IP (klient sportowy tego nie sprawdza i się rozczarowuje)</td></tr>
+</table>
+
+<p>> Analiza KCF fundamentu (źródło atrybutów): pola <code>kcf</code> z <code>sluchawki_anc_v2.json</code>. <strong>T1 = 5 (routing + jakość wyciszenia i dźwięku), T2 = 5 (użytkowe: mikrofon, bateria, ambient, EQ, multipoint), T3 = 5 (sytuacyjne: sterowanie, waga, gaming, przenośność, IP).</strong></p>
+
+<h2>5. Typowy Produkt</h2>
+<table>
+<tr><th>Cecha</th><th>Norma kategorii</th><th>Red flag</th></tr>
+<tr><td>Budowa</td><td>nauszne zamknięte LUB dokanałowe TWS w etui</td><td>douszne otwarte reklamowane jako „z ANC" — ANC w otwartej konstrukcji jest symboliczne</td></tr>
+<tr><td>Typ ANC</td><td>hybrydowe (feedforward + feedback)</td><td>tylko feedforward w cenie „premium" = łapie mniej niskich tonów</td></tr>
+<tr><td>Głębokość ANC</td><td>35–45 dB w paśmie niskim</td><td>brak podanego dB / „redukcja hałasu" bez liczby = marketing, nie parametr</td></tr>
+<tr><td>Tryb przezroczystości</td><td>obecny, przełączany z ANC</td><td>brak trybu ambient = zdejmujesz słuchawki przy każdej rozmowie/kasie</td></tr>
+<tr><td>Bateria (nauszne)</td><td>20–40h z ANC</td><td><15h z ANC = ładowanie co 2 dni</td></tr>
+<tr><td>Bateria (TWS)</td><td>5–8h pchełki + 20–30h etui</td><td>pchełki <4h z ANC = nie przetrwają lotu/dnia pracy</td></tr>
+<tr><td>Kodeki</td><td>min. AAC; LDAC/aptX dla Androida</td><td>tylko SBC w cenie >400 zł = kompresja słyszalna</td></tr>
+<tr><td>Multipoint</td><td>2 urządzenia</td><td>brak multipoint w słuchawkach „do pracy" = ręczne przełączanie laptop↔telefon</td></tr>
+<tr><td>Etui / składanie (nauszne)</td><td>sztywne etui + zawiasy składane</td><td>brak etui przy cenie 1500+ zł = ryzyko uszkodzenia w plecaku</td></tr>
+</table>
+
+<h2>6. Tier Specs</h2>
+<p><strong>Tier-1 Universal</strong> (musi być w PDP każdych słuchawek ANC):</p>
+<ul><li>Budowa — format: <code>nauszne zamknięte / dokanałowe TWS / douszne otwarte</code></li><li>Typ ANC — format: <code>hybrydowe / adaptacyjne / feedforward</code></li><li>Głębokość ANC — format: <code>do X dB</code> (z pasmem/kontekstem)</li><li>Czas pracy z ANC — format: <code>X h (nauszne)</code> lub <code>X h + Yh etui (TWS)</code></li><li>Kodeki — format: <code>SBC / AAC / LDAC / aptX Adaptive / LC3</code></li></ul>
+
+<p><strong>Tier-2 Differentiator:</strong></p>
+<ul><li>Mikrofon + ENC — format: <code>X mikrofonów + ENC / AI noise reduction TAK/NIE</code></li><li>Tryb przezroczystości — format: <code>TAK (regulowany / adaptive) / NIE</code></li><li>Multipoint — format: <code>2 / 3+ urządzenia</code></li><li>Aplikacja + EQ — format: <code>zaawansowany EQ + presety / podstawowy / brak</code></li></ul>
+
+<p><strong>Tier-3 / CEP-Specific:</strong></p>
+<ul><li>Wodoszczelność <code>IPX4+</code> — <code>cep_sport</code></li><li>Kodek / tryb low-latency <code><40 ms</code> — <code>cep_gaming</code></li><li>Waga <code><300 g</code> + składanie + sztywne etui — <code>cep_samolot</code>, <code>cep_dojazdy</code></li><li>Sensor nacisku / przyciski fizyczne — <code>cep_sport</code> (pewność sterowania w ruchu)</li></ul>
+
+<h2>7. 💰 Tier Pricing — PLN, Polska 2026</h2>
+
+<table>
+<tr><th>Tier</th><th>Widełki (PLN)</th><th>Co dostajesz (parametry / KCF)</th><th>Typowe modele</th></tr>
+<tr><td><strong>Budżet</strong></td><td>150–400 zł</td><td>Wejście w ANC. Wyciszenie feedforward/hybrydowe do ~30–35 dB — łapie dudnienie metra i szum, ale mniej głosów. Nauszne albo proste TWS. Kodeki SBC/AAC (LDAC czasem w górnym budżecie). App podstawowa lub brak EQ. Multipoint bywa. Bateria nauszne 30–40h (tanio, bo prosty układ), TWS 5–7h + etui. Tryb przezroczystości podstawowy. Plastik, brak IP lub IPX4. <strong>To realna alternatywa dla „słuchawek bez ANC" — demokratyzacja.</strong></td><td>Soundcore (Anker) Life Q35 / Space Q45, Edifier W820NB / WH950NB, QCY H3 / H4, Nothing Ear (a) [web-check ceny]</td></tr>
+<tr><td><strong>Średni</strong></td><td>400–900 zł</td><td>ANC hybrydowe realne 35–40 dB. Nauszne z komfortem na godziny LUB dobre TWS z etui. LDAC/aptX Adaptive dla Androida. Zaawansowany EQ w app + regulacja siły ANC. Multipoint 2 urządzenia. Tryb przezroczystości regulowany. Bateria nauszne 30–60h, TWS 6–8h + 24–30h etui. IPX4 w modelach sportowych. To „słodki punkt" ceny do jakości.</td><td>Sony WH-CH720N, Soundcore Space One Pro, Sennheiser Accentum Plus, Nothing Headphone (1), Sony WF-C710N [web-check ceny]</td></tr>
+<tr><td><strong>Premium</strong></td><td>1000–1800 zł</td><td>Flagowe ANC ~40–45 dB, adaptacyjne (dopasowuje siłę do otoczenia i szczelności). Najlepszy tuning + hi-res (LDAC / aptX Adaptive / LC3). Mikrofony 4+ z AI ENC do rozmów. Multipoint 3+. App z pełnym EQ, profilami, aktualizacjami. Bateria 30h (nauszne) / 8h + etui (TWS). Sztywne etui, składanie, materiały premium. Gwarancja 24 mies.</td><td>Sony WH-1000XM5, Bose QuietComfort Ultra, Sennheiser Momentum 4, Sony WF-1000XM5, Bose QC Ultra Earbuds, AirPods Pro 2 [web-check ceny]</td></tr>
+<tr><td><strong>Flagowiec / prestiż</strong></td><td>1800–2800 zł</td><td>Najwyższa półka + warstwa statusowa. Topowe ANC + dźwięk referencyjny, aluminiowa/skórzana obudowa, rozpoznawalny design (logo się liczy — <code>cep_prestiz_marka</code>). Najnowsze generacje. Ekosystem (Apple: adaptive audio, spatial; Sony XM6 [web-check]). Cena zawiera „widać, że mam".</td><td>Apple AirPods Max (USB-C), Sony WH-1000XM6, Bowers & Wilkins Px8, Focal Bathys [web-check ceny]</td></tr>
+</table>
+
+<p>> <strong>Oś #1 (budżet ↔ realne wyciszenie):</strong> dla wchodzącego pierwszy raz kluczowe pytanie to „ile dopłacam i o ile ciszej będzie". Poniżej 400 zł = wejście w ANC (dudnienie tak, głosy słabiej); 400–900 zł = realne wyciszenie open space; 1000+ zł = flagowe ANC + hi-res + rozmowy; 1800+ zł = prestiż i ekosystem. Różnica 300 → 1500 zł to NIE „dwa razy ciszej", tylko szersze pasmo tłumienia (głosy, nie tylko dudnienie), lepsze rozmowy i komfort godzinami — i to trzeba w treści powiedzieć wprost, bo klient tego nie widzi z samego dB.</p>
+
+<h2>8. Consumer Decision Tree</h2>
+<pre><code>[L1 — Routing: jaka budowa słuchawek?]
+
+Q1. Gdzie głównie będziesz ich używać?
+  consumer_language: &quot;Głównie przy biurku / w podróży&quot; vs &quot;W ruchu, do plecaka, na trening&quot;
+  → Biurko / open space / samolot, komfort godzinami → [Nauszne zamknięte] → Q1-L2-nauszne
+  → W ruchu / do kieszeni / sport → [Dokanałowe TWS] → Q1-L2-tws
+  → Chcę słyszeć otoczenie (rower/ulica) → [Douszne otwarte] → ANC symboliczne, ostrzeż
+
+Q2. (jeśli niejednoznaczne) Ile godzin naraz na uszach?
+  → 2–8h ciągiem (praca, lot) → nauszne (komfort + bateria)
+  → Krótkie sesje, mobilność → TWS
+
+[L2 — Nauszne zamknięte]
+Q1. Priorytet: maksymalne wyciszenie czy jakość dźwięku?
+  consumer_language: &quot;Chcę odciąć open space&quot; vs &quot;Słucham dużo muzyki, liczy się brzmienie&quot;
+  → Wyciszenie (praca/lot) → ANC hybrydowe/adaptacyjne ~40–45 dB (Sony XM5, Bose QC Ultra)
+  → Dźwięk → mocny tuning + hi-res + EQ (Sennheiser Momentum 4, planar dla audiofila)
+  → Oba → flagowiec premium
+
+Q2. Dużo rozmów / callów?
+  → TAK → mikrofony 4+ z AI ENC (klucz: cep_meetings_online)
+  → NIE → mikrofon drugorzędny
+
+Q3. Android czy iPhone?
+  → Android → wymagaj LDAC / aptX Adaptive
+  → iPhone → AAC wystarczy (LDAC bezużyteczny na iOS); ekosystem → AirPods Max
+
+Q4. Praca na 2 urządzeniach naraz?
+  → TAK → multipoint 2–3 urządzenia (obowiązkowo)
+  → NIE → pomijalne
+
+Q5. Budżet?
+  → 150–400 zł → wejście (Soundcore, Edifier, QCY)
+  → 400–900 zł → realne open-space (Sony CH720N, Space One Pro, Accentum)
+  → 1000–1800 zł → flagowce (Sony XM5, Bose QC Ultra, Momentum 4)
+  → 1800+ zł → prestiż/ekosystem (AirPods Max, Sony XM6)
+
+mandatory_in_PDP: budowa + typ ANC + głębokość ANC [dB] + czas z ANC [h] + kodeki + multipoint TAK/NIE
+
+[L2 — Dokanałowe True Wireless]
+Q1. Główne zastosowanie?
+  consumer_language: &quot;Do metra i muzyki&quot; vs &quot;Do biegania i siłowni&quot;
+  → Dojazdy/muzyka → ANC hybrydowe + kodeki + komfort dopasowania (Sony WF-1000XM5, AirPods Pro 2)
+  → Sport → IPX4+ + zaczep/pewne dopasowanie + sensor nacisku (nie panel dotykowy)
+
+Q2. Ekosystem telefonu?
+  consumer_language: &quot;Mam iPhone&quot; vs &quot;Mam Androida/Samsunga&quot;
+  → iPhone → AirPods Pro 2 (adaptive audio, integracja) lub AAC-first
+  → Android/Samsung → LDAC / aptX Adaptive; integracja Galaxy Buds
+
+Q3. Rozmowy w hałasie?
+  → TAK → 4+ mikrofony + ENC
+  → NIE → drugorzędne
+
+Q4. Ile na jednym ładowaniu pchełek?
+  → Krótkie sesje → 5–6h wystarczy
+  → Lot / długi dzień → celuj w 8h + duże etui
+
+mandatory_in_PDP: budowa (dokanałowe TWS) + typ ANC + IP [IPX_] + czas pchełki [h] + czas etui [h] + kodeki
+
+[L2 — Gaming (przecięcie budowy)]
+Q1. Opóźnienie krytyczne?
+  → TAK → tryb low-latency / LE Audio &lt;40 ms (Bluetooth klasyczny = lag)
+  → NIE → dowolne ANC
+
+Q2. Rozmowy w grze?
+  → TAK → mikrofon + ENC
+
+mandatory_in_PDP: kodek/tryb gamingowy + opóźnienie [ms] + mikrofon</code></pre>
+
+<h2>9. Forbidden Patterns</h2>
+<table>
+<tr><th>❌ Zakazane</th><th>✅ Poprawne</th></tr>
+<tr><td>„krystalicznie czysty dźwięk"</td><td>„przetwornik 40 mm + LDAC (hi-res na Androidzie) — detal słyszalny w akustycznych nagraniach"</td></tr>
+<tr><td>„doskonała redukcja szumów"</td><td>„ANC hybrydowe do 42 dB [web-check] — tłumi dudnienie metra i większość głosów w open space"</td></tr>
+<tr><td>„cały dzień na baterii"</td><td>„30h z włączonym ANC — tydzień dojazdów bez ładowarki"</td></tr>
+<tr><td>„idealne do rozmów"</td><td>„4 mikrofony + AI ENC — rozmówca słyszy ciebie, nie kawiarnię w tle"</td></tr>
+<tr><td>„wygodne i lekkie"</td><td>„250 g + gąbki z pianki pamięciowej — bez ucisku po 4h lotu"</td></tr>
+<tr><td>„kompatybilne z każdym telefonem"</td><td>„multipoint na 2 urządzenia — laptop i telefon naraz, połączenie wchodzi bez przełączania"</td></tr>
+</table>
+
+<h2>10. Ścieżki percepcji & persony</h2>
+
+<h4>ŚCIEŻKA A — Open space zabija skupienie</h4>
+<p><strong>Persona:</strong> Kasia, 29 lat, UX designer, siedzi w 40-osobowym open space, sprzedaż gada za plecami, nie może wejść w flow — koleżanka pracuje w Sony i „w ogóle nie słyszy biura"</p>
+<p><strong>CEP:</strong> <code>cep_open_space</code></p>
+<p><strong>Trigger:</strong> „Muszę odciąć open space — chcę wejść w skupienie i nie słyszeć gadania obok"</p>
+<p><strong>Długość procesu:</strong> 1–2 tygodnie</p>
+
+<table>
+<tr><th>Stan</th><th>Nazwa</th><th>Pytania w głowie</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>A1</td><td>Rozpoznanie problemu</td><td>„Czy słuchawki z ANC naprawdę wyciszą ludzi mówiących obok, czy tylko szum klimatyzacji?"</td><td>informacyjna</td><td>artykuł „co ANC realnie wycisza (a czego nie)"</td></tr>
+<tr><td>A2</td><td>Nauka kategorii</td><td>„Nauszne czy dokanałowe do biurka? Co znaczy 40 dB? Hybrydowe vs zwykłe ANC?"</td><td>informacyjna</td><td>poradnik „ANC do open space — jak czytać parametry"</td></tr>
+<tr><td>A3</td><td>Preselekcja</td><td>„Do 8h przy biurku — nauszne będą wygodniejsze i wyciszą lepiej niż pchełki?"</td><td>komercyjna</td><td>comparison nauszne vs TWS do pracy</td></tr>
+<tr><td>A4</td><td>Porównywanie</td><td>„Sony WH-1000XM5 vs Bose QC Ultra — które lepiej tłumią głosy ludzi?"</td><td>komercyjna</td><td>head-to-head flagowce ANC</td></tr>
+<tr><td>A5</td><td>Zakup</td><td>„Gdzie kupię z możliwością zwrotu, gdyby uwierały po całym dniu?"</td><td>transakcyjna</td><td>PDP + polityka zwrotów</td></tr>
+</table>
+
+<p><strong>Pytania ścieżkowe CEP <code>cep_open_space</code>:</strong></p>
+<ul><li>„Jakie słuchawki z ANC najlepiej wyciszają rozmowy ludzi w open space?"</li><li>„Nauszne czy dokanałowe do pracy przy biurku 8 godzin?"</li><li>„Czy ANC wycisza głosy, czy tylko niskie dźwięki jak klimatyzacja?"</li><li>„Sony WH-1000XM5 vs Bose QuietComfort Ultra do open space?"</li><li>„Czy w słuchawkach z ANC można pracować cały dzień bez bólu głowy?"</li></ul>
+
+<hr>
+
+<h4>ŚCIEŻKA B — Cisza w dojazdach</h4>
+<p><strong>Persona:</strong> Michał, 34 lata, analityk, codziennie 40 min metra w każdą stronę, dudnienie kół nie do zniesienia, tanie słuchawki nic nie dają</p>
+<p><strong>CEP:</strong> <code>cep_dojazdy</code></p>
+<p><strong>Trigger:</strong> „Codzienne metro mnie wykańcza — chcę odciąć hałas kół i posłuchać podcastów"</p>
+<p><strong>Długość procesu:</strong> kilka dni – 1 tydzień</p>
+
+<table>
+<tr><th>Stan</th><th>Nazwa</th><th>Pytania w głowie</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>B1</td><td>Rozpoznanie</td><td>„Czy ANC poradzi sobie z dudnieniem metra? Czy warto dopłacać?"</td><td>informacyjna</td><td>artykuł „ANC w komunikacji miejskiej"</td></tr>
+<tr><td>B2</td><td>Preselekcja</td><td>„Dokanałowe do kieszeni czy składane nauszne do plecaka?"</td><td>komercyjna</td><td>comparison przenośność TWS vs nauszne składane</td></tr>
+<tr><td>B3</td><td>Porównywanie</td><td>„Sony WF-1000XM5 vs AirPods Pro 2 do metra — które ciszej?"</td><td>komercyjna</td><td>head-to-head TWS</td></tr>
+<tr><td>B4</td><td>Budżet vs efekt</td><td>„Czy Soundcore za 350 zł wyciszy metro tak jak Sony za 1100?"</td><td>komercyjna</td><td>artykuł „ile ANC za ile złotych"</td></tr>
+<tr><td>B5</td><td>Zakup</td><td>„Które mają tryb przezroczystości, żeby usłyszeć ogłoszenia o stacji?"</td><td>transakcyjna</td><td>PDP + FAQ tryb ambient</td></tr>
+</table>
+
+<p><strong>Pytania ścieżkowe CEP <code>cep_dojazdy</code>:</strong></p>
+<ul><li>„Jakie słuchawki z ANC najlepiej wyciszają metro i autobus?"</li><li>„Dokanałowe czy składane nauszne do codziennych dojazdów?"</li><li>„Czy tanie słuchawki z ANC (do 400 zł) wyciszą hałas metra?"</li><li>„Sony WF-1000XM5 czy AirPods Pro 2 do komunikacji miejskiej?"</li><li>„Czy w słuchawkach z ANC usłyszę zapowiedź stacji dzięki trybowi przezroczystości?"</li></ul>
+
+<hr>
+
+<h4>ŚCIEŻKA C — Callowy zawodowiec (praca zdalna)</h4>
+<p><strong>Persona:</strong> Ola, 38 lat, account managerka, 6 Zoomów dziennie z domu, remont u sąsiada, boi się że klient słyszy wiertarkę i płacz dziecka</p>
+<p><strong>CEP:</strong> <code>cep_meetings_online</code> (+ <code>cep_home_office</code>)</p>
+<p><strong>Trigger:</strong> „Muszę brzmieć profesjonalnie na callach mimo hałasu w domu — i sama się skupić"</p>
+<p><strong>Długość procesu:</strong> 1–2 tygodnie</p>
+
+<table>
+<tr><th>Stan</th><th>Nazwa</th><th>Pytania w głowie</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>C1</td><td>Rozpoznanie</td><td>„ANC wycisza to co JA słyszę — ale czy klient przestanie słyszeć wiertarkę w tle MOJEGO głosu?"</td><td>informacyjna</td><td>artykuł „ANC vs ENC — różnica dla rozmów"</td></tr>
+<tr><td>C2</td><td>Nauka kategorii</td><td>„Co to ENC? Ile mikrofonów potrzeba? Czy AI redukcja szumu działa?"</td><td>informacyjna</td><td>poradnik „słuchawki do callów — mikrofon się liczy, nie ANC"</td></tr>
+<tr><td>C3</td><td>Preselekcja</td><td>„Nauszne z boomem czy TWS wystarczą do 6h rozmów dziennie?"</td><td>komercyjna</td><td>comparison mikrofon nauszne vs TWS</td></tr>
+<tr><td>C4</td><td>Porównywanie</td><td>„Które słuchawki mają najlepszy mikrofon w hałasie i multipoint laptop+telefon?"</td><td>komercyjna</td><td>ranking mikrofon + multipoint</td></tr>
+<tr><td>C5</td><td>Zakup</td><td>„Czy działają z Teams i Zoom bez dongli? Multipoint na firmowy laptop i prywatny telefon?"</td><td>transakcyjna</td><td>PDP + FAQ kompatybilność</td></tr>
+</table>
+
+<p><strong>Pytania ścieżkowe CEP <code>cep_meetings_online</code>:</strong></p>
+<ul><li>„Jakie słuchawki z ANC mają najlepszy mikrofon do rozmów w hałasie?"</li><li>„Czym różni się ANC od ENC w słuchawkach do pracy zdalnej?"</li><li>„Czy klient na Zoomie usłyszy hałas w tle, jeśli mam słuchawki z ENC?"</li><li>„Które słuchawki obsługują multipoint — laptop i telefon jednocześnie?"</li><li>„Najlepsze słuchawki do Teams i Zoom z redukcją szumu w mikrofonie?"</li></ul>
+
+<hr>
+
+<h4>ŚCIEŻKA D — Podróżnik służbowy (samolot)</h4>
+<p><strong>Persona:</strong> Tomasz, 45 lat, dyrektor sprzedaży, lata co 2 tygodnie, 4h turbin go wykańcza, ma stare Bose ale bateria pada w połowie lotu</p>
+<p><strong>CEP:</strong> <code>cep_samolot</code> (+ <code>cep_wymiana</code>)</p>
+<p><strong>Trigger:</strong> „Latam co 2 tygodnie — chcę odciąć turbiny na cały lot i mieć spokój, nie ładować w połowie"</p>
+<p><strong>Długość procesu:</strong> 1–2 tygodnie</p>
+
+<table>
+<tr><th>Stan</th><th>Nazwa</th><th>Pytania w głowie</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>D1</td><td>Rozpoznanie</td><td>„Które ANC najlepiej tłumią niski szum turbiny? Czy wszystkie tak samo?"</td><td>informacyjna</td><td>artykuł „ANC do samolotu — pasmo niskie ma znaczenie"</td></tr>
+<tr><td>D2</td><td>Preselekcja</td><td>„Nauszne dają lepsze wyciszenie i komfort na 4h niż pchełki?"</td><td>komercyjna</td><td>comparison nauszne vs TWS na długi lot</td></tr>
+<tr><td>D3</td><td>Porównywanie</td><td>„Bose QC Ultra vs Sony XM5 na lot — komfort i bateria?"</td><td>komercyjna</td><td>head-to-head podróżny</td></tr>
+<tr><td>D4</td><td>Praktyka lotu</td><td>„Czy się składają do bagażu podręcznego? Adapter do gniazda w fotelu? Ile realnie baterii z ANC?"</td><td>komercyjna</td><td>FAQ podróżne + składanie/etui</td></tr>
+<tr><td>D5</td><td>Zakup</td><td>„Sztywne etui w zestawie? Gwarancja gdyby zawias pękł?"</td><td>transakcyjna</td><td>PDP + zawartość zestawu</td></tr>
+</table>
+
+<p><strong>Pytania ścieżkowe CEP <code>cep_samolot</code>:</strong></p>
+<ul><li>„Najlepsze słuchawki z ANC do samolotu na długie loty?"</li><li>„Bose QuietComfort Ultra czy Sony WH-1000XM5 do podróży?"</li><li>„Które słuchawki nauszne są najwygodniejsze na 4–8 godzin?"</li><li>„Ile realnie trzyma bateria z włączonym ANC podczas lotu?"</li><li>„Czy słuchawki składają się do bagażu podręcznego i mają sztywne etui?"</li></ul>
+
+<hr>
+
+<h4>ŚCIEŻKA E — Sport bez wypadania i potu</h4>
+<p><strong>Persona:</strong> Paweł, 31 lat, zaczął biegać i chodzić na siłownię, tanie pchełki wypadają na biegu i padły od potu, chce ANC żeby odciąć hałas siłowni i muzykę do tempa</p>
+<p><strong>CEP:</strong> <code>cep_sport</code></p>
+<p><strong>Trigger:</strong> „Do biegania i siłowni — nie mają wypadać ani odpaść od potu, a ANC odcina zgiełk siłowni"</p>
+<p><strong>Długość procesu:</strong> kilka dni – 1 tydzień</p>
+
+<table>
+<tr><th>Stan</th><th>Nazwa</th><th>Pytania w głowie</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>E1</td><td>Rozpoznanie</td><td>„Czy dokanałowe z ANC utrzymają się na biegu i zniosą pot? Co znaczy IPX4?"</td><td>informacyjna</td><td>artykuł „słuchawki ANC do sportu — dopasowanie i IP"</td></tr>
+<tr><td>E2</td><td>Preselekcja</td><td>„Pchełki z zaczepem czy douszne otwarte? Czy ANC ma sens na treningu?"</td><td>komercyjna</td><td>comparison TWS sportowe vs otwarte</td></tr>
+<tr><td>E3</td><td>Porównywanie</td><td>„Które sportowe TWS z ANC mają najpewniejsze dopasowanie i sterowanie w ruchu?"</td><td>komercyjna</td><td>head-to-head TWS sport</td></tr>
+<tr><td>E4</td><td>Sterowanie/pot</td><td>„Czy panel dotykowy działa mokrą ręką, czy lepszy sensor nacisku / przycisk?"</td><td>komercyjna</td><td>FAQ kontrola + wodoszczelność</td></tr>
+<tr><td>E5</td><td>Zakup</td><td>„Które mają IPX5+ i gwarancję obejmującą uszkodzenie od potu?"</td><td>transakcyjna</td><td>PDP + FAQ IP/gwarancja</td></tr>
+</table>
+
+<p><strong>Pytania ścieżkowe CEP <code>cep_sport</code>:</strong></p>
+<ul><li>„Jakie słuchawki dokanałowe z ANC do biegania, żeby nie wypadały?"</li><li>„Czy ANC ma sens na siłowni, czy lepszy tryb przezroczystości?"</li><li>„Które sportowe słuchawki z ANC są wodoodporne IPX4/IPX5 na pot?"</li><li>„Czy panel dotykowy działa mokrą/spoconą ręką na treningu?"</li><li>„Najlepsze TWS z ANC i pewnym dopasowaniem do biegania w 2026?"</li></ul>
+
+<hr>
+
+<h4>ŚCIEŻKA F — Wejście w ANC za mały budżet</h4>
+<p><strong>Persona:</strong> Natalia, 24 lata, studentka, nigdy nie miała ANC, na Reddicie przeczytała że „Soundcore za 300 zł wycisza jak Sony", nie chce wydać fortuny na pierwsze</p>
+<p><strong>CEP:</strong> <code>cep_demokratyzacja</code></p>
+<p><strong>Trigger:</strong> „Słyszałam że dobre ANC to teraz 200–300 zł — chcę sprawdzić bez wydawania majątku"</p>
+<p><strong>Długość procesu:</strong> kilka dni – 1 tydzień</p>
+
+<table>
+<tr><th>Stan</th><th>Nazwa</th><th>Pytania w głowie</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>F1</td><td>Rozpoznanie kategorii</td><td>„Czy tanie ANC ma sens, czy to ściema? Od czego zacząć?"</td><td>informacyjna</td><td>artykuł „ANC do 400 zł — co realnie dostajesz"</td></tr>
+<tr><td>F2</td><td>Nauka kategorii</td><td>„Co odróżnia budżet od Sony za 1500? Na czym oszczędzają?"</td><td>informacyjna</td><td>comparison budżet vs flagowiec (co tracisz)</td></tr>
+<tr><td>F3</td><td>Preselekcja</td><td>„Do uczelni i tramwaju — nauszne czy pchełki, w tej cenie?"</td><td>komercyjna</td><td>ranking budżet nauszne vs TWS</td></tr>
+<tr><td>F4</td><td>Porównywanie</td><td>„Soundcore Space One vs Edifier WH950NB vs QCY — które najlepsze do 400 zł?"</td><td>komercyjna</td><td>head-to-head budżet</td></tr>
+<tr><td>F5</td><td>Zakup</td><td>„Gdzie kupić najtaniej z gwarancją i zwrotem?"</td><td>transakcyjna</td><td>PDP + porównywarka cen</td></tr>
+</table>
+
+<p><strong>Pytania ścieżkowe CEP <code>cep_demokratyzacja</code>:</strong></p>
+<ul><li>„Najlepsze słuchawki z ANC do 400 zł w 2026?"</li><li>„Czy tanie ANC (Soundcore, Edifier, QCY) naprawdę działa?"</li><li>„Co dostaję za 1500 zł w Sony, czego nie ma budżet za 300?"</li><li>„Soundcore Space One vs Edifier WH950NB — które lepiej wyciszają?"</li><li>„Czy warto dopłacić do droższych słuchawek ANC dla studenta?"</li></ul>
+
+<hr>
+
+<h4>ŚCIEŻKA G — Status na uszach (prestiż marki)</h4>
+<p><strong>Persona:</strong> Kuba, 27 lat, marketer, znajomi noszą AirPods Max i Sony, chce „w końcu coś porządnego, widocznego" — logo się liczy, ale nie chce przepłacić za sam brand</p>
+<p><strong>CEP:</strong> <code>cep_prestiz_marka</code> (+ <code>cep_okazja</code>)</p>
+<p><strong>Trigger:</strong> „Wszyscy mają Sony/AirPods — chcę w końcu porządne, widoczne słuchawki, najlepiej w promce"</p>
+<p><strong>Długość procesu:</strong> 1–3 tygodnie (czeka na okazję)</p>
+
+<table>
+<tr><th>Stan</th><th>Nazwa</th><th>Pytania w głowie</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>G1</td><td>Aspiracja</td><td>„Które słuchawki są teraz 'te właściwe' — co noszą ludzie, na których patrzę?"</td><td>informacyjna</td><td>artykuł „flagowce ANC 2026 — co się nosi"</td></tr>
+<tr><td>G2</td><td>Uzasadnienie ceny</td><td>„Czy AirPods Max są warte 2500 zł, czy płacę za logo?"</td><td>komercyjna</td><td>artykuł „za co realnie płacisz w premium ANC"</td></tr>
+<tr><td>G3</td><td>Porównywanie</td><td>„AirPods Max vs Sony XM6 vs Bose QC Ultra — prestiż i jakość?"</td><td>komercyjna</td><td>head-to-head flagowce prestiżowe</td></tr>
+<tr><td>G4</td><td>Okazja</td><td>„Kiedy XM5 spadnie -40%? Czy czekać na Black Friday?"</td><td>komercyjna</td><td>tracker cen + kalendarz promocji</td></tr>
+<tr><td>G5</td><td>Zakup</td><td>„Gdzie oryginał z gwarancją (nie podróbka) i ładne opakowanie?"</td><td>transakcyjna</td><td>PDP + autoryzowany sprzedawca</td></tr>
+</table>
+
+<p><strong>Pytania ścieżkowe CEP <code>cep_prestiz_marka</code>:</strong></p>
+<ul><li>„Które słuchawki z ANC są najbardziej prestiżowe w 2026?"</li><li>„Czy AirPods Max są warte swojej ceny, czy to płacenie za logo?"</li><li>„Apple AirPods Max vs Sony WH-1000XM6 vs Bose QC Ultra?"</li><li>„Kiedy Sony WH-1000XM5 najtaniej — Black Friday czy premiera XM6?"</li><li>„Gdzie kupić oryginalne słuchawki premium z gwarancją, nie podróbkę?"</li></ul>
+
+<hr>
+
+<h2>11. Cross-Category Triggers</h2>
+<table>
+<tr><th>Kategoria źródłowa</th><th>Trigger zakupu</th><th>CEP który aktywuje</th><th>Fraza wejściowa w AI</th></tr>
+<tr><td>Nowy telefon (iPhone / flagowy Android)</td><td>„Kupiłem iPhone/Samsunga — chcę słuchawki które grają z ekosystemem."</td><td><code>cep_prestiz_marka</code> / (brand loyalty)</td><td>„jakie słuchawki ANC najlepiej działają z iPhone 17 / Galaxy S26?"</td></tr>
+<tr><td>Nowa praca / powrót do biura (open space)</td><td>„Wróciliśmy do biura open space — nie da się pracować w hałasie."</td><td><code>cep_open_space</code></td><td>„słuchawki z ANC do open space — co polecacie do pracy?"</td></tr>
+<tr><td>Bilet lotniczy / częste delegacje</td><td>„Zaczynam dużo latać służbowo — potrzebuję czegoś na turbiny."</td><td><code>cep_samolot</code></td><td>„najlepsze słuchawki nauszne z ANC do częstych lotów?"</td></tr>
+<tr><td>Karnet na siłownię / start biegania</td><td>„Zacząłem biegać — stare słuchawki wypadają i nie znoszą potu."</td><td><code>cep_sport</code></td><td>„słuchawki dokanałowe z ANC do biegania, wodoodporne IPX4?"</td></tr>
+<tr><td>Nowa konsola / PC gamingowy</td><td>„Złożyłem PC / kupiłem konsolę — potrzebuję dźwięku bez opóźnień."</td><td><code>cep_gaming</code></td><td>„słuchawki z ANC do gamingu z niskim opóźnieniem i mikrofonem?"</td></tr>
+</table>
+
+<h2>12. Tone of Voice for GEO</h2>
+<p><em>20 reguł pisania PDP/artykułów pod cytowalność w AI (Perplexity, AI Overviews, ChatGPT). Niezależna od Forbidden Patterns — tamto mówi czego NIE pisać, to mówi JAK pisać. Kategoria-specyficzne: słuchawki z ANC.</em></p>
+
+<p><strong>Struktura passage'a (cytowalność):</strong></p>
+<ol><li>Odpowiadaj na pytanie o budowę/typ w PIERWSZYM zdaniu — AI cytuje zdanie otwierające, nie konkluzję. Zły: „Biorąc pod uwagę wiele czynników, nauszne mogą być lepsze". Dobry: „Do pracy przy biurku 8h nauszne zamknięte wyciszają lepiej i są wygodniejsze niż dokanałowe."</li><li>Jeden akapit = jedna budowa lub jedna cecha. Nie łącz nausznych i dokanałowych w jednym akapicie — AI ich nie rozróżni.</li><li>Głębokość ANC zawsze z kontekstem: nie „40 dB" lecz „do 40 dB w paśmie niskim — tłumi dudnienie metra i turbiny; głosy ludzi tłumi słabiej (to fizyka ANC, nie wada modelu)".</li><li>Czas baterii zawsze z sytuacją i realizmem: nie „30h" lecz „30h z włączonym ANC (deklaracja producenta; realnie ~24h) — tydzień dojazdów bez ładowarki".</li><li>Kodeki zawsze z zależnością od telefonu: nie „LDAC" lecz „LDAC — hi-res na Androidzie; na iPhonie działa AAC (LDAC jest wtedy nieaktywny)".</li></ol>
+
+<p><strong>Język konsumenta (nie producenta):</strong></p>
+<ol><li>Używaj słów z pytań klienta: „wyciszy gadanie w open space", „nie wypadną na treningu", „słychać mnie na Zoomie", nie „adaptacyjny algorytm feedforward-feedback". Żargon tłumacz przy pierwszym użyciu.</li><li>Routing CEP jawny w treści: „Jeśli głównie latasz albo siedzisz w open space — wybierz nauszne. Jeśli w ruchu i do kieszeni — dokanałowe TWS." AI cytuje rekomendacje warunkowe.</li><li>Rozróżniaj ANC od ENC wprost: „ANC wycisza hałas DLA ciebie (słyszysz ciszę). ENC czyści TWÓJ głos DLA rozmówcy na callu. To dwie różne funkcje — do pracy zdalnej potrzebujesz obu."</li><li>Adresuj porównania które klient i tak zrobi: „Sony WH-1000XM5 vs Bose QuietComfort Ultra — Bose wygrywa w wyciszeniu głosów, Sony w aplikacji i kodeku LDAC dla Androida."</li><li>Mapuj tryb przezroczystości na sytuację: nie „tryb ambient" lecz „tryb przezroczystości — wpuszcza otoczenie bez zdejmowania słuchawek: usłyszysz kasjera, zapowiedź stacji, rozmowę."</li></ol>
+
+<p><strong>Struktura pod AI parsing:</strong></p>
+<ol><li>Tabele porównawcze dla kluczowych decyzji: nauszne vs dokanałowe, Sony vs Bose vs Apple — AI ekstrahuje tabele lepiej niż akapity z porównaniami.</li><li>Nagłówki = pytania klienta: „Czy ANC wycisza głosy ludzi?" zamiast „Charakterystyka redukcji szumów". AI indeksuje nagłówki jako potencjalne pytania.</li><li>Decision tree jawny w treści poradnikowej: „Krok 1: gdzie będziesz ich używać? Krok 2: Android czy iPhone? Krok 3: dużo rozmów?" — listy kroków cytowane przez AI Overviews.</li><li>FAQ z odpowiedziami jednozdaniowymi na końcu PDP: „Czy tanie ANC za 300 zł działa? Tak — wycisza dudnienie metra i szum, ale głosy ludzi tłumi słabiej niż flagowce za 1500 zł."</li><li>Jednostki spójne w całej kategorii: zawsze „dB" dla ANC, zawsze „h" dla baterii, zawsze „IPX4/5/7" dla wodoszczelności, zawsze „ms" dla opóźnienia.</li></ol>
+
+<p><strong>Zaufanie i kontekst:</strong></p>
+<ol><li>Podawaj „dla kogo NIE": „Douszne otwarte nie nadają się gdy zależy ci na wyciszeniu — ANC w otwartej konstrukcji jest symboliczne; do open space wybierz nauszne zamknięte." Buduje wiarygodność, AI to cytuje.</li><li>Realizm baterii i dB zamiast deklaracji: „Producent podaje 8h na pchełkach; z włączonym ANC realnie ~6h. Na 4h lot wystarczy, na cały dzień pracy — dolądujesz z etui." AI cytuje wartości z zastrzeżeniem.</li><li>Konkret producent+model+wersja zamiast „wiodące słuchawki ANC": „Sony WH-1000XM5" cytuje się; „popularne słuchawki z tej półki" nie.</li><li>Ostrzeżenie o ukrytych ograniczeniach wprost w PDP: „Uwaga: te nauszne premium nie mają certyfikatu IP — nie nadają się na trening/pot. Do sportu wybierz dokanałowe IPX4+." AI traktuje ostrzeżenia jako wartość dodaną.</li><li>Zależność telefon↔słuchawka jako argument doboru: „Na iPhonie LDAC jest nieaktywny — dopłata za LDAC ma sens tylko dla Androida. Dla iPhone'a liczy się jakość AAC i integracja (np. AirPods Pro 2)." Liczby i warunki = cytowalne twierdzenie.</li></ol>
+
+<hr>
+<p><em>Determ.: fundament (0/0b/2 CEP) + CEV/KCF z <code>sluchawki_anc_v2.json</code> (1:1) + ref wzorca ekspresów #V2. Sloty LLM wypełnione: CEV interp (3 garby: CEP/Preselekcja/Porównywanie) · KCF uwagi (15 atrybutów) · Tier Pricing (4 progi PLN 2026) · Decision Tree (routing budowa → nauszne/TWS/gaming) · ścieżki A–G (7) + pytania ścieżkowe per CEP · Tone 20 reguł. 2026-07-21.</em></p>
+
+<h2>13. Pole pytań</h2>
+
+<p><em>Pełne pole pytań generuje <strong>engine v5</strong> per <strong>CEP × stan świadomości × intent</strong> (15 CEP × 8 stanów Schwartz), z blokerami 🛡️ i wariantami sytuacyjnymi — analogicznie do wzorca ekspresów (264 pytań / 13 ścieżek). Nie wklejamy go tu w całości: żywe, pełne pole leży w <strong>mapie percepcji</strong> kategorii (<code>ROZSZYTE_sluchawki_anc_pole_pytan.md</code> / render w hubie), skąd zasila Discovery i cytowalną treść PDP. Powyżej (§10) siedzą pytania ścieżkowe reprezentatywne per CEP — próbka, nie komplet.</em></p>
+
+<p><strong>Schwartz — 8 wartości z wagami (dla kategorii ANC):</strong></p>
+
+<table>
+<tr><th>Wartość</th><th>Waga</th><th>Przejaw w kategorii</th></tr>
+<tr><td>Hedonizm</td><td><strong>H</strong></td><td>przyjemność dźwięku, cisza jako komfort, rytuał muzyki</td></tr>
+<tr><td>Stymulacja</td><td><strong>M</strong></td><td>nowe modele, kodeki, trendy (XM6, spatial audio)</td></tr>
+<tr><td>Przystosowanie</td><td><strong>H</strong></td><td>dobór do sytuacji (praca/podróż/sport), akceptacja w grupie</td></tr>
+<tr><td>Osiągnięcia</td><td><strong>M</strong></td><td>„wybrałem dobrze" — kompetencja techniczna, znajomość parametrów</td></tr>
+<tr><td>Bezpieczeństwo</td><td><strong>M</strong></td><td>sprawdzona marka, tryb przezroczystości na ulicy, ochrona słuchu</td></tr>
+<tr><td>Życzliwość</td><td><strong>L</strong></td><td>prezent (<code>cep_prezent</code>)</td></tr>
+<tr><td>Władza</td><td><strong>H</strong></td><td>status, prestiż marki, widoczne logo (<code>cep_prestiz_marka</code>)</td></tr>
+<tr><td>Uniwersalizm</td><td><strong>L</strong></td><td>ekologia/etyka — marginalne (moralność CEV = 0.10)</td></tr>
+</table>
+
+<p><strong>Interpretacja:</strong> Kategoria dominuje w: Hedonizm, Przystosowanie, Władza. Zakup napędzany przyjemnością (cisza + dźwięk), dopasowaniem do sytuacji użycia i statusem marki na uszach. Osiągnięcia/Bezpieczeństwo grają średnio (klient chce „wybrać dobrze" i „nie przepłacić za logo"). Uniwersalizm/Życzliwość marginalne — spójne z profilem CEV (moralność 0.10, aspiracja 0.65).</p>
+
+<hr>
+<p><em>Pole pytań: engine v5 · 15 CEP × 8 stanów Schwartz · pełny render w mapie percepcji. §10 = próbka reprezentatywna (7 ścieżek × ~5 pytań).</em></p>
+</div>
+  </div>
+</div>
+
 </div>
 <script>
-const SRC={mapa:'MAPA_PERCEPCJI_sluchawki_anc_v5.5.html',cs:'cs_sluchawki_anc.html'};
-const cache={};
-async function fetchHTML(url){
-  if(cache[url]) return cache[url];
-  const r=await fetch(url);
-  if(!r.ok) throw new Error(r.status+' '+url);
-  cache[url]=await r.text();
-  return cache[url];
-}
-function inject(htmlStr, container){
-  const dp=new DOMParser().parseFromString(htmlStr,'text/html');
-  container.innerHTML='';
-  dp.querySelectorAll('style,link[rel="stylesheet"]').forEach(s=>{
-    container.appendChild(document.importNode(s,true));
-  });
-  Array.from(dp.body.childNodes).forEach(n=>container.appendChild(document.importNode(n,true)));
-  container.querySelectorAll('script').forEach(old=>{
-    const ns=document.createElement('script');
-    if(old.src){ns.src=old.src;}else{ns.textContent=old.textContent;}
-    old.replaceWith(ns);
-  });
-}
-const done={};
-async function ensure(key,targetId){
-  if(done[targetId]) return;
-  done[targetId]=true;
-  try{inject(await fetchHTML(SRC[key]),document.getElementById(targetId));}
-  catch(e){document.getElementById(targetId).innerHTML='<div class="spinner" style="color:#cf222e">❌ '+e.message+'</div>';}
-}
-async function sw(btn,id){
+function sw(btn,id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.panel,.combined').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tab-'+id).classList.add('active');
-  if(id==='mapa') await ensure('mapa','tab-mapa');
-  else if(id==='cs') await ensure('cs','tab-cs');
-  else{await Promise.all([ensure('mapa','comb-mapa'),ensure('cs','comb-cs')]);}
+  var pm=document.getElementById('panel-mapa'),pc=document.getElementById('panel-cs');
+  if(id==='mapa'){pc.style.display='none';pm.style.display='';}
+  else{pm.style.display='none';pc.style.display='block';}
 }
-ensure('mapa','tab-mapa');
+</script>
+<script>
+const A=[
+{nr:1,t:"Jak się skupić w open space, gdy ludzie gadają i dzwonią telefony?",p:"A",s:["A1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:2,t:"Czy słuchawki z ANC faktycznie wyciszają rozmowy w biurze, czy tylko szum wentylacji?",p:"A",s:["A1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:3,t:"Co pomyślą współpracownicy, jak założę słuchawki — czy uznają, że się izoluję?",p:"A",s:["A1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:4,t:"Jakie słuchawki z ANC najlepiej redukują ludzkie głosy w open space, a nie tylko niskie tony?",p:"A",s:["A2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:5,t:"Czy są słuchawki z trybem koncentracji, który przepuszcza komunikaty, a wycina hałas tła?",p:"A",s:["A2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:6,t:"Ile kosztują słuchawki, które faktycznie pozwolą mi pracować bez rozpraszania się w głośnym biurze?",p:"A",s:["A2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:7,t:"Czy ANC w słuchawkach nausznych działa lepiej niż w dokanałowych w open space?",p:"A",s:["A3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:8,t:"Jakie marki słuchawek z ANC są najczęściej polecane do pracy w biurze open space?",p:"A",s:["A3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:9,t:"Czy słuchawki z ANC mogą powodować dyskomfort przy długim noszeniu przez 8 godzin?",p:"A",s:["A3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:10,t:"Jakie modele słuchawek z ANC mają najlepsze opinie o redukcji hałasu w biurze?",p:"A",s:["A3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:11,t:"Czy popularne słuchawki z ANC (Sony, Bose) radzą sobie z rozmowami ludzi, czy tylko z szumem?",p:"A",s:["A3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:12,t:"Które słuchawki z ANC do open space mają najlepszy stosunek ceny do skuteczności wyciszania?",p:"A",s:["A4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:13,t:"Czy Sony WH-1000XM5 czy Bose QC45 lepiej tłumią ludzkie głosy w biurze?",p:"A",s:["A4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:14,t:"Jakie słuchawki z ANC wybrać, żeby nie wyglądać jakbym uciekał od zespołu, ale jednak się skupić?",p:"A",s:["A4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:15,t:"Porównanie Sony WH-1000XM5 vs Bose QC45 vs Sennheiser Momentum 4 — które lepiej wyciszają open space?",p:"A",s:["A5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:16,t:"Czy słuchawki z ANC z regulacją przezroczystości (aware mode) są lepsze do biura niż stałe ANC?",p:"A",s:["A5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:17,t:"Jakie słuchawki z ANC mają najdłuższy czas pracy na baterii przy ciągłym używaniu w pracy?",p:"A",s:["A5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:18,t:"Które słuchawki z ANC są najwygodniejsze do noszenia przez cały dzień w biurze — opinie użytkowników?",p:"A",s:["A5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:19,t:"Czy droższe słuchawki z ANC faktycznie dają zauważalnie lepszą koncentrację w hałasie, czy to marketing?",p:"A",s:["A5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:20,t:"Gdzie kupić słuchawki z ANC z możliwością przetestowania w hałasie open space (sklep stacjonarny)?",p:"A",s:["A6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:21,t:"Czy w MediaMarkt czy RTV Euro AGD można sprawdzić ANC na żywo przed zakupem?",p:"A",s:["A6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:22,t:"Który sklep online ma najlepsze opinie o zwrotach słuchawek z ANC, jeśli nie spełnią oczekiwań?",p:"A",s:["A6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:23,t:"Czy warto kupić słuchawki z ANC z drugiej ręki (OLX, Vinted) do biura, czy ryzyko zużycia wkładek?",p:"A",s:["A6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:24,t:"Jakie promocje na słuchawki z ANC są teraz w Polsce — gdzie szukać najlepszej ceny?",p:"A",s:["A6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:25,t:"Czy po zakupie słuchawek z ANC od razu poczuję różnicę w koncentracji w open space, czy trzeba się przyzwyczaić?",p:"A",s:["A7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:26,t:"Jakie akcesoria do słuchawek z ANC (etui, kabel) są potrzebne do codziennego noszenia do biura?",p:"A",s:["A7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:27,t:"Czy mogę zwrócić słuchawki z ANC, jeśli nie wyciszają rozmów w open space tak, jak obiecywano?",p:"A",s:["A7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:28,t:"Czy po zakupie tych słuchawek stanę się bardziej produktywny i mniej zmęczony hałasem — czy to zmieni moją wersję zawodową?",p:"A",s:["A7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:29,t:"Jak skupić się przy pracy zdalnej, gdy w domu jest głośno od dzieci/remontu/ulicy?",p:"B",s:["B1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:30,t:"Czy słuchawki z ANC faktycznie wyciszą domowy hałas na tyle, bym mógł normalnie pracować?",p:"B",s:["B1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:31,t:"Co polecają inni pracujący zdalnie w podobnym, głośnym domu – jakieś konkretne modele?",p:"B",s:["B1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:32,t:"Jakie słuchawki z ANC najlepiej sprawdzają się w warunkach domowego chaosu (nie w biurze/open space)?",p:"B",s:["B2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:33,t:"Czy są słuchawki z ANC, które dobrze tłumią rozmowy domowników, a nie tylko szum wentylatora?",p:"B",s:["B2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:34,t:"Ile kosztują dobre słuchawki z ANC do pracy zdalnej – czy warto dopłacić do droższych?",p:"B",s:["B2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:35,t:"Czym się różnią słuchawki nauszne od dokanałowych z ANC w kontekście wyciszania domowego hałasu?",p:"B",s:["B3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:36,t:"Jaka jest różnica między ANC pasywnym a aktywnym – które lepiej poradzi sobie z krzykiem dziecka?",p:"B",s:["B3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:37,t:"Czy wszystkie słuchawki z ANC mają tryb przezroczystości i czy to przydaje się w domu?",p:"B",s:["B3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:38,t:"Jak długo działa bateria w słuchawkach z ANC przy 8-godzinnym dniu pracy?",p:"B",s:["B3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:39,t:"Czy słuchawki z ANC mogą powodować dyskomfort przy noszeniu przez cały dzień pracy zdalnej?",p:"B",s:["B3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:40,t:"Które słuchawki z ANC do 1000 zł są najlepsze do pracy zdalnej w hałaśliwym domu?",p:"B",s:["B4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:41,t:"Czy Sony WH-1000XM5 czy Bose QC45 lepiej wyciszają domowe odgłosy (np. telewizor, rozmowy)?",p:"B",s:["B4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:42,t:"Jakie słuchawki z ANC mają najlepszy mikrofon do rozmów wideo przy domowym hałasie?",p:"B",s:["B4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:43,t:"Porównanie ANC w Sony WH-1000XM5 vs Bose QC45 vs Sennheiser Momentum 4 – które lepiej tłumi głosy?",p:"B",s:["B5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:44,t:"Czy AirPods Pro 2 z ANC poradzą sobie z hałasem w domu lepiej niż nauszne Sony?",p:"B",s:["B5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:45,t:"Które słuchawki z ANC mają najlepszą redukcję szumów w testach użytkowników pracujących zdalnie?",p:"B",s:["B5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:46,t:"Czy droższe słuchawki z ANC faktycznie dają zauważalnie lepszy efekt wyciszenia w domu?",p:"B",s:["B5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:47,t:"Jakie słuchawki z ANC są najczęściej polecane przez społeczność pracujących zdalnie na Reddicie/forach?",p:"B",s:["B5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:48,t:"Gdzie kupić słuchawki z ANC z możliwością zwrotu/testu w domu przez 30 dni?",p:"B",s:["B6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:49,t:"Czy w MediaMarkt czy w X-komie lepsza oferta na słuchawki z ANC do pracy zdalnej?",p:"B",s:["B6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:50,t:"Który sklep ma najtańsze Sony WH-1000XM5 z gwarancją i szybką dostawą?",p:"B",s:["B6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:51,t:"Czy warto kupić słuchawki z ANC z drugiej ręki (OLX/Allegro) czy lepiej nowe z gwarancją?",p:"B",s:["B6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:52,t:"Jakie opinie o słuchawkach z ANC na Ceneo/Allegro są najbardziej wiarygodne dla pracującego zdalnie?",p:"B",s:["B6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:53,t:"Czy te słuchawki z ANC faktycznie zmienią moją produktywność w pracy zdalnej – czy to tylko marketing?",p:"B",s:["B7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:54,t:"Jak szybko dostanę zamówione słuchawki – czy zdążą przed jutrzejszym spotkaniem online?",p:"B",s:["B7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:55,t:"Czy po zakupie słuchawek z ANC będę mógł pracować bez przerw na hałas – czy to realna zmiana?",p:"B",s:["B7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:56,t:"Co pomyślą domownicy, gdy założę te słuchawki – czy to nie będzie ucieczka od rodziny?",p:"B",s:["B7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:57,t:"Jak zagłuszyć hałas metra, żeby w końcu poczuć spokój w drodze do pracy?",p:"C",s:["C1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:58,t:"Czy istnieją słuchawki, które odcinają od zgiełku autobusu bez podkręcania głośności do maksimum?",p:"C",s:["C1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:59,t:"Co zrobić, żeby nie słyszeć rozmów i dzwonków w komunikacji miejskiej i móc się skupić na książce?",p:"C",s:["C1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:60,t:"Jakie słuchawki najlepiej wyciszają niski dudniący dźwięk metra i wysokie piski hamulców?",p:"C",s:["C2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:61,t:"Czy ANC poradzi sobie z nagłymi hałasami w autobusie, jak trąbienie czy trzaskanie drzwiami?",p:"C",s:["C2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:62,t:"Które słuchawki z redukcją szumów nie wypadają z uszu przy wsiadaniu i wysiadaniu z pojazdu?",p:"C",s:["C2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:63,t:"Czy słuchawki nauszne czy dokanałowe lepiej izolują od hałasu ulicznego w metrze?",p:"C",s:["C3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:64,t:"Jaka jest różnica między ANC a pasywną izolacją w kontekście jazdy autobusem?",p:"C",s:["C3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:65,t:"Czy wszystkie słuchawki z ANC mają tryb przezroczystości przydatny do słyszenia komunikatów na peronie?",p:"C",s:["C3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:66,t:"Jak długo działa bateria w słuchawkach z ANC podczas codziennych dojazdów (2h dziennie)?",p:"C",s:["C3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:67,t:"Czy słuchawki z ANC są wygodne do noszenia przez całą podróż pod kapturem lub czapką?",p:"C",s:["C3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:68,t:"Które słuchawki z ANC do 500 zł mają najlepsze opinie o redukcji hałasu w metrze?",p:"C",s:["C4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:69,t:"Czy Sony WH-1000XM5 czy Bose QC45 lepiej radzą sobie z wiatrem podczas wysiadania z autobusu?",p:"C",s:["C4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:70,t:"Jakie słuchawki z ANC są najczęściej polecane przez osoby dojeżdżające codziennie komunikacją miejską?",p:"C",s:["C4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:71,t:"Porównanie Sony WH-1000XM5 vs Bose QC45: która ma lepsze ANC w metrze i wygodę na dłuższą trasę?",p:"C",s:["C5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:72,t:"Czy AirPods Pro 2 z ANC wystarczą do zagłuszenia hałasu autobusu, czy lepiej brać nauszne?",p:"C",s:["C5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:73,t:"Jak wypada Sennheiser Momentum 4 vs Sony XM5 pod kątem izolacji od rozmów w zatłoczonym wagonie?",p:"C",s:["C5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:74,t:"Które słuchawki z ANC mają lepszą jakość mikrofonu do rozmów w hałasie ulicznym?",p:"C",s:["C5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:75,t:"Czy popularne modele jak JBL Tune 770NC mają gorsze ANC od droższych Sony w warunkach metra?",p:"C",s:["C5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:76,t:"Gdzie kupić słuchawki z ANC z możliwością zwrotu po teście w metrze?",p:"C",s:["C6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:77,t:"Czy w Media Expert czy w X-Komie lepsze opinie o realizacji gwarancji na słuchawki z ANC?",p:"C",s:["C6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:78,t:"Który sklep ma najtańsze Sony WH-1000XM5 z darmową dostawą i szybką wysyłką?",p:"C",s:["C6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:79,t:"Czy lepiej kupić używane słuchawki z ANC na OLX czy nowe z promocją w RTV Euro AGD?",p:"C",s:["C6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:80,t:"Gdzie sprawdzić aktualne promocje na słuchawki z ANC do komunikacji miejskiej?",p:"C",s:["C6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:81,t:"Czy wybrane słuchawki z ANC będą dobrze leżeć pod kapturem zimowej kurtki podczas jazdy autobusem?",p:"C",s:["C7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:82,t:"Jak szybko nauczę się obsługi gestów i przycisków w nowych słuchawkach podczas stania w metrze?",p:"C",s:["C7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:83,t:"Czy po zakupie Sony XM5 będę żałować, że nie wziąłem Bose – co mówią opinie o długotrwałym użytkowaniu w dojazdach?",p:"C",s:["C7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:84,t:"Czy te słuchawki sprawią, że w końcu polubię dojazdy do pracy i poczuję się jak w swojej bańce ciszy?",p:"C",s:["C7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:85,t:"Jak nie oszaleć od hałasu silników podczas 12-godzinnego lotu do Azji?",p:"D",s:["D1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:86,t:"Czy są słuchawki, które skutecznie wyciszą płacz dziecka w samolocie na długiej trasie?",p:"D",s:["D1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:87,t:"Jakie słuchawki polecają stewardesy do spania w trakcie lotu długodystansowego?",p:"D",s:["D1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:88,t:"Czy słuchawki z ANC poradzą sobie z niskim, jednostajnym szumem silników Boeinga 777?",p:"D",s:["D2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:89,t:"Jakie słuchawki najlepiej tłumią hałas w samolocie – nauszne czy dokanałowe na długi lot?",p:"D",s:["D2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:90,t:"Czy ANC działa też na rozmowy pasażerów i dźwięk serwowanego posiłku, czy tylko na silnik?",p:"D",s:["D2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:91,t:"Czym różni się ANC adaptacyjne od zwykłego w słuchawkach do samolotu?",p:"D",s:["D3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:92,t:"Czy słuchawki z ANC mają tryb przezroczystości przydatny do komunikatów na lotnisku?",p:"D",s:["D3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:93,t:"Jak długo działa ANC na baterii podczas lotu transatlantyckiego – 8 czy 12 godzin?",p:"D",s:["D3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:94,t:"Czy słuchawki z ANC wymagają specjalnego kodeka Bluetooth do dobrej jakości dźwięku w locie?",p:"D",s:["D3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:95,t:"Które marki słuchawek z ANC mają najlepszą reputację wśród podróżników biznesowych?",p:"D",s:["D3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:96,t:"Które słuchawki z ANC są najwygodniejsze do spania w fotelu samolotowym przez 10 godzin?",p:"D",s:["D4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:97,t:"Czy Sony WH-1000XM5 czy Bose QC Ultra lepiej znoszą zmiany ciśnienia w kabinie?",p:"D",s:["D4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:98,t:"Jakie słuchawki z ANC mają najcichszy szum własny – ważne przy słuchaniu audiobooków w locie?",p:"D",s:["D4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:99,t:"Porównanie redukcji szumów: Bose 700 vs Sony XM5 vs AirPods Max – test w samolocie na YouTube?",p:"D",s:["D5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:100,t:"Które słuchawki z ANC mają lepszy mikrofon do rozmów w hałasie lotniska i samolotu?",p:"D",s:["D5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:101,t:"Czy droższe słuchawki z ANC faktycznie wyciszają więcej, czy to tylko marketing na długich trasach?",p:"D",s:["D5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:102,t:"Jakie słuchawki z ANC wybrać, żeby nie odstawać w biznes klasie – opinie innych pasażerów?",p:"D",s:["D5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:103,t:"Które słuchawki z ANC są najczęściej rekomendowane przez blogerów lotniczych i dlaczego?",p:"D",s:["D5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:104,t:"Gdzie kupić słuchawki z ANC z możliwością zwrotu po locie próbnym – polityka zwrotów?",p:"D",s:["D6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:105,t:"Czy w sklepach na lotnisku są tańsze słuchawki z ANC niż w internecie – porównanie cen?",p:"D",s:["D6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:106,t:"Który sklep ma najlepsze opinie o dostawie słuchawek z ANC przed wyjazdem w podróż?",p:"D",s:["D6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:107,t:"Czy warto kupić słuchawki z ANC z drugiej ręki na długi lot – ryzyko zużycia poduszek?",p:"D",s:["D6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:108,t:"Gdzie sprawdzić, czy słuchawki z ANC są oryginalne – uniknięcie podróbek przed lotem?",p:"D",s:["D6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:109,t:"Czy te słuchawki z ANC zmienią moje doświadczenie lotu – czy faktycznie przestanę słyszeć silniki?",p:"D",s:["D7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:110,t:"Jakie akcesoria do słuchawek z ANC dokupić do samolotu – adapter do systemu rozrywki pokładowej?",p:"D",s:["D7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:111,t:"Czy po zakupie tych słuchawek z ANC inni pasażerowie będą mi zazdrościć spokoju podczas lotu?",p:"D",s:["D7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:112,t:"Czy ta inwestycja w słuchawki z ANC sprawi, że wyląduję wypoczęty jak po 8 godzinach snu?",p:"D",s:["D7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:113,t:"Jak skupić się w kawiarni, gdy wokół jest głośno i gra muzyka?",p:"E",s:["E1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:114,t:"Czy ludzie w coworkingu pomyślą, że jestem dziwakiem, jeśli założę słuchawki na cały dzień?",p:"E",s:["E1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:115,t:"Czy dobra izolacja od hałasu w kawiarni sprawi, że będę wyglądać bardziej profesjonalnie i produktywnie?",p:"E",s:["E1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:116,t:"Jakie słuchawki z ANC najlepiej tłumią odgłosy ekspresu do kawy i rozmów w kawiarni?",p:"E",s:["E2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:117,t:"Czy słuchawki z ANC w kawiarni są lepsze od zwykłych słuchawek nausznych do pracy zdalnej?",p:"E",s:["E2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:118,t:"Jakie modele słuchawek z ANC są najczęściej polecane przez innych pracujących w coworkingu?",p:"E",s:["E2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:119,t:"Czy wszystkie słuchawki z ANC działają tak samo dobrze w głośnej kawiarni, czy są różnice w tłumieniu wysokich tonów?",p:"E",s:["E3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:120,t:"Jakie są wady i zalety słuchawek nausznych vs dokanałowych z ANC do pracy w kawiarni?",p:"E",s:["E3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:121,t:"Czy słuchawki z ANC z regulacją trybu przezroczystości są przydatne w kawiarni, żeby słyszeć zamówienie?",p:"E",s:["E3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:122,t:"Jak długo działa bateria w słuchawkach z ANC podczas 8-godzinnej sesji w coworkingu?",p:"E",s:["E3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:123,t:"Czy popularne marki (Sony, Bose, Apple) mają lepsze ANC do kawiarni niż tańsze alternatywy?",p:"E",s:["E3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:124,t:"Które słuchawki z ANC mają najlepszy stosunek jakości do ceny do pracy w kawiarni?",p:"E",s:["E4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:125,t:"Czy Sony WH-1000XM5 czy Bose QC45 lepiej radzą sobie z hałasem w kawiarni?",p:"E",s:["E4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:126,t:"Jakie słuchawki z ANC są najczęściej rekomendowane przez użytkowników pracujących w kawiarniach na Reddicie?",p:"E",s:["E4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:127,t:"Czy Sony WH-1000XM5 ma lepsze ANC niż Bose QC45 w kawiarni, czy różnica jest minimalna?",p:"E",s:["E5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:128,t:"Jakie słuchawki z ANC mają najwygodniejsze poduszki do noszenia przez 4 godziny w kawiarni?",p:"E",s:["E5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:129,t:"Czy AirPods Pro 2 z ANC wystarczą do pracy w kawiarni, czy lepiej kupić nauszne?",p:"E",s:["E5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:130,t:"Które słuchawki z ANC mają najlepszy mikrofon do rozmów wideo w kawiarni?",p:"E",s:["E5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:131,t:"Czy droższe słuchawki z ANC faktycznie zmienią moją produktywność w kawiarni, czy to tylko marketing?",p:"E",s:["E5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:132,t:"Gdzie kupić słuchawki z ANC z możliwością przetestowania w kawiarni (np. w sklepie stacjonarnym)?",p:"E",s:["E6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:133,t:"Czy w Media Markt czy w X-komie mają lepsze ceny na słuchawki z ANC do pracy?",p:"E",s:["E6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:134,t:"Czy warto kupić używane słuchawki z ANC z gwarancją do pracy w kawiarni?",p:"E",s:["E6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:135,t:"Który sklep online ma najszybszą dostawę słuchawek z ANC i darmowy zwrot?",p:"E",s:["E6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:136,t:"Czy na Amazon są promocje na słuchawki z ANC do kawiarni w Black Week?",p:"E",s:["E6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:137,t:"Czy wybrane słuchawki z ANC będą pasować do mojego stylu w kawiarni i nie będą krzyczeć 'gamer'?",p:"E",s:["E7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:138,t:"Czy po zakupie słuchawek z ANC będę mógł skupić się w kawiarni jak w biurze?",p:"E",s:["E7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:139,t:"Jakie akcesoria do słuchawek z ANC (etui, kabel) są potrzebne do codziennego noszenia do kawiarni?",p:"E",s:["E7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:140,t:"Czy po zakupie tych słuchawek z ANC inni w coworkingu pomyślą, że jestem poważnym profesjonalistą?",p:"E",s:["E7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:141,t:"Dlaczego mój głos na Zoomie brzmi jak z puszki, mimo że mam dobre słuchawki?",p:"F",s:["F1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:142,t:"Czy istnieją słuchawki, które sprawią, że mój rozmówca usłyszy tylko mój głos, a nie odgłosy z pokoju obok?",p:"F",s:["F1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:143,t:"Ile kosztuje spokój na callach — czy opłaca się dopłacić za ANC, żeby nie przekrzykiwać wiatraka?",p:"F",s:["F1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:144,t:"Czy słuchawki z ANC faktycznie wycinają szum tła na tyle, by głos był krystalicznie czysty na Zoomie?",p:"F",s:["F2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:145,t:"Jakie modele słuchawek z ANC są polecane do pracy zdalnej i rozmów w open space?",p:"F",s:["F2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:146,t:"Czy lepsza jest redukcja szumów w mikrofonie (ENC) czy w słuchawkach (ANC) dla czystego głosu na callach?",p:"F",s:["F2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:147,t:"Czym różni się ANC od pasywnego wyciszenia w kontekście rozmów wideo?",p:"F",s:["F3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:148,t:"Czy wszystkie słuchawki z ANC mają dobry mikrofon do Zooma, czy to osobna cecha?",p:"F",s:["F3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:149,t:"Jakie technologie (np. Qualcomm cVc, Sony Dual Noise Sensor) wpływają na jakość głosu w słuchawkach z ANC?",p:"F",s:["F3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:150,t:"Czy słuchawki nauszne z ANC są lepsze do calli niż dokanałowe z ANC?",p:"F",s:["F3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:151,t:"Czy istnieją słuchawki z ANC, które automatycznie wyciszają otoczenie tylko podczas mówienia?",p:"F",s:["F3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:152,t:"Które słuchawki z ANC do 1000 zł mają najlepszy mikrofon do Zooma według testów?",p:"F",s:["F4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:153,t:"Czy Sony WH-1000XM5 czy Bose QC45 lepiej radzą sobie z wycinaniem szumu tła podczas rozmowy?",p:"F",s:["F4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:154,t:"Jakie słuchawki z ANC wybrać, żeby nie słychać było mojego klawisza ani psa na drugim końcu?",p:"F",s:["F4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:155,t:"Porównanie mikrofonów w Sony WH-1000XM5 vs Bose QC45 vs Jabra Evolve2 85 — który jest najczystszy na Zoomie?",p:"F",s:["F5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:156,t:"Czy słuchawki gamingowe z ANC (np. SteelSeries Arctis Nova Pro) dorównują biznesowym w jakości głosu na callach?",p:"F",s:["F5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:157,t:"Jakie opinie mają użytkownicy o redukcji szumów w mikrofonie w AirPods Pro 2 vs Samsung Galaxy Buds2 Pro?",p:"F",s:["F5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:158,t:"Czy popularność modelu (np. Sony XM5) idzie w parze z faktyczną skutecznością na callach, czy to tylko marketing?",p:"F",s:["F5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:159,t:"Które słuchawki z ANC sprawią, że będę brzmiał jak w studiu nagraniowym i zyskam lepszą opinię u szefa?",p:"F",s:["F5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:160,t:"Gdzie kupić słuchawki z ANC z możliwością przetestowania mikrofonu na Zoomie przed zakupem?",p:"F",s:["F6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:161,t:"Czy w Media Expert czy w x-komie mają lepsze opinie o zwrotach słuchawek z ANC, jeśli nie spełnią oczekiwań na callach?",p:"F",s:["F6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:162,t:"Czy warto kupić używane słuchawki z ANC z gwarancją, czy lepiej nowe z promocji?",p:"F",s:["F6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:163,t:"Który sklep oferuje najszybszą dostawę słuchawek z ANC i darmowy zwrot, jeśli głos nie będzie czysty?",p:"F",s:["F6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:164,t:"Czy popularność modelu na Ceneo/Allegro oznacza, że inni też używają go do Zooma i są zadowoleni?",p:"F",s:["F6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:165,t:"Czy po zakupie Sony WH-1000XM5 będę musiał coś konfigurować w Zoomie, żeby głos był idealny?",p:"F",s:["F7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:166,t:"Jak sprawdzić, czy nowe słuchawki z ANC faktycznie poprawiły jakość mojego głosu na callach przed upływem 14 dni?",p:"F",s:["F7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:167,t:"Czy dołączone do słuchawek oprogramowanie (np. Bose Music) pozwala ustawić priorytet mikrofonu nad muzyką?",p:"F",s:["F7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:168,t:"Czy inni uczestnicy spotkań zauważą różnicę od razu, czy muszę im powiedzieć, że zmieniłem sprzęt?",p:"F",s:["F7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:169,t:"Czy nowe słuchawki z ANC będą faktycznie lepsze od moich obecnych, czy to tylko chwilowa zachcianka?",p:"G",s:["G1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:170,t:"Co pomyślą znajomi, jeśli zobaczę ich z nowszym modelem, a ja wciąż chodzę w starych?",p:"G",s:["G1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:171,t:"Czy upgrade do droższych słuchawek z ANC realnie poprawi komfort słuchania w hałasie, czy to tylko marketing?",p:"G",s:["G1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:172,t:"Jakie konkretnie ulepszenia w ANC zyskałem w modelach z ostatnich 2 lat w porównaniu do moich 3-letnich słuchawek?",p:"G",s:["G2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:173,t:"Czy wymiana starych na nowe z lepszym ANC to standardowy krok, czy większość ludzi czeka dłużej?",p:"G",s:["G2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:174,t:"Ile osób poleca upgrade zamiast naprawy starych słuchawek – jakie są opinie na forach?",p:"G",s:["G2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:175,t:"Czy wszystkie słuchawki z ANC w przedziale 500-1000 zł mają podobną skuteczność wyciszania, czy są duże różnice?",p:"G",s:["G3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:176,t:"Jakie marki słuchawek z ANC są obecnie najpopularniejsze wśród osób robiących upgrade ze starszego modelu?",p:"G",s:["G3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:177,t:"Czy nowsze ANC lepiej radzi sobie z szumem wiatru i rozmowami w tle niż moje stare?",p:"G",s:["G3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:178,t:"Które słuchawki z ANC mają najlepsze opinie o trwałości i nie tracą skuteczności po roku?",p:"G",s:["G3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:179,t:"Czy upgrade do słuchawek z adaptacyjnym ANC to faktycznie game-changer, czy tylko bajer?",p:"G",s:["G3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:180,t:"Które z top 3 modeli ANC w moim budżecie mają najwięcej rekomendacji od osób, które też wymieniały stare słuchawki?",p:"G",s:["G4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:181,t:"Czy popularność danego modelu wśród recenzentów przekłada się na realną satysfakcję użytkowników po upgrade?",p:"G",s:["G4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:182,t:"Jakie słuchawki z ANC dadzą mi efekt „wow” po latach używania starszego sprzętu – co polecają eksperci?",p:"G",s:["G4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:183,t:"Czy Sony WH-1000XM5 ma wyraźnie lepsze ANC niż XM4, czy to tylko kosmetyczna zmiana dla kogoś po upgrade?",p:"G",s:["G5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:184,t:"Jak wypada Bose QC Ultra vs Sony XM5 pod kątem komfortu noszenia przy 4-godzinnym słuchaniu – co mówią opinie?",p:"G",s:["G5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:185,t:"Który model ma lepszą jakość połączeń głosowych w hałasie – ważne, bo często dzwonię w trasie?",p:"G",s:["G5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:186,t:"Czy różnica w ANC między modelem za 800 zł a 1500 zł jest aż tak odczuwalna, żeby przepłacać?",p:"G",s:["G5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:187,t:"Jakie słuchawki z ANC wybrać, żeby po upgrade nie żałować i nie myśleć o kolejnej wymianie za rok – rekomendacje długoterminowe?",p:"G",s:["G5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:188,t:"Gdzie kupić słuchawki z ANC, żeby dostać najlepszą cenę i mieć możliwość zwrotu po teście w domu?",p:"G",s:["G6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:189,t:"Czy w sklepie stacjonarnym mogę porównać ANC kilku modeli obok siebie, czy lepiej zamówić 3 pary online?",p:"G",s:["G6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:190,t:"Który sklep ma najlepsze opinie o szybkości realizacji i obsłudze reklamacji przy zakupie słuchawek premium?",p:"G",s:["G6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:191,t:"Czy popularne platformy (MediaExpert, x-kom, Amazon) mają różne ceny na te same modele – gdzie szukać promocji?",p:"G",s:["G6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:192,t:"Czy warto czekać na Black Friday/Cyber Monday na upgrade słuchawek, czy teraz jest dobry moment?",p:"G",s:["G6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:193,t:"Czy po zakupie nowych słuchawek z ANC od razu odczuję różnicę, czy potrzeba czasu na przyzwyczajenie się?",p:"G",s:["G7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:194,t:"Jak sprawdzić, czy nowe słuchawki nie mają wady fabrycznej i czy ANC działa poprawnie od razu po rozpakowaniu?",p:"G",s:["G7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:195,t:"Co pomyślą inni, gdy zobaczą mnie z nowym modelem – czy to będzie postrzegane jako mądry upgrade, czy fanaberia?",p:"G",s:["G7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:196,t:"Czy po wymianie starych na nowe słuchawki z lepszym ANC faktycznie poczuję się jak „lepsza wersja siebie” w codziennym użytkowaniu?",p:"G",s:["G7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:197,t:"Czy słuchawki z ANC będą dobrym prezentem dla kogoś, kto nie lubi hałasu w biurze?",p:"H",s:["H1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:198,t:"Jaki model słuchawek z ANC wybrać, żeby obdarowana osoba poczuła się wyjątkowo, a nie jakbym kupił byle co?",p:"H",s:["H1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:199,t:"Czy lepiej kupić słuchawki z ANC jako prezent, czy to ryzykowne, bo osoba może woleć inny typ?",p:"H",s:["H1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:200,t:"Jakie słuchawki z ANC są teraz najpopularniejsze i najczęściej polecane jako prezent?",p:"H",s:["H2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:201,t:"Czy znajomi pomyślą, że to fajny prezent, jeśli kupię słuchawki z ANC, czy raczej uznają to za zbyt techniczny gadżet?",p:"H",s:["H2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:202,t:"Które słuchawki z ANC mają najlepsze opinie w kontekście prezentu – eleganckie opakowanie i unboxing?",p:"H",s:["H2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:203,t:"Czy wszystkie słuchawki z ANC działają tak samo, czy są różne poziomy wyciszenia – co wybrać na prezent?",p:"H",s:["H3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:204,t:"Jaka jest różnica między ANC a pasywnym wyciszaniem w słuchawkach – co będzie lepsze dla kogoś, kto słucha muzyki w komunikacji?",p:"H",s:["H3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:205,t:"Czy słuchawki z ANC mają wpływ na komfort noszenia przez kilka godzin – ważne przy prezencie dla kogoś, kto dużo pracuje?",p:"H",s:["H3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:206,t:"Jakie marki słuchawek z ANC są uznawane za prestiżowe i zrobią wrażenie jako prezent?",p:"H",s:["H3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:207,t:"Czy droższe słuchawki z ANC faktycznie lepiej wyciszają, czy to tylko marketing – co wybrać, żeby nie przepłacić?",p:"H",s:["H3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:208,t:"Które słuchawki z ANC do 1000 zł mają najlepsze opinie i są najczęściej rekomendowane jako prezent?",p:"H",s:["H4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:209,t:"Czy Sony WH-1000XM5 czy Bose QC45 – które będą lepszym prezentem dla kogoś, kto ceni design i jakość dźwięku?",p:"H",s:["H4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:210,t:"Jakie słuchawki z ANC wybrać, żeby obdarowana osoba wyglądała w nich stylowo i nowocześnie?",p:"H",s:["H4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:211,t:"Porównaj Sony WH-1000XM5 vs Bose QC45 vs Apple AirPods Max – które mają najlepsze ANC i są najlepszym prezentem?",p:"H",s:["H5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:212,t:"Czy słuchawki z ANC od Sennheisera są lepsze od Sony pod kątem jakości dźwięku i trwałości – co wybrać na prezent?",p:"H",s:["H5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:213,t:"Które słuchawki z ANC mają najdłuższy czas pracy na baterii – ważne, żeby prezent nie wymagał ciągłego ładowania?",p:"H",s:["H5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:214,t:"Jak wypada popularność i opinie o słuchawkach z ANC od Xiaomi vs Sony – czy tańsze mogą być równie dobrym prezentem?",p:"H",s:["H5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:215,t:"Czy lepiej kupić słuchawki z ANC z regulacją poziomu wyciszenia, czy to zbędny bajer – co będzie praktycznym prezentem?",p:"H",s:["H5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:216,t:"Gdzie najlepiej kupić słuchawki z ANC jako prezent – w MediaMarkt, x-kom czy Amazon – która opcja ma najlepsze opinie o dostawie?",p:"H",s:["H6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:217,t:"Czy w sklepie stacjonarnym mogę przetestować ANC przed zakupem prezentu, czy lepiej zamówić online z możliwością zwrotu?",p:"H",s:["H6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:218,t:"Który sklep oferuje najładniejsze opakowanie i możliwość dodania dedykacji – ważne przy prezencie?",p:"H",s:["H6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:219,t:"Czy warto kupić słuchawki z ANC z outletu lub promocji jako prezent, czy to ryzykowne ze względu na stan?",p:"H",s:["H6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:220,t:"Jakie opinie mają poszczególne sklepy o szybkości wysyłki i obsłudze reklamacji – żeby prezent dotarł na czas?",p:"H",s:["H6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:221,t:"Czy do słuchawek z ANC jako prezent dokupić etui ochronne, czy to już przesada – co pomyśli obdarowany?",p:"H",s:["H7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:222,t:"Jak sprawić, żeby słuchawki z ANC wyglądały jak superprezent – czy warto zapakować je w dodatkowy papier?",p:"H",s:["H7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:223,t:"Czy po zakupie słuchawek z ANC mogę je jeszcze wymienić na inny model, jeśli obdarowana osoba nie będzie zadowolona?",p:"H",s:["H7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:224,t:"Czy do prezentu dołączyć paragon, żeby osoba mogła samodzielnie wymienić na inny kolor – czy to zepsuje niespodziankę?",p:"H",s:["H7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:225,t:"Czy słuchawki z ANC naprawdę chronią słuch przed hałasem, czy to tylko chwyt marketingowy?",p:"I",s:["I1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:226,t:"Jakie są pierwsze objawy uszkodzenia słuchu od głośnych dźwięków i czy ANC może temu zapobiec?",p:"I",s:["I1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:227,t:"Czy używanie słuchawek z ANC w ciszy jest bezpieczne dla uszu, czy może je przeciążać?",p:"I",s:["I1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:228,t:"Czy ochrona słuchu za pomocą ANC działa lepiej niż zwykłe zatyczki do uszu w głośnym otoczeniu?",p:"I",s:["I2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:229,t:"Jakie konkretnie zagrożenia dla słuchu eliminuje ANC, a jakich nie?",p:"I",s:["I2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:230,t:"Czy słuchawki z ANC mogą pomóc w regeneracji słuchu po przebytym urazie akustycznym?",p:"I",s:["I2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:231,t:"Czy wszystkie słuchawki z ANC mają taką samą skuteczność redukcji hałasu, czy są różne poziomy ochrony?",p:"I",s:["I3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:232,t:"Jak działa technologia ANC – czy tłumi tylko stałe dźwięki, czy też nagłe hałasy?",p:"I",s:["I3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:233,t:"Czy słuchawki z ANC mogą być używane jako ochrona słuchu na koncertach lub przy maszynach?",p:"I",s:["I3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:234,t:"Jakie są normy bezpieczeństwa dla słuchawek z ANC w kontekście ochrony słuchu?",p:"I",s:["I3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:235,t:"Czy pasywne wygłuszenie (materiały) w słuchawkach jest ważniejsze od ANC dla ochrony słuchu?",p:"I",s:["I3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:236,t:"Które modele słuchawek z ANC mają najlepsze opinie użytkowników pod kątem ochrony słuchu, a nie tylko jakości dźwięku?",p:"I",s:["I4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:237,t:"Czy popularne marki jak Sony, Bose czy Apple mają certyfikaty potwierdzające ochronę słuchu?",p:"I",s:["I4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:238,t:"Jakie słuchawki z ANC polecają audiolodzy lub specjaliści od higieny słuchu?",p:"I",s:["I4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:239,t:"Czy Sony WH-1000XM5 chroni słuch lepiej niż Bose QC Ultra w głośnym biurze?",p:"I",s:["I5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:240,t:"Jak wypada skuteczność ANC w tańszych modelach (np. Soundcore) w porównaniu do flagowców pod kątem ochrony słuchu?",p:"I",s:["I5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:241,t:"Które słuchawki z ANC mają najniższy poziom zniekształceń przy wysokich głośnościach, by nie uszkodzić słuchu?",p:"I",s:["I5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:242,t:"Czy używanie ANC przez 8 godzin dziennie jest bezpieczne dla słuchu – porównanie modeli pod kątem komfortu i ciśnienia w uchu?",p:"I",s:["I5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:243,t:"Jakie słuchawki z ANC są najczęściej rekomendowane przez społeczności audiofilskie jako bezpieczne dla słuchu?",p:"I",s:["I5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:244,t:"Gdzie kupić słuchawki z ANC z możliwością zwrotu, jeśli nie spełnią oczekiwań ochrony słuchu?",p:"I",s:["I6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:245,t:"Czy w sklepach stacjonarnych można przetestować skuteczność ANC przed zakupem, np. w głośnym pomieszczeniu?",p:"I",s:["I6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:246,t:"Który sklep internetowy ma najlepsze opinie o szybkości dostawy i polityce reklamacji słuchawek z ANC?",p:"I",s:["I6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:247,t:"Czy warto kupić słuchawki z ANC z drugiej ręki, czy to ryzykowne dla jakości ochrony słuchu?",p:"I",s:["I6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:248,t:"Jakie promocje na słuchawki z ANC są teraz w MediaMarkt, RTV Euro AGD czy Amazonie?",p:"I",s:["I6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:249,t:"Czy po zakupie słuchawek z ANC powinienem sprawdzić ich skuteczność ochrony słuchu w domu, np. za pomocą aplikacji?",p:"I",s:["I7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:250,t:"Jakie akcesoria (np. piankowe wkładki) zwiększą ochronę słuchu w moich nowych słuchawkach z ANC?",p:"I",s:["I7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:251,t:"Czy po zakupie słuchawek z ANC zmieni się moje postrzeganie głośności dźwięków w codziennym życiu?",p:"I",s:["I7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:252,t:"Czy inni zauważą, że używam słuchawek z ANC i czy to wpłynie na ich opinię o mojej dbałości o zdrowie?",p:"I",s:["I7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:253,t:"Jak odciąć się od hałasu w domu, żeby mieć chwilę tylko dla siebie?",p:"J",s:["J1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:254,t:"Czy istnieje sposób na natychmiastową ciszę bez zamykania się w pokoju?",p:"J",s:["J1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:255,t:"Co kupić, żeby nikt i nic nie przeszkadzało mi w myślach?",p:"J",s:["J1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:256,t:"Czy słuchawki z ANC faktycznie dają uczucie 'własnej bańki ciszy'?",p:"J",s:["J2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:257,t:"Jakie słuchawki najlepiej izolują od rozmów domowników i ulicy?",p:"J",s:["J2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:258,t:"Czy 'sanctuary' w słuchawkach to tylko marketing, czy realne odcięcie od świata?",p:"J",s:["J2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:259,t:"Czy wszystkie słuchawki z ANC działają tak samo, czy są różne poziomy wyciszenia?",p:"J",s:["J3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:260,t:"Jaka jest różnica między ANC a pasywną izolacją w kontekście domowego spokoju?",p:"J",s:["J3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:261,t:"Czy słuchawki z ANC mogą wyciszyć też nagłe dźwięki, jak trzaskanie drzwiami?",p:"J",s:["J3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:262,t:"Jakie marki słuchawek z ANC są znane z najlepszej 'bańki ciszy'?",p:"J",s:["J3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:263,t:"Czy droższe słuchawki z ANC rzeczywiście dają większe poczucie odosobnienia?",p:"J",s:["J3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:264,t:"Które słuchawki z ANC mają najlepsze opinie o tworzeniu 'strefy ciszy'?",p:"J",s:["J4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:265,t:"Czy Sony WH-1000XM5 faktycznie dają najlepsze wrażenie odcięcia od świata?",p:"J",s:["J4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:266,t:"Jakie słuchawki z ANC polecają ludzie, którzy potrzebują absolutnego spokoju w domu?",p:"J",s:["J4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:267,t:"Sony WH-1000XM5 vs Bose QC Ultra – które lepiej wyciszają i dają poczucie 'sanctuary'?",p:"J",s:["J5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:268,t:"Czy AirPods Pro 2 z ANC wystarczą do odcięcia się od domowego hałasu, czy lepsze są nauszne?",p:"J",s:["J5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:269,t:"Jakie słuchawki z ANC mają najlepszy stosunek ceny do realnego wyciszenia w domu?",p:"J",s:["J5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:270,t:"Które słuchawki z ANC są najwygodniejsze do noszenia przez kilka godzin w ciszy?",p:"J",s:["J5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:271,t:"Czy popularność modelu Sony XM5 oznacza, że faktycznie dają najlepsze 'odcięcie od świata'?",p:"J",s:["J5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:272,t:"Gdzie kupić słuchawki z ANC z możliwością przetestowania wyciszenia w sklepie?",p:"J",s:["J6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:273,t:"Czy lepiej zamówić słuchawki z ANC online, czy iść do sklepu i sprawdzić 'bańkę ciszy' osobiście?",p:"J",s:["J6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:274,t:"Który sklep ma najlepsze opinie o zwrotach słuchawek z ANC, jeśli nie spełnią oczekiwań co do izolacji?",p:"J",s:["J6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:275,t:"Czy warto kupić używane słuchawki z ANC, czy ryzykuję gorsze wyciszenie?",p:"J",s:["J6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:276,t:"Jakie promocje na słuchawki z ANC są teraz, żeby nie przepłacić za 'ciszę dla siebie'?",p:"J",s:["J6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:277,t:"Czy po zakupie tych słuchawek z ANC naprawdę poczuję się jak w osobnej bańce?",p:"J",s:["J7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:278,t:"Jak szybko dostanę zamówione słuchawki z ANC, żeby w końcu mieć święty spokój?",p:"J",s:["J7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:279,t:"Czy dołączone do słuchawek materiały (etui, kabel) są dobre, czy muszę dokupić coś jeszcze?",p:"J",s:["J7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:280,t:"Czy po rozpakowaniu słuchawek od razu poczuję różnicę w ciszy, czy trzeba je 'dotrzeć'?",p:"J",s:["J7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:281,t:"Czy słuchawki z ANC nie będą przeszkadzać w bieganiu, bo nie usłyszę samochodu?",p:"K",s:["K1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:282,t:"Jakie słuchawki do biegania z ANC wybrać, żeby się nie pociły i nie wypadały z uszu?",p:"K",s:["K1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:283,t:"Czy ludzie na siłowni będą patrzeć, jak biegam w dużych słuchawkach z ANC?",p:"K",s:["K1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:284,t:"Czy do biegania lepsze są słuchawki douszne czy nauszne z ANC, żeby nie spadały?",p:"K",s:["K2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:285,t:"Jakie słuchawki sportowe z ANC polecają inni biegacze na forach?",p:"K",s:["K2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:286,t:"Czy ANC w słuchawkach do biegania to przesada, czy faktycznie pomaga skupić się na treningu?",p:"K",s:["K2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:287,t:"Czy słuchawki z ANC do biegania mają wodoodporność IPX, czy to tylko marketing?",p:"K",s:["K3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:288,t:"Jak działa tryb przezroczystości w słuchawkach sportowych z ANC – czy słychać otoczenie podczas biegu?",p:"K",s:["K3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:289,t:"Które marki słuchawek sportowych z ANC są najpopularniejsze wśród biegaczy w 2024?",p:"K",s:["K3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:290,t:"Czy słuchawki z ANC na siłownię zmienią moje wyniki treningowe przez lepsze skupienie?",p:"K",s:["K3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:291,t:"Jakie opinie mają słuchawki sportowe z ANC w kwestii wygody przy długim bieganiu?",p:"K",s:["K3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:292,t:"Słuchawki do biegania z ANC – Sony czy Jabra, które lepsze na pot i stabilność?",p:"K",s:["K4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:293,t:"Czy słuchawki z ANC do sportu mają lepszy dźwięk niż zwykłe sportowe bez ANC?",p:"K",s:["K4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:294,t:"Które słuchawki sportowe z ANC są najczęściej rekomendowane przez trenerów personalnych?",p:"K",s:["K4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:295,t:"Porównanie Sony WF-1000XM5 vs Jabra Elite 8 Active do biegania – które mają lepsze ANC i nie wypadają?",p:"K",s:["K5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:296,t:"Czy Bose QuietComfort Earbuds II sprawdzą się na siłowni, czy tylko do biura?",p:"K",s:["K5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:297,t:"Jak wypada czas pracy na baterii w słuchawkach sportowych z ANC przy ciągłym bieganiu?",p:"K",s:["K5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:298,t:"Które słuchawki z ANC do biegania mają najlepszy tryb ambient, żeby nie wpaść pod samochód?",p:"K",s:["K5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:299,t:"Czy popularność modelu Sony WF-1000XM5 wśród biegaczy to tylko marketing, czy faktyczna jakość?",p:"K",s:["K5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:300,t:"Gdzie kupić słuchawki sportowe z ANC najtaniej – MediaMarkt, X-Kom czy Amazon?",p:"K",s:["K6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:301,t:"Czy warto brać słuchawki z ANC do biegania z drugiej ręki na OLX, czy ryzyko potu?",p:"K",s:["K6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:302,t:"Który sklep ma najlepsze opinie o zwrotach słuchawek sportowych z ANC po treningu?",p:"K",s:["K6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:303,t:"Czy w sklepie stacjonarnym mogę przymierzyć słuchawki do biegania z ANC i sprawdzić stabilność?",p:"K",s:["K6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:304,t:"Jakie promocje na słuchawki sportowe z ANC są teraz w Polsce – Black Friday czy wyprzedaż?",p:"K",s:["K6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:305,t:"Czy po zakupie słuchawek z ANC do biegania będę biegał dłużej i bardziej się skupię?",p:"K",s:["K7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:306,t:"Jak sprawdzić, czy słuchawki sportowe z ANC są oryginalne przy odbiorze w paczkomacie?",p:"K",s:["K7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:307,t:"Czy warto dokupić dodatkowe tipsy do słuchawek z ANC na siłownię, żeby lepiej trzymały?",p:"K",s:["K7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:308,t:"Jakie pierwsze wrażenia mają inni po zakupie słuchawek sportowych z ANC – czy to zmienia trening?",p:"K",s:["K7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:309,t:"Czy słuchawki z ANC nadają się do grania, czy opóźnienie dźwięku będzie za duże?",p:"L",s:["L1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:310,t:"Jakie słuchawki gamingowe z ANC mają najniższe opóźnienie, żeby nie psuć immersji?",p:"L",s:["L1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:311,t:"Czy znajomi gracze polecają słuchawki z ANC do gier, czy to tylko chwyt marketingowy?",p:"L",s:["L1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:312,t:"Czy istnieją słuchawki z ANC i niskim opóźnieniem, które działają bezprzewodowo bez zauważalnego lagu?",p:"L",s:["L2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:313,t:"Jakie modele słuchawek z ANC są uznawane za najlepsze do gamingu przez społeczność graczy?",p:"L",s:["L2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:314,t:"Czy używanie ANC w grach wpływa na lokalizację dźwięku (np. kroki w FPS) i czy to przeszkadza?",p:"L",s:["L2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:315,t:"Czym różni się technologia ANC w słuchawkach gamingowych od tych do muzyki – czy to wpływa na opóźnienie?",p:"L",s:["L3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:316,t:"Jakie są typy łączności (Bluetooth, 2.4 GHz, USB-C) w słuchawkach z ANC do gier i które dają najmniejsze opóźnienie?",p:"L",s:["L3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:317,t:"Czy słuchawki z ANC do gamingu mają dedykowane tryby niskiego opóźnienia (np. gaming mode) i jak działają?",p:"L",s:["L3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:318,t:"Jakie marki (np. Sony, SteelSeries, Razer, Logitech) oferują słuchawki z ANC i niskim opóźnieniem – które są popularne wśród graczy?",p:"L",s:["L3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:319,t:"Czy recenzje i testy opóźnienia (np. na YouTube) są wiarygodne przy wyborze słuchawek z ANC do gier?",p:"L",s:["L3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:320,t:"Które słuchawki z ANC mają najlepsze opinie graczy pod kątem niskiego opóźnienia i wygody podczas długich sesji?",p:"L",s:["L4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:321,t:"Czy warto dopłacić do droższych słuchawek z ANC do gamingu, czy tańsze modele też radzą sobie z lagiem?",p:"L",s:["L4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:322,t:"Jakie słuchawki z ANC do gier są najczęściej rekomendowane na forach i w rankingach gamingowych?",p:"L",s:["L4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:323,t:"Porównaj opóźnienie w SteelSeries Arctis Nova Pro Wireless z Sony Inzone H9 – które ma lepsze ANC i mniejszy lag?",p:"L",s:["L5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:324,t:"Czy słuchawki z ANC do gamingu tracą na jakości dźwięku w trybie bezprzewodowym w porównaniu do przewodowych?",p:"L",s:["L5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:325,t:"Jakie są różnice w czasie pracy na baterii między modelami z ANC przy aktywnym graniu (np. Razer Barracuda Pro vs Logitech G733)?",p:"L",s:["L5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:326,t:"Które słuchawki z ANC mają lepsze mikrofony do komunikacji w grach – czy to wpływa na opinię innych graczy o mnie?",p:"L",s:["L5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:327,t:"Czy popularność danego modelu słuchawek z ANC wśród streamerów i pro-graczy oznacza, że faktycznie mają niskie opóźnienie?",p:"L",s:["L5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:328,t:"Gdzie kupić słuchawki z ANC do gamingu z możliwością testu opóźnienia na miejscu (sklep stacjonarny)?",p:"L",s:["L6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:329,t:"Który sklep internetowy ma najlepsze opinie o szybkiej dostawie i zwrotach słuchawek gamingowych z ANC?",p:"L",s:["L6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:330,t:"Czy warto czekać na promocję (np. Black Friday) na słuchawki z ANC do gier, czy ceny są stabilne?",p:"L",s:["L6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:331,t:"Jakie są rekomendacje znajomych graczy co do sklepów z dobrym wsparciem przy zakupie słuchawek z ANC?",p:"L",s:["L6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:332,t:"Czy kupno używanych słuchawek z ANC do gamingu to ryzyko opóźnienia lub uszkodzonego ANC?",p:"L",s:["L6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:333,t:"Czy po zakupie tych słuchawek z ANC będę grał lepiej, czy to tylko poprawi komfort i izolację?",p:"L",s:["L7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:334,t:"Jak szybko mogę sprawdzić, czy opóźnienie w nowych słuchawkach z ANC jest akceptowalne w mojej ulubionej grze?",p:"L",s:["L7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:335,t:"Czy inni gracze zauważą różnicę, gdy zacznę używać słuchawek z ANC (np. lepsza komunikacja, brak hałasu z otoczenia)?",p:"L",s:["L7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:336,t:"Jakie akcesoria (np. kabel do trybu przewodowego) powinienem dokupić, aby zminimalizować opóźnienie w tych słuchawkach z ANC?",p:"L",s:["L7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P2"},
+{nr:337,t:"Jakie słuchawki z ANC noszą ludzie, którzy chcą wyglądać jak ktoś z klasą i statusem?",p:"M",s:["M1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:338,t:"Czy drogie słuchawki z ANC faktycznie robią lepsze wrażenie na innych niż zwykłe słuchawki?",p:"M",s:["M1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:339,t:"Która marka słuchawek z ANC jest teraz najmodniejsza i pokazuje, że się ma styl?",p:"M",s:["M1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:340,t:"Czy noszenie Bose QuietComfort Ultra daje taki sam prestiż jak Sony WH-1000XM5?",p:"M",s:["M2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:341,t:"Jakie słuchawki z ANC wybrać, żeby znajomi pomyśleli, że jestem na bieżąco z trendami?",p:"M",s:["M2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:342,t:"Które słuchawki z ANC są najczęściej polecane przez influencerów i celebrytów jako symbol statusu?",p:"M",s:["M2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:343,t:"Czy Apple AirPods Max są lepsze od Bowers & Wilkins Px7 S2e, jeśli chodzi o postrzeganie marki na ulicy?",p:"M",s:["M3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:344,t:"Które słuchawki z ANC mają najbardziej rozpoznawalny design, który od razu kojarzy się z luksusem?",p:"M",s:["M3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:345,t:"Jakie słuchawki z ANC wybrać, żeby wyglądać profesjonalnie i zamożnie w pracy lub na spotkaniu?",p:"M",s:["M3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:346,t:"Gdzie kupić słuchawki z ANC, żeby mieć pewność, że to oryginał i nikt nie pomyśli, że noszę podróbkę?",p:"M",s:["M4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:347,t:"Czy w Media Expert czy w iSpot lepszy serwis i zwroty przy zakupie drogich słuchawek z ANC?",p:"M",s:["M4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:348,t:"Który sklep ma najszybszą dostawę słuchawek z ANC, żeby od razu móc je pokazać znajomym?",p:"M",s:["M4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:349,t:"Czy warto dopłacić za przedłużoną gwarancję w RTV Euro AGD przy zakupie flagowych słuchawek z ANC?",p:"M",s:["M4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:350,t:"Gdzie inni kupują słuchawki z ANC, żeby mieć pewność, że wybrałem popularny i sprawdzony model?",p:"M",s:["M4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:351,t:"Czy słuchawki z ANC są już naprawdę tanie, czy to tylko chwyt marketingowy?",p:"N",s:["N1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:352,t:"Jaka jest najtańsza para słuchawek z ANC, która w ogóle działa?",p:"N",s:["N1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:353,t:"Czy za 200 zł da się kupić słuchawki z ANC, które nie są kompletnym badziewiem?",p:"N",s:["N1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:354,t:"Które słuchawki z ANC mają najlepszy stosunek ceny do jakości w 2025 roku?",p:"N",s:["N2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:355,t:"Czy tanie ANC jest tak samo skuteczne jak drogie, czy to oszustwo?",p:"N",s:["N2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:356,t:"Jakie marki oferują przystępne cenowo ANC, które nie rozczarowują?",p:"N",s:["N2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:357,t:"Czy słuchawki z ANC za 300 zł faktycznie wyciszają hałas, czy tylko szumią?",p:"N",s:["N3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:358,t:"Jaka jest różnica między ANC pasywnym a aktywnym w tanich modelach?",p:"N",s:["N3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:359,t:"Czy tanie ANC działa lepiej w słuchawkach nausznych czy dokanałowych?",p:"N",s:["N3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:360,t:"Jakie są najczęstsze problemy z tanimi słuchawkami ANC (np. szum, ciśnienie)?",p:"N",s:["N3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:361,t:"Czy warto dopłacić 100 zł do lepszego ANC, czy to tylko marketing?",p:"N",s:["N3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:362,t:"Które tanie słuchawki z ANC są najczęściej polecane na Reddicie i w recenzjach?",p:"N",s:["N4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:363,t:"Czy ludzie, którzy kupili tanie ANC, żałują, czy są zadowoleni?",p:"N",s:["N4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:364,t:"Jakie słuchawki z ANC za 200-400 zł mają najlepsze opinie o wyciszaniu w autobusie?",p:"N",s:["N4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:365,t:"Gdzie kupić tanie słuchawki z ANC z możliwością zwrotu i szybką wysyłką?",p:"N",s:["N5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:366,t:"Czy na Allegro/Olx są używane słuchawki z ANC warte polecenia?",p:"N",s:["N5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:367,t:"Który sklep ma najlepsze promocje na słuchawki z ANC w tym tygodniu?",p:"N",s:["N5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:368,t:"Czy warto czekać na Black Friday/Cyber Monday na tańsze ANC?",p:"N",s:["N5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:369,t:"Jakie opinie o sprzedawcy i gwarancji mają tanie słuchawki ANC z Chin (np. z AliExpress)?",p:"N",s:["N5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:370,t:"Czy te słuchawki z ANC są teraz w promocji i czy warto je kupić, póki jest wyprzedaż?",p:"O",s:["O1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:371,t:"Jaka premia lub bonus jest dostępna przy zakupie słuchawek z ANC w tej okazji?",p:"O",s:["O1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:372,t:"Czy inni już kupili te słuchawki na wyprzedaży i czy to popularny model w tej cenie?",p:"O",s:["O1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:373,t:"Które słuchawki z ANC mają najlepsze opinie w tej konkretnej promocji cenowej?",p:"O",s:["O2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:374,t:"Czy ta okazja jest limitowana i czy muszę szybko zdecydować, żeby nie przegapić rabatu?",p:"O",s:["O2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:375,t:"Jakie rekomendacje znajdę dla słuchawek z ANC w tej cenie wyprzedażowej od innych użytkowników?",p:"O",s:["O2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:376,t:"Czy słuchawki z ANC w tej promocji mają lepszą redukcję szumów niż inne modele w podobnej cenie?",p:"O",s:["O3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:377,t:"Jaka jest różnica w jakości dźwięku między markami słuchawek z ANC dostępnymi na wyprzedaży?",p:"O",s:["O3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:378,t:"Czy te słuchawki z ANC są wygodne do noszenia przez kilka godzin i czy opinie to potwierdzają?",p:"O",s:["O3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:379,t:"Jakie funkcje dodatkowe (np. tryb przezroczystości, aplikacja) mają słuchawki z ANC w tej okazji?",p:"O",s:["O3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:380,t:"Czy popularność tych słuchawek z ANC wśród znajomych lub w sieci wpłynie na to, jak będę postrzegany po ich zakupie?",p:"O",s:["O3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:381,t:"Który model słuchawek z ANC z tej wyprzedaży ma najlepszy stosunek ceny do jakości według recenzji?",p:"O",s:["O4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:382,t:"Czy te słuchawki z ANC są lepsze od innych w tej samej promocji pod względem trwałości i opinii użytkowników?",p:"O",s:["O4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:383,t:"Jakie słuchawki z ANC z tej okazji sprawią, że poczuję się jakbym kupił coś premium i zyskał lepszą wersję siebie?",p:"O",s:["O4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:384,t:"W którym sklepie online jest największa wyprzedaż słuchawek z ANC i czy oferuje dodatkową premię?",p:"O",s:["O5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:385,t:"Czy w sklepie stacjonarnym mogę przetestować słuchawki z ANC przed zakupem w tej promocji?",p:"O",s:["O5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:386,t:"Który sklep ma najszybszą dostawę i darmowy zwrot dla słuchawek z ANC kupionych na wyprzedaży?",p:"O",s:["O5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:387,t:"Czy opinie o sklepie są pozytywne i czy inni polecają zakup słuchawek z ANC właśnie tam?",p:"O",s:["O5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"},
+{nr:388,t:"Jakie metody płatności lub rabaty dodatkowe (np. kod promocyjny) są dostępne przy zakupie słuchawek z ANC w tej okazji?",p:"O",s:["O5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P1"}
+];
+const PC={"A": "#3b82f6", "B": "#8b5cf6", "C": "#ec4899", "D": "#14b8a6", "E": "#f59e0b", "F": "#10b981", "G": "#f43f5e", "H": "#eab308", "I": "#6366f1", "J": "#d946ef", "K": "#06b6d4", "L": "#84cc16", "M": "#a855f7", "N": "#94a3b8", "O": "#94a3b8"};
+const PN={"A": "Open space — koncentracja w hałasie", "B": "Praca zdalna — hałas w domu", "C": "Cisza w dojazdach — metro/autobus", "D": "Podróż lotnicza — długie trasy", "E": "Skupienie poza biurem — kawiarnia/coworking", "F": "Czysty głos na callach — Zoom", "G": "Wymiana starych / upgrade", "H": "Prezent", "I": "Ochrona słuchu", "J": "Cisza dla siebie — sanctuary", "K": "Do sportu — bieganie/siłownia", "L": "Do gamingu — niskie opóźnienie", "M": "Status i marka na uszach", "N": "ANC teraz dostępne cenowo", "O": "Okazja — wyprzedaż/premia"};
+const PS={"A": [{'c': "A1", 'n': "Potrzeba/impuls"}, {'c': "A2", 'n': "RozpoznanieCEP"}, {'c': "A3", 'n': "Naukakategorii"}, {'c': "A4", 'n': "Preselekcja"}, {'c': "A5", 'n': "Porównywanie"}, {'c': "A6", 'n': "Wybórsklepu/sp"}, {'c': "A7", 'n': "Zakup"}], "B": [{'c': "B1", 'n': "Potrzeba/impuls"}, {'c': "B2", 'n': "RozpoznanieCEP"}, {'c': "B3", 'n': "Naukakategorii"}, {'c': "B4", 'n': "Preselekcja"}, {'c': "B5", 'n': "Porównywanie"}, {'c': "B6", 'n': "Wybórsklepu/sp"}, {'c': "B7", 'n': "Zakup"}], "C": [{'c': "C1", 'n': "Potrzeba/impuls"}, {'c': "C2", 'n': "RozpoznanieCEP"}, {'c': "C3", 'n': "Naukakategorii"}, {'c': "C4", 'n': "Preselekcja"}, {'c': "C5", 'n': "Porównywanie"}, {'c': "C6", 'n': "Wybórsklepu/sp"}, {'c': "C7", 'n': "Zakup"}], "D": [{'c': "D1", 'n': "Potrzeba/impuls"}, {'c': "D2", 'n': "RozpoznanieCEP"}, {'c': "D3", 'n': "Naukakategorii"}, {'c': "D4", 'n': "Preselekcja"}, {'c': "D5", 'n': "Porównywanie"}, {'c': "D6", 'n': "Wybórsklepu/sp"}, {'c': "D7", 'n': "Zakup"}], "E": [{'c': "E1", 'n': "Potrzeba/impuls"}, {'c': "E2", 'n': "RozpoznanieCEP"}, {'c': "E3", 'n': "Naukakategorii"}, {'c': "E4", 'n': "Preselekcja"}, {'c': "E5", 'n': "Porównywanie"}, {'c': "E6", 'n': "Wybórsklepu/sp"}, {'c': "E7", 'n': "Zakup"}], "F": [{'c': "F1", 'n': "Potrzeba/impuls"}, {'c': "F2", 'n': "RozpoznanieCEP"}, {'c': "F3", 'n': "Naukakategorii"}, {'c': "F4", 'n': "Preselekcja"}, {'c': "F5", 'n': "Porównywanie"}, {'c': "F6", 'n': "Wybórsklepu/sp"}, {'c': "F7", 'n': "Zakup"}], "G": [{'c': "G1", 'n': "Potrzeba/impuls"}, {'c': "G2", 'n': "RozpoznanieCEP"}, {'c': "G3", 'n': "Naukakategorii"}, {'c': "G4", 'n': "Preselekcja"}, {'c': "G5", 'n': "Porównywanie"}, {'c': "G6", 'n': "Wybórsklepu/sp"}, {'c': "G7", 'n': "Zakup"}], "H": [{'c': "H1", 'n': "Potrzeba/impuls"}, {'c': "H2", 'n': "RozpoznanieCEP"}, {'c': "H3", 'n': "Naukakategorii"}, {'c': "H4", 'n': "Preselekcja"}, {'c': "H5", 'n': "Porównywanie"}, {'c': "H6", 'n': "Wybórsklepu/sp"}, {'c': "H7", 'n': "Zakup"}], "I": [{'c': "I1", 'n': "Potrzeba/impuls"}, {'c': "I2", 'n': "RozpoznanieCEP"}, {'c': "I3", 'n': "Naukakategorii"}, {'c': "I4", 'n': "Preselekcja"}, {'c': "I5", 'n': "Porównywanie"}, {'c': "I6", 'n': "Wybórsklepu/sp"}, {'c': "I7", 'n': "Zakup"}], "J": [{'c': "J1", 'n': "Potrzeba/impuls"}, {'c': "J2", 'n': "RozpoznanieCEP"}, {'c': "J3", 'n': "Naukakategorii"}, {'c': "J4", 'n': "Preselekcja"}, {'c': "J5", 'n': "Porównywanie"}, {'c': "J6", 'n': "Wybórsklepu/sp"}, {'c': "J7", 'n': "Zakup"}], "K": [{'c': "K1", 'n': "Potrzeba/impuls"}, {'c': "K2", 'n': "RozpoznanieCEP"}, {'c': "K3", 'n': "Naukakategorii"}, {'c': "K4", 'n': "Preselekcja"}, {'c': "K5", 'n': "Porównywanie"}, {'c': "K6", 'n': "Wybórsklepu/sp"}, {'c': "K7", 'n': "Zakup"}], "L": [{'c': "L1", 'n': "Potrzeba/impuls"}, {'c': "L2", 'n': "RozpoznanieCEP"}, {'c': "L3", 'n': "Naukakategorii"}, {'c': "L4", 'n': "Preselekcja"}, {'c': "L5", 'n': "Porównywanie"}, {'c': "L6", 'n': "Wybórsklepu/sp"}, {'c': "L7", 'n': "Zakup"}], "M": [{'c': "M1", 'n': "Potrzeba/impuls"}, {'c': "M2", 'n': "RozpoznanieCEP"}, {'c': "M3", 'n': "Preselekcja"}, {'c': "M4", 'n': "Wybórsklepu/sp"}], "N": [{'c': "N1", 'n': "Potrzeba/impuls"}, {'c': "N2", 'n': "RozpoznanieCEP"}, {'c': "N3", 'n': "Naukakategorii"}, {'c': "N4", 'n': "Preselekcja"}, {'c': "N5", 'n': "Wybórsklepu/sp"}], "O": [{'c': "O1", 'n': "Potrzeba/impuls"}, {'c': "O2", 'n': "RozpoznanieCEP"}, {'c': "O3", 'n': "Naukakategorii"}, {'c': "O4", 'n': "Preselekcja"}, {'c': "O5", 'n': "Wybórsklepu/sp"}]};
+const TC={'INFO':'tn','KOMERC':'tf','TRANS':'ts'};
+const SC={BRAK:'brak',ISTNIEJE:'istnieje','ROZBUDOWAĆ':'rozbudowac'};
+const DC={BRAK:'db',ISTNIEJE:'di','ROZBUDOWAĆ':'dr'};
+const PRC={P1:'pp1',P2:'pp2',P3:'pp3',P4:'pp4'};
+
+let filt={prio:'all',typ:'all',status:'all'};
+let activePath='all';
+let q='';
+
+function vis(a){
+  if(activePath!=='all'&&a.p!==activePath)return false;
+  if(filt.prio!=='all'&&a.pr!==filt.prio)return false;
+  if(filt.typ!=='all'&&a.y!==filt.typ)return false;
+  if(filt.status!=='all'&&a.st!==filt.status)return false;
+  if(q){const ql=q.toLowerCase();if(!a.t.toLowerCase().includes(ql)&&!a.k.toLowerCase().includes(ql))return false;}
+  return true;
+}
+
+function card(a){
+  const pc=PC[a.p]||'#94a3b8';
+  const sc=SC[a.st]||'brak';
+  const dc=DC[a.st]||'db';
+  const tc=TC[a.y]||'tn';
+  const prc=PRC[a.pr]||'pp3';
+  const kw=a.k&&a.k!=='—'?`<div class="card-keyword">&#128273; ${a.k}</div>`:'';
+  return `<div class="article-card ${sc}" data-nr="${a.nr}" data-p="${a.p}" data-pr="${a.pr}" data-y="${a.y}" data-st="${a.st}" data-tl="${a.t.toLowerCase()}" data-kw="${a.k.toLowerCase()}">
+<div class="card-top"><span class="card-nr">#${a.nr}</span><span class="card-title">${a.t}</span></div>
+<div class="card-bottom"><span class="badge-path" style="background:${pc}">${a.p}</span><span class="badge-prio ${prc}">${a.pr}</span><span class="badge-typ ${tc}">${a.y}</span><span class="status-dot ${dc}"></span></div>
+${kw}</div>`;
+}
+
+function render(){
+  const content=document.getElementById('contentArea');
+  const paths=activePath==='all'?['A','B','C','D','E','F','G','H','I','J','K','L','M']:[activePath];
+  let html='';let total=0;
+  for(const path of paths){
+    const pc=PC[path];const states=PS[path];
+    let ph='';let pcount=0;
+    for(const st of states){
+      const arts=A.filter(a=>a.s[0]===st.c);
+      const filtered=arts.filter(vis);
+      if(arts.length===0)continue;
+      const cardsHtml=arts.map(a=>{const v=vis(a);return v?card(a):`<div class="hidden">${card(a)}</div>`;}).join('');
+      pcount+=filtered.length;total+=filtered.length;
+      ph+=`<div class="state-section"><div class="state-header" onclick="toggleState(this)"><span class="state-toggle">▼</span><span class="state-code" style="background:${pc}">${st.c}</span><span class="state-name">${st.n}</span><span class="state-count">${filtered.length}</span></div><div class="state-cards" style="max-height:none">${cardsHtml||'<div style="color:var(--text-muted);font-size:12px;padding:4px">Brak</div>'}</div></div>`;
+    }
+    if(pcount===0&&activePath==='all')continue;
+    html+=`<div class="path-section"><div class="path-header"><span class="path-badge" style="background:${pc}">${path}</span><span class="path-title">Ścieżka ${path}: ${PN[path]}</span><span class="path-total">${pcount} artykułów</span></div>${ph}</div>`;
+  }
+  if(!html)html='<div class="empty-state"><div style="font-size:32px;margin-bottom:12px">&#128269;</div><p>Brak artykułów spełniających kryteria.</p></div>';
+  content.innerHTML=html;
+  let idx=0;content.querySelectorAll('.article-card').forEach(function(c){var el=c.querySelector('.card-nr');if(el&&!(c.parentElement&&c.parentElement.classList.contains('hidden')))el.textContent='#'+(++idx);});
+  document.getElementById('visibleCount').textContent=total;
+  updateStats(total);
+}
+
+function visNoPath(a){if(filt.prio!=='all'&&a.pr!==filt.prio)return false;if(filt.typ!=='all'&&a.y!==filt.typ)return false;if(filt.status!=='all'&&a.st!==filt.status)return false;if(q){const ql=q.toLowerCase();if(!a.t.toLowerCase().includes(ql)&&!a.k.toLowerCase().includes(ql))return false;}return true;}
+function updateStats(total){
+  const vA=A.filter(vis);
+  document.getElementById('stat-total').textContent=total!==undefined?total:vA.length;
+  document.getElementById('stat-p1').textContent=vA.filter(a=>a.pr==='P1').length;
+  document.getElementById('stat-brak').textContent=vA.filter(a=>a.st==='BRAK').length;
+  document.getElementById('stat-exist').textContent=vA.filter(a=>a.st==='ISTNIEJE'||a.st==='ROZBUDOWAĆ').length;
+  ['all','A','B','C','D','E','F','G','H','I','J','K','L','M'].forEach(p=>{
+    const el=document.getElementById('cnt-'+p);
+    if(el)el.textContent=p==='all'?A.filter(visNoPath).length:A.filter(a=>a.p===p&&visNoPath(a)).length;
+  });
+}
+
+function filterPath(btn,path){activePath=path;document.querySelectorAll('.path-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render();}
+function setF(type,val,btn){filt[type]=val;document.querySelectorAll(`.filter-pill[data-f="${type}"]`).forEach(p=>p.classList.remove('active'));btn.classList.add('active');render();}
+function applyFilters(){q=document.getElementById('searchInput').value;render();}
+function resetAll(){activePath='all';filt={prio:'all',typ:'all',status:'all'};q='';document.getElementById('searchInput').value='';document.querySelectorAll('.path-btn').forEach(b=>b.classList.remove('active'));document.querySelector('.path-btn[data-path="all"]').classList.add('active');document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.filter-pill[data-v="all"]').forEach(p=>p.classList.add('active'));render();}
+function toggleState(hdr){const cards=hdr.nextElementSibling;const tog=hdr.querySelector('.state-toggle');const col=cards.classList.contains('collapsed');if(col){cards.style.maxHeight=cards.scrollHeight+'px';cards.classList.remove('collapsed');tog.classList.remove('collapsed');setTimeout(()=>{cards.style.maxHeight='none';},260);}else{cards.style.maxHeight=cards.scrollHeight+'px';requestAnimationFrame(()=>{cards.classList.add('collapsed');tog.classList.add('collapsed');});}}
+
+/* ---- TABS ---- */
+let activeTab='mapa';
+let sortBy='prio';
+let checked={};
+// pre-check ISTNIEJE
+A.forEach(a=>{if(a.st==='ISTNIEJE')checked[a.nr]=true;});
+
+function switchTab(tab){
+  activeTab=tab;
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('stab-'+tab).classList.add('active');
+  const topbar=document.querySelector('.topbar');
+  const statsbar=document.querySelector('.statsbar');
+  if(tab==='mapa'){topbar.style.display='';statsbar.style.display='';render();}
+  else if(tab==='lista'){topbar.style.display='';statsbar.style.display='none';renderList();}
+  else{topbar.style.display='none';statsbar.style.display='none';renderInfo();}
+}
+
+/* ---- LIST VIEW ---- */
+const PRIO_ORDER={P1:0,P2:1,P3:2,P4:3};
+function sortedArticles(){
+  let arr=A.filter(vis);
+  if(sortBy==='prio') arr.sort((a,b)=>PRIO_ORDER[a.pr]-PRIO_ORDER[b.pr]||a.nr-b.nr);
+  else if(sortBy==='nr') arr.sort((a,b)=>a.nr-b.nr);
+  else if(sortBy==='sciezka') arr.sort((a,b)=>a.p.localeCompare(b.p)||a.nr-b.nr);
+  return arr;
+}
+
+function toggleCheck(nr){
+  checked[nr]=!checked[nr];
+  const item=document.querySelector(`.list-item[data-nr="${nr}"]`);
+  if(!item)return;
+  item.classList.toggle('checked',!!checked[nr]);
+  const cb=item.querySelector('.list-cb');
+  if(cb)cb.textContent=checked[nr]?'✓':'';
+  updateListProgress();
+}
+
+function updateListProgress(){
+  const total=A.filter(vis).length;
+  const done=A.filter(vis).filter(a=>checked[a.nr]).length;
+  const el=document.getElementById('list-progress-label');
+  const bar=document.getElementById('list-progress-fill');
+  if(el)el.textContent=`${done} / ${total} zrobione`;
+  if(bar)bar.style.width=total?((done/total*100).toFixed(0)+'%'):'0%';
+}
+
+function renderList(){
+  const content=document.getElementById('contentArea');
+  const arr=sortedArticles();
+  const totalVis=arr.length;
+  const done=arr.filter(a=>checked[a.nr]).length;
+  const pct=totalVis?((done/totalVis*100).toFixed(0))+'%':'0%';
+
+  let lastPrio='';
+  let rows='';
+  for(const a of arr){
+    if(sortBy==='prio'&&a.pr!==lastPrio){
+      const pLabel={P1:'🔴 P1 — Krytyczne',P2:'🟠 P2 — Ważne',P3:'🟡 P3 — Standardowe',P4:'⚪ P4 — Niski priorytet'};
+      rows+=`<div class="list-section-head">${pLabel[a.pr]||a.pr}</div>`;
+      lastPrio=a.pr;
+    }
+    const isChecked=!!checked[a.nr];
+    const stColor=a.st==='ISTNIEJE'?'#22c55e':a.st==='ROZBUDOWAĆ'?'#818cf8':'#3b82f6';
+    const pc=PC[a.p]||'#94a3b8';
+    rows+=`<div class="list-item${isChecked?' checked':''}" data-nr="${a.nr}" onclick="toggleCheck(${a.nr})">
+  <div class="list-cb">${isChecked?'✓':''}</div>
+  <div class="list-nr">#${a.nr}</div>
+  <div style="flex:1">
+    <div class="list-title">${a.t}</div>
+    <div class="list-badges">
+      <span style="background:${pc};color:#fff;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700">${a.p}</span>
+      <span style="background:${stColor}22;color:${stColor};border:1px solid ${stColor}44;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700">${a.st}</span>
+      <span style="font-size:10px;color:var(--text-muted)">${a.s.join(', ')} · ${a.y} · ${a.pr}</span>
+      ${a.k&&a.k!=='—'?`<span style="font-size:10px;color:var(--text-muted)">🔑 ${a.k}</span>`:''}
+    </div>
+  </div>
+</div>`;
+  }
+
+  content.innerHTML=`<div class="list-view">
+<div class="list-toolbar">
+  <div class="list-progress">
+    <div class="list-progress-label" id="list-progress-label">${done} / ${totalVis} zrobione</div>
+    <div class="list-progress-bar"><div class="list-progress-fill" id="list-progress-fill" style="width:${pct}"></div></div>
+  </div>
+  <div class="sort-group">
+    <span class="sort-label">Sortuj:</span>
+    <button class="sort-btn${sortBy==='prio'?' active':''}" onclick="setSort('prio')">Priorytet</button>
+    <button class="sort-btn${sortBy==='nr'?' active':''}" onclick="setSort('nr')">Numer</button>
+    <button class="sort-btn${sortBy==='sciezka'?' active':''}" onclick="setSort('sciezka')">Ścieżka</button>
+  </div>
+  <button class="copy-btn" onclick="copyList()">📋 Kopiuj listę</button>
+</div>
+${rows||'<div style="color:var(--text-muted);padding:20px">Brak artykułów.</div>'}
+</div>`;
+}
+
+function setSort(s){sortBy=s;renderList();}
+
+function copyList(){
+  const arr=sortedArticles();
+  const txt=arr.map(a=>`[${checked[a.nr]?'x':' '}] ${a.nr}. ${a.t} (${a.p} | ${a.s.join(',')} | ${a.y} | ${a.st} | ${a.pr})`).join('\n');
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=document.querySelector('.copy-btn');
+    btn.textContent='✓ Skopiowano!';setTimeout(()=>btn.textContent='📋 Kopiuj listę',2000);
+  });
+}
+
+/* ---- INFO VIEW ---- */
+function renderInfo(){
+  const content=document.getElementById('contentArea');
+  content.innerHTML=`<div class="info-view">
+<h2>🗺️ Jak powstała ta mapa?</h2>
+<p>To narzędzie zostało zbudowane w celu analizy CEP i ścieżek edukacyjnych dla kategorii Słuchawki z ANC. Układ został odwzorowany z projektu SejfZone. Zawiera <strong>388 pytań</strong> rozmieszczone w <strong>13 ścieżkach</strong> (A-M) odpowiadających 13 CEP z Category Standard v5.5.</p>
+
+<h3>Metodologia: CEP (Category Entry Points)</h3>
+<p>Każda ścieżka to inna potrzeba lub lęk, który sprowadza klienta do kategorii produktowej. W tej mapie znajduje się <strong>13 ścieżek (A-M)</strong> odpowiadających 13 CEP z Category Standard v5.5:</p>
+<ul>
+  <li><strong>A</strong> — Open space — koncentracja w hałasie</li>
+  <li><strong>B</strong> — Praca zdalna — hałas w domu</li>
+  <li><strong>C</strong> — Cisza w dojazdach — metro/autobus</li>
+  <li><strong>D</strong> — Podróż lotnicza — długie trasy</li>
+  <li><strong>E</strong> — Skupienie poza biurem — kawiarnia/coworking</li>
+  <li><strong>F</strong> — Czysty głos na callach — Zoom</li>
+  <li><strong>G</strong> — Wymiana starych / upgrade</li>
+  <li><strong>H</strong> — Prezent</li>
+  <li><strong>I</strong> — Ochrona słuchu</li>
+  <li><strong>J</strong> — Cisza dla siebie — sanctuary</li>
+  <li><strong>K</strong> — Do sportu — bieganie/siłownia</li>
+  <li><strong>L</strong> — Do gamingu — niskie opóźnienie</li>
+  <li><strong>M</strong> — Status i marka na uszach</li>
+</ul>
+<p>Każda ścieżka dzieli się na stany (Trigger → Nauka → Porównanie → Wybór → Zakup), a pytania są oznaczone priorytetem (P1-P4) i typem intencji (INFO/KOMERC/TRANS).</p>
+<h2>📖 Instrukcja obsługi narzędzia</h2>
+<h3>🗺️ Zakładka MAPA</h3>
+<p>Karty pytań pogrupowane w ścieżki i fazy edukacji. Typy (INFO, KOMERC, TRANS) ułatwiają priorytetyzację intencji wyszukiwania.</p>
+</div>`;
+}
+
+render();
+
+// Load checks from localStorage
+const LS_KEY = 'ekspresy_checks_v1';
+try {
+  const saved = JSON.parse(localStorage.getItem(LS_KEY));
+  if(saved) checked = saved;
+} catch(e) {}
+
+const oldToggleCheck = toggleCheck;
+toggleCheck = function(nr) {
+  oldToggleCheck(nr);
+  localStorage.setItem(LS_KEY, JSON.stringify(checked));
+};
+
+</script>
+<script>
+const CATS=[{"num":1,"name":"Słuchawki z ANC","v":"v2","s":"słuchawki z anc"}];
+const searchEl=document.getElementById('search');
+const statEl=document.getElementById('stat');
+const nrEl=document.getElementById('nr');
+const TOTAL=CATS.length;
+let curFilter='all';
+
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function hi(text,q){
+  if(!q)return text;
+  return text.replace(new RegExp('('+esc(q)+')','gi'),'<mark>$1</mark>');
+}
+
+function applySearch(q){
+  const ql=q.trim().toLowerCase();
+  let n=0;
+  CATS.forEach(c=>{
+    const item=document.getElementById('i'+c.num);
+    const matchQ=!ql||c.s.includes(ql);
+    const matchF=curFilter==='all'||(curFilter==='v1'&&c.v==='v1')||(curFilter==='v2p'&&c.v!=='v1');
+    const ok=matchQ&&matchF;
+    if(item)item.classList.toggle('hidden',!ok);
+    if(ok){
+      n++;
+      const el=item&&item.querySelector('.ct');
+      if(el)el.innerHTML=hi(c.name,q.trim());
+    }
+  });
+  nrEl.style.display=n===0?'block':'none';
+  const fLabel=curFilter==='v1'?' · Draft':curFilter==='v2p'?' · Verified':'';
+  statEl.textContent=(ql?n+'/':'')+TOTAL+' cat.'+fLabel;
+}
+
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+  applySearch(searchEl.value);
+}
+
+function select(num){
+  document.querySelectorAll('.ci').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.cs').forEach(e=>e.classList.remove('vis'));
+  const item=document.getElementById('i'+num);
+  const sec=document.getElementById('s'+num);
+  if(item){item.classList.add('active');item.scrollIntoView({block:'nearest'});}
+  if(sec)sec.classList.add('vis');
+  document.getElementById('ct').scrollTop=0;
+}
+
+searchEl.addEventListener('input',e=>applySearch(e.target.value));
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();searchEl.focus();searchEl.select();}
+  if(e.key==='Escape'&&document.activeElement===searchEl){searchEl.value='';applySearch('');searchEl.blur();}
+});
+
+if(CATS.length>0)select(CATS[0].num);
+
+function toggleTheme(){
+  const l=document.body.classList.toggle('light');
+  localStorage.setItem('geo-theme',l?'light':'dark');
+  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
+}
+(function(){if(localStorage.getItem('geo-theme')==='light'){
+  document.body.classList.add('light');
+  var b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
 </script>
 </body>
 </html>

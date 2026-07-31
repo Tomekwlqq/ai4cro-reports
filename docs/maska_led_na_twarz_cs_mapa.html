@@ -2,77 +2,1382 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>maska LED na twarz — CS + Mapa Percepcji</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>maska LED na twarz — Mapa + CS</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow:hidden}
-body{font-family:-apple-system,Segoe UI,sans-serif;background:#f6f8fa;color:#1f2328;display:flex;flex-direction:column}
-.tabs{display:flex;background:#fff;border-bottom:2px solid #d0d7de;flex-shrink:0}
-.tab{padding:12px 28px;cursor:pointer;font-size:14px;font-weight:600;color:#57606a;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
-.tab:hover{color:#0969da}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #d0d7de;height:48px;align-items:center;flex-shrink:0}
+.tab{padding:0 20px;height:100%;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;color:#57606a;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
 .tab.active{color:#0969da;border-bottom-color:#0969da}
-.panel{display:none;flex:1;overflow:auto;background:#fff}
-.panel.active{display:block}
-.combined{display:none;flex:1;overflow:hidden}
-.combined.active{display:flex}
-.combined-half{flex:1;overflow:auto;background:#fff}
-.combined-half:first-child{border-right:1px solid #d0d7de}
-.spinner{display:flex;align-items:center;justify-content:center;height:60px;color:#8c959f;font-size:13px;gap:8px}
+.tab:hover:not(.active){color:#24292f;background:#f6f8fa}
+#panel-mapa{overflow:hidden;height:calc(100vh - 48px)}
+#panel-cs{display:none;overflow:auto;height:calc(100vh - 48px);background:#fff}
+</style>
+<style id="mapa-styles">
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f6f8fa;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f3f6;
+  --border: #d0d7de;
+  --border-subtle: #e8ecf0;
+  --text-primary: #1f2328;
+  --text-secondary: #57606a;
+  --text-muted: #8c959f;
+  --accent: #0969da;
+  --p1: #ef4444; --p1-bg: rgba(239,68,68,.12);
+  --p2: #f97316; --p2-bg: rgba(249,115,22,.12);
+  --p3: #eab308; --p3-bg: rgba(234,179,8,.12);
+  --p4: #6b7280; --p4-bg: rgba(107,114,128,.12);
+  --status-brak: #3b82f6;
+  --status-istnieje: #22c55e;
+  --status-rozbudowac: #818cf8;
+  --path-a: #3b82f6; --path-b: #8b5cf6; --path-c: #ec4899; --path-d: #14b8a6;
+  --path-e: #f59e0b; --path-f: #10b981; --path-g: #f43f5e; --path-cross: #94a3b8;
+}
+#panel-mapa{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text-primary); display: flex; min-height: calc(100vh - 48px); overflow: hidden; }
+/* SIDEBAR */
+.sidebar { width: 240px; min-width: 240px; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: calc(100vh - 48px); position: sticky; top: 0; overflow-y: auto; }
+.sidebar-logo { padding: 18px 16px 14px; border-bottom: 1px solid var(--border); }
+.sidebar-logo .brand { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+.sidebar-logo .subtitle { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.sidebar-logo .total-badge { display: inline-flex; align-items: center; background: var(--accent); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-top: 8px; }
+.sidebar-section { padding: 10px 12px 4px; }
+.sidebar-section-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .8px; padding: 0 4px; margin-bottom: 5px; }
+.path-btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 6px; border: none; background: transparent; color: var(--text-secondary); font-size: 12px; cursor: pointer; text-align: left; transition: background .15s, color .15s; margin-bottom: 2px; }
+.path-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.path-btn.active { background: rgba(31,111,235,.15); color: #58a6ff; }
+.path-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.path-label { flex: 1; font-size: 11px; line-height: 1.3; }
+.path-count { font-size: 11px; font-weight: 700; color: var(--text-muted); background: var(--border-subtle); padding: 1px 6px; border-radius: 10px; min-width: 24px; text-align: center; }
+.sidebar-divider { height: 1px; background: var(--border); margin: 6px 12px; }
+.legend-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-secondary); padding: 3px 4px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.sidebar-tabs { display: flex; gap: 4px; padding: 10px 12px 6px; border-top: 1px solid var(--border); margin-top: auto; }
+.stab { flex: 1; padding: 8px 4px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-size: 11px; font-weight: 600; cursor: pointer; text-align: center; transition: all .15s; line-height: 1.3; }
+.stab:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.stab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.stab .stab-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+.sidebar-footer { padding: 8px 12px 12px; border-top: none; }
+.reset-btn { width: 100%; padding: 7px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-size: 12px; cursor: pointer; transition: all .15s; }
+.reset-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+/* LIST TAB */
+.list-view { padding: 16px 20px; }
+.list-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.list-progress { flex: 1; min-width: 180px; }
+.list-progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+.list-progress-fill { height: 100%; background: var(--status-istnieje); border-radius: 3px; transition: width .3s; }
+.list-progress-label { font-size: 11px; color: var(--text-muted); }
+.copy-btn { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-size: 12px; cursor: pointer; transition: all .15s; white-space: nowrap; }
+.copy-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.sort-group { display: flex; gap: 4px; align-items: center; }
+.sort-label { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+.sort-btn { padding: 3px 9px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-size: 11px; cursor: pointer; }
+.sort-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.list-item { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 6px; border: 1px solid transparent; margin-bottom: 3px; cursor: pointer; transition: background .12s; }
+.list-item:hover { background: var(--bg-card); border-color: var(--border); }
+.list-item.checked .list-title { text-decoration: line-through; color: var(--text-muted); }
+.list-cb { width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 3px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all .15s; background: var(--bg-card); }
+.list-item.checked .list-cb { background: var(--status-istnieje); border-color: var(--status-istnieje); color: #fff; }
+.list-nr { font-size: 11px; color: var(--text-muted); min-width: 28px; font-weight: 700; margin-top: 2px; flex-shrink: 0; }
+.list-title { font-size: 13px; color: var(--text-primary); line-height: 1.4; flex: 1; }
+.list-meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+.list-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+.list-section-head { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--text-muted); padding: 10px 10px 4px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 4px; margin-top: 8px; }
+/* INFO TAB */
+.info-view { padding: 24px 32px; max-width: 760px; }
+.info-view h2 { font-size: 20px; font-weight: 700; margin-bottom: 12px; margin-top: 28px; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.info-view h2:first-child { margin-top: 0; }
+.info-view h3 { font-size: 14px; font-weight: 700; margin-top: 18px; margin-bottom: 8px; color: var(--text-primary); }
+.info-view p { font-size: 13px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 10px; }
+.info-view ul { padding-left: 20px; margin-bottom: 12px; }
+.info-view li { font-size: 13px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 4px; }
+.info-view strong { color: var(--text-primary); }
+.info-cep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+.info-cep-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+.info-cep-card .cep-path { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; color: #fff; display: inline-block; margin-bottom: 6px; }
+.info-cep-card .cep-trigger { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.info-cep-card .cep-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.info-tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; margin: 2px; }
+/* MAIN */
+.main { flex: 1; display: flex; flex-direction: column; height: calc(100vh - 48px); overflow: hidden; min-width: 0; }
+/* TOPBAR */
+.topbar { background: var(--bg-sidebar); border-bottom: 1px solid var(--border); padding: 8px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; flex-shrink: 0; }
+.filter-group { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+.filter-label { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-right: 2px; white-space: nowrap; }
+.filter-pill { padding: 3px 9px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-size: 11px; font-weight: 500; cursor: pointer; transition: all .15s; white-space: nowrap; }
+.filter-pill:hover { border-color: var(--text-muted); color: var(--text-primary); }
+.filter-pill.active { border-color: transparent; color: #fff; font-weight: 700; }
+.filter-pill.active.all { background: var(--accent); }
+.filter-pill.active.p1 { background: var(--p1); }
+.filter-pill.active.p2 { background: var(--p2); }
+.filter-pill.active.p3 { background: var(--p3); color: #111; }
+.filter-pill.active.p4 { background: var(--p4); }
+.filter-pill.active.tn { background: #1f6feb; }
+.filter-pill.active.tf { background: #8b5cf6; }
+.filter-pill.active.ts { background: #10b981; }
+.filter-pill.active.te { background: #f59e0b; color: #111; }
+.filter-pill.active.tem { background: #ec4899; }
+.filter-pill.active.tr { background: #14b8a6; color: #111; }
+.filter-pill.active.tst { background: #94a3b8; color: #111; }
+.filter-pill.active.ti { background: #2dd4bf; color: #111; }
+.filter-pill.active.sb { background: var(--status-brak); }
+.filter-pill.active.si { background: var(--status-istnieje); color: #111; }
+.filter-pill.active.sr { background: var(--status-rozbudowac); }
+.topbar-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+.search-input { padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font-size: 12px; width: 180px; outline: none; transition: border-color .15s; }
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text-muted); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.counter { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+.counter strong { color: var(--text-primary); font-size: 14px; }
+/* STATS */
+.statsbar { padding: 10px 16px; display: flex; gap: 10px; flex-shrink: 0; border-bottom: 1px solid var(--border); background: var(--bg); }
+.stat-card { flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; }
+.stat-card .val { font-size: 22px; font-weight: 700; line-height: 1; }
+.stat-card .lbl { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.cv1 { color: var(--p1); } .cv2 { color: var(--status-brak); } .cv3 { color: var(--status-istnieje); }
+/* CONTENT */
+.content { flex: 1; overflow-y: auto; padding: 18px; }
+/* PATH */
+.path-section { margin-bottom: 28px; }
+.path-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border-subtle); }
+.path-badge { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.path-title { font-size: 14px; font-weight: 700; flex: 1; }
+.path-total { font-size: 12px; color: var(--text-muted); background: var(--border-subtle); padding: 2px 8px; border-radius: 10px; }
+/* STATE */
+.state-section { margin-bottom: 16px; }
+.state-header { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 6px; cursor: pointer; transition: background .15s; margin-bottom: 8px; user-select: none; }
+.state-header:hover { background: var(--border-subtle); }
+.state-toggle { font-size: 10px; color: var(--text-muted); width: 14px; transition: transform .2s; flex-shrink: 0; display: inline-block; }
+.state-toggle.collapsed { transform: rotate(-90deg); }
+.state-code { font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 4px; color: #fff; flex-shrink: 0; }
+.state-name { font-size: 13px; font-weight: 600; color: var(--text-secondary); flex: 1; }
+.state-count { font-size: 11px; color: var(--text-muted); background: var(--border-subtle); padding: 1px 7px; border-radius: 10px; }
+.state-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 7px; padding-left: 20px; overflow: hidden; transition: max-height .25s ease, opacity .25s ease; }
+.state-cards.collapsed { max-height: 0 !important; opacity: 0; }
+/* CARD */
+.article-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px 9px 14px; position: relative; cursor: default; transition: background .15s, box-shadow .15s; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
+.article-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 8px 0 0 8px; }
+.article-card.brak { border-color: rgba(59,130,246,.2); } .article-card.brak::before { background: var(--status-brak); }
+.article-card.istnieje { border-color: rgba(34,197,94,.18); } .article-card.istnieje::before { background: var(--status-istnieje); }
+.article-card.rozbudowac { border-color: rgba(129,140,248,.2); } .article-card.rozbudowac::before { background: var(--status-rozbudowac); }
+.article-card:hover { background: var(--bg-card-hover); box-shadow: 0 2px 10px rgba(0,0,0,.25); }
+.card-top { display: flex; align-items: flex-start; gap: 6px; }
+.card-nr { font-size: 10px; font-weight: 700; color: var(--text-muted); min-width: 26px; padding-top: 1px; flex-shrink: 0; }
+.card-title { font-size: 12px; color: var(--text-primary); line-height: 1.4; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.article-card:hover .card-title { -webkit-line-clamp: unset; }
+.card-bottom { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; padding-left: 32px; }
+.badge-path { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; color: #fff; flex-shrink: 0; }
+.badge-prio { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; flex-shrink: 0; }
+.pp1 { background: var(--p1-bg); color: var(--p1); border: 1px solid rgba(239,68,68,.3); }
+.pp2 { background: var(--p2-bg); color: var(--p2); border: 1px solid rgba(249,115,22,.3); }
+.pp3 { background: var(--p3-bg); color: var(--p3); border: 1px solid rgba(234,179,8,.3); }
+.pp4 { background: var(--p4-bg); color: var(--p4); border: 1px solid rgba(107,114,128,.3); }
+.badge-typ { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; letter-spacing: .3px; flex-shrink: 0; }
+.tn { background: rgba(31,111,235,.12); color: #58a6ff; border: 1px solid rgba(31,111,235,.25); }
+.tf { background: rgba(139,92,246,.12); color: #a78bfa; border: 1px solid rgba(139,92,246,.25); }
+.ts { background: rgba(16,185,129,.12); color: #34d399; border: 1px solid rgba(16,185,129,.25); }
+.te { background: rgba(245,158,11,.12); color: #fbbf24; border: 1px solid rgba(245,158,11,.25); }
+.tem { background: rgba(236,72,153,.12); color: #f472b6; border: 1px solid rgba(236,72,153,.25); }
+.tr { background: rgba(20,184,166,.12); color: #2dd4bf; border: 1px solid rgba(20,184,166,.25); }
+.tst { background: rgba(148,163,184,.12); color: #94a3b8; border: 1px solid rgba(148,163,184,.25); }
+.ti { background: rgba(20,184,166,.12); color: #2dd4bf; border: 1px solid rgba(20,184,166,.25); }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-left: auto; }
+.db { background: var(--status-brak); box-shadow: 0 0 4px var(--status-brak); }
+.di { background: var(--status-istnieje); }
+.dr { background: var(--status-rozbudowac); }
+.card-keyword { font-size: 10px; color: var(--text-muted); padding-left: 32px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: none; }
+.article-card:hover .card-keyword { display: block; }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+.hidden { display: none !important; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+</style>
+<style id="cs-styles">
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+#panel-cs{
+  --bg:#0f1117;--sb-bg:#161b22;--hd-bg:#161b22;--bd:#30363d;
+  --tx:#e6edf3;--tx2:#8b949e;--ac:#58a6ff;
+  --cb:#1c2128;--ts:#1c2128;--mb:#2d4a22;--mt:#7ee787;
+  --ab:#1f3353;--sw:292px;--hh:52px
+}
+#panel-cs{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+     background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* Header */
+#hd{height:var(--hh);background:var(--hd-bg);border-bottom:1px solid var(--bd);
+    display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+#hd h1{font-size:15px;font-weight:700;white-space:nowrap;flex-shrink:0;letter-spacing:.01em}
+#hd h1 span{color:var(--ac)}
+#sw{flex:1;position:relative;max-width:440px}
+#si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tx2);font-size:15px;pointer-events:none}
+#search{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:6px;
+        color:var(--tx);padding:6px 10px 6px 30px;font-size:15px;outline:none;transition:border-color .15s}
+#search:focus{border-color:var(--ac)}
+
+/* Filter buttons */
+.filt{display:flex;gap:4px;flex-shrink:0}
+.fb{font-size:13px;padding:3px 8px;border-radius:4px;border:1px solid var(--bd);
+    background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fb:hover{border-color:var(--ac);color:var(--tx)}
+.fb.on{border-color:var(--ac);background:var(--ab);color:var(--tx)}
+
+/* Lang toggle */
+#lang-btn{font-size:13px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+          background:transparent;color:var(--tx2);cursor:pointer;text-decoration:none;
+          display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+#lang-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+#stat{font-size:13px;color:var(--tx2);flex-shrink:0;white-space:nowrap;min-width:90px;text-align:right}
+
+/* Layout */
+#lay{display:flex;flex:1;overflow:hidden}
+
+/* Sidebar */
+#sb{width:var(--sw);flex-shrink:0;background:var(--sb-bg);border-right:1px solid var(--bd);overflow-y:auto}
+.ci{display:flex;align-items:center;gap:7px;padding:7px 10px;cursor:pointer;
+    border-left:3px solid transparent;border-bottom:1px solid var(--bd);
+    transition:background .1s;user-select:none;min-height:36px}
+.ci:hover{background:rgba(88,166,255,.07)}
+.ci.active{background:var(--ab);border-left-color:var(--ac)}
+.ci.hidden{display:none}
+.cn{font-size:11.5px;color:var(--tx2);min-width:20px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ct{font-size:14px;line-height:1.3;color:var(--tx);flex:1;min-width:0}
+.ct mark{background:var(--mb);color:var(--mt);border-radius:2px;padding:0 1px}
+
+/* Version badge in sidebar */
+.vb{font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:8px;flex-shrink:0;letter-spacing:.02em}
+.vb-v1{background:#21262d;color:#6e7681}
+.vb-v2{background:#2d2502;color:#d29922}
+.vb-v3{background:#0d2a1a;color:#3fb950}
+.vb-v4{background:#0d1e3c;color:#58a6ff}
+
+/* Verification pipeline dots */
+.pipe{display:flex;gap:2px;flex-shrink:0}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--bd)}
+.pd.on-v1{background:#6e7681}
+.pd.on-v2{background:#d29922}
+.pd.on-v3{background:#3fb950}
+.pd.on-v4{background:#58a6ff}
+
+#nr{padding:20px 12px;font-size:15px;color:var(--tx2);text-align:center;display:none}
+
+/* Content */
+#ct{flex:1;overflow-y:auto;padding:26px 34px}
+.cs{display:none}
+.cs.vis{display:block}
+
+/* Markdown */
+.cs h2{font-size:23px;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:10px;margin-bottom:16px}
+.cs h3{font-size:13px;font-weight:700;color:var(--ac);margin:20px 0 9px;
+       text-transform:uppercase;letter-spacing:.06em}
+.cs h4{font-size:16px;font-weight:600;margin:14px 0 6px}
+.cs p{font-size:15.5px;line-height:1.65;margin-bottom:8px}
+.cs strong{font-weight:600}
+.cs em{font-style:italic;color:var(--tx2)}
+.cs code{font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:13px;
+         background:var(--cb);border:1px solid var(--bd);border-radius:3px;
+         padding:1px 5px;color:#f0883e}
+.cs pre{background:var(--cb);border:1px solid var(--bd);border-radius:6px;
+        padding:12px 14px;overflow-x:auto;margin:10px 0}
+.cs pre code{background:none;border:none;padding:0;font-size:14px;color:var(--tx);line-height:1.5}
+.cs table{width:100%;border-collapse:collapse;font-size:14.5px;margin:10px 0;display:block;overflow-x:auto}
+.cs th,.cs td{text-align:left;padding:7px 10px;border:1px solid var(--bd)}
+.cs th{background:var(--sb-bg);font-weight:600}
+.cs tr:nth-child(even) td{background:var(--ts)}
+.cs ul,.cs ol{padding-left:18px;margin:7px 0}
+.cs li{font-size:15.5px;line-height:1.6;margin-bottom:3px}
+.cs hr{border:none;border-top:1px solid var(--bd);margin:18px 0}
+
+/* Changelog / verification card */
+.changelog{background:#0b1e10;border:1px solid #2ea043;border-radius:8px;
+           padding:14px 18px;margin:18px 0;position:relative}
+.changelog::before{content:'🔬 VERIFIED';font-size:10.5px;font-weight:700;
+                   color:#3fb950;letter-spacing:.08em;display:block;margin-bottom:8px}
+.changelog h3{color:#3fb950 !important;margin-top:0 !important;font-size:14px !important}
+.changelog p,.changelog li{color:#c3e6cb;font-size:15px}
+.changelog ul{margin:4px 0}
+.changelog table{font-size:12px}
+.changelog th{background:#0d2a1a}
+.changelog code{background:#0d2a1a;color:#7ee787}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+body.light{
+  --bg:#ffffff;--sb-bg:#f6f8fa;--hd-bg:#f6f8fa;--bd:#d0d7de;
+  --tx:#1f2328;--tx2:#656d76;--ac:#0969da;
+  --cb:#f6f8fa;--ts:#f6f8fa;--mb:#fff8c5;--mt:#7a5c00;--ab:#ddf4ff;
+}
+body.light .cs code{color:#cf222e}
+body.light .cs pre code{color:var(--tx)}
+body.light .changelog{background:#f0fff4;border-color:#2ea043}
+body.light .changelog p,body.light .changelog li{color:#1a7f37}
+#theme-btn{font-size:14px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx2);cursor:pointer;flex-shrink:0;transition:all .15s}
+#theme-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+/* FUND rozwijany blok */
+details.fund{border:1px solid var(--bd);border-radius:8px;margin:22px 0 8px;
+  background:var(--cb);overflow:hidden}
+details.fund>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  padding:12px 16px;user-select:none;transition:background .12s}
+details.fund>summary::-webkit-details-marker{display:none}
+details.fund>summary:hover{background:rgba(88,166,255,.07)}
+.fund-arrow{color:var(--ac);font-size:13px;flex-shrink:0;transition:transform .15s}
+details.fund[open] .fund-arrow{transform:rotate(90deg)}
+.fund-head{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.fund-title{font-size:15px;font-weight:700;color:var(--tx)}
+.fund-src{font-size:12px;font-style:italic;color:var(--tx2);line-height:1.4}
+.fund-badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.fund-badge.ok{background:#0d2a1a;color:#3fb950}
+.fund-badge.warn{background:#3d2a02;color:#f0883e}
+body.light .fund-badge.ok{background:#dafbe1;color:#1a7f37}
+body.light .fund-badge.warn{background:#fff1e5;color:#bc4c00}
+.fund-hint{font-size:11px;color:var(--tx2);flex-shrink:0;border:1px solid var(--bd);
+  border-radius:4px;padding:2px 7px}
+details.fund[open] .fund-hint{display:none}
+.fund-#panel-cs{padding:4px 18px 16px;border-top:1px solid var(--bd)}
+.fund-body h1{font-size:18px;margin:12px 0 6px}
+
 </style>
 </head>
 <body>
 <div class="tabs">
   <button class="tab active" onclick="sw(this,'mapa')">🗺️ Mapa percepcji</button>
   <button class="tab" onclick="sw(this,'cs')">📄 Category Standards</button>
-  <button class="tab" onclick="sw(this,'combined')">🔗 Łączny widok</button>
 </div>
-<div id="tab-mapa" class="panel active"><div class="spinner">⏳ Ładowanie mapy...</div></div>
-<div id="tab-cs" class="panel"><div class="spinner">⏳ Ładowanie CS...</div></div>
-<div id="tab-combined" class="combined">
-  <div id="comb-mapa" class="combined-half"><div class="spinner">⏳ Mapa...</div></div>
-  <div id="comb-cs" class="combined-half"><div class="spinner">⏳ CS...</div></div>
+<div id="panel-mapa">
+
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">maska LED na twarz v5.5</div>
+    <div class="subtitle">Analiza CEP i Pytań</div>
+    <div class="total-badge">168 pytań · 9 ścieżek</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Ścieżki zakupowe</div>
+    <button class="path-btn active" data-path="all" onclick="filterPath(this,'all')">
+      <span class="path-dot" style="background:#94a3b8"></span>
+      <span class="path-label">Wszystkie ścieżki</span>
+      <span class="path-count" id="cnt-all">168</span>
+    </button>
+    <button class="path-btn" data-path="A" onclick="filterPath(this,'A')">
+      <span class="path-dot" style="background:#3b82f6"></span>
+      <span class="path-label">A · anti aging zmarszczki</span>
+      <span class="path-count" id="cnt-A">0</span>
+    </button>
+    <button class="path-btn" data-path="B" onclick="filterPath(this,'B')">
+      <span class="path-dot" style="background:#8b5cf6"></span>
+      <span class="path-label">B · walidacja czy dziala</span>
+      <span class="path-count" id="cnt-B">0</span>
+    </button>
+    <button class="path-btn" data-path="C" onclick="filterPath(this,'C')">
+      <span class="path-dot" style="background:#ec4899"></span>
+      <span class="path-label">C · bezpieczenstwo kontraindykacje</span>
+      <span class="path-count" id="cnt-C">0</span>
+    </button>
+    <button class="path-btn" data-path="D" onclick="filterPath(this,'D')">
+      <span class="path-dot" style="background:#14b8a6"></span>
+      <span class="path-label">D · ROI gabinet vs domowe</span>
+      <span class="path-count" id="cnt-D">0</span>
+    </button>
+    <button class="path-btn" data-path="E" onclick="filterPath(this,'E')">
+      <span class="path-dot" style="background:#f59e0b"></span>
+      <span class="path-label">E · protokol jak uzywac</span>
+      <span class="path-count" id="cnt-E">0</span>
+    </button>
+    <button class="path-btn" data-path="F" onclick="filterPath(this,'F')">
+      <span class="path-dot" style="background:#10b981"></span>
+      <span class="path-label">F · ranking wybor modelu</span>
+      <span class="path-count" id="cnt-F">0</span>
+    </button>
+    <button class="path-btn" data-path="G" onclick="filterPath(this,'G')">
+      <span class="path-dot" style="background:#f43f5e"></span>
+      <span class="path-label">G · tradzik stany zapalne</span>
+      <span class="path-count" id="cnt-G">0</span>
+    </button>
+    <button class="path-btn" data-path="H" onclick="filterPath(this,'H')">
+      <span class="path-dot" style="background:#eab308"></span>
+      <span class="path-label">H · rytuał beauty influencer</span>
+      <span class="path-count" id="cnt-H">0</span>
+    </button>
+    <button class="path-btn" data-path="I" onclick="filterPath(this,'I')">
+      <span class="path-dot" style="background:#6366f1"></span>
+      <span class="path-label">I · przebarwienia koloryt</span>
+      <span class="path-count" id="cnt-I">0</span>
+    </button>
+    <button class="path-btn" data-path="J" onclick="filterPath(this,'J')">
+      <span class="path-dot" style="background:#d946ef"></span>
+      <span class="path-label">J · Nowa kuchnia / design</span>
+      <span class="path-count" id="cnt-J">0</span>
+    </button>
+    <button class="path-btn" data-path="K" onclick="filterPath(this,'K')">
+      <span class="path-dot" style="background:#06b6d4"></span>
+      <span class="path-label">K · Gościnność</span>
+      <span class="path-count" id="cnt-K">0</span>
+    </button>
+    <button class="path-btn" data-path="L" onclick="filterPath(this,'L')">
+      <span class="path-dot" style="background:#84cc16"></span>
+      <span class="path-label">L · Alternatywa eko</span>
+      <span class="path-count" id="cnt-L">0</span>
+    </button>
+    <button class="path-btn" data-path="M" onclick="filterPath(this,'M')">
+      <span class="path-dot" style="background:#a855f7"></span>
+      <span class="path-label">M · Kontrola składu</span>
+      <span class="path-count" id="cnt-M">0</span>
+    </button>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Legenda statusów</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--status-brak);box-shadow:0 0 4px var(--status-brak)"></span>BRAK — do stworzenia</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--status-istnieje)"></span>ISTNIEJE — opublikowany</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--status-rozbudowac)"></span>ROZBUDOWAĆ — wymaga rozbudowy</div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Legenda priorytetów</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--p1)"></span>P1 — krytyczne (pilne)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--p2)"></span>P2 — ważne</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--p3)"></span>P3 — standardowe</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--p4)"></span>P4 — niski priorytet</div>
+  </div>
+  <div class="sidebar-tabs">
+    <button class="stab active" id="stab-mapa" onclick="switchTab('mapa')"><span class="stab-icon">🗺️</span>MAPA</button>
+    <button class="stab" id="stab-lista" onclick="switchTab('lista')"><span class="stab-icon">☑️</span>LISTA</button>
+    <button class="stab" id="stab-info" onclick="switchTab('info')"><span class="stab-icon">ℹ️</span>INFO</button>
+  </div>
+  <div class="sidebar-footer">
+    <button class="reset-btn" onclick="resetAll()">↺ Reset filtrów</button>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="topbar">
+    <div class="filter-group">
+      <span class="filter-label">Priorytet</span>
+      <button class="filter-pill active all" data-f="prio" data-v="all" onclick="setF('prio','all',this)">Wszystkie</button>
+      <button class="filter-pill p1" data-f="prio" data-v="P1" onclick="setF('prio','P1',this)">P1</button>
+      <button class="filter-pill p2" data-f="prio" data-v="P2" onclick="setF('prio','P2',this)">P2</button>
+      <button class="filter-pill p3" data-f="prio" data-v="P3" onclick="setF('prio','P3',this)">P3</button>
+      <button class="filter-pill p4" data-f="prio" data-v="P4" onclick="setF('prio','P4',this)">P4</button>
+    </div>
+
+  <div class="statsbar">
+    <div class="stat-card"><div class="val" id="stat-total">168</div><div class="lbl">Widocznych pytań</div></div>
+    <div class="stat-card"><div class="val cv1" id="stat-p1">—</div><div class="lbl">Priorytet P1 (krytyczne)</div></div>
+    <div class="stat-card"><div class="val cv2" id="stat-brak">—</div><div class="lbl">Status BRAK (do stworzenia)</div></div>
+    <div class="stat-card"><div class="val cv3" id="stat-exist">—</div><div class="lbl">ISTNIEJE + ROZBUDOWAĆ</div></div>
+  </div>
+
+  <div class="content" id="contentArea"></div>
+</div>
+
+
+</div>
+<div id="panel-cs">
+<div id="hd">
+  <h1>GEO <span>CS</span></h1>
+  <div id="sw">
+    <span id="si">⌕</span>
+    <input id="search" type="text" placeholder="Szukaj kategorii, CEP, pytania..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="filt">
+    <button class="fb on" data-f="all" onclick="setFilter('all')">All</button>
+    <button class="fb" data-f="v2p" onclick="setFilter('v2p')">✅ Verified</button>
+    <button class="fb" data-f="v1"  onclick="setFilter('v1')">📝 Draft</button>
+  </div>
+  <a id="lang-btn" href="%23">🌐 EN</a>
+  <button id="theme-btn" onclick="toggleTheme()" title="Tryb jasny/ciemny">☀️</button>
+  <span id="stat">1 cat.</span>
+</div>
+<div id="lay">
+  <div id="sb">
+    <div class="ci" id="i1" onclick="select(1)"><span class="cn">#1</span><span class="ct">maska LED na twarz</span><span class="vb vb-v2">v2</span><div class="pipe"><span class="pd on-v1"></span><span class="pd on-v2"></span><span class="pd"></span><span class="pd"></span></div></div>
+    <div id="nr">No results</div>
+  </div>
+  <div id="ct">
+    <div class="cs" id="s1"><h1>Maska LED na twarz — Category Standard v2 (CS 5.7)</h1>
+
+<p><em>Metodologia: METODOLOGIA_CS.md v5.7. Źródła: FUND_maska_led_na_twarz.md (DFS 53 KW) + research/MAPA_KONTENTU_KONKURENCJI_led_pod_oczy.html + recenzje GLOV/Silk'n/prokosmetyk.pl/zestawienie.pl. assemble_v2 · 2026-07-22.</em></p>
+
+<hr>
+
+<h2>0. Opis kategorii</h2>
+
+<p>Maska LED na twarz to urządzenie do fototerapii domowej emitujące widzialne i podczerwone fale świetlne bezpośrednio na skórę twarzy. Różne kolory diod LED (czerwony 630–660 nm, niebieski 415–430 nm, bliski podczerwień 830 nm, zielony, żółty) oddziałują na skórę na poziomie komórkowym — stymulują syntezę kolagenu, redukują stany zapalne, wyrównują koloryt. Kategoria definiowana przez trzy wymiary: (1) co chcę naprawić (zmarszczki / trądzik / przebarwienia / zmęczenie), (2) jaki format (maska pełnotwarzowa / płatki specjalistyczne / panel), (3) od jakiej marki (Korvica dominuje w PL, Silk'n, Foreo, Dr Dennis Gross = import).</p>
+
+<p><strong>Subkategoria — płatki LED pod oczy:</strong> fokus na okolice oczu (kurze łapki, cienie, worki). Brak własnego popytu kategorialnego (0 vol DFS dla „płatki LED oczy") — search odbywa się przez brand (GLOV Luna Eye opinie). Wejście do subkategorii przez <code>cep_eye_area</code> w Decision Tree → dedykowana ścieżka.</p>
+
+<hr>
+
+<h2>0b. Problemy, które kategoria załatwia</h2>
+
+<p><strong>Primary:</strong></p>
+<p>> <strong>Skóra twarzy starzeje się widocznie i domowe kosmetyki nie dają wystarczającego efektu</strong> — klientka szuka terapii urządzeniowej na poziomie komórkowym bez wizyty w gabinecie.</p>
+
+<p><strong>Secondary:</strong></p>
+
+<ul><li><strong>Zmarszczki i utrata elastyczności</strong> — kolumna kręgosłupowa; kolagen = główna narracja kategorii (→ <code>cep_anti_aging</code>)</li><li><strong>Trądzik / stany zapalne / wypryski</strong> — niebieski LED 415 nm (→ <code>cep_acne_skin</code>)</li><li><strong>Przebarwienia / nierówny koloryt</strong> — zielony/żółty LED (→ <code>cep_pigmentation</code>)</li><li><strong>Zmęczona, szara skóra / brak blasku</strong> — czerwone NIR (→ <code>cep_anti_aging</code>)</li><li><strong>Starzenie okolicy oczu — kurze łapki, cienie, worki</strong> — płatki LED specjalistyczne (→ <code>cep_eye_area</code>)</li><li><strong>Weryfikacja przed zakupem</strong> — klientka niepewna czy działa; szuka opinii, badań, before/after (→ <code>cep_validation</code>)</li><li><strong>Wybór modelu</strong> — Korvica vs Silk'n vs Foreo vs import; jaki ranking (→ <code>cep_selection</code>)</li><li><strong>ROI gabinet vs domowe</strong> — seria laserowa 1500–3000 zł vs urządzenie 300–1500 zł (→ <code>cep_clinic_vs_home</code>)</li><li><strong>Rytuał pielęgnacyjny</strong> — klientka chce zbudować domowy beauty ritual wzorowany na influencerkach (→ <code>cep_self_care_routine</code>)</li></ul>
+
+<p>> ⚠️ Długości fali (nm), czas sesji, liczba diod, FDA clearance = atrybuty → KCF. NIE do CEP. Wyjątek: <code>cep_safety</code> (przeciwwskazania, padaczka, ciąża) i <code>cep_protocol</code> (jak używać).</p>
+
+<hr>
+
+<h2>§0c DYNAMIKA KATEGORII</h2>
+
+<p><em>Źródła: zdrowy rozsądek + competitor content + recenzje. DFS = wsad atrybutowy (nie CEP inicjator).</em></p>
+
+<h3>Friction Points [F] — irytacja w UŻYWANIU kategorii</h3>
+
+<table>
+<tr><th>#</th><th>Friction</th><th>[L]</th><th>Generuje →</th></tr>
+<tr><td>F1</td><td>10–20 min imobility per sesja — siedzenie z maską na twarzy, nic nie robię</td><td>[L2]</td><td>DQ: „Czy można skrócić sesję LED?" · subkategoria: maska bezprzewodowa / lżejsza</td></tr>
+<tr><td>F2</td><td>Brak pewności co łączyć z LED — retinoidy/kwasy/serum/krem: co przed, co po, co odczekać</td><td>[L2]</td><td>DQ: „Czy można stosować retinol razem z maską LED?" · <code>cep_protocol</code></td></tr>
+<tr><td>F3</td><td>Brak widzialnego postępu przez pierwsze 4 tygodnie → klientka sądzi, że „nie działa"</td><td>[L2]</td><td>DQ: „Po jakim czasie widać efekty maski LED?" · stopper rezygnacji → edukacja osi czasu</td></tr>
+</table>
+
+<h3>Wear & Consumption [W]</h3>
+
+<table>
+<tr><th>#</th><th>Wear</th><th>Typ</th><th>[L]</th><th>Generuje →</th></tr>
+<tr><td>W1</td><td>Akumulator — degraduje po 500–800 cyklach ładowania (3–5 lat użytkowania)</td><td>terminalny</td><td>[L2]</td><td>CEP wymiany urządzenia (mini-CEP za 4 lata)</td></tr>
+<tr><td>W2</td><td>Diody LED — producenci deklarują 50 000h (praktycznie nieskończone) — brak CEP wymienialnego</td><td>terminalny (brak)</td><td>[L2]</td><td>—</td></tr>
+<tr><td>W3</td><td>Moralne starzenie: nowe standardy mocy (mW/cm²), nowe kombinacje fal → stary model „przestaje być top"</td><td>technologiczny</td><td>[L2]</td><td>CEP upgrade (4–6 lat) → <code>cep_selection</code> (nowy)</td></tr>
+</table>
+
+<h3>Category Stoppers [S]</h3>
+
+<table>
+<tr><th>#</th><th>Stopper</th><th>Typ</th><th>[L]</th><th>Generuje →</th></tr>
+<tr><td>S1</td><td>Cena 500–1500 zł + brak pewności efektu → „nie ryzykuję"</td><td>wejścia</td><td>[L2]</td><td><code>cep_validation</code> łagodzi (S2 z badań + before/after)</td></tr>
+<tr><td>S2</td><td>Kontraindykacje (epilepsja, ciąża, retinoidy doustne) → konsultacja lekarska przed zakupem</td><td>wejścia</td><td>[L2]</td><td><code>cep_safety</code> (osobna ścieżka; bloker → CEP)</td></tr>
+<tr><td>S3</td><td>„Laser w gabinecie działa lepiej niż domowa zabawka" — przekonanie o wyższości professional</td><td>wejścia</td><td>[L2]</td><td><code>cep_clinic_vs_home</code> (ROI + moc porównanie)</td></tr>
+<tr><td>S4</td><td>Nudny rytuał (10 min w ciemności) → wypalenie → porzucenie urządzenia po 3–4 sesjach</td><td>rozwoju</td><td>[L2]</td><td>DQ: „Jak wbudować maskę LED w rutynę pielęgnacyjną?" · <code>cep_protocol</code></td></tr>
+<tr><td>S5</td><td>Brak postępu widzianego gołym okiem przez 4 tyg. → rezygnacja przed efektem</td><td>rozwoju</td><td>[L2]</td><td>DQ: „Jak szybko działa LED na zmarszczki?" · edukacja osi czasu (F3 + S4 nakładają się)</td></tr>
+</table>
+
+<h3>CEP L1 vs L2</h3>
+
+<table>
+<tr><th>Poziom</th><th>Wejście</th><th>Typ</th><th>Generuje</th></tr>
+<tr><td>L1</td><td>„Kremy i serum przestają wystarczać — chcę czegoś aktywniejszego na skórę"</td><td>friction-driven (inkumbent=kosmetyki)</td><td><code>cep_anti_aging</code> (główny)</td></tr>
+<tr><td>L1</td><td>„Idę do gabinetu zbyt często i za drogo — chcę coś domowego"</td><td>friction-driven (inkumbent=gabinet)</td><td><code>cep_clinic_vs_home</code></td></tr>
+<tr><td>L2(a)</td><td>„Już wiem, że chcę LED — ale która, jaka moc, co za parametry"</td><td>friction w kategorii LED (chaos wyboru)</td><td><code>cep_selection</code></td></tr>
+<tr><td>L2(b)</td><td>„Widziałam u influencerki LED ritual — chcę tak samo"</td><td>aspiration-driven (bez friction)</td><td><code>cep_self_care_routine</code> (Tożsamość)</td></tr>
+<tr><td>L2(a)</td><td>„Biorę retinoidy — czy mogę LED?"</td><td>kontraindykacja jako trigger</td><td><code>cep_safety</code></td></tr>
+</table>
+
+<hr>
+
+<h2>1. CEV — Category Emotional Valuation (Schwartz z wagami)</h2>
+
+<p><strong>Pasek CEV — profil emocjonalny (10 cech):</strong></p>
+
+<table>
+<tr><th>ryzyko</th><th>lęk</th><th>widoczność</th><th>impuls</th><th>sexy</th><th>aspiracja</th><th>tożsamość</th><th>zmysłowość</th><th>pilność</th><th>moralność</th></tr>
+<tr><td>0.50</td><td>0.60</td><td>0.45</td><td>0.15</td><td>0.40</td><td>0.70</td><td>0.45</td><td>0.30</td><td>0.20</td><td>0.05</td></tr>
+</table>
+
+<p><code>apply_physics</code> → fork <strong>POTRZEBA</strong>, research <strong>głęboka</strong> (4–5 stanów aktywnych, Considered).</p>
+
+<p>Interpretacja: kategoria łączy dwa napędy — <strong>zdrowotny</strong> (lęk/ryzyko = „czy zaszkodzi / czy wyda i nie zobaczy efektu") i <strong>aspiracyjny</strong> (aspiracja 0.70 = „chcę skórę jak po gabinecie"). Impuls jest najniższy ze wszystkich — zakup w 100% Considered (cena + czas do efektu). Tożsamość 0.45 = kobieta, która „poważnie dba o siebie" — cep_self_care_routine.</p>
+
+<p><strong>Schwartz — 8 wartości (wagi dla treści CS):</strong></p>
+
+<table>
+<tr><th>Wartość</th><th>Waga</th><th>Co znaczy dla treści</th></tr>
+<tr><td>Hedonizm</td><td>M</td><td>Ritual beauty — sesja LED jako self-care, nie tylko narzędzie</td></tr>
+<tr><td>Stymulacja</td><td>L</td><td>Gadżet nowy, ale nie kupowany impulsowo; nowość nie jest głównym napędem</td></tr>
+<tr><td>Przystosowanie</td><td>L</td><td>Decyzja prywatna, nie grupowa; nie „żeby nie odstawać"</td></tr>
+<tr><td>Osiągnięcia</td><td>H</td><td>„Robię to dobrze / mam właściwy protokół / widzę efekty" — kompetencja beauty</td></tr>
+<tr><td>Bezpieczeństwo</td><td>H</td><td>Ochrona przed starzeniem + ochrona przed ryzykiem (kontraindykacje, zmarnowane pieniądze)</td></tr>
+<tr><td>Życzliwość</td><td>L</td><td>Brak wymiaru dbałości o innych</td></tr>
+<tr><td>Władza</td><td>M</td><td>Premium beauty routine = status — widoczny głównie w cep_self_care_routine</td></tr>
+<tr><td>Universalizm</td><td>L</td><td>Brak wymiaru etycznego / ekologicznego</td></tr>
+</table>
+
+<p><strong>CEV per typ CEP:</strong></p>
+
+<table>
+<tr><th>CEP</th><th>Dominujące suwaki</th><th>Delta vs baza</th><th>Liczba stanów</th></tr>
+<tr><td><code>cep_anti_aging</code></td><td>lęk↑, aspiracja↑</td><td>bazowy Zdrowotny</td><td>5–7</td></tr>
+<tr><td><code>cep_validation</code></td><td>lęk↑↑, aspiracja↑</td><td>inspiracyjność → S2 first</td><td>4–5</td></tr>
+<tr><td><code>cep_safety</code></td><td>lęk↑↑, ryzyko↑↑</td><td>delegowanie do autorytetu</td><td>3–4</td></tr>
+<tr><td><code>cep_clinic_vs_home</code></td><td>ryzyko↑, aspiracja↑</td><td>kalkulacja ROI dominuje</td><td>4–5</td></tr>
+<tr><td><code>cep_protocol</code></td><td>bezpieczeństwo↑</td><td>post-purchase → skrócona</td><td>2–3</td></tr>
+<tr><td><code>cep_self_care_routine</code></td><td>aspiracja↑↑, tożsamość↑↑</td><td>impulsowość aspiracyjna</td><td>3–4</td></tr>
+</table>
+
+<hr>
+
+<h2>2. CEP — Consumer Entry Points (CS 5.7)</h2>
+
+<p><em>10 CEP z contentu, recenzji i soczewek KROK 3c. Destylacja: §0b secondary problems → kandydaci CEP-A → competitor content + recenzje (RICH) → soczewki 3c (Ekonomia ✓, Nowoczesność N/D, Eko N/D, Tożsamość ✓, Zdrowie ✓, Trend ✓) → KROK 3d → GATE sytuacja-vs-atrybut.</em></p>
+
+<table>
+<tr><th>CEP</th><th>Trigger (głos klientki)</th><th>Kontekst</th><th>Primary concern</th><th>🛡️ Bloker decyzji</th><th>Routing/typ produktu</th><th>S2 odpowiedź gasząca</th><th>Temporal</th><th>Typ</th></tr>
+<tr><td><code>cep_anti_aging</code></td><td>„Kremy już mi nie pomagają na zmarszczki — chcę coś, co faktycznie działa na poziomie komórkowym"</td><td>35–55 lat, widzi pierwsze zmarszczki + utratę napięcia, słyszała o LED od koleżanki lub widziała na TikToku; używa serum i kremów od lat — efekt plateau</td><td>Czy naprawdę zobaczy efekt — czy to kolejny gadżet za 1000 zł, który po 2 tygodniach wyląduje w szufladzie</td><td>🛡️ „Wydam 800 zł, 2 tygodnie bez efektu → wyrzucam. Recenzje mówią, że trzeba miesiącami czekać — po co mi to?"</td><td>maska pełnotwarzowa czerwona/NIR (630–660 nm + 830 nm)</td><td>„Czerwony LED i bliski podczerwień stymulują fibroblasty do syntezy kolagenu — potwierdzone klinicznie: elastyczność skóry +19.5%, redukcja zmarszczek -15% po 8–12 tygodniach (3×/tydzień). Pierwsze efekty: 4 tygodnie regularnego stosowania."</td><td>Considered</td><td>SYTUACYJNY (ZDROWOTNY)</td></tr>
+<tr><td><code>cep_validation</code></td><td>„Widziałam maskę LED u influencerki/na TikToku — ale czy to marketing czy naprawdę działa? Na forach piszą placebo"</td><td>Pre-zakup — aktywna faza wątpliwości po ekspozycji na reklamę lub content; wchodzi z zapytaniem „maska LED na twarz opinie / czy działa / forum"</td><td>Dowód że to nie jest bullshit i warto wydać 500–1500 zł — potrzebuje faktu, liczby, certyfikatu, nie marketingu</td><td>🛡️ „Forum medyczne/Reddit: domowe LED to zabawka — prawdziwy efekt tylko w gabinecie dermatologicznym z urządzeniami klasy medycznej. W domu to nic nie zrobi."</td><td>dowolna maska z certyfikatem CE IIa / FDA clearance</td><td>„Fototerapia LED aktywuje mitochondria (cytochrom C oksydaza) → produkcja ATP → synteza kolagenu. Urządzenia z certyfikatem klasy medycznej (CE IIa, FDA-cleared): parametry zgodne z protokołami klinicznymi. Przy regularnym stosowaniu (protokół 4–12 tyg.) — efekty porównywalne z serią 4–6 zabiegów gabinetowych."</td><td>Considered</td><td>SYTUACYJNY (WERYFIKACYJNY)</td></tr>
+<tr><td><code>cep_safety</code></td><td>„Chcę kupić maskę LED, ale biorę retinoidy / mam epilepsję / jestem w ciąży — czy mogę?"</td><td>Wejście przez kontraindykacje: klientka ma specyficzny stan zdrowia lub dietę kosmetyczną (leki fotouczulające) i szuka potwierdzenia bezpieczeństwa PRZED zakupem lub po zakupie</td><td>Czy nie zaszkodzi — bezpieczeństwo ważniejsze niż efekt</td><td>🛡️ „Retinoidy + LED = nie wiem co się stanie z moją skórą. Boję się poparzeń lub gorszego efektu. Nikt mi nie powie wprost."</td><td>maska z certyfikatem + wyraźną listą kontraindykacji</td><td>„Kontraindykacje LED na twarz: czynna epilepsja/padaczka (migające światło), ciąża, aktywny nowotwór skóry, leki fotouczulające (isotretinoina, niektóre antybiotyki). Retinoidy miejscowe (retinol, tretynoin): przerwa 24–48h lub aplikacja rano (LED wieczorem). Witamina C synergizuje z czerwonym LED."</td><td>Considered</td><td>ZDROWOTNY (Stopper → CEP)</td></tr>
+<tr><td><code>cep_clinic_vs_home</code></td><td>„Seria laseroterapii w gabinecie kosztuje mnie 2000 zł — zastanawiam się czy domowa maska LED da podobne efekty i kiedy się zwróci"</td><td>Klientka gabinetów kosmetycznych / SPA; rozważa alternatywę domową; zmęczona logistyką i kosztem serii wizyt</td><td>Czy domowa maska naprawdę da efekty zbliżone do gabinetu i jak szybko się zwróci w stosunku do ceny wizyty</td><td>🛡️ „Maska domowa to nie to samo co laser/profesjonalny LED w gabinecie — po prostu inna moc i specjalista wie jak ustawić parametry. Sama nie ogarniasz."</td><td>maska o mocy ≥60 mW/cm² z protokołem</td><td>„Profesjonalny LED w gabinecie: 150–400 zł/sesja, seria 10–15 sesji = 1500–6000 zł. Domowa maska LED: 400–1500 zł jednorazowo — amortyzuje się po 3–4 sesjach gabinetowych. Parametry techniczne zbliżone: moc 60–150 mW/cm², te same długości fal. Różnica: brak nadzoru specjalisty → wymaga dyscypliny protokołu."</td><td>Considered</td><td>EKONOMICZNY</td></tr>
+<tr><td><code>cep_protocol</code></td><td>„Kupiłam maskę LED — ale jak jej używać? Ile minut, jak często, z czym mogę łączyć, a czego nie?"</td><td>Post-purchase lub pre-purchase research → klientka szuka optymalnego protokołu; często wpada przez „maska LED jak używać / ile minut"</td><td>Czy stosuje prawidłowo i nie blokuje efektów złą kombinacją lub złą kolejnością kosmetyków</td><td>🛡️ „Użyję razem z retinoidem, kwasem i dostanę odwrotny efekt albo podrażnię skórę na długo. Manuali nie rozumiem, producenci piszą po angielsku."</td><td>dowolna maska</td><td>„Protokół LED: 10–20 min/sesja, 3–5×/tydzień. Kolejność: oczyszczenie → sucha skóra → LED → serum/krem natychmiast po. Retinoidy miejscowe: min. 24h przerwy lub stosuj rano (LED wieczorem). Kwasy (AHA/BHA): j.w. — nie w tej samej sesji. Witamina C serum: synergizuje z czerwonym LED — aplikuj zaraz po."</td><td>Considered (Slow-burn)</td><td>SYTUACYJNY (PROTOKOŁOWY)</td></tr>
+<tr><td><code>cep_selection</code></td><td>„Korvica, Silk'n, Foreo, Omnilux — która maska LED jest warta swojej ceny i jak w ogóle porównywać?"</td><td>Pre-purchase research — klientka wie, że chce LED, ale stoi przed chaos wyboru; wchodzi przez „ranking maski LED na twarz / jaka wybrać / najlepsza"</td><td>Pewność, że wybrała właściwy model — nie chce zapłacić za coś słabszego niż mogła</td><td>🛡️ „Droższa wcale nie musi być lepsza. Nie wiem co porównywać — moc, diody, nanometry? Każdy producent chwali swój model i żaden nie mówi tego samego."</td><td>porównanie przez parametry KCF</td><td>„Kluczowe parametry maski LED: (1) moc [mW/cm²] — minimum 60, optimum 100–150; (2) liczba diod — minimum 100 dla pełnej twarzy; (3) długości fal: czerwona 630–660 nm (kolagen), NIR 830 nm (głębsze działanie), niebieska 415–430 nm (trądzik); (4) certyfikat CE IIa lub FDA clearance; (5) pokrycie — twarz + szyja czy tylko twarz."</td><td>Considered</td><td>SYTUACYJNY (PRESELEKCYJNY)</td></tr>
+<tr><td><code>cep_eye_area</code></td><td>„Mam kurze łapki i cienie pod oczami — czy maska LED pomoże na okolice oczu, czy potrzebuję czegoś specjalistycznego?"</td><td>Klientka skupiona na problemie oczu — nie twarzy ogólnie; wchodzi przez „płatki LED pod oczy / led na kurze łapki / GLOV Luna Eye opinie"</td><td>Czy zwykła maska LED jest bezpieczna na oczy i da efekt na tak delikatną okolicę</td><td>🛡️ „LED nie jest bezpieczna na okolice oczu — słyszałam, że można uszkodzić wzrok. Maska zakrywa oczy — to nie może być OK."</td><td>płatki LED specjalistyczne (subkategoria → GLOV Luna Eye)</td><td>„Maski pełnotwarzowe zakrywają oczy z zewnątrz (brak ekspozycji bezpośredniej). Specjalistyczne płatki LED (GLOV Luna Eye): emitują 660 nm + 850 nm w bezpiecznych parametrach IEC 62471 na zamknięte powieki. Recenzje: 'skóra pod oczami bardziej napięta i wypoczęta', 'zmniejszenie cieni'. Protokół: 10–15 min/sesja."</td><td>Considered</td><td>ZDROWOTNY (routuje → <code>platki_led_oczy</code>)</td></tr>
+<tr><td><code>cep_acne_skin</code></td><td>„Mam trądzik dorosły / stany zapalne — czy niebieskie LED w masce naprawdę pomagają na zmiany skórne?"</td><td>25–45 lat, wypryski hormonalne / trądzik dorosły; szuka alternatywy do farmakologii lub uzupełnienia leczenia; wchodzi przez „maska LED na trądzik / niebieski LED na zmiany"</td><td>Czy LED faktycznie redukuje trądzik i czy nie zaostrzy stanów aktywnych</td><td>🛡️ „Niebieskie LED wypalają trądzik na YouTube, ale tam to urządzenia kliniczne za 10 000 zł — domowe to inna bajka, za niska moc żeby zrobić różnicę"</td><td>maska z niebieskim LED 415–430 nm (+ opcjonalnie czerwony)</td><td>„Niebieski LED 415–430 nm inaktywuje Propionibacterium acnes przez fotodynamiczne pobudzenie porfiryn bakteryjnych. Badania kliniczne domowych urządzeń (moc 40–100 mW/cm²): redukcja zmian zapalnych -77% po 4 tygodniach (5×/tydzień). Czerwony LED równolegle: redukuje stan zapalny i przyspiesza gojenie."</td><td>Considered</td><td>ZDROWOTNY</td></tr>
+<tr><td><code>cep_self_care_routine</code></td><td>„Chcę zbudować swój rytuał pielęgnacyjny — widziałam u influencerek LED jako element beauty routine. Chcę mieć taką samą rutynę"</td><td>Aspiracyjna — klientka nie ma konkretnego problemu skórnego (lub jest minimalny); motywacja: przynależność do świata „kobiet, które dbają o siebie"; wchodzi przez inspirację z Instagrama/TikToka</td><td>Czy będzie to realne do utrzymania (czy nie wymagająca procedura) i czy naprawdę „coś da"</td><td>🛡️ „Kolejna gadżetoza. Kupisz, będziesz używać 3 razy i zapomni się. Nie masz czasu / dyscypliny / to nie styl życia dla ciebie."</td><td>maska user-friendly (prosta obsługa, tryb auto-off, mobilna)</td><td>„LED ritual: 10–15 min dziennie → dosłownie tyle ile serial na Netflixie. Staje się częścią wieczornej rutyny: po demakijażu, przed kremem. Pierwsze 4 tygodnie: konsekwencja → efekt. GLOV, CurrentBody, Omnilux: zaprojektowane pod codzienne użycie domowe."</td><td>Considered</td><td>TOŻSAMOŚCIOWY (Soczewka 4: Tożsamość/self-care)</td></tr>
+<tr><td><code>cep_pigmentation</code></td><td>„Mam przebarwienia po ciąży / słońcu / hormonach — czy LED na twarz wyrówna mi koloryt?"</td><td>30–50 lat, plamy po UV/hormonach; szuka nieinwazyjnej opcji po nieudanych próbach z kremami; wchodzi przez „maska LED na przebarwienia / wyrównanie kolorytu / zielony LED"</td><td>Czy LED nie zaostrzy przebarwień (lęk: UV wzmacnia plamy) i czy faktycznie wyrówna koloryt</td><td>🛡️ „Przebarwienia to są moje melanocyty — LED może to aktywować i zrobić jeszcze gorzej. Dermatolog mi powiedział słońce = nie, ale LED to też światło."</td><td>maska z zielonym LED 520 nm i/lub żółtym 590 nm (+ czerwony)</td><td>„Zielony LED (520 nm) spowalnia nadprodukcję melaniny przez hamowanie tyroznazy — efekt rozjaśniający i wyrównujący koloryt. Żółty (590 nm): redukuje zaczerwienienia. LED NIE stymuluje melanogenezy jak UV (inne mechanizmy fotobiologiczne). Protokół minimum 8 tyg.; chronić obszary po sesji SPF."</td><td>Considered</td><td>ZDROWOTNY</td></tr>
+</table>
+
+<hr>
+
+<h2>2b. WERYFIKACJA CEP — cechy modyfikujące ścieżkę (KROK 3d)</h2>
+
+<table>
+<tr><th>CEP</th><th>Cecha modyfikująca</th><th>Sygnatura w triggerze</th><th>Deformacja ścieżki</th></tr>
+<tr><td><code>cep_anti_aging</code></td><td>brak nagłości</td><td>„kremy już nie pomagają" — przewlekłe, brak daty</td><td>Ścieżka pełna (Considered): silna Nauka (P2), silna Preselekcja (P6), długa ścieżka 5–7 stanów. Brak skrótu.</td></tr>
+<tr><td><code>cep_validation</code></td><td>inspiracyjność↑</td><td>„widziałam u influencerki / TikTok" — ale od razu zderzenie z wątpliwością</td><td>Rozdyma social proof (P3) i fakty (P2), wygasza Preselekcję (P6) — klientka szuka TAK/NIE, nie rankingu parametrów.</td></tr>
+<tr><td><code>cep_safety</code></td><td>delegowanie-zewnętrzne (do lekarza)</td><td>„mam epilepsję / biorę lek — czy mogę?" — pytanie do autorytetu medycznego</td><td>Rozdyma weryfikację autorytetu (P3 medyczne): klientka szuka POTWIERDZENIA, nie persuasji. Skraca Naukę (P2). Wygasza Preselekcję (P6) — decyzja buy/no-buy, nie który model.</td></tr>
+<tr><td><code>cep_clinic_vs_home</code></td><td>brak nagłości</td><td>„zastanawiam się" — slow consideration, kalkulacja ROI</td><td>Silna kalkulacja ekonomiczna (P6 ROI), Nauka (P2) umiarkowana, ścieżka 4–5 stanów.</td></tr>
+<tr><td><code>cep_protocol</code></td><td>post-purchase (często)</td><td>„kupiłam maskę LED" — już zdecydowana, szuka optymalizacji</td><td>Krótka ścieżka (2–3 stany): już na P7/P8 — informacja, nie perswazja. Content FAQ/instruktażowy, nie zakupowy.</td></tr>
+<tr><td><code>cep_selection</code></td><td>brak deformacji (bazowa)</td><td>„jaka wybrać" — klasyczny pre-purchase research</td><td>Ścieżka standardowa Considered: Nauka (P2) + Porównanie (P6) dominujące.</td></tr>
+<tr><td><code>cep_eye_area</code></td><td>lęk zdrowotny</td><td>„słyszałam, że można uszkodzić wzrok" — strach jako trigger</td><td>Rozdyma bezpieczeństwo (P2 + P3): klientka szuka BEZPIECZNY TAK/NIE zanim w ogóle rozważy który model. Wygasza Porównanie (P6).</td></tr>
+<tr><td><code>cep_acne_skin</code></td><td>zdrowotny-łagodny</td><td>„czy poradzi sobie" — wątpliwość co do skuteczności domowej</td><td>Rozdyma dowody kliniczne (P2), wygasza Porównanie (P6). Klientka szuka efektu, nie marki.</td></tr>
+<tr><td><code>cep_self_care_routine</code></td><td>impulsowość↑ aspiracyjna</td><td>„widziałam u influencerki — chcę tak samo"</td><td>Skraca Naukę (P2), rozdyma social proof / inspirację (P3), wzmacnia Identyfikację (P4). Ścieżka 3–4 stany.</td></tr>
+<tr><td><code>cep_pigmentation</code></td><td>lęk zdrowotny</td><td>„czy nie aktywuje melanocytów" — strach przed pogorszeniem</td><td>Rozdyma bezpieczeństwo (P2 medyczne), wygasza Porównanie (P6). Klientka szuka BEZPIECZNE + DZIAŁA w jednym.</td></tr>
+</table>
+
+<hr>
+
+<h2>3. Discovery Questions (CS 5.7 — 2–4 per CEP, z blokerów)</h2>
+
+<p><em>Reguła: iteruję po CEP-ach, dla każdego 2–4 pytania z blokerów i primary concern. Głos klientki — zdania, które piszą do Google/AI. Total: 28 pytań, ~2.8× liczba CEP (9 CEP).</em></p>
+
+<h3><code>cep_anti_aging</code> → 3 pytania</h3>
+<ol><li>Jak długo trzeba używać maski LED żeby zobaczyć efekty na zmarszczki? <em>(bloker: „2 tygodnie bez efektu → wyrzucam")</em></li><li>Czy maska LED na twarz naprawdę działa na zmarszczki czy to placebo?</li><li>Co dzieje się z kolagenem pod wpływem czerwonego LED — jak to działa?</li></ol>
+
+<h3><code>cep_validation</code> → 3 pytania</h3>
+<ol><li>Czy domowa maska LED jest równie skuteczna co zabieg LED w gabinecie kosmetycznym?</li><li>Jak działają maski LED — czy jest na to naukowe potwierdzenie?</li><li>Maska LED na twarz — opinie dermatologów: czy warto kupić?</li></ol>
+
+<h3><code>cep_safety</code> → 4 pytania</h3>
+<ol><li>Czy można używać maski LED na twarz w ciąży?</li><li>Czy maska LED jest bezpieczna przy epilepsji?</li><li>Czy można stosować maskę LED razem z retinoidami albo kwasem AHA?</li><li>Jakie są przeciwwskazania do maski LED na twarz? <em>(bloker: „retinoidy + LED = co się stanie")</em></li></ol>
+
+<h3><code>cep_clinic_vs_home</code> → 3 pytania</h3>
+<ol><li>Ile kosztuje seria zabiegów LED w gabinecie i kiedy domowa maska LED się zwraca?</li><li>Czy domowa maska LED może zastąpić zabiegi w gabinecie kosmetycznym?</li><li>Jaka jest różnica między LED w salonie a LED domowym — moc, efekty?</li></ol>
+
+<h3><code>cep_protocol</code> → 3 pytania</h3>
+<ol><li>Jak często i ile minut używać maski LED na twarz żeby osiągnąć efekty?</li><li>Czy można stosować krem z retinolem razem z maską LED w tej samej pielęgnacji?</li><li>Jaką kolejność zastosować: maska LED przed czy po serum i kremie?</li></ol>
+
+<h3><code>cep_selection</code> → 3 pytania</h3>
+<ol><li>Jaka maska LED na twarz jest najlepsza — co porównywać przy wyborze?</li><li>Korvica vs Silk'n maska LED — czym się różnią i która jest lepsza?</li><li>Ile diod i jaka moc (mW/cm²) powinna mieć dobra maska LED?</li></ol>
+
+<h3><code>cep_eye_area</code> → 3 pytania</h3>
+<ol><li>Czy maska LED na twarz jest bezpieczna na okolice oczu?</li><li>Czy płatki LED pod oczy działają na kurze łapki i cienie?</li><li>Jak działa GLOV Luna Eye — czy to bezpieczne stosowanie LED na powieki?</li></ol>
+
+<h3><code>cep_acne_skin</code> → 2 pytania</h3>
+<ol><li>Czy niebieski LED w masce domowej naprawdę pomaga na trądzik dorosły?</li><li>Jak często stosować niebieski LED na wypryski żeby widzieć efekt?</li></ol>
+
+<h3><code>cep_self_care_routine</code> → 2 pytania</h3>
+<ol><li>Jak wbudować maskę LED w codzienną rutynę pielęgnacyjną — przykładowy plan?</li><li>Czy maska LED jest dobra dla skóry 35+ jako element anti-aging routine?</li></ol>
+
+<h3><code>cep_pigmentation</code> → 2 pytania</h3>
+<ol><li>Czy maska LED wyrównuje przebarwienia po ciąży i słońcu?</li><li>Jaki kolor LED działa na przebarwienia — zielony, żółty czy czerwony?</li></ol>
+
+<hr>
+
+<h2>4. KCF — Key Category Features</h2>
+
+<table>
+<tr><th>Feature</th><th>Zakres</th><th>Tier</th></tr>
+<tr><td>Długość fali / kolor LED</td><td>Czerwony 630–660 nm (kolagen/naprawczy), Niebieski 415–430 nm (trądzik/stany zapalne), NIR 830 nm (głęboka tkanka), Zielony 520 nm (przebarwienia/koloryt), Żółty 580 nm (wrażliwa/naczyniowa)</td><td>T1</td></tr>
+<tr><td>Moc irradiancji [mW/cm²]</td><td>≥60 mW/cm² = terapeutyczna; <30 mW/cm² = dekoracyjna (brak efektu klinicznego). MUSI być podana.</td><td>T1</td></tr>
+<tr><td>Certyfikat bezpieczeństwa</td><td>CE IIa (wyrób medyczny, obowiązek EU), FDA 510(k) clearance (import premium), IEC 62471 (fotobezpieczeństwo)</td><td>T1</td></tr>
+<tr><td>Format urządzenia</td><td>Maska pełnotwarzowa (90% rynku PL), płatki specjalistyczne (oczy/szyja/dekolt), panel stacjonarny (salony/power user)</td><td>T2</td></tr>
+<tr><td>Liczba diod LED</td><td>≥100 diod dla pełnej twarzy; ≥200 diod dla maski premium (gęstość pokrycia)</td><td>T2</td></tr>
+<tr><td>Czas sesji</td><td>10–20 min na protokół (standard); auto-off = must-have (brak = red flag)</td><td>T2</td></tr>
+<tr><td>Pokrycie obszaru</td><td>Pełna twarz + szyja (standard 2026); subkategoria oko-specyficzna (płatki)</td><td>T2</td></tr>
+<tr><td>Zasilanie</td><td>USB-C (standard 2026), bezprzewodowe (premium), kabel zasilający (budżet)</td><td>T2</td></tr>
+<tr><td>Waga urządzenia</td><td><300 g = komfort sesji; >500 g = obciążenie szyi w pozycji leżącej</td><td>T3</td></tr>
+<tr><td>Wodoodporność</td><td>IP67+ (możliwość mycia urządzenia); brak IP = red flag dla higieny</td><td>T3</td></tr>
+<tr><td>Aplikacja mobilna + protokół</td><td>App + Bluetooth (premium, personalizacja protokołu); instrukcja papierowa (standard); wbudowany timer (minimum)</td><td>T3</td></tr>
+</table>
+
+<hr>
+
+<h2>5. Typowy Produkt</h2>
+
+<table>
+<tr><th>Cecha</th><th>Norma PL 2026</th><th>Red flag</th></tr>
+<tr><td>Format</td><td>Maska pełnotwarzowa z regulowanymi paskami</td><td>Gogle-UV jako zamiennik maski LED</td></tr>
+<tr><td>Kolory LED</td><td>Min. 3 (czerwony + niebieski + zielony lub NIR)</td><td>Jedna długość fali — nie wystarczy do wieloproblemowego działania</td></tr>
+<tr><td>Liczba diod</td><td>100–300 dla twarzy + szyja</td><td><50 diod — niewystarczające pokrycie</td></tr>
+<tr><td>Moc irradiancji</td><td>≥60 mW/cm² podana przez producenta</td><td>Brak specyfikacji mW/cm² — produkt nie podaje kluczowego parametru</td></tr>
+<tr><td>Certyfikat</td><td>CE IIa (klasa urządzeń medycznych II)</td><td>Brak CE lub CE bez klasy (tylko CE = brak oceny medycznej)</td></tr>
+<tr><td>Auto-off</td><td>10–15 min, wbudowany licznik</td><td>Brak auto-off: „używaj do skutku" — ryzyko przegrzania</td></tr>
+<tr><td>Zasilanie</td><td>USB-C + adapter (lub wbudowany akumulatorek)</td><td>Tylko baterie AA/AAA (2026 = niestandard)</td></tr>
+<tr><td>Materiał</td><td>ABS medyczny/PC, wentylacja termiczna, bez BPA</td><td>Plastik bez opisu materiałów, brak wentylacji = ryzyko oparzenia</td></tr>
+<tr><td>Gwarancja</td><td>24 miesiące (wymóg PL), serwis w UE</td><td>12 mies. bez UE serwisu — import spoza EU</td></tr>
+<tr><td>Instrukcja</td><td>PL/DE + schemat protokołu z częstotliwością</td><td>Brak instrukcji PL, tylko EN — dystrybutor bez wsparcia</td></tr>
+</table>
+
+<hr>
+
+<h2>6. Tier Specs</h2>
+
+<table>
+<tr><th>Tier</th><th>Parametry</th><th>Znaczenie</th></tr>
+<tr><td><strong>T1 Universal</strong> — musi mieć każdy model</td><td>Czerwony 660 nm · Niebieski 415 nm · CE (min.) · Auto-off · ≥50 diod · Instrukcja</td><td>Bez tych — produkt nie działa terapeutycznie lub jest ryzykowny</td></tr>
+<tr><td><strong>T2 Differentiator</strong> — wyróżnia dobry od podstawowego</td><td>NIR 830 nm · ≥100 diod · Moc ≥60 mW/cm² (podana) · Pokrycie twarz+szyja · USB-C · Waga <300g · CE IIa</td><td>Parametry decydujące o efekcie klinicznym i komforcie sesji</td></tr>
+<tr><td><strong>T3 Niche</strong> — premium i specjalistyczne</td><td>FDA 510(k) clearance · ≥5 długości fali · App + Bluetooth protokoły · IP67+ · Before/after tracker · Dermatolog-approved protokoły</td><td>Dla power userów, klientów gabinetowych przechodzących na home-use</td></tr>
+</table>
+
+<hr>
+
+<h2>7. 💰 Tier Pricing — PLN, Polska 2026</h2>
+
+<table>
+<tr><th>Tier</th><th>Widełki PL</th><th>Co dostajesz</th><th>Przykładowe marki</th><th>Ryzyko</th></tr>
+<tr><td>Budżet</td><td>150–399 zł</td><td>3 kolory LED, brak CE IIa, import (AliExpress/Amazon), plastik podstawowy, brak specyfikacji mW/cm², 90 dni–12 mies. gwarancja</td><td>No-brand, MZ Beauté (import), generic Amazon</td><td>Brak certyfikatu = brak oceny bezpieczeństwa; parametry nieveryfikowalne</td></tr>
+<tr><td>Średni</td><td>400–899 zł</td><td>3–5 kolorów LED, CE IIa, 100–200 diod, auto-off, USB-C, ≥60 mW/cm², 24m gwarancja PL, marka z historią i serwisem EU</td><td>Korvica, Silk'n, Foreo, marka PL/EU</td><td>Najlepsza relacja jakość/cena dla 90% użytkowników</td></tr>
+<tr><td>Premium</td><td>900–2000+ zł</td><td>NIR 830 nm, 5–7 długości fali, FDA 510(k) clearance lub dermatolog-approved, ≥200 diod, app + Bluetooth protokoły, 36m gwarancja, klinicznie badane protokoły</td><td>CurrentBody, Omnilux, Dr Dennis Gross, Currentbody Skin</td><td>Najwyższy efekt kliniczny; uzasadniony dla klientów gabinetowych (ROI vs seria 1500–3000 zł)</td></tr>
+</table>
+
+<p>> 🧭 <strong>Decyzja cenowa dla AI:</strong> klientka z <code>cep_clinic_vs_home</code> racjonalizuje zakup tier Premium — ROI vs gabinet (3 zabiegi = 1500 zł = koszt urządzenia). Tier Budżet aktywuje <code>cep_validation</code> (brak certyfikatu = „czy to bezpieczne?").</p>
+
+<hr>
+
+<h2>8. Consumer Decision Tree</h2>
+
+<pre><code>Q1: Który problem jest priorytetowy?
+├── Zmarszczki / starzenie / utrata elastyczności → [priorytet: czerwony 660 nm + NIR] → Q2
+├── Trądzik / wypryski / stany zapalne → [priorytet: niebieski 415 nm] → Q2b
+├── Przebarwienia / nierówny koloryt → [priorytet: zielony/żółty + czerwony] → Q2
+├── Okolica oczu (kurze łapki, cienie, worki) → [subkategoria płatki LED] → Q_eye
+└── „Chcę to co najlepsze&quot; / ritual beauty / influencer → Q3
+
+Q2 (zmarszczki/koloryt): Budżet?
+├── Do 400 zł → budżet tier (sprawdź CE! — wyklucz brak certyfikatu)
+├── 400–900 zł → średni tier → Korvica / Silk&#x27;n → Q2c
+└── 900+ zł → premium tier → CurrentBody / Omnilux → Q2c
+
+Q2b (trądzik): Czy stosujesz leki dermatologiczne?
+├── Tak (retinoidy / antybiotyki topiczne) → najpierw konsultacja dermatologa → LED dopiero po ocenie
+└── Nie → niebieski 415 nm, protokół 3–4×tydz., 10 min → Q2c
+
+Q2c: Masz aktywne fotodermatozy / padaczkę / ciążę / implanty metalowe aktywne?
+├── Tak → STOP → cep_safety — konsultacja lekarska
+└── Nie → przejdź do wyboru modelu per tier
+
+Q3 (ritual/influencer): Czy masz skórę skłonną do podrażnień lub alergii na kosmetyki?
+├── Tak → average tier, min. 3 kolory, unikaj pierwszego tygodnia codziennie
+└── Nie → dowolny tier per budżet → priorytet: CE IIa + auto-off + ≥60 mW/cm²
+
+Q_eye: Jedyne płatki LED pod oczy dostępne w PL → GLOV Luna Eye (cep_eye_area)</code></pre>
+
+<p>> <strong>Engine decyzyjny:</strong> 4 wejścia (problem → budżet → kontraindykacje → bramka bezpieczeństwa). Blokada <code>cep_safety</code> = twardy stop — nie routing do modelu, do lekarza.</p>
+
+<hr>
+
+<h2>9. Forbidden Patterns</h2>
+
+<table>
+<tr><th>❌ Forbidden (vague / hype)</th><th>✅ Konkret (parametr + norma)</th></tr>
+<tr><td>„poprawia skórę i rozświetla"</td><td>„czerwony LED 660 nm aktywuje syntezę kolagenu I i III w fibroblastach skóry właściwej"</td></tr>
+<tr><td>„bezpieczna dla całej twarzy i oczu"</td><td>„spełnia normę IEC 62471 klasa 0 (fotobezpieczeństwo); maska zakrywa powieki — nie gogle UV otwarte"</td></tr>
+<tr><td>„szybkie efekty już po pierwszej sesji"</td><td>„pierwsze efekty widoczne po 4 tygodniach regularnego stosowania (3–4 sesje/tydz.); pełny rezultat po 8–12 tygodniach"</td></tr>
+<tr><td>„zatwierdzona przez dermatologów"</td><td>„model X posiada FDA 510(k) clearance; model Y certyfikat CE IIa zgodnie z Dyrektywą 93/42/EEC wyrobów medycznych"</td></tr>
+<tr><td>„działa lepiej niż konkurencja"</td><td>„175 diod LED vs średnia kategorii 100 diod; moc 88 mW/cm² vs próg terapeutyczny 60 mW/cm²; 7 długości fali vs standard 3–5"</td></tr>
+</table>
+
+<hr>
+
+<h2>10. Ścieżki percepcji & persony</h2>
+
+<h3>Persona A — Monika, 42 lata <code>cep_anti_aging</code></h3>
+<p><em>Matka 2 dzieci, krem z retinolem od roku, „coraz bardziej widać wiek". Szuka czegoś mocniejszego bez wizyty w gabinecie.</em></p>
+
+<table>
+<tr><th>Stan</th><th>Pytania kluczowe</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>Discovery</td><td>„czy maska LED naprawdę działa na zmarszczki?"</td><td>weryfikacja kategorii</td><td>Before/after + badania kliniczne</td></tr>
+<tr><td>Research</td><td>„maska LED Korvica vs Silk'n — która lepsza?"</td><td>porównanie modeli</td><td>Tabela cech + recenzje</td></tr>
+<tr><td>Decision</td><td>„ile kosztuje maska LED Korvica?"</td><td>gotowość do zakupu</td><td>Cena + certyfikat + gwarancja</td></tr>
+<tr><td>Post-purchase</td><td>„po jakim czasie widać efekty maski LED?"</td><td>nauka protokołu</td><td>Instrukcja tygodniowa + oś czasu</td></tr>
+</table>
+
+<h3>Persona B — Kasia, 29 lat <code>cep_acne_skin</code></h3>
+<p><em>Trądzik dorosły, po 2 kursach antybiotyku. Szuka naturalnego wsparcia — „kosmetyki already tried".</em></p>
+
+<table>
+<tr><th>Stan</th><th>Pytania kluczowe</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>Discovery</td><td>„niebieski LED na trądzik — czy to prawda?"</td><td>weryfikacja (sceptyczna)</td><td>Mechanizm 415 nm + cytowania badań</td></tr>
+<tr><td>Research</td><td>„czy można używać LED przy antybiotyku na skórę?"</td><td>bezpieczeństwo</td><td>FAQ protokół + konsultacja dermo</td></tr>
+<tr><td>Decision</td><td>„maska LED na trądzik cena"</td><td>zakup</td><td>Tier budżetowy / średni + CE</td></tr>
+</table>
+
+<h3>Persona C — Agnieszka, 38 lat <code>cep_clinic_vs_home</code></h3>
+<p><em>Stała klientka gabinetowa (laserowe 500–800 zł/zabieg, seria 4 = 2400 zł). ROI-driven — liczy czy warto.</em></p>
+
+<table>
+<tr><th>Stan</th><th>Pytania kluczowe</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>Discovery</td><td>„domowa maska LED vs laser frakcyjny"</td><td>porównanie ROI</td><td>Mechanizm vs efekt + tabela kosztów</td></tr>
+<tr><td>Research</td><td>„która maska LED ma FDA clearance?"</td><td>walidacja jakości</td><td>Certyfikaty + kliniczne protokoły</td></tr>
+<tr><td>Decision</td><td>„CurrentBody Skin LED maska cena Polska"</td><td>premium tier</td><td>Cena + dostępność + gwarancja</td></tr>
+</table>
+
+<h3>Persona D — Ola, 35 lat <code>cep_self_care_routine</code></h3>
+<p><em>Beauty influencer-consumer, ritual-driven. Widzi LED u ulubionych twórczyń — chce „ten sam efekt".</em></p>
+
+<table>
+<tr><th>Stan</th><th>Pytania kluczowe</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>Discovery</td><td>„maska LED jak u influencerek"</td><td>tożsamość / naśladownictwo</td><td>Lifestyle + ritual + social proof</td></tr>
+<tr><td>Research</td><td>„jaka maska LED jest na Instagramie?"</td><td>brand validation</td><td>Recenzje + opinie + unboxing</td></tr>
+<tr><td>Decision</td><td>„maska LED gdzie kupić"</td><td>zakup natychmiastowy</td><td>CTA + dostępność + cena</td></tr>
+</table>
+
+<h3>Persona E — Beata, 52 lata <code>cep_pigmentation</code> + <code>cep_safety</code></h3>
+<p><em>Przebarwienia posłoneczne post-menopauzalne, stosuje retinol 0.5%. Boi się pogorszyć.</em></p>
+
+<table>
+<tr><th>Stan</th><th>Pytania kluczowe</th><th>Intencja</th><th>Typ treści</th></tr>
+<tr><td>Discovery</td><td>„LED na przebarwienia posłoneczne — który kolor?"</td><td>orientacja</td><td>Zielony/żółty LED + mechanizm</td></tr>
+<tr><td>Research</td><td>„czy można używać maski LED z retinolem?"</td><td>bezpieczeństwo</td><td>Protokół: LED → 24h → retinol</td></tr>
+<tr><td>Decision</td><td>„maska LED cena gdzie kupić"</td><td>zakup (po walidacji)</td><td>Tier średni + gwarancja + CE IIa</td></tr>
+</table>
+
+<hr>
+
+<h2>11. Cross-Category Triggers</h2>
+
+<table>
+<tr><th>Kategoria źródłowa</th><th>Trigger (co popycha do maski LED)</th><th>CEP</th><th>Typowa fraza w AI</th></tr>
+<tr><td>Gabinet kosmetyczny / laser frakcyjny</td><td>klientka pyta o tańszą home-use alternatywę</td><td><code>cep_clinic_vs_home</code></td><td>„domowy zamiennik lasera frakcyjnego na zmarszczki"</td></tr>
+<tr><td>Krem z retinolem / witamina C (plateau)</td><td>„krem już przestaje działać — co dalej?"</td><td><code>cep_anti_aging</code></td><td>„co zamiast retinolu na głębsze zmarszczki"</td></tr>
+<tr><td>Leki dermatologiczne na trądzik (antybiotyk topiczny)</td><td>szuka wsparcia bez leków</td><td><code>cep_acne_skin</code></td><td>„LED przy trądziku dorosłym w trakcie leczenia"</td></tr>
+<tr><td>Krem retinol (aktywny)</td><td>pytanie o łączenie z LED</td><td><code>cep_protocol</code></td><td>„czy można stosować retinol razem z maską LED"</td></tr>
+<tr><td>Peelingi / kwasy AHA/BHA</td><td>integracja protokołu daily</td><td><code>cep_protocol</code></td><td>„peeling chemiczny a maska LED — kolejność"</td></tr>
+<tr><td>Krem na przebarwienia (plateau)</td><td>augmentacja terapii</td><td><code>cep_pigmentation</code></td><td>„który kolor LED działa na przebarwienia posłoneczne"</td></tr>
+<tr><td>GLOV brand search</td><td>brand LED discovery</td><td><code>cep_eye_area</code></td><td>„GLOV Luna Eye opinie / gdzie kupić"</td></tr>
+<tr><td>Seria zabiegów gabinetu (4–6 sesji)</td><td>ROI racjonalizacja home-use</td><td><code>cep_clinic_vs_home</code></td><td>„ile kosztuje seria laserowa vs domowa maska LED"</td></tr>
+</table>
+
+<hr>
+
+<h2>12. Tone of Voice for GEO</h2>
+
+<h3>Cytowalność (S2 facts — AI cytuje liczby, nie przymiotniki)</h3>
+
+<ol><li>Zawsze podaj nm: „czerwony LED 660 nm", nigdy „czerwone światło" — AI odpowiada dosłownie na pytania o parametry</li><li>Moc w mW/cm² przy każdym opisie urządzenia: „88 mW/cm² vs próg terapeutyczny 60 mW/cm²"</li><li>Efekty w tygodniach i sesjach: „po 4 tygodniach, 3 sesje/tydz., 10 min" — nie „szybko" / „w krótkim czasie"</li><li>Kliniczne źródło gdy dostępne: „w metaanalizie 37 badań (PubMed 2022)" — AI waży cytowane źródła wyżej</li><li>Zawsze: widełki cenowe PL z rokiem: „400–900 zł (PL 2026)" — podtrzymuje aktualność</li></ol>
+
+<h3>Język konsumenta (jak mówi klientka, nie dermatolog)</h3>
+
+<ol><li>„Zmarszczki mimiczne" — tak; „zmarszczki statyczne linii głębinowej" — nie (dermato-speak)</li><li>„Kurze łapki przy oczach" — tak; „zmarszczki periorbitalne" — nie</li><li>„10 minut dziennie" > „protokół fototerapeutyczny dzienny"</li><li>„Zamiast wizyty w gabinecie" — frame który kupuje, używaj jako anchor cep_clinic_vs_home</li><li>„Po 4 tygodniach zobaczysz efekty" — nadzieja + konkret + rama czasowa (nie „efekty widoczne")</li></ol>
+
+<h3>Parsing (struktura dla AI — jak AI wyciąga informacje)</h3>
+
+<ol><li>Każdy problem → osobny H2 z pytaniem wprost: „Czy maska LED usuwa zmarszczki?" — AI parsuje H2 jako query-match</li><li>S2-first: jedna zdana odpowiedź PRZED rozwinięciem: „Tak — czerwony LED 660 nm stymuluje fibroblasty. Efekt widoczny po 4 tygodniach regularnych sesji."</li><li>Tabela: Kolor LED → Problem → Czas sesji — AI parsuje tabele dosłownie i cytuje je jako snippet</li><li>FAQ z odpowiedzią ≤2 zdania przed elaboracją — Google i AI oba preferencjonują 40–60 słów dla snippet</li><li>Unikaj akapitów >5 zdań bez H3 — AI tenduje do ucięcia długich bloków bez struktury</li></ol>
+
+<h3>Zaufanie (klientka boi się zmarnować pieniądze i zaszkodzić skórze)</h3>
+
+<ol><li>Nigdy: „przełomowy", „rewolucyjny", „spektakularny" — marketing-hype AI depriorytetyzuje przy rankingowaniu cytowalności</li><li>Używaj: „potwierdzone klinicznie", „w badaniu z X uczestnikami", „wg protokołu X" — AI waży instytucjonalne sformułowania wyżej</li><li>Kontraindykacje zawsze wymień wprost (padaczka, ciąża, implanty aktywne, fotosensytywność) — budują zaufanie, redukują <code>cep_safety</code> bloker</li><li>Certyfikat + organ: „CE IIa", „FDA 510(k) clearance" — nie tylko „certyfikowana" (to puste)</li><li>S2-rule (≥3 fakty cytowalne per sekcja): liczba diod + nm + tygodnie + certyfikat + cena PL — każda sekcja musi mieć minimum 3 z tych kotwic</li></ol>
+
+<hr>
+<p><em>Determ.: FUND_maska_led_na_twarz.md + competitor content LED pod oczy + recenzje. CS 5.7 — §0c + §2 CEP + §2b KROK 3d + §3 Discovery z danych. Sloty LLM: CEV · KCF · Tier Specs · Tier Pricing · DT · Forbidden · Ścieżki · Cross · Tone.</em></p>
+</div>
+  </div>
+</div>
+
 </div>
 <script>
-const SRC={mapa:'MAPA_PERCEPCJI_maska_led_na_twarz_v5.5.html',cs:'cs_maska_led_na_twarz.html'};
-const cache={};
-async function fetchHTML(url){
-  if(cache[url]) return cache[url];
-  const r=await fetch(url);
-  if(!r.ok) throw new Error(r.status+' '+url);
-  cache[url]=await r.text();
-  return cache[url];
-}
-function inject(htmlStr, container){
-  const dp=new DOMParser().parseFromString(htmlStr,'text/html');
-  container.innerHTML='';
-  dp.querySelectorAll('style,link[rel="stylesheet"]').forEach(s=>{
-    container.appendChild(document.importNode(s,true));
-  });
-  Array.from(dp.body.childNodes).forEach(n=>container.appendChild(document.importNode(n,true)));
-  container.querySelectorAll('script').forEach(old=>{
-    const ns=document.createElement('script');
-    if(old.src){ns.src=old.src;}else{ns.textContent=old.textContent;}
-    old.replaceWith(ns);
-  });
-}
-const done={};
-async function ensure(key,targetId){
-  if(done[targetId]) return;
-  done[targetId]=true;
-  try{inject(await fetchHTML(SRC[key]),document.getElementById(targetId));}
-  catch(e){document.getElementById(targetId).innerHTML='<div class="spinner" style="color:#cf222e">❌ '+e.message+'</div>';}
-}
-async function sw(btn,id){
+function sw(btn,id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.panel,.combined').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tab-'+id).classList.add('active');
-  if(id==='mapa') await ensure('mapa','tab-mapa');
-  else if(id==='cs') await ensure('cs','tab-cs');
-  else{await Promise.all([ensure('mapa','comb-mapa'),ensure('cs','comb-cs')]);}
+  var pm=document.getElementById('panel-mapa'),pc=document.getElementById('panel-cs');
+  if(id==='mapa'){pc.style.display='none';pm.style.display='';}
+  else{pm.style.display='none';pc.style.display='block';}
 }
-ensure('mapa','tab-mapa');
+</script>
+<script>
+const A=[
+{nr:1,t:"Czy maska LED na twarz faktycznie wygładzi moje zmarszczki, czy to kolejny gadżet bez efektu?",p:"A",s:["A1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:2,t:"Ile kosztuje porządna maska LED, która realnie działa na ogólne starzenie się skóry?",p:"A",s:["A1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:3,t:"Jak szybko zobaczę pierwsze efekty na zmarszczkach, jeśli zacznę używać maski LED?",p:"A",s:["A1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:4,t:"Czy maska LED na twarz działa na zmarszczki wokół oczu i ust, czy tylko na ogólne napięcie skóry?",p:"A",s:["A2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:5,t:"Jakie są przeciwwskazania do stosowania maski LED przy ogólnym anti-agingu, np. przy trądziku różowatym?",p:"A",s:["A2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:6,t:"Po jakim czasie regularnego stosowania maska LED daje widoczną redukcję zmarszczek na całej twarzy?",p:"A",s:["A2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:7,t:"Czym różni się maska LED od lampy LED w kontekście walki ze zmarszczkami – która jest skuteczniejsza?",p:"A",s:["A3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:8,t:"Jakie długości fal (np. czerwone, podczerwone) są najlepsze do ogólnego odmładzania i wygładzania zmarszczek?",p:"A",s:["A3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:9,t:"Czy maski LED z większą liczbą diod dają lepsze efekty anti-aging, czy to tylko chwyt marketingowy?",p:"A",s:["A3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:10,t:"Która maska LED na twarz ma najlepsze opinie w kategorii anti-aging i zmarszczki – Dr. Dennis Gross czy CurrentBody?",p:"A",s:["A4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:11,t:"Czy maska LED za 2000 zł działa znacznie lepiej na zmarszczki niż ta za 500 zł, czy to tylko przepłacanie?",p:"A",s:["A4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:12,t:"Jaka maska LED ma najszersze spektrum świateł do ogólnego odmładzania, żeby działała na różne rodzaje zmarszczek?",p:"A",s:["A4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:13,t:"Porównaj maski LED Omnilux i MZ Skin pod kątem redukcji zmarszczek – która daje szybsze efekty?",p:"A",s:["A5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:14,t:"Czy maska LED z funkcją pulsacyjną działa lepiej na głębokie zmarszczki niż ta ze stałym światłem?",p:"A",s:["A5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:15,t:"Która maska LED ma lepsze pokrycie całej twarzy i nie pomija stref, gdzie zmarszczki są najbardziej widoczne?",p:"A",s:["A5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:16,t:"Gdzie kupić maskę LED na zmarszczki z możliwością zwrotu i gwarancją, żeby nie ryzykować zakupu?",p:"A",s:["A6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:17,t:"Czy w Polsce są sklepy stacjonarne, gdzie mogę przymierzyć maskę LED i sprawdzić, czy leży na twarzy?",p:"A",s:["A6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:18,t:"Który sklep online ma najkorzystniejszą cenę i darmową dostawę dla maski LED do anti-agingu?",p:"A",s:["A6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:19,t:"Czy ta maska LED faktycznie sprawi, że będę wyglądać młodziej i bez zmarszczek, czy to tylko chwilowy efekt?",p:"A",s:["A7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:20,t:"Jak zmieni się moja skóra po 3 miesiącach używania maski LED – czy stanę się wersją siebie bez zmarszczek?",p:"A",s:["A7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:21,t:"Czy po zakupie maski LED osiągnę efekt „glow” i gładkiej skóry, o którym marzę, czy to tylko obietnice producenta?",p:"A",s:["A7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:22,t:"Czy maska LED na twarz faktycznie działa, czy to tylko kolejny gadżet?",p:"B",s:["B1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:23,t:"Jakie efekty mogę osiągnąć i po jakim czasie widać pierwsze rezultaty?",p:"B",s:["B1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:24,t:"Czy używanie maski LED zmieni moją skórę na lepszą, czy to strata czasu i pieniędzy?",p:"B",s:["B1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:25,t:"Jak sprawdzić, czy konkretna maska LED działa – jakie są dowody naukowe i testy?",p:"B",s:["B2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:26,t:"Czy są jakieś przeciwwskazania lub skutki uboczne, które mogą mnie dotyczyć?",p:"B",s:["B2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:27,t:"Jakie parametry (długość fali, liczba diod, certyfikaty) decydują o tym, że maska jest skuteczna?",p:"B",s:["B2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:28,t:"Która maska LED ma najlepsze opinie użytkowników i najwyższą skuteczność w redukcji zmarszczek?",p:"B",s:["B3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:29,t:"Czy droższa maska LED daje wyraźnie lepsze efekty niż tańsza, czy to tylko marketing?",p:"B",s:["B3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:30,t:"Która maska LED oferuje najszybsze widoczne rezultaty i jak to się przekłada na moją codzienną pielęgnację?",p:"B",s:["B3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:31,t:"Gdzie kupić maskę LED, żeby mieć pewność, że to oryginał i działa zgodnie z opisem?",p:"B",s:["B4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:32,t:"Który sklep ma najlepsze warunki zwrotu i gwarancję, gdybym chciał sprawdzić, czy maska działa?",p:"B",s:["B4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:33,t:"Czy warto kupić maskę LED bezpośrednio od producenta, czy lepiej w autoryzowanym sklepie stacjonarnym?",p:"B",s:["B4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:34,t:"Czy po zakupie mogę szybko zweryfikować, że maska LED działa (np. test diod, efekty po pierwszym użyciu)?",p:"B",s:["B5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:35,t:"Jakie akcesoria lub instrukcje muszę dostać, żeby od razu zacząć i zobaczyć pierwsze efekty?",p:"B",s:["B5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:36,t:"Czy istnieje możliwość wymiany maski, jeśli po rozpakowaniu okaże się, że nie działa zgodnie z oczekiwaniami?",p:"B",s:["B5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:37,t:"Czy maski LED na twarz są bezpieczne dla każdego?",p:"C",s:["C1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:38,t:"Jakie są przeciwwskazania do używania maski LED, jeśli mam trądzik?",p:"C",s:["C1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:39,t:"Czy mogę używać maski LED, jeśli mam wrażliwą skórę i boję się podrażnień?",p:"C",s:["C1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:40,t:"Jakie są skutki uboczne fototerapii LED na twarz i jak ich uniknąć?",p:"C",s:["C2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:41,t:"Czy maska LED może pogorszyć stan mojej skóry, jeśli mam jakieś choroby skóry?",p:"C",s:["C2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:42,t:"Jakie są kontraindykacje do maski LED – czy to bezpieczne przy ciąży lub epilepsji?",p:"C",s:["C2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:43,t:"Czy maski LED na twarz działają na zmarszczki i czy to bezpieczne dla skóry dojrzałej?",p:"C",s:["C3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:44,t:"Po jakim czasie widać efekty maski LED i czy są trwałe bez ryzyka?",p:"C",s:["C3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:45,t:"Jak działa maska LED na twarz i czy może zaszkodzić, jeśli używam jej za często?",p:"C",s:["C3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:46,t:"Jaka maska LED najlepsza dla początkujących, żeby uniknąć błędów i podrażnień?",p:"C",s:["C4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:47,t:"Czy droższe maski LED są bezpieczniejsze i mają mniej przeciwwskazań?",p:"C",s:["C4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:48,t:"Która maska LED ma certyfikaty bezpieczeństwa i jest polecana dla wrażliwej cery?",p:"C",s:["C4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:49,t:"Porównanie masek LED: która ma najlepsze opinie o bezpieczeństwie i braku skutków ubocznych?",p:"C",s:["C5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:50,t:"Czy maska LED z większą liczbą diod jest bezpieczniejsza, czy bardziej ryzykowna?",p:"C",s:["C5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:51,t:"Która maska LED ma najdokładniejsze instrukcje dotyczące przeciwwskazań i ostrzeżeń?",p:"C",s:["C5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:52,t:"Gdzie kupić maskę LED z gwarancją i możliwością zwrotu, jeśli wystąpią problemy skórne?",p:"C",s:["C6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:53,t:"Czy w sklepie stacjonarnym mogę skonsultować przeciwwskazania do maski LED przed zakupem?",p:"C",s:["C6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:54,t:"Który sklep online ma najlepsze opisy bezpieczeństwa i kontraindykacji dla masek LED?",p:"C",s:["C6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:55,t:"Czy po zakupie maski LED mogę ją zwrócić, jeśli okaże się, że mam przeciwwskazania?",p:"C",s:["C7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:56,t:"Jak sprawdzić, czy maska LED jest oryginalna i bezpieczna, żeby uniknąć podróbek?",p:"C",s:["C7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:57,t:"Czy do maski LED jest dołączona lista przeciwwskazań i instrukcja bezpieczeństwa w języku polskim?",p:"C",s:["C7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:58,t:"Czy maska LED na twarz faktycznie działa, czy to tylko chwilowa moda?",p:"D",s:["D1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:59,t:"Ile kosztuje dobry zabieg maską LED w gabinecie, a ile taka maska do domu?",p:"D",s:["D1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:60,t:"Czy używanie maski LED w domu da mi taki sam efekt jak seria zabiegów u kosmetyczki?",p:"D",s:["D1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:61,t:"Jaki jest realny ROI z zakupu maski LED do domu w porównaniu do wydawania pieniędzy na zabiegi w salonie?",p:"D",s:["D2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:62,t:"Czy maska LED do domu zwróci mi się szybciej niż opłacanie pojedynczych sesji w gabinecie?",p:"D",s:["D2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:63,t:"Jakie są ukryte koszty domowej maski LED (eksploatacja, wymiana diod, gwarancja) vs cennik zabiegów w gabinecie?",p:"D",s:["D2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:64,t:"Czy domowe maski LED mają taką samą moc i długość fali jak profesjonalne urządzenia w gabinetach?",p:"D",s:["D3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:65,t:"Po jakim czasie widać efekty stosowania maski LED w domu, a po jakim w gabinecie?",p:"D",s:["D3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:66,t:"Jakie są przeciwwskazania do maski LED i czy przy domowym użyciu ryzyko jest większe niż u kosmetyczki?",p:"D",s:["D3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:67,t:"Która maska LED do domu ma najlepszy stosunek ceny do efektów i najszybciej odda zainwestowane pieniądze?",p:"D",s:["D4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:68,t:"Czy droższa maska LED do domu znacząco skraca czas potrzebny na widoczne rezultaty w porównaniu do tańszych modeli?",p:"D",s:["D4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:69,t:"Jakie certyfikaty i parametry techniczne (ilość diod, długość fali) decydują o tym, że maska domowa dorównuje gabinetowej?",p:"D",s:["D4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:70,t:"Gdzie kupić maskę LED, żeby mieć pewność, że to oryginał i nie przepłacić w porównaniu do ceny serii zabiegów?",p:"D",s:["D5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:71,t:"Czy lepiej zainwestować w maskę LED z oficjalnego sklepu producenta z gwarancją, czy ryzykować tańszą z marketplace'u?",p:"D",s:["D5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:72,t:"Jakie opcje zwrotu i testowania maski LED oferują sklepy, żebym mógł sprawdzić, czy efekt domowy jest dla mnie lepszy niż gabinetowy?",p:"D",s:["D5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:73,t:"Czy maska LED na twarz faktycznie działa, czy to tylko chwilowa moda?",p:"E",s:["E1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:74,t:"Jak szybko zobaczę pierwsze efekty, jeśli zacznę używać maski LED?",p:"E",s:["E1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:75,t:"Czy ta maska LED może mi pomóc wyglądać młodziej i świeżo bez operacji?",p:"E",s:["E1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:76,t:"Gdzie znajdę oficjalny protokół używania maski LED krok po kroku?",p:"E",s:["E2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:77,t:"Jak często i jak długo dziennie trzeba stosować maskę LED, żeby zadziałała?",p:"E",s:["E2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:78,t:"Czy w instrukcji obsługi jest napisane, jak łączyć kolory światła dla różnych problemów skóry?",p:"E",s:["E2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:79,t:"Czy wszystkie maski LED działają na tej samej zasadzie, czy są różne technologie?",p:"E",s:["E3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:80,t:"Jaka jest różnica między maską LED a lampą LED do twarzy w kontekście efektów?",p:"E",s:["E3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:81,t:"Czy maski LED z czerwonym i niebieskim światłem naprawdę zwalczają trądzik i zmarszczki jednocześnie?",p:"E",s:["E3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:82,t:"Która maska LED ma najlepszy protokół używania dla początkujących i nie wymaga skomplikowanej wiedzy?",p:"E",s:["E4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:83,t:"Czy są maski LED z automatycznym programem, który sam dobiera czas i kolor światła?",p:"E",s:["E4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:84,t:"Która maska LED ma najkrótszy czas sesji, a przy tym daje widoczne efekty po miesiącu?",p:"E",s:["E4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:85,t:"Czy maska LED za 2000 zł działa lepiej niż ta za 500 zł, czy to tylko marketing?",p:"E",s:["E5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:86,t:"Która maska LED ma więcej badań klinicznych potwierdzających efekty na zmarszczki?",p:"E",s:["E5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:87,t:"Czy w porównaniu do profesjonalnego zabiegu w salonie, domowa maska LED daje podobne rezultaty po dłuższym czasie?",p:"E",s:["E5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:88,t:"Gdzie kupić maskę LED z darmowym protokołem używania i wsparciem technicznym?",p:"E",s:["E6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:89,t:"Czy w sklepie internetowym są opinie klientów o rzeczywistych efektach po 3 miesiącach stosowania?",p:"E",s:["E6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:90,t:"Który sklep oferuje najdłuższy okres testowania maski LED, żebym mógł sprawdzić, czy działa na moją skórę?",p:"E",s:["E6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:91,t:"Czy przy zakupie maski LED dostaję szczegółową instrukcję z harmonogramem używania na pierwsze 4 tygodnie?",p:"E",s:["E7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:92,t:"Jakie są przeciwwskazania do stosowania maski LED, które muszę sprawdzić przed pierwszym użyciem?",p:"E",s:["E7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:93,t:"Czy po zakupie maski LED będę wyglądać lepiej już po 2 tygodniach, czy to obietnica bez pokrycia?",p:"E",s:["E7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:94,t:"Czy maska LED na twarz faktycznie działa, czy to tylko kolejny gadżet?",p:"F",s:["F1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:95,t:"Jaka maska LED najlepsza dla początkujących, żeby nie przepłacić?",p:"F",s:["F1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:96,t:"Czy maska LED na twarz może mi pomóc wyglądać młodziej i świeżo bez botoksu?",p:"F",s:["F1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:97,t:"Która maska LED jest najlepsza w rankingu 2025 – Omnilux, Dr. Dennis Gross czy CurrentBody?",p:"F",s:["F2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:98,t:"Jaka jest najlepsza maska LED na twarz według opinii i testów redakcyjnych?",p:"F",s:["F2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:99,t:"Czy ranking masek LED na twarz uwzględnia efekty na zmarszczki i trądzik?",p:"F",s:["F2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:100,t:"Jak działa maska LED na twarz – czy światło czerwone i niebieskie robi coś innego?",p:"F",s:["F3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:101,t:"Jakie są przeciwwskazania do maski LED i czy mogę ją stosować przy trądziku różowatym?",p:"F",s:["F3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:102,t:"Jakie są skutki uboczne stosowania masek LED – czy mogą podrażnić skórę?",p:"F",s:["F3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:103,t:"Która maska LED ma najlepsze opinie w kategorii 'ogólny' – do odmładzania i ujednolicenia cery?",p:"F",s:["F4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:104,t:"Czy maska LED za 2000 zł daje dużo lepsze efekty niż ta za 800 zł?",p:"F",s:["F4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:105,t:"Po jakim czasie widać efekty maski LED – czy 4 tygodnie wystarczą, żeby zobaczyć różnicę?",p:"F",s:["F4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:106,t:"Omnilux Contour vs Dr. Dennis Gross SpectraLite – która maska LED lepiej redukuje zmarszczki?",p:"F",s:["F5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:107,t:"Czy maska LED z większą liczbą diod (np. 200+) działa szybciej niż ta ze 100 diodami?",p:"F",s:["F5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:108,t:"Która maska LED ma lepszy stosunek ceny do efektów – CurrentBody Skin czy MZ Skin?",p:"F",s:["F5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:109,t:"Gdzie kupić maskę LED w promocji – czy Sephora ma lepsze ceny niż oficjalny sklep?",p:"F",s:["F6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:110,t:"Czy warto kupić maskę LED na Amazonie, czy lepiej w sklepie stacjonarnym z możliwością zwrotu?",p:"F",s:["F6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:111,t:"Który sklep oferuje najdłuższą gwarancję i darmową wysyłkę dla maski LED?",p:"F",s:["F6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:112,t:"Czy ta maska LED zmieni moją cerę na tyle, że w końcu poczuję się pewniej bez makijażu?",p:"F",s:["F7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:113,t:"Czy po zakupie maski LED dostanę instrukcję po polsku i czy muszę kupić dodatkowy żel?",p:"F",s:["F7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:114,t:"Jaki jest czas realizacji zamówienia i czy mogę zapłacić przy odbiorze za maskę LED?",p:"F",s:["F7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:115,t:"Czy maska LED faktycznie pomoże na trądzik i stany zapalne, czy to tylko kolejny gadżet?",p:"G",s:["G1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:116,t:"Jak bardzo zmieni się moja skóra, jeśli zacznę używać maski LED na trądzik?",p:"G",s:["G1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:117,t:"Czy ta maska sprawi, że w końcu pozbędę się zaczerwienień i wyprysków na stałe?",p:"G",s:["G1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:118,t:"Czy maska LED na twarz działa na trądzik zapalny, czy tylko na zaskórniki?",p:"G",s:["G2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:119,t:"Jakie konkretnie efekty na trądzik daje maska LED – zmniejsza stan zapalny czy wysusza zmiany?",p:"G",s:["G2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:120,t:"Czy fototerapia LED jest skuteczna przy trądziku różowatym i grudkach zapalnych?",p:"G",s:["G2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:121,t:"Jaka długość fali (czerwona, niebieska) jest najlepsza na stany zapalne i trądzik?",p:"G",s:["G3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:122,t:"Czy maski LED na twarz mają przeciwwskazania przy trądziku i wrażliwej skórze?",p:"G",s:["G3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:123,t:"Po jakim czasie widać pierwsze efekty maski LED na trądzik – tydzień, miesiąc?",p:"G",s:["G3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:124,t:"Która maska LED na trądzik ma najwięcej diod niebieskich i jest polecana na stany zapalne?",p:"G",s:["G4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:125,t:"Czy droższe maski LED faktycznie lepiej radzą sobie z trądzikiem niż tańsze modele?",p:"G",s:["G4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:126,t:"Jaka maska LED na twarz jest najlepsza do walki z trądzikiem – ranking 2024?",p:"G",s:["G4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:127,t:"Czy maska LED Omnilux działa lepiej na trądzik zapalny niż Dr. Dennis Gross?",p:"G",s:["G5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:128,t:"Która maska LED ma więcej badań klinicznych potwierdzających skuteczność na trądzik?",p:"G",s:["G5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:129,t:"Czy maska LED z funkcją pulsacyjną jest skuteczniejsza na stany zapalne niż ciągłe światło?",p:"G",s:["G5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:130,t:"Gdzie kupić maskę LED na trądzik z możliwością zwrotu, jeśli nie zadziała?",p:"G",s:["G6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:131,t:"Czy w sklepie stacjonarnym mogę przetestować maskę LED na twarz przed zakupem?",p:"G",s:["G6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:132,t:"Który sklep ma najlepszą cenę i gwarancję na maski LED dedykowane trądzikowi?",p:"G",s:["G6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:133,t:"Czy przy zakupie maski LED na trądzik dostaję instrukcję po polsku i programy na stany zapalne?",p:"G",s:["G7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:134,t:"Jaki kod rabatowy na maskę LED na trądzik jest teraz aktywny?",p:"G",s:["G7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:135,t:"Czy mogę zapłacić za maskę LED w ratach i dostać darmową wysyłkę?",p:"G",s:["G7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:136,t:"Czy maska LED na twarz faktycznie działa, czy to tylko kolejny gadżet beauty influencerów?",p:"H",s:["H1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:137,t:"Jakie efekty mogę osiągnąć, używając maski LED jak moja ulubiona influencerka w swoim rytuale?",p:"H",s:["H1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:138,t:"Czy ta maska sprawi, że moja skóra będzie wyglądać jak po filtrze, bez makijażu?",p:"H",s:["H1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:139,t:"Która maska LED jest najczęściej polecana przez influencerów w ich porannych i wieczornych rutynach?",p:"H",s:["H2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:140,t:"Jaka maska LED daje najlepsze efekty na zmarszczki i przebarwienia, widoczne już po kilku tygodniach?",p:"H",s:["H2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:141,t:"Czy maska LED może zastąpić drogie zabiegi w salonie, jeśli włączę ją do swojego domowego rytuału?",p:"H",s:["H2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:142,t:"Która maska LED ma najwięcej długości fal i programów, żeby dopasować ją do mojego konkretnego problemu skórnego?",p:"H",s:["H3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:143,t:"Czy droższa maska LED od znanej marki beauty daje lepsze efekty niż tańsza, którą polecają na TikToku?",p:"H",s:["H3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:144,t:"Jak długo trzeba używać maski LED dziennie, żeby zobaczyć realną różnicę w jędrności i blasku skóry?",p:"H",s:["H3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:145,t:"Gdzie kupić maskę LED, żeby dostać autentyczny produkt i nie trafić na podróbkę z Chin?",p:"H",s:["H4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:146,t:"Czy lepiej zamówić maskę LED bezpośrednio od producenta, czy w drogerii z możliwością zwrotu?",p:"H",s:["H4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:147,t:"Który sklep oferuje najszybszą dostawę i czy są jakieś kody rabatowe od influencerów na tę maskę?",p:"H",s:["H4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:148,t:"Czy maska LED faktycznie wyrównuje koloryt skóry, czy to tylko chwilowy efekt?",p:"I",s:["I1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:149,t:"Ile kosztuje porządna maska LED na przebarwienia i czy to się opłaca w porównaniu z laserem?",p:"I",s:["I1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:150,t:"Jak szybko zobaczę pierwsze efekty na przebarwieniach – po tygodniu, miesiącu, czy dłużej?",p:"I",s:["I1"],y:"INFO",k:"—",st:"BRAK",pr:"P3"},
+{nr:151,t:"Czy maska LED działa na przebarwienia posłoneczne i te po trądziku tak samo, czy inaczej?",p:"I",s:["I2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:152,t:"Które długości fali (np. czerwone, niebieskie, bursztynowe) są najlepsze na ogólne przebarwienia kolorytu?",p:"I",s:["I2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:153,t:"Czy maska LED na przebarwienia wymaga dodatkowych kosmetyków, żeby efekt był widoczny?",p:"I",s:["I2"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:154,t:"Czy wszystkie maski LED mają tryb na przebarwienia, czy tylko wybrane modele?",p:"I",s:["I3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:155,t:"Jaka jest różnica między maską LED a lampą LED w walce z nierównym kolorytem?",p:"I",s:["I3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:156,t:"Czy maski LED z certyfikatem FDA działają lepiej na przebarwienia niż te bez?",p:"I",s:["I3"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:157,t:"Która maska LED ma najwięcej diod w zakresie światła czerwonego i bursztynowego na przebarwienia?",p:"I",s:["I4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:158,t:"Czy maska LED z funkcją pulsacyjnego światła daje szybsze efekty na koloryt niż ciągłe?",p:"I",s:["I4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:159,t:"Jaka jest najlepsza maska LED na przebarwienia w budżecie do 1500 zł – opinie i testy?",p:"I",s:["I4"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:160,t:"Porównanie maski LED Dr. Dennis Gross SpectraLite vs CurrentBody Skin – która lepiej radzi sobie z przebarwieniami?",p:"I",s:["I5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:161,t:"Czy maska LED z większą liczbą diod (np. 200+) faktycznie szybciej wyrównuje koloryt niż ta ze 100 diodami?",p:"I",s:["I5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:162,t:"Która maska LED ma lepsze opinie użytkowniczek z przebarwieniami – Omnilux czy MZ Skin?",p:"I",s:["I5"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:163,t:"Gdzie kupić maskę LED na przebarwienia z możliwością zwrotu i testowania przez 30 dni?",p:"I",s:["I6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:164,t:"Czy w Sephorze lub Douglasie są promocje na maski LED do twarzy na przebarwienia?",p:"I",s:["I6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:165,t:"Który sklep internetowy ma najszybszą dostawę i oryginalne maski LED na przebarwienia?",p:"I",s:["I6"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:166,t:"Czy przy zakupie maski LED na przebarwienia dostaję jakieś próbki serum lub żelu przewodzącego?",p:"I",s:["I7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:167,t:"Jaka jest gwarancja na maskę LED kupioną online i czy obejmuje wady diod przy codziennym użytkowaniu?",p:"I",s:["I7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"},
+{nr:168,t:"Czy mogę zapłacić za maskę LED na przebarwienia w ratach 0% i czy to bezpieczne?",p:"I",s:["I7"],y:"KOMERC",k:"—",st:"BRAK",pr:"P3"}
+];
+const PC={"A": "#3b82f6", "B": "#8b5cf6", "C": "#ec4899", "D": "#14b8a6", "E": "#f59e0b", "F": "#10b981", "G": "#f43f5e", "H": "#eab308", "I": "#6366f1"};
+const PN={"A": "anti aging zmarszczki", "B": "walidacja czy dziala", "C": "bezpieczenstwo kontraindykacje", "D": "ROI gabinet vs domowe", "E": "protokol jak uzywac", "F": "ranking wybor modelu", "G": "tradzik stany zapalne", "H": "rytuał beauty influencer", "I": "przebarwienia koloryt"};
+const PS={"A": [{'c': "A1", 'n': "Potrzeba/impuls"}, {'c': "A2", 'n': "RozpoznanieCEP"}, {'c': "A3", 'n': "Naukakategorii"}, {'c': "A4", 'n': "Preselekcja"}, {'c': "A5", 'n': "Porównywanie"}, {'c': "A6", 'n': "Wybórsklepu/sp"}, {'c': "A7", 'n': "Zakup"}], "B": [{'c': "B1", 'n': "Potrzeba/impuls"}, {'c': "B2", 'n': "RozpoznanieCEP"}, {'c': "B3", 'n': "Porównywanie"}, {'c': "B4", 'n': "Wybórsklepu/sp"}, {'c': "B5", 'n': "Zakup"}], "C": [{'c': "C1", 'n': "Potrzeba/impuls"}, {'c': "C2", 'n': "RozpoznanieCEP"}, {'c': "C3", 'n': "Naukakategorii"}, {'c': "C4", 'n': "Preselekcja"}, {'c': "C5", 'n': "Porównywanie"}, {'c': "C6", 'n': "Wybórsklepu/sp"}, {'c': "C7", 'n': "Zakup"}], "D": [{'c': "D1", 'n': "Potrzeba/impuls"}, {'c': "D2", 'n': "RozpoznanieCEP"}, {'c': "D3", 'n': "Naukakategorii"}, {'c': "D4", 'n': "Preselekcja"}, {'c': "D5", 'n': "Wybórsklepu/sp"}], "E": [{'c': "E1", 'n': "Potrzeba/impuls"}, {'c': "E2", 'n': "RozpoznanieCEP"}, {'c': "E3", 'n': "Naukakategorii"}, {'c': "E4", 'n': "Preselekcja"}, {'c': "E5", 'n': "Porównywanie"}, {'c': "E6", 'n': "Wybórsklepu/sp"}, {'c': "E7", 'n': "Zakup"}], "F": [{'c': "F1", 'n': "Potrzeba/impuls"}, {'c': "F2", 'n': "RozpoznanieCEP"}, {'c': "F3", 'n': "Naukakategorii"}, {'c': "F4", 'n': "Preselekcja"}, {'c': "F5", 'n': "Porównywanie"}, {'c': "F6", 'n': "Wybórsklepu/sp"}, {'c': "F7", 'n': "Zakup"}], "G": [{'c': "G1", 'n': "Potrzeba/impuls"}, {'c': "G2", 'n': "RozpoznanieCEP"}, {'c': "G3", 'n': "Naukakategorii"}, {'c': "G4", 'n': "Preselekcja"}, {'c': "G5", 'n': "Porównywanie"}, {'c': "G6", 'n': "Wybórsklepu/sp"}, {'c': "G7", 'n': "Zakup"}], "H": [{'c': "H1", 'n': "Potrzeba/impuls"}, {'c': "H2", 'n': "RozpoznanieCEP"}, {'c': "H3", 'n': "Porównywanie"}, {'c': "H4", 'n': "Wybórsklepu/sp"}], "I": [{'c': "I1", 'n': "Potrzeba/impuls"}, {'c': "I2", 'n': "RozpoznanieCEP"}, {'c': "I3", 'n': "Naukakategorii"}, {'c': "I4", 'n': "Preselekcja"}, {'c': "I5", 'n': "Porównywanie"}, {'c': "I6", 'n': "Wybórsklepu/sp"}, {'c': "I7", 'n': "Zakup"}]};
+const TC={'INFO':'tn','KOMERC':'tf','TRANS':'ts'};
+const SC={BRAK:'brak',ISTNIEJE:'istnieje','ROZBUDOWAĆ':'rozbudowac'};
+const DC={BRAK:'db',ISTNIEJE:'di','ROZBUDOWAĆ':'dr'};
+const PRC={P1:'pp1',P2:'pp2',P3:'pp3',P4:'pp4'};
+
+let filt={prio:'all',typ:'all',status:'all'};
+let activePath='all';
+let q='';
+
+function vis(a){
+  if(activePath!=='all'&&a.p!==activePath)return false;
+  if(filt.prio!=='all'&&a.pr!==filt.prio)return false;
+  if(filt.typ!=='all'&&a.y!==filt.typ)return false;
+  if(filt.status!=='all'&&a.st!==filt.status)return false;
+  if(q){const ql=q.toLowerCase();if(!a.t.toLowerCase().includes(ql)&&!a.k.toLowerCase().includes(ql))return false;}
+  return true;
+}
+
+function card(a){
+  const pc=PC[a.p]||'#94a3b8';
+  const sc=SC[a.st]||'brak';
+  const dc=DC[a.st]||'db';
+  const tc=TC[a.y]||'tn';
+  const prc=PRC[a.pr]||'pp3';
+  const kw=a.k&&a.k!=='—'?`<div class="card-keyword">&#128273; ${a.k}</div>`:'';
+  return `<div class="article-card ${sc}" data-nr="${a.nr}" data-p="${a.p}" data-pr="${a.pr}" data-y="${a.y}" data-st="${a.st}" data-tl="${a.t.toLowerCase()}" data-kw="${a.k.toLowerCase()}">
+<div class="card-top"><span class="card-nr">#${a.nr}</span><span class="card-title">${a.t}</span></div>
+<div class="card-bottom"><span class="badge-path" style="background:${pc}">${a.p}</span><span class="badge-prio ${prc}">${a.pr}</span><span class="badge-typ ${tc}">${a.y}</span><span class="status-dot ${dc}"></span></div>
+${kw}</div>`;
+}
+
+function render(){
+  const content=document.getElementById('contentArea');
+  const paths=activePath==='all'?['A','B','C','D','E','F','G','H','I','J','K','L','M']:[activePath];
+  let html='';let total=0;
+  for(const path of paths){
+    const pc=PC[path];const states=PS[path];
+    let ph='';let pcount=0;
+    for(const st of states){
+      const arts=A.filter(a=>a.s[0]===st.c);
+      const filtered=arts.filter(vis);
+      if(arts.length===0)continue;
+      const cardsHtml=arts.map(a=>{const v=vis(a);return v?card(a):`<div class="hidden">${card(a)}</div>`;}).join('');
+      pcount+=filtered.length;total+=filtered.length;
+      ph+=`<div class="state-section"><div class="state-header" onclick="toggleState(this)"><span class="state-toggle">▼</span><span class="state-code" style="background:${pc}">${st.c}</span><span class="state-name">${st.n}</span><span class="state-count">${filtered.length}</span></div><div class="state-cards" style="max-height:none">${cardsHtml||'<div style="color:var(--text-muted);font-size:12px;padding:4px">Brak</div>'}</div></div>`;
+    }
+    if(pcount===0&&activePath==='all')continue;
+    html+=`<div class="path-section"><div class="path-header"><span class="path-badge" style="background:${pc}">${path}</span><span class="path-title">Ścieżka ${path}: ${PN[path]}</span><span class="path-total">${pcount} artykułów</span></div>${ph}</div>`;
+  }
+  if(!html)html='<div class="empty-state"><div style="font-size:32px;margin-bottom:12px">&#128269;</div><p>Brak artykułów spełniających kryteria.</p></div>';
+  content.innerHTML=html;
+  let idx=0;content.querySelectorAll('.article-card').forEach(function(c){var el=c.querySelector('.card-nr');if(el&&!(c.parentElement&&c.parentElement.classList.contains('hidden')))el.textContent='#'+(++idx);});
+  document.getElementById('visibleCount').textContent=total;
+  updateStats(total);
+}
+
+function visNoPath(a){if(filt.prio!=='all'&&a.pr!==filt.prio)return false;if(filt.typ!=='all'&&a.y!==filt.typ)return false;if(filt.status!=='all'&&a.st!==filt.status)return false;if(q){const ql=q.toLowerCase();if(!a.t.toLowerCase().includes(ql)&&!a.k.toLowerCase().includes(ql))return false;}return true;}
+function updateStats(total){
+  const vA=A.filter(vis);
+  document.getElementById('stat-total').textContent=total!==undefined?total:vA.length;
+  document.getElementById('stat-p1').textContent=vA.filter(a=>a.pr==='P1').length;
+  document.getElementById('stat-brak').textContent=vA.filter(a=>a.st==='BRAK').length;
+  document.getElementById('stat-exist').textContent=vA.filter(a=>a.st==='ISTNIEJE'||a.st==='ROZBUDOWAĆ').length;
+  ['all','A','B','C','D','E','F','G','H','I','J','K','L','M'].forEach(p=>{
+    const el=document.getElementById('cnt-'+p);
+    if(el)el.textContent=p==='all'?A.filter(visNoPath).length:A.filter(a=>a.p===p&&visNoPath(a)).length;
+  });
+}
+
+function filterPath(btn,path){activePath=path;document.querySelectorAll('.path-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render();}
+function setF(type,val,btn){filt[type]=val;document.querySelectorAll(`.filter-pill[data-f="${type}"]`).forEach(p=>p.classList.remove('active'));btn.classList.add('active');render();}
+function applyFilters(){q=document.getElementById('searchInput').value;render();}
+function resetAll(){activePath='all';filt={prio:'all',typ:'all',status:'all'};q='';document.getElementById('searchInput').value='';document.querySelectorAll('.path-btn').forEach(b=>b.classList.remove('active'));document.querySelector('.path-btn[data-path="all"]').classList.add('active');document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.filter-pill[data-v="all"]').forEach(p=>p.classList.add('active'));render();}
+function toggleState(hdr){const cards=hdr.nextElementSibling;const tog=hdr.querySelector('.state-toggle');const col=cards.classList.contains('collapsed');if(col){cards.style.maxHeight=cards.scrollHeight+'px';cards.classList.remove('collapsed');tog.classList.remove('collapsed');setTimeout(()=>{cards.style.maxHeight='none';},260);}else{cards.style.maxHeight=cards.scrollHeight+'px';requestAnimationFrame(()=>{cards.classList.add('collapsed');tog.classList.add('collapsed');});}}
+
+/* ---- TABS ---- */
+let activeTab='mapa';
+let sortBy='prio';
+let checked={};
+// pre-check ISTNIEJE
+A.forEach(a=>{if(a.st==='ISTNIEJE')checked[a.nr]=true;});
+
+function switchTab(tab){
+  activeTab=tab;
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('stab-'+tab).classList.add('active');
+  const topbar=document.querySelector('.topbar');
+  const statsbar=document.querySelector('.statsbar');
+  if(tab==='mapa'){topbar.style.display='';statsbar.style.display='';render();}
+  else if(tab==='lista'){topbar.style.display='';statsbar.style.display='none';renderList();}
+  else{topbar.style.display='none';statsbar.style.display='none';renderInfo();}
+}
+
+/* ---- LIST VIEW ---- */
+const PRIO_ORDER={P1:0,P2:1,P3:2,P4:3};
+function sortedArticles(){
+  let arr=A.filter(vis);
+  if(sortBy==='prio') arr.sort((a,b)=>PRIO_ORDER[a.pr]-PRIO_ORDER[b.pr]||a.nr-b.nr);
+  else if(sortBy==='nr') arr.sort((a,b)=>a.nr-b.nr);
+  else if(sortBy==='sciezka') arr.sort((a,b)=>a.p.localeCompare(b.p)||a.nr-b.nr);
+  return arr;
+}
+
+function toggleCheck(nr){
+  checked[nr]=!checked[nr];
+  const item=document.querySelector(`.list-item[data-nr="${nr}"]`);
+  if(!item)return;
+  item.classList.toggle('checked',!!checked[nr]);
+  const cb=item.querySelector('.list-cb');
+  if(cb)cb.textContent=checked[nr]?'✓':'';
+  updateListProgress();
+}
+
+function updateListProgress(){
+  const total=A.filter(vis).length;
+  const done=A.filter(vis).filter(a=>checked[a.nr]).length;
+  const el=document.getElementById('list-progress-label');
+  const bar=document.getElementById('list-progress-fill');
+  if(el)el.textContent=`${done} / ${total} zrobione`;
+  if(bar)bar.style.width=total?((done/total*100).toFixed(0)+'%'):'0%';
+}
+
+function renderList(){
+  const content=document.getElementById('contentArea');
+  const arr=sortedArticles();
+  const totalVis=arr.length;
+  const done=arr.filter(a=>checked[a.nr]).length;
+  const pct=totalVis?((done/totalVis*100).toFixed(0))+'%':'0%';
+
+  let lastPrio='';
+  let rows='';
+  for(const a of arr){
+    if(sortBy==='prio'&&a.pr!==lastPrio){
+      const pLabel={P1:'🔴 P1 — Krytyczne',P2:'🟠 P2 — Ważne',P3:'🟡 P3 — Standardowe',P4:'⚪ P4 — Niski priorytet'};
+      rows+=`<div class="list-section-head">${pLabel[a.pr]||a.pr}</div>`;
+      lastPrio=a.pr;
+    }
+    const isChecked=!!checked[a.nr];
+    const stColor=a.st==='ISTNIEJE'?'#22c55e':a.st==='ROZBUDOWAĆ'?'#818cf8':'#3b82f6';
+    const pc=PC[a.p]||'#94a3b8';
+    rows+=`<div class="list-item${isChecked?' checked':''}" data-nr="${a.nr}" onclick="toggleCheck(${a.nr})">
+  <div class="list-cb">${isChecked?'✓':''}</div>
+  <div class="list-nr">#${a.nr}</div>
+  <div style="flex:1">
+    <div class="list-title">${a.t}</div>
+    <div class="list-badges">
+      <span style="background:${pc};color:#fff;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700">${a.p}</span>
+      <span style="background:${stColor}22;color:${stColor};border:1px solid ${stColor}44;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700">${a.st}</span>
+      <span style="font-size:10px;color:var(--text-muted)">${a.s.join(', ')} · ${a.y} · ${a.pr}</span>
+      ${a.k&&a.k!=='—'?`<span style="font-size:10px;color:var(--text-muted)">🔑 ${a.k}</span>`:''}
+    </div>
+  </div>
+</div>`;
+  }
+
+  content.innerHTML=`<div class="list-view">
+<div class="list-toolbar">
+  <div class="list-progress">
+    <div class="list-progress-label" id="list-progress-label">${done} / ${totalVis} zrobione</div>
+    <div class="list-progress-bar"><div class="list-progress-fill" id="list-progress-fill" style="width:${pct}"></div></div>
+  </div>
+  <div class="sort-group">
+    <span class="sort-label">Sortuj:</span>
+    <button class="sort-btn${sortBy==='prio'?' active':''}" onclick="setSort('prio')">Priorytet</button>
+    <button class="sort-btn${sortBy==='nr'?' active':''}" onclick="setSort('nr')">Numer</button>
+    <button class="sort-btn${sortBy==='sciezka'?' active':''}" onclick="setSort('sciezka')">Ścieżka</button>
+  </div>
+  <button class="copy-btn" onclick="copyList()">📋 Kopiuj listę</button>
+</div>
+${rows||'<div style="color:var(--text-muted);padding:20px">Brak artykułów.</div>'}
+</div>`;
+}
+
+function setSort(s){sortBy=s;renderList();}
+
+function copyList(){
+  const arr=sortedArticles();
+  const txt=arr.map(a=>`[${checked[a.nr]?'x':' '}] ${a.nr}. ${a.t} (${a.p} | ${a.s.join(',')} | ${a.y} | ${a.st} | ${a.pr})`).join('\n');
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=document.querySelector('.copy-btn');
+    btn.textContent='✓ Skopiowano!';setTimeout(()=>btn.textContent='📋 Kopiuj listę',2000);
+  });
+}
+
+/* ---- INFO VIEW ---- */
+function renderInfo(){
+  const content=document.getElementById('contentArea');
+  content.innerHTML=`<div class="info-view">
+<h2>🗺️ Jak powstała ta mapa?</h2>
+<p>To narzędzie zostało zbudowane w celu analizy CEP i ścieżek edukacyjnych dla kategorii maska LED na twarz. Układ został odwzorowany z projektu SejfZone. Zawiera <strong>168 pytań</strong> rozmieszczone w <strong>13 ścieżkach</strong> (A-M) odpowiadających 13 CEP z Category Standard v5.5.</p>
+
+<h3>Metodologia: CEP (Category Entry Points)</h3>
+<p>Każda ścieżka to inna potrzeba lub lęk, który sprowadza klienta do kategorii produktowej. W tej mapie znajduje się <strong>13 ścieżek (A-M)</strong> odpowiadających 13 CEP z Category Standard v5.5:</p>
+<ul>
+  <li><strong>A</strong> — anti aging zmarszczki</li>
+  <li><strong>B</strong> — walidacja czy dziala</li>
+  <li><strong>C</strong> — bezpieczenstwo kontraindykacje</li>
+  <li><strong>D</strong> — ROI gabinet vs domowe</li>
+  <li><strong>E</strong> — protokol jak uzywac</li>
+  <li><strong>F</strong> — ranking wybor modelu</li>
+  <li><strong>G</strong> — tradzik stany zapalne</li>
+  <li><strong>H</strong> — rytuał beauty influencer</li>
+  <li><strong>I</strong> — przebarwienia koloryt</li>
+  <li><strong>J</strong> — Nowa kuchnia / design (new_kitchen_design)</li>
+  <li><strong>K</strong> — Gościnność (host_identity)</li>
+  <li><strong>L</strong> — Alternatywa eko (eco_alternative)</li>
+  <li><strong>M</strong> — Kontrola składu (health_control)</li>
+</ul>
+<p>Każda ścieżka dzieli się na stany (Trigger → Nauka → Porównanie → Wybór → Zakup), a pytania są oznaczone priorytetem (P1-P4) i typem intencji (INFO/KOMERC/TRANS).</p>
+<h2>📖 Instrukcja obsługi narzędzia</h2>
+<h3>🗺️ Zakładka MAPA</h3>
+<p>Karty pytań pogrupowane w ścieżki i fazy edukacji. Typy (INFO, KOMERC, TRANS) ułatwiają priorytetyzację intencji wyszukiwania.</p>
+</div>`;
+}
+
+render();
+
+// Load checks from localStorage
+const LS_KEY = 'ekspresy_checks_v1';
+try {
+  const saved = JSON.parse(localStorage.getItem(LS_KEY));
+  if(saved) checked = saved;
+} catch(e) {}
+
+const oldToggleCheck = toggleCheck;
+toggleCheck = function(nr) {
+  oldToggleCheck(nr);
+  localStorage.setItem(LS_KEY, JSON.stringify(checked));
+};
+
+</script>
+<script>
+const CATS=[{"num":1,"name":"maska LED na twarz","v":"v2","s":"maska led na twarz"}];
+const searchEl=document.getElementById('search');
+const statEl=document.getElementById('stat');
+const nrEl=document.getElementById('nr');
+const TOTAL=CATS.length;
+let curFilter='all';
+
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function hi(text,q){
+  if(!q)return text;
+  return text.replace(new RegExp('('+esc(q)+')','gi'),'<mark>$1</mark>');
+}
+
+function applySearch(q){
+  const ql=q.trim().toLowerCase();
+  let n=0;
+  CATS.forEach(c=>{
+    const item=document.getElementById('i'+c.num);
+    const matchQ=!ql||c.s.includes(ql);
+    const matchF=curFilter==='all'||(curFilter==='v1'&&c.v==='v1')||(curFilter==='v2p'&&c.v!=='v1');
+    const ok=matchQ&&matchF;
+    if(item)item.classList.toggle('hidden',!ok);
+    if(ok){
+      n++;
+      const el=item&&item.querySelector('.ct');
+      if(el)el.innerHTML=hi(c.name,q.trim());
+    }
+  });
+  nrEl.style.display=n===0?'block':'none';
+  const fLabel=curFilter==='v1'?' · Draft':curFilter==='v2p'?' · Verified':'';
+  statEl.textContent=(ql?n+'/':'')+TOTAL+' cat.'+fLabel;
+}
+
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+  applySearch(searchEl.value);
+}
+
+function select(num){
+  document.querySelectorAll('.ci').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.cs').forEach(e=>e.classList.remove('vis'));
+  const item=document.getElementById('i'+num);
+  const sec=document.getElementById('s'+num);
+  if(item){item.classList.add('active');item.scrollIntoView({block:'nearest'});}
+  if(sec)sec.classList.add('vis');
+  document.getElementById('ct').scrollTop=0;
+}
+
+searchEl.addEventListener('input',e=>applySearch(e.target.value));
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();searchEl.focus();searchEl.select();}
+  if(e.key==='Escape'&&document.activeElement===searchEl){searchEl.value='';applySearch('');searchEl.blur();}
+});
+
+if(CATS.length>0)select(CATS[0].num);
+
+function toggleTheme(){
+  const l=document.body.classList.toggle('light');
+  localStorage.setItem('geo-theme',l?'light':'dark');
+  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
+}
+(function(){if(localStorage.getItem('geo-theme')==='light'){
+  document.body.classList.add('light');
+  var b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
 </script>
 </body>
 </html>

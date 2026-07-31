@@ -2,77 +2,1200 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SUV premium — nabywca prywatny — CS + Mapa Percepcji</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SUV premium — Mapa + CS</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow:hidden}
-body{font-family:-apple-system,Segoe UI,sans-serif;background:#f6f8fa;color:#1f2328;display:flex;flex-direction:column}
-.tabs{display:flex;background:#fff;border-bottom:2px solid #d0d7de;flex-shrink:0}
-.tab{padding:12px 28px;cursor:pointer;font-size:14px;font-weight:600;color:#57606a;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
-.tab:hover{color:#0969da}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #d0d7de;height:48px;align-items:center;flex-shrink:0}
+.tab{padding:0 20px;height:100%;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;color:#57606a;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
 .tab.active{color:#0969da;border-bottom-color:#0969da}
-.panel{display:none;flex:1;overflow:auto;background:#fff}
-.panel.active{display:block}
-.combined{display:none;flex:1;overflow:hidden}
-.combined.active{display:flex}
-.combined-half{flex:1;overflow:auto;background:#fff}
-.combined-half:first-child{border-right:1px solid #d0d7de}
-.spinner{display:flex;align-items:center;justify-content:center;height:60px;color:#8c959f;font-size:13px;gap:8px}
+.tab:hover:not(.active){color:#24292f;background:#f6f8fa}
+#panel-mapa{overflow:hidden;height:calc(100vh - 48px)}
+#panel-cs{display:none;overflow:auto;height:calc(100vh - 48px);background:#fff}
+</style>
+<style id="mapa-styles">
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+#panel-mapa{ font-family: -apple-system, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; display: flex; height: calc(100vh - 48px); overflow: hidden; }
+
+/* SIDEBAR */
+#sidebar {
+  width: 220px; min-width: 220px; background: #fff; border-right: 1px solid #e2e8f0;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.brand {
+  padding: 14px 16px 10px;
+  font-weight: 700; font-size: 13px; color: #1e293b;
+  border-bottom: 1px solid #e2e8f0; line-height: 1.3;
+}
+.brand small { display: block; font-weight: 400; font-size: 11px; color: #64748b; margin-top: 2px; }
+.total-badge {
+  margin: 8px 12px; background: #f1f5f9; border-radius: 6px;
+  padding: 5px 10px; font-size: 11px; color: #475569; font-weight: 500;
+}
+.paths-header { padding: 10px 16px 4px; font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .6px; }
+.paths-list { overflow-y: auto; flex: 1; }
+.path-all {
+  display: flex; align-items: center; gap: 8px; padding: 7px 12px;
+  cursor: pointer; border-radius: 6px; margin: 2px 8px;
+  font-size: 12px; font-weight: 600; color: #334155;
+}
+.path-all.active, .path-all:hover { background: #f1f5f9; }
+.path-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+  cursor: pointer; border-radius: 6px; margin: 1px 8px;
+  font-size: 12px; color: #475569; transition: background .1s;
+}
+.path-item:hover, .path-item.active { background: #f1f5f9; color: #1e293b; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.plabel { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pcount { font-size: 11px; font-weight: 600; color: #94a3b8; min-width: 20px; text-align: right; }
+
+.legend { padding: 10px 12px; border-top: 1px solid #e2e8f0; }
+.legend-title { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+.legend-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #475569; margin: 2px 0; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* MAIN */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* TOPBAR */
+#topbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  padding: 8px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 4px; }
+.filter-label { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-right: 2px; }
+.fbtn {
+  font-size: 11px; padding: 3px 8px; border: 1px solid #e2e8f0; border-radius: 4px;
+  background: #fff; cursor: pointer; color: #475569; transition: all .1s;
+}
+.fbtn:hover { border-color: #94a3b8; }
+.fbtn.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+.search-wrap { margin-left: auto; }
+#search { border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 10px; font-size: 12px; width: 180px; outline: none; }
+#search:focus { border-color: #3b82f6; }
+.counter { font-size: 12px; color: #64748b; white-space: nowrap; }
+
+/* STATS BAR */
+#statsbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  display: flex; gap: 0; overflow-x: auto;
+}
+.stat { flex: 1; padding: 10px 16px; border-right: 1px solid #e2e8f0; min-width: 120px; }
+.stat:last-child { border-right: none; }
+.stat .val { font-size: 24px; font-weight: 700; color: #1e293b; }
+.stat .val.green { color: #10b981; }
+.stat .val.red { color: #ef4444; }
+.stat-lbl { font-size: 11px; color: #64748b; margin-top: 1px; }
+
+/* BOARD */
+#board { flex: 1; overflow-x: auto; overflow-y: auto; padding: 12px; }
+.state-block { margin-bottom: 16px; }
+.state-header {
+  font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase;
+  letter-spacing: .5px; padding: 6px 0 8px; display: flex; align-items: center; gap: 8px;
+}
+.state-code { background: #e2e8f0; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: #64748b; }
+.state-cnt { color: #94a3b8; font-weight: 400; font-size: 11px; }
+.cards-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.card {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 10px 12px; width: 280px; flex-shrink: 0;
+  cursor: default; transition: box-shadow .15s;
+}
+.card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.card .nr { font-size: 10px; color: #94a3b8; margin-bottom: 4px; }
+.card .qt { font-size: 13px; line-height: 1.45; color: #1e293b; margin-bottom: 8px; }
+.card .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600;
+  border: 1px solid; letter-spacing: .2px;
+}
+.tag-p1 { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-p2 { color: #f97316; border-color: #fdba74; background: #fff7ed; }
+.tag-p3 { color: #d97706; border-color: #fcd34d; background: #fffbeb; }
+.tag-p4 { color: #94a3b8; border-color: #cbd5e1; background: #f8fafc; }
+.tag-info  { color: #3b82f6; border-color: #93c5fd; background: #eff6ff; }
+.tag-komerc { color: #8b5cf6; border-color: #c4b5fd; background: #f5f3ff; }
+.tag-trans { color: #14b8a6; border-color: #5eead4; background: #f0fdfa; }
+.tag-brak { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-istnieje { color: #10b981; border-color: #6ee7b7; background: #ecfdf5; }
+.card.hidden { display: none; }
+
+/* TABS */
+#tabs { display: flex; border-bottom: 2px solid #e2e8f0; background: #fff; }
+.tab { padding: 8px 20px; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.tab.active { color: #1e293b; border-bottom-color: #3b82f6; }
+.tab-panel { display: none; }
+.tab-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+/* LIST VIEW */
+#list-panel { overflow-y: auto; padding: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 8px 12px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; position: sticky; top: 0; }
+td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; }
+tr:hover td { background: #f8fafc; }
+tr.hidden { display: none; }
+
+/* INFO */
+#info-panel { overflow: hidden; display: flex; flex-direction: column; font-size: 13px; line-height: 1.6; }
+.info-section { margin-bottom: 16px; }
+.info-section h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #64748b; margin-bottom: 8px; }
+.info-section ul { padding-left: 16px; color: #475569; }
+.info-section li { margin: 3px 0; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin: 2px; }
+
+</style>
+<style id="cs-styles">
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+#panel-cs{
+  --bg:#0f1117;--sb-bg:#161b22;--hd-bg:#161b22;--bd:#30363d;
+  --tx:#e6edf3;--tx2:#8b949e;--ac:#58a6ff;
+  --cb:#1c2128;--ts:#1c2128;--mb:#2d4a22;--mt:#7ee787;
+  --ab:#1f3353;--sw:292px;--hh:52px
+}
+#panel-cs{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+     background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* Header */
+#hd{height:var(--hh);background:var(--hd-bg);border-bottom:1px solid var(--bd);
+    display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+#hd h1{font-size:15px;font-weight:700;white-space:nowrap;flex-shrink:0;letter-spacing:.01em}
+#hd h1 span{color:var(--ac)}
+#sw{flex:1;position:relative;max-width:440px}
+#si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--tx2);font-size:15px;pointer-events:none}
+#search{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:6px;
+        color:var(--tx);padding:6px 10px 6px 30px;font-size:15px;outline:none;transition:border-color .15s}
+#search:focus{border-color:var(--ac)}
+
+/* Filter buttons */
+.filt{display:flex;gap:4px;flex-shrink:0}
+.fb{font-size:13px;padding:3px 8px;border-radius:4px;border:1px solid var(--bd);
+    background:transparent;color:var(--tx2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fb:hover{border-color:var(--ac);color:var(--tx)}
+.fb.on{border-color:var(--ac);background:var(--ab);color:var(--tx)}
+
+/* Lang toggle */
+#lang-btn{font-size:13px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+          background:transparent;color:var(--tx2);cursor:pointer;text-decoration:none;
+          display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+#lang-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+#stat{font-size:13px;color:var(--tx2);flex-shrink:0;white-space:nowrap;min-width:90px;text-align:right}
+
+/* Layout */
+#lay{display:flex;flex:1;overflow:hidden}
+
+/* Sidebar */
+#sb{width:var(--sw);flex-shrink:0;background:var(--sb-bg);border-right:1px solid var(--bd);overflow-y:auto}
+.ci{display:flex;align-items:center;gap:7px;padding:7px 10px;cursor:pointer;
+    border-left:3px solid transparent;border-bottom:1px solid var(--bd);
+    transition:background .1s;user-select:none;min-height:36px}
+.ci:hover{background:rgba(88,166,255,.07)}
+.ci.active{background:var(--ab);border-left-color:var(--ac)}
+.ci.hidden{display:none}
+.cn{font-size:11.5px;color:var(--tx2);min-width:20px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ct{font-size:14px;line-height:1.3;color:var(--tx);flex:1;min-width:0}
+.ct mark{background:var(--mb);color:var(--mt);border-radius:2px;padding:0 1px}
+
+/* Version badge in sidebar */
+.vb{font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:8px;flex-shrink:0;letter-spacing:.02em}
+.vb-v1{background:#21262d;color:#6e7681}
+.vb-v2{background:#2d2502;color:#d29922}
+.vb-v3{background:#0d2a1a;color:#3fb950}
+.vb-v4{background:#0d1e3c;color:#58a6ff}
+
+/* Verification pipeline dots */
+.pipe{display:flex;gap:2px;flex-shrink:0}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--bd)}
+.pd.on-v1{background:#6e7681}
+.pd.on-v2{background:#d29922}
+.pd.on-v3{background:#3fb950}
+.pd.on-v4{background:#58a6ff}
+
+#nr{padding:20px 12px;font-size:15px;color:var(--tx2);text-align:center;display:none}
+
+/* Content */
+#ct{flex:1;overflow-y:auto;padding:26px 34px}
+.cs{display:none}
+.cs.vis{display:block}
+
+/* Markdown */
+.cs h2{font-size:23px;font-weight:700;border-bottom:1px solid var(--bd);padding-bottom:10px;margin-bottom:16px}
+.cs h3{font-size:13px;font-weight:700;color:var(--ac);margin:20px 0 9px;
+       text-transform:uppercase;letter-spacing:.06em}
+.cs h4{font-size:16px;font-weight:600;margin:14px 0 6px}
+.cs p{font-size:15.5px;line-height:1.65;margin-bottom:8px}
+.cs strong{font-weight:600}
+.cs em{font-style:italic;color:var(--tx2)}
+.cs code{font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:13px;
+         background:var(--cb);border:1px solid var(--bd);border-radius:3px;
+         padding:1px 5px;color:#f0883e}
+.cs pre{background:var(--cb);border:1px solid var(--bd);border-radius:6px;
+        padding:12px 14px;overflow-x:auto;margin:10px 0}
+.cs pre code{background:none;border:none;padding:0;font-size:14px;color:var(--tx);line-height:1.5}
+.cs table{width:100%;border-collapse:collapse;font-size:14.5px;margin:10px 0;display:block;overflow-x:auto}
+.cs th,.cs td{text-align:left;padding:7px 10px;border:1px solid var(--bd)}
+.cs th{background:var(--sb-bg);font-weight:600}
+.cs tr:nth-child(even) td{background:var(--ts)}
+.cs ul,.cs ol{padding-left:18px;margin:7px 0}
+.cs li{font-size:15.5px;line-height:1.6;margin-bottom:3px}
+.cs hr{border:none;border-top:1px solid var(--bd);margin:18px 0}
+
+/* Changelog / verification card */
+.changelog{background:#0b1e10;border:1px solid #2ea043;border-radius:8px;
+           padding:14px 18px;margin:18px 0;position:relative}
+.changelog::before{content:'🔬 VERIFIED';font-size:10.5px;font-weight:700;
+                   color:#3fb950;letter-spacing:.08em;display:block;margin-bottom:8px}
+.changelog h3{color:#3fb950 !important;margin-top:0 !important;font-size:14px !important}
+.changelog p,.changelog li{color:#c3e6cb;font-size:15px}
+.changelog ul{margin:4px 0}
+.changelog table{font-size:12px}
+.changelog th{background:#0d2a1a}
+.changelog code{background:#0d2a1a;color:#7ee787}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+body.light{
+  --bg:#ffffff;--sb-bg:#f6f8fa;--hd-bg:#f6f8fa;--bd:#d0d7de;
+  --tx:#1f2328;--tx2:#656d76;--ac:#0969da;
+  --cb:#f6f8fa;--ts:#f6f8fa;--mb:#fff8c5;--mt:#7a5c00;--ab:#ddf4ff;
+}
+body.light .cs code{color:#cf222e}
+body.light .cs pre code{color:var(--tx)}
+body.light .changelog{background:#f0fff4;border-color:#2ea043}
+body.light .changelog p,body.light .changelog li{color:#1a7f37}
+#theme-btn{font-size:14px;padding:3px 9px;border-radius:4px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx2);cursor:pointer;flex-shrink:0;transition:all .15s}
+#theme-btn:hover{border-color:var(--ac);color:var(--tx)}
+
+/* FUND rozwijany blok */
+details.fund{border:1px solid var(--bd);border-radius:8px;margin:22px 0 8px;
+  background:var(--cb);overflow:hidden}
+details.fund>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  padding:12px 16px;user-select:none;transition:background .12s}
+details.fund>summary::-webkit-details-marker{display:none}
+details.fund>summary:hover{background:rgba(88,166,255,.07)}
+.fund-arrow{color:var(--ac);font-size:13px;flex-shrink:0;transition:transform .15s}
+details.fund[open] .fund-arrow{transform:rotate(90deg)}
+.fund-head{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.fund-title{font-size:15px;font-weight:700;color:var(--tx)}
+.fund-src{font-size:12px;font-style:italic;color:var(--tx2);line-height:1.4}
+.fund-badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.fund-badge.ok{background:#0d2a1a;color:#3fb950}
+.fund-badge.warn{background:#3d2a02;color:#f0883e}
+body.light .fund-badge.ok{background:#dafbe1;color:#1a7f37}
+body.light .fund-badge.warn{background:#fff1e5;color:#bc4c00}
+.fund-hint{font-size:11px;color:var(--tx2);flex-shrink:0;border:1px solid var(--bd);
+  border-radius:4px;padding:2px 7px}
+details.fund[open] .fund-hint{display:none}
+.fund-#panel-cs{padding:4px 18px 16px;border-top:1px solid var(--bd)}
+.fund-body h1{font-size:18px;margin:12px 0 6px}
+
 </style>
 </head>
 <body>
 <div class="tabs">
   <button class="tab active" onclick="sw(this,'mapa')">🗺️ Mapa percepcji</button>
   <button class="tab" onclick="sw(this,'cs')">📄 Category Standards</button>
-  <button class="tab" onclick="sw(this,'combined')">🔗 Łączny widok</button>
 </div>
-<div id="tab-mapa" class="panel active"><div class="spinner">⏳ Ładowanie mapy...</div></div>
-<div id="tab-cs" class="panel"><div class="spinner">⏳ Ładowanie CS...</div></div>
-<div id="tab-combined" class="combined">
-  <div id="comb-mapa" class="combined-half"><div class="spinner">⏳ Mapa...</div></div>
-  <div id="comb-cs" class="combined-half"><div class="spinner">⏳ CS...</div></div>
+<div id="panel-mapa">
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="brand">
+    SUV premium — nabywca prywatny
+    <small>v5.7 · Analiza CEP i Pytań</small>
+  </div>
+  <div class="total-badge" id="total-badge">130 pytań · 8 ścieżek</div>
+  <div class="paths-header">Ścieżki zakupowe</div>
+  <div class="paths-list">
+    <div class="path-all active" onclick="filterPath(this)" data-path="ALL">
+      <span class="dot" style="background:#64748b"></span>
+      <span class="plabel">Wszystkie ścieżki</span>
+      <span class="pcount" id="cnt-all">0</span>
+    </div>
+    
+        <div class="path-item" data-path="A" onclick="filterPath(this)" title="Rodzina potrzebuje miejsca (7 miejsc)">
+          <span class="dot" style="background:#3b82f6"></span>
+          <span class="plabel">A · Rodzina potrzebuje miejsca (7 miejsc)</span>
+          <span class="pcount" id="cnt-A">0</span>
+        </div>
+        <div class="path-item" data-path="B" onclick="filterPath(this)" title="Awans/selfgift — nagroda dla siebie">
+          <span class="dot" style="background:#8b5cf6"></span>
+          <span class="plabel">B · Awans/selfgift — nagroda dla siebie</span>
+          <span class="pcount" id="cnt-B">0</span>
+        </div>
+        <div class="path-item" data-path="C" onclick="filterPath(this)" title="Zamiana sedana klasy D/E na SUV">
+          <span class="dot" style="background:#ec4899"></span>
+          <span class="plabel">C · Zamiana sedana klasy D/E na SUV</span>
+          <span class="pcount" id="cnt-C">0</span>
+        </div>
+        <div class="path-item" data-path="D" onclick="filterPath(this)" title="Dom poza miastem / polne drogi / 4×4">
+          <span class="dot" style="background:#14b8a6"></span>
+          <span class="plabel">D · Dom poza miastem / polne drogi / 4×4</span>
+          <span class="pcount" id="cnt-D">0</span>
+        </div>
+        <div class="path-item" data-path="E" onclick="filterPath(this)" title="EV-SUV premium bez kompromisu przestrzeni">
+          <span class="dot" style="background:#f59e0b"></span>
+          <span class="plabel">E · EV-SUV premium bez kompromisu przestrzeni</span>
+          <span class="pcount" id="cnt-E">0</span>
+        </div>
+        <div class="path-item" data-path="F" onclick="filterPath(this)" title="Lojalista marki — upgrade do SUV">
+          <span class="dot" style="background:#10b981"></span>
+          <span class="plabel">F · Lojalista marki — upgrade do SUV</span>
+          <span class="pcount" id="cnt-F">0</span>
+        </div>
+        <div class="path-item" data-path="G" onclick="filterPath(this)" title="Pierwszy raz premium — porównanie Audi/BMW/MB">
+          <span class="dot" style="background:#f43f5e"></span>
+          <span class="plabel">G · Pierwszy raz premium — porównanie Audi/BMW/MB</span>
+          <span class="pcount" id="cnt-G">0</span>
+        </div>
+        <div class="path-item" data-path="H" onclick="filterPath(this)" title="PHEV SUV jako kompromis EV/spalinowy">
+          <span class="dot" style="background:#eab308"></span>
+          <span class="plabel">H · PHEV SUV jako kompromis EV/spalinowy</span>
+          <span class="pcount" id="cnt-H">0</span>
+        </div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Statusy</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>BRAK — do stworzenia</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#10b981"></span>ISTNIEJE — opublikowany</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>ROZBUDOWAĆ — wymaga rozbudowy</div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Priorytety</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>P1 — krytyczne (blokery)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>P2 — ważne (decyzja)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#eab308"></span>P3 — standardowe</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#94a3b8"></span>P4 — niski priorytet</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <span class="filter-label">Priorytet</span>
+    <div class="filter-group" id="fg-pr">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="P1">P1</button>
+      <button class="fbtn" data-val="P2">P2</button>
+      <button class="fbtn" data-val="P3">P3</button>
+      <button class="fbtn" data-val="P4">P4</button>
+    </div>
+    <span class="filter-label" style="margin-left:8px">Typ</span>
+    <div class="filter-group" id="fg-typ">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="INFO">INFO</button>
+      <button class="fbtn" data-val="KOMERC">KOMERC</button>
+      <button class="fbtn" data-val="TRANS">TRANS</button>
+    </div>
+    <div class="search-wrap">
+      <input id="search" type="text" placeholder="Szukaj pytania..." oninput="applyFilters()">
+    </div>
+    <div class="counter">Widoczne: <strong id="visibleCount">0</strong> / 130</div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div id="statsbar">
+    <div class="stat"><div class="val" id="stat-total">0</div><div class="stat-lbl">Widocznych pytań</div></div>
+    <div class="stat"><div class="val red" id="stat-p1">0</div><div class="stat-lbl">Priorytet P1 (blokery)</div></div>
+    <div class="stat"><div class="val" id="stat-brak">0</div><div class="stat-lbl">Status BRAK (do stworzenia)</div></div>
+    <div class="stat"><div class="val green" id="stat-istnieje">0</div><div class="stat-lbl">ISTNIEJE + ROZBUDOWAĆ</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div id="tabs">
+    <button class="tab active" onclick="switchTab('mapa')">🗺️ Mapa</button>
+    <button class="tab" onclick="switchTab('lista')">📋 Lista</button>
+    <button class="tab" onclick="switchTab('info')">ℹ️ Info</button>
+  </div>
+
+  <!-- MAPA PANEL -->
+  <div id="mapa-panel" class="tab-panel active">
+    <div id="board"></div>
+  </div>
+
+  <!-- LISTA PANEL -->
+  <div id="lista-panel" class="tab-panel">
+    <div id="list-panel">
+      <table id="list-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Pytanie</th><th>Ścieżka</th><th>Stan</th><th>Priorytet</th><th>Typ</th>
+          </tr>
+        </thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INFO PANEL -->
+  <div id="info-panel" class="tab-panel">
+    <div style="overflow-y:auto;padding:16px;flex:1">
+    <div class="info-section">
+      <h3>Kategoria</h3>
+      <p style="font-size:14px"><strong>SUV premium — nabywca prywatny</strong></p>
+      <p style="font-size:12px;color:#64748b;margin-top:4px">v5.7 · 130 pytań · 8 ścieżek zakupowych (CEP)</p>
+    </div>
+    <div class="info-section">
+      <h3>Struktura pytań wg stanu</h3>
+      <div id="info-states" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
+    </div>
+    <div class="info-section">
+      <h3>Ścieżki zakupowe — pełne profile CEP</h3>
+      <div id="info-paths" style="margin-top:8px"></div>
+    </div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+<div id="panel-cs">
+<div id="hd">
+  <h1>GEO <span>CS</span></h1>
+  <div id="sw">
+    <span id="si">⌕</span>
+    <input id="search" type="text" placeholder="Szukaj kategorii, CEP, pytania..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="filt">
+    <button class="fb on" data-f="all" onclick="setFilter('all')">All</button>
+    <button class="fb" data-f="v2p" onclick="setFilter('v2p')">✅ Verified</button>
+    <button class="fb" data-f="v1"  onclick="setFilter('v1')">📝 Draft</button>
+  </div>
+  <a id="lang-btn" href="%23">🌐 EN</a>
+  <button id="theme-btn" onclick="toggleTheme()" title="Tryb jasny/ciemny">☀️</button>
+  <span id="stat">1 cat.</span>
+</div>
+<div id="lay">
+  <div id="sb">
+    <div class="ci" id="i1" onclick="select(1)"><span class="cn">#1</span><span class="ct">SUV premium — nabywca prywatny</span><span class="vb vb-v2">v2</span><div class="pipe"><span class="pd on-v1"></span><span class="pd on-v2"></span><span class="pd"></span><span class="pd"></span></div></div>
+    <div id="nr">No results</div>
+  </div>
+  <div id="ct">
+    <div class="cs" id="s1"><h1>CS-6. SUV premium — nabywca prywatny · Category Standard v2</h1>
+
+<p><em>Baza: research Audi Plichta + VW PHD IDI 2020 + DCJ qual/quant. Nowe warstwy: opis + Problemy kategorii · CEV (Schwartz+wagi) · Tone of Voice GEO. Format aparat/sejfy V2 ze ścieżkami. cs_series: CS-6 z 6.</em></p>
+
+<hr>
+
+<h2>0. Opis kategorii</h2>
+
+<p>SUV premium to nadwozie crossover/off-road w segmencie D lub E (i pochodnych coupé-SUV) sprzedawane przez prestiżowe marki europejskie: Audi (Q5, Q7, Q8), BMW (X5, X7, X6), Mercedes-Benz (GLE, GLS, GLC), Volvo (XC90, XC60), Porsche (Cayenne) i inne. Ceny nowych egzemplarzy plasują się w przedziale <strong>200 000–500 000+ PLN</strong>. Nabywca prywatny kupuje SUV-a premium jako połączenie przestrzeni rodzinnej, prestiżu społecznego i jakości prowadzenia — przy czym te trzy funkcje różnie ważą w zależności od CEP wejścia. Kategoria jest wysoce aspiracyjna i tożsamościowa: wybór marki (Audi vs BMW vs Mercedes) to często decyzja o tym, kim się jest, a nie tylko czego się potrzebuje.</p>
+
+<h2>0b. Problemy, które kategoria załatwia</h2>
+
+<p><em>Primary = funkcjonalny rdzeń, po co kategoria powstała. Secondary = jak rynek zdetalizował rdzeń na węższe potrzeby.</em></p>
+
+<p><strong>🎯 Primary (rdzeń — po co SUV premium powstał):</strong></p>
+<p>> <strong>Łączy prestiż marki z praktyczną przestrzenią dla rodziny lub stylu życia poza miastem — bez kompromisu jakości prowadzenia.</strong></p>
+<p>Goła funkcja: duże auto premium, które nie wstydzi się pod restauracją ani na polnej drodze.</p>
+
+<p><strong>Secondary (detalizacja rdzenia — rynek pociął „premium + przestrzeń" na węższe konteksty):</strong></p>
+<ul><li>przestrzeń dla <strong>dużej rodziny</strong> (3 dzieci + pies + wózek → 7 miejsc) (→ <code>cep_rodzina_przestrzen</code>)</li><li><strong>nagroda dla siebie</strong> (awans, premia, zmiana pracy → czas na coś premium) (→ <code>cep_awans_selfgift_premium</code>)</li><li><strong>przejście z sedana na SUV</strong> (wieloletni użytkownik BMW 5 / Audi A6 odkrywa SUV-y) (→ <code>cep_zamiana_z_sedana</code>)</li><li><strong>dom na wsi / polne drogi</strong> — realny 4×4 i dobre zawieszenie (→ <code>cep_dojazd_poza_miasto</code>)</li><li><strong>EV bez kompromisu przestrzeni</strong> — e-tron, iX, EQS SUV (→ <code>cep_ev_suv_luksusy</code>)</li><li><strong>lojalność marki</strong> — od Audi A6 do Q7, pozostać w marce (→ <code>cep_prestige_marka</code>)</li><li><strong>porównanie marek</strong> — Q5 vs X5 vs GLE, decyzja zawieszona (→ <code>cep_porownanie_marek</code>)</li><li><strong>PHEV jako kompromis</strong> — SUV z wtyczką, spokojne sumienie (→ <code>cep_hybryda_suv_plug</code>)</li></ul>
+
+<p>> ⚠️ <strong>„Lubię SUV-y" / „Chcę duże auto" — to NIE CEP.</strong> CEP = sytuacja życiowa (rodzina, awans, zmiana stylu), nie atrybut.</p>
+
+<hr>
+
+<h2>0c. Dynamika Kategorii — siły wejścia / używania / zużycia / barier</h2>
+
+<p><em>Poziom: <strong>[L1]</strong> = ból dotychczasowej kategorii (sedan, SUV niższy segment, van) → sojusznik · <strong>[L2]</strong> = ból samego SUV-a premium → nasz problem, rozbijaj.</em></p>
+
+<h3>① CEP — momenty wejścia</h3>
+
+<p><strong>L1 — wejście w „czas na duże auto premium"</strong> <em>(konkuruje: przedłużenie leasingu dotychczasowego auta, upgrade do executive sedan, minivan, „może wystarczy Tiguan")</em></p>
+
+<table>
+<tr><th>Moment</th><th>Trigger (głos klienta)</th></tr>
+<tr><td>narodziny 3. dziecka / powiększenie rodziny</td><td>„Passat już za mały, trzeba coś z 7 miejscami i dużym bagażnikiem"</td></tr>
+<tr><td>awans / duża premia / zmiana pracy</td><td>„Zarabiam więcej, jeżdżę od 10 lat Audi A4 — czas na coś lepszego"</td></tr>
+<tr><td>przeprowadzka poza miasto</td><td>„Dom na wsi, drogi polne, potrzebuję 4×4 i dobrego klirensu"</td></tr>
+<tr><td>zakończenie umowy leasingowej</td><td>„Leasing BMW X3 minął, czy brać X5, Q7 czy zostać przy X3?"</td></tr>
+<tr><td>presja społeczna / środowisko zawodowe</td><td>„Klienci i partnerzy przyjeżdżają Q7-ami, może czas się dostosować"</td></tr>
+</table>
+
+<p><strong>L2 — wejście w KONKRETNY SUV premium (marka/segment/napęd)</strong></p>
+
+<table>
+<tr><th>Moment</th><th>Droga</th><th>Friction/wear L1, który to rodzi</th></tr>
+<tr><td><code>cep_rodzina_przestrzen</code></td><td>C-SUV za mały dla rodziny 5+ → D-SUV/7-miejsc</td><td>Tiguan/Q3 nie mieści 3 dzieci + wózek spacerowy</td></tr>
+<tr><td><code>cep_zamiana_z_sedana</code></td><td>sedan niekomfortowy na wybojach/parkowaniu</td><td>A6/5 Series nisko, ciasny wjazd, problemy z widocznością</td></tr>
+<tr><td><code>cep_ev_suv_luksusy</code></td><td>dotychczasowy dieselowy SUV kosztowny / strefa niskoemisyjna</td><td>diesel Q5 = koszty w mieście, Niemcy strefy</td></tr>
+<tr><td><code>cep_hybryda_suv_plug</code></td><td>full EV to za duże ryzyko zasięgu → PHEV jako krok pośredni</td><td>BEV zasięg zimą niepewny, brak szybkiej sieci</td></tr>
+</table>
+
+<h3>② Friction Points</h3>
+<ul><li><strong>[L1]</strong> sedan w korku i na polnych drogach → niski klirens, słaba widoczność → <em>sojusznik <code>cep_zamiana_z_sedana</code></em></li><li><strong>[L1]</strong> C-SUV za mały dla rodziny 5+ osób z bagażem → <em>sojusznik <code>cep_rodzina_przestrzen</code></em></li><li><strong>[L1]</strong> diesel kosztowny w strefach niskoemisyjnych (DE/PL planowane) → <em>sojusznik <code>cep_ev_suv_luksusy</code>, <code>cep_hybryda_suv_plug</code></em></li><li><strong>[L2]</strong> cena podstawowa vs bogato wyposażony niższy segment — „Q7 base vs Q5 Full" → <em>nasz: pełna kalkulacja TCO + wyposażenie bazowe</em></li><li><strong>[L2]</strong> wartość rezydualna niepewna przy BEV → <em>nasz: dane historyczne RV premium BEV</em></li><li><strong>[L2]</strong> czas oczekiwania na nowy (4–12 mies.) → <em>nasz: demo/CPO jako alternatywa</em></li><li><strong>[L2]</strong> decyzja marka-tożsamość: „co powiedzą znajomi jeśli zmienię z Audi na BMW?" → <em>nasz: transparentne porównanie</em></li></ul>
+
+<h3>③ Wear & Consumption</h3>
+<ul><li><strong>[L2] terminalny:</strong> cykl wymiany auta (leasing 3 lata / własność 5-7 lat) → powrót do CEP z nową sytuacją</li><li><strong>[L2] konsumpcja paliwa:</strong> diesel/benzyna → realny koszt vs PHEV (mini-CEP: „ile naprawdę oszczędza PHEV")</li><li><strong>[L2] bateria PHEV:</strong> degradacja po 5+ latach (zdolność elektryczna ↓) → argument za BEV lub diesel</li><li><strong>[L2] wartość rezydualna:</strong> Q5 zachowuje ~55% po 3 latach, Q7 ~50%, Cayenne ~60% → kluczowy argument leasingu</li></ul>
+
+<h3>④ Category Stoppers</h3>
+<p><strong>Wejścia</strong> (nie zaczynam)</p>
+<ul><li><strong>[L2]</strong> cena (300k+ PLN gotówka) → <em>S2: kalkulator leasingu/kredytu, rata vs ownership cost</em></li><li><strong>[L2]</strong> „czy Q7 jest za duży do mojego garażu?" → <em>S2: wymiary z klarownymi porównaniami</em></li><li><strong>[L2]</strong> niepewność napędu: diesel vs PHEV vs BEV → <em>S2: decision tree napędu wg profilu jazdy</em></li><li><strong>[L2]</strong> „nie wiem co wybrać Audi vs BMW" → <em>S2: transparentna tabela porównawcza bez korporacyjnego szumu</em></li></ul>
+
+<p><strong>Rozwoju</strong> (nie pogłębiam)</p>
+<ul><li><strong>[L2]</strong> wybiera Q5 bazowy zamiast lepiej skonfigurowanego → żal po zakupie przy porównaniu z kolegą który wziął S-line</li><li><strong>[L2]</strong> leasing bez ubezpieczenia GAP → strata przy szkodzie totalnej</li></ul>
+
+<h3>🔗 Cross-cutting</h3>
+<ul><li><strong>Prestiż marki × tożsamość</strong> — przy SUV premium kupujący nie tylko wybiera auto, wybiera do której grupy przynależy (Audi = technologiczny intelektualista / BMW = dynamiczny / Mercedes = klasyczny elegancja). Treść PDP musi to adresować bez korporacyjnego blurbowania.</li><li><strong>Napęd = osobna ścieżka decyzji</strong> — diesel/MHEV vs PHEV vs BEV to 3 różne profile kupujących; nigdy nie wrzucaj do jednej taktyki.</li><li><strong>Leasing premium</strong> — przy 300k+ leasing jest bardziej racjonalny niż zakup gotówkowy; RV i rata = kluczowe liczby.</li></ul>
+
+<hr>
+
+<h2>1. CEV — Category Emotional Valuation (Schwartz + wagi)</h2>
+
+<p><strong>Pasek CEV — profil emocjonalny kategorii (10 cech):</strong></p>
+
+<table>
+<tr><th>ryzyko</th><th>lęk</th><th>widoczność</th><th>impuls</th><th>sexy</th><th>aspiracja</th><th>tożsamość</th><th>zmysłowość</th><th>pilność</th><th>moralność</th></tr>
+<tr><td>.55</td><td>.50</td><td>.90</td><td>.10</td><td>.80</td><td>.95</td><td>.90</td><td>.75</td><td>.35</td><td>.20</td></tr>
+</table>
+
+<p>Bardzo wysokie <strong>aspiracja .95</strong> + <strong>tożsamość .90</strong> + <strong>widoczność .90</strong> → kategoria aspiracyjno-tożsamościowa klasy A. Sexy .80 + zmysłowość .75 = silny komponent hedonistyczny (prowadzenie, wnętrze). <code>apply_physics</code> przekłada na wagi etapów ↓.</p>
+
+<p><strong>Schwartz — stany świadomości + wagi:</strong></p>
+
+<p>Fork <strong>EMOCJA</strong>, research <strong>~5.0</strong> (intensywny — marka, model, napęd, wyposażenie, finansowanie), pole pytań ~<strong>160+</strong>, emocja +0.9 (aspiracja/prestiż).</p>
+
+<table>
+<tr><th>#</th><th>Stan świadomości</th><th>Waga</th><th>Co to znaczy dla treści</th></tr>
+<tr><td>1</td><td>Nie wiem (unaware)</td><td>◔ L</td><td>Myśl o wymianie auta dopiero kiełkuje. Mało treści.</td></tr>
+<tr><td>2</td><td>Potrzeba / trigger</td><td>◑ M</td><td>Rodzina, awans, zmiana pracy — CEP aktywowany.</td></tr>
+<tr><td>3</td><td>CEP (sytuacja)</td><td>◑ M</td><td>Routing do ścieżki: rodzina/awans/zamiana/dojazd/EV/marka.</td></tr>
+<tr><td>4</td><td><strong>Nauka kategorii</strong></td><td>●● <strong>VH</strong></td><td>Napędy, segmenty (C/D/E-SUV), marki, wyposażenie, finansowanie — najcięższy etap.</td></tr>
+<tr><td>5</td><td>Preselekcja</td><td>● <strong>H</strong></td><td>Które modele pasują? Q5 vs Q7 vs Q8? PHEV vs diesel?</td></tr>
+<tr><td>6</td><td><strong>Porównywanie marek</strong></td><td>●● <strong>VH</strong></td><td>Audi vs BMW vs Mercedes vs Porsche — etap tożsamościowy, kluczowy.</td></tr>
+<tr><td>7</td><td>Wybór dealera</td><td>◑ M</td><td>Gdzie kupić, czas oczekiwania, demo/CPO vs nowe.</td></tr>
+<tr><td>8</td><td>Zakup / finalizacja</td><td>● <strong>H</strong></td><td>Konfiguracja, leasing, ubezpieczenie, odbiór.</td></tr>
+</table>
+
+<p><strong>Kształt:</strong> EMOCJA aspiracyjna z podwójnym szczytem na <strong>Nauce (E4)</strong> i <strong>Porównaniu marek (E6)</strong>. Impuls płaski (nikt nie kupuje Q7 pod wpływem chwili). Treść GEO musi obsłużyć głębokie porównania marek i transparentną kalkulację finansowania.</p>
+
+<hr>
+
+<h2>2. CEP — Consumer Entry Points</h2>
+
+<table>
+<tr><th>id</th><th>Trigger (język konsumenta)</th><th>Kontekst</th><th>Primary concern</th><th>Routes to</th><th>PDP anchor</th></tr>
+<tr><td><code>cep_rodzina_przestrzen</code></td><td>„Troje dzieci + pies + wózek — potrzebuję przynajmniej 7 miejsc"</td><td>Rodzina 5-7 osób, bagaż, zwierzę</td><td>Praktyczna przestrzeń + bezpieczeństwo</td><td>D-SUV 7-miejscowy (Q7, X7, GLS)</td><td>„Pojemność bagażnika + 7 miejsc + ISOFIX + NCAP"</td></tr>
+<tr><td><code>cep_awans_selfgift_premium</code></td><td>„Dostałem dużą premię / zmieniłem pracę — czas na coś premium"</td><td>Nagroda dla siebie, gotówka/leasing</td><td>Jakość, prestiż, „na to zasługuję"</td><td>D/E-SUV premium, pełne wyposażenie</td><td>„Wyposażenie S-line / M-Sport + wrażenie z jazdy"</td></tr>
+<tr><td><code>cep_zamiana_z_sedana</code></td><td>„Jeżdżę od lat BMW 5 (sedan) — czas spróbować SUV-a"</td><td>Wieloletni użytkownik sedana w tej marce</td><td>Czy SUV to regres? Jak prowadzi?</td><td>C/D-SUV tej samej marki (Q5 dla A4/A6, X3/X5 dla 5S)</td><td>„Prowadzenie + suspension + vs sedan benchmark"</td></tr>
+<tr><td><code>cep_dojazd_poza_miasto</code></td><td>„Dom na wsi / przedmieściach, polne drogi — potrzebuję 4×4"</td><td>Dojazd do pracy z obszaru wiejskiego</td><td>Realny 4×4 vs AWD marketingowy</td><td>D-SUV z quattro/xDrive + dobry klirens</td><td>„System 4×4 + klirens + zawieszenie pneumatyczne"</td></tr>
+<tr><td><code>cep_ev_suv_luksusy</code></td><td>„Chcę przejść na elektryczny ale bez kompromisu przestrzeni"</td><td>Poszukiwacz BEV w segmencie premium</td><td>Zasięg + sieć ładowania + czas ładowania</td><td>BEV-SUV (Q8 e-tron, iX, EQS SUV, Taycan Cross Turismo)</td><td>„Zasięg WLTP + realna trasa + czas ładowania DC"</td></tr>
+<tr><td><code>cep_prestige_marka</code></td><td>„Przez lata Audi A6, teraz czas na Q7 — zostać w marce, przejść na SUV"</td><td>Loyalista marki, upgrade segmentu</td><td>Tożsamość marki + wiarygodność</td><td>Q7/Q8 (Audi), GLE/GLS (MB)</td><td>„Ekosystem marki + wartość rezydualna + serwis"</td></tr>
+<tr><td><code>cep_porownanie_marek</code></td><td>„Stoję między Audi Q5 a BMW X5 — nie wiem co wybrać i dlaczego"</td><td>Kupujący po raz pierwszy premium</td><td>Który wybór jest „właściwy" dla mnie?</td><td>Q5 vs X5 vs GLE vs XC90 — tabela</td><td>„Tabela porównawcza + test drive + różnice charakteru"</td></tr>
+<tr><td><code>cep_hybryda_suv_plug</code></td><td>„Chcę SUV-a ale trochę myślę o środowisku — PHEV to dobry kompromis?"</td><td>Kupujący z mieszanymi potrzebami</td><td>Realna oszczędność PHEV vs diesel vs BEV</td><td>PHEV-SUV (Q5 45 TFSI e, X5 45e, GLE 350 de)</td><td>„Elektryczny zasięg PHEV + realne spalanie + kalkulator"</td></tr>
+</table>
+
+<hr>
+
+<h2>3. 20 Discovery Questions</h2>
+
+<p><em>Wspólny punkt startu — adresują wszystkie CEP-y, zanim klient wejdzie w konkretną personę.</em></p>
+
+<ol><li>Jaki SUV premium wybrać w 2026 — ranking Audi / BMW / Mercedes / Porsche?</li><li>Audi Q7 czy BMW X7 — co wybrać dla rodziny 5 osób?</li><li>Co to znaczy „SUV premium" i czym różni się od zwykłego SUV-a?</li><li>SUV klasy D vs klasy E — różnice praktyczne i co wybrać?</li><li>Leasing Audi Q5 vs zakup gotówką — co się opłaca przy 250k?</li><li>Audi Q5 vs BMW X5 2026 — pełne porównanie cech i ceny.</li><li>PHEV SUV — czy naprawdę oszczędza paliwo? Realny zasięg.</li><li>Najlepszy 7-miejscowy SUV premium do 400k PLN — ranking.</li><li>Wartość rezydualna Audi Q5 vs BMW X5 po 3 latach — ile procentowo?</li><li>Audi Q8 e-tron zasięg 2026 — ile realnie przejadę trasą zimą?</li><li>Diesel vs benzyna vs PHEV w SUV premium — co wybrać w Polsce?</li><li>Czy SUV premium kosztuje dużo w utrzymaniu? Serwis, opony, ubezpieczenie.</li><li>Audi Q7 vs Mercedes GLS — różnice, który większy, który lepszy?</li><li>Porsche Cayenne vs Audi Q8 — co daje więcej prestiżu i co taniej w utrzymaniu?</li><li>Jak długo czekać na nowy Audi Q7 z salonu w Polsce 2026?</li><li>Audi quattro vs BMW xDrive vs Mercedes 4MATIC — który lepszy off-road?</li><li>SUV premium dla rodziny z psem i dziećmi — co zmieści wszystko?</li><li>Czy warto kupić demo / użytkowany SUV premium z salonu (CPO)?</li><li>Jak skonfigurować Audi Q5 — jakie opcje są kluczowe, czego nie brać?</li><li>Test drive SUV premium — na co zwrócić uwagę, żeby nie żałować wyboru?</li></ol>
+
+<hr>
+
+<h2>4. KCF — Key Category Features</h2>
+
+<table>
+<tr><th>Feature</th><th>Zakres rynkowy</th><th>Tier</th><th>Uwaga</th></tr>
+<tr><td>Segment / rozmiar (C/D/E-SUV)</td><td>Q3/XC60 vs Q5/X5/XC90 vs Q7/X7/GLS</td><td>T1</td><td>Długość i rozstaw osi = przestrzeń tylna, 7 miejsc opcja tylko D-SUV+</td></tr>
+<tr><td>Napęd</td><td>2.0 diesel MHEV / 3.0 V6 / PHEV / BEV</td><td>T1</td><td>Profil jazdy (miasto/trasa) determinuje optymalny napęd</td></tr>
+<tr><td>System 4×4</td><td>quattro / xDrive / 4MATIC / AWD</td><td>T1</td><td>Stały vs on-demand — różnica przy polnej drodze</td></tr>
+<tr><td>Moc (KM)</td><td>204–680 KM</td><td>T1</td><td>Premium: min. 250 KM dla komfortu podróży</td></tr>
+<tr><td>Wyposażenie bazowe vs pakiety</td><td>podstawa / S-line / M-Sport / AMG Line / Inscription</td><td>T2</td><td>Bazowe premium = bardzo ubogie; S-line/M-Sport = standard rynkowy</td></tr>
+<tr><td>Zawieszenie</td><td>standardowe / pneumatyczne (air suspension)</td><td>T2</td><td>Pneumatyczne = komfort OFF + regulacja klirensu</td></tr>
+<tr><td>Ładowność bagażnika</td><td>500–2000 l (z rozłożonymi siedzeniami)</td><td>T2</td><td>7-miejsc: bagażnik może być minimalny przy pełnym składzie</td></tr>
+<tr><td>Wartość rezydualna (RV)</td><td>45–65% po 36 mies.</td><td>T2</td><td>Kluczowy przy leasingu; Porsche najwyższe, BEV niepewne</td></tr>
+<tr><td>Zasięg elektryczny (PHEV/BEV)</td><td>40–600 km</td><td>T2</td><td>PHEV: realny 30-50 km AER; BEV: realny zasięg tras ÷ WLTP ~0.75</td></tr>
+<tr><td>Bezpieczeństwo NCAP</td><td>5 gwiazdek (standard segmentu)</td><td>T3</td><td>Wszystkie warto weryfikować dla aktualnego roku modelowego</td></tr>
+<tr><td>Connectivity / software</td><td>MMI/iDrive/MBUX + OTA updates</td><td>T3</td><td>Kupujący premium wymagają aktualności systemu</td></tr>
+</table>
+
+<hr>
+
+<h2>5. Typowy Produkt — konwencje kategorii</h2>
+
+<table>
+<tr><th>Cecha</th><th>Norma kategorii</th><th>Red flag</th></tr>
+<tr><td>Segment</td><td>min. D-SUV (dł. >4,7 m) przy zakupie premiumowym</td><td>C-SUV (Q5) sprzedawany jako „rodzinny 7-miejscowy" — 7 miejsc tylko w Q7/X7/GLS</td></tr>
+<tr><td>Napęd</td><td>min. mild-hybrid 48V lub PHEV; diesel 2.0 wychodzi</td><td>Diesel bez MHEV w 2026 = przestarzały; silnik 1.4 TSI w Q5 = nie jest premium</td></tr>
+<tr><td>Wykończenie</td><td>skóra Nappa / Alcantara, podgrzewane fotele, szklany dach</td><td>tkanina w bazowym premium = poniżej oczekiwań; okna bez panoramy = poczucie klatki</td></tr>
+<tr><td>Systemy</td><td>full ADAS (ACC, Lane Assist, Parking sensors+kamera 360)</td><td>brak ACC w segmencie premium = defect dla tej półki</td></tr>
+<tr><td>4×4</td><td>trwały 4×4 (nie na żądanie) w wersji terenowej</td><td>etykieta „4×4" bez stałego przeniesienia napędu na polnych drogach</td></tr>
+<tr><td>Gwarancja</td><td>3-5 lat producenta + roczna na akumulator PHEV/BEV</td><td>gwarancja 2 lata = minimum, nie przewaga</td></tr>
+</table>
+
+<hr>
+
+<h2>6. Tier Specs</h2>
+
+<p><strong>Tier-1 Universal</strong> (musi być w PDP każdego SUV-a premium):</p>
+<ul><li>Segment i długość — <code>C-SUV (4,5 m) / D-SUV (4,7–5,0 m) / E-SUV (5,0+ m)</code></li><li>Silnik i napęd — <code>2.0 TDI / 3.0 TDI / 2.0 TFSI / PHEV 45 / BEV; KM; Nm</code></li><li>Układ napędowy — <code>quattro stały / xDrive / 4MATIC / FWD</code></li><li>Liczba miejsc — <code>5 / 7 (opcja)</code></li><li>Bagażnik — <code>XX l (5 miejsc) / XX l (7 miejsc)</code></li><li>Cena PLN — <code>od XX 000 PLN (konfiguracja testowa)</code></li></ul>
+
+<p><strong>Tier-2 Differentiator:</strong> zawieszenie pneumatyczne (opcja/standard) · pakiet S-line/Avus/M-Sport (co zawiera) · zasięg elektryczny PHEV/BEV (WLTP + estymacja realna) · wartość rezydualna 36 mies. (%).</p>
+<p><strong>Tier-3 Niche:</strong> systemy off-road (terrain modes) · systemy dźwiękowe (B&O, Harman, Bose) · head-up display (standard/opcja) · OTA update support.</p>
+
+<hr>
+
+<h2>7. Tier Pricing — PLN, Polska 2026</h2>
+
+<table>
+<tr><th>Tier</th><th>Zakres (PLN)</th><th>Typowy kupujący</th><th>Przykłady</th></tr>
+<tr><td>Wejście w premium</td><td>200 000–280 000</td><td>Pierwszy SUV premium, z leasingu Tiguana/X1</td><td>Audi Q5 40 TDI, BMW X3 xDrive20d, Mercedes GLC 220d</td></tr>
+<tr><td>Premium mid</td><td>280 000–380 000</td><td>Upgrade z C-SUV, rodzina 5+, awans</td><td>Audi Q5 PHEV, BMW X5 xDrive40i, Volvo XC90 B5</td></tr>
+<tr><td>Premium high</td><td>380 000–500 000</td><td>D-SUV 7-miejscowy, lojalista marki</td><td>Audi Q7 55 TFSI, BMW X7 xDrive40i, Mercedes GLS 400d</td></tr>
+<tr><td>Ultra premium</td><td>500 000+</td><td>Porsche, Bentley, Range Rover, Lamborghini Urus</td><td>Porsche Cayenne Turbo, Range Rover Autobiography</td></tr>
+</table>
+
+<hr>
+
+<h2>8. Consumer Decision Tree</h2>
+
+<pre><code>[L1 — Routing: po co SUV premium i jaka sytuacja życiowa?]
+
+Q1. Ile osób regularnie podróżuje?
+   → max 4-5 osób (para + dzieci) → C-SUV lub D-SUV 5-miejsc → Q2
+   → 6-7 osób lub pies/sprzęt → D-SUV 7-miejsc → Q2b
+
+Q2. Co jest ważniejsze: prestiż marki / technologia czy przestrzeń / terenowość?
+   → Prestiż + technologia → [ścieżka marka] → Q3
+   → Przestrzeń + terenowość → [ścieżka użyteczność] → Q3
+
+Q3. Jakie trasy dominują?
+   → Miasto + trasy → diesel MHEV / PHEV → Q4
+   → Dom na wsi, drogi polne → stały 4×4 + zawieszenie pneumatyczne → Q4
+   → Miasto 80% → PHEV (AER 40+ km) → Q4
+   → Pełne EV OK → BEV (Q8 e-tron / iX / EQS) → Q4
+
+Q4. Napęd i budżet:
+   → &lt;250k → Q5 40 TDI / X3 / GLC entry
+   → 250–350k → Q5 PHEV / X5 / XC90
+   → 350–500k → Q7 / X7 / GLS
+   → 500k+ → Cayenne / Range Rover
+
+Q5. Marka (tożsamość):
+   → „Jestem od zawsze w Audi&quot; → Q5/Q7/Q8
+   → „BMW to sport&quot; → X5/X6/X7
+   → „Mercedes to elegancja&quot; → GLE/GLS
+   → „Porsche to prestiż&quot; → Cayenne
+   → „Niezależny / Skandynawski&quot; → Volvo XC90
+
+→ Kluczowe info: SEGMENT+DŁUGOŚĆ · NAPĘD · 4×4 typ · BAGAŻNIK · MIEJSCA · CENA · WYPOSAŻENIE</code></pre>
+
+<hr>
+
+<h2>9. Forbidden Patterns</h2>
+
+<table>
+<tr><th>❌ Zakazane</th><th>✅ Poprawne</th></tr>
+<tr><td>„luksusowe wnętrze premium"</td><td>„Tapicerka skóra Nappa, podgrzewane fotele przód+tył, panoramiczny szklany dach, ambient lighting 30 kolorów."</td></tr>
+<tr><td>„doskonałe prowadzenie"</td><td>„Zawieszenie pneumatyczne (opcja): regulacja klirensu od 80 do 215 mm; tryby Comfort/Auto/Dynamic/Allroad."</td></tr>
+<tr><td>„ogromny bagażnik dla rodziny"</td><td>„Bagażnik 702 l (5-miejsc) / 325 l przy rozłożonych 7 miejscach — zmieści wózek i 2 torby podróżne."</td></tr>
+<tr><td>„prawdziwy SUV z 4×4"</td><td>„quattro stały — 100% momentu obrotowego dostępne dla osi tylnej przy pełzaniu po błocie; nie system na żądanie."</td></tr>
+<tr><td>„oszczędny PHEV"</td><td>„Q5 45 TFSI e: zasięg elektryczny 40 km WLTP (realny ~28-35 km). Przy ładowaniu codziennym: ~4-5 l/100 km. Bez ładowania: 7,5 l/100 km."</td></tr>
+<tr><td>„topowy w klasie"</td><td>„Audi Q7 zajmuje 3. miejsce w kategorii 7-miejscowych SUV premium w Polsce pod względem sprzedaży (2025, dane SAMAR)."</td></tr>
+</table>
+
+<hr>
+
+<h2>10. Ścieżki percepcji & pole pytań</h2>
+
+<p><em>7 ścieżek głównych + ścieżki napędowe. Każda z CEP wejścia, personą i szacunkową liczbą pytań.</em></p>
+
+<table>
+<tr><th>Ścieżka</th><th>CEP wejścia</th><th>Persona / kontekst</th><th>Pytań</th></tr>
+<tr><td>A — Rodzina potrzebuje miejsca</td><td><code>cep_rodzina_przestrzen</code></td><td>Katarzyna, 38, dwoje dzieci + pies + plany na trzecie</td><td>25</td></tr>
+<tr><td>B — Awans/selfgift</td><td><code>cep_awans_selfgift_premium</code></td><td>Marek, 44, dyrektor finansowy, Audi A6 → Q7</td><td>18</td></tr>
+<tr><td>C — Zmiana z sedana na SUV</td><td><code>cep_zamiana_z_sedana</code></td><td>Piotr, 51, od lat BMW 5 Series, pierwszy SUV</td><td>20</td></tr>
+<tr><td>D — Dom na wsi / terenowość</td><td><code>cep_dojazd_poza_miasto</code></td><td>Tomasz, 42, dom za miastem, droga polna 10 km</td><td>18</td></tr>
+<tr><td>E — EV-SUV premium</td><td><code>cep_ev_suv_luksusy</code></td><td>Anna, 40, chce BEV ale z przestrzenią rodzinną</td><td>16</td></tr>
+<tr><td>F — Lojalista marki Audi</td><td><code>cep_prestige_marka</code></td><td>Krzysztof, 56, A8 → Q8, zostaje w marce</td><td>14</td></tr>
+<tr><td>G — Porównanie marek, pierwszy raz premium</td><td><code>cep_porownanie_marek</code></td><td>Michał, 35, pierwszy zakup premium, stoi między Q5 a X5</td><td>22</td></tr>
+<tr><td>H — PHEV SUV</td><td><code>cep_hybryda_suv_plug</code></td><td>Joanna, 39, myśli o środowisku, nie gotowa na full EV</td><td>15</td></tr>
+</table>
+
+<h3>Ścieżka A — Rodzina potrzebuje miejsca (25)</h3>
+<p><strong>A1 — Świadomość / trigger:</strong></p>
+<ul><li>7-miejscowy SUV premium — jaki wybrać dla rodziny 5 osób?</li><li>Audi Q7 vs BMW X7 — który większy i lepszy dla rodziny?</li><li>Mercedes GLS vs Audi Q7 — różnice praktyczne dla dużej rodziny</li><li>Czy Q7 ma prawdziwe 7 miejsc dla dorosłych czy tylko dla dzieci?</li><li>Bagażnik przy 7 miejscach — ile zostaje w Q7/X7/GLS?</li></ul>
+
+<p><strong>A2 — Nauka / orientacja:</strong></p>
+<ul><li>D-SUV vs E-SUV — różnice rozmiarowe i co wybrać?</li><li>ISOFIX w SUV premium — które miejsca mają system mocowania?</li><li>Bezpieczeństwo NCAP Audi Q7 2025/2026 — aktualne wyniki</li><li>Czy SUV premium jest bezpieczniejszy niż sedan klasy D?</li><li>Minimalne wymiary garażu dla Q7 / X7 / GLS</li></ul>
+
+<p><strong>A3 — Porównanie modeli:</strong></p>
+<ul><li>Audi Q7 vs BMW X7 — tabela porównawcza 2026</li><li>Q7 vs GLS — kto ma więcej miejsca z tyłu i większy bagażnik?</li><li>Volvo XC90 7 miejsc vs Audi Q7 — który lepszy dla rodziny?</li><li>Land Rover Discovery vs Audi Q7 — off-road i wnętrze porównanie</li></ul>
+
+<p><strong>A4 — Decyzja/zakup:</strong></p>
+<ul><li>Leasing Audi Q7 rata miesięczna 2026 — kalkulator i warunki</li><li>Opcje 7 miejsc w Q7 — jaka dopłata i co ogranicza?</li><li>Konfiguracja Q7 dla rodziny — jakie pakiety wziąć?</li></ul>
+
+<p><strong>A5 — Blokery:</strong></p>
+<ul><li>🛡️ Czy Q7 zmieści się w typowym garażu polskiego domu?</li><li>🛡️ Ile kosztuje ubezpieczenie AC/OC Audi Q7 rocznie?</li><li>🛡️ Q7 czy Q5 — który ma więcej bagażnika przy 2 fotelikach?</li><li>🛡️ Czy Q7 z 7 miejscami to kompromis — może lepiej minivan?</li><li>🛡️ Jak długo czekać na Q7 z salonu — jest demo pod Warszawą?</li></ul>
+
+<h3>Ścieżka B — Awans / selfgift premium (18)</h3>
+<p><strong>B1 — Trigger aspiracyjny:</strong></p>
+<ul><li>Jaki SUV premium kupić za premię 300 000 PLN — ranking</li><li>Audi Q8 czy Q7 — różnice i dla kogo każde?</li><li>BMW X6 M vs Audi Q8 — coupe-SUV, który lepszy?</li><li>SUV za 350k PLN — co jest absolutnie najlepsze?</li></ul>
+
+<p><strong>B2 — Wyposażenie i doznania:</strong></p>
+<ul><li>Audi Q7 S-line vs podstawowy — co zawiera pakiet i czy warto?</li><li>Bang & Olufsen vs Bang & Olufsen Premium Audi — różnice brzmienia</li><li>Head-up display w Audi Q7 — co wyświetla i czy niezbędny?</li><li>Masaż foteli w SUV premium — Audi vs BMW vs Mercedes</li></ul>
+
+<p><strong>B3 — Porównanie marek (tożsamościowe):</strong></p>
+<ul><li>Audi Q7 vs Porsche Cayenne — prestiż, prowadzenie, cena</li><li>Co daje wyższy prestiż: Audi Q8 czy Porsche Cayenne bazowy?</li><li>Jak jeżdżą menedżerowie — Audi Q7 czy Mercedes GLE?</li></ul>
+
+<p><strong>B4 — Zakup/finansowanie:</strong></p>
+<ul><li>Leasing Q8 vs gotówka — co bardziej prestiżowe i opłacalne?</li><li>Czy warto dopłacić do Porsche Cayenne zamiast Q8?</li><li>🛡️ Co zrobi Q7 z wartością rezydualną za 3 lata?</li><li>🛡️ Czy niższy segment dobrze wyposażony to lepszy wybór niż Q7 w podstawie?</li></ul>
+
+<h3>Ścieżka C — Zamiana z sedana na SUV (20)</h3>
+<p><strong>C1 — Świadomość:</strong></p>
+<ul><li>BMW 5 Series vs BMW X5 — co zmienia się po przesiadce?</li><li>Audi A6 vs Audi Q7 — różnice prowadzenia i komfortu</li><li>Czy przesiadka z sedana na SUV to regres? Co tracę?</li><li>Jazda SUV-em vs sedan — jak się różni prowadzenie na autostradzie?</li></ul>
+
+<p><strong>C2 — Nauka:</strong></p>
+<ul><li>SUV vs sedan zużycie paliwa — ile więcej pali Q7 niż A6?</li><li>Zawieszenie pneumatyczne w SUV — czy eliminuje kołysanie?</li><li>Wysokość siedzenia w SUV — za wysoka czy komfortowa dla seniora?</li><li>Parking SUV premium w mieście — czy to problem z Q7/X7?</li></ul>
+
+<p><strong>C3 — Porównanie:</strong></p>
+<ul><li>Audi Q5 vs Audi A6 — czy Q5 to równoważna alternatywa sedana?</li><li>BMW X5 vs BMW 5 Series — który ma lepsze prowadzenie?</li><li>Mercedes GLE vs Mercedes E-Klasse — co wybrać po 10 latach E-klasy?</li><li>Volvo XC90 vs S90 — kombi czy SUV dla rodziny 4-osobowej?</li></ul>
+
+<p><strong>C4 — Decyzja:</strong></p>
+<ul><li>Test drive Q7 vs A6 — na co zwrócić uwagę żeby nie żałować?</li><li>Konfiguracja Q5 dla byłego użytkownika A4 — co zabrać?</li><li>🛡️ Czy Q5 jest wystarczającą nagrodą po latach Audi A4?</li><li>🛡️ Mam A6 na leasing — czy opłaca mi się zerwać umowę na Q7?</li><li>🛡️ Spalanie Q7 3.0 TDI w cyklu mieszanym — realne vs WLTP?</li></ul>
+
+<h3>Ścieżka D — Dom poza miastem / terenowość (18)</h3>
+<p><strong>D1 — Trigger:</strong></p>
+<ul><li>SUV 4×4 do domu na wsi — co wybrać w 2026?</li><li>Audi Q7 vs Land Rover Discovery — który lepszy na polnych drogach?</li><li>Jaki klirens w SUV premium? Q7 vs Cayenne vs GLS — tabela</li></ul>
+
+<p><strong>D2 — Nauka 4×4:</strong></p>
+<ul><li>quattro stały vs xDrive on-demand — różnice w błocie i śniegu?</li><li>Zawieszenie pneumatyczne w SUV — czy podnosi klirens na polne drogi?</li><li>Audi quattro ultra vs pełne quattro — której wersji szukać?</li><li>4MATIC Mercedes — stały czy adaptacyjny? Różnica praktyczna</li></ul>
+
+<p><strong>D3 — Porównanie:</strong></p>
+<ul><li>Audi Q7 vs Porsche Cayenne w terenie — kto lepszy?</li><li>Volvo XC90 T8 PHEV na wsi — terenowość i spalanie</li><li>BMW X7 xDrive na szutrze — realna zdolność terenowa?</li></ul>
+
+<p><strong>D4 — Decyzja:</strong></p>
+<ul><li>Opony all-terrain w SUV premium — które marki i czy warto?</li><li>Czy Q7/X7 ma tryby terenowe? Co uruchamiają?</li><li>Serwis SUV premium na wsi — ile km do ASO, koszty</li><li>🛡️ Czy Q7 to SUV do lasu czy tylko do miasta?</li><li>🛡️ Land Rover vs Audi Q7 — niezawodność i koszty serwisu po 3 latach</li><li>🛡️ Spalanie Q7 na trasie ze wsi do miasta — realne przy 150 km/dzień?</li></ul>
+
+<h3>Ścieżka E — EV-SUV premium (16)</h3>
+<p><strong>E1 — Trigger:</strong></p>
+<ul><li>Audi Q8 e-tron vs BMW iX — który lepszy dla rodziny?</li><li>SUV elektryczny premium — ranking 2026 (zasięg + komfort)</li><li>Mercedes EQS SUV vs Audi Q8 e-tron — różnice i cena</li></ul>
+
+<p><strong>E2 — Nauka:</strong></p>
+<ul><li>Zasięg realny Q8 e-tron 2026 — trasa Warszawa-Kraków zimą?</li><li>Czas ładowania Audi Q8 e-tron DC 150 kW — od 10 do 80%?</li><li>BEV vs PHEV SUV — co wybrać przy 200 km dziennie?</li><li>Infrastruktura ładowania premium SUV w Polsce — Ionity vs Orlen?</li></ul>
+
+<p><strong>E3 — Porównanie:</strong></p>
+<ul><li>Q8 e-tron vs Porsche Taycan Cross Turismo — prestiż i zasięg</li><li>BMW iX vs Mercedes EQS SUV vs Audi Q8 e-tron — tabela</li></ul>
+
+<p><strong>E4 — Decyzja:</strong></p>
+<ul><li>Wartość rezydualna BEV SUV po 3 latach — ryzyko?</li><li>🛡️ Zasięg Q8 e-tron zimą -10°C — ile realnie?</li><li>🛡️ Czy dom na wsi wyklucza BEV? Ładowanie 11 kW AC wystarczy?</li><li>🛡️ Q8 e-tron vs Q7 TDI — całkowity koszt posiadania (TCO) 3 lata?</li><li>🛡️ Bateria BEV SUV po 5 latach — ile procent pojemności zostaje?</li></ul>
+
+<h3>Ścieżka F — Lojalista marki Audi (14)</h3>
+<p><strong>F1 — Trigger:</strong></p>
+<ul><li>Audi Q8 vs Q7 — który wybrać po latach A8/A6?</li><li>Audi Q8 sportback vs Q7 — coupe-SUV czy 7-miejscowy?</li><li>Jak zmienił się Q7 od 2016 do 2026? Co nowego?</li></ul>
+
+<p><strong>F2 — Nauka:</strong></p>
+<ul><li>Ekosystem Audi — myQ, e-tron Charging, serwis ASO w Polsce</li><li>Audi S-line vs Audi Sport — różnica wizualna i techniczna</li><li>Gwarancja Audi 2026 — co obejmuje i przez ile lat?</li></ul>
+
+<p><strong>F3 — Decyzja:</strong></p>
+<ul><li>Leasing Audi Select — warunki odkupu Q7 po 3 latach</li><li>Wartość rezydualna Audi Q7 vs Q8 — który traci mniej?</li><li>🛡️ Czy Audi Q8 to lepsza inwestycja niż Q7?</li><li>🛡️ Audi Q7 facelift 2025 — czy warto czekać czy brać teraz?</li><li>🛡️ Jak skonfigurować Q7 żeby stracić jak najmniej na sprzedaży?</li></ul>
+
+<h3>Ścieżka G — Pierwszy raz premium, porównanie marek (22)</h3>
+<p><strong>G1 — Orientacja:</strong></p>
+<ul><li>Audi Q5 vs BMW X5 — pełne porównanie 2026 (cena, prowadzenie, wnętrze)</li><li>Mercedes GLE vs Audi Q5 vs BMW X5 — który lepszy?</li><li>Volvo XC90 vs Audi Q7 — niezawodność, komfort, cena</li><li>SUV premium — jak wybrać markę? Audi vs BMW vs Mercedes vs Porsche</li></ul>
+
+<p><strong>G2 — Nauka marki:</strong></p>
+<ul><li>Czym różni się Audi od BMW — filozofia marki i jak prowadzą?</li><li>Dlaczego niektórzy zawsze wracają do BMW a inni do Audi?</li><li>Mercedes GLE — dla kogo i co wyróżnia?</li><li>Audi vs BMW — który ma lepszy system multimedialny 2026?</li></ul>
+
+<p><strong>G3 — Test drive:</strong></p>
+<ul><li>Co sprawdzić na test drive Q5 vs X5 — lista pytań do handlowca</li><li>Na co zwrócić uwagę podczas jazdy próbnej SUV premium?</li></ul>
+
+<p><strong>G4 — Porównania szczegółowe:</strong></p>
+<ul><li>Audi MMI vs iDrive 9 vs MBUX — który system jest najlepszy?</li><li>Q5 S-line vs BMW X5 M-Sport — różnice w wyposażeniu seryjnym</li><li>Niezawodność Audi Q5 vs BMW X5 po 100 000 km — opinie warsztatów</li><li>Koszty serwisu Audi Q5 vs BMW X5 — co droższe w 3 lata?</li><li>Dealer Audi vs BMW — obsługa posprzedażowa w Polsce</li></ul>
+
+<p><strong>G5 — Decyzja/blokery:</strong></p>
+<ul><li>🛡️ Jaki SUV premium wybrać jeśli nie wiem nic o markach?</li><li>🛡️ Czy kupując Q5 zamiast X5 popełniam błąd?</li><li>🛡️ Co zrobi moja żona/partner jeśli wezmę BMW zamiast Audi co zawsze?</li><li>🛡️ Audi Q5 bazowy vs BMW X3 dobrze wyposażony — co lepsze za te same pieniądze?</li></ul>
+
+<h3>Ścieżka H — PHEV SUV (15)</h3>
+<p><strong>H1 — Trigger:</strong></p>
+<ul><li>Audi Q5 PHEV 45 TFSI e — czy to dobry wybór w 2026?</li><li>PHEV vs diesel SUV — co wybrać przy 80% jazdy w mieście?</li><li>BMW X5 45e PHEV vs Audi Q7 55 TFSI e — porównanie</li></ul>
+
+<p><strong>H2 — Nauka PHEV:</strong></p>
+<ul><li>Jak działa PHEV w SUV premium — kiedy jedzie elektrycznie?</li><li>Realne spalanie Q5 PHEV bez ładowania — ile litrów?</li><li>Zasięg elektryczny Q5 PHEV zimą — ile realnie przy -10°C?</li><li>Ładowanie PHEV w garażu — jakie złącze, ile czasu?</li></ul>
+
+<p><strong>H3 — Decyzja:</strong></p>
+<ul><li>Leasing Q5 PHEV vs diesel — rat różnica i co się opłaca?</li><li>🛡️ PHEV to greenwashing? Czy naprawdę oszczędza?</li><li>🛡️ Q5 PHEV bagażnik — mniejszy niż diesel?</li><li>🛡️ Serwis Q5 PHEV po gwarancji — dużo droższe?</li><li>🛡️ Bateria Q5 PHEV po 5 latach — ile % pojemności zostaje?</li><li>🛡️ Q5 PHEV vs Q7 diesel — co realnie sensowniejsze dla 200 km/tydzień?</li><li>🛡️ Czy PHEV SUV da mi zniżkę na ubezpieczenie lub parkowanie w Warszawie?</li></ul>
+
+<hr>
+
+<h2>11. Cross-Category Triggers</h2>
+
+<table>
+<tr><th>Kategoria źródłowa</th><th>Trigger zakupu</th><th>CEP aktywowany</th><th>Fraza wejściowa w AI</th></tr>
+<tr><td>Dziecko / rozszerzenie rodziny</td><td>„Trzecie dziecko, Peugeot 3008 za mały"</td><td><code>cep_rodzina_przestrzen</code></td><td>„jaki 7-miejscowy SUV premium do 400k"</td></tr>
+<tr><td>Awans / zmiana pracy</td><td>„Dostałem podwyżkę, jeżdżę A4, czas na coś lepszego"</td><td><code>cep_awans_selfgift_premium</code></td><td>„jaki SUV premium na awans firmowy"</td></tr>
+<tr><td>Zakup domu poza miastem</td><td>„Nieruchomość 30 km od miasta, droga leśna"</td><td><code>cep_dojazd_poza_miasto</code></td><td>„SUV 4×4 do domu na wsi premium"</td></tr>
+<tr><td>Stacja ładowania domowa</td><td>„Instaluję ładowarkę 11 kW — jaki EV-SUV?"</td><td><code>cep_ev_suv_luksusy</code></td><td>„audi e-tron zasięg 2026 porównanie"</td></tr>
+<tr><td>Firma / leasing firmowy</td><td>„Spółka pozwala na 300k leasingu — co wybrać"</td><td><code>cep_awans_selfgift_premium</code></td><td>„jaki SUV premium na leasing firmowy 300k"</td></tr>
+<tr><td>Nieruchomości premium</td><td>„Nowi sąsiedzi parkują Q7-ami i X7-ami"</td><td><code>cep_prestige_marka</code></td><td>„audi Q7 vs BMW X7 prestiż i wartość"</td></tr>
+</table>
+
+<hr>
+
+<h2>12. Tone of Voice for GEO — jak pisać treść SUV premium pod AI search</h2>
+
+<p><em>20 reguł pisania PDP/artykułów pod cytowalność — kategoria aspiracyjno-tożsamościowa.</em></p>
+
+<p><strong>Struktura passage'a (cytowalność):</strong></p>
+<ol><li>Odpowiadaj na pytanie w PIERWSZYM zdaniu. Źle: „Audi Q7 to elegancki SUV…". Dobrze: „Audi Q7 2026 mierzy 5,06 m długości, bagażnik 770 l (5-miejsc) / 295 l (7-miejsc), dostępny w napędach: 45 TDI (231 KM), 55 TFSI e PHEV (381 KM), 60 TFSI e PHEV (462 KM)."</li><li>Jeden akapit = jedna kompletna odpowiedź. Nie mieszaj „dla kogo Q7" z „jak działa quattro".</li><li>Liczby zawsze z jednostkami i kontekstem: „770 l" → „bagażnik 770 l — mieści wózek dziecięcy + 2 duże walizki 30 l".</li><li>Porównanie zawsze z wnioskiem: „Q7 długość 5,06 m vs X7 5,15 m → X7 szersze tylne siedzenie (+3 cm ramię w ramię)".</li><li>Konkretne modele: „Q7 45 TDI 231 KM" cytuje się; „solidny diesel" nie.</li></ol>
+
+<p><strong>Język konsumenta (nie katalogu):</strong></p>
+<ol><li>Adresuj lęk wprost: „Czy Q7 zmieści się w garażu?" → „Q7: szerokość 2,00 m (z lusterkami 2,21 m), długość 5,06 m. Standard garaż 5,5×3,0 m: Q7 wchodzi bez lusterek."</li><li>Marka = tożsamość: nie pisz „oba modele oferują podobne osiągi" — różnicuj charakter: „Audi Q7 = technologiczny spokój; BMW X7 = sportowa prezencja; GLS = klasyczny autorytet".</li><li>PHEV: podawaj ZAWSZE dwa scenariusze: z ładowaniem (AER) i bez (zużycie silnika spalinowego).</li><li>Wartość rezydualna: konkretna liczba+źródło: „Q5 zachowuje ~55% wartości po 36 mies./60 000 km (Eurotax Glass's, Q4 2025)".</li><li>Odpowiadaj na „co powiedzą inni": „Q7 to auto, które identyfikuje właściciela jako «kogoś, kto dotarł» — wybór, gdy marka jest świadomą deklaracją, nie przypadkiem".</li></ol>
+
+<p><strong>Struktura pod AI parsing:</strong></p>
+<ol><li>Tabele dla porównań marek — AI ekstrahuje tabelę (marka, model, długość, bagażnik, napęd, cena) lepiej niż prozę.</li><li>Nagłówki = pytania klienta: „Ile bagażnika w Q7 przy 7 miejscach?" nie „Specyfikacja przestrzeni ładunkowej".</li><li>Napęd = osobna sekcja z wyborem: „DIESEL — jeśli: trasy 70%+, brak garażu, 180+ km/dzień. PHEV — jeśli: garaż 11 kW, miasto 60%, do 80 km dziennie. BEV — jeśli: garaż, głównie miasto, wyjazdy planowane."</li><li>Każdy parametr z konsekwencją: „klirens 213 mm (pneumatyczne) → wystarczy na szutrową drogę; standard 195 mm → ostrożnie na głębokiej kolei".</li><li>Blokery: jako osobna sekcja FAQ, każdy z konkretną odpowiedzią liczbową lub warunkiem.</li></ol>
+
+<p><strong>Zaufanie i kontekst:</strong></p>
+<ol><li>Podawaj „dla kogo NIE": „Q7 to NIE wybór jeśli > 50% jazdy po centrum dużego miasta — Q5 PHEV jest wtedy sensowniejszy".</li><li>Dowód zamiast przymiotnika: „Audi Q7 5 gwiazdek NCAP (2024)" zamiast „bezpieczny".</li><li>Finansowanie: rata + wpłata + RV — zawsze trójka razem. Rata bez RV i wpłaty = niepełna informacja.</li><li>Czas oczekiwania: konkretny (3-12 mies. dla nowego; demo dostępne od ręki).</li><li>Zamknij sekcję cytatem-faktem (liczba/ranking/test), nie CTA sprzedażowym.</li></ol>
+
+<hr>
+
+<h2>13. Pole pytań</h2>
+
+<h3>① Discovery Questions (20 — patrz sekcja 3)</h3>
+
+<hr>
+
+<p><em>Źródło treści: research Audi Plichta + VW PHD + DCJ + rynek PL 2026. Format: WPIS_CS_sejfy_domowe_V2.md (16 sekcji). cs_series: CS-6 z 6.</em></p>
+</div>
+  </div>
+</div>
+
 </div>
 <script>
-const SRC={mapa:'MAPA_PERCEPCJI_suv_premium_prywatny_v5.7.html',cs:'cs_suv_premium_prywatny.html'};
-const cache={};
-async function fetchHTML(url){
-  if(cache[url]) return cache[url];
-  const r=await fetch(url);
-  if(!r.ok) throw new Error(r.status+' '+url);
-  cache[url]=await r.text();
-  return cache[url];
-}
-function inject(htmlStr, container){
-  const dp=new DOMParser().parseFromString(htmlStr,'text/html');
-  container.innerHTML='';
-  dp.querySelectorAll('style,link[rel="stylesheet"]').forEach(s=>{
-    container.appendChild(document.importNode(s,true));
-  });
-  Array.from(dp.body.childNodes).forEach(n=>container.appendChild(document.importNode(n,true)));
-  container.querySelectorAll('script').forEach(old=>{
-    const ns=document.createElement('script');
-    if(old.src){ns.src=old.src;}else{ns.textContent=old.textContent;}
-    old.replaceWith(ns);
-  });
-}
-const done={};
-async function ensure(key,targetId){
-  if(done[targetId]) return;
-  done[targetId]=true;
-  try{inject(await fetchHTML(SRC[key]),document.getElementById(targetId));}
-  catch(e){document.getElementById(targetId).innerHTML='<div class="spinner" style="color:#cf222e">❌ '+e.message+'</div>';}
-}
-async function sw(btn,id){
+function sw(btn,id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.panel,.combined').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tab-'+id).classList.add('active');
-  if(id==='mapa') await ensure('mapa','tab-mapa');
-  else if(id==='cs') await ensure('cs','tab-cs');
-  else{await Promise.all([ensure('mapa','comb-mapa'),ensure('cs','comb-cs')]);}
+  var pm=document.getElementById('panel-mapa'),pc=document.getElementById('panel-cs');
+  if(id==='mapa'){pc.style.display='none';pm.style.display='';}
+  else{pm.style.display='none';pc.style.display='block';}
 }
-ensure('mapa','tab-mapa');
+</script>
+<script>
+// ── DANE ──────────────────────────────────────────────────────────────────────
+const A = [
+{nr:1,t:"Jakie auto wybrać dla rodziny z trojgiem dzieci i psem?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:2,t:"7-miejscowy SUV premium — jaki wybrać dla rodziny 5 osób?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:3,t:"Minivan vs SUV premium dla rodziny 6 osób — co wybrać?",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:4,t:"SUV z 7 miejscami do 400 000 PLN — ranking 2026",p:"A",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:5,t:"Audi Q7 czy BMW X7 — co wybrać dla rodziny 5 osób?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:6,t:"Audi Q7 vs Mercedes GLS — który większy i lepszy dla dużej rodziny?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:7,t:"Volvo XC90 7 miejsc vs Audi Q7 — który lepszy dla rodziny?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:8,t:"Czy Q7 ma prawdziwe 7 miejsc dla dorosłych czy tylko dla dzieci?",p:"A",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:9,t:"Bagażnik przy 7 miejscach Q7 vs X7 — ile zostaje po rozłożeniu siedzeń?",p:"A",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:10,t:"D-SUV vs E-SUV — różnice rozmiarowe i przestrzeni dla pasażerów",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:11,t:"ISOFIX w SUV premium — które miejsca mają system mocowania fotelika?",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:12,t:"Bezpieczeństwo NCAP Audi Q7 2025/2026 — aktualne wyniki testów",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:13,t:"Minimalne wymiary garażu dla Audi Q7 i BMW X7 — tabela",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:14,t:"Land Rover Discovery vs Audi Q7 — off-road i wnętrze dla rodziny",p:"A",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:15,t:"Leasing Audi Q7 rata miesięczna 2026 — kalkulator i typowe warunki",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:16,t:"Opcja 7 miejsc w Audi Q7 — jaka dopłata i co ogranicza?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:17,t:"Konfiguracja Q7 dla rodziny — jakie pakiety wziąć, czego nie brać?",p:"A",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:18,t:"🛡️ Czy Q7 zmieści się w typowym garażu polskiego domu?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:19,t:"🛡️ Ile kosztuje ubezpieczenie AC/OC Audi Q7 rocznie dla prywatnego?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:20,t:"🛡️ Q7 czy Q5 — który ma więcej bagażnika przy 2 zamontowanych fotelikach?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:21,t:"🛡️ Może zamiast Q7 lepszy minivan — Chrysler Voyager czy KIA Carnival?",p:"A",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:22,t:"Jaki SUV premium kupić za premię roczną 300 000 PLN?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:23,t:"Audi Q8 czy Q7 — różnice i dla kogo każde jest lepsze?",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:24,t:"SUV premium coupé — Audi Q8 vs BMW X6 vs Mercedes GLE Coupé",p:"B",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:25,t:"Audi Q7 S-line vs podstawowy — co zawiera pakiet i czy warto dopłacić?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:26,t:"Audi Q8 vs Porsche Cayenne — prestiż, prowadzenie, cena i co wybrać?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:27,t:"Co daje wyższy prestiż — Audi Q8 czy Porsche Cayenne w cenie podstawowej?",p:"B",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:28,t:"Bang & Olufsen w Audi Q7 — co zawiera i czym różni się od standardowego audio?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:29,t:"Head-up display w Audi Q7 — co wyświetla i czy warto?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:30,t:"Masaż foteli w SUV premium — Audi Q7 vs BMW X7 vs Mercedes GLS — różnice",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:31,t:"Leasing Q8 vs zakup gotówką przy 500k PLN — co jest bardziej opłacalne?",p:"B",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:32,t:"Jak skonfigurować Audi Q8 żeby stracić jak najmniej na sprzedaży po 3 latach?",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:33,t:"Czy warto dopłacić do Porsche Cayenne zamiast Audi Q8 tej samej ceny?",p:"B",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:34,t:"🛡️ Wartość rezydualna Audi Q7 vs Q8 — który traci mniej po 3 latach?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:35,t:"🛡️ Czy niższy segment dobrze wyposażony (Q5 Avus) to sensowniejszy wybór niż Q7 w bazowej wersji?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:36,t:"🛡️ Audi Q7 facelift 2025/2026 — czy warto czekać czy brać teraz?",p:"B",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:37,t:"BMW 5 Series vs BMW X5 — co zmienia się po przesiadce na SUV?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:38,t:"Audi A6 vs Audi Q7 — różnice prowadzenia, komfortu i przestrzeni",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:39,t:"Czy przesiadka z sedana klasy E na SUV premium to regres?",p:"C",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:40,t:"Audi Q5 vs Audi A6 — czy Q5 to równoważna alternatywa dla długodystansowca?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:41,t:"BMW X5 vs BMW 5 Series na autostradzie — który bardziej komfortowy?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:42,t:"Mercedes GLE vs Mercedes E-Klasse — co wybrać po 10 latach E-klasy?",p:"C",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:43,t:"SUV vs sedan zużycie paliwa — ile więcej pali Q7 niż A6 3.0 TDI?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:44,t:"Zawieszenie pneumatyczne w SUV premium — czy eliminuje kołysanie na autostradzie?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:45,t:"Wysokość centrum ciężkości SUV vs sedan — czy SUV jest niebezpieczniejszy?",p:"C",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:46,t:"Parking SUV premium w centrum miasta — jak sobie radzić z Q7/X7?",p:"C",s:"nauka",sn:"Nauka",y:"INFO",pr:"P4",st:"BRAK"},{nr:47,t:"Test drive Q7 vs A6 — na co zwrócić uwagę żeby nie żałować wyboru?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:48,t:"Konfiguracja Q5 dla byłego użytkownika Audi A4 — co absolutnie wziąć?",p:"C",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:49,t:"🛡️ Spalanie Q7 3.0 TDI w cyklu mieszanym — realne vs deklarowane WLTP?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:50,t:"🛡️ Mam A6 na leasingu — czy opłaca się zerwać umowę żeby wziąć Q7?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:51,t:"🛡️ Czy Q5 jest wystarczającą nagrodą po latach w Audi A4?",p:"C",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:52,t:"SUV 4×4 do domu na wsi — co wybrać w 2026?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:53,t:"Audi Q7 vs Land Rover Discovery — który lepszy na polnych drogach?",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:54,t:"Klirens SUV premium — Q7 vs Cayenne vs GLS — tabela porównawcza",p:"D",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:55,t:"Audi quattro stały vs BMW xDrive on-demand — różnice przy błocie i śniegu",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:56,t:"Zawieszenie pneumatyczne w SUV — ile podnosi klirens na polne drogi?",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:57,t:"4MATIC Mercedes GLE — stały czy adaptacyjny system? Różnica praktyczna",p:"D",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:58,t:"Audi quattro ultra vs pełne quattro — której wersji szukać przy zakupie?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:59,t:"Tryby terenowe w Audi Q7 — co uruchamiają i do czego służą?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:60,t:"Opony all-terrain w SUV premium — które marki i czy warto zainstalować?",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:61,t:"Spalanie Q7 na 150 km dziennej trasy ze wsi do miasta — realne dane",p:"D",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:62,t:"Audi Q7 vs Porsche Cayenne w terenie — kto lepszy i dlaczego?",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:63,t:"Serwis SUV premium na wsi — ile km do ASO Audi, koszty dojazdu",p:"D",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:64,t:"🛡️ Czy Q7 to auto do lasu czy tylko pozorny off-road na asfalt?",p:"D",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:65,t:"🛡️ Land Rover vs Audi Q7 — niezawodność i koszty serwisu po 3 latach na wsi",p:"D",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:66,t:"🛡️ Czy Q7 z zawieszeniem pneumatycznym daje radę na głębokiej kolei polnej?",p:"D",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:67,t:"Audi Q8 e-tron vs BMW iX — który lepszy dla rodziny jako EV?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:68,t:"SUV elektryczny premium — ranking 2026 (zasięg + komfort + prestiż)",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:69,t:"Mercedes EQS SUV vs Audi Q8 e-tron — różnice, cena i co wybrać?",p:"E",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:70,t:"BEV vs PHEV SUV przy 200 km dziennie — co wybrać?",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:71,t:"Infrastruktura ładowania premium SUV w Polsce — Ionity, Orlen, Greenway 2026",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:72,t:"Q8 e-tron vs Porsche Taycan Cross Turismo — prestiż, zasięg i cena",p:"E",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:73,t:"Zasięg realny Audi Q8 e-tron 2026 — trasa Warszawa-Kraków zimą (-10°C)",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:74,t:"Czas ładowania Audi Q8 e-tron DC 150 kW — od 10 do 80% ile minut?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:75,t:"BMW iX vs Mercedes EQS SUV vs Audi Q8 e-tron — tabela porównawcza 2026",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:76,t:"Q8 e-tron vs Q7 TDI — całkowity koszt posiadania (TCO) przez 3 lata",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:77,t:"Wartość rezydualna BEV-SUV premium po 3 latach — ryzyko i dane historyczne",p:"E",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:78,t:"🛡️ Zasięg Q8 e-tron zimą -10°C — ile realnie zostaje z deklarowanych 582 km?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:79,t:"🛡️ Czy dom na wsi wyklucza BEV? Ładowanie 11 kW AC przez noc — wystarczy?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:80,t:"🛡️ Bateria BEV SUV po 5 latach — ile procent pojemności realnie zostaje?",p:"E",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:81,t:"Audi Q8 vs Q7 — który wybrać po latach w Audi A8 lub A6?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:82,t:"Jak zmienił się Audi Q7 od 2016 do 2026 — co nowego i czy warto?",p:"F",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:83,t:"Audi Q8 Sportback vs Q7 — coupe-SUV czy klasyczny 7-miejscowy?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:84,t:"Ekosystem Audi — myQ, e-tron Charging, serwis ASO w Polsce — co to daje?",p:"F",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:85,t:"Audi S-line vs Audi Sport — różnica wizualna i techniczna — tabela",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:86,t:"Gwarancja Audi 2026 — co obejmuje, ile lat i jak aktywować?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:87,t:"Leasing Audi Select — warunki odkupu Q7 po 3 latach i jak to działa?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:88,t:"Jak skonfigurować Q7 żeby stracić jak najmniej na sprzedaży po 3 latach?",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:89,t:"Wartość rezydualna Q7 vs Q8 — który model traci mniej przy odsprzedaży?",p:"F",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:90,t:"🛡️ Czy Audi Q8 to lepsza inwestycja niż Q7 — długoterminowo?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:91,t:"🛡️ Jeśli zawsze miałem Audi, czy przesiadka na BMW to zdrada marki?",p:"F",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:92,t:"Audi Q7 vs Q8 — który model rośnie bardziej w cenie używanej po 3 latach?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:93,t:"Jak wygląda serwis Audi w Polsce — czas oczekiwania, koszty, samochód zastępczy?",p:"F",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:94,t:"Audi Q8 e-tron vs Q8 TFSI e — BEV czy PHEV co wybrać i dlaczego?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:95,t:"Holowanie przyczepy BEV SUV premium — czy Q8 e-tron nadaje się do przyczepy?",p:"E",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:96,t:"Audi Q5 vs BMW X5 2026 — pełne porównanie cech i ceny",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:97,t:"Mercedes GLE vs Audi Q5 vs BMW X5 — który lepszy i dla kogo?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:98,t:"SUV premium — jak wybrać markę między Audi, BMW i Mercedes?",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:99,t:"Volvo XC90 vs Audi Q7 — niezawodność, komfort i cena porównanie",p:"G",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:100,t:"Czym różni się Audi od BMW — filozofia marki, charakter prowadzenia, tożsamość",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:101,t:"Mercedes GLE — dla kogo i co wyróżnia spośród SUV premium?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:102,t:"Audi vs BMW — który ma lepszy system multimedialny MMI vs iDrive 9 w 2026?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:103,t:"Dlaczego niektórzy zawsze wracają do BMW a inni do Audi — co decyduje?",p:"G",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:104,t:"Audi MMI vs BMW iDrive 9 vs Mercedes MBUX — który system jest najlepszy?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:105,t:"Q5 S-line vs BMW X5 M-Sport — różnice w wyposażeniu seryjnym tabela",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:106,t:"Niezawodność Audi Q5 vs BMW X5 po 100 000 km — opinie właścicieli i warsztatów",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:107,t:"Koszty serwisu Audi Q5 vs BMW X5 — co droższe przez pierwsze 3 lata?",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:108,t:"Co sprawdzić na test drive Q5 vs X5 — lista pytań do handlowca",p:"G",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:109,t:"Dealer Audi vs BMW w Polsce — obsługa posprzedażowa, czas naprawy, loaner",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:110,t:"Na co zwrócić uwagę podczas jazdy próbnej SUV premium — checklista",p:"G",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:111,t:"🛡️ Jaki SUV premium wybrać jeśli nie wiem nic o różnicach między markami?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:112,t:"🛡️ Czy kupując Q5 zamiast X5 za te same pieniądze popełniam błąd?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:113,t:"🛡️ Co powiedzą znajomi jeśli wezmę BMW zamiast Audi — czy to ma znaczenie?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:114,t:"🛡️ Audi Q5 bazowy vs BMW X3 dobrze wyposażony za te same pieniądze — co lepsze?",p:"G",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:115,t:"Audi Q5 PHEV 45 TFSI e — czy to dobry wybór w 2026 dla prywatnego?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:116,t:"PHEV vs diesel SUV — co wybrać przy 80% jazdy w mieście?",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:117,t:"BMW X5 45e PHEV vs Audi Q7 55 TFSI e — porównanie 2026",p:"H",s:"swiadomosc",sn:"Świadomość",y:"INFO",pr:"P4",st:"BRAK"},{nr:118,t:"Jak działa PHEV w SUV premium — kiedy jedzie elektrycznie, kiedy spalinowo?",p:"H",s:"orientacja",sn:"Orientacja",y:"INFO",pr:"P3",st:"BRAK"},{nr:119,t:"Realne spalanie Q5 PHEV bez ładowania — ile litrów na 100 km?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:120,t:"Leasing Q5 PHEV vs Q5 diesel — różnica raty i co się bardziej opłaca?",p:"H",s:"orientacja",sn:"Orientacja",y:"KOMERC",pr:"P3",st:"BRAK"},{nr:121,t:"Zasięg elektryczny Q5 PHEV zimą -10°C — ile realnie z 40 km WLTP?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:122,t:"Ładowanie Q5 PHEV w garażu — jakie złącze, ile czasu, jaki koszt prądu?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:123,t:"Q5 PHEV bagażnik — czy mniejszy niż w dieslu przez baterię pod podłogą?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:124,t:"Kalkulator oszczędności PHEV vs diesel — przy jakim profilu jazdy PHEV wygrywa?",p:"H",s:"nauka",sn:"Nauka",y:"KOMERC",pr:"P4",st:"BRAK"},{nr:125,t:"Q5 PHEV vs Q7 diesel — co realnie sensowniejsze przy 200 km tygodniowo?",p:"H",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:126,t:"Czy PHEV SUV daje zniżkę na parkowanie w Warszawie lub ulgę w strefie?",p:"H",s:"decyzja",sn:"Decyzja",y:"KOMERC",pr:"P2",st:"BRAK"},{nr:127,t:"🛡️ PHEV to greenwashing? Czy naprawdę oszczędza jeśli nie ładuję codziennie?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:128,t:"🛡️ Serwis Q5 PHEV po gwarancji — dużo droższe niż diesel?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:129,t:"🛡️ Bateria Q5 PHEV po 5 latach — ile procent pojemności elektrycznej zostaje?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"},{nr:130,t:"🛡️ Czy warto zapłacić 30k więcej za PHEV zamiast diesla w Q5?",p:"H",s:"bloker",sn:"Bloker",y:"TRANS",pr:"P1",st:"BRAK"}
+];
+
+const PATHS = [{"letter": "A", "label": "Rodzina potrzebuje miejsca (7 miejsc)", "cep_id": "cep_rodzina_przestrzen", "typ": "POTRZEBA", "color": "#3b82f6", "count": 21, "verbatim": "„Troje dzieci + pies + wózek — potrzebuję przynajmniej 7 miejsc\"", "kontekst": "Rodzina 5-7 osób, bagaż, zwierzę", "concern": "Praktyczna przestrzeń + bezpieczeństwo", "bloker": "D-SUV 7-miejscowy (Q7, X7, GLS)"}, {"letter": "B", "label": "Awans/selfgift — nagroda dla siebie", "cep_id": "cep_awans_selfgift_premium", "typ": "EMOCJA", "color": "#8b5cf6", "count": 15, "verbatim": "„Dostałem dużą premię / zmieniłem pracę — czas na coś premium\"", "kontekst": "Nagroda dla siebie, gotówka/leasing", "concern": "Jakość, prestiż, „na to zasługuję\"", "bloker": "D/E-SUV premium, pełne wyposażenie"}, {"letter": "C", "label": "Zamiana sedana klasy D/E na SUV", "cep_id": "cep_zamiana_z_sedana", "typ": "POTRZEBA", "color": "#ec4899", "count": 15, "verbatim": "„Jeżdżę od lat BMW 5 (sedan) — czas spróbować SUV-a\"", "kontekst": "Wieloletni użytkownik sedana w tej marce", "concern": "Czy SUV to regres? Jak prowadzi?", "bloker": "C/D-SUV tej samej marki (Q5 dla A4/A6, X3/X5 dla 5S)"}, {"letter": "D", "label": "Dom poza miastem / polne drogi / 4×4", "cep_id": "cep_dojazd_poza_miasto", "typ": "POTRZEBA", "color": "#14b8a6", "count": 15, "verbatim": "„Dom na wsi / przedmieściach, polne drogi — potrzebuję 4×4\"", "kontekst": "Dojazd do pracy z obszaru wiejskiego", "concern": "Realny 4×4 vs AWD marketingowy", "bloker": "D-SUV z quattro/xDrive + dobry klirens"}, {"letter": "E", "label": "EV-SUV premium bez kompromisu przestrzeni", "cep_id": "cep_ev_suv_luksusy", "typ": "EMOCJA", "color": "#f59e0b", "count": 16, "verbatim": "„Chcę przejść na elektryczny ale bez kompromisu przestrzeni\"", "kontekst": "Poszukiwacz BEV w segmencie premium", "concern": "Zasięg + sieć ładowania + czas ładowania", "bloker": "BEV-SUV (Q8 e-tron, iX, EQS SUV, Taycan Cross Turismo)"}, {"letter": "F", "label": "Lojalista marki — upgrade do SUV", "cep_id": "cep_prestige_marka", "typ": "EMOCJA", "color": "#10b981", "count": 13, "verbatim": "„Przez lata Audi A6, teraz czas na Q7 — zostać w marce, przejść na SUV\"", "kontekst": "Loyalista marki, upgrade segmentu", "concern": "Tożsamość marki + wiarygodność", "bloker": "Q7/Q8 (Audi), GLE/GLS (MB)"}, {"letter": "G", "label": "Pierwszy raz premium — porównanie Audi/BMW/MB", "cep_id": "cep_porownanie_marek", "typ": "EMOCJA", "color": "#f43f5e", "count": 19, "verbatim": "„Stoję między Audi Q5 a BMW X5 — nie wiem co wybrać i dlaczego\"", "kontekst": "Kupujący po raz pierwszy premium", "concern": "Który wybór jest „właściwy\" dla mnie?", "bloker": "Q5 vs X5 vs GLE vs XC90 — tabela"}, {"letter": "H", "label": "PHEV SUV jako kompromis EV/spalinowy", "cep_id": "cep_hybryda_suv_plug", "typ": "EMOCJA", "color": "#eab308", "count": 16, "verbatim": "„Chcę SUV-a ale trochę myślę o środowisku — PHEV to dobry kompromis?\"", "kontekst": "Kupujący z mieszanymi potrzebami", "concern": "Realna oszczędność PHEV vs diesel vs BEV", "bloker": "PHEV-SUV (Q5 45 TFSI e, X5 45e, GLE 350 de)"}];
+const STATE_ORDER = ["swiadomosc", "orientacja", "nauka", "decyzja", "bloker"];
+const STATE_LABELS = {"swiadomosc": "Świadomość", "orientacja": "Orientacja", "nauka": "Nauka", "decyzja": "Decyzja", "bloker": "Bloker"};
+
+// ── STAN FILTRÓW ──────────────────────────────────────────────────────────────
+let activePath = 'ALL';
+let activePr   = 'ALL';
+let activeTyp  = 'ALL';
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildBoard();
+  buildList();
+  buildInfoPaths();
+  buildInfoStates();
+  applyFilters();
+});
+
+function buildBoard() {
+  const board = document.getElementById('board');
+  // Zbierz stany wg kolejności
+  const stateGroups = {};
+  for (const a of A) {
+    if (!stateGroups[a.s]) stateGroups[a.s] = [];
+    stateGroups[a.s].push(a);
+  }
+  const orderedStates = STATE_ORDER.filter(s => stateGroups[s]);
+  for (const sid of orderedStates) {
+    const label = STATE_LABELS[sid] || sid;
+    const arts = stateGroups[sid];
+    const block = document.createElement('div');
+    block.className = 'state-block';
+    block.dataset.state = sid;
+    block.innerHTML = `<div class="state-header">
+      <span class="state-code">${sid.toUpperCase()}</span>
+      <span>${label}</span>
+      <span class="state-cnt" id="scnt-${sid}"></span>
+    </div><div class="cards-row" id="cards-${sid}"></div>`;
+    board.appendChild(block);
+    const row = document.getElementById('cards-' + sid);
+    for (const a of arts) {
+      const tagPr  = `<span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span>`;
+      const tagTyp = `<span class="tag tag-${a.y.toLowerCase()}">${a.y}</span>`;
+      const tagSt  = `<span class="tag tag-${a.st.toLowerCase()}">${a.st}</span>`;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.nr = a.nr;
+      card.dataset.p  = a.p;
+      card.dataset.s  = a.s;
+      card.dataset.pr = a.pr;
+      card.dataset.y  = a.y;
+      card.dataset.st = a.st;
+      card.dataset.t  = a.t.toLowerCase();
+      card.innerHTML = `<div class="nr">#${a.nr} · ${a.p}</div>
+        <div class="qt">${a.t}</div>
+        <div class="tags">${tagPr}${tagTyp}${tagSt}</div>`;
+      row.appendChild(card);
+    }
+  }
+}
+
+function buildList() {
+  const tbody = document.getElementById('list-body');
+  for (const a of A) {
+    const tr = document.createElement('tr');
+    tr.dataset.nr = a.nr;
+    tr.dataset.p  = a.p;
+    tr.dataset.s  = a.s;
+    tr.dataset.pr = a.pr;
+    tr.dataset.y  = a.y;
+    tr.dataset.st = a.st;
+    tr.dataset.t  = a.t.toLowerCase();
+    tr.innerHTML = `<td>${a.nr}</td>
+      <td>${a.t}</td>
+      <td>${a.p}</td>
+      <td>${STATE_LABELS[a.s] || a.s}</td>
+      <td><span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span></td>
+      <td><span class="tag tag-${a.y.toLowerCase()}">${a.y}</span></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function buildInfoPaths() {
+  const wrap = document.getElementById('info-paths');
+  for (const p of PATHS) {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:12px;border-left:4px solid '+p.color;
+    // Składowe HTML karty CEP
+    const typBadge = p.typ
+      ? `<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-left:6px">${p.typ}</span>`
+      : '';
+    const verbHTML = p.verbatim
+      ? `<div style="margin-top:8px;font-size:12px;color:#374151;background:#f8fafc;border-radius:6px;padding:8px 10px;border-left:3px solid ${p.color};line-height:1.5;font-style:italic">${p.verbatim}</div>`
+      : '';
+    const detailRows = [];
+    if (p.kontekst) detailRows.push(['Kontekst', p.kontekst]);
+    if (p.concern)  detailRows.push(['Główna troska', p.concern]);
+    if (p.bloker)   detailRows.push(['Bloker decyzji', p.bloker]);
+    const detailHTML = detailRows.length
+      ? `<table style="margin-top:8px;width:100%;border-collapse:collapse;font-size:12px">` +
+        detailRows.map(([k,v]) =>
+          `<tr><td style="width:120px;color:#94a3b8;font-weight:600;padding:3px 8px 3px 0;vertical-align:top;white-space:nowrap">${k}</td>` +
+          `<td style="color:#334155;padding:3px 0;line-height:1.5">${v}</td></tr>`
+        ).join('') + `</table>`
+      : '';
+    // Rozkład pytań per stan
+    const statCnts = {};
+    for (const a of A) if (a.p === p.letter) statCnts[a.s] = (statCnts[a.s]||0)+1;
+    const stateBar = STATE_ORDER.filter(s=>statCnts[s]).map(s=>
+      `<span style="font-size:10px;padding:1px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-right:4px">${STATE_LABELS[s]||s} ${statCnts[s]}</span>`
+    ).join('');
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="width:26px;height:26px;border-radius:50%;background:${p.color};color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${p.letter}</span>
+        <strong style="font-size:14px;color:#1e293b">${p.label}</strong>
+        ${typBadge}
+        <span style="margin-left:auto;font-size:11px;color:#94a3b8">${p.count} pytań</span>
+      </div>
+      <div style="font-size:10px;color:#64748b;margin-top:4px;font-family:monospace">${p.cep_id||''}</div>
+      ${verbHTML}
+      ${detailHTML}
+      <div style="margin-top:8px">${stateBar}</div>`;
+    wrap.appendChild(card);
+  }
+}
+
+function buildInfoStates() {
+  const wrap = document.getElementById('info-states');
+  const counts = {};
+  for (const a of A) counts[a.s] = (counts[a.s]||0)+1;
+  for (const s of STATE_ORDER) {
+    if (!counts[s]) continue;
+    const el = document.createElement('div');
+    el.style.cssText = 'background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 14px;text-align:center;min-width:100px';
+    el.innerHTML = `<div style="font-size:20px;font-weight:700;color:#1e293b">${counts[s]}</div><div style="font-size:11px;color:#64748b;margin-top:2px">${STATE_LABELS[s]||s}</div>`;
+    wrap.appendChild(el);
+  }
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+function filterPath(el) {
+  document.querySelectorAll('.path-item, .path-all').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  activePath = el.dataset.path;
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  let vis = 0, p1 = 0, brak = 0, istnieje = 0;
+  const pathCounts = {};
+
+  const allEls = [...document.querySelectorAll('.card, #list-body tr')];
+  for (const el of allEls) {
+    const match =
+      (activePath === 'ALL' || el.dataset.p === activePath) &&
+      (activePr   === 'ALL' || el.dataset.pr === activePr) &&
+      (activeTyp  === 'ALL' || el.dataset.y  === activeTyp) &&
+      (!q || el.dataset.t.includes(q));
+    el.classList.toggle('hidden', !match);
+    if (match) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pathCounts[el.dataset.p] = (pathCounts[el.dataset.p] || 0) + 1;
+    }
+  }
+  // Odejmij duplikaty (card + tr)
+  vis = Math.round(vis / (document.querySelector('#list-body tr') ? 2 : 1));
+  if (document.querySelector('#list-body tr')) vis = Math.round(vis / 2);
+  // Policz raz — cards only
+  vis = 0; p1 = 0; brak = 0; istnieje = 0;
+  const pcounts2 = {};
+  document.querySelectorAll('.card').forEach(el => {
+    if (!el.classList.contains('hidden')) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pcounts2[el.dataset.p] = (pcounts2[el.dataset.p] || 0) + 1;
+    }
+  });
+
+  document.getElementById('stat-total').textContent   = vis;
+  document.getElementById('stat-p1').textContent      = p1;
+  document.getElementById('stat-brak').textContent    = brak;
+  document.getElementById('stat-istnieje').textContent = istnieje;
+  document.getElementById('visibleCount').textContent  = vis;
+
+  // Aktualizuj liczniki ścieżek
+  let allCnt = 0;
+  for (const p of PATHS) {
+    const cnt = pcounts2[p.letter] || 0;
+    const el = document.getElementById('cnt-' + p.letter);
+    if (el) el.textContent = cnt;
+    allCnt += cnt;
+  }
+  const cntAll = document.getElementById('cnt-all');
+  if (cntAll) cntAll.textContent = allCnt;
+
+  // State block counts (tylko mapa)
+  for (const sid of STATE_ORDER) {
+    const el = document.getElementById('scnt-' + sid);
+    if (el) {
+      const cnt = document.querySelectorAll(`#cards-${sid} .card:not(.hidden)`).length;
+      el.textContent = cnt ? cnt + ' art.' : '';
+    }
+  }
+}
+
+// Filtry przyciski
+document.getElementById('fg-pr').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-pr .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activePr = e.target.dataset.val;
+  applyFilters();
+});
+document.getElementById('fg-typ').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-typ .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeTyp = e.target.dataset.val;
+  applyFilters();
+});
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['mapa','lista','info'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(name + '-panel').classList.add('active');
+  applyFilters();
+}
+</script>
+<script>
+const CATS=[{"num":1,"name":"SUV premium — nabywca prywatny","v":"v2","s":"suv premium — nabywca prywatny"}];
+const searchEl=document.getElementById('search');
+const statEl=document.getElementById('stat');
+const nrEl=document.getElementById('nr');
+const TOTAL=CATS.length;
+let curFilter='all';
+
+function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function hi(text,q){
+  if(!q)return text;
+  return text.replace(new RegExp('('+esc(q)+')','gi'),'<mark>$1</mark>');
+}
+
+function applySearch(q){
+  const ql=q.trim().toLowerCase();
+  let n=0;
+  CATS.forEach(c=>{
+    const item=document.getElementById('i'+c.num);
+    const matchQ=!ql||c.s.includes(ql);
+    const matchF=curFilter==='all'||(curFilter==='v1'&&c.v==='v1')||(curFilter==='v2p'&&c.v!=='v1');
+    const ok=matchQ&&matchF;
+    if(item)item.classList.toggle('hidden',!ok);
+    if(ok){
+      n++;
+      const el=item&&item.querySelector('.ct');
+      if(el)el.innerHTML=hi(c.name,q.trim());
+    }
+  });
+  nrEl.style.display=n===0?'block':'none';
+  const fLabel=curFilter==='v1'?' · Draft':curFilter==='v2p'?' · Verified':'';
+  statEl.textContent=(ql?n+'/':'')+TOTAL+' cat.'+fLabel;
+}
+
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+  applySearch(searchEl.value);
+}
+
+function select(num){
+  document.querySelectorAll('.ci').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.cs').forEach(e=>e.classList.remove('vis'));
+  const item=document.getElementById('i'+num);
+  const sec=document.getElementById('s'+num);
+  if(item){item.classList.add('active');item.scrollIntoView({block:'nearest'});}
+  if(sec)sec.classList.add('vis');
+  document.getElementById('ct').scrollTop=0;
+}
+
+searchEl.addEventListener('input',e=>applySearch(e.target.value));
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();searchEl.focus();searchEl.select();}
+  if(e.key==='Escape'&&document.activeElement===searchEl){searchEl.value='';applySearch('');searchEl.blur();}
+});
+
+if(CATS.length>0)select(CATS[0].num);
+
+function toggleTheme(){
+  const l=document.body.classList.toggle('light');
+  localStorage.setItem('geo-theme',l?'light':'dark');
+  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
+}
+(function(){if(localStorage.getItem('geo-theme')==='light'){
+  document.body.classList.add('light');
+  var b=document.getElementById('theme-btn');if(b)b.textContent='🌙';}})();
 </script>
 </body>
 </html>
