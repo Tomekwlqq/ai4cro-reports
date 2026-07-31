@@ -4605,7 +4605,7 @@ function aggregateProxyRange(fromDate, toDate){
       if(!campMap[name]) campMap[name] = {
         name,
         meta: {spend:0,impressions:0,clicks:0,reach:0,purchases:0,revenue:0},
-        ga4:  {sessions:0,transactions:0,revenue:0},
+        ga4:  {sessions:0,transactions:0,revenue:0,utmSet:new Set()},
         has_meta: false, has_ga4: false
       };
       const cm = campMap[name];
@@ -4623,6 +4623,7 @@ function aggregateProxyRange(fromDate, toDate){
         cm.ga4.sessions     += c.ga4.sessions     || 0;
         cm.ga4.transactions += c.ga4.transactions || 0;
         cm.ga4.revenue      += c.ga4.revenue      || 0;
+        (c.ga4.utms || []).forEach(u => cm.ga4.utmSet.add(u));
       }
     });
   });
@@ -4637,6 +4638,7 @@ function aggregateProxyRange(fromDate, toDate){
     const g = cm.ga4;
     g.revenue   = Math.round(g.revenue*100)/100;
     g.roas_ga4  = m.spend>0 && g.revenue>0 ? Math.round(g.revenue/m.spend*100)/100 : 0;
+    g.utms = [...g.utmSet]; delete g.utmSet;
     return cm;
   }).sort((a,b)=>(b.meta.spend||0)-(a.meta.spend||0));
 
