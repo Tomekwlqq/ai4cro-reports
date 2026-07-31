@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>GLOV — Rekomendacje nagłówków H1/H2</title>
+<style>
+:root[data-theme="light"]{
+  --bg:#f8f9fa;--card:#fff;--border:#dee2e6;--text:#212529;--muted:#6c757d;
+  --accent:#d4005c;--accent-bg:#fff0f5;--ok:#198754;--warn:#dc3545;--warn-bg:#fff5f5;
+  --input-bg:#f8f9fa;--badge-bg:#e9ecef;--shadow:rgba(0,0,0,.07);
+}
+:root[data-theme="dark"]{
+  --bg:#1a1a2e;--card:#16213e;--border:#2d3748;--text:#e2e8f0;--muted:#a0aec0;
+  --accent:#ff6b9d;--accent-bg:#2d1b2e;--ok:#48bb78;--warn:#fc8181;--warn-bg:#2d1b1b;
+  --input-bg:#0f3460;--badge-bg:#2d3748;--shadow:rgba(0,0,0,.3);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;flex-wrap:wrap;box-shadow:0 2px 8px var(--shadow)}
+.topbar h1{font-size:16px;font-weight:700;color:var(--accent);flex:1}
+.topbar .stats{font-size:12px;color:var(--muted)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+select,input[type=text]{background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:6px;font-size:13px}
+.btn{border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{opacity:.85}
+.btn-sm{padding:4px 10px;font-size:12px;border-radius:5px}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-warn{background:var(--badge-bg);color:var(--muted)}
+.btn-export{background:#0d6efd;color:#fff}
+.toggle-theme{background:var(--badge-bg);color:var(--text);border:1px solid var(--border);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:13px}
+.container{max-width:1400px;margin:0 auto;padding:16px}
+.progress-bar{background:var(--badge-bg);border-radius:8px;height:8px;margin:0 0 16px 0;overflow:hidden}
+.progress-fill{height:100%;background:var(--ok);transition:.3s;border-radius:8px}
+.item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;display:none}
+.item.visible{display:block}
+.item.accepted{border-color:var(--ok);background:var(--accent-bg)}
+.item-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 8px;border-radius:4px;background:var(--badge-bg);color:var(--muted);font-weight:600}
+.badge.product{background:#dbeafe;color:#1d4ed8}
+.badge.collection{background:#d1fae5;color:#065f46}
+.badge.warn{background:#fee2e2;color:#991b1b}
+.badge.cat{background:#fef3c7;color:#92400e}
+.item-url{font-size:12px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item-url a{color:var(--accent);text-decoration:none}
+.item-url a:hover{text-decoration:underline}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:768px){.grid{grid-template-columns:1fr}}
+.field-group{}
+.field-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.field-current{font-size:12px;color:var(--muted);padding:6px 10px;background:var(--badge-bg);border-radius:5px;margin-bottom:6px;line-height:1.4}
+.field-current .len{float:right;font-weight:700}
+.len.ok{color:var(--ok)}
+.len.bad{color:var(--warn)}
+.reko-wrap{display:flex;gap:6px;align-items:flex-start}
+.reko-input{flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--input-bg);color:var(--text);resize:vertical;min-height:36px;line-height:1.4;font-family:inherit}
+.reko-input.accepted{border-color:var(--ok);background:var(--accent-bg)}
+.h2-list{display:flex;flex-direction:column;gap:6px}
+.h2-item{display:flex;gap:6px;align-items:flex-start}
+.h2-input{flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--input-bg);color:var(--text);font-family:inherit}
+.h2-input.accepted{border-color:var(--ok);background:var(--accent-bg)}
+.h2-num{font-size:11px;color:var(--muted);padding-top:8px;min-width:20px}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.comment-field{flex:1;min-width:200px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:var(--input-bg);color:var(--text);font-family:inherit}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--badge-bg);flex-shrink:0}
+.status-dot.accepted{background:var(--ok)}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>GLOV — Rekomendacje nagłówków H1 + H2</h1>
+  <div class="stats" id="stats">Ładowanie…</div>
+  <div class="filters">
+    <select id="filterType" onchange="applyFilters()">
+      <option value="all">Wszystkie typy</option>
+      <option value="product">Produkty</option>
+      <option value="collection">Kolekcje</option>
+    </select>
+    <select id="filterStatus" onchange="applyFilters()">
+      <option value="all">Wszystkie</option>
+      <option value="pending">Do zatwierdzenia</option>
+      <option value="accepted">Zatwierdzone</option>
+    </select>
+    <select id="filterH1" onchange="applyFilters()">
+      <option value="all">Każdy H1</option>
+      <option value="toolong">H1 za długi (&gt;65)</option>
+    </select>
+    <input type="text" id="filterSearch" placeholder="🔍 Szukaj…" oninput="applyFilters()">
+    <button class="btn btn-export" onclick="exportJSON()">⬇ Eksportuj JSON</button>
+    <button class="btn btn-accent" onclick="acceptAll()">✓ Zaakceptuj widoczne</button>
+    <button class="toggle-theme" onclick="toggleTheme()">🌙/☀️</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div id="list"></div>
+</div>
+
+<script>
+const DATA = [{"type": "product", "url": "https://glov.co/products/rekawica-do-mycia-twarzy-i-demakijazu-cery-mieszanej-glov-on-the-go", "shopify_id": "6906550911165", "current_h1": "Rękawiczka do demakijażu i oczyszczania twarzy tylko przy użyciu wody GLOV® Iconic Mitt", "current_seo": "", "reko_h1": "Rękawiczka do demakijażu i oczyszczania twarzy GLOV® Iconic Mitt", "reko_seo": "Rękawiczka do demakijażu i oczyszczania twarzy GLOV®…", "h2s": ["Rękawica do demakijażu — co to i jak działa", "Rękawica do peelingu ciała — jak używać", "Rękawica do mycia ciała — dla jakiej cery"], "cat": "rekawice", "h1_len": 87, "h1_ok": false, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/glov-on-the-go-all-skin-types", "shopify_id": "7032216256701", "current_h1": "Ręcznik do oczyszczania twarzy i demakijażu GLOV®", "current_seo": "Rękawica do oczyszczania twarzy i demakijażu GLOV Comfort | GLOV", "reko_h1": "Ręcznik do oczyszczania twarzy i demakijażu GLOV®", "reko_seo": "Ręcznik do oczyszczania twarzy i demakijażu GLOV®", "h2s": [], "cat": "—", "h1_len": 49, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/mini-rekawiczka-do-korekt-makijazu-glov-quick-treat", "shopify_id": "7033129009341", "current_h1": "Mini-rękawiczka do korekt makijażu OUTLET", "current_seo": "Mini-rękawiczka do korekt makijażu GLOV Quick Treat | GLOV", "reko_h1": "Mini-rękawiczka do korekt makijażu OUTLET", "reko_seo": "Mini-rękawiczka do korekt makijażu OUTLET | GLOV", "h2s": ["Rękawica do demakijażu — co to i jak działa", "Rękawica do peelingu ciała — jak używać", "Rękawica do mycia ciała — dla jakiej cery"], "cat": "rekawice", "h1_len": 41, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/glov-dry-skin-expert-rekawiczka-do-oczyszczania-twarzy-i-demakijazu-cery-suchej", "shopify_id": "7033242091709", "current_h1": "Wielorazowa rękawiczka do demakijażu i oczyszczania skóry suchej za pomoca wody GLOV®", "current_seo": "Rękawica do mycia twarzy i demakijażu cery suchej GLOV Dry Skin | GLOV", "reko_h1": "rękawiczka do demakijażu i oczyszczania skóry suchej GLOV®", "reko_seo": "rękawiczka do demakijażu i oczyszczania skóry suchej GLOV®", "h2s": ["Rękawica do demakijażu — co to i jak działa", "Rękawica do peelingu ciała — jak używać", "Rękawica do mycia ciała — dla jakiej cery"], "cat": "rekawice", "h1_len": 85, "h1_ok": false, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/zestaw-do-pielegnacji-ust-glov-perfect-lips", "shopify_id": "7033374245053", "current_h1": "Zestaw do pielęgnacji ust Perfect Lips GLOV®", "current_seo": "Zestaw do pielęgnacji ust GLOV Perfect Lips | GLOV", "reko_h1": "Zestaw do pielęgnacji ust Perfect Lips GLOV®", "reko_seo": "Zestaw do pielęgnacji ust Perfect Lips GLOV®", "h2s": [], "cat": "—", "h1_len": 44, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/wielorazowe-platki-kosmetyczne-glov-moon-pads", "shopify_id": "7033395216573", "current_h1": "Wielorazowe płatki kosmetyczne do demakijażu GLOV®", "current_seo": "Wielorazowe płatki kosmetyczne GLOV Moon Pads | GLOV", "reko_h1": "Wielorazowe płatki kosmetyczne do demakijażu GLOV®", "reko_seo": "Wielorazowe płatki kosmetyczne do demakijażu GLOV®", "h2s": ["Wielorazowe płatki kosmetyczne — jak działają", "Płatki wielorazowe do demakijażu — jak prać", "Waciki wielorazowe vs jednorazowe"], "cat": "platki_kosmetyczne", "h1_len": 50, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/platki-wielorazowe-glov-moon-pads-original-fiber", "shopify_id": "7033559515325", "current_h1": "Płatki wielorazowe do demakijażu i oczyszczania GLOV®", "current_seo": "Płatki wielorazowe GLOV Moon Pads Original Fiber | GLOV", "reko_h1": "Płatki wielorazowe do demakijażu i oczyszczania GLOV®", "reko_seo": "Płatki wielorazowe do demakijażu i oczyszczania GLOV®", "h2s": ["Wielorazowe płatki kosmetyczne — jak działają", "Płatki wielorazowe do demakijażu — jak prać", "Waciki wielorazowe vs jednorazowe"], "cat": "platki_kosmetyczne", "h1_len": 53, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/wielorazowe-platki-kosmetyczne-glov-heart-pads", "shopify_id": "7033654247613", "current_h1": "Wielorazowe płatki kosmetyczne do demakijażu w kształcie serca GLOV®", "current_seo": "Wielorazowe płatki kosmetyczne GLOV Heart Pads | GLOV", "reko_h1": "Wielorazowe płatki kosmetyczne do demakijażu w kształcie serca", "reko_seo": "Wielorazowe płatki kosmetyczne do demakijażu w | GLOV", "h2s": ["Wielorazowe płatki kosmetyczne — jak działają", "Płatki wielorazowe do demakijażu — jak prać", "Waciki wielorazowe vs jednorazowe"], "cat": "platki_kosmetyczne", "h1_len": 68, "h1_ok": false, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/biodegradowalne-platki-oczyszczajace-glov-natural-cleansing-pads", "shopify_id": "7033782501565", "current_h1": "Celulozowe płatki do czyszenia twarzy Natural Cleansing Pads GLOV®", "current_seo": "", "reko_h1": "Celulozowe płatki do czyszenia twarzy Natural Cleansing Pads", "reko_seo": "Celulozowe płatki do czyszenia twarzy Natural | GLOV", "h2s": ["Wielorazowe płatki kosmetyczne — jak działają", "Płatki wielorazowe do demakijażu — jak prać", "Waciki wielorazowe vs jednorazowe"], "cat": "platki_kosmetyczne", "h1_len": 66, "h1_ok": false, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/akcesorium-do-peelingu-ust-glov-scrubex", "shopify_id": "7034334544061", "current_h1": "Akcesorium do peelingu ust GLOV® Scrubex", "current_seo": "Akcesorium do peelingu ust GLOV Scrubex | GLOV", "reko_h1": "Akcesorium do peelingu ust GLOV® Scrubex", "reko_seo": "Akcesorium do peelingu ust GLOV® Scrubex", "h2s": [], "cat": "—", "h1_len": 40, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/glov-bunny-ears-opaska-na-glowe-ulatwiajaca-codzienna-pielegnacje", "shopify_id": "7035195719869", "current_h1": "Opaska na głowę i opaska do włosów 2w1 Bunny Ears, Królicze uszy", "current_seo": "Opaska na głowę ułatwiająca pielęgnację GLOV Bunny Ears | GLOV", "reko_h1": "Opaska na głowę i opaska do włosów 2w1 Bunny Ears, Królicze uszy", "reko_seo": "Opaska na głowę i opaska do włosów 2w1 Bunny Ears, | GLOV", "h2s": [], "cat": "—", "h1_len": 64, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/glov-face-towel-pielegnacyjny-recznik-do-twarzy", "shopify_id": "7035222491325", "current_h1": "3 x Pielęgnacyjny ręcznik do twarzy", "current_seo": "Pielęgnacyjny ręcznik do twarzy GLOV Face Towel | GLOV", "reko_h1": "3 x Pielęgnacyjny ręcznik do twarzy", "reko_seo": "3 x Pielęgnacyjny ręcznik do twarzy | GLOV", "h2s": ["Ręczniczki do twarzy GLOV — do czego służą"], "cat": "reczniki_do_twarzy", "h1_len": 35, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing", "shopify_id": "7035227537597", "current_h1": "Rękawica do peelingu i mycia ciała GLOV®", "current_seo": "Rękawica do peelingu i mycia ciała GLOV Skin Smoothing | GLOV", "reko_h1": "Rękawica do peelingu i mycia ciała GLOV®", "reko_seo": "Rękawica do peelingu i mycia ciała GLOV®", "h2s": ["Rękawica do demakijażu — co to i jak działa", "Rękawica do peelingu ciała — jak używać", "Rękawica do mycia ciała — dla jakiej cery"], "cat": "rekawice", "h1_len": 40, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/rekawica-do-peelingu-i-mycia-ciala-dla-mezczyzn-glov-man", "shopify_id": "7035305918653", "current_h1": "Rękawica do peelingu i mycia ciała dla mężczyzn", "current_seo": "Rękawica do peelingu i mycia ciała dla mężczyzn GLOV Man | GLOV", "reko_h1": "Rękawica do peelingu i mycia ciała dla mężczyzn", "reko_seo": "Rękawica do peelingu i mycia ciała dla mężczyzn | GLOV", "h2s": ["Rękawica do demakijażu — co to i jak działa", "Rękawica do peelingu ciała — jak używać", "Rękawica do mycia ciała — dla jakiej cery"], "cat": "rekawice", "h1_len": 47, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/glov-kids-rekawiczki-do-obmywania-skory-dziecka", "shopify_id": "7035319550141", "current_h1": "Rękawiczki do mycia skóry dziecka GLOV®", "current_seo": "Rękawiczki do mycia skóry dziecka GLOV Kids |  GLOV", "reko_h1": "Rękawiczki do mycia skóry dziecka GLOV®", "reko_seo": "Rękawiczki do mycia skóry dziecka GLOV®", "h2s": [], "cat": "—", "h1_len": 39, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/glov-hair-wrap-ultrachlonny-pielegnacyjny-turban-do-wlosow", "shopify_id": "7035359035581", "current_h1": "Ultrachłonny, pielęgnacyjny turban do włosów GLOV®", "current_seo": "Ultrachłonny, pielęgnacyjny turban do włosów GLOV Hair Wrap | GLOV", "reko_h1": "turban do włosów GLOV®", "reko_seo": "turban do włosów GLOV®", "h2s": ["Satynowy czepek do spania — jak wybrać rozmiar i materiał", "Czepek satynowy do spania — dla kogo i po co", "Turban do włosów po myciu — jak używać"], "cat": "czepki_turbany_satynowe", "h1_len": 50, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/ultralekki-recznik-do-wlosow-glov-soft-hair-wrap", "shopify_id": "7035373060285", "current_h1": "Chłonny turban do włosów GLOV®", "current_seo": "Ultralekki ręcznik do włosów GLOV Soft Hair Wrap | GLOV", "reko_h1": "Chłonny turban do włosów GLOV®", "reko_seo": "Chłonny turban do włosów GLOV®", "h2s": ["Satynowy czepek do spania — jak wybrać rozmiar i materiał", "Czepek satynowy do spania — dla kogo i po co", "Turban do włosów po myciu — jak używać"], "cat": "czepki_turbany_satynowe", "h1_len": 30, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/glov-eye-brushes-pedzle-do-makijazu-oczu", "shopify_id": "7035714339005", "current_h1": "Pędzle do makijażu oczu Eye Brushes GLOV®", "current_seo": "Pędzle do makijażu oczu GLOV Eye Brushes | GLOV", "reko_h1": "Pędzle do makijażu oczu Eye Brushes GLOV®", "reko_seo": "Pędzle do makijażu oczu Eye Brushes GLOV®", "h2s": [], "cat": "—", "h1_len": 41, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/mydlo-do-czyszczenia-rekawic-i-pedzli-do-makijazu-glov-magnet-cleanser", "shopify_id": "7036908241085", "current_h1": "Mydło do czyszczenia rękawic i pędzli do makijażu Magnet Cleanser GLOV®", "current_seo": "", "reko_h1": "Mydło do czyszczenia rękawic i pędzli do makijażu Magnet", "reko_seo": "Mydło do czyszczenia rękawic i pędzli do makijażu | GLOV", "h2s": [], "cat": "—", "h1_len": 71, "h1_ok": false, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/satynowa-maska-do-spania", "shopify_id": "7066726236349", "current_h1": "Satynowa maska do spania", "current_seo": "Satynowa maska do spania | GLOV", "reko_h1": "Satynowa maska do spania", "reko_seo": "Satynowa maska do spania | GLOV", "h2s": [], "cat": "—", "h1_len": 24, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/cekinowa-maska-do-spania", "shopify_id": "7036890480829", "current_h1": "Cekinowa maska do spania", "current_seo": "Cekinowa maska do spania | GLOV", "reko_h1": "Cekinowa maska do spania", "reko_seo": "Cekinowa maska do spania | GLOV", "h2s": [], "cat": "—", "h1_len": 24, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/biodegradowalna-szczotka-do-wlosow-glov-biobased-brush", "shopify_id": "7075498459325", "current_h1": "Biodegradowalna szczotka do włosów Biobased Brush GLOV®", "current_seo": "Biodegradowalna szczotka do włosów GLOV Biobased Brush | GLOV", "reko_h1": "Biodegradowalna szczotka do włosów Biobased Brush GLOV®", "reko_seo": "Biodegradowalna szczotka do włosów Biobased Brush GLOV®", "h2s": [], "cat": "—", "h1_len": 55, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka", "shopify_id": "7076026089661", "current_h1": "Tarka-pumeks do stóp z nano szkła GLOV®", "current_seo": "Pumeks GLOV z nano szkła do zrogowaciałego naskórka | GLOV", "reko_h1": "Tarka-pumeks do stóp z nano szkła GLOV®", "reko_seo": "Tarka-pumeks do stóp z nano szkła GLOV®", "h2s": ["Nano szkło do pięt — tarka czy pumeks?", "Jak używać tarki/pumeksu z nano szkła na pięty", "Co to jest nano szkło"], "cat": "nano_szklo", "h1_len": 39, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/jonizujaca-szczotka-do-ciala-glov-ionic-dry-body-brush", "shopify_id": "7187257819325", "current_h1": "Jonizująca szczotka do masażu ciała na sucho GLOV®", "current_seo": "Jonizująca szczotka do ciała GLOV Ionic Dry Body Brush | GLOV", "reko_h1": "Jonizująca szczotka do masażu ciała na sucho GLOV®", "reko_seo": "Jonizująca szczotka do masażu ciała na sucho GLOV®", "h2s": [], "cat": "—", "h1_len": 50, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/szczotka-do-ciala-glov-dry-body-brush", "shopify_id": "7188324778173", "current_h1": "Szczotka do suchego szczotkowania ciała GLOV®", "current_seo": "Szczotka do ciała GLOV Dry Body Brush | GLOV", "reko_h1": "Szczotka do suchego szczotkowania ciała GLOV®", "reko_seo": "Szczotka do suchego szczotkowania ciała GLOV®", "h2s": [], "cat": "—", "h1_len": 45, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/szczotka-do-masazu-glowy-scalp-massage", "shopify_id": "7227422310589", "current_h1": "Szczotka do masażu głowy GLOV Scalp Massage", "current_seo": "Szczotka do masażu głowy GLOV Scalp Massage | GLOV", "reko_h1": "Szczotka do masażu głowy GLOV Scalp Massage", "reko_seo": "Szczotka do masażu głowy GLOV Scalp Massage", "h2s": [], "cat": "—", "h1_len": 43, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/glov-coolcurltm-innowacyjna-lokowka-do-krecenia-wlosow-bez-uzycia-ciepla", "shopify_id": "7324126740669", "current_h1": "COOLCURL™ innowacyjna lokówka do kręcenia włosów bez użycia ciepła GLOV®", "current_seo": "", "reko_h1": "COOLCURL™ lokówka do kręcenia włosów bez użycia ciepła GLOV®", "reko_seo": "COOLCURL™ lokówka do kręcenia włosów bez użycia ciepła GLOV®", "h2s": ["Overnight Blowout — jak zrobić loki bez ciepła na noc", "Wałki do włosów na noc — jak zakładać", "Zestaw Overnight Blowout — co zawiera"], "cat": "coolcurl_loki_bez_ciepla", "h1_len": 72, "h1_ok": false, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/glov-satynowy-czepek-do-wlosow", "shopify_id": "7328092913853", "current_h1": "Czepek satynowy chroniący kręcone i stylizowane włosy przed tarciem i puszeniem GLOV®", "current_seo": "", "reko_h1": "Czepek satynowy chroniący kręcone i stylizowane włosy przed", "reko_seo": "Czepek satynowy chroniący kręcone i stylizowane | GLOV", "h2s": ["Satynowy czepek do spania — jak wybrać rozmiar i materiał", "Czepek satynowy do spania — dla kogo i po co", "Turban do włosów po myciu — jak używać"], "cat": "czepki_turbany_satynowe", "h1_len": 85, "h1_ok": false, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/superchlonny-satynowy-glov-hair-wrap", "shopify_id": "7343066448061", "current_h1": "GLOV Dwustronny turban do włosów z mikrofibry i wegańskiej satyny, szybkie suszenie, anti-frizz", "current_seo": "", "reko_h1": "GLOV Dwustronny turban do włosów z mikrofibry i wegańskiej", "reko_seo": "GLOV Dwustronny turban do włosów z mikrofibry i wegańskiej", "h2s": ["Satynowy czepek do spania — jak wybrać rozmiar i materiał", "Czepek satynowy do spania — dla kogo i po co", "Turban do włosów po myciu — jak używać"], "cat": "czepki_turbany_satynowe", "h1_len": 95, "h1_ok": false, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/frotka-do-wlosow-i-demakijazu-oczyszczajaca-twarz", "shopify_id": "8495094530396", "current_h1": "Frotka do włosów i demakijażu oczyszczająca twarz GLOV®", "current_seo": "", "reko_h1": "Frotka do włosów i demakijażu oczyszczająca twarz GLOV®", "reko_seo": "Frotka do włosów i demakijażu oczyszczająca twarz GLOV®", "h2s": ["Rękawica do demakijażu — co to i jak działa", "Rękawica do peelingu ciała — jak używać", "Rękawica do mycia ciała — dla jakiej cery"], "cat": "rekawice", "h1_len": 55, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/depilator-z-nano-szkla-glov", "shopify_id": "9580977455452", "current_h1": "Depilator z nano szkła GLOV", "current_seo": "", "reko_h1": "Depilator z nano szkła GLOV", "reko_seo": "Depilator z nano szkła GLOV", "h2s": ["Nano szkło do pięt — tarka czy pumeks?", "Jak używać tarki/pumeksu z nano szkła na pięty", "Co to jest nano szkło"], "cat": "nano_szklo", "h1_len": 27, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/grzebien-3d-do-lokow-i-fal-coolcurl™", "shopify_id": "9656932991324", "current_h1": "Grzebień do fal i loków COOLCURL™ 3D", "current_seo": "", "reko_h1": "Grzebień do fal i loków COOLCURL™ 3D", "reko_seo": "Grzebień do fal i loków COOLCURL™ 3D | GLOV", "h2s": ["Overnight Blowout — jak zrobić loki bez ciepła na noc", "Wałki do włosów na noc — jak zakładać", "Zestaw Overnight Blowout — co zawiera"], "cat": "coolcurl_loki_bez_ciepla", "h1_len": 36, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/overnight-blowout-set-zestaw-do-stylizacji-wlosow-na-zimno", "shopify_id": "8881890689372", "current_h1": "Overnight Blowout Set - zestaw do stylizacji włosów na zimno", "current_seo": "", "reko_h1": "Overnight Blowout Set - zestaw do stylizacji włosów na zimno", "reko_seo": "Overnight Blowout Set - zestaw do stylizacji włosów | GLOV", "h2s": ["Overnight Blowout — jak zrobić loki bez ciepła na noc", "Wałki do włosów na noc — jak zakładać", "Zestaw Overnight Blowout — co zawiera"], "cat": "coolcurl_loki_bez_ciepla", "h1_len": 60, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/gabeczka-do-makijazu-makeup-sponge", "shopify_id": "8788216447324", "current_h1": "Gąbeczka do makijażu MakeUp Sponge", "current_seo": "Gąbka do makijażu GLOV Mango Sponge | GLOV", "reko_h1": "Gąbeczka do makijażu MakeUp Sponge", "reko_seo": "Gąbeczka do makijażu MakeUp Sponge | GLOV", "h2s": ["Gąbka do makijażu — do czego służy", "Gąbka do twarzy — jak myć i dezynfekować", "Czym zmywać makijaż — gąbka, płatek czy rękawica"], "cat": "gabki_do_makijazu", "h1_len": 34, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/zestaw-gumek-do-wlosow-glov-scrunchies-1", "shopify_id": "8830578360668", "current_h1": "Zestaw gumek do włosów GLOV Scrunchies - 2 PACK M", "current_seo": "Zestaw gumek do włosów GLOV Scrunchies | GLOV", "reko_h1": "Zestaw gumek do włosów GLOV Scrunchies - 2 PACK M", "reko_seo": "Zestaw gumek do włosów GLOV Scrunchies - 2 PACK M", "h2s": [], "cat": "—", "h1_len": 49, "h1_ok": true, "seo_ok": true}, {"type": "product", "url": "https://glov.co/products/opaska-do-wlosow-2w1-bunny-ears-edycja-limitowana-outlet-1", "shopify_id": "14783602622812", "current_h1": "Opaska do włosów 2w1 Bunny Ears, Edycja limitowana", "current_seo": "", "reko_h1": "Opaska do włosów 2w1 Bunny Ears, Edycja limitowana", "reko_seo": "Opaska do włosów 2w1 Bunny Ears, Edycja limitowana | GLOV", "h2s": [], "cat": "—", "h1_len": 50, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/wielopak-rekawiczka-do-demakijazu-i-oczyszczania-twarzy-glov", "shopify_id": "14945406124380", "current_h1": "WIELOPAK 2 sztuki Rękawiczka do demakijażu i oczyszczania twarzy GLOV", "current_seo": "", "reko_h1": "WIELOPAK 2 sztuki Rękawiczka do demakijażu i oczyszczania twarzy", "reko_seo": "WIELOPAK 2 sztuki Rękawiczka do demakijażu i | GLOV", "h2s": ["Rękawica do demakijażu — co to i jak działa", "Rękawica do peelingu ciała — jak używać", "Rękawica do mycia ciała — dla jakiej cery"], "cat": "rekawice", "h1_len": 69, "h1_ok": false, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/wielopak-3-sztuki-rekawiczka-do-demakijazu-i-oczyszczania-twarzy-glov-kopia", "shopify_id": "14945417920860", "current_h1": "WIELOPAK 3 sztuki Rękawiczka do demakijażu i oczyszczania twarzy GLOV", "current_seo": "", "reko_h1": "WIELOPAK 3 sztuki Rękawiczka do demakijażu i oczyszczania twarzy", "reko_seo": "WIELOPAK 3 sztuki Rękawiczka do demakijażu i | GLOV", "h2s": ["Rękawica do demakijażu — co to i jak działa", "Rękawica do peelingu ciała — jak używać", "Rękawica do mycia ciała — dla jakiej cery"], "cat": "rekawice", "h1_len": 69, "h1_ok": false, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/pumeks-i-depilator-z-nano-szkla-2w1", "shopify_id": "14992810738012", "current_h1": "Pumeks i depilator z nano szkła 2w1 Nano Twist Duo", "current_seo": "", "reko_h1": "Pumeks i depilator z nano szkła 2w1 Nano Twist Duo", "reko_seo": "Pumeks i depilator z nano szkła 2w1 Nano Twist Duo | GLOV", "h2s": ["Nano szkło do pięt — tarka czy pumeks?", "Jak używać tarki/pumeksu z nano szkła na pięty", "Co to jest nano szkło"], "cat": "nano_szklo", "h1_len": 50, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/ultrachlonny-turban-do-wlosow-glov®-hydroweave™-twister", "shopify_id": "9361315529052", "current_h1": "Ultrachłonny turban do włosów GLOV® HydroWeave™ TWISTER", "current_seo": "Ultrachłonny, pielęgnacyjny turban do włosów GLOV Hair Wrap | GLOV", "reko_h1": "turban do włosów GLOV® HydroWeave™ TWISTER", "reko_seo": "turban do włosów GLOV® HydroWeave™ TWISTER", "h2s": ["Satynowy czepek do spania — jak wybrać rozmiar i materiał", "Czepek satynowy do spania — dla kogo i po co", "Turban do włosów po myciu — jak używać"], "cat": "czepki_turbany_satynowe", "h1_len": 55, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/7x-wielorazowe-platki-kosmetyczne-z-bambusa-glov-bambooleo-set", "shopify_id": "9669168922972", "current_h1": "Zestaw do pielęgnacji twarzy GLOV BAMBOOLEO SET", "current_seo": "", "reko_h1": "Zestaw do pielęgnacji twarzy GLOV BAMBOOLEO SET", "reko_seo": "Zestaw do pielęgnacji twarzy GLOV BAMBOOLEO SET", "h2s": ["Wielorazowe płatki kosmetyczne — jak działają", "Płatki wielorazowe do demakijażu — jak prać", "Waciki wielorazowe vs jednorazowe"], "cat": "platki_kosmetyczne", "h1_len": 47, "h1_ok": true, "seo_ok": false}, {"type": "product", "url": "https://glov.co/products/szampon-w-kostce-wlosy-dlugie-soap-for-globe", "shopify_id": "15046960841052", "current_h1": "Szampon w kostce włosy normalne SOAP FOR GLOBE", "current_seo": "", "reko_h1": "Szampon w kostce włosy normalne SOAP FOR GLOBE", "reko_seo": "Szampon w kostce włosy normalne SOAP FOR GLOBE | GLOV", "h2s": [], "cat": "—", "h1_len": 46, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/rekawice-do-demakijazu", "shopify_id": "", "current_h1": "Oczyszczanie", "current_seo": "", "reko_h1": "Oczyszczanie", "reko_seo": "Sklep GLOV — Oczyszczanie", "h2s": ["Rękawica do demakijażu — jak działają produkty GLOV", "Wybierz rękawicę GLOV do swojego typu cery", "Opinie klientów o rękawiczkach GLOV"], "cat": "kolekcja", "h1_len": 12, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/reczniki-do-twarzy", "shopify_id": "", "current_h1": "Ręczniki do twarzy", "current_seo": "", "reko_h1": "Ręczniki do twarzy", "reko_seo": "Sklep GLOV — Ręczniki do twarzy", "h2s": ["Produkty GLOV — Ręczniki do twarzy", "Opinie klientów o produktach GLOV"], "cat": "kolekcja", "h1_len": 18, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/platki-kosmetyczne", "shopify_id": "", "current_h1": "Płatki kosmetyczne", "current_seo": "", "reko_h1": "Płatki kosmetyczne", "reko_seo": "Sklep GLOV — Płatki kosmetyczne", "h2s": ["Wielorazowe płatki kosmetyczne — jak wybrać", "Płatki GLOV vs jednorazowe waciki — porównanie", "Jak prać wielorazowe płatki kosmetyczne"], "cat": "kolekcja", "h1_len": 18, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/zestawy-do-pielegnacji-twarzy", "shopify_id": "", "current_h1": "Zestawy do pielęgnacji twarzy", "current_seo": "", "reko_h1": "Zestawy do pielęgnacji twarzy", "reko_seo": "Sklep GLOV — Zestawy do pielęgnacji twarzy", "h2s": ["Zestawy GLOV do pielęgnacji — co zawierają", "Jak wybrać zestaw GLOV na prezent"], "cat": "kolekcja", "h1_len": 29, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/pielegnacja-ust", "shopify_id": "", "current_h1": "Pielęgnacja ust", "current_seo": "", "reko_h1": "Pielęgnacja ust", "reko_seo": "Sklep GLOV — Pielęgnacja ust", "h2s": ["Produkty GLOV — Pielęgnacja ust", "Opinie klientów o produktach GLOV"], "cat": "kolekcja", "h1_len": 15, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/akcesoria-do-masazu-twarzy", "shopify_id": "", "current_h1": "Akcesoria do masażu twarzy", "current_seo": "", "reko_h1": "Akcesoria do masażu twarzy", "reko_seo": "Sklep GLOV — Akcesoria do masażu twarzy", "h2s": ["Szczotka do masażu — jak wpływa na skórę", "Masaż na sucho szczotką GLOV — efekty"], "cat": "kolekcja", "h1_len": 26, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/maski-do-spania", "shopify_id": "", "current_h1": "Maski do spania", "current_seo": "", "reko_h1": "Maski do spania", "reko_seo": "Sklep GLOV — Maski do spania", "h2s": ["Produkty GLOV — Maski do spania", "Opinie klientów o produktach GLOV"], "cat": "kolekcja", "h1_len": 15, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/turbany-do-wlosow", "shopify_id": "", "current_h1": "Turbany do włosów", "current_seo": "", "reko_h1": "Turbany do włosów", "reko_seo": "Sklep GLOV — Turbany do włosów", "h2s": ["Turban do włosów GLOV — porównanie modeli", "Jak skrócić czas suszenia włosów turbanem", "Opinie o turbanach GLOV"], "cat": "kolekcja", "h1_len": 17, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/gumki-do-wlosow", "shopify_id": "", "current_h1": "Gumki do włosów", "current_seo": "", "reko_h1": "Gumki do włosów", "reko_seo": "Sklep GLOV — Gumki do włosów", "h2s": ["Turban do włosów GLOV — porównanie modeli", "Jak skrócić czas suszenia włosów turbanem", "Opinie o turbanach GLOV"], "cat": "kolekcja", "h1_len": 15, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/szczotki-do-masazu-glowy", "shopify_id": "", "current_h1": "Szczotki do masażu głowy", "current_seo": "", "reko_h1": "Szczotki do masażu głowy", "reko_seo": "Sklep GLOV — Szczotki do masażu głowy", "h2s": ["Szczotka do masażu — jak wpływa na skórę", "Masaż na sucho szczotką GLOV — efekty"], "cat": "kolekcja", "h1_len": 24, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/szczotki-do-wlosow", "shopify_id": "", "current_h1": "Szczotki do włosów", "current_seo": "", "reko_h1": "Szczotki do włosów", "reko_seo": "Sklep GLOV — Szczotki do włosów", "h2s": ["Turban do włosów GLOV — porównanie modeli", "Jak skrócić czas suszenia włosów turbanem", "Opinie o turbanach GLOV"], "cat": "kolekcja", "h1_len": 18, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/rekawice-do-peelingu", "shopify_id": "", "current_h1": "Rękawice do peelingu", "current_seo": "", "reko_h1": "Rękawice do peelingu", "reko_seo": "Sklep GLOV — Rękawice do peelingu", "h2s": ["Rękawica do peelingu ciała — jak używać", "Pielęgnacja ciała produktami GLOV"], "cat": "kolekcja", "h1_len": 20, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/nano-glass-collection", "shopify_id": "", "current_h1": "Nano Glass Collection", "current_seo": "", "reko_h1": "Nano Glass Collection", "reko_seo": "Sklep GLOV — Nano Glass Collection", "h2s": ["Nano szkło do pięt — jak działa", "Pumeks z nano szkła vs tradycyjny pumeks"], "cat": "kolekcja", "h1_len": 21, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/gabki-do-makijazu", "shopify_id": "", "current_h1": "Gąbki do makijażu", "current_seo": "", "reko_h1": "Gąbki do makijażu", "reko_seo": "Sklep GLOV — Gąbki do makijażu", "h2s": ["Produkty GLOV — Gąbki do makijażu", "Opinie klientów o produktach GLOV"], "cat": "kolekcja", "h1_len": 17, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/pedzle-do-makijazu", "shopify_id": "", "current_h1": "Pędzle do makijażu", "current_seo": "", "reko_h1": "Pędzle do makijażu", "reko_seo": "Sklep GLOV — Pędzle do makijażu", "h2s": ["Produkty GLOV — Pędzle do makijażu", "Opinie klientów o produktach GLOV"], "cat": "kolekcja", "h1_len": 18, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/zestawy-do-oczyszczania-twarzy", "shopify_id": "", "current_h1": "Zestawy do oczyszczania twarzy", "current_seo": "", "reko_h1": "Zestawy do oczyszczania twarzy", "reko_seo": "Sklep GLOV — Zestawy do oczyszczania twarzy", "h2s": ["Rękawica do demakijażu — jak działają produkty GLOV", "Wybierz rękawicę GLOV do swojego typu cery", "Opinie klientów o rękawiczkach GLOV"], "cat": "kolekcja", "h1_len": 30, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/zestawy-do-pielegnacji-wlosow", "shopify_id": "", "current_h1": "Zestawy do pielęgnacji włosów", "current_seo": "", "reko_h1": "Zestawy do pielęgnacji włosów", "reko_seo": "Sklep GLOV — Zestawy do pielęgnacji włosów", "h2s": ["Turban do włosów GLOV — porównanie modeli", "Jak skrócić czas suszenia włosów turbanem", "Opinie o turbanach GLOV"], "cat": "kolekcja", "h1_len": 29, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/zestawy-do-pielegnacji-ciala", "shopify_id": "", "current_h1": "Zestawy do pielęgnacji ciała", "current_seo": "", "reko_h1": "Zestawy do pielęgnacji ciała", "reko_seo": "Sklep GLOV — Zestawy do pielęgnacji ciała", "h2s": ["Zestawy GLOV do pielęgnacji — co zawierają", "Jak wybrać zestaw GLOV na prezent"], "cat": "kolekcja", "h1_len": 28, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/produkty-do-pielegnacji-twarzy", "shopify_id": "", "current_h1": "PROMIENNA CERA", "current_seo": "", "reko_h1": "PROMIENNA CERA", "reko_seo": "Sklep GLOV — PROMIENNA CERA", "h2s": ["Produkty GLOV — PROMIENNA CERA", "Opinie klientów o produktach GLOV"], "cat": "kolekcja", "h1_len": 14, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/produkty-do-pielegnacji-wlosow", "shopify_id": "", "current_h1": "Piękne włosy", "current_seo": "", "reko_h1": "Piękne włosy", "reko_seo": "Sklep GLOV — Piękne włosy", "h2s": ["Turban do włosów GLOV — porównanie modeli", "Jak skrócić czas suszenia włosów turbanem", "Opinie o turbanach GLOV"], "cat": "kolekcja", "h1_len": 12, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/produkty-do-pielegnacji-ciala", "shopify_id": "", "current_h1": "Gładkie ciało", "current_seo": "", "reko_h1": "Gładkie ciało", "reko_seo": "Sklep GLOV — Gładkie ciało", "h2s": ["Produkty GLOV — Gładkie ciało", "Opinie klientów o produktach GLOV"], "cat": "kolekcja", "h1_len": 13, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/cera-normalna-mieszana", "shopify_id": "", "current_h1": "Cera normalna/mieszana", "current_seo": "", "reko_h1": "Cera normalna/mieszana", "reko_seo": "Sklep GLOV — Cera normalna/mieszana", "h2s": ["Produkty GLOV dla cera normalna/mieszana — rekomendacje", "Jak pielęgnować cerę produktami GLOV"], "cat": "kolekcja", "h1_len": 22, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/cera-sucha-wrazliwa", "shopify_id": "", "current_h1": "Cera sucha/wrażliwa", "current_seo": "", "reko_h1": "Cera sucha/wrażliwa", "reko_seo": "Sklep GLOV — Cera sucha/wrażliwa", "h2s": ["Produkty GLOV dla cera sucha/wrażliwa — rekomendacje", "Jak pielęgnować cerę produktami GLOV"], "cat": "kolekcja", "h1_len": 19, "h1_ok": true, "seo_ok": false}, {"type": "collection", "url": "https://glov.co/collections/cera-tlusta", "shopify_id": "", "current_h1": "Cera tłusta", "current_seo": "", "reko_h1": "Cera tłusta", "reko_seo": "Sklep GLOV — Cera tłusta", "h2s": ["Produkty GLOV dla cera tłusta — rekomendacje", "Jak pielęgnować cerę produktami GLOV"], "cat": "kolekcja", "h1_len": 11, "h1_ok": true, "seo_ok": false}];
+const STATE_KEY = 'glov-headings-v1';
+
+let state = {};
+try { state = JSON.parse(localStorage.getItem(STATE_KEY) || '{}'); } catch(e) {}
+
+function save() { localStorage.setItem(STATE_KEY, JSON.stringify(state)); updateStats(); }
+
+function getState(id) { return state[id] || {accepted:false,h1:'',seo:'',h2s:[],comment:''}; }
+
+function renderAll() {
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  DATA.forEach((row, idx) => {
+    const id = `item-${idx}`;
+    const s = getState(id);
+    const h1_len = row.current_h1.length;
+    const seo_len = (row.current_seo||'').length;
+    const h1_ok = h1_len <= 65;
+    const seo_ok = seo_len > 0 && seo_len <= 60;
+    const div = document.createElement('div');
+    div.className = 'item' + (s.accepted ? ' accepted' : '');
+    div.dataset.id = id;
+    div.dataset.type = row.type;
+    div.dataset.accepted = s.accepted ? '1' : '0';
+    div.dataset.h1ok = h1_ok ? '1' : '0';
+    div.dataset.title = row.current_h1.toLowerCase();
+
+    const h2sHtml = (row.h2s||[]).map((h2,i) => {
+      const val = (s.h2s||[])[i] !== undefined ? s.h2s[i] : h2;
+      return `<div class="h2-item">
+        <span class="h2-num">H2.${i+1}</span>
+        <input class="h2-input${s.accepted?' accepted':''}" data-h2idx="${i}" value="${esc(val)}"
+          oninput="updateH2('${id}',${i},this.value)" placeholder="Propozycja H2…">
+        <button class="btn btn-sm btn-warn" title="Przywróć" onclick="resetH2('${id}',${i},'${esc(h2)}',this)">↩</button>
+      </div>`;
+    }).join('');
+
+    div.innerHTML = `
+      <div class="item-header">
+        <span class="status-dot${s.accepted?' accepted':''}"></span>
+        <span class="badge ${row.type}">${row.type === 'product' ? '📦 Produkt' : '📁 Kolekcja'}</span>
+        ${!h1_ok ? '<span class="badge warn">⚠ H1 za długi</span>' : ''}
+        ${!seo_ok ? '<span class="badge warn">⚠ Brak SEO title</span>' : ''}
+        ${row.cat !== '—' ? `<span class="badge cat">${row.cat.replace(/_/g,' ')}</span>` : ''}
+        <span class="item-url"><a href="${row.url}" target="_blank">${esc(row.url)}</a></span>
+      </div>
+      <div class="grid">
+        <div class="field-group">
+          <div class="field-label">Tytuł produktu (H1) · aktualny</div>
+          <div class="field-current">${esc(row.current_h1)} <span class="len ${h1_ok?'ok':'bad'}">${h1_len} zn.</span></div>
+          <div class="field-label">➜ Rekomendacja H1</div>
+          <div class="reko-wrap">
+            <textarea class="reko-input${s.accepted?' accepted':''}" id="h1-${id}" rows="2"
+              oninput="updateField('${id}','h1',this.value)">${esc(s.h1||row.reko_h1)}</textarea>
+            <button class="btn btn-sm btn-warn" onclick="resetField('${id}','h1','${esc(row.reko_h1)}','h1-${id}')">↩</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">SEO Page Title · aktualny</div>
+          <div class="field-current">${row.current_seo ? esc(row.current_seo) + ` <span class="len ${seo_ok?'ok':'bad'}">${seo_len} zn.</span>` : '<em style="color:var(--warn)">brak</em>'}</div>
+          <div class="field-label">➜ Rekomendacja SEO title (max 60 zn.)</div>
+          <div class="reko-wrap">
+            <textarea class="reko-input${s.accepted?' accepted':''}" id="seo-${id}" rows="2"
+              oninput="updateField('${id}','seo',this.value)">${esc(s.seo||row.reko_seo)}</textarea>
+            <button class="btn btn-sm btn-warn" onclick="resetField('${id}','seo','${esc(row.reko_seo)}','seo-${id}')">↩</button>
+          </div>
+        </div>
+      </div>
+      ${row.h2s && row.h2s.length ? `
+      <div class="field-label" style="margin-bottom:8px">➜ Propozycje H2 (z blueprintu GSC)</div>
+      <div class="h2-list">${h2sHtml}</div>` : ''}
+      <div class="actions">
+        <button class="btn ${s.accepted?'btn-warn':'btn-ok'} btn-sm" onclick="toggleAccept('${id}',this)">
+          ${s.accepted ? '↩ Cofnij' : '✓ Akceptuję'}
+        </button>
+        <input class="comment-field" placeholder="💬 Notatka / uwaga…" value="${esc(s.comment||'')}"
+          oninput="updateField('${id}','comment',this.value)">
+      </div>`;
+    list.appendChild(div);
+  });
+  applyFilters();
+  updateStats();
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function toggleAccept(id, btn) {
+  const s = getState(id);
+  s.accepted = !s.accepted;
+  state[id] = s;
+  const div = document.querySelector(`[data-id="${id}"]`);
+  div.classList.toggle('accepted', s.accepted);
+  div.dataset.accepted = s.accepted ? '1' : '0';
+  div.querySelector('.status-dot').classList.toggle('accepted', s.accepted);
+  btn.textContent = s.accepted ? '↩ Cofnij' : '✓ Akceptuję';
+  btn.className = `btn ${s.accepted?'btn-warn':'btn-ok'} btn-sm`;
+  div.querySelectorAll('.reko-input,.h2-input').forEach(el => el.classList.toggle('accepted', s.accepted));
+  save();
+}
+
+function updateField(id, field, val) {
+  if(!state[id]) state[id] = {};
+  state[id][field] = val;
+  save();
+}
+
+function updateH2(id, idx, val) {
+  if(!state[id]) state[id] = {};
+  if(!state[id].h2s) state[id].h2s = [];
+  state[id].h2s[idx] = val;
+  save();
+}
+
+function resetField(id, field, orig, inputId) {
+  if(!state[id]) state[id] = {};
+  state[id][field] = orig;
+  document.getElementById(inputId).value = orig;
+  save();
+}
+
+function resetH2(id, idx, orig, btn) {
+  if(!state[id]) state[id] = {};
+  if(!state[id].h2s) state[id].h2s = [];
+  state[id].h2s[idx] = orig;
+  btn.previousElementSibling.value = orig;
+  save();
+}
+
+function acceptAll() {
+  document.querySelectorAll('.item.visible:not(.accepted)').forEach(div => {
+    const id = div.dataset.id;
+    if(!state[id]) state[id] = {};
+    state[id].accepted = true;
+    div.classList.add('accepted');
+    div.dataset.accepted = '1';
+    div.querySelector('.status-dot').classList.add('accepted');
+    const btn = div.querySelector('.actions .btn');
+    btn.textContent = '↩ Cofnij'; btn.className = 'btn btn-warn btn-sm';
+    div.querySelectorAll('.reko-input,.h2-input').forEach(el => el.classList.add('accepted'));
+  });
+  save();
+}
+
+function applyFilters() {
+  const fType = document.getElementById('filterType').value;
+  const fStatus = document.getElementById('filterStatus').value;
+  const fH1 = document.getElementById('filterH1').value;
+  const fSearch = document.getElementById('filterSearch').value.toLowerCase();
+  document.querySelectorAll('.item').forEach(div => {
+    let show = true;
+    if(fType !== 'all' && div.dataset.type !== fType) show = false;
+    if(fStatus === 'pending' && div.dataset.accepted === '1') show = false;
+    if(fStatus === 'accepted' && div.dataset.accepted !== '1') show = false;
+    if(fH1 === 'toolong' && div.dataset.h1ok === '1') show = false;
+    if(fSearch && !div.dataset.title.includes(fSearch)) show = false;
+    div.classList.toggle('visible', show);
+  });
+  updateStats();
+}
+
+function updateStats() {
+  const all = DATA.length;
+  const accepted = Object.values(state).filter(s=>s.accepted).length;
+  const visible = document.querySelectorAll('.item.visible').length;
+  const pct = all ? Math.round(accepted/all*100) : 0;
+  document.getElementById('stats').textContent = `${accepted}/${all} zaakceptowanych (${pct}%) · widoczne: ${visible}`;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function exportJSON() {
+  const out = DATA.map((row,idx) => {
+    const id = `item-${idx}`;
+    const s = getState(id);
+    return {
+      url: row.url,
+      shopify_id: row.shopify_id,
+      type: row.type,
+      accepted: s.accepted,
+      h1_final: s.h1 || row.reko_h1,
+      seo_title_final: s.seo || row.reko_seo,
+      h2s_final: row.h2s.map((h2,i) => (s.h2s||[])[i] !== undefined ? s.h2s[i] : h2),
+      comment: s.comment || ''
+    };
+  }).filter(r=>r.accepted);
+  const blob = new Blob([JSON.stringify(out,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'glov_headings_accepted.json';
+  a.click();
+}
+
+function toggleTheme() {
+  const r = document.documentElement;
+  const t = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  r.setAttribute('data-theme', t);
+  localStorage.setItem('glov-theme', t);
+}
+
+// Restore theme
+const savedTheme = localStorage.getItem('glov-theme');
+if(savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+
+renderAll();
+</script>
+</body>
+</html>
