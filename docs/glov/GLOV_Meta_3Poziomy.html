@@ -309,7 +309,7 @@ th.grp-bl{background:var(--bl-head);color:#3a1a70}
     <th rowspan="2">Status</th>
     <th rowspan="2">Cel</th>
     <th colspan="7" class="grp-meta">Meta · snapshot 2026-07-20 – 2026-07-26</th>
-    <th colspan="6" class="grp-ga4">GA4 · <span id="ga4-period-label">7 dni (2026-07-20 – 2026-07-26)</span></th>
+    <th colspan="7" class="grp-ga4">GA4 · <span id="ga4-period-label">7 dni (2026-07-20 – 2026-07-26)</span></th>
     <th colspan="2" class="grp-bl">BL · 2026-07-20–2026-07-26</th>
   </tr>
   <tr>
@@ -326,6 +326,7 @@ th.grp-bl{background:var(--bl-head);color:#3a1a70}
     <th class="ga4 num">Txn</th>
     <th class="ga4 num">Przychód</th>
     <th class="ga4 num">ROAS ga4</th>
+    <th class="ga4" style="min-width:160px">UTM (GA4)</th>
     <th class="bl num">BL Zam.</th>
     <th class="bl num">BL Rev</th>
   </tr>
@@ -4689,16 +4690,25 @@ function renderPeriodTable(){
       const g = c.ga4;
       const roas_ga4 = g.roas_ga4||0;
       const ga4Cls = roas_ga4>=2?'rp-ok':roas_ga4>0?'rp-bad':'rp-na';
+      /* UTM pills — lista raw sessionCampaignName z GA4 */
+      const utms = (g.utms && g.utms.length) ? g.utms : [c.name];
+      const utmPills = utms.map(u => {
+        const match = u === c.name;
+        return `<span style="display:inline-block;font-size:10px;padding:1px 5px;border-radius:3px;margin:1px;
+          background:${match?'#c8e6c8':'#fff3cd'};color:${match?'#1a4d1a':'#6d4c00'};
+          white-space:nowrap" title="${match?'exact match':'fuzzy match'}">${u}</span>`;
+      }).join('');
       ga4Html = `
         <td class="ga4 num">${fmt(g.sessions,'n')}</td>
         <td class="ga4 num">${g.transactions>0?g.transactions:'—'}</td>
         <td class="ga4 num">${g.revenue>0?fmt(g.revenue,'zl'):'—'}</td>
         <td class="ga4 num"><span class="${ga4Cls}">${roas_ga4>0?roas_ga4.toFixed(2)+'×':'—'}</span></td>
-        <td class="ga4 num muted" colspan="2">—</td>`;
+        <td class="ga4 num muted" colspan="2">—</td>
+        <td class="ga4" style="min-width:160px;padding:3px 6px">${utmPills}</td>`;
     } else if(proxy && !c.has_ga4){
-      ga4Html = `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">brak UTM</td>`;
+      ga4Html = `<td class="ga4 num muted" colspan="7" style="font-style:italic;color:var(--muted)">brak UTM match</td>`;
     } else {
-      ga4Html = `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">—</td>`;
+      ga4Html = `<td class="ga4 num muted" colspan="7" style="font-style:italic;color:var(--muted)">—</td>`;
     }
 
     /* BL total (jeden wiersz na wszystko — wyświetlamy tylko w pierwszym) */
@@ -4726,7 +4736,7 @@ function renderPeriodTable(){
     const blRow = `<tr style="background:color-mix(in srgb,var(--bl-bg) 40%,transparent);font-weight:600">
       <td colspan="3" style="text-align:right;font-size:11px;color:var(--muted)">BL TOTAL (wszystkie kanały):</td>
       <td colspan="7" class="meta num">—</td>
-      <td colspan="6" class="ga4 num">—</td>
+      <td colspan="7" class="ga4 num">—</td>
       <td class="bl num">${fmt(proxy.bl.gross,'zl')}</td>
       <td class="bl num">${proxy.bl.orders}</td>
     </tr>`;
