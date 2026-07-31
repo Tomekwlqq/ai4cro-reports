@@ -255,9 +255,10 @@ th.grp-bl{background:var(--bl-head);color:#3a1a70}
     <div class="picker-sep"></div>
     <div class="preset-wrap">
       <span class="preset-lbl">Preset</span>
-      <button class="preset-btn active" id="prst-today" onclick="setPreset('today')">Ostatni dzień</button>
+      <button class="preset-btn active" id="prst-yday" onclick="setPreset('yesterday')">Przedwczoraj</button>
       <button class="preset-btn" id="prst-7d" onclick="setPreset('last_7d')">7 dni</button>
       <button class="preset-btn" id="prst-30d" onclick="setPreset('last_30d')">30 dni</button>
+      <button class="preset-btn" id="prst-mtd" onclick="setPreset('mtd')">Od pocz. miesiąca</button>
     </div>
     <div class="picker-sep"></div>
     <label class="compare-lbl"><input type="checkbox" id="compare-chk"> Porównaj z poprzednim</label>
@@ -4318,6 +4319,15 @@ function setDay(key){
   currentDay = key;
   document.getElementById('dbtn-today').classList.toggle('active', key==='today');
   document.getElementById('dbtn-yesterday').classList.toggle('active', key==='yesterday');
+  /* Reset presetu do today gdy user wraca do widoku dziennego */
+  if(currentPreset==='last_7d' || currentPreset==='last_30d'){
+    currentPreset = 'today';
+    const keyMap = {'today':'today','last_7d':'7d','last_30d':'30d'};
+    Object.keys(keyMap).forEach(k=>{
+      const el = document.getElementById('prst-'+keyMap[k]);
+      if(el) el.classList.toggle('active', k==='today');
+    });
+  }
   renderDayCampanel();
 }
 
@@ -4447,19 +4457,23 @@ function renderDayCampanel(){
   const dk = currentDay;
   const dayData = M[dk];
   if(!dayData||!dayData.campaigns){
-    panel.innerHTML='<div class="meta-loading">Brak kampanii dla tego dnia</div>'; return;
+    panel.innerHTML='<div class="meta-loading">Brak kampanii dla tego zakresu</div>'; return;
   }
 
   /* GA4 lookup — dostępne tylko dla 'yesterday' przez live2.today */
   const ga4Map = {};
   const isToday = dk==='today';
-  if(!isToday && L && L.today && L.today.ga4 && L.today.ga4.channels){
+  const isMultiDay = (dk==='last_7d' || dk==='last_30d');
+  if(!isToday && !isMultiDay && L && L.today && L.today.ga4 && L.today.ga4.channels){
     L.today.ga4.channels.forEach(ch=>{
       if(ch.campaign) ga4Map[ch.campaign.toLowerCase()] = ch;
     });
   }
 
-  const dateLabel = dk==='today' ? (M.today_date||'Dziś') : (M.yesterday_date||'Wczoraj');
+  const dateLabel = dk==='today' ? (M.today_date||'Dziś')
+    : dk==='yesterday' ? (M.yesterday_date||'Wczoraj')
+    : dk==='last_7d'   ? (M.week_range||'7 dni')
+    : (M.month_range||'30 dni');
 
   const rows = dayData.campaigns.map(c=>{
     const rpCls = c.roas>=2?'rp-ok':c.roas>0?'rp-bad':'rp-na';
@@ -4468,7 +4482,7 @@ function renderDayCampanel(){
       ? '<span class="badge-active">ACTIVE</span>'
       : '<span class="badge-paused">PAUSED</span>';
 
-    const ga4 = !isToday ? (ga4Map[c.name.toLowerCase()]||null) : null;
+    const ga4 = (!isToday && !isMultiDay) ? (ga4Map[c.name.toLowerCase()]||null) : null;
     const ga4sess = ga4 ? ga4.sessions : null;
     const ga4txn  = ga4 ? (ga4.purchases??null) : null;
     const ga4rev  = ga4 ? (ga4.revenue??null) : null;
@@ -4476,6 +4490,8 @@ function renderDayCampanel(){
 
     const ga4cells = isToday
       ? `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">brak (lag 1d)</td>`
+      : isMultiDay
+      ? `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">n/d dla okresu</td>`
       : `<td class="ga4 num">${ga4sess!=null?fmt(ga4sess,'n'):'—'}</td>
          <td class="ga4 num">—</td>
          <td class="ga4 num">—</td>
@@ -4557,6 +4573,23 @@ function setPreset(p){
     document.getElementById('picker-from').value = pts[0]||'';
     document.getElementById('picker-to').value   = pts[1]||'';
   }
+  /* Synchronizuj tabelę kampanii z presetem */
+  if(p==='last_7d' || p==='last_30d'){
+    currentDay = p;
+    /* Odznacz przyciski Dziś/Wczoraj */
+    const db = document.getElementById('dbtn-today');
+    const dy = document.getElementById('dbtn-yesterday');
+    if(db) db.classList.remove('active');
+    if(dy) dy.classList.remove('active');
+  } else if(p==='today'){
+    /* Preset "today" → tabela kampanii: dziś */
+    currentDay = 'today';
+    const db = document.getElementById('dbtn-today');
+    if(db) db.classList.add('active');
+    const dy = document.getElementById('dbtn-yesterday');
+    if(dy) dy.classList.remove('active');
+  }
+  renderDayCampanel();
   renderPeriodKpi();
 }
 
