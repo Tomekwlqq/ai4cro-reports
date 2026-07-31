@@ -4579,6 +4579,55 @@ function renderDayCampanel(){
   </div>`;
 }
 
+/* ===== PERIOD TABLE (dolna, sterowana pickerem) ===== */
+
+function renderPeriodTable(){
+  const {from, to} = getPickerDates();
+  const agg = aggregateRange(from, to);
+  const tbl = document.getElementById('tab-kampanie-tbl');
+  if(!tbl) return;
+
+  const dateLabel = from===to ? from : from+' – '+to;
+
+  /* aktualizuj nagłówki */
+  const metaTh = tbl.querySelector('th.grp-meta');
+  if(metaTh) metaTh.textContent = 'Meta · '+dateLabel;
+  const blTh = tbl.querySelector('th.grp-bl');
+  if(blTh) blTh.textContent = 'BL · '+dateLabel;
+  const ga4Span = document.getElementById('ga4-period-label');
+  if(ga4Span) ga4Span.textContent = dateLabel;
+
+  const tbody = tbl.querySelector('tbody');
+  if(!tbody) return;
+
+  if(!agg || !agg.campaigns || agg.campaigns.length===0){
+    tbody.innerHTML='<tr><td colspan="18" style="text-align:center;padding:12px;color:var(--muted)">Brak danych Meta dla wybranego zakresu</td></tr>';
+    return;
+  }
+
+  const isMultiDay = from !== to;
+  tbody.innerHTML = agg.campaigns.map(c=>{
+    const rpCls = c.roas>=2?'rp-ok':c.roas>0?'rp-bad':'rp-na';
+    const rpTxt = c.roas>0?c.roas.toFixed(2)+'×':'—';
+    const ga4cells = `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">${isMultiDay?'sumowane':'n/d'}</td>`;
+    return `<tr class="row-match" data-status="ACTIVE">
+      <td class="name-cell"><span class="camp-name">${c.name||c.id}</span></td>
+      <td><span class="badge-active">ACTIVE</span></td>
+      <td class="muted">—</td>
+      <td class="meta num">${fmt(c.spend,'zl')}</td>
+      <td class="meta num">${c.reach!=null?fmt(c.reach,'n'):'—'}</td>
+      <td class="meta num">${c.impressions!=null?fmt(c.impressions,'n'):'—'}</td>
+      <td class="meta num">${c.clicks!=null?fmt(c.clicks,'n'):'—'}</td>
+      <td class="meta num">${c.ctr!=null?fmt(c.ctr,'pct'):'—'}</td>
+      <td class="meta num">${c.purchases!=null?c.purchases:'—'}</td>
+      <td class="meta num"><span class="${rpCls}">${rpTxt}</span></td>
+      ${ga4cells}
+      <td class="bl num">—</td>
+      <td class="bl num">—</td>
+    </tr>`;
+  }).join('');
+}
+
 /* ===== PICKER SECTION ===== */
 
 function setPreset(p){
@@ -4624,6 +4673,7 @@ function setPreset(p){
 
   renderDayCampanel();
   renderPeriodKpi();
+  renderPeriodTable();
 }
 
 function generateReport(){
@@ -4717,8 +4767,8 @@ async function refreshAllData(force=false){
 document.addEventListener('DOMContentLoaded', ()=>{
   const pf = document.getElementById('picker-from');
   const pt = document.getElementById('picker-to');
-  if(pf) pf.addEventListener('change', ()=>{ currentPreset=''; renderDayCampanel(); renderPeriodKpi(); });
-  if(pt) pt.addEventListener('change', ()=>{ currentPreset=''; renderDayCampanel(); renderPeriodKpi(); });
+  if(pf) pf.addEventListener('change', ()=>{ currentPreset=''; renderDayCampanel(); renderPeriodKpi(); renderPeriodTable(); });
+  if(pt) pt.addEventListener('change', ()=>{ currentPreset=''; renderDayCampanel(); renderPeriodKpi(); renderPeriodTable(); });
 });
 
 refreshAllData();
