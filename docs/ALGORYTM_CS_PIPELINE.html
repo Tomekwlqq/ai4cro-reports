@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALGORYTM CS Pipeline v2 — GEO PDP Optimizer</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,Segoe UI,sans-serif;background:#f6f8fa;color:#1f2328;font-size:14px;line-height:1.6}
+a{color:#0969da;text-decoration:none}a:hover{text-decoration:underline}
+code{background:#f0f3f6;color:#cf222e;padding:2px 5px;border-radius:4px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+pre{background:#f6f8fa;border:1px solid #d0d7de;border-radius:8px;padding:14px 16px;overflow-x:auto;font-family:ui-monospace,Menlo,monospace;font-size:12px;line-height:1.5;margin:12px 0}
+
+/* === HEADER === */
+.hdr{background:#fff;border-bottom:2px solid #d0d7de;padding:14px 24px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.hdr h1{font-size:18px;font-weight:700;color:#1f2328}
+.hdr h1 span{color:#0969da}
+.hdr .sub{font-size:12px;color:#656d76;margin-top:2px}
+.ver{font-size:11px;background:#ddf4ff;color:#0969da;border:1px solid #b6e3ff;border-radius:10px;padding:2px 9px;font-weight:600;white-space:nowrap;flex-shrink:0}
+
+/* === TABS === */
+.tabbar{background:#fff;border-bottom:2px solid #d0d7de;position:sticky;top:0;z-index:100;display:flex;flex-wrap:nowrap;overflow-x:auto;padding:0 12px}
+.tab{padding:10px 16px;cursor:pointer;font-size:13px;font-weight:600;color:#57606a;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:.15s;flex-shrink:0}
+.tab:hover{color:#0969da}
+.tab.active{color:#0969da;border-bottom-color:#0969da}
+.panel{display:none;padding:28px 32px;max-width:1080px;margin:0 auto}
+.panel.active{display:block}
+
+/* === TYPO === */
+h2{font-size:17px;font-weight:700;margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid #d0d7de;color:#1f2328}
+h2:first-child{margin-top:0}
+h3{font-size:14px;font-weight:700;margin:20px 0 8px;color:#1f2328}
+p{margin:6px 0}
+ul,ol{padding-left:20px;margin:6px 0}
+li{margin:3px 0}
+
+/* === TABLES === */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+th{background:#f0f3f6;font-weight:700;text-align:left;padding:8px 12px;border:1px solid #d0d7de;color:#1f2328}
+td{padding:7px 12px;border:1px solid #d0d7de;vertical-align:top}
+tr:hover td{background:#f9fafb}
+
+/* === GATES highlight === */
+.gate-row td{background:#fef9c3;border-color:#f0c000}
+.gate-row:hover td{background:#fef3c7}
+.gate-row td:first-child{font-weight:700}
+.gate-tag{display:inline-block;background:#f0c000;color:#78350f;font-size:10px;font-weight:800;padding:2px 6px;border-radius:4px;letter-spacing:.06em;vertical-align:middle;margin-right:4px}
+.warn-tag{display:inline-block;background:#fee2e2;color:#991b1b;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;vertical-align:middle;margin-right:4px}
+.ok-tag{display:inline-block;background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;vertical-align:middle;margin-right:4px}
+.note-tag{display:inline-block;background:#dbeafe;color:#1e40af;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;vertical-align:middle;margin-right:4px}
+.pending-block{background:#fff8f0;border-left:3px solid #fb923c;padding:8px 12px;border-radius:0 6px 6px 0;margin:10px 0;font-size:12px;color:#7c2d12}
+
+/* === FLOW DIAGRAM === */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:16px 20px;background:#fff;border:1px solid #d0d7de;border-radius:8px;margin:16px 0;font-size:12px}
+.flow-step{border-radius:6px;padding:5px 11px;font-weight:600;white-space:nowrap}
+.flow-step.gen{background:#f0fdf4;color:#14532d;border:1px solid #86efac}
+.flow-step.gate{background:#fef3c7;color:#92400e;border:1px solid #f0c000}
+.flow-step.det{background:#dbeafe;color:#1e3a8a;border:1px solid #bfdbfe}
+.flow-step.orm{background:#fdf4ff;color:#581c87;border:1px solid #d8b4fe}
+.flow-step.pending{background:#f0fdf4;color:#14532d;border:1px dashed #86efac}
+.flow-arr{color:#9ca3af;font-weight:700}
+
+/* === CALLOUTS === */
+.info{background:#ddf4ff;border-left:3px solid #0969da;padding:10px 14px;border-radius:0 6px 6px 0;margin:12px 0;font-size:13px}
+.warn{background:#fff8c5;border-left:3px solid #d29922;padding:10px 14px;border-radius:0 6px 6px 0;margin:12px 0;font-size:13px}
+.stop{background:#ffebe9;border-left:3px solid #d1242f;padding:10px 14px;border-radius:0 6px 6px 0;margin:12px 0;font-size:13px}
+.placeholder{background:#f8f0ff;border:2px dashed #c084fc;border-radius:10px;padding:32px;text-align:center;color:#7e22ce;margin:20px 0}
+.placeholder h3{font-size:20px;margin-bottom:8px}
+
+/* === LINK CARD === */
+.link-card{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid #d0d7de;border-radius:8px;padding:8px 14px;margin:6px 4px;font-size:13px;font-weight:600;color:#0969da}
+.link-card:hover{background:#f0f8ff;border-color:#0969da}
+
+/* === MISC === */
+.dim{color:#656d76}
+.section-hr{border:none;border-top:1px solid #e5e7eb;margin:24px 0}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <h1>ALGORYTM <span>CS Pipeline</span></h1>
+    <div class="sub">GEO PDP Optimizer · Mapa procesu dla człowieka</div>
+  </div>
+  <span class="ver">v2 · 2026-07-30</span>
+  <span class="dim" style="font-size:12px;flex:1">przepisane od zera — 10 zakładek, właściwe kroki, właściwe skrypty, właściwe ścieżki. v1 nie miał zakładek, mieszał warstwy, podawał złe nazwy skryptów.</span>
+</div>
+
+<div class="tabbar">
+  <button class="tab active" onclick="switchTab(this,'t1')">① Pipeline CS</button>
+  <button class="tab" onclick="switchTab(this,'t2')">② CS + Pole pytań</button>
+  <button class="tab" onclick="switchTab(this,'t3')">③ CEP</button>
+  <button class="tab" onclick="switchTab(this,'t4')">④ CEV — fizyka</button>
+  <button class="tab" onclick="switchTab(this,'t5')">⑤ Fundament</button>
+  <button class="tab" onclick="switchTab(this,'t6')">⑥ ORM</button>
+  <button class="tab" onclick="switchTab(this,'t7')">⑦ GEO + SEO</button>
+  <button class="tab" onclick="switchTab(this,'t8')">⑧ Analiza konkurencji</button>
+  <button class="tab" onclick="switchTab(this,'t9')">⑨ Wzory wyglądu</button>
+  <button class="tab" onclick="switchTab(this,'t10')">⑩ Warstwy powiązane</button>
+  <button class="tab" onclick="switchTab(this,'t11')">⑪ Changelog metodologii</button>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TAB ① Pipeline CS -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div id="t1" class="panel active">
+  <h2>Pipeline CS — jedno wejście, jeden skrypt</h2>
+
+  <div class="info">
+    <strong>Master command:</strong> <code>python3 cs_pipeline.py {slug}</code><br>
+    <strong>Status check:</strong> <code>python3 cs_pipeline.py {slug} --status</code> &nbsp;|&nbsp; <code>python3 cs_pipeline.py --all --status</code><br>
+    <span class="dim">Żadnego innego wejścia. Żadnych ośmiu skryptów. Orchestrator prowadzi kategorię przez kanoniczny łańcuch, idempotentnie.</span>
+  </div>
+
+  <h3>Przepływ procesu</h3>
+  <div class="flow">
+    <div class="flow-step gen">0 FUND<br><span style="font-weight:400;font-size:11px">research ręczny</span></div>
+    <div class="flow-arr">→</div>
+    <div class="flow-step gen">1 cs_v2<br><span style="font-weight:400;font-size:11px">build_intel</span></div>
+    <div class="flow-arr">→</div>
+    <div class="flow-step pending">1b CEP+DT<br><span style="font-weight:400;font-size:11px">⚠️ D-11 wpięcie</span></div>
+    <div class="flow-arr">→</div>
+    <div class="flow-step gen">2 WPIS_CS<br><span style="font-weight:400;font-size:11px">assemble_v2</span></div>
+    <div class="flow-arr">→</div>
+    <div class="flow-step gate">2b GATE<br><span style="font-weight:400;font-size:11px">format_guard</span></div>
+    <div class="flow-arr">→</div>
+    <div class="flow-step det">3 pytania<br><span style="font-weight:400;font-size:11px">V5 chain</span></div>
+    <div class="flow-arr">→</div>
+    <div class="flow-step gate">3b GATE<br><span style="font-weight:400;font-size:11px">dq_guard</span></div>
+    <div class="flow-arr">→</div>
+    <div class="flow-step det">4 render<br><span style="font-weight:400;font-size:11px">render_cs_mapa</span></div>
+    <div class="flow-arr">→</div>
+    <div class="flow-step gate">5 GATE<br><span style="font-weight:400;font-size:11px">cs_guard</span></div>
+    <div class="flow-arr">→</div>
+    <div class="flow-step orm">6 ORM<br><span style="font-weight:400;font-size:11px">mapper.py</span></div>
+  </div>
+
+  <div class="warn">Etapy generatywne (0, 1, 2) — pipeline <strong>BRAMKUJE i podaje komendę</strong>, nie odpala sam (wymaga LLM/research). Etapy deterministyczne (3, 4, 5, 6) — pipeline odpala automatycznie (<code>subprocess.run</code> + <code>returncode</code> check).</div>
+
+  <h3>Etapy — szczegółowo</h3>
+  <table>
+    <tr>
+      <th style="width:55px">Etap</th>
+      <th style="width:100px">Co</th>
+      <th style="width:210px">Skrypt / Jak</th>
+      <th style="width:190px">Input → Output</th>
+      <th>Bramka / Uwagi</th>
+    </tr>
+
+    <tr>
+      <td><code>0</code></td>
+      <td><strong>FUND</strong><br><span class="dim">fundament</span></td>
+      <td>
+        <span class="note-tag">RĘCZNY</span><br>
+        Research wg <a href="METODOLOGIA_FUNDAMENT.md">METODOLOGIA_FUNDAMENT.md</a>.<br>
+        <span class="dim">Zero DFS. Zero fabrykacji. „Po co ta kategoria istnieje?"</span>
+      </td>
+      <td>
+        research →<br>
+        <code>FUND_{slug}.md</code>
+      </td>
+      <td>Brak pliku = <strong>pipeline STOP</strong>. Nie zgaduje.</td>
+    </tr>
+
+    <tr>
+      <td><code>1</code></td>
+      <td><strong>cs_v2</strong><br><span class="dim">pakiet JSON</span></td>
+      <td>
+        <span class="note-tag">GENERATYWNY</span><br>
+        <code>python3 build_category_intel.py {slug}</code><br>
+        <span class="dim">Strukturyzuje FUND → CEP, KCF, discovery raw. Metoda: METODOLOGIA_CS.md KROK 0-3.</span>
+      </td>
+      <td>
+        <code>FUND_{slug}.md</code> →<br>
+        <code>data/cs_v2/{slug}_v2.json</code>
+      </td>
+      <td>
+        <code>sanity_gate.py</code> (root, nie tools/)<br>
+        <span class="dim">weryfikuje skażenie CEP-atrybutami; 98/110 kat. miało ten problem</span>
+      </td>
+    </tr>
+
+    <tr style="background:#f0fdf4">
+      <td><code>1b</code></td>
+      <td><strong>CEP+DT</strong><br><span class="dim">klasyfikacja + drzewo</span></td>
+      <td>
+        <span class="ok-tag">DETERMINISTYCZNY</span><br>
+        <code>python3 classify_ceps_v5.py {slug}</code><br>
+        <code>python3 decision_tree_v4.py {slug} --md</code><br>
+        <span class="dim">Typy CEP (tożsamościowy/sytuacyjny/ekonomiczny) + §8 Decision Tree (2 drzewa gdy B2B/ENDUSER).</span>
+        <div class="pending-block">⚠️ D-11: Etap zdefiniowany w algorytmie, <strong>jeszcze nie wpięty do cs_pipeline.py</strong>. Wpięcie: między etapem 1 a 2. assemble_v2 potrzebuje §8, który produkuje DT. Implementacja: <code>subprocess.run(..., cwd=ROOT, returncode check)</code>.</div>
+      </td>
+      <td>
+        <code>data/cs_v2/{slug}_v2.json</code> →<br>
+        wzbogacony cs_v2 + §8 MD
+      </td>
+      <td>
+        Brak §8 przed assemble_v2 = §8 bez drzewa decyzyjnego.<br>
+        <span class="warn-tag">ZAKAZ ręcznego §8</span>
+      </td>
+    </tr>
+
+    <tr>
+      <td><code>2</code></td>
+      <td><strong>WPIS_CS</strong><br><span class="dim">16 sekcji</span></td>
+      <td>
+        <span class="note-tag">GENERATYWNY</span><br>
+        <code>python3 assemble_v2.py &lt;fund&gt; &lt;pkg&gt; {slug} "&lt;Nazwa&gt;"</code><br>
+        <span class="dim">Wypełnia sloty <code>&lt;&lt;LLM: ...&gt;&gt;</code> wg metodologii. Wzorzec = <a href="WPIS_CS_sluchawki_anc_V2.md">WPIS_CS_sluchawki_anc_V2.md</a> (16/16, 388 pytań). ZERO freestyle.</span>
+      </td>
+      <td>
+        <code>FUND_{slug}.md</code> +<br>
+        <code>data/cs_v2/{slug}_v2.json</code> →<br>
+        <code>WPIS_CS_{slug}_V2.md</code>
+      </td>
+      <td>→ etap 2b</td>
+    </tr>
+
+    <tr class="gate-row">
+      <td><code>2b</code></td>
+      <td><span class="gate-tag">🚦 GATE</span><br><strong>format_guard</strong></td>
+      <td>
+        <code>python3 tools/format_guard.py {slug}</code><br>
+        <span class="dim">Parsuje WPIS_CS, liczy <code>^## </code>, porównuje z kanonem 16 sekcji (źródło: sejfy_domowe). Raportuje braki imiennie: „brak §0c Dynamika Kategorii".</span>
+      </td>
+      <td>
+        <code>WPIS_CS_{slug}_V2.md</code> →<br>
+        PASS (16/16) / <strong>exit 1</strong>
+      </td>
+      <td>
+        <span class="warn-tag">exit 1 = STOP</span><br>
+        Nie obchodź flagą. Napraw generator (<code>assemble_v2.py</code>), nie wpis.
+      </td>
+    </tr>
+
+    <tr>
+      <td><code>3</code></td>
+      <td><strong>pytania §13</strong><br><span class="dim">pole pytań</span></td>
+      <td>
+        <span class="ok-tag">AUTO-CHAIN</span><br>
+        <code>python3 dump_questions.py {slug}</code><br>
+        <span class="dim">Chain wewnętrzny: <code>perception_paths_v5.py</code> → <code>batch_regen_v5.py</code> (→ DB <code>path_questions</code>) → dump. V5 dociągany automatycznie gdy DB puste.</span>
+      </td>
+      <td>
+        <code>data/cs_v2/{slug}_v2.json</code> →<br>
+        <code>data/questions/{slug}.json</code><br>
+        <span class="dim">~388 pytań per kategoria (wzorzec: sluchawki_anc)</span>
+      </td>
+      <td>→ etap 3b</td>
+    </tr>
+
+    <tr class="gate-row">
+      <td><code>3b</code></td>
+      <td><span class="gate-tag">🚦 GATE</span><br><strong>dq_guard</strong></td>
+      <td>
+        <code>python3 tools/dq_guard.py {slug}</code><br>
+        <span class="dim">Sprawdza: plik istnieje · n&gt;0 · <code>_meta.cev_source ≠ "zero"</code> · każdy CEP ma ≥1 pytanie · zero Discovery-sierot (pytanie bez CEP).</span>
+      </td>
+      <td>
+        <code>data/questions/{slug}.json</code> →<br>
+        PASS / <strong>exit 1</strong>
+      </td>
+      <td>
+        <span class="warn-tag">exit 1 = STOP</span><br>
+        Bez tej bramki: renderujesz CS z pustym §13 i nikt nie widzi.
+      </td>
+    </tr>
+
+    <tr>
+      <td><code>4</code></td>
+      <td><strong>render</strong><br><span class="dim">3 pliki HTML</span></td>
+      <td>
+        <span class="ok-tag">DETERMINISTYCZNY</span><br>
+        <code>python3 render_cs_mapa.py {slug} --all</code><br>
+        <span class="dim">Dispatcher: <code>--cs</code> (CS HTML), <code>--mapa</code> (mapa percepcji), <code>--all</code> (oba + wrapper 2-tab). Serwuj: <code>python3 -m http.server 8877</code> (iframe'y blokuje <code>file://</code>).</span>
+      </td>
+      <td>
+        <code>WPIS_CS_{slug}_V2.md</code> +<br>
+        <code>data/questions/{slug}.json</code> →<br>
+        <code>cs_{slug}.html</code><br>
+        <code>MAPA_PERCEPCJI_{slug}_v5.7.html</code><br>
+        <code>{slug}_cs_mapa.html</code>
+      </td>
+      <td>→ etap 5 (cs_guard)</td>
+    </tr>
+
+    <tr class="gate-row">
+      <td><code>5</code></td>
+      <td><span class="gate-tag">🚦 GATE</span><br><strong>cs_guard</strong></td>
+      <td>
+        <code>python3 tools/cs_guard.py {slug}</code><br>
+        <span class="dim">Skanuje CS HTML: sprawdza podpisy <code>build_html</code> (class="ci", id="stat", "Category Standard v2"). Freestyle = brak podpisów → kwarantanna <code>_freestyle_quarantine/</code>.</span>
+      </td>
+      <td>
+        <code>cs_{slug}.html</code> →<br>
+        PASS / <strong>exit 1</strong>
+      </td>
+      <td>
+        <span class="warn-tag">exit 1 = STOP</span><br>
+        Ręcznie pisany HTML = zawsze freestyle. Jedyna droga: generator.
+      </td>
+    </tr>
+
+    <tr style="background:#fdf4ff">
+      <td><code>6</code></td>
+      <td><strong>ORM</strong><br><span class="dim">Produkt #3</span></td>
+      <td>
+        <code>python3 scripts/engine/mapper.py \<br>&nbsp;&nbsp;--cs WPIS_CS_{slug}_V2.md \<br>&nbsp;&nbsp;--product product.json</code><br>
+        <span class="dim">Bierze produkt → lokuje na polu pytań kategorii. Wymaga: §4 KCF z tierami · §2 CEP z triggerami · §10+§13 ścieżki+pytania · §8 DT.</span>
+      </td>
+      <td>
+        <code>WPIS_CS_{slug}_V2.md</code> +<br>
+        <code>product.json</code> +<br>
+        <code>data/questions/{slug}.json</code> →<br>
+        Organic Response Map
+      </td>
+      <td>
+        DT Gate (§8 CS) — wewnątrz mapper.py<br>
+        <span class="warn-tag">⚠️ BRAK WZORU HTML</span><br>
+        <span class="dim">Dziś: print_summary terminala (F5.5 = do decyzji Tomka)</span>
+      </td>
+    </tr>
+  </table>
+
+  <h3>Kanon skryptów — tabela referencyjna</h3>
+  <p>Każdy skrypt tu wymieniony <strong>istnieje w repo</strong> (sprawdzone 2026-07-30) i jest jedyną drogą do danego outputu.</p>
+  <table>
+    <tr><th>Skrypt</th><th>Lokalizacja</th><th>Produkuje</th></tr>
+    <tr><td><code>build_category_intel.py</code></td><td>root</td><td><code>data/cs_v2/{slug}_v2.json</code></td></tr>
+    <tr><td><code>sanity_gate.py</code></td><td><strong>root</strong> (NIE tools/!)</td><td>walidacja CEP (exit 1 = skażenie atrybutem)</td></tr>
+    <tr><td><code>classify_ceps_v5.py</code></td><td>root</td><td>typy CEP w cs_v2 ⚠️ D-11</td></tr>
+    <tr><td><code>decision_tree_v4.py</code></td><td>root</td><td>§8 Decision Tree MD ⚠️ D-11</td></tr>
+    <tr><td><code>assemble_v2.py</code></td><td>root</td><td><code>WPIS_CS_{slug}_V2.md</code></td></tr>
+    <tr><td><code>tools/format_guard.py</code></td><td>tools/</td><td>PASS/exit 1 (16 sekcji)</td></tr>
+    <tr><td><code>perception_paths_v5.py</code></td><td>root</td><td><code>data/paths_v5/</code> (DB)</td></tr>
+    <tr><td><code>batch_regen_v5.py</code></td><td>root</td><td>DB <code>path_questions</code></td></tr>
+    <tr><td><code>dump_questions.py</code></td><td>root</td><td><code>data/questions/{slug}.json</code></td></tr>
+    <tr><td><code>tools/dq_guard.py</code></td><td>tools/</td><td>PASS/exit 1 (pole pytań)</td></tr>
+    <tr><td><code>tools/mapa_smoke.py</code></td><td>tools/</td><td><strong>bramka mapy</strong> — 6 checków wygenerowanego HTML; exit 1 = mapa zepsuta</td></tr>
+    <tr><td><code>gen_angle.py</code></td><td>root</td><td><code>data/angle_{slug}.json</code> — kąty przekierowania + siła 🟢🟡🔴 (warstwa KLIENCKA)</td></tr>
+    <tr><td><code>tools/build_hub.py</code></td><td>tools/</td><td><code>HUB_{slug}.html</code> — Przegląd + CS + mapa</td></tr>
+    <tr><td><code>_shared/publish_web.sh</code></td><td>_shared/</td><td>GitHub Pages; rzeczy klienckie → <code>docs/{klient}/</code></td></tr>
+    <tr><td><code>render_cs_mapa.py</code></td><td>root</td><td>CS HTML + mapa percepcji + wrapper</td></tr>
+    <tr><td><code>tools/cs_guard.py</code></td><td>tools/</td><td>PASS/exit 1 (freestyle check)</td></tr>
+    <tr><td><code>scripts/engine/mapper.py</code></td><td>scripts/engine/</td><td>Organic Response Map</td></tr>
+  </table>
+
+
+  <h3>Narzędzia naprawcze — gdy łańcuch się rozjedzie</h3>
+  <p>Nie są częścią normalnego przebiegu. Każde ma <code>--dry-run</code> i robi backup przed zapisem.
+     Leczą <strong>dane</strong>, nigdy plik wyjściowy — jeśli objaw wraca po regeneracji, problem jest w generatorze.</p>
+  <table>
+    <tr><th>Skrypt</th><th>Kiedy</th><th>Objaw, który leczy</th></tr>
+    <tr><td><code>tools/rebuild_ceps_from_wpis.py</code></td><td><code>cs_v2.ceps</code> ma atrybuty DFS
+        (<code>forwhom_*</code>, <code>where_*</code>, <code>feeling_*</code>, <code>_other</code>)</td>
+        <td>pytania budują się na atrybutach zamiast sytuacji wejścia. Label bierze z <strong>triggera</strong>, nie ze sluga — slug wywala CEP na bramce G2</td></tr>
+    <tr><td><code>tools/sync_paths_from_questions.py</code></td><td><code>cs_v2.paths</code> starsze niż pole pytań</td>
+        <td><code>gen_angle</code> widzi 5 ścieżek przy 12 → angle tylko dla części, <strong>bez ostrzeżenia</strong></td></tr>
+    <tr><td><code>tools/rebuild_discovery_section.py</code></td><td>§3 ucięta („20 pierwszych")</td>
+        <td>część CEP-ów nie ma reprezentacji w §3, choć kanon wymaga <strong>2–4 per CEP</strong></td></tr>
+    <tr><td><code>tools/rebuild_pole_pytan_section.py</code></td><td>§13 to próbka / odsyła do nieistniejącego pliku</td>
+        <td>pole żyje tylko w mapie, CS pokazuje ułamek. Zachowuje tabele merytoryczne ze starej wersji</td></tr>
+  </table>
+
+  <h3>Po CS — warstwa kliencka i publikacja</h3>
+  <p>🛡️ Etapy 6–8 <strong>znają markę</strong>. Ich wynik NIE wchodzi do <code>data/questions/</code> ani <code>cs_v2</code> —
+     inaczej 10 klientów = 10 różnych pól tej samej kategorii i batch ×110 przestaje istnieć.</p>
+  <table>
+    <tr><th>Etap</th><th>Komenda</th><th>Produkuje</th></tr>
+    <tr><td><code>5b</code> bramka mapy</td><td><code>python3 tools/mapa_smoke.py {slug}</code></td><td>6 checków; exit 1 = nie publikuj</td></tr>
+    <tr><td><code>6a</code> angle</td><td><code>python3 gen_angle.py {slug}_v2 STRATEGIA_ODPOWIEDZI_{klucz}.md</code></td>
+        <td><code>data/angle_{slug}.json</code> — kąt + siła per pytanie. Wymaga wsadu strategii marki</td></tr>
+    <tr><td><code>6</code> ORM</td><td><code>python3 scripts/engine/mapper.py --cs … --product …</code></td><td>Organic Response Map (produkt × pole)</td></tr>
+    <tr><td><code>7</code> hub</td><td><code>python3 tools/build_hub.py {slug} --title "…"</code></td><td><code>HUB_{slug}.html</code>; zakładki bez danych są wyłączone, nie wypełniane</td></tr>
+    <tr><td><code>8</code> publikacja</td><td><code>bash _shared/publish_web.sh {plik} tomekwlqq/eel-reports docs/{klient}/{plik}</code></td>
+        <td>GitHub Pages + kafel w <code>KATALOG_MAP_CS.html</code> i hubie klienta</td></tr>
+  </table>
+
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TAB ② CS + Pole pytań -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div id="t2" class="panel">
+  <div class="info">
+    Jeden dokument źródłowy od F1 (D-2, D-13): <a href="METODOLOGIA_CS.md">METODOLOGIA_CS.md</a> v5.9 + <a href="ENGINE_PYTAN_MATRYCA.md">ENGINE_PYTAN_MATRYCA.md</a> (aneks). Poniżej: streszczenie operacyjne — nie ma drugiej metodologii.
+  </div>
+
+  <h2>CS — budowa w krokach</h2>
+  <p>CS (Category Standard) = <strong>rozumienie procesu zakupowego</strong>, nie keywordy. Słaby CS → słaba reko → zły kontent — żaden copywriter tego nie naprawi. Napraw CS → output poprawia się sam.</p>
+
+  <table>
+    <tr><th style="width:90px">KROK</th><th style="width:160px">Co produkuje</th><th>Skrypt / Jak</th></tr>
+    <tr><td><code>KROK 0</code></td><td>FUND — fundament</td><td>Research ręczny: po co kategoria istnieje, surowiec kw sytuacyjnych, KW-błędy. Skrypt: <code>build_category_intel.py</code> strukturyzuje do JSON po badaniu. Wyjście: <code>data/cs_v2/{slug}_v2.json</code></td></tr>
+    <tr><td><code>KROK 1</code></td><td>CEV — 10 cech kategorii</td><td><code>cev_scorer.py</code> — profil cech (0–1). Fizyka ścieżki: fork impuls/potrzeba, stany, wagi. Patrz <strong>tab ④ CEV</strong>.</td></tr>
+    <tr><td><code>KROK 2</code></td><td>Fizyka — fork + stany + wagi</td><td><code>category_physics_model.py</code> — kształt podróży. 8 stanów (Schwartz mod.), FORK w stanie 2: impuls (→ 2-6-8) vs. potrzeba (→ pełna ścieżka).</td></tr>
+    <tr><td><code>KROK 3</code></td><td>CEP — sytuacje wejścia</td><td>Lista CEP sytuacyjnych (nie atrybutowych). Gate: <em>„czy trigger zmieni się gdy zmienię klienta, nie kategorię?"</em> Tak → NIE CEP. Patrz <strong>tab ③ CEP</strong>.</td></tr>
+    <tr><td><code>KROK 3b</code></td><td>Typy CEP</td><td><code>classify_ceps_v5.py</code> — tożsamościowy / sytuacyjny / ekonomiczny. Każdy typ modyfikuje kształt ścieżki. <span style="color:#dc2626;font-size:11px;font-weight:700">⚠️ D-11</span></td></tr>
+    <tr><td><code>KROK 4</code></td><td>KCF — kluczowe cechy kategorii</td><td>Tiery T1 (blokery) / T2 / T3. T1 GAP = ścieżka weak. Source: FUND + rynek. Sekcja §4 w WPIS_CS.</td></tr>
+    <tr><td><code>KROK 5</code></td><td>Segmenty produktowe</td><td>Podtypy kategorii (np. epilator / woskownica / krem depilacyjny). Sekcja §5 w WPIS_CS.</td></tr>
+    <tr><td><code>KROK 6</code></td><td>Ścieżki percepcji V5</td><td>1 CEP = 1 ścieżka (nie persona demograficzna). Engine V5: <code>perception_paths_v5.py</code>. Standardowe stany 1→8, modyfikowane cechami CEV.</td></tr>
+    <tr><td><code>KROK 7</code></td><td>Pole pytań (§13 / §10)</td><td><code>batch_regen_v5.py</code> + <code>dump_questions.py</code>. CEP × stan × intent × waga → pytania. Wzorzec: 388 pytań (sluchawki_anc), min. 20 Discovery per kategoria.</td></tr>
+    <tr><td><code>KROK 8</code></td><td>Decision Tree (§8)</td><td><code>decision_tree_v4.py {slug} --md</code>. 2 drzewa gdy §2 ma <code>### [ENDUSER]</code> / <code>### [B2B]</code>. Ręczny §8 = zakaz.</td></tr>
+  </table>
+
+  <h3>16 sekcji WPIS_CS — kanon</h3>
+  <p>Wzorzec: <a href="WPIS_CS_sluchawki_anc_V2.md">WPIS_CS_sluchawki_anc_V2.md</a> (16/16, 388 pytań, layout v57). Bramka: <code>tools/format_guard.py</code>.</p>
+  <div class="flow" style="flex-direction:column;align-items:flex-start;gap:4px">
+    <div>§0 Opis kategorii &nbsp;|&nbsp; §0b Gwiazda Północna &nbsp;|&nbsp; <strong>§0c Dynamika Kategorii</strong> &nbsp;|&nbsp; §1 Changelog</div>
+    <div>§2 CEP (tabela: id | Trigger | Kontekst | Primary concern | Bloker 🛡️ | Routes to | PDP anchor)</div>
+    <div><strong>§3 20 Discovery Questions</strong> (layer ①, z data/questions/{slug}.json) &nbsp;|&nbsp; §4 KCF (T1/T2/T3)</div>
+    <div>§5 Segmenty &nbsp;|&nbsp; §6 Marka &nbsp;|&nbsp; §7 Zawartość PDP &nbsp;|&nbsp; §8 Decision Tree &nbsp;|&nbsp; §9 Forbidden Patterns</div>
+    <div>§10 Ścieżki percepcji &amp; pole pytań &nbsp;|&nbsp; §11 Mapa kontentu &nbsp;|&nbsp; §12 Wdrożenie &nbsp;|&nbsp; §13 Pole pytań (zakończenie CS)</div>
+  </div>
+
+  <div class="stop"><strong>Zasada Tomka 2026-07-17:</strong> „CS osobno, pytania osobno" wyprodukowało 114 ze 125 CS <em>bez pytań</em>. §13 <strong>kończy wpis CS</strong>. Pole pytań = asset kategorii, nie dodatek.</div>
+
+  <hr class="section-hr">
+  <h2>8 stanów świadomości (ENGINE_PYTAN_MATRYCA)</h2>
+  <table>
+    <tr><th style="width:60px">Stan</th><th>Gdzie jest konsument</th><th>EQA</th><th>Format pytania</th></tr>
+    <tr><td><code>1</code></td><td>Discovery — „Coś jest nie tak, ale nie wiem co"</td><td>Description</td><td><em>Dlaczego X...? / Czy X to normalne?</em></td></tr>
+    <tr><td><code>1b</code></td><td>Lęk funkcjonalny — „Boję się, że nie dam rady"</td><td>Opinion + Description</td><td><em>Czy dam radę? / Czy przepłacę?</em></td></tr>
+    <tr><td><code>2</code> <span class="gate-tag" style="font-size:9px">FORK</span></td><td>Rozpoznanie CEP — impuls (→ 2-6-8) lub potrzeba (→ pełna)</td><td>Description</td><td><em>Jaki X do...? / Czym jest Y?</em></td></tr>
+    <tr><td><code>3</code></td><td>Nauka kategorii — „Jak działa, czym się różni"</td><td>Description + Instruction</td><td><em>Jak działa X? / Czym różni się X od Y?</em></td></tr>
+    <tr><td><code>4</code></td><td>Moje potrzeby — preselekcja</td><td>Recommendation</td><td><em>Jaki X dla...? / Który typ X pasuje do...?</em></td></tr>
+    <tr><td><code>5</code></td><td>Porównywanie</td><td>Comparison + Factoid</td><td><em>X vs Y — co lepsze? / Ile wytrzyma?</em></td></tr>
+    <tr><td><code>6</code></td><td>Wybór sklepu / sposobu zakupu</td><td>Factoid</td><td><em>Gdzie kupić? / Subskrypcja czy jednorazowo?</em></td></tr>
+    <tr><td><code>7</code></td><td>Post-purchase</td><td>Instruction</td><td><em>Jak używać? / Jak dbać?</em></td></tr>
+  </table>
+
+  <hr class="section-hr">
+  <h2>CUT — granica odklientowienia (Produkt #2 CQF)</h2>
+  <p><strong>Test CUT:</strong> <em>„Czy ta wartość zmieni się gdy zmienię klienta, nie zmieniając kategorii?"</em><br>
+  Nie → zostaje w polu kategorii (CQF ✓). Tak → CRS (#4 — per klient).</p>
+  <p>CQF = pole pytań bez klienta. ORM (#3) dokłada produkt klienta na pole. CRS (#4) dokłada markę i angle.</p>
+  <p>Nic klienckiego (angle, siła 🟢🟡🔴, marka) do CS ani CQF.</p>
+
+  <div style="margin-top:16px">
+    <a class="link-card" href="METODOLOGIA_CS.md">📄 METODOLOGIA_CS.md — pełna metodologia</a>
+    <a class="link-card" href="ENGINE_PYTAN_MATRYCA.md">📄 ENGINE_PYTAN_MATRYCA.md — cheat-sheet wzorców pytań</a>
+    <a class="link-card" href="METODOLOGIA_CATEGORY_QUESTION_FIELD.md">🪦 METODOLOGIA_CQF.md — nagrobek (treść → CS.md)</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TAB ③ CEP -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div id="t3" class="panel">
+  <div class="info">Streszczenie operacyjne. Pełna metodologia: <a href="CEP_METHODOLOGY_v3.md">CEP_METHODOLOGY_v3.md</a> (36 KB)</div>
+
+  <h2>CEP — Consumer Entry Points</h2>
+  <p>CEP = <strong>sytuacja wejścia</strong> do kategorii, nie cecha produktu. Przykład: „depilacja przed wakacjami" = CEP (sytuacja). „bezprzewodowy" = atrybut → NIE CEP.</p>
+
+  <div class="stop"><strong>Gate sytuacja-vs-atrybut:</strong> <em>„Czy ten trigger zmieni się gdy zmienię klienta, nie zmieniając kategorii?"</em> Nie zmieni = CEP ✓. Zmieni = atrybut → do KCF, NIE do CEP.</div>
+
+  <h3>3 typy CEP (<code>classify_ceps_v5.py</code>)</h3>
+  <table>
+    <tr><th>Typ</th><th>Definicja</th><th>Przykład</th><th>Modyfikacja ścieżki</th></tr>
+    <tr><td><strong>Sytuacyjny</strong></td><td>Konkretna sytuacja życiowa wyzwala potrzebę</td><td>„depilacja przed wakacjami" / „ekspres do biura"</td><td>Standardowa ścieżka 1→8</td></tr>
+    <tr><td><strong>Tożsamościowy</strong></td><td>Zakup wyraża kim jest / chce być</td><td>„sejf dla kolekcjonera" / „organiczne dla mamy"</td><td>Wyższe wagi stanów 1b + aspiracja; FORK częściej impuls</td></tr>
+    <tr><td><strong>Ekonomiczny</strong></td><td>Motywator cenowy / oszczędnościowy</td><td>„najtańszy ekspres do 500 zł"</td><td>Skrócona ścieżka, dominują stany 5-6</td></tr>
+  </table>
+
+  <h3>Format w §2 WPIS_CS</h3>
+  <pre>| id | Trigger (język konsumenta) | Kontekst | Primary concern | Bloker 🛡️ | Routes to | PDP anchor |
+|---|---|---|---|---|---|---|
+| `cep_pain_free` | „depilacja bez bólu" | szuka alternatywy dla woskowania | ból zabiegu | „a jeśli i tak boli?" | — | §7 Porównanie metod |</pre>
+  <p class="dim">Backticki w kolumnie id są kanoniczne w WPIS_CS. <code>parsers.py:159</code> stripuje je przy parsowaniu (<code>cep_id = cells[0].strip("`")</code> — fix F5.1).</p>
+
+  <h3>Inicjator #1 wg Romaniuk</h3>
+  <p>§2b CEP (modyfikatory → 7W) = inicjator #1 w algorytmie GEO+SEO. CEP v3 domyka go gatem sytuacja-vs-atrybut + inicjatorem #2 „po co kategoria". Patrz <strong>tab ⑦ GEO+SEO</strong>.</p>
+
+  <a class="link-card" href="CEP_METHODOLOGY_v3.md">📄 CEP_METHODOLOGY_v3.md — pełna metodologia</a>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TAB ④ CEV — fizyka -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div id="t4" class="panel">
+  <div class="info">Streszczenie operacyjne. Pełna metodologia: <a href="METODOLOGIA_CEV.md">METODOLOGIA_CEV.md</a> (48 KB)</div>
+
+  <h2>CEV — Category Emotional Valuation</h2>
+  <div class="stop"><strong>CEV + P1–P8 = AUTORSKI MODEL TOMKA. Rdzeń IP, nie config.</strong> 10 cech, macierz atrybucji i 8 parametrów kształtu — Tomek od zera. Zapożyczony wyłącznie szkielet 8 stanów (mod. Schwartz). Gdy kod i model się rozjeżdżają — <strong>brakuje KODOWI</strong>.</div>
+
+  <h3>Gdzie CEV siedzi w całości</h3>
+  <table>
+    <tr><th>Warstwa</th><th>Pytanie</th><th>Narzędzie</th></tr>
+    <tr><td><strong>WHO / WHEN</strong></td><td>Kto i w jakiej sytuacji wchodzi</td><td>CEP (§2 CS)</td></tr>
+    <tr><td><strong>HOW ← ten tab</strong></td><td>Jaki kształt ma podróż</td><td>CEV: 10 cech → macierz → P1–P8 → fizyka</td></tr>
+    <tr><td><strong>CO PDP MA MIEĆ</strong></td><td>Czego treść musi dostarczyć</td><td>16 sekcji wpisu CS</td></tr>
+  </table>
+
+  <h3>10 cech kategorii (0–1)</h3>
+  <table>
+    <tr><th>#</th><th>Cecha</th><th>Co mierzy</th></tr>
+    <tr><td>1</td><td>Emocjonalność</td><td>Jak bardzo decyzja jest napędzana emocją vs. racjonalnością</td></tr>
+    <tr><td>2</td><td>Aspiracyjność</td><td>Czy zakup wyraża tożsamość / aspiracje</td></tr>
+    <tr><td>3</td><td>Widoczność społeczna</td><td>Czy produkt jest widoczny dla innych</td></tr>
+    <tr><td>4</td><td>Impulsywność</td><td>Jak często decyzja jest impulsowa (→ fork w stanie 2)</td></tr>
+    <tr><td>5</td><td>Nawrotowość</td><td>Czy zakup jest powtarzalny (subskrypcja, zużycie)</td></tr>
+    <tr><td>6</td><td>Złożoność decyzyjna</td><td>Jak skomplikowana jest decyzja zakupowa</td></tr>
+    <tr><td>7</td><td>Ryzyko zakupowe</td><td>Jak duże ryzyko złej decyzji (finansowe, zdrowotne)</td></tr>
+    <tr><td>8</td><td>Zaangażowanie czasowe</td><td>Ile czasu trwa podróż zakupowa</td></tr>
+    <tr><td>9</td><td>Wiedza wejściowa</td><td>Ile wiedzy potrzeba, żeby zacząć wybierać</td></tr>
+    <tr><td>10</td><td>EDS</td><td>Embarassment-Driven Search — strach przed oceną społeczną napędza search</td></tr>
+  </table>
+
+  <h3>FORK w stanie 2</h3>
+  <p><strong>IMPULS</strong> = kombo MEGA emocjonalność × aspiracyjność (trigger: influencer). Ścieżka: 2→6→8.<br>
+  <strong>POTRZEBA</strong> = standardowa 2→3…8 (pełna edukacja).<br>
+  Trend: impulsów coraz więcej.</p>
+
+  <h3>Model dwuliniowy (kanon 2026-06-08)</h3>
+  <p>Dwie równoległe linie: Linia A (8 stanów świadomości) + Linia B (waga emocjonalna per stan). CEV deformuje obie.</p>
+
+  <h3>Skrypty CEV</h3>
+  <ul>
+    <li><code>cev_scorer.py</code> — scoring 10 cech</li>
+    <li><code>category_physics_model.py</code> — kształt ścieżki (P1–P8)</li>
+    <li><code>category_physics_config.json</code> — macierz atrybucji</li>
+  </ul>
+
+  <a class="link-card" href="METODOLOGIA_CEV.md">📄 METODOLOGIA_CEV.md — pełna metodologia (48 KB)</a>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TAB ⑤ Fundament -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div id="t5" class="panel">
+  <div class="info">Streszczenie operacyjne. Pełna metodologia: <a href="METODOLOGIA_FUNDAMENT.md">METODOLOGIA_FUNDAMENT.md</a> (8 KB)</div>
+
+  <h2>Fundament — KROK 0, przed DFS</h2>
+  <p>FUND = research <strong>przed</strong> DataForSEO. Odpowiedź na: <em>„Po co ta kategoria w ogóle istnieje?"</em> Bez FUND → CS z keywordów → pole pytań bez fizyki → fabrykaty zamiast realnego procesu zakupowego.</p>
+
+  <div class="stop"><strong>ZERO DFS na etapie FUND.</strong> DataForSEO wchodzi dopiero po fundamencie. FUND budowany z: realnych zapytań (Google Suggest, Reddit, fora), własnego doświadczenia, obserwacji sklepów — nie z wolumetrii.</div>
+
+  <h3>Co musi zawierać FUND_{slug}.md</h3>
+  <table>
+    <tr><th>Sekcja</th><th>Co</th><th>Po co</th></tr>
+    <tr><td>0.1 Frazy sytuacyjne</td><td>„bezbolesna depilacja" / „co zamiast golarki"</td><td>Surowiec do CEP — sytuacje, nie atrybuty</td></tr>
+    <tr><td>0.2 Opis kategorii</td><td>Czym jest kategoria, kto w nią wchodzi, kiedy</td><td>Kontekst dla CS KROK 1-3</td></tr>
+    <tr><td>0.3 KW-błędy</td><td>Frazy wyglądające jak CEP, ale będące atrybutami</td><td>Gate sytuacja-vs-atrybut działa ZANIM</td></tr>
+    <tr><td>0.4 Motywatory</td><td>Dlaczego ktoś szuka (nie „co szuka")</td><td>CEV scoring, fork impuls/potrzeba</td></tr>
+    <tr><td>0.5 Błędy narracyjne rynku</td><td>Co komunikuje konkurencja, co jest mylące</td><td>Forbidden Patterns (§9 CS)</td></tr>
+  </table>
+
+  <h3>Test jakości FUND</h3>
+  <p>Dobrym sygnałem jest: czy z FUND da się wymienić 5+ realnych sytuacji wejścia (nie cech produktu), zanim otworzysz DFS? Nie → FUND słaby, CS będzie słaby.</p>
+
+  <a class="link-card" href="METODOLOGIA_FUNDAMENT.md">📄 METODOLOGIA_FUNDAMENT.md — pełna metodologia (8 KB)</a>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TAB ⑥ ORM -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div id="t6" class="panel">
+  <div class="info">Streszczenie operacyjne. Pełna specyfikacja: <a href="ALGORYTM_ORGANIC_RESPONSE_MAP.md">ALGORYTM_ORGANIC_RESPONSE_MAP.md</a>. ⚠️ Duplikat: istnieje też <code>.html</code> — rozstrzygnij które jest źródłem.</div>
+
+  <h2>ORM — Organic Response Map (Produkt #3)</h2>
+  <p>ORM = bierze <strong>dowolny produkt</strong> i lokuje go na polu pytań kategorii: które ścieżki obsługuje autentycznie, na które pytania odpowie, gdzie NIE pasuje i dlaczego. Uczciwe mapowanie — produkt premium nie wygrywa na ścieżce „szukam najtańszego".</p>
+
+  <div class="warn"><strong>Kod już istnieje — nie pisz od nowa.</strong> <code>scripts/engine/mapper.py</code> (221 linii, CLI przez argparse). Test: <code>scripts/engine/test_data/product_glov_nano_pumice.json</code>.</div>
+
+  <h3>5 kroków ORM</h3>
+  <table>
+    <tr><th style="width:40px">#</th><th style="width:160px">Krok</th><th>Co robi</th><th>Wejście CS</th></tr>
+    <tr><td><code>1</code></td><td><strong>KCF Comparison</strong></td><td>Cechy produktu vs. każda KCF. Werdykt: MATCH / GAP / PARTIAL + uzasadnienie. Score ważony tierem: T1×3, T2×2, T3×1. T1 GAP = bloker ścieżki.</td><td>§4 KCF z tierami</td></tr>
+    <tr><td><code>2</code></td><td><strong>CEP Routing</strong></td><td>Które CEP-y produkt obsługuje? KCF match → sytuacje wejścia. T1 GAP-y wykluczają CEP-y wymagające tej cechy.</td><td>§2 CEP</td></tr>
+    <tr><td><code>3</code></td><td><strong>Pathway Placement</strong></td><td>Dla każdej ścieżki: confidence % (primary / secondary / weak). Rozjazd: <code>parsers.py:159</code> backticki w CEP ID → 0% (fix F5.1 — czeka zgody Tomka).</td><td>§10+§13 ścieżki+pytania</td></tr>
+    <tr><td><code>4</code></td><td><strong>Question Coverage</strong></td><td>Które pytania z pola produkt może odpowiedzieć? Lista per ścieżka z coverage flagą.</td><td><code>data/questions/{slug}.json</code></td></tr>
+    <tr class="gate-row"><td><code>5</code></td><td><span class="gate-tag">🚦 GATE</span><br><strong>DT Gate</strong></td><td>Decision Tree Gate — czy routing CEP zgadza się z §8 DT? Inkoherencja = ostrzeżenie.</td><td>§8 Decision Tree</td></tr>
+  </table>
+
+  <h3>Wymagania CS dla ORM — check gotowości</h3>
+  <p>ORM na niekompletnym CS produkuje ciche śmieci. Check: <code>python3 cs_pipeline.py {slug} --status</code></p>
+  <table>
+    <tr><th>Co</th><th>Sekcja CS</th><th>Dlaczego krytyczne</th></tr>
+    <tr><td>KCF z tierami T1/T2/T3</td><td>§4</td><td>Bez tierów: każdy GAP równy, brak blokerów</td></tr>
+    <tr><td>CEP z triggerami + blokerami</td><td>§2</td><td>Bez CEP: routing niemożliwy</td></tr>
+    <tr><td>Ścieżki + pole pytań</td><td>§10 + §13</td><td>Bez pytań: coverage = 0/0</td></tr>
+    <tr><td>Decision Tree</td><td>§8</td><td>Bez DT: DT Gate ciche śmieci</td></tr>
+  </table>
+
+  <h3>Kontrakt product.json</h3>
+  <pre>{
+  "product_name": "Nazwa produktu",
+  "features": ["cecha 1", "cecha 2"],
+  "price_range": "100-200 PLN",
+  "constraints": ["brak certyfikatu X"],
+  "target_use": "opis zastosowania"
+}</pre>
+  <p>Wzorzec: <code>scripts/engine/test_data/product_glov_nano_pumice.json</code>. Skąd będą pochodzić produkty produkcyjnie — decyzja Tomka, nie wykonawcy. ⛔ base.com: SPRAWDZONE I ODRZUCONE.</p>
+
+  <div class="warn"><strong>F5.5 — wzór wyglądu raportu ORM: ⚠️ BRAK WZORU.</strong> Dziś tylko <code>print_summary</code> do terminala. Budować? — do decyzji Tomka.</div>
+
+  <a class="link-card" href="ALGORYTM_ORGANIC_RESPONSE_MAP.md">📄 ALGORYTM_ORGANIC_RESPONSE_MAP.md — pełna spec</a>
+  <a class="link-card" href="scripts/engine/mapper.py">⚙️ scripts/engine/mapper.py — implementacja</a>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TAB ⑦ GEO + SEO -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div id="t7" class="panel">
+  <div class="info">
+    4 źródła: <a href="FILOZOFIA_GEO_SERWIS.md">FILOZOFIA_GEO_SERWIS.md</a> · <a href="GEO_CANON.md">GEO_CANON.md</a> · <a href="GEO_SEO_ALGORYTM.html">GEO_SEO_ALGORYTM.html</a> · <a href="MATRYCA_GEO_SEO.md">MATRYCA_GEO_SEO.md</a>. Czytaj PARAMI: Canon.md + Algorytm.html.
+  </div>
+
+  <h2>Filozofia — CS = moat, nie keywordy</h2>
+  <p>Discovery przechodzi z keyworda → pytanie (era AI). Kto zmapuje <strong>pole pytań</strong> (CEP × etap × π) i pokryje je cytowalną treścią — wygrywa discovery.</p>
+  <ul>
+    <li>Keywordy = commodity. Każdy ma DataForSEO/Senuto/Ahrefs.</li>
+    <li><strong>Różnicę robi rozumienie procesu zakupowego</strong> zakodowane w CS.</li>
+    <li>GEO = Inference Advantage. AI cytuje fakty S2, ignoruje przymiotniki-szum. Próg cytacji ≥3 S2.</li>
+    <li>Słaba reko = słaby CS, nie słaby copywriter. <strong>Napraw CS → output poprawia się sam.</strong></li>
+  </ul>
+
+  <h2>Rubric /135 — dwie osie</h2>
+  <table>
+    <tr><th>Oś</th><th>Max</th><th>Co mierzy</th></tr>
+    <tr><td><strong>GEO</strong> — gotowość na AI</td><td>/75</td><td>Cytowalność przez AI: fakty S2, pytania i odpowiedzi, źródłowość, przejrzystość struktury</td></tr>
+    <tr><td><strong>SEO</strong> — widoczność w SERP</td><td>/60</td><td>Technikalia: title, meta, nagłówki, structured data, szybkość, mobile</td></tr>
+    <tr><td><strong>RAZEM</strong></td><td>/135</td><td>Łączny wynik audytu strony klienta</td></tr>
+  </table>
+
+  <h2>Algorytm v0.8 — kluczowe etapy</h2>
+  <p>Pełne drzewo: <a href="GEO_SEO_ALGORYTM.html">GEO_SEO_ALGORYTM.html</a>.</p>
+  <ol>
+    <li><code>[0]</code> Wejście: URL klienta → harvest kw + treści PDP</li>
+    <li><code>[1]</code> Audyt technikaliów (SEO oś)</li>
+    <li><code>[2]</code> CEP v3 — modyfikatory KV → 7W <em>(inicjator #1 wg Romaniuk)</em></li>
+    <li><code>[2b]</code> Inicjator #2 — „po co kategoria"</li>
+    <li><code>[3]</code> CS — audyt pokrycia treści CS per sekcja</li>
+    <li><code>[4]</code> Pole pytań — gap coverage</li>
+    <li><code>[5]</code> Rekomendacje priorytetyzowane</li>
+    <li><code>[6]</code> Raporty klienckie (Cortex Lab, EEL HUB)</li>
+  </ol>
+
+  <div style="margin-top:16px">
+    <a class="link-card" href="FILOZOFIA_GEO_SERWIS.md">📄 FILOZOFIA_GEO_SERWIS.md</a>
+    <a class="link-card" href="GEO_CANON.md">📄 GEO_CANON.md</a>
+    <a class="link-card" href="GEO_SEO_ALGORYTM.html">🌐 GEO_SEO_ALGORYTM.html</a>
+    <a class="link-card" href="MATRYCA_GEO_SEO.md">📄 MATRYCA_GEO_SEO.md</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TAB ⑧ Analiza konkurencji -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div id="t8" class="panel">
+  <div class="placeholder">
+    <h3>⏸️ Analiza konkurencji — F7</h3>
+    <p style="margin:12px 0;font-size:14px">Budowana <strong>od zera na przykładach</strong>, w osobnej sesji z Tomkiem.</p>
+    <p style="font-size:13px;color:#6b21a8">NIE jest scaleniem istniejących dokumentów.<br><code>METODOLOGIA_ANALIZA_KONKURENCJI.md</code> i <code>_OD_URL.md</code> — do przemyślenia, nie przepisania.</p>
+    <hr style="border:1px dashed #c084fc;margin:16px 0">
+    <p style="font-size:12px;color:#7e22ce"><strong>Gdzie to siedzi w stacku:</strong><br>
+    Coverage-gap (kto pokrywa które pytania, a które zostawia odsłonięte) = mechanika ORM/#3 z innym <code>product.json</code>.<br>
+    Analiza konkurencji jest <strong>za CQF</strong> i <strong>na ORM</strong>, nie obok nich.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TAB ⑨ Wzory wyglądu -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div id="t9" class="panel">
+  <div class="info">Każdy output ma imienny wzór albo jawne <span class="warn-tag">⚠️ BRAK WZORU</span>. Wzory generowane przez kanon — nie ręcznie, nie freestyle.</div>
+
+  <h2>Wzory wyglądu — pliki referencyjne</h2>
+  <table>
+    <tr><th>Output</th><th>Wzór</th><th>Generator</th><th>Bramka</th></tr>
+    <tr>
+      <td><strong>CS HTML</strong></td>
+      <td><code>cs_sluchawki_anc.html</code><br><span class="dim">layout v57, jasny tryb, card-style §</span></td>
+      <td><code>render_cs_mapa.py --cs</code><br><span class="dim">→ build_html.py (kanon)</span></td>
+      <td><code>tools/cs_guard.py</code></td>
+    </tr>
+    <tr>
+      <td><strong>Mapa percepcji (CQF)</strong></td>
+      <td><code>MAPA_PERCEPCJI_ekspresy_do_kawy_v5.7.html</code><br><span class="dim">kanban + search</span></td>
+      <td><code>render_cs_mapa.py --mapa</code><br><span class="dim">→ render_mapa_v57.py</span></td>
+      <td><code>tools/dq_guard.py</code></td>
+    </tr>
+    <tr>
+      <td><strong>Wrapper CS+CQF</strong></td>
+      <td><code>ekspresy_do_kawy_cs_mapa.html</code><br><span class="dim">2 zakładki: 🗺️ Mapa / 📄 CS; iframe; http.server 8877</span></td>
+      <td><code>render_cs_mapa.py --all</code></td>
+      <td>cs_guard po generacji</td>
+    </tr>
+    <tr>
+      <td><strong>Baza CS</strong></td>
+      <td><code>reports/baza_cs.html</code><br><span class="dim">wszystkie kategorie, sidebar, metodologia</span></td>
+      <td><code>tools/build_baza_cs.py</code></td>
+      <td><code>tools/cs_guard.py</code> (batch)</td>
+    </tr>
+    <tr>
+      <td><strong>Pilot (sejfy)</strong></td>
+      <td><code>reports/pilot_baza_sejfy.html</code><br><span class="dim">WPIS_CS + KW DFS + FUND — razem</span></td>
+      <td><code>tools/build_pilot_sejfy.py</code></td>
+      <td>—</td>
+    </tr>
+    <tr style="background:#fff8f0">
+      <td><strong>ORM raport</strong></td>
+      <td><span class="warn-tag">⚠️ BRAK WZORU</span></td>
+      <td><code>scripts/engine/mapper.py</code><br><span class="dim">dziś: print_summary terminala</span></td>
+      <td>DT Gate (wewnętrzny)</td>
+    </tr>
+  </table>
+
+  <h3>CSS — zasady jasnego trybu</h3>
+  <ul>
+    <li><strong>HTML ZAWSZE jasny tryb. Nigdy dark mode toggle. Twarda zasada.</strong></li>
+    <li><code>_LIGHT_CSS</code> + <code>_THEME_JS</code> (inicjuje <code>body.light</code>) → importowane z <code>tools/build_pilot_sejfy.py</code></li>
+    <li><code>_THEME_JS = "(function()&#123;document.body.classList.add('light');&#125;)()"</code> — bez warunkowego toggle</li>
+    <li>Card-style §: <code>body.light .cs h2&#123;background:#f0f3f6; border-radius:8px; border:1px solid #d0d7de&#125;</code></li>
+  </ul>
+
+  <h3>Serwowanie lokalne</h3>
+  <pre>cd /Users/Tomek_Main/Documents/Claude/Projects/GEO_PDP_Optimizer
+python3 -m http.server 8877</pre>
+  <p class="dim">Iframe'y wymagają serwera HTTP. <code>file://</code> blokuje cross-origin iframe. Wrapper nie działa bez serwera.</p>
+
+  <h3>Publikacja</h3>
+  <p>Kanon: <code>_shared/publish_web.sh</code> → GitHub Pages. <strong>Nigdy Artifact</strong> (prywatny widget, nie publiczny link).</p>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TAB ⑩ Warstwy powiązane -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div id="t10" class="panel">
+  <div class="info">Elementy przeniesione z v1 KROK 6-7 + §9. Wyraźnie oddzielone od pipeline'u CS — to nie są etapy procesu, to warstwy eksperymentalne i infrastrukturalne.</div>
+
+  <h2>Asystent zakupowy</h2>
+  <div class="warn"><strong>Status: CLI prototyp — NIE produkt.</strong> Nie blokuje pipeline'u. Pipeline CS kończy się na etapie 5 (cs_guard). Asystent = osobny projekt, testowany.</div>
+  <table>
+    <tr><th>Co</th><th>Szczegół</th></tr>
+    <tr><td>Skrypt</td><td><code>asystent_dt.py</code></td></tr>
+    <tr><td>Model</td><td>DeepSeek + Honcho (pamięć) + OpenRouter</td></tr>
+    <tr><td>Stan</td><td>25 produktów testowych (słuchawki ANC) · odpowiada na pytania z pola CQF</td></tr>
+    <tr><td>Reguła #1</td><td>Produkt w <strong>pierwszej</strong> odpowiedzi, nie po 4 pytaniach</td></tr>
+    <tr><td>Reguła #2</td><td>Każde „nie wiem z Honcho" = luka. Luka = brak CS / słaby trigger / brak produktu</td></tr>
+    <tr><td>Diagnoza</td><td><code>python3 honczo.py --raw</code> — kontekst z Honcho</td></tr>
+    <tr><td>Doc</td><td><code>PROCESS_ASYSTENT.md</code> — 8-etapowy proces</td></tr>
+  </table>
+
+  <h2>Honcho — pamięć cross-agent</h2>
+  <table>
+    <tr><th>Co</th><th>Szczegół</th></tr>
+    <tr><td>Workspace</td><td><code>geo-pdp-optimizer</code></td></tr>
+    <tr><td>Backend</td><td>Docker port 8000+5432, Bun MCP 8787, Ollama nomic 768-dim</td></tr>
+    <tr><td>Model embeddingów</td><td>nomic-embed-text (local)</td></tr>
+    <tr><td>Rozmiar</td><td>3267 wiadomości</td></tr>
+    <tr><td>Rola</td><td>Pamięć kontekstowa asystenta między sesjami; plan: pamięć per-klient per-kategoria</td></tr>
+    <tr><td>Debug</td><td><code>honczo.py --raw</code></td></tr>
+  </table>
+
+  <h2>DBT — źródła produktów</h2>
+  <table>
+    <tr><th>Co</th><th>Szczegół</th></tr>
+    <tr><td>Cel</td><td>Docelowo: automatyczne zaciąganie <code>product.json</code> z bazy danych produktów klienta</td></tr>
+    <tr><td>Stan</td><td>Koncepcja / praca w toku — brak implementacji</td></tr>
+    <tr><td>Dziś</td><td><code>product.json</code> wypełniany ręcznie (wzorzec: <code>scripts/engine/test_data/</code>)</td></tr>
+    <tr><td>⛔ base.com</td><td><strong>ODRZUCONE.</strong> BaseLinker po rebrandingu. Nie proponuj, nie wracaj do tematu.</td></tr>
+    <tr><td>Skąd źródła</td><td>Decyzja Tomka, nie wykonawcy. Nie zakładaj źródła produkcyjnego.</td></tr>
+  </table>
+
+  <a class="link-card" href="PROCESS_ASYSTENT.md">📄 PROCESS_ASYSTENT.md — 8-etapowy proces asystenta</a>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- TAB ⑪ Changelog metodologii -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div id="t11" class="panel">
+  <h2>Rejestr wersji metodologii</h2>
+
+  <div class="info">
+    <strong>Tutaj trzymamy WSZYSTKIE WERSJE I ODNOTOWUJEMY ZMIANY.</strong> Przy każdej zmianie dowolnej metodologii — uzupełnij tabelę: dodaj wiersz lub zaktualizuj wersję + opis. Jeden wpis = jedna wersja = jeden zestaw zmian. Log jest chronologiczny w kolumnie „Historia".
+  </div>
+
+  <h3>Indeks metodologii</h3>
+  <table>
+    <tr>
+      <th>Metodologia</th>
+      <th>Plik</th>
+      <th>Aktualna wersja</th>
+      <th>Data</th>
+      <th>Opis ostatnich zmian</th>
+    </tr>
+    <tr>
+      <td><strong>Category Standards (CS)</strong><br><span class="dim">JEDYNA metodologia CS — rządzi całym łańcuchem</span></td>
+      <td><code>METODOLOGIA_CS.md</code></td>
+      <td><span class="ok-tag">v5.8</span></td>
+      <td>2026-07-30</td>
+      <td>
+        <strong>v5.8 · 2026-07-30</strong> — korekty sesji bieżącej; dostosowanie opisu silnika V5.<br>
+        <strong>v4.2 · 2026-07-17</strong> — CEP przesunięte ZA KCF (kluczowa zmiana kolejności); fix retinol-bug w <code>build_category_intel</code> (sekcje kcf/typowy_produkt generowane STUB zamiast skażonych hardkodów); <code>METODOLOGIA_KATEGORII.md</code> + <code>MACIERZ_0e_SCORING.md</code> wchłonięte do CEV (tombstone). <strong>§0d</strong> Query Mutation Map, <strong>§3b</strong> subkategorie dodane.<br>
+        <strong>v4.0 · 2026-06-16</strong> — przepisana od zera (nowa kolejność: KCF → CEP). Stara: <code>METODOLOGIA_CS.md.backup-2026-06-16-stara-kolejnosc</code>. Gate sytuacja-vs-atrybut na CEP, drugi inicjator CEP.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>CEV — Category Emotional Valuation</strong><br><span class="dim">10 cech → macierz atrybucji → P1–P8 → fizyka zakupowa. Autorski model Tomka.</span></td>
+      <td><code>METODOLOGIA_CEV.md</code></td>
+      <td><span class="ok-tag">v1</span></td>
+      <td>2026-07-17</td>
+      <td>
+        <strong>v1 · 2026-07-17</strong> — scalenie <code>METODOLOGIA_KATEGORII.md</code> + <code>MACIERZ_0e_SCORING.md</code>. Oba pliki źródłowe wchłonięte (tombstone). CEV + P1–P8 = IP projektu, rdzeń moatu.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>CEP — Consumer Entry Points</strong><br><span class="dim">Model 7W — sytuacje zakupowe (nie atrybuty)</span></td>
+      <td><code>CEP_METHODOLOGY_v3.md</code></td>
+      <td><span class="note-tag">v3</span></td>
+      <td>2026-06-02</td>
+      <td>
+        <strong>v3 · 2026-06-02</strong> — model 7W (Who/When/Where/What/Why/With/Worry); gate sytuacja-vs-atrybut; re-derywacja CEP z keywordów. Status: 🟡 do akceptacji Tomka.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Fundament (KROK 0)</strong><br><span class="dim">Protokół budowania fundamentu przed CS</span></td>
+      <td><code>METODOLOGIA_FUNDAMENT.md</code></td>
+      <td><span class="dim">—</span></td>
+      <td>2026-06-10</td>
+      <td>
+        Brak numeru wersji. Reguła nadrzędna: referencja = matryca do rozbudowy (NIE nowy dokument od zera). DFS embargo: keywordy tylko po KROK 0.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Organic Response Map (ORM)</strong><br><span class="dim">Produkt #3 — lokowanie produktu na pole pytań CS</span></td>
+      <td><code>ALGORYTM_ORGANIC_RESPONSE_MAP.md</code></td>
+      <td><span class="ok-tag">v1</span></td>
+      <td>2026-07-16</td>
+      <td>
+        <strong>v1 · 2026-07-16</strong> — pierwsza wersja. Mapa mapuje produkt (cechy fizyczne + emocjonalne) na pytania ścieżek CS. Uczciwe dopasowanie — brak pasowania = wprost sygnalizowane.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>ENGINE PYTAŃ (matryca wzorców)</strong><br><span class="dim">Aneks do METODOLOGIA_CS.md KROK 4 — cheat-sheet per stan</span></td>
+      <td><code>ENGINE_PYTAN_MATRYCA.md</code></td>
+      <td><span class="dim">aneks</span></td>
+      <td>2026-07-30</td>
+      <td>
+        <strong>2026-07-30</strong> — zmiana nazwy z „ENGINE PYTAŃ v4" → „ENGINE PYTAŃ — matryca wzorców (ANEKS)". Wzorce EQA: Instruction, Opinion, Description, Comparison, Recommendation, Factoid.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>GEO Canon (rubric /135)</strong><br><span class="dim">Algorytm serwisu GEO v0.8 — drzewo decyzyjne, etapy [0]→[6]</span></td>
+      <td><code>GEO_CANON.md</code></td>
+      <td><span class="dim">—</span></td>
+      <td>2026-06-02</td>
+      <td>
+        Brak numeru wersji. Rubric /135 (GEO+SEO), dwie osie, pipeline audytu.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Matryca GEO+SEO</strong><br><span class="dim">Oś GEO+SEO, mapping sekcja→wskaźnik</span></td>
+      <td><code>MATRYCA_GEO_SEO.md</code></td>
+      <td><span class="dim">—</span></td>
+      <td>2026-06-13</td>
+      <td>
+        Brak numeru wersji. Mapowanie dimensji GEO+SEO na sekcje CS.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Filozofia GEO serwisu</strong><br><span class="dim">Fundament strategiczny: dlaczego CS = moat</span></td>
+      <td><code>FILOZOFIA_GEO_SERWIS.md</code></td>
+      <td><span class="dim">—</span></td>
+      <td>2026-06-11</td>
+      <td>
+        Brak numeru wersji. Discovery: keyword → pytanie (era AI). CS = rozumienie procesu zakupowego, nie keywordy.
+      </td>
+    </tr>
+  </table>
+
+  <div class="warn" style="margin-top:20px">
+    <strong>Jak uzupełniać:</strong> przy każdej zmianie metodologii → znajdź wiersz → dodaj do kolumny „Opis" nowy wpis w formacie <code>v?.? · RRRR-MM-DD — co i dlaczego</code>. Aktualizuj „Aktualna wersja" i „Data". Nie kasuj historycznych wpisów.
+  </div>
+</div>
+
+<script>
+(function(){document.body.classList.add('light');})();
+function switchTab(btn, id){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>
