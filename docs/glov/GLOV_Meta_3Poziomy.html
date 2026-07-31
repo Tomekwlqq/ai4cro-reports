@@ -4648,6 +4648,100 @@ function aggregateProxyRange(fromDate, toDate){
   };
 }
 
+/* ===== AGREGACJA ADSETS ===== */
+
+function aggregateProxyRangeAdsets(fromDate, toDate){
+  const PT = window.PROXY_TRUTH;
+  if(!PT || !PT.days) return null;
+
+  const adsetMap = {};
+  Object.entries(PT.days).forEach(([d, day])=>{
+    if(d < fromDate || d > toDate) return;
+    (day.adsets||[]).forEach(a=>{
+      const key = a.id || a.name;
+      if(!adsetMap[key]) adsetMap[key] = {
+        id: a.id, name: a.name,
+        campaign_id: a.campaign_id, campaign_name: a.campaign_name,
+        meta: {spend:0,impressions:0,clicks:0,reach:0,purchases:0,revenue:0},
+      };
+      const am = adsetMap[key];
+      if(a.meta){
+        am.meta.spend       += a.meta.spend       || 0;
+        am.meta.impressions += a.meta.impressions || 0;
+        am.meta.clicks      += a.meta.clicks      || 0;
+        am.meta.reach       += a.meta.reach       || 0;
+        am.meta.purchases   += a.meta.purchases   || 0;
+        am.meta.revenue     += a.meta.revenue     || 0;
+      }
+    });
+  });
+
+  const adsets = Object.values(adsetMap).map(am=>{
+    const m = am.meta;
+    m.spend   = Math.round(m.spend*100)/100;
+    m.revenue = Math.round(m.revenue*100)/100;
+    m.ctr     = m.impressions>0 ? Math.round(m.clicks/m.impressions*10000)/100 : 0;
+    m.roas    = m.spend>0 && m.revenue>0 ? Math.round(m.revenue/m.spend*100)/100 : 0;
+    return am;
+  }).sort((a,b)=>(b.meta.spend||0)-(a.meta.spend||0));
+
+  return {adsets};
+}
+
+/* ===== AGREGACJA ADS ===== */
+
+function aggregateProxyRangeAds(fromDate, toDate){
+  const PT = window.PROXY_TRUTH;
+  if(!PT || !PT.days) return null;
+
+  const adMap = {};
+  Object.entries(PT.days).forEach(([d, day])=>{
+    if(d < fromDate || d > toDate) return;
+    (day.ads||[]).forEach(ad=>{
+      const key = ad.id || ad.name;
+      if(!adMap[key]) adMap[key] = {
+        id: ad.id, name: ad.name,
+        adset_id: ad.adset_id, adset_name: ad.adset_name,
+        campaign_id: ad.campaign_id, campaign_name: ad.campaign_name,
+        meta: {spend:0,impressions:0,clicks:0,reach:0,purchases:0,revenue:0},
+        ga4: {sessions:0,transactions:0,revenue:0,utmSet:new Set()},
+        has_ga4: false,
+      };
+      const am = adMap[key];
+      if(ad.meta){
+        am.meta.spend       += ad.meta.spend       || 0;
+        am.meta.impressions += ad.meta.impressions || 0;
+        am.meta.clicks      += ad.meta.clicks      || 0;
+        am.meta.reach       += ad.meta.reach       || 0;
+        am.meta.purchases   += ad.meta.purchases   || 0;
+        am.meta.revenue     += ad.meta.revenue     || 0;
+      }
+      if(ad.ga4){
+        am.has_ga4 = true;
+        am.ga4.sessions     += ad.ga4.sessions     || 0;
+        am.ga4.transactions += ad.ga4.transactions || 0;
+        am.ga4.revenue      += ad.ga4.revenue      || 0;
+        (ad.ga4.utms||[]).forEach(u => am.ga4.utmSet.add(u));
+      }
+    });
+  });
+
+  const ads = Object.values(adMap).map(am=>{
+    const m = am.meta;
+    m.spend   = Math.round(m.spend*100)/100;
+    m.revenue = Math.round(m.revenue*100)/100;
+    m.ctr     = m.impressions>0 ? Math.round(m.clicks/m.impressions*10000)/100 : 0;
+    m.roas    = m.spend>0 && m.revenue>0 ? Math.round(m.revenue/m.spend*100)/100 : 0;
+    const g = am.ga4;
+    g.revenue  = Math.round(g.revenue*100)/100;
+    g.roas_ga4 = m.spend>0 && g.revenue>0 ? Math.round(g.revenue/m.spend*100)/100 : 0;
+    g.utms = [...g.utmSet]; delete g.utmSet;
+    return am;
+  }).sort((a,b)=>(b.meta.spend||0)-(a.meta.spend||0));
+
+  return {ads};
+}
+
 /* ===== PERIOD TABLE (dolna, sterowana pickerem) ===== */
 
 function renderPeriodTable(){
@@ -4746,6 +4840,127 @@ function renderPeriodTable(){
   }
 }
 
+/* ===== PERIOD TABLE ADSETS (zestawy reklam, sterowana pickerem) ===== */
+
+function renderPeriodTableAdsets(){
+  const {from, to} = getPickerDates();
+  const tbl = document.getElementById('tab-zestawy-tbl');
+  if(!tbl) return;
+
+  const dateLabel = from===to ? from : from+' – '+to;
+  const metaTh = tbl.querySelector('th.grp-meta');
+  if(metaTh) metaTh.textContent = 'Meta · '+dateLabel;
+  const blTh = tbl.querySelector('th.grp-bl');
+  if(blTh) blTh.textContent = 'BL · '+dateLabel;
+  tbl.querySelectorAll('.ga4-period-label').forEach(el => el.textContent = dateLabel);
+
+  const tbody = tbl.querySelector('tbody');
+  if(!tbody) return;
+
+  const proxy = aggregateProxyRangeAdsets(from, to);
+  if(!proxy || !proxy.adsets || proxy.adsets.length===0){
+    tbody.innerHTML='<tr><td colspan="18" style="text-align:center;padding:12px;color:var(--muted)">Brak danych dla wybranego zakresu</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = proxy.adsets.map(a=>{
+    const m = a.meta;
+    const spend = m.spend||0;
+    const roas_meta = m.roas||0;
+    const rpCls = roas_meta>=2?'rp-ok':roas_meta>0?'rp-bad':'rp-na';
+    const rpTxt = roas_meta>0?roas_meta.toFixed(2)+'×':'—';
+
+    return `<tr class="row-match" data-status="ACTIVE">
+      <td class="name-cell"><span class="camp-name">${a.name}</span></td>
+      <td class="muted" style="font-size:11px;max-width:180px;white-space:normal;word-break:break-word">${a.campaign_name||'—'}</td>
+      <td><span class="badge-active">ACTIVE</span></td>
+      <td class="meta num">${fmt(spend,'zl')}</td>
+      <td class="meta num">${m.reach!=null?fmt(m.reach,'n'):'—'}</td>
+      <td class="meta num">${m.impressions!=null?fmt(m.impressions,'n'):'—'}</td>
+      <td class="meta num">${m.clicks!=null?fmt(m.clicks,'n'):'—'}</td>
+      <td class="meta num">${m.ctr!=null?fmt(m.ctr,'pct'):'—'}</td>
+      <td class="meta num">${m.purchases!=null?m.purchases:'—'}</td>
+      <td class="meta num"><span class="${rpCls}">${rpTxt}</span></td>
+      <td class="ga4 num muted" colspan="6" style="text-align:center;font-style:italic;color:var(--muted)">brak wymiaru adset w GA4</td>
+      <td class="bl num">—</td>
+      <td class="bl num">—</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ===== PERIOD TABLE ADS/KREACJE (sterowana pickerem) ===== */
+
+function renderPeriodTableAds(){
+  const {from, to} = getPickerDates();
+  const tbl = document.getElementById('tab-reklamy-tbl');
+  if(!tbl) return;
+
+  const dateLabel = from===to ? from : from+' – '+to;
+  const metaTh = tbl.querySelector('th.grp-meta');
+  if(metaTh) metaTh.textContent = 'Meta · '+dateLabel;
+  tbl.querySelectorAll('.ga4-period-label').forEach(el => el.textContent = dateLabel);
+
+  const tbody = tbl.querySelector('tbody');
+  if(!tbody) return;
+
+  const proxy = aggregateProxyRangeAds(from, to);
+  if(!proxy || !proxy.ads || proxy.ads.length===0){
+    tbody.innerHTML='<tr><td colspan="18" style="text-align:center;padding:12px;color:var(--muted)">Brak danych dla wybranego zakresu</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = proxy.ads.map(ad=>{
+    const m = ad.meta;
+    const spend = m.spend||0;
+    const roas_meta = m.roas||0;
+    const rpCls = roas_meta>=2?'rp-ok':roas_meta>0?'rp-bad':'rp-na';
+    const rpTxt = roas_meta>0?roas_meta.toFixed(2)+'×':'—';
+
+    let ga4Html = '';
+    if(ad.has_ga4){
+      const g = ad.ga4;
+      const roas_ga4 = g.roas_ga4||0;
+      const ga4Cls = roas_ga4>=2?'rp-ok':roas_ga4>0?'rp-bad':'rp-na';
+      const utms = (g.utms && g.utms.length) ? g.utms : [ad.name];
+      const utmPills = utms.map(u => {
+        const match = u === ad.name;
+        return `<span style="display:inline-block;font-size:10px;padding:1px 5px;border-radius:3px;margin:1px;
+          background:${match?'#c8e6c8':'#fff3cd'};color:${match?'#1a4d1a':'#6d4c00'};
+          white-space:nowrap" title="${match?'exact match':'fuzzy match'}">${u}</span>`;
+      }).join('');
+      ga4Html = `
+        <td class="ga4 num">${fmt(g.sessions,'n')}</td>
+        <td class="ga4 num">${g.transactions>0?g.transactions:'—'}</td>
+        <td class="ga4 num">${g.revenue>0?fmt(g.revenue,'zl'):'—'}</td>
+        <td class="ga4 num"><span class="${ga4Cls}">${roas_ga4>0?roas_ga4.toFixed(2)+'×':'—'}</span></td>
+        <td class="ga4 num muted" colspan="2">—</td>`;
+    } else {
+      ga4Html = `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">brak utm match</td>`;
+    }
+
+    return `<tr class="row-match" data-status="ACTIVE">
+      <td class="thumb-cell"><span class="no-thumb">—</span></td>
+      <td class="name-cell">
+        <small class="muted">${ad.adset_name||'—'}</small><br>
+        <span class="camp-name">${ad.name}</span><br>
+        <small class="muted">${ad.campaign_name||'—'}</small>
+      </td>
+      <td><span class="badge-active">ACTIVE</span></td>
+      <td class="meta num">${fmt(spend,'zl')}</td>
+      <td class="meta num">${m.reach!=null?fmt(m.reach,'n'):'—'}</td>
+      <td class="meta num">—</td>
+      <td class="meta num">${m.impressions!=null?fmt(m.impressions,'n'):'—'}</td>
+      <td class="meta num">${m.clicks!=null?fmt(m.clicks,'n'):'—'}</td>
+      <td class="meta num">${m.ctr!=null?fmt(m.ctr,'pct'):'—'}</td>
+      <td class="meta num">${m.purchases!=null?m.purchases:'—'}</td>
+      <td class="meta num"><span class="${rpCls}">${rpTxt}</span></td>
+      ${ga4Html}
+      <td class="bl num">—</td>
+      <td class="bl num">—</td>
+    </tr>`;
+  }).join('');
+}
+
 /* ===== PICKER SECTION ===== */
 
 function setPreset(p){
@@ -4792,6 +5007,8 @@ function setPreset(p){
   renderDayCampanel();
   renderPeriodKpi();
   renderPeriodTable();
+  renderPeriodTableAdsets();
+  renderPeriodTableAds();
 }
 
 function generateReport(){
@@ -4887,8 +5104,8 @@ async function refreshAllData(force=false){
 document.addEventListener('DOMContentLoaded', ()=>{
   const pf = document.getElementById('picker-from');
   const pt = document.getElementById('picker-to');
-  if(pf) pf.addEventListener('change', ()=>{ currentPreset=''; renderDayCampanel(); renderPeriodKpi(); renderPeriodTable(); });
-  if(pt) pt.addEventListener('change', ()=>{ currentPreset=''; renderDayCampanel(); renderPeriodKpi(); renderPeriodTable(); });
+  if(pf) pf.addEventListener('change', ()=>{ currentPreset=''; renderDayCampanel(); renderPeriodKpi(); renderPeriodTable(); renderPeriodTableAdsets(); renderPeriodTableAds(); });
+  if(pt) pt.addEventListener('change', ()=>{ currentPreset=''; renderDayCampanel(); renderPeriodKpi(); renderPeriodTable(); renderPeriodTableAdsets(); renderPeriodTableAds(); });
 });
 
 refreshAllData();
