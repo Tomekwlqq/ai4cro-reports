@@ -4663,6 +4663,8 @@ function aggregateProxyRangeAdsets(fromDate, toDate){
         id: a.id, name: a.name,
         campaign_id: a.campaign_id, campaign_name: a.campaign_name,
         meta: {spend:0,impressions:0,clicks:0,reach:0,purchases:0,revenue:0},
+        ga4: {sessions:0,transactions:0,revenue:0,utmSet:new Set()},
+        has_ga4: false,
       };
       const am = adsetMap[key];
       if(a.meta){
@@ -4673,6 +4675,13 @@ function aggregateProxyRangeAdsets(fromDate, toDate){
         am.meta.purchases   += a.meta.purchases   || 0;
         am.meta.revenue     += a.meta.revenue     || 0;
       }
+      if(a.ga4){
+        am.has_ga4 = true;
+        am.ga4.sessions     += a.ga4.sessions     || 0;
+        am.ga4.transactions += a.ga4.transactions || 0;
+        am.ga4.revenue      += a.ga4.revenue      || 0;
+        (a.ga4.utms||[]).forEach(u => am.ga4.utmSet.add(u));
+      }
     });
   });
 
@@ -4682,6 +4691,10 @@ function aggregateProxyRangeAdsets(fromDate, toDate){
     m.revenue = Math.round(m.revenue*100)/100;
     m.ctr     = m.impressions>0 ? Math.round(m.clicks/m.impressions*10000)/100 : 0;
     m.roas    = m.spend>0 && m.revenue>0 ? Math.round(m.revenue/m.spend*100)/100 : 0;
+    const g = am.ga4;
+    g.revenue  = Math.round(g.revenue*100)/100;
+    g.roas_ga4 = m.spend>0 && g.revenue>0 ? Math.round(g.revenue/m.spend*100)/100 : 0;
+    g.utms = [...g.utmSet]; delete g.utmSet;
     return am;
   }).sort((a,b)=>(b.meta.spend||0)-(a.meta.spend||0));
 
@@ -4870,6 +4883,22 @@ function renderPeriodTableAdsets(){
     const rpCls = roas_meta>=2?'rp-ok':roas_meta>0?'rp-bad':'rp-na';
     const rpTxt = roas_meta>0?roas_meta.toFixed(2)+'×':'—';
 
+    let ga4Html = '';
+    if(a.has_ga4){
+      const g = a.ga4;
+      const rg = g.roas_ga4||0;
+      const rgCls = rg>=2?'rp-ok':rg>0?'rp-bad':'rp-na';
+      const utmPills = (g.utms||[]).map(u=>`<span style="display:inline-block;font-size:10px;padding:1px 5px;border-radius:3px;margin:1px;background:#c8e6c8;color:#1a4d1a;white-space:nowrap">${u}</span>`).join('');
+      ga4Html = `
+        <td class="ga4 num">${fmt(g.sessions,'n')}</td>
+        <td class="ga4 num">${g.transactions>0?g.transactions:'—'}</td>
+        <td class="ga4 num">${g.revenue>0?fmt(g.revenue,'zl'):'—'}</td>
+        <td class="ga4 num"><span class="${rgCls}">${rg>0?rg.toFixed(2)+'×':'—'}</span></td>
+        <td class="ga4 num muted" colspan="2" style="font-size:10px">${utmPills||'—'}</td>`;
+    } else {
+      ga4Html = `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">brak utm match</td>`;
+    }
+
     return `<tr class="row-match" data-status="ACTIVE">
       <td class="name-cell"><span class="camp-name">${a.name}</span></td>
       <td class="muted" style="font-size:11px;max-width:180px;white-space:normal;word-break:break-word">${a.campaign_name||'—'}</td>
@@ -4881,7 +4910,7 @@ function renderPeriodTableAdsets(){
       <td class="meta num">${m.ctr!=null?fmt(m.ctr,'pct'):'—'}</td>
       <td class="meta num">${m.purchases!=null?m.purchases:'—'}</td>
       <td class="meta num"><span class="${rpCls}">${rpTxt}</span></td>
-      <td class="ga4 num muted" colspan="6" style="text-align:center;font-style:italic;color:var(--muted)">brak wymiaru adset w GA4</td>
+      ${ga4Html}
       <td class="bl num">—</td>
       <td class="bl num">—</td>
     </tr>`;
