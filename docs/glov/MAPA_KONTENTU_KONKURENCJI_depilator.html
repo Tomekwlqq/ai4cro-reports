@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Konkurencji — Depilator z Nano Szkła GLOV · EEL 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:15px;line-height:1.5}
+a{color:#2563eb;text-decoration:none}a:hover{text-decoration:underline}
+
+/* HEADER */
+.hero{background:#111;color:#fff;padding:28px 32px 20px}
+.hero h1{font-size:22px;font-weight:700;letter-spacing:-.3px}
+.hero .sub{color:#aaa;font-size:13px;margin-top:6px}
+.hero .pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.pill{background:#2b2b2b;border-radius:20px;padding:4px 12px;font-size:12px;color:#ccc}
+.pill.hot{background:#7c2d12;color:#fca}
+
+/* TABS */
+.tabs{display:flex;background:#1e1e1e;border-bottom:2px solid #333;overflow-x:auto}
+.tab{padding:13px 22px;font-size:13px;font-weight:600;color:#888;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.tab:hover{color:#ccc}
+.tab.active{color:#fff;border-bottom-color:#f59e0b}
+.pane{display:none;padding:28px 24px;max-width:1400px}
+.pane.active{display:block}
+
+/* SECTION TITLE */
+.sec{font-size:18px;font-weight:700;margin-bottom:16px;color:#111;border-left:4px solid #f59e0b;padding-left:12px}
+.sec2{font-size:15px;font-weight:700;margin:24px 0 12px;color:#222}
+.note{background:#fef9c3;border:1px solid #fde047;border-radius:6px;padding:10px 14px;font-size:13px;color:#713f12;margin-bottom:18px}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+th{background:#1e1e1e;color:#e5e7eb;padding:10px 12px;text-align:left;font-weight:600;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid #e5e7eb;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr.hero-row td{background:#fef3c7;font-weight:600}
+tr.l2-row td{background:#f0fdf4}
+tr.sub-row td{background:#f8fafc}
+.badge{display:inline-block;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700}
+.b-hero{background:#f59e0b;color:#111}
+.b-l2{background:#22c55e;color:#fff}
+.b-l1{background:#94a3b8;color:#fff}
+.score-good{color:#16a34a;font-weight:700}
+.score-mid{color:#ca8a04;font-weight:700}
+.score-bad{color:#dc2626;font-weight:700}
+.icon-ok{color:#16a34a}
+.icon-bad{color:#dc2626}
+
+/* MATRIX */
+.matrix-grid{display:grid;grid-template-columns:180px repeat(5,1fr);gap:0;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;background:#fff;font-size:13px}
+.matrix-grid.full{grid-template-columns:180px repeat(5,1fr)}
+.mgr-head{background:#1e1e1e;color:#e5e7eb;padding:10px 10px;font-weight:700;font-size:12px;text-align:center}
+.mgr-dim{background:#f8f9fa;padding:9px 10px;font-weight:600;border-bottom:1px solid #e5e7eb;border-right:1px solid #e5e7eb;font-size:12px;color:#374151}
+.mgr-cell{padding:9px 10px;border-bottom:1px solid #e5e7eb;border-right:1px solid #e5e7eb;font-size:12.5px;vertical-align:top}
+.mgr-cell:last-child{border-right:none}
+.mgr-cell.hero-col{background:#fef9e7}
+.tag-green{color:#16a34a;font-weight:600}
+.tag-red{color:#dc2626}
+.tag-orange{color:#d97706}
+
+/* VISION */
+.vision-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;margin-top:8px}
+.vcard{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.1);overflow:hidden}
+.vcard img{width:100%;height:200px;object-fit:cover;border-bottom:2px solid #e5e7eb}
+.vcard-body{padding:16px}
+.vcard-title{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.vcard-url{font-size:11px;color:#6b7280;margin-bottom:10px}
+.obs{margin-top:8px;font-size:12.5px;color:#374151}
+.obs li{margin-bottom:4px;list-style:disc;margin-left:16px}
+.obs li b{color:#111}
+.obs li.gap{list-style:none;margin-left:0;background:#fef2f2;border-left:3px solid #ef4444;padding:3px 8px;border-radius:0 4px 4px 0}
+.obs li.plus{list-style:none;margin-left:0;background:#f0fdf4;border-left:3px solid #22c55e;padding:3px 8px;border-radius:0 4px 4px 0}
+.vcard-link{display:inline-block;margin-top:10px;font-size:12px;color:#2563eb;border:1px solid #bfdbfe;border-radius:6px;padding:3px 10px}
+.vision-note{font-size:13px;color:#374151;font-style:italic;margin-top:18px;padding:12px 16px;background:#f1f5f9;border-radius:8px;border-left:4px solid #64748b}
+
+/* STRATEGY */
+.strat-block{background:#fff;border-radius:12px;padding:22px 24px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:18px}
+.strat-block h3{font-size:15px;font-weight:700;color:#111;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.answer-list li{margin-bottom:14px;font-size:13.5px;padding-left:20px;list-style:none;position:relative}
+.answer-list li::before{content:"→";position:absolute;left:0;color:#f59e0b;font-weight:700}
+.answer-list .q{font-weight:700;color:#111;display:block;margin-bottom:3px}
+.answer-list .a{color:#374151}
+.answer-list .src{font-size:11px;color:#9ca3af;margin-top:2px}
+.gap-list li{margin-bottom:12px;font-size:13.5px;padding:10px 14px;background:#fef2f2;border-left:4px solid #dc2626;border-radius:0 8px 8px 0;list-style:none}
+.gap-list .gt{font-weight:700;color:#991b1b;display:block;margin-bottom:2px}
+.gap-list .gd{color:#374151;font-size:13px}
+.gap-list .fix{font-size:12px;color:#2563eb;margin-top:4px;display:block}
+.gap-list li.p0{border-left-color:#7c2d12}
+.gap-list li.p1{border-left-color:#dc2626}
+.gap-list li.p2{border-left-color:#d97706}
+.prio{display:inline-block;font-size:10px;font-weight:700;background:#dc2626;color:#fff;border-radius:3px;padding:1px 5px;margin-right:5px;vertical-align:middle}
+.prio.p0{background:#7c2d12}
+.prio.p2{background:#d97706}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🪒 Mapa Kontentu Konkurencji — Depilator z Nano Szkła</h1>
+  <div class="sub">GLOV PDP · Kategoria: Bezbolesna depilacja nano glass · EEL Audit · 2026-08-05</div>
+  <div class="pills">
+    <span class="pill hot">Bohater: glov.co/products/depilator-z-nano-szkla-glov</span>
+    <span class="pill">CEP Cover: 42%</span>
+    <span class="pill">KCF: 0/8</span>
+    <span class="pill">63 recenzje · 4.7★</span>
+    <span class="pill">39,90 zł (wyprzedaż)</span>
+    <span class="pill">5 graczy · 2 kosze</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(0)">📊 Tabela porównawcza</div>
+  <div class="tab" onclick="switchTab(1)">🧬 Matryca 8 wymiarów</div>
+  <div class="tab" onclick="switchTab(2)">👁 Vision Reporty</div>
+  <div class="tab" onclick="switchTab(3)">⚡ Strategia</div>
+</div>
+
+<!-- TAB 0: TABELA PORÓWNAWCZA -->
+<div class="pane active" id="pane0">
+  <div class="sec">Tabela head-to-head — 5 graczy</div>
+  <div class="note">🏷 Kosz: <b>L2</b> = bezpośrednia (nano glass do ciała) · <b>L1 sub.</b> = substytut (inna technologia depilacji). Topestetic = stopy, nie ciało — uwzględniony jako rynkowy kontekst nano glass.</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Gracz</th>
+          <th>Kosz</th>
+          <th>Technologia</th>
+          <th>Cena</th>
+          <th>Obszar</th>
+          <th>Główny claim</th>
+          <th>Social proof</th>
+          <th>CEP cover</th>
+          <th>KCF</th>
+          <th>Słabość kluczowa</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="hero-row">
+          <td><span class="badge b-hero">BOHATER</span><br><b>GLOV Nano Glass</b><br><small><a href="https://glov.co/products/depilator-z-nano-szkla-glov" target="_blank">glov.co →</a></small></td>
+          <td>—</td>
+          <td>Nano glass</td>
+          <td><b>39,90 zł</b><br><small>wyprzedaż (49,90 zł)</small></td>
+          <td>Nogi, ręce, ciało</td>
+          <td>Bezbolesna depilacja nano szkłem</td>
+          <td class="score-good">4.7★ (63)<br>Trusted Shops 4.73</td>
+          <td class="score-mid">42% (5/12 CEPs)</td>
+          <td class="score-bad">0/8</td>
+          <td>Brak liczb, FAQ, schema. S2=0. Nie mówi ILE trwa efekt.</td>
+        </tr>
+        <tr class="l2-row">
+          <td><span class="badge b-l2">L2</span><br><b>Malowidło</b><br><small><a href="https://malowidlo.pl/bezbolesny-depilator-depilacja-zluszczajaca-p-582.html" target="_blank">malowidlo.pl →</a></small></td>
+          <td>L2 bezpośrednia</td>
+          <td>Nano glass</td>
+          <td>~34,99 zł</td>
+          <td>Nogi, twarz, ręce, klatka, plecy</td>
+          <td>"Bezbolesny depilator do całego ciała"</td>
+          <td class="score-bad">0 recenzji</td>
+          <td>—</td>
+          <td>—</td>
+          <td>Chwilowo niedostępny. 0 recenzji. Opis generyczny, brak wyróżnika.</td>
+        </tr>
+        <tr class="l2-row">
+          <td><span class="badge b-l2">L2</span><br><b>LadyMakeup</b><br><small><a href="https://www.ladymakeup.com/shop/painless_full_body_epilator_lilac.html" target="_blank">ladymakeup.com →</a></small></td>
+          <td>L2 bezpośrednia</td>
+          <td>Nano glass</td>
+          <td>n/d (PL dostępny)</td>
+          <td>Całe ciało</td>
+          <td>"Painless", "removes hair + dead skin, as after peeling"</td>
+          <td class="score-good">1M+ klientów, od 2010</td>
+          <td>—</td>
+          <td>—</td>
+          <td>Strona po angielsku, produkt niedostępny. Brak ceny.</td>
+        </tr>
+        <tr class="l2-row">
+          <td><span class="badge b-l2">L2*</span><br><b>Topestetic</b><br><small><a href="https://www.topestetic.pl/topestetic-r/tarka-do-piet-z-nano-szkla-topestetic-czarna-1-szt" target="_blank">topestetic.pl →</a></small></td>
+          <td>L2 — STOPY</td>
+          <td>Nano glass (pięty)</td>
+          <td>n/d</td>
+          <td>Pięty / stopy</td>
+          <td>"Tarka do pięt", "nano-szklany pumeks", "zabieg skuteczny i delikatny"</td>
+          <td>Wysyłka JUTRO, dostawa 0 zł</td>
+          <td class="score-bad">13% (błąd kat.)</td>
+          <td>—</td>
+          <td>Tylko stopy. Używa "game-changer" i "komfortowy" ❌ (forbidden patterns).</td>
+        </tr>
+        <tr class="sub-row">
+          <td><span class="badge b-l1">L1 sub.</span><br><b>Veet Professional</b><br><small><a href="https://www.veet.pl/produkty/kremy-do-depilacji/09-23veet-professional-krem-do-depilacji-do-wszystkich-rodzajow-skory-400-ml/" target="_blank">veet.pl →</a></small></td>
+          <td>L1 — krem chem.</td>
+          <td>Krem depilacyjny (chemicals)</td>
+          <td>~25–35 zł / 400 ml<br><small>(kupowany w drogeriach)</small></td>
+          <td>Nogi i ciało</td>
+          <td>"2 minuty", "Shea Butter", "wszystkie rodzaje skóry"</td>
+          <td class="score-bad">Brak na PDP</td>
+          <td class="score-bad">8% (1/12)</td>
+          <td class="score-bad">0/8</td>
+          <td>Brak ceny PDP, brak S2, zapach chemii, jednorazowy.</td>
+        </tr>
+        <tr class="sub-row">
+          <td><span class="badge b-l1">L1 sub.</span><br><b>Braun Silk·épil 9</b><br><small><a href="https://www.braun.pl/pl-pl/female-hair-removal/epilators/silk-epil-9/silk-epil-9-9-000" target="_blank">braun.pl →</a></small></td>
+          <td>L1 — elektryczny</td>
+          <td>40 szczypców MicroGrip</td>
+          <td>~300–600 zł<br><small>(Premium segment)</small></td>
+          <td>Całe ciało, wet&amp;dry</td>
+          <td>"Do 1 miesiąca gładkiej skóry", "włoski od 0,5 mm", "40 MicroGrip"</td>
+          <td class="score-mid">5.0★ (tylko 1 rec.) na braun.pl</td>
+          <td class="score-mid">25% (3/12)</td>
+          <td class="score-bad">0/8</td>
+          <td>Bardzo drogi vs GLOV. Depilacja boli. Wymaga ładowania.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 1: MATRYCA 8 WYMIARÓW -->
+<div class="pane" id="pane1">
+  <div class="sec">Matryca 8 wymiarów — per gracz</div>
+  <div class="note">Wzorzec: <b>pumeksy/ANALIZA_KONKURENCJI</b>. Czytaj poziomo = co gracz robi dobrze. Czytaj kolumnę = gdzie GLOV odstaje.</div>
+
+  <div class="matrix-grid" style="margin-bottom:20px">
+    <div class="mgr-head" style="background:#333">Wymiar</div>
+    <div class="mgr-head" style="background:#b45309">GLOV (bohater)</div>
+    <div class="mgr-head">Malowidło</div>
+    <div class="mgr-head">Veet Prof.</div>
+    <div class="mgr-head">Topestetic</div>
+    <div class="mgr-head">Braun Silk·épil 9</div>
+
+    <!-- ROW 1 -->
+    <div class="mgr-dim">1. Technologia usuwania</div>
+    <div class="mgr-cell hero-col">Nano glass (brak spec. rozmiaru/gęstości)</div>
+    <div class="mgr-cell">Nano glass ("najnowsza technologia")</div>
+    <div class="mgr-cell">Krem chemiczny, działa w 2 min</div>
+    <div class="mgr-cell">Nano glass (stopy) — "nano-szklany pumeks"</div>
+    <div class="mgr-cell"><b>40 szczypców MicroGrip</b>, piwotująca głowica, Smart Light, Smart Touch</div>
+
+    <!-- ROW 2 -->
+    <div class="mgr-dim">2. Obszar stosowania</div>
+    <div class="mgr-cell hero-col">Nogi, ręce, ciało — <span class="tag-red">brak listy na PDP</span></div>
+    <div class="mgr-cell"><b>Nogi, twarz, ręce, klatka piersiowa, plecy</b> — konkretna lista</div>
+    <div class="mgr-cell">Nogi i ciało (legs & body)</div>
+    <div class="mgr-cell">Pięty / stopy (wąski zakres)</div>
+    <div class="mgr-cell">Całe ciało, bikini, mokro i sucho</div>
+
+    <!-- ROW 3 -->
+    <div class="mgr-dim">3. Komunikacja / claimy</div>
+    <div class="mgr-cell hero-col">"bezbolesny", "złuszcza skórę" — <span class="tag-red">bez liczb, brak porównania z metodami</span></div>
+    <div class="mgr-cell">"bezbolesny do całego ciała", "koniec z bolesnymi depilacjami"</div>
+    <div class="mgr-cell"><b>"2 minuty"</b>, "Shea Butter", "Professional" — szybkość + pielęgnacja</div>
+    <div class="mgr-cell">"game-changer" ❌, "komfortowy" ❌ — forbidden patterns</div>
+    <div class="mgr-cell"><b>"do 1 miesiąca gładkiej skóry"</b>, "3× krótsze włoski niż wosk", "Comfortable &amp; Efficient"</div>
+
+    <!-- ROW 4 -->
+    <div class="mgr-dim">4. Cena / warianty</div>
+    <div class="mgr-cell hero-col"><b>39,90 zł</b> (wyprzedaż), 2 kolory (Pink, Black)</div>
+    <div class="mgr-cell">~34,99 zł, 6 kolorów — <span class="tag-red">chwilowo niedostępny</span></div>
+    <div class="mgr-cell">~25–35 zł/400 ml — jednorazowy</div>
+    <div class="mgr-cell">n/d (dostawa 0 zł, JUTRO) — <span class="tag-green">logistyka przewaga</span></div>
+    <div class="mgr-cell">~300–600 zł — <span class="tag-green">wysoka postrzegana wartość</span>, 4 modele</div>
+
+    <!-- ROW 5 -->
+    <div class="mgr-dim">5. Dowód / social proof</div>
+    <div class="mgr-cell hero-col"><span class="tag-green"><b>4.7★ (63 rec.)</b>, Trusted Shops 4.73</span> — najsilniejszy w L2</div>
+    <div class="mgr-cell"><span class="tag-red">0 recenzji</span></div>
+    <div class="mgr-cell"><span class="tag-red">Brak recenzji na własnej PDP</span> (brand site)</div>
+    <div class="mgr-cell">Brak widocznych recenzji</div>
+    <div class="mgr-cell"><span class="tag-red">5.0★ tylko 1 recenzja</span> (na braun.pl)</div>
+
+    <!-- ROW 6 -->
+    <div class="mgr-dim">6. Bezpieczeństwo / skóra</div>
+    <div class="mgr-cell hero-col"><span class="tag-red">Brak info o wrażliwej skórze, brak certyfikatów</span></div>
+    <div class="mgr-cell">"do każdego typu włosów" — ogólne</div>
+    <div class="mgr-cell">"do wszystkich rodzajów skóry", ze składnikami Shea Butter</div>
+    <div class="mgr-cell">"zabieg delikatny", "pomaga na suchość"</div>
+    <div class="mgr-cell"><b>"mokro i sucho"</b> — zmniejsza ból, wrażliwa skóra wymieniona</div>
+
+    <!-- ROW 7 -->
+    <div class="mgr-dim">7. Ekologia / zrównoważoność</div>
+    <div class="mgr-cell hero-col"><span class="tag-red">Brak argumentów eko na PDP</span></div>
+    <div class="mgr-cell"><span class="tag-red">Brak</span></div>
+    <div class="mgr-cell"><span class="tag-red">Plastik jednorazowy</span> — słaby ekologicznie</div>
+    <div class="mgr-cell"><span class="tag-red">Brak</span></div>
+    <div class="mgr-cell">Akumulator (brak ładowarki ciągłej) — <span class="tag-orange">mieszany</span></div>
+
+    <!-- ROW 8 -->
+    <div class="mgr-dim">8. Target / person</div>
+    <div class="mgr-cell hero-col">Kobiety dbające o pielęgnację — <span class="tag-red">brak explicite na PDP</span></div>
+    <div class="mgr-cell">Osoby szukające alternatywy dla golenia/kremów</div>
+    <div class="mgr-cell">Szybka rutyna, convenience, brak czasu</div>
+    <div class="mgr-cell">Kobiety z problemem suchości stóp</div>
+    <div class="mgr-cell"><b>Kobiety z wrażliwą skórą</b>, długotrwały efekt, premium segment</div>
+  </div>
+
+  <div class="note">📌 <b>Kluczowy wniosek matrycy:</b> GLOV ma najsilniejszy social proof wśród L2 nano (4.7★/63 vs 0 Malowidło) ale nie używa go strategicznie. Braun dominuje claimami konkretnymi (liczby: 1 miesiąc, 40 szczypców, 0,5mm). Wszyscy zapomnieli o ekologii — white space dla GLOV.</div>
+</div>
+
+<!-- TAB 2: VISION REPORTY -->
+<div class="pane" id="pane2">
+  <div class="sec">Vision Reporty — mapping element-po-elemencie</div>
+  <div class="note">Kanon EEL: OKO, nie DOM. Shopper widzi obraz, nie kod. Thumbnails = viewport screenshot (above the fold).</div>
+
+  <div class="vision-grid">
+
+    <!-- GLOV -->
+    <div class="vcard">
+      <img src="_img/depilator/glov_depilator.jpg" alt="GLOV Depilator PDP" onerror="this.style.background='#ddd';this.alt='Brak screenshota'">
+      <div class="vcard-body">
+        <div class="vcard-title"><span class="badge b-hero">BOHATER</span> GLOV Nano Glass</div>
+        <div class="vcard-url"><a href="https://glov.co/products/depilator-z-nano-szkla-glov" target="_blank">glov.co →</a> · 5 elementów ATF</div>
+        <ul class="obs">
+          <li class="plus"><b>Cena + wyprzedaż widoczna</b> — 39,90 zł z oszczędnością 10 zł i badge "WYPRZEDAŻ"</li>
+          <li class="plus"><b>Social proof ATF</b> — 4.7★ (63) tuż pod ceną, Trusted Shops widget</li>
+          <li class="plus"><b>Wybór koloru</b> — Pink/Black z wizualnymi swatchami</li>
+          <li class="gap"><b>BRAK</b> jakiegokolwiek opisu korzyści above the fold — shopper widzi tylko cenę i przycisk</li>
+          <li class="gap"><b>BRAK</b> liczb/obietnic efektu ("bezbolesny", "gładka skóra przez X dni")</li>
+          <li class="gap"><b>BRAK</b> informacji o mechanizmie — co to jest "nano szkło" i dlaczego to działa</li>
+        </ul>
+        <a href="https://glov.co/products/depilator-z-nano-szkla-glov" target="_blank" class="vcard-link">🔗 Otwórz PDP</a>
+      </div>
+    </div>
+
+    <!-- LADYMAKEUP -->
+    <div class="vcard">
+      <img src="_img/depilator/ladymakeup_nano.jpg" alt="LadyMakeup nano depilator">
+      <div class="vcard-body">
+        <div class="vcard-title"><span class="badge b-l2">L2</span> LadyMakeup</div>
+        <div class="vcard-url"><a href="https://www.ladymakeup.com/shop/painless_full_body_epilator_lilac.html" target="_blank">ladymakeup.com →</a> · 7 elementów ATF</div>
+        <ul class="obs">
+          <li class="plus"><b>Opis produktu poniżej fołda</b> — "painless", "nano glass technology", "as after peeling"</li>
+          <li class="plus"><b>Trust indicators</b> — "We've been here for you for 16 years", "1M+ customers"</li>
+          <li class="plus"><b>Breadcrumb jasny</b> — Shop / Care / Depilation</li>
+          <li class="gap"><b>BRAK ceny</b> widocznej — "Not in stock" zamiast ceny</li>
+          <li class="gap"><b>Strona po angielsku</b> — dla PL shoppera brak zaufania</li>
+          <li class="gap"><b>Cookie modal</b> blokuje treść ATF — zła pierwsze wrażenie</li>
+        </ul>
+        <a href="https://www.ladymakeup.com/shop/painless_full_body_epilator_lilac.html" target="_blank" class="vcard-link">🔗 Otwórz PDP</a>
+      </div>
+    </div>
+
+    <!-- TOPESTETIC -->
+    <div class="vcard">
+      <img src="_img/depilator/topestetic_nano.jpg" alt="Topestetic nano tarka">
+      <div class="vcard-body">
+        <div class="vcard-title"><span class="badge b-l2">L2*</span> Topestetic (stopy)</div>
+        <div class="vcard-url"><a href="https://www.topestetic.pl/topestetic-r/tarka-do-piet-z-nano-szkla-topestetic-czarna-1-szt" target="_blank">topestetic.pl →</a> · 6 elementów ATF</div>
+        <ul class="obs">
+          <li class="plus"><b>Logistyka ATF</b> — "W magazynie, wysyłka JUTRO", "Dostawa zawsze 0 zł", "Zapytaj o produkt"</li>
+          <li class="plus"><b>Szybkie tabs</b> — O produkcie / Opis / Jak stosować / Wskazania / Opinie</li>
+          <li class="plus"><b>Breadcrumb + marka</b> — Topestetic (R) / marki / topestetic (r)</li>
+          <li class="gap"><b>Cookie modal</b> blokuje ATF — ten sam problem co LadyMakeup</li>
+          <li class="gap"><b>Obraz produktu niewidoczny</b> za modalem — shopper nie wie co kupuje</li>
+          <li><b>Kontekst: STOPY</b> — nie ciało. Użytkownik szukający depilatora do ciała może trafić tu przez "nano szkło"</li>
+        </ul>
+        <a href="https://www.topestetic.pl/topestetic-r/tarka-do-piet-z-nano-szkla-topestetic-czarna-1-szt" target="_blank" class="vcard-link">🔗 Otwórz PDP</a>
+      </div>
+    </div>
+
+    <!-- VEET -->
+    <div class="vcard">
+      <img src="_img/depilator/veet_krem.jpg" alt="Veet Professional krem">
+      <div class="vcard-body">
+        <div class="vcard-title"><span class="badge b-l1">L1</span> Veet Professional</div>
+        <div class="vcard-url"><a href="https://www.veet.pl/produkty/kremy-do-depilacji/09-23veet-professional-krem-do-depilacji-do-wszystkich-rodzajow-skory-400-ml/" target="_blank">veet.pl →</a> · 4 elementy ATF</div>
+        <ul class="obs">
+          <li class="plus"><b>Hero title dominuje</b> — "VEET PROFESSIONAL™ KREM DO DEPILACJI" — bardzo czytelny, duża typografia</li>
+          <li class="plus"><b>Branding spójny</b> — magenta kolor, "Professional" w nazwie = zaufanie</li>
+          <li class="plus"><b>Widoczny produkt</b> — 400ml butelka po prawej, etykieta "2 min" i "ALL SKIN TYPES" czytalna</li>
+          <li class="gap"><b>BRAK ceny</b> na stronie producenta — musi iść do drogerii</li>
+          <li class="gap"><b>Sekcja Opis</b> poniżej fołda, za cookie modal</li>
+          <li class="gap"><b>Brak S2</b> (zdań-odpowiedzi) — LLM nie cytuje tej strony</li>
+        </ul>
+        <a href="https://www.veet.pl/produkty/kremy-do-depilacji/09-23veet-professional-krem-do-depilacji-do-wszystkich-rodzajow-skory-400-ml/" target="_blank" class="vcard-link">🔗 Otwórz PDP</a>
+      </div>
+    </div>
+
+    <!-- BRAUN -->
+    <div class="vcard">
+      <img src="_img/depilator/braun_silkepil9.jpg" alt="Braun Silk-épil 9">
+      <div class="vcard-body">
+        <div class="vcard-title"><span class="badge b-l1">L1</span> Braun Silk·épil 9</div>
+        <div class="vcard-url"><a href="https://www.braun.pl/pl-pl/female-hair-removal/epilators/silk-epil-9/silk-epil-9-9-000" target="_blank">braun.pl →</a> · 6 elementów ATF</div>
+        <ul class="obs">
+          <li class="plus"><b>Packaging mówi za siebie</b> — "Comfortable &amp; Efficient", "Up to 1 month of smooth skin" — widoczne na boxie</li>
+          <li class="plus"><b>Breadcrumb edukuje</b> — "Depilatory elektryczne → Silk-épil 9" — kategoria jasna</li>
+          <li class="plus"><b>Upsell ATF</b> — "Wszystkie dostępne modele (4)" z cenami — zachęca do porównania</li>
+          <li class="gap"><b>Brak ceny</b> na stronie producenta — kieruje do sklepów</li>
+          <li class="gap"><b>BRAK "add to cart"</b> — tylko "Kup teraz" bez ceny = frustracja</li>
+          <li class="plus"><b>Galeria 8 zdjęć</b> — kontekstowe (kobieta, produkt w użyciu)</li>
+        </ul>
+        <a href="https://www.braun.pl/pl-pl/female-hair-removal/epilators/silk-epil-9/silk-epil-9-9-000" target="_blank" class="vcard-link">🔗 Otwórz PDP</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="vision-note">
+    💡 <b>Wniosek wizualny:</b> GLOV jest jedynym graczem z <b>ceną + social proof widocznym ATF</b> (above the fold). Wszyscy konkurenci cierpią na cookie modals blokujące treść. Jednak GLOV nie ma żadnych claimów korzyściowych ATF — shopper widzi cenę, ocenę i przycisk, ale nie wie dlaczego ma kupić właśnie to.
+  </div>
+</div>
+
+<!-- TAB 3: STRATEGIA -->
+<div class="pane" id="pane3">
+  <div class="sec">Strategia — Odpowiedzi FIRST &amp; Luki GLOV</div>
+
+  <!-- ODPOWIEDZI FIRST -->
+  <div class="sec2">⚡ ODPOWIEDZI FIRST — co AI cytuje, gdy pyta o depilator nano glass</div>
+  <div class="note">Braun dominuje claimami konkretnymi. GLOV musi przejść z języka marketingowego na język odpowiedzi. Format S2: zdanie zaczyna się od Tak/Nie/liczby.</div>
+
+  <div class="strat-block">
+    <h3>📋 5 pytań klientów z odpowiedziami do wdrożenia na PDP GLOV</h3>
+    <ul class="answer-list">
+      <li>
+        <span class="q">Q: Czy depilacja nano szkłem naprawdę nie boli?</span>
+        <span class="a">➜ Odpowiedź GLOV powinna brzmieć: <b>"Tak, depilator z nano szkła GLOV nie ciągnie włosków — usuwa je poprzez mikroskopijne tarcze szklane, które działają jak peeling, nie wyrywanie. Zero bólu, zero ryzyka wrastania."</b></span>
+        <span class="src">Źródło braku: CEP "Chcę depilatora który nie boli" pokrywają Malowidło i LadyMakeup; GLOV nie ma S2 na ten temat</span>
+      </li>
+      <li>
+        <span class="q">Q: Jak długo utrzymuje się efekt po depilacji nano glass?</span>
+        <span class="a">➜ <b>"Efekt gładkości utrzymuje się 2–3 tygodnie, podobnie do woskowania — włosek musi odrosnąć do ok. 3 mm przed kolejną sesją."</b></span>
+        <span class="src">Braun twierdzi "1 miesiąc" — GLOV musi mieć własną liczbę lub AI zacytuje Braun zamiast GLOV</span>
+      </li>
+      <li>
+        <span class="q">Q: Na jakich częściach ciała można stosować GLOV depilator?</span>
+        <span class="a">➜ <b>"Depilator GLOV działa na nogi, ręce, pachy, linię bikini i plecy. Nie jest zalecany na twarz (zbyt wrażliwa skóra)."</b></span>
+        <span class="src">Malowidło wymienia 5 obszarów na PDP; GLOV nie ma żadnej listy</span>
+      </li>
+      <li>
+        <span class="q">Q: Ile kosztuje depilacja nano glass vs woskowanie / epilator?</span>
+        <span class="a">➜ <b>"Jednorazowy zakup GLOV za 39,90 zł zastępuje wielokrotne wizuty woskowania (ok. 80–150 zł/sesja) lub koszty kremów depilacyjnych. Urządzenie jest wielorazowe — płukane pod wodą."</b></span>
+        <span class="src">Żaden konkurent nie robi tej kalkulacji ROI. Okazja dla GLOV na Discovery.</span>
+      </li>
+      <li>
+        <span class="q">Q: Czy depilator nano glass usuwa martwy naskórek?</span>
+        <span class="a">➜ <b>"Tak — nano szkło GLOV jednocześnie usuwa włoski i złuszcza martwy naskórek, pozostawiając skórę gładką jak po peelingu."</b></span>
+        <span class="src">LadyMakeup ma ten claim ("as after peeling"); GLOV go ma ale bez S2 formatu — AI nie cytuje</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- LUKI -->
+  <div class="sec2">🔴 LUKI — gdzie GLOV traci vs konkurencja</div>
+  <div class="note">Ranking: P0 = krytyczna (GLOV traci klienta), P1 = ważna (GLOV traci pozycję GEO), P2 = optymalizacja.</div>
+
+  <div class="strat-block">
+    <ul class="gap-list">
+      <li class="p0">
+        <span class="gt"><span class="prio p0">P0</span> Brak obietnicy efektu z liczbą</span>
+        <span class="gd">Braun mówi "do 1 miesiąca gładkiej skóry". Veet mówi "2 minuty". GLOV nie mówi nic. AI zapytane "jak długo trwa efekt depilacji nano glass" odpowie danymi Brauna.</span>
+        <span class="fix">✅ Fix: Dodaj "Efekt gładkości przez X tygodni" jako pierwsze zdanie pod H1. Wymaga weryfikacji realnego czasu.</span>
+      </li>
+      <li class="p0">
+        <span class="gt"><span class="prio p0">P0</span> Zero zdań-odpowiedzi S2 (LLM nie cytuje tej strony)</span>
+        <span class="gd">KCF 0/8, S2=0/20. Strona ma treść ale żadne zdanie nie zaczyna się od Tak/Nie/liczby. AI ignoruje GLOV PDP przy query "bezbolesna depilacja".</span>
+        <span class="fix">✅ Fix: Przepisz 5-7 zdań na format S2. Przykłady w sekcji "Odpowiedzi FIRST" powyżej.</span>
+      </li>
+      <li class="p1">
+        <span class="gt"><span class="prio">P1</span> Brak sekcji FAQ</span>
+        <span class="gd">Żaden z 5 graczy nie ma FAQ na PDP. GLOV może zdobyć Featured Snippet + FAQPage schema. Topowe pytania: ból, obszary ciała, czas efektu, skóra wrażliwa, porównanie z kremem.</span>
+        <span class="fix">✅ Fix: 5-7 Q&amp;A + FAQPage JSON-LD schema.</span>
+      </li>
+      <li class="p1">
+        <span class="gt"><span class="prio">P1</span> Brak Product JSON-LD schema</span>
+        <span class="gd">Żaden gracz nie ma schema. Kto doda pierwszy — będzie cytowany przez AI z rating/ceną/dostępnością.</span>
+        <span class="fix">✅ Fix: Product schema z aggregateRating (4.7, 63 recenzji), priceValidUntil, availability.</span>
+      </li>
+      <li>
+        <span class="gt"><span class="prio p2">P2</span> Brak listy obszarów ciała</span>
+        <span class="gd">Malowidło wymienia 5 obszarów. GLOV nie wymienia żadnego. Shopper szukający "czy GLOV działa na pachy" nie znajdzie odpowiedzi na PDP.</span>
+        <span class="fix">✅ Fix: Dodaj bullety "Działa na: nogi, ręce, pachy, bikini, plecy".</span>
+      </li>
+      <li>
+        <span class="gt"><span class="prio p2">P2</span> Brak argumentu ekologicznego</span>
+        <span class="gd">Veet = plastik jednorazowy. Braun = ładowarka. GLOV nano glass = wielorazowy, myty wodą. Żaden gracz nie eksponuje tego. Rosnący segment "zero waste beauty".</span>
+        <span class="fix">✅ Fix: Dodaj "Wielorazowy — płukasz pod wodą. Zero plastiku jednorazowego." jako USP.</span>
+      </li>
+      <li>
+        <span class="gt"><span class="prio p2">P2</span> Brak porównania ROI vs inne metody</span>
+        <span class="gd">39,90 zł jednorazowo vs 80-150 zł/miesiąc salon lub 25-35 zł/miesiąc krem (wielokrotne zakupy). GLOV jest najtańszy w długim terminie ale tego nie mówi.</span>
+        <span class="fix">✅ Fix: Tabela lub 2 zdania kalkulacji kosztów miesięcznych.</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="note">
+    📊 <b>Podsumowanie priorytetu:</b> 2× P0 (S2 i obietnica efektu) — natychmiast. 2× P1 (FAQ + schema) — sprint 1. 3× P2 — sprint 2. Koszt wdrożenia P0: ~2h copywriting. ROI: GLOV pojawia się w AI overview dla "bezbolesna depilacja nano glass".
+  </div>
+</div>
+
+<script>
+function switchTab(n){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+  document.querySelectorAll('.pane').forEach((p,i)=>p.classList.toggle('active',i===n));
+}
+</script>
+</body>
+</html>
