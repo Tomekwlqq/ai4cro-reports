@@ -17,59 +17,656 @@ h1{font-size:21px;font-weight:650;letter-spacing:-.2px}
 .tab.active{color:var(--ink);border-bottom-color:var(--acc)}
 .tab[disabled]{opacity:.42;cursor:not-allowed}
 .panel{display:none}.panel.active{display:block}
-iframe{width:100%;border:none;height:calc(100vh - 108px);background:var(--card);display:block}
+iframe{width:100%;border:none;height:calc(100vh - 90px);background:var(--card);display:block}
 .wrap{max-width:1280px;margin:0 auto;padding:26px 24px 60px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin-bottom:26px}
-.kpi{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:15px 17px}
-.kpi .n{font-size:27px;font-weight:660;letter-spacing:-.6px;line-height:1.1}
-.kpi .l{font-size:11.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;margin-top:5px}
-.kpi .h{font-size:11.5px;color:var(--mut);margin-top:6px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:20px 22px;margin-bottom:18px}
-.card h2{font-size:15.5px;font-weight:620;margin-bottom:13px;display:flex;align-items:center;gap:8px}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--mut);
-   padding:7px 9px;border-bottom:1px solid var(--line);font-weight:600}
-td{padding:8px 9px;border-bottom:1px solid #eef1f4;vertical-align:top}
-tr:last-child td{border-bottom:none}
-.bar{height:6px;background:#eef1f4;border-radius:3px;overflow:hidden;min-width:72px}
-.bar i{display:block;height:100%;background:var(--acc);border-radius:3px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
 .pill{display:inline-block;padding:1.5px 8px;border-radius:11px;font-size:11px;font-weight:600}
 .pill.ok{background:#dafbe1;color:var(--ok)}
-.pill.warn{background:#fff8c5;color:var(--warn)}
-.pill.bad{background:#ffebe9;color:var(--bad)}
-.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
-.split{display:flex;height:calc(100vh - 108px)}
-.split iframe{width:50%;height:100%}
-.split iframe:first-child{border-right:1px solid var(--line)}
 .empty{background:var(--soft);border:1px dashed var(--line);border-radius:9px;padding:34px;
        text-align:center;color:var(--mut);font-size:13.5px}
 .empty b{color:var(--ink);display:block;margin-bottom:5px;font-size:14.5px}
-@media(max-width:760px){.split{flex-direction:column}.split iframe{width:100%;height:50%}}
+
+/* ========== KONKURENCJA styles (k- prefix) ========== */
+.k-wrap{max-width:1180px;margin:0 auto;padding:28px 18px 60px;
+        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+        font-size:15px;line-height:1.55;color:#1c1a17;background:#faf8f5;min-height:calc(100vh - 90px)}
+.k-h1{font-size:22px;margin:0 0 3px;color:#1c1a17}
+.k-sub{color:#6b6457;font-size:13px;margin:0 0 18px}
+.k-h2{font-size:17px;margin:32px 0 12px;padding-bottom:6px;border-bottom:2px solid #e7e1d8;color:#1c1a17}
+
+/* topnav */
+.k-topnav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}
+.k-topnav a{font:600 13px/1 inherit;padding:8px 14px;border:1.5px solid #e7e1d8;border-radius:8px;
+             background:#fff;color:#6b6457;text-decoration:none;transition:all .15s}
+.k-topnav a:hover{border-color:#c0392b;color:#c0392b}
+
+/* brand tabs */
+.k-btabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.k-btab{font:600 13px/1 inherit;padding:8px 16px;border:1.5px solid #e7e1d8;border-radius:8px;
+         background:#fff;color:#6b6457;cursor:pointer;transition:all .15s}
+.k-btab:hover{opacity:.85}
+.k-btab[data-brand="malowidlo"]:hover,.k-btab[data-brand="malowidlo"].active{border-color:#7b3fa0;color:#7b3fa0}
+.k-btab[data-brand="malowidlo"].active{background:#7b3fa0;color:#fff}
+.k-btab[data-brand="lady"]:hover,.k-btab[data-brand="lady"].active{border-color:#0891b2;color:#0891b2}
+.k-btab[data-brand="lady"].active{background:#0891b2;color:#fff}
+.k-btab[data-brand="topestetic"]:hover,.k-btab[data-brand="topestetic"].active{border-color:#2e8b57;color:#2e8b57}
+.k-btab[data-brand="topestetic"].active{background:#2e8b57;color:#fff}
+.k-btab[data-brand="veet"]:hover,.k-btab[data-brand="veet"].active{border-color:#e07a10;color:#e07a10}
+.k-btab[data-brand="veet"].active{background:#e07a10;color:#fff}
+.k-btab[data-brand="braun"]:hover,.k-btab[data-brand="braun"].active{border-color:#2563eb;color:#2563eb}
+.k-btab[data-brand="braun"].active{background:#2563eb;color:#fff}
+
+/* cards */
+.k-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;margin-bottom:8px}
+.k-card{background:#fff;border:1px solid #e7e1d8;border-radius:12px;overflow:hidden}
+.k-ch{padding:11px 16px;font-weight:700;font-size:14px;color:#fff}
+.k-ch.glov{background:#c0392b}
+.k-ch.malowidlo{background:#7b3fa0}
+.k-ch.lady{background:#0891b2}
+.k-ch.topestetic{background:#2e8b57}
+.k-ch.veet{background:#e07a10}
+.k-ch.braun{background:#2563eb}
+.k-cb{padding:14px 16px}
+
+/* product tile */
+.k-ptile{display:flex;gap:14px;align-items:center;background:#f0ebe2;border-radius:10px;
+          padding:10px 14px;margin:0 0 14px;border:1px solid #e7e1d8}
+.k-ptile img{width:90px;height:90px;object-fit:contain;border-radius:8px;background:#fff;flex:none}
+.k-ptile-ph{width:90px;height:90px;border-radius:8px;background:#e7e1d8;flex:none;
+              display:flex;align-items:center;justify-content:center;font-size:10px;color:#6b6457;text-align:center}
+.k-ptile-info{flex:1;min-width:0}
+.k-pt-name{font-weight:700;font-size:14px;color:#1c1a17;line-height:1.3}
+.k-pt-price{font-weight:700;font-size:13px;color:#c0392b;margin:2px 0}
+.k-pt-price.blue{color:#2563eb}
+.k-pt-meta{font-size:11.5px;color:#6b6457;margin:2px 0}
+.k-pt-link{font-size:12px;color:#1a6fb5}
+
+/* dimensions */
+.k-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#6b6457;margin:12px 0 3px}
+.k-dim{font-size:13px;color:#3a352d}
+.k-dim ul{margin:3px 0;padding-left:16px}
+.k-dim li{margin:2px 0}
+
+/* chips */
+.k-chip{display:inline-block;background:#f0ebe2;border-radius:6px;padding:2px 8px;margin:2px 3px 2px 0;font-size:11.5px}
+.k-chip.ok{background:#e8f5ee;color:#1a6b3c}
+.k-chip.warn{background:#fdecea;color:#a52828}
+.k-chip.info{background:#e8f0fb;color:#1a4fa0}
+.k-ok{color:#1a6b3c;font-weight:600}
+.k-bad{color:#a52828}
+
+/* reviews */
+.k-rev-hd{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#6b6457;margin:14px 0 6px;padding-top:12px;border-top:1px solid #f0ebe2}
+.k-q{font-style:italic;color:#3a352d;background:#f0ebe2;border-radius:6px;padding:7px 11px;margin:5px 0;font-size:13px;line-height:1.5}
+.k-q.pos{background:#e8f5ee;color:#1a6b3c}
+.k-q.neg{background:#fdecea;color:#a52828}
+.k-q.nd{background:#f5f5f5;color:#888;font-style:normal}
+.k-q b{font-style:normal}
+.k-qm{font-size:11px;color:#888;font-style:normal;margin-top:2px}
+
+/* visual mapping */
+.k-vis-row{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
+.k-vis-badge{background:#f0ebe2;border-radius:6px;padding:3px 9px;font-size:11.5px;font-weight:600;border-left:3px solid #1a6b3c}
+
+/* boxes */
+.k-box{background:#fff;border:1px solid #e7e1d8;border-left:4px solid #c0392b;border-radius:8px;padding:13px 15px;margin:14px 0;font-size:14px}
+.k-box.info{border-left-color:#1a6fb5}
+.k-box.ok{border-left-color:#2f8f5b}
+.k-box.gap{border-left-color:#c0392b}
+
+/* matrix */
+.k-matrix{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e7e1d8;border-radius:10px;overflow:hidden;font-size:13px;margin:10px 0}
+.k-matrix th,.k-matrix td{text-align:left;padding:8px 10px;border-bottom:1px solid #e7e1d8;vertical-align:top}
+.k-matrix th{background:#f0ebe2;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:#6b6457;font-weight:700}
+.k-matrix tr:last-child td{border-bottom:none}
+.k-matrix td:first-child{font-weight:600;color:#1c1a17;width:140px}
+.k-c-ok{color:#1a6b3c;font-weight:700}
+.k-c-mid{color:#9a6700}
+.k-c-bad{color:#a52828}
+
+/* gaps grid */
+.k-gaps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:12px 0}
+.k-gap-card{background:#fff;border:1px solid #e7e1d8;border-radius:10px;padding:14px}
+.k-gap-card h4{margin:0 0 7px;font-size:14px}
+.k-gap-card p{margin:0;font-size:13px;color:#6b6457}
+.k-gap-card .k-fix{font-size:12.5px;color:#1a6b3c;margin-top:8px;font-weight:600}
+.k-p0{border-top:3px solid #c0392b}
+.k-p1{border-top:3px solid #e07a10}
+.k-p2{border-top:3px solid #2563eb}
+
+/* lista graczy */
+.k-gtbl{width:100%;border-collapse:collapse;font-size:13px;border:1px solid #e7e1d8;border-radius:10px;overflow:hidden;margin:10px 0}
+.k-gtbl th{background:#1c1a17;color:#f0ebe2;padding:9px 11px;font-size:11px;font-weight:600}
+.k-gtbl td{padding:9px 11px;border-bottom:1px solid #e7e1d8;vertical-align:top}
+.k-gtbl tr:last-child td{border-bottom:none}
+.k-gtbl tr.hero td{background:#fef3f2;font-weight:600}
+
+.k-rival-panel{display:none}
+.k-rival-panel.active{display:block}
+.k-footer{font-size:12px;color:#6b6457;margin-top:32px;padding-top:16px;border-top:1px solid #e7e1d8}
+@media(max-width:760px){.k-cols{grid-template-columns:1fr}.k-gaps-grid{grid-template-columns:1fr}}
 </style></head><body>
 <header><div class="hwrap">
   <h1>Depilatory — GLOV nano szkło</h1>
-  <div class="sub"><span class="mono">depilator</span> · Category Standard + pole pytań ·
-     engine V5 · 348 pytań / 12 ścieżek &nbsp;<span class="pill ok">pokrycie OK</span></div>
-  <div class="tabs"><button class="tab active"  onclick="T(this,'prz')">📊 Przegląd</button><button class="tab"  onclick="T(this,'cs')">📄 Category Standard</button><button class="tab"  onclick="T(this,'map')">🗺️ Mapa percepcji</button><button class="tab" disabled title='brak danych' onclick="T(this,'kon')">⚔️ Konkurencja</button><button class="tab" disabled title='brak danych' onclick="T(this,'vis')">👁️ Vision</button></div>
+  <div class="sub"><span class="mono">depilator</span> · Category Standard + pole pytań · engine V5 · 348 pytań / 12 ścieżek &nbsp;<span class="pill ok">pokrycie OK</span></div>
+  <div class="tabs">
+    <button class="tab active" onclick="T(this,'cs')">📄 Category Standard</button>
+    <button class="tab" onclick="T(this,'map')">🗺️ Mapa percepcji</button>
+    <button class="tab" onclick="T(this,'kon')">⚔️ Konkurencja</button>
+    <button class="tab" disabled title='brak danych' onclick="T(this,'vis')">👁️ Vision</button>
+  </div>
 </div></header>
 
-<div id="p-prz" class="panel active"><div class="wrap">
-  <div class="grid"><div class="kpi"><div class="n">348</div><div class="l">pytań w polu</div><div class="h">① 36 · ② 312</div></div><div class="kpi"><div class="n">12</div><div class="l">ścieżek (CEP)</div><div class="h">1 CEP = 1 ścieżka</div></div><div class="kpi"><div class="n">3.0</div><div class="l">Discovery / CEP</div><div class="h">norma kanonu 2–4</div></div><div class="kpi"><div class="n">7</div><div class="l">stanów świadomości</div><div class="h">Schwartz, linia A</div></div></div>
-  <div class="card"><h2>🛣️ Ścieżki percepcji — CEP × pytania</h2>
-    <table><thead><tr><th>CEP</th><th>Sytuacja wejścia</th><th style="text-align:right">Pytań</th>
-      <th>Udział</th><th style="text-align:center">Discovery</th></tr></thead><tbody><tr><td class="mono">cep_depilacja_bez_bolu</td><td>Chcę depilatora który nie boli</td><td style="text-align:right">29</td><td><div class="bar"><i style="width:100%"></i></div></td><td style="text-align:center">3 <span class="pill ok">✓</span></td></tr><tr><td class="mono">cep_diy_dom_efekt_salonu</td><td>Chcę efektu woskowania w domu bez wizyty w salonie</td><td style="text-align:right">29</td><td><div class="bar"><i style="width:100%"></i></div></td><td style="text-align:center">3 <span class="pill ok">✓</span></td></tr><tr><td class="mono">cep_permanentna_redukcja</td><td>Chcę żeby włosy wolniej rosły / przestały rosnąć</td><td style="text-align:right">29</td><td><div class="bar"><i style="width:100%"></i></div></td><td style="text-align:center">3 <span class="pill ok">✓</span></td></tr><tr><td class="mono">cep_szybka_depilacja</td><td>Mam 10 minut, za godzinę wyjście</td><td style="text-align:right">29</td><td><div class="bar"><i style="width:100%"></i></div></td><td style="text-align:center">3 <span class="pill ok">✓</span></td></tr><tr><td class="mono">cep_wrazliwa_skora</td><td>Mam wrażliwą skórę — po każdej depilacji mam…</td><td style="text-align:right">29</td><td><div class="bar"><i style="width:100%"></i></div></td><td style="text-align:center">3 <span class="pill ok">✓</span></td></tr><tr><td class="mono">cep_eko_wielorazowy</td><td>Szukam wielorazowego, ekologicznego rozwiązania</td><td style="text-align:right">29</td><td><div class="bar"><i style="width:100%"></i></div></td><td style="text-align:center">3 <span class="pill ok">✓</span></td></tr><tr><td class="mono">cep_wrastajace_wlosy</td><td>Po depilacji mam wrastające włosy</td><td style="text-align:right">29</td><td><div class="bar"><i style="width:100%"></i></div></td><td style="text-align:center">3 <span class="pill ok">✓</span></td></tr><tr><td class="mono">cep_peeling_skory</td><td>Chcę przy depilacji jednocześnie wygładzić skórę</td><td style="text-align:right">29</td><td><div class="bar"><i style="width:100%"></i></div></td><td style="text-align:center">3 <span class="pill ok">✓</span></td></tr><tr><td class="mono">cep_zmiana_metody</td><td>Moja metoda mnie zawodzi — szukam czegoś nowego</td><td style="text-align:right">29</td><td><div class="bar"><i style="width:100%"></i></div></td><td style="text-align:center">3 <span class="pill ok">✓</span></td></tr><tr><td class="mono">cep_budzet</td><td>Chcę tanio i skutecznie — nie stać mnie na…</td><td style="text-align:right">29</td><td><div class="bar"><i style="width:100%"></i></div></td><td style="text-align:center">3 <span class="pill ok">✓</span></td></tr><tr><td class="mono">cep_okolice_bikini</td><td>Depilacja bikini / pachy — jak bezpiecznie?</td><td style="text-align:right">29</td><td><div class="bar"><i style="width:100%"></i></div></td><td style="text-align:center">3 <span class="pill ok">✓</span></td></tr><tr><td class="mono">cep_krotkie_wlosy</td><td>Włoski za krótkie dla epilatora / wosku</td><td style="text-align:right">29</td><td><div class="bar"><i style="width:100%"></i></div></td><td style="text-align:center">3 <span class="pill ok">✓</span></td></tr></tbody></table>
-    <p class="sub" style="margin-top:11px">Discovery = pytania wejściowe ścieżki.
-       Kanon: <b>2–4 na CEP</b> — nie stała liczba na kategorię.</p></div>
-  <div class="card"><h2>🎯 Stany świadomości — gdzie gęstnieją pytania</h2>
-    <table><thead><tr><th>#</th><th>Stan</th><th style="text-align:right">Pytań</th>
-      <th style="text-align:right">Waga</th></tr></thead><tbody><tr><td style="width:34px" class="mono">2</td><td>Potrzeba/impuls</td><td style="text-align:right">36</td><td style="text-align:right" class="mono">1.45</td></tr><tr><td style="width:34px" class="mono">3</td><td>Rozpoznanie CEP</td><td style="text-align:right">36</td><td style="text-align:right" class="mono">1.0</td></tr><tr><td style="width:34px" class="mono">4</td><td>Nauka kategorii</td><td style="text-align:right">72</td><td style="text-align:right" class="mono">3.65</td></tr><tr><td style="width:34px" class="mono">5</td><td>Preselekcja</td><td style="text-align:right">48</td><td style="text-align:right" class="mono">1.8</td></tr><tr><td style="width:34px" class="mono">6</td><td>Porównywanie</td><td style="text-align:right">48</td><td style="text-align:right" class="mono">1.9</td></tr><tr><td style="width:34px" class="mono">7</td><td>Wybór sklepu/sposobu zakupu</td><td style="text-align:right">72</td><td style="text-align:right" class="mono">3.25</td></tr><tr><td style="width:34px" class="mono">8</td><td>Zakup</td><td style="text-align:right">36</td><td style="text-align:right" class="mono">1.1</td></tr></tbody></table></div>
-  
-</div></div>
-
-<div id="p-cs" class="panel"><iframe src="cs_depilator.html"></iframe></div>
+<div id="p-cs" class="panel active"><iframe src="cs_depilator.html"></iframe></div>
 <div id="p-map" class="panel"><iframe src="MAPA_PERCEPCJI_depilator_v5.7.html"></iframe></div>
-<div id="p-kon" class="panel"><div class="wrap"><div class="empty"><b>Brak danych</b>Ta warstwa nie została jeszcze zbudowana dla tej kategorii.<br>Zakładka pojawi się, gdy powstaną dane — nie wypełniamy jej treścią zastępczą.</div></div></div>
-<div id="p-vis" class="panel"><div class="wrap"><div class="empty"><b>Brak danych</b>Ta warstwa nie została jeszcze zbudowana dla tej kategorii.<br>Zakładka pojawi się, gdy powstaną dane — nie wypełniamy jej treścią zastępczą.</div></div></div>
+
+<div id="p-kon" class="panel">
+<div class="k-wrap">
+
+<h1 class="k-h1">Mapa kontentu konkurencji — Depilatory nano szkło</h1>
+<p class="k-sub">Kategoria: <b>nano glass (bezpośredni)</b> + kremy i elektryczne (substytut) · <b>5 rywali</b> (Malowidło, LadyMakeup, TopEstetic, Veet, Braun) · dane: scrape PDP + Allegro + Ceneo + Wizaz · 2026-08-05</p>
+
+<div class="k-topnav">
+  <a href="#k-hth">↓ Head-to-Head</a>
+  <a href="#k-matryca">↓ Matryca</a>
+  <a href="#k-luki">↓ Luki</a>
+  <a href="#k-strategia">↓ Strategia</a>
+  <a href="#k-gracze">↓ Gracze</a>
+</div>
+
+<div class="k-box info"><b>Head-to-head: GLOV Depilator z Nano Szkła vs rywal (wybierz markę).</b> Lewa karta = GLOV (stała). Prawa = wybrany konkurent. 7 wymiarów cytowalności + recenzje verbatim + visual mapping PDP. Kategoria: <b>nano glass bezpośredni</b> (Malowidło, LadyMakeup, TopEstetic) · <b>substytut</b> (Veet krem, Braun elektryczny).</div>
+
+<!-- BRAND TABS -->
+<div class="k-btabs">
+  <button class="k-btab active" data-brand="malowidlo" onclick="kR('malowidlo',this)">🟣 Malowidło (nano)</button>
+  <button class="k-btab" data-brand="lady" onclick="kR('lady',this)">🔵 LadyMakeup (nano)</button>
+  <button class="k-btab" data-brand="topestetic" onclick="kR('topestetic',this)">🟢 TopEstetic (nano)</button>
+  <button class="k-btab" data-brand="veet" onclick="kR('veet',this)">🟠 Veet (krem)</button>
+  <button class="k-btab" data-brand="braun" onclick="kR('braun',this)">🔷 Braun Silk·épil 9</button>
+</div>
+
+<div id="k-hth">
+
+<!-- ========== MALOWIDŁO ========== -->
+<div class="k-rival-panel active" id="krp-malowidlo">
+<div class="k-cols">
+  <div class="k-card">
+    <div class="k-ch glov">GLOV — Depilator z Nano Szkła (bohater)</div>
+    <div class="k-cb">
+      <div class="k-ptile">
+        <img src="_img/depilator/glov_depilator.jpg" alt="GLOV Depilator z Nano Szkła" class="k-ptile-img" style="width:90px;height:90px;object-fit:contain;border-radius:8px;background:#fff;flex:none">
+        <div class="k-ptile-info">
+          <div class="k-pt-name">GLOV Depilator z Nano Szkła</div>
+          <div class="k-pt-price">39,90 zł <span style="font-size:11.5px;color:#6b6457;font-weight:400">reg. 49,90 zł</span></div>
+          <div class="k-pt-meta">4.7★ (63 rec. glov.co) · 4.63★ Allegro (64 oceny)</div>
+          <a class="k-pt-link" href="https://glov.co/products/depilator-z-nano-szkla-glov" target="_blank">glov.co</a>
+        </div>
+      </div>
+      <div class="k-lbl">1. Tytuł PDP</div>
+      <div class="k-dim">„Depilator z nano szkła GLOV" — benefit-first, brand-last</div>
+      <div class="k-lbl">2. Opis / struktura</div>
+      <div class="k-dim"><ul><li>4 bullety benefity + 7-krokowa instrukcja</li><li>Narracja w intro: efekt jak po profesjonalnym zabiegu</li><li>Brak porównania z innymi metodami</li></ul></div>
+      <div class="k-lbl">3. Claimy / dowód</div>
+      <div class="k-dim">
+        <span class="k-ok">✓</span> „Efekt mikroabrazji" — unikalne określenie<br>
+        <span class="k-ok">✓</span> „Bez ostrzy, kabli, kosmetyków"<br>
+        <span class="k-ok">✓</span> „Wielorazowy" — argument ekologiczny<br>
+        <span class="k-bad">✗</span> Brak: ile tygodni gładkości?<br>
+        <span class="k-chip warn">brak liczby efektu</span><span class="k-chip warn">brak certyfikatu derm.</span>
+      </div>
+      <div class="k-lbl">4. FAQ</div>
+      <div class="k-dim"><span class="k-chip warn">BRAK sekcji FAQ — luka GEO P0</span></div>
+      <div class="k-lbl">5. Obszar ciała</div>
+      <div class="k-dim"><span class="k-chip warn">„ręce i nogi" — ogólne, brak listy obszarów na PDP</span></div>
+      <div class="k-lbl">6. Cena / wartość</div>
+      <div class="k-dim">39,90 zł · wielorazowy — zero kosztu wymiany<br><span class="k-chip warn">brak kalkulacji ROI vs metody jednorazowe</span></div>
+      <div class="k-lbl">7. Trust / recenzje</div>
+      <div class="k-dim"><span class="k-chip ok">4.7★ (63 rec.)</span> <span class="k-chip ok">Trusted Shops 4.73</span> — najsilniejszy social proof w kategorii nano</div>
+      <div class="k-rev-hd">Recenzje GLOV (verbatim)</div>
+      <div class="k-q pos">„Skóra jest gładka na dużo dłużej niż po maszynce. Jestem pozytywnie zaskoczona." <div class="k-qm">— Barbara, 5★ glov.co</div></div>
+      <div class="k-q pos">„Genialny" <div class="k-qm">— Małgorzata Słowik, 5★ glov.co</div></div>
+      <div class="k-q neg">„Po pierwszej próbie skóra na moich rękach przez wiele dni była szorstka i podrażniona." <div class="k-qm">— Katarzyna, 1★ (12/2025)</div></div>
+      <div class="k-lbl">Visual mapping PDP</div>
+      <div class="k-vis-row">
+        <span class="k-vis-badge">produkt różowy/czarny (różne kąty)</span>
+        <span class="k-vis-badge">użycie na nodze</span>
+        <span class="k-vis-badge">infografika: zero bólu</span>
+        <span class="k-vis-badge">przed/po kompaktowy</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="k-card">
+    <div class="k-ch malowidlo">Malowidło — nano glass bezpośredni</div>
+    <div class="k-cb">
+      <div class="k-ptile">
+        <div class="k-ptile-ph">brak<br>zdjęcia</div>
+        <div class="k-ptile-info">
+          <div class="k-pt-name">Bezbolesny DEPILATOR Depilacja ZŁUSZCZAJĄCA</div>
+          <div class="k-pt-price blue">34,99 zł</div>
+          <div class="k-pt-meta" style="color:#a52828">0 recenzji · OOS (chwilowo niedostępny)</div>
+          <a class="k-pt-link" href="https://malowidlo.pl/bezbolesny-depilator-depilacja-zluszczajaca-p-582.html" target="_blank">malowidlo.pl</a>
+        </div>
+      </div>
+      <div class="k-lbl">1. Tytuł PDP</div>
+      <div class="k-dim">„Bezbolesny DEPILATOR Depilacja ZŁUSZCZAJĄCA" — CAPS, keyword-stuffing, słaba czytelność</div>
+      <div class="k-lbl">2. Opis / struktura</div>
+      <div class="k-dim"><ul><li>Lista obszarów ciała — lepsza niż GLOV</li><li>6 kolorów: light blue, gold, rose red, silver, black, sky blue</li><li>Parametry: 11×7×2,5 cm · plastik · EAN</li></ul></div>
+      <div class="k-lbl">3. Claimy / dowód verbatim</div>
+      <div class="k-dim">
+        „Bezbolesny depilator do ciała wykorzystuje technologię nano szkła"<br>
+        „usuwa martwy naskórek warstwa po warstwie"<br>
+        „zminimalizuje ryzyko wrastania włosków"<br>
+        <span class="k-chip warn">zero certyfikatów</span><span class="k-chip warn">zero recenzji</span>
+      </div>
+      <div class="k-lbl">4. FAQ</div>
+      <div class="k-dim"><span class="k-chip warn">BRAK</span></div>
+      <div class="k-lbl">5. Obszar ciała</div>
+      <div class="k-dim"><span class="k-chip ok">nogi, twarz, ramiona, klatka, plecy</span> — <b>przewaga nad GLOV</b> — 5 obszarów vs „ręce i nogi"</div>
+      <div class="k-lbl">6. Cena / wartość</div>
+      <div class="k-dim">34,99 zł — 5 zł taniej niż GLOV · wielorazowy · brak ROI kalkulacji</div>
+      <div class="k-lbl">7. Trust / recenzje</div>
+      <div class="k-dim"><span class="k-chip warn">0 recenzji · OOS · 4 osoby kupiły (Gadżetarnia)</span> — najsłabszy trust w kategorii</div>
+      <div class="k-rev-hd">Recenzje Malowidło (verbatim)</div>
+      <div class="k-q nd">Brak recenzji na stronie. Produkt chwilowo niedostępny (OOS).</div>
+      <div class="k-lbl">Visual mapping PDP</div>
+      <div class="k-vis-row">
+        <span class="k-vis-badge">6 wariantów kolorystycznych</span>
+        <span class="k-vis-badge">zbliżenia powierzchni</span>
+        <span class="k-vis-badge">brak użycia na ciele</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="k-box ok" style="margin-top:8px"><b>Wniosek Malowidło:</b> GLOV wygrywa social proof (63 vs 0 recenzji) i dostępnością. Malowidło ma lepszą listę obszarów ciała — to konkretna luka PDP do zamknięcia przez GLOV. OOS = brak realnej presji konkurencyjnej dziś, ale może wrócić.</div>
+</div>
+
+<!-- ========== LADYMAKEUP ========== -->
+<div class="k-rival-panel" id="krp-lady">
+<div class="k-cols">
+  <div class="k-card">
+    <div class="k-ch glov">GLOV — Depilator z Nano Szkła (bohater)</div>
+    <div class="k-cb">
+      <div class="k-ptile">
+        <img src="_img/depilator/glov_depilator.jpg" alt="GLOV" style="width:90px;height:90px;object-fit:contain;border-radius:8px;background:#fff;flex:none">
+        <div class="k-ptile-info">
+          <div class="k-pt-name">GLOV Depilator z Nano Szkła</div>
+          <div class="k-pt-price">39,90 zł</div>
+          <div class="k-pt-meta">4.7★ (63 rec.) · strona PL · dostępny</div>
+          <a class="k-pt-link" href="https://glov.co/products/depilator-z-nano-szkla-glov" target="_blank">glov.co</a>
+        </div>
+      </div>
+      <div class="k-lbl">Przewagi GLOV vs LadyMakeup</div>
+      <div class="k-dim">
+        <span class="k-ok">✓</span> Dostępny vs LadyMakeup OOS<br>
+        <span class="k-ok">✓</span> PDP po polsku vs angielski<br>
+        <span class="k-ok">✓</span> 63 recenzje vs 1 recenzja<br>
+        <span class="k-ok">✓</span> Brand trust: Trusted Shops 4.73, Allegro 4.63★<br>
+        <span class="k-bad">✗</span> Oba mają negatywy o podrażnieniu — wspólny pain point klasy nano<br>
+        <span class="k-chip warn">LadyMakeup 3× tańszy gdy dostępny (15,90 vs 39,90 zł)</span>
+      </div>
+      <div class="k-lbl">4. FAQ</div><div class="k-dim"><span class="k-chip warn">BRAK</span></div>
+      <div class="k-rev-hd">Recenzje GLOV</div>
+      <div class="k-q pos">„Skóra jest gładka na dużo dłużej niż po maszynce." <div class="k-qm">— Barbara, 5★</div></div>
+      <div class="k-q neg">„Skóra na moich rękach przez wiele dni była szorstka i podrażniona." <div class="k-qm">— Katarzyna, 1★ (12/2025)</div></div>
+    </div>
+  </div>
+
+  <div class="k-card">
+    <div class="k-ch lady">LadyMakeup — nano glass, white-label, EN</div>
+    <div class="k-cb">
+      <div class="k-ptile">
+        <img src="_img/depilator/ladymakeup_nano.jpg" alt="LadyMakeup nano" style="width:90px;height:90px;object-fit:contain;border-radius:8px;background:#fff;flex:none">
+        <div class="k-ptile-info">
+          <div class="k-pt-name">Painless Full Body Epilator (Lilac)</div>
+          <div class="k-pt-price blue">15,90 zł <span style="font-size:11px;color:#a52828">— OOS</span></div>
+          <div class="k-pt-meta" style="color:#a52828">4.0★ (1 recenzja) · strona angielska · OOS</div>
+          <a class="k-pt-link" href="https://www.ladymakeup.com/shop/painless_full_body_epilator_lilac.html" target="_blank">ladymakeup.com</a>
+        </div>
+      </div>
+      <div class="k-lbl">1. Tytuł PDP</div>
+      <div class="k-dim">„Painless Full Body Epilator" — <b>angielski!</b> Brak polskiego opisu</div>
+      <div class="k-lbl">2. Opis / struktura</div>
+      <div class="k-dim">Minimalistyczny, EN. Dual-benefit: „removes hair as well as dead skin — as after peeling"</div>
+      <div class="k-lbl">3. Claimy / dowód verbatim</div>
+      <div class="k-dim">
+        „removes hair as well as dead skin — as after peeling"<br>
+        „reusable product"<br>
+        <span class="k-chip warn">PDP angielski</span><span class="k-chip warn">zero certyfikatów</span><span class="k-chip warn">brak liczb</span>
+      </div>
+      <div class="k-lbl">4. FAQ</div><div class="k-dim"><span class="k-chip warn">BRAK</span></div>
+      <div class="k-lbl">5. Obszar ciała</div><div class="k-dim">„full body" — EN, brak szczegółów</div>
+      <div class="k-lbl">6. Cena / wartość</div><div class="k-dim">15,90 zł — 3× tańszy od GLOV gdy dostępny · white-label brak brand trust</div>
+      <div class="k-lbl">7. Trust / recenzje</div><div class="k-dim"><span class="k-chip warn">4.0★ (1 rec.) · OOS · 1M+ klientów platformy ale nie produktu</span></div>
+      <div class="k-rev-hd">Recenzje LadyMakeup (verbatim)</div>
+      <div class="k-q neg">„Feels like scrubbing your body with sandpaper" (jakby trzeć ciało papierem ściernym) <div class="k-qm">— jedyna recenzja, 4★</div></div>
+      <div class="k-q nd">Pain point identyczny co GLOV neg — podrażnienie jest pain pointem całej klasy nano glass.</div>
+      <div class="k-lbl">Visual mapping PDP</div>
+      <div class="k-vis-row">
+        <span class="k-vis-badge">liliowy produkt</span>
+        <span class="k-vis-badge">basic packshot</span>
+        <span class="k-vis-badge">brak zdjęć użycia</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="k-box ok" style="margin-top:8px"><b>Wniosek LadyMakeup:</b> GLOV wygrywa na każdym froncie (język, dostępność, recenzje, brand trust). Zagrożenie jedynie ceną (15,90 zł) gdy produkt dostępny — i wspólnym pain pointem podrażnienia w kategorii nano.</div>
+</div>
+
+<!-- ========== TOPESTETIC ========== -->
+<div class="k-rival-panel" id="krp-topestetic">
+<div class="k-cols">
+  <div class="k-card">
+    <div class="k-ch glov">GLOV — Depilator z Nano Szkła (bohater)</div>
+    <div class="k-cb">
+      <div class="k-ptile">
+        <img src="_img/depilator/glov_depilator.jpg" alt="GLOV" style="width:90px;height:90px;object-fit:contain;border-radius:8px;background:#fff;flex:none">
+        <div class="k-ptile-info">
+          <div class="k-pt-name">GLOV Depilator z Nano Szkła</div>
+          <div class="k-pt-price">39,90 zł</div>
+          <div class="k-pt-meta">4.7★ (63 rec.) · własna dystrybucja glov.co</div>
+          <a class="k-pt-link" href="https://glov.co/products/depilator-z-nano-szkla-glov" target="_blank">glov.co</a>
+        </div>
+      </div>
+      <div class="k-lbl">Wyróżniki GLOV vs TopEstetic</div>
+      <div class="k-dim">
+        <span class="k-ok">✓</span> Własna marka z historią (Monika Żochowska) — nie white-label<br>
+        <span class="k-ok">✓</span> Trusted Shops, Allegro, własny sklep — pełna dystrybucja<br>
+        <span class="k-ok">✓</span> 63 recenzje — walidacja produktu<br>
+        <span class="k-chip warn">nd. — brak danych PDP TopEstetic do porównania</span>
+      </div>
+      <div class="k-rev-hd">Recenzje GLOV</div>
+      <div class="k-q pos">„Skóra jest gładka na dużo dłużej niż po maszynce." <div class="k-qm">— Barbara, 5★</div></div>
+      <div class="k-q neg">„Po pierwszej próbie skóra na moich rękach przez wiele dni była szorstka i podrażniona." <div class="k-qm">— Katarzyna, 1★</div></div>
+    </div>
+  </div>
+
+  <div class="k-card">
+    <div class="k-ch topestetic">TopEstetic — nano glass (brak PDP)</div>
+    <div class="k-cb">
+      <div class="k-ptile">
+        <img src="_img/depilator/topestetic_nano.jpg" alt="TopEstetic nano" style="width:90px;height:90px;object-fit:contain;border-radius:8px;background:#fff;flex:none">
+        <div class="k-ptile-info">
+          <div class="k-pt-name">TopEstetic Nano Glass Depilator</div>
+          <div class="k-pt-price blue">nd.</div>
+          <div class="k-pt-meta">nd. — strona PDP niedostępna / brak scrape</div>
+          <span class="k-pt-link">topestetic.pl</span>
+        </div>
+      </div>
+      <div class="k-lbl">1. Tytuł PDP</div><div class="k-dim">nd. — brak dostępu do PDP</div>
+      <div class="k-lbl">2. Opis / struktura</div><div class="k-dim">nd.</div>
+      <div class="k-lbl">3. Claimy / dowód</div><div class="k-dim">nd.</div>
+      <div class="k-lbl">4. FAQ</div><div class="k-dim">nd.</div>
+      <div class="k-lbl">5. Obszar ciała</div><div class="k-dim">nd.</div>
+      <div class="k-lbl">6. Cena / wartość</div><div class="k-dim">nd.</div>
+      <div class="k-lbl">7. Trust / recenzje</div><div class="k-dim">nd.</div>
+      <div class="k-rev-hd">Recenzje TopEstetic</div>
+      <div class="k-q nd">Brak danych — PDP niedostępne w scrape. Do uzupełnienia przy kolejnym researchu.</div>
+      <div class="k-lbl">Visual mapping PDP</div>
+      <div class="k-vis-row"><span class="k-vis-badge">nd. — brak scrape</span></div>
+    </div>
+  </div>
+</div>
+<div class="k-box" style="margin-top:8px;border-left-color:#e07a10"><b>⚠️ TopEstetic — brak PDP data.</b> Produkt istnieje (obraz potwierdzony), ale scrape topestetic.pl nie zwrócił PDP nano glass. Uzupełnić przy następnym research rundzie.</div>
+</div>
+
+<!-- ========== VEET ========== -->
+<div class="k-rival-panel" id="krp-veet">
+<div class="k-cols">
+  <div class="k-card">
+    <div class="k-ch glov">GLOV — Depilator z Nano Szkła (bohater)</div>
+    <div class="k-cb">
+      <div class="k-ptile">
+        <img src="_img/depilator/glov_depilator.jpg" alt="GLOV" style="width:90px;height:90px;object-fit:contain;border-radius:8px;background:#fff;flex:none">
+        <div class="k-ptile-info">
+          <div class="k-pt-name">GLOV Depilator z Nano Szkła</div>
+          <div class="k-pt-price">39,90 zł <span style="font-size:11px;color:#6b6457">vs 57,99 zł Veet</span></div>
+          <div class="k-pt-meta">4.7★ (63 rec.) · wielorazowy na lata · zero chemii</div>
+          <a class="k-pt-link" href="https://glov.co/products/depilator-z-nano-szkla-glov" target="_blank">glov.co</a>
+        </div>
+      </div>
+      <div class="k-lbl">Przewagi GLOV vs Veet krem</div>
+      <div class="k-dim">
+        <span class="k-ok">✓</span> Tańszy jednorazowo (39,90 vs 57,99 zł)<br>
+        <span class="k-ok">✓</span> Wielorazowy — Veet co miesiąc 58 zł × 12 = <b>696 zł/rok</b><br>
+        <span class="k-ok">✓</span> Zero chemii · zero zapachu · zero baterii<br>
+        <span class="k-ok">✓</span> Bez ryzyka podrażnień chemicznych<br>
+        <span class="k-bad">✗</span> Brak konkretnego czasu zabiegu (Veet: „od 2 minut")<br>
+        <span class="k-bad">✗</span> Brak badania dermatologicznego (Veet: testowany klinicznie)<br>
+        <span class="k-chip warn">brak liczb efektu</span><span class="k-chip warn">brak badania derm.</span>
+      </div>
+      <div class="k-lbl">4. FAQ</div><div class="k-dim"><span class="k-chip warn">BRAK</span></div>
+      <div class="k-rev-hd">Recenzje GLOV</div>
+      <div class="k-q pos">„Skóra jest gładka na dużo dłużej niż po maszynce. Jestem pozytywnie zaskoczona." <div class="k-qm">— Barbara, 5★</div></div>
+      <div class="k-q neg">„Po pierwszej próbie skóra na moich rękach przez wiele dni była szorstka i podrażniona." <div class="k-qm">— Katarzyna, 1★</div></div>
+    </div>
+  </div>
+
+  <div class="k-card">
+    <div class="k-ch veet">Veet Professional — substytut krem</div>
+    <div class="k-cb">
+      <div class="k-ptile">
+        <img src="_img/depilator/veet_krem.jpg" alt="Veet Professional" style="width:90px;height:90px;object-fit:contain;border-radius:8px;background:#fff;flex:none">
+        <div class="k-ptile-info">
+          <div class="k-pt-name">Veet Professional Krem do Depilacji 400 ml</div>
+          <div class="k-pt-price blue">57,99 zł <span style="font-size:11px;color:#a52828">— droższy niż GLOV</span></div>
+          <div class="k-pt-meta">4.6★ (22 op. Rossmann) · 4.6★ (37 op. Ceneo)</div>
+          <a class="k-pt-link" href="https://www.veet.pl/produkty/kremy-do-depilacji/" target="_blank">veet.pl</a>
+        </div>
+      </div>
+      <div class="k-lbl">1. Tytuł PDP</div>
+      <div class="k-dim">„Veet Professional Krem do Depilacji 400 ml" — brand-first, descriptor</div>
+      <div class="k-lbl">2. Opis / struktura</div>
+      <div class="k-dim"><ul><li>Konkretne liczby — benchmark komunikacji w kategorii</li><li>Certyfikacja dermatologiczna wyeksponowana</li><li>Składnik aktywny: masło Shea</li></ul></div>
+      <div class="k-lbl">3. Claimy / dowód verbatim — <b>BENCHMARK</b></div>
+      <div class="k-dim">
+        <b>„od 2 minut"</b> — konkretny czas zabiegu<br>
+        <b>„nawilżenie do 48 godzin"</b> — konkretny efekt post-use<br>
+        <b>„jedwabiście gładka skóra"</b> · <b>„klinicznie testowany"</b><br>
+        <span class="k-chip ok">testowany dermatologicznie</span>
+        <span class="k-chip ok">masło Shea</span>
+        <span class="k-chip warn">jednorazowy — brak eko argumentu</span>
+      </div>
+      <div class="k-lbl">4. FAQ</div><div class="k-dim"><span class="k-chip warn">BRAK</span></div>
+      <div class="k-lbl">5. Obszar ciała</div><div class="k-dim"><span class="k-chip ok">nogi, ręce, pachy, bikini</span> — lepsza lista niż GLOV</div>
+      <div class="k-lbl">6. Cena / wartość</div><div class="k-dim">57,99 zł jednorazowy · odnawiany co miesiąc · 696 zł/rok · efektywnie 17× droższy niż GLOV</div>
+      <div class="k-lbl">7. Trust / recenzje</div><div class="k-dim"><span class="k-chip ok">4.6★ (22 Rossmann) · 4.6★ (37 Ceneo)</span> — stabilny trust przez szeroką dystrybucję</div>
+      <div class="k-rev-hd">Recenzje Veet (verbatim)</div>
+      <div class="k-q pos">„Nie mam żadnych podrażnień a w kilka minut moje ciało jest gładkie" <div class="k-qm">— Rossmann, 5★</div></div>
+      <div class="k-q pos">„Krem do depilacji jest wybawieniem na moje podrażnienia po goleniu w okolicy bikini... skóra jest gładka i ukojona." <div class="k-qm">— Joanna, 5★ Ceneo</div></div>
+      <div class="k-q neg">„Zapach jest specyficzny. Skuteczność jest dyskusyjna." <div class="k-qm">— F...3, 2.5★ Ceneo</div></div>
+      <div class="k-lbl">Visual mapping PDP</div>
+      <div class="k-vis-row">
+        <span class="k-vis-badge">tuba kremowa biała</span>
+        <span class="k-vis-badge">gładka noga — efekt</span>
+        <span class="k-vis-badge">ikony: 2 min · derm. test</span>
+        <span class="k-vis-badge">masło Shea highlight</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="k-box ok" style="margin-top:8px"><b>Wniosek Veet:</b> Veet jest benchmarkiem komunikacji liczb. GLOV powinien dodać „X minut zabiegu" i „Y tygodni efektu" na wzór Veeta. ROI argument (39,90 zł × 1 vs 57,99 zł × 12 = 696 zł) to niezagospodarowana szansa PDP.</div>
+</div>
+
+<!-- ========== BRAUN ========== -->
+<div class="k-rival-panel" id="krp-braun">
+<div class="k-cols">
+  <div class="k-card">
+    <div class="k-ch glov">GLOV — Depilator z Nano Szkła (bohater)</div>
+    <div class="k-cb">
+      <div class="k-ptile">
+        <img src="_img/depilator/glov_depilator.jpg" alt="GLOV" style="width:90px;height:90px;object-fit:contain;border-radius:8px;background:#fff;flex:none">
+        <div class="k-ptile-info">
+          <div class="k-pt-name">GLOV Depilator z Nano Szkła</div>
+          <div class="k-pt-price">39,90 zł <span style="font-size:11px;color:#6b6457">vs 479 zł Braun — 12× taniej</span></div>
+          <div class="k-pt-meta">4.7★ (63 rec.) · bezbolesny · zero ładowania · zero kabli</div>
+          <a class="k-pt-link" href="https://glov.co/products/depilator-z-nano-szkla-glov" target="_blank">glov.co</a>
+        </div>
+      </div>
+      <div class="k-lbl">Przewagi GLOV vs Braun elektryczny</div>
+      <div class="k-dim">
+        <span class="k-ok">✓</span> 12× taniej (39,90 vs 479 zł)<br>
+        <span class="k-ok">✓</span> Bezbolesny — Braun boli (wszystkie recenzje potwierdzają)<br>
+        <span class="k-ok">✓</span> Zero ładowania · zero kabli · portabilny<br>
+        <span class="k-ok">✓</span> Brak ryzyka wrastania włosów (Braun ma ten problem)<br>
+        <span class="k-bad">✗</span> Braun: „do miesiąca gładkości" — GLOV nie ma liczby efektu<br>
+        <span class="k-bad">✗</span> Braun działa szybciej na większe powierzchnie<br>
+        <span class="k-chip warn">brak obietnicy czasu efektu — Braun wygrywa komunikacyjnie</span>
+      </div>
+      <div class="k-lbl">4. FAQ</div><div class="k-dim"><span class="k-chip warn">BRAK</span></div>
+      <div class="k-rev-hd">Recenzje GLOV</div>
+      <div class="k-q pos">„Skóra jest gładka na dużo dłużej niż po maszynce." <div class="k-qm">— Barbara, 5★</div></div>
+      <div class="k-q neg">„Mocniejsze pocieranie sprawiło, że skóra była bardzo podrażniona, zaczerwieniona przez dwa dni." <div class="k-qm">— Allegro, 2★</div></div>
+    </div>
+  </div>
+
+  <div class="k-card">
+    <div class="k-ch braun">Braun Silk·épil 9 — substytut elektryczny premium</div>
+    <div class="k-cb">
+      <div class="k-ptile">
+        <img src="_img/depilator/braun_silkepil9.jpg" alt="Braun Silk-épil 9" style="width:90px;height:90px;object-fit:contain;border-radius:8px;background:#fff;flex:none">
+        <div class="k-ptile-info">
+          <div class="k-pt-name">Braun Silk·épil 9 9-000 (mokro i sucho)</div>
+          <div class="k-pt-price blue">479 zł <span style="font-size:11px;color:#a52828">— 12× droższy</span></div>
+          <div class="k-pt-meta">4.8★ (104 rec. Wizaz) · 3.9★ (6 rec. Ceneo)</div>
+          <a class="k-pt-link" href="https://www.braun.pl/pl-pl/female-hair-removal/epilators/silk-epil-9/silk-epil-9-9-000" target="_blank">braun.pl</a>
+        </div>
+      </div>
+      <div class="k-lbl">1. Tytuł PDP</div>
+      <div class="k-dim">„Braun Silk·épil 9 9-000" — brand-first, model-number-heavy, bez benefit</div>
+      <div class="k-lbl">2. Opis / struktura</div>
+      <div class="k-dim"><ul><li>Specyfikacja techniczna szczegółowa — <b>benchmark parametrów</b></li><li>Porównanie modeli w serii</li><li>Smart Light + tryb mokro/sucho</li></ul></div>
+      <div class="k-lbl">3. Claimy / dowód verbatim — <b>BENCHMARK LICZB</b></div>
+      <div class="k-dim">
+        <b>„Do miesiąca gładkiej skóry"</b> — najlepsza obietnica efektu w kategorii<br>
+        <b>„40 pęset MicroGrip"</b> — konkretna liczba<br>
+        <b>„do 0,5 mm włosków"</b> — parametr techniczny<br>
+        <b>„50 minut na akumulatorze"</b> — konkretna liczba<br>
+        <span class="k-chip ok">Smart Light</span>
+        <span class="k-chip ok">mokro i sucho</span>
+        <span class="k-chip warn">boli — potwierdzone recenzjami</span>
+      </div>
+      <div class="k-lbl">4. FAQ</div><div class="k-dim"><span class="k-chip warn">BRAK</span></div>
+      <div class="k-lbl">5. Obszar ciała</div><div class="k-dim"><span class="k-chip ok">całe ciało</span> — pełna lista</div>
+      <div class="k-lbl">6. Cena / wartość</div><div class="k-dim">479 zł · premium · jednorazowa inwestycja (wymienne głowice) · brak ROI vs GLOV</div>
+      <div class="k-lbl">7. Trust / recenzje</div><div class="k-dim"><span class="k-chip ok">4.8★ (104 rec. Wizaz)</span> — najsilniejszy trust przez recenzje beauty</div>
+      <div class="k-rev-hd">Recenzje Braun (verbatim)</div>
+      <div class="k-q pos">„Najlepszy depilator, jaki miałam – skuteczny i nie aż tak bolesny jak się spodziewałam!" <div class="k-qm">— Good7x, 5★ Wizaz</div></div>
+      <div class="k-q pos">„Pierwsze użycie i WOW nie bolało aż tak jak się spodziewałam." <div class="k-qm">— Natalusia0508, 5★ Wizaz</div></div>
+      <div class="k-q neg">„Dramat. Nie wyrywa włosów tylko je obcina. Najgorszy depilator jaki miałam." <div class="k-qm">— 1★ Ceneo</div></div>
+      <div class="k-lbl">Visual mapping PDP</div>
+      <div class="k-vis-row">
+        <span class="k-vis-badge">urządzenie elektryczne srebrne</span>
+        <span class="k-vis-badge">zbliżenia głowicy pęset</span>
+        <span class="k-vis-badge">użycie pod prysznicem</span>
+        <span class="k-vis-badge">Smart Light demo</span>
+        <span class="k-vis-badge">infografika 40 pęset</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="k-box ok" style="margin-top:8px"><b>Wniosek Braun:</b> Braun jest benchmarkiem liczb w kategorii. „Do miesiąca gładkości", „40 pęset", „0,5 mm" — GLOV powinien skopiować ten format komunikacji liczb. Ból = kluczowy wyróżnik GLOV, ale nigdzie nie jest zestawiony wprost z Braunem na PDP.</div>
+</div>
+
+</div><!-- /k-hth -->
+
+<!-- MATRYCA -->
+<h2 class="k-h2" id="k-matryca">Matryca porównawcza — wszystkie marki naraz</h2>
+<div style="overflow-x:auto">
+<table class="k-matrix">
+  <thead>
+    <tr>
+      <th>Wymiar</th>
+      <th style="border-left:3px solid #c0392b">GLOV Nano Glass ★</th>
+      <th style="border-left:3px solid #7b3fa0">Malowidło</th>
+      <th style="border-left:3px solid #0891b2">LadyMakeup</th>
+      <th style="border-left:3px solid #2e8b57">TopEstetic</th>
+      <th style="border-left:3px solid #e07a10">Veet Prof.</th>
+      <th style="border-left:3px solid #2563eb">Braun Silk·9</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Cena</td><td>39,90 zł</td><td>34,99 zł</td><td class="k-c-ok">15,90 zł (OOS)</td><td>nd.</td><td class="k-c-bad">57,99 zł</td><td class="k-c-bad">479 zł</td></tr>
+    <tr><td>Ocena ★</td><td class="k-c-ok">4.7★ (63)</td><td class="k-c-bad">—(0)</td><td class="k-c-bad">4.0★(1)</td><td>nd.</td><td>4.6★(37)</td><td class="k-c-ok">4.8★(104)</td></tr>
+    <tr><td>Język PDP</td><td class="k-c-ok">PL</td><td class="k-c-ok">PL</td><td class="k-c-bad">EN!</td><td>nd.</td><td class="k-c-ok">PL</td><td class="k-c-ok">PL</td></tr>
+    <tr><td>Styl komunikacji</td><td>korzyść+eko, brak liczb</td><td>CAPS, keyword-stuffing</td><td>EN minimalistyczny</td><td>nd.</td><td class="k-c-ok">2 min · 48h — benchmark</td><td class="k-c-ok">40 pęset · 0,5 mm · 1 mies. ← #1</td></tr>
+    <tr><td>Lista obszarów ciała</td><td class="k-c-bad">„ręce i nogi" — brak</td><td class="k-c-ok">5 obszarów</td><td>„full body" (EN)</td><td>nd.</td><td class="k-c-ok">4 obszary</td><td class="k-c-ok">całe ciało</td></tr>
+    <tr><td>FAQ na PDP</td><td class="k-c-bad">BRAK</td><td class="k-c-bad">BRAK</td><td class="k-c-bad">BRAK</td><td>nd.</td><td class="k-c-bad">BRAK</td><td class="k-c-bad">BRAK</td></tr>
+    <tr><td>Liczba / obietnica efektu</td><td class="k-c-bad">brak</td><td class="k-c-bad">brak</td><td class="k-c-bad">brak</td><td>nd.</td><td class="k-c-ok">2 min · 48h nawilżenie</td><td class="k-c-ok">do 1 miesiąca</td></tr>
+    <tr><td>Wielorazowy</td><td class="k-c-ok">TAK · zero baterii</td><td class="k-c-ok">TAK</td><td class="k-c-ok">TAK</td><td>nd.</td><td class="k-c-bad">NIE — jednorazowy</td><td class="k-c-mid">TAK (bateria)</td></tr>
+    <tr><td>Badanie kliniczne</td><td class="k-c-bad">brak</td><td class="k-c-bad">brak</td><td class="k-c-bad">brak</td><td>nd.</td><td class="k-c-ok">testowany derm.</td><td class="k-c-mid">brand trust 100+ lat</td></tr>
+    <tr><td>Dostępność</td><td class="k-c-ok">✓ dostępny</td><td class="k-c-bad">OOS</td><td class="k-c-bad">OOS</td><td>nd.</td><td class="k-c-ok">✓</td><td class="k-c-ok">✓</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- LUKI -->
+<h2 class="k-h2" id="k-luki">Luki rynkowe P0 / P1 / P2</h2>
+<div class="k-gaps-grid">
+  <div class="k-gap-card k-p0">
+    <h4><span class="k-chip warn">P0</span> Żaden z 5 graczy nie ma FAQ</h4>
+    <p>0 z 5 rywali ma sekcję FAQ na PDP. Kto doda FAQ + FAQPage schema JSON-LD — wygrywa AI Overview dla kategorii „czy depilator nano boli", „jak długo efekt" itp.</p>
+    <div class="k-fix">✅ 7–10 Q&A + FAQPage JSON-LD · Czas: 2–3h · ROI: Featured Snippet + LLM cytowania</div>
+  </div>
+  <div class="k-gap-card k-p0">
+    <h4><span class="k-chip warn">P0</span> Nikt nie podaje ile trwa efekt</h4>
+    <p>Braun: „do miesiąca". Veet: „od 2 minut". GLOV: nic. Shopper pyta AI — AI odpowie Braunem i Veetem, nie GLOV.</p>
+    <div class="k-fix">✅ Pierwsze zdanie po H1: „Efekt gładkości X–Y tygodni przy regularnym stosowaniu." Recenzje mówią „dłużej niż maszynka" — zamień w liczbę.</div>
+  </div>
+  <div class="k-gap-card k-p0">
+    <h4><span class="k-chip warn">P0</span> Brak listy obszarów ciała na PDP GLOV</h4>
+    <p>Malowidło: 5 obszarów. Veet: 4 obszary. GLOV: „ręce i nogi". Shopper szuka „czy GLOV na pachy, bikini, plecy" — PDP nie odpowiada.</p>
+    <div class="k-fix">✅ Bullety „Działa na: nogi, ręce, pachy, linię bikini, plecy" · 15 min pracy · ROI: +SEO na long-tail per obszar</div>
+  </div>
+  <div class="k-gap-card k-p1">
+    <h4><span class="k-chip" style="background:#fff8e1;color:#9a6700">P1</span> Podrażnienie = pain point kategorii — nikt nie adresuje</h4>
+    <p>GLOV i LadyMakeup — identyczny wzorzec negatywny w recenzjach: „szorstka skóra", „podrażnienie". Żaden gracz nie tłumaczy jak używać poprawnie.</p>
+    <div class="k-fix">✅ Sekcja „Jak stosować bez podrażnienia": delikatne okrężne ruchy, mokra skóra, 5–10 sek na obszar. Zamienia 1★ w 5★.</div>
+  </div>
+  <div class="k-gap-card k-p1">
+    <h4><span class="k-chip" style="background:#fff8e1;color:#9a6700">P1</span> ROI argument vs Veet niezagospodarowany</h4>
+    <p>Veet 57,99 zł × 12 = 696 zł/rok. GLOV 39,90 zł × 1 = 39,90 zł na lata. 17× różnica. Nikt nie robi tej kalkulacji wprost na PDP.</p>
+    <div class="k-fix">✅ „Jeden GLOV (39,90 zł) wystarczy na lata. Krem do depilacji kupujesz co miesiąc za ~58 zł. Policz sama." · + eko argument = 0 śmieci plastikowych</div>
+  </div>
+  <div class="k-gap-card k-p2">
+    <h4><span class="k-chip info">P2</span> Styl Brauna — mów liczbami nie przymiotnikami</h4>
+    <p>Braun: „40 pęset, 0,5 mm, 50 min". GLOV: „efektywny", „skuteczny" — puste słowa których AI nie cytuje jako fakty.</p>
+    <div class="k-fix">✅ „Usuwa owłosienie w 3–5 minut na nogi. Efekt gładkości 2–3 tygodnie. Zero ostrzy, zero kabli, zero bólu." Format: liczba + unit + efekt.</div>
+  </div>
+</div>
+
+<!-- STRATEGIA -->
+<h2 class="k-h2" id="k-strategia">Strategia odpowiedzi GLOV</h2>
+<div class="k-box ok"><b>1. Na Brauna: „Miesiąc gładkości? My też — bez bólu i za 40 zł."</b><br>Braun komunikuje „miesiąc gładkości" — GLOV milczy. Recenzje mówią „dłużej niż po maszynce". To musi być na PDP jako liczba.<br><span style="font-style:italic;color:#1a6b3c;display:block;margin-top:6px">"Efekt gładkości utrzymuje się 2–3 tygodnie przy regularnym stosowaniu. Bez bólu elektrycznych pęset. Bez ładowania. Bez 479 zł."</span></div>
+<div class="k-box ok"><b>2. Na Veeta: „Jednorazowy za 58 zł/mies vs wielorazowy za 40 zł raz."</b><br>Veet droższy jednorazowo i odnawia się co miesiąc. 696 zł/rok to argument który nikt nie komunikuje na PDP.<br><span style="font-style:italic;color:#1a6b3c;display:block;margin-top:6px">"Jeden GLOV wystarczy na lata. Krem do depilacji kupujesz co miesiąc. Policz sama: 39,90 zł vs 696 zł/rok."</span></div>
+<div class="k-box ok"><b>3. Na negatywne recenzje (kategorii): edukacja protokołu użycia</b><br>Podrażnienie = pain point GLOV i LadyMakeup jednakowo. Edukacja zamienia 1★ w 5★ — i to jest differentiator vs tańszych no-name nano.<br><span style="font-style:italic;color:#1a6b3c;display:block;margin-top:6px">"Stosuj delikatnymi, okrężnymi ruchami na MOKREJ skórze. 5–10 sekund na obszar. Nigdy sucho, nigdy za mocno."</span></div>
+<div class="k-box ok"><b>4. FAQ — autostrada GEO (0 z 5 graczy ma)</b><br>Kto wejdzie pierwszy z FAQ + FAQPage JSON-LD wygrywa AI Overview dla całej kategorii. Pytania: Czy boli? Jak długo efekt? Na jakich częściach? Różnica vs krem/epilator? Dla wrażliwej skóry?<br><span style="font-style:italic;color:#1a6b3c;display:block;margin-top:6px">7–10 Q&A → FAQPage schema → AI Overview → 0 rywali tam jest dziś.</span></div>
+<div class="k-box ok"><b>5. Kopiuj styl Brauna — mów liczbami</b><br>Braun: 40 pęset, 0,5 mm, 50 min. GLOV: „efektywny", „skuteczny" — puste słowa. Format do wdrożenia: [liczba] + [unit] + [efekt].<br><span style="font-style:italic;color:#1a6b3c;display:block;margin-top:6px">"Usuwa owłosienie w 3–5 minut · efekt 2–3 tygodnie · działa od 0 mm odrostu · zero ostrzy · zero kabli."</span></div>
+
+<!-- LISTA GRACZY -->
+<h2 class="k-h2" id="k-gracze">Lista graczy — quick stats</h2>
+<div style="overflow-x:auto">
+<table class="k-gtbl">
+  <thead>
+    <tr><th>#</th><th>Produkt</th><th>Typ</th><th>Cena</th><th>Ocena ★</th><th>Rec.</th><th>Wyróżnik</th><th>Słabość</th></tr>
+  </thead>
+  <tbody>
+    <tr class="hero"><td>★</td><td>GLOV Nano Glass</td><td>Nano glass</td><td>39,90 zł</td><td class="k-c-ok">4.7★</td><td>63</td><td>Najsilniejszy trust w nano · PL brand</td><td>Brak liczb, FAQ, listy obszarów</td></tr>
+    <tr><td>1</td><td>Malowidło</td><td>Nano glass</td><td>34,99 zł</td><td class="k-c-bad">—</td><td>0</td><td>5 obszarów ciała · 6 kolorów</td><td>0 recenzji · OOS</td></tr>
+    <tr><td>2</td><td>LadyMakeup</td><td>Nano glass</td><td>15,90 zł</td><td class="k-c-bad">4.0★</td><td>1</td><td>Najniższa cena w nano (gdy dostępny)</td><td>EN PDP · OOS · 1 recenzja</td></tr>
+    <tr><td>3</td><td>TopEstetic</td><td>Nano glass</td><td>nd.</td><td>nd.</td><td>nd.</td><td>nd. — brak scrape PDP</td><td>nd.</td></tr>
+    <tr><td>4</td><td>Veet Professional</td><td>Krem</td><td>57,99 zł</td><td>4.6★</td><td>37</td><td>Benchmark liczb (2 min · 48h) · derm. test</td><td>Jednorazowy · drogi · zapach</td></tr>
+    <tr><td>5</td><td>Braun Silk·épil 9</td><td>Elektryczny</td><td>479 zł</td><td class="k-c-ok">4.8★</td><td>104</td><td>Benchmark efektu (1 mies.) · 40 pęset</td><td>Boli · 12× droższy · ładowanie</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="k-footer">Metoda: scrape PDP (WebFetch) + Allegro + Ceneo + Wizaz · dane: 2026-08-05 · kanon: /mapa-kontentu-konkurencji skill · gold standard: ANALIZA_KONKURENCJI_pumeksy.html · autor: EEL system</div>
+</div><!-- /k-wrap -->
+</div><!-- /p-kon -->
+
+<div id="p-vis" class="panel"><div class="wrap"><div class="empty"><b>Brak danych</b>Vision scans dla depilatorów nie zostały jeszcze zbudowane.<br>Zakładka pojawi się, gdy powstaną Vision Raporty per rywal.</div></div></div>
 
 <script>
 function T(b,k){
@@ -77,5 +674,11 @@ function T(b,k){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   b.classList.add('active');
   document.getElementById('p-'+k).classList.add('active');
+}
+function kR(brand,btn){
+  document.querySelectorAll('.k-btab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.k-rival-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('krp-'+brand).classList.add('active');
 }
 </script></body></html>
