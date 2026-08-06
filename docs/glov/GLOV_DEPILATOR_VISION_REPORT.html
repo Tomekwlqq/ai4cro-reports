@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head><meta charset="UTF-8"><title>GLOV Depilator — Vision Scan</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f8fafc;color:#1e293b;font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.page-header{padding:10px 20px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.client-name{font-size:16px;font-weight:800}
+.scan-meta{color:#94a3b8;font-size:11px}
+.header-right{margin-left:auto;display:flex;gap:8px}
+.toggle-group{display:flex;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden}
+.tbtn{padding:5px 12px;background:#fff;border:none;cursor:pointer;font-size:12px;font-weight:500;color:#64748b;border-right:1px solid #e2e8f0;transition:all .12s}
+.tbtn:last-child{border-right:none}
+.tbtn.active{background:#1e293b;color:#fff}
+.new-block{margin:8px 16px;padding:8px 12px;background:#fef3c7;border:1px solid #fde68a;border-radius:6px;font-size:12px;flex-shrink:0}
+.new-block ul{margin-top:4px;padding-left:18px;line-height:1.8}
+.split-view{display:flex;flex:1;overflow:hidden}
+.split-table{flex:0 0 62%;overflow-y:auto}
+.split-shot{flex:0 0 38%;border-left:2px solid #e2e8f0;overflow-y:auto;background:#f1f5f9;scroll-behavior:smooth}
+.shot-img{width:100%;display:block}
+.scan-table{width:100%;border-collapse:collapse}
+.scan-table thead{position:sticky;top:0;z-index:5}
+.scan-table th{background:#f1f5f9;padding:8px 10px;text-align:left;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+.scan-table td{padding:7px 10px;border-bottom:1px solid #f1f5f9;vertical-align:top;font-size:12px}
+.el-row{cursor:pointer;transition:background .1s}
+.el-row:hover td{background:#f0f9ff}
+.el-row.active td{background:#e0f2fe}
+.col-lp{width:28px;color:#94a3b8;font-size:11px;text-align:right;padding-right:6px}
+.col-el{width:170px;font-weight:600;color:#0f172a}
+.col-etyk{width:200px;color:#0f172a;font-weight:600}
+.col-zaw{color:#475569;line-height:1.5;font-size:12.5px}
+.col-p{width:34px;text-align:center;font-size:15px}
+.th-sub{font-weight:400;color:#94a3b8;font-size:10px}
+.col-pos{width:110px;white-space:nowrap}
+.zbadge{font-size:10px;font-weight:600;padding:2px 5px;border-radius:3px}
+.dim{color:#94a3b8;font-size:10px}
+.new-badge{background:#fde68a;color:#92400e;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:6px;vertical-align:middle}
+.view-toggle{margin-right:8px}
+.stack-panel{margin:8px 16px;padding:8px 12px;background:#ecfeff;border:1px solid #a5f3fc;border-radius:6px;font-size:11.5px;flex-shrink:0;line-height:2}
+.chip{display:inline-block;background:rgba(14,116,144,.08);color:var(--c,#0e7490);border:1px solid rgba(14,116,144,.25);font-weight:600;font-size:11px;padding:2px 8px;border-radius:5px;margin:0 4px}
+.col-sel{width:230px}.col-sel code{font-size:11px;color:#0f766e;background:#f0fdfa;padding:1px 5px;border-radius:4px;word-break:break-all}
+.col-track{width:100px}.tbadge{font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;white-space:nowrap}
+.col-gtm{width:180px}.gtm{font-size:10.5px;color:#92400e;background:#fef3c7;padding:1px 5px;border-radius:4px}
+.col-cls{color:#94a3b8}
+#tbl-developer{display:none}
+#tbl-comments{display:none}
+body.dev #tbl-shopper{display:none}
+body.dev #tbl-developer{display:table}
+body.comments #tbl-shopper{display:none}
+body.comments #tbl-comments{display:table}
+.col-kom{color:#475569;line-height:1.55;font-size:12.5px}
+.col-obs,.col-obs-h{width:240px;border-left:2px solid #f3e8ff}
+.col-obs{background:#faf5ff;color:#6b21a8;font-size:12px;line-height:1.5;cursor:text;outline:none}
+.col-obs:empty::before{content:attr(data-ph);color:#c4b5d4;font-style:italic}
+.col-obs:focus{background:#f3e8ff;box-shadow:inset 0 0 0 2px #d8b4fe}
+.col-obs-h{color:#7c3aed}
+</style></head>
+<body>
+<div class="page-header">
+  <div>
+    <span class="client-name">GLOV — Depilator</span>
+    <span class="scan-meta"> — Vision Scan — 2026-08-06 — <a href="https://glov.co/products/depilator-z-nano-szkla-glov" target="_blank">glov.co/products/depilator-z-nano-szkla-glov</a> — platforma: Shopify</span>
+  </div>
+  <div class="header-right">
+    <div class="toggle-group view-toggle">
+      <button class="tbtn active" onclick="setView('shopper',this)">🛍 Shopper</button>
+      <button class="tbtn" onclick="setView('dev',this)">⚙️ Dev</button>
+      <button class="tbtn" onclick="setView('comments',this)">💬 Comments</button>
+    </div>
+    <div class="toggle-group vp-toggle">
+      <button class="tbtn active" onclick="setVP('desktop',this)">🖥 Desktop</button>
+      <button class="tbtn" onclick="setVP('mobile',this)">📱 Mobile</button>
+    </div>
+  </div>
+</div>
+
+<div class="stack-panel"><b>🔧 Tech stack:</b>
+  <span class="chip" style="--c:#7c3aed">Shopify</span>
+  <span class="chip" style="--c:#0369a1">Liquid</span>
+  <span class="chip" style="--c:#16a34a">Okendo Reviews</span>
+  <span class="chip" style="--c:#b45309">Klaviyo</span>
+  <span class="chip" style="--c:#0891b2">PL locale</span>
+</div>
+
+<div class="new-block"><b>🆕 Nowe typy elementów (do elements_master.json):</b><ul>
+  <li><b>nano_glass_explainer</b> — sekcja edukacyjna wyjaśniająca technologię nano-szkła; specyfika urządzeń depilacyjnych mechanicznych (nie laser, nie krem)</li>
+  <li><b>eco_usp_block</b> — blok "Eco / Bez chemii / Wielorazowy" jako główny argument konwersji; kontra dla kremów depilacyjnych</li>
+</ul></div>
+
+<div class="split-view">
+  <div class="split-table">
+
+    <!-- SHOPPER VIEW -->
+    <table class="scan-table" id="tbl-shopper">
+      <thead><tr>
+        <th class="col-lp">LP</th>
+        <th class="col-etyk">Etykieta <span class="th-sub">(jak jest)</span></th>
+        <th class="col-el">Typ / rola obiektu</th>
+        <th>Zawartość / akcje</th>
+        <th class="col-obs-h">Obserwacje <span class="th-sub">(→ baza)</span></th>
+        <th class="col-p" title="personalizacja">P</th>
+        <th class="col-pos">Pozycja</th>
+      </tr></thead>
+      <tbody>
+
+      <tr class="el-row" data-top="0" onclick="scrollShot(0)">
+        <td class="col-lp">1</td>
+        <td class="col-etyk">GLOV</td>
+        <td class="col-el">Header / nawigacja</td>
+        <td class="col-zaw">Logo GLOV po lewej, menu poziome (Pielęgnacja ciała, Twarz, Zestawy, Outlet, Blog), ikony szukajki / konta / koszyka po prawej. Sticky navbar.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Białe tło; logo czerwone/coral; menu bez megadropdown; minimalistyczny header Shopify; sticky — zawsze widoczny podczas scrollu.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">0px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="0" onclick="scrollShot(0)">
+        <td class="col-lp">2</td>
+        <td class="col-etyk">Darmowa dostawa od X PLN</td>
+        <td class="col-el">Announcement bar</td>
+        <td class="col-zaw">Pasek informacyjny na samej górze strony — komunikat o darmowej dostawie lub aktualnej promocji.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Ciemnoszare lub coral tło; biały tekst; centrowany; rotujące komunikaty lub statyczny; typowy Shopify upsell bar.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">0px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="55" onclick="scrollShot(55)">
+        <td class="col-lp">3</td>
+        <td class="col-etyk">Strona główna / Depilacja</td>
+        <td class="col-el">Breadcrumbs</td>
+        <td class="col-zaw">Ścieżka nawigacyjna: Strona główna / Ciało / Depilator z nano szkła GLOV.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Mały szary tekst; linkowane; standard Shopify; brak rozbudowanych ikon kategorii.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">55px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="80" onclick="scrollShot(80)">
+        <td class="col-lp">4</td>
+        <td class="col-etyk">[packshot + lifestyle shots]</td>
+        <td class="col-el">Galeria produktu</td>
+        <td class="col-zaw">Galeria zdjęć produktu — główne zdjęcie packshot na białym tle, miniaturki po lewej stronie lub pod spodem. 4–6 zdjęć: packshot, zdjęcia użytkowe (kobieta używa na nodze), closeup tekstury.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Dominujące białe tło; zdjęcia lifestyle na beżowym/neutralnym tle; brak 360°; dobra jakość fotografii; urządzenie małe, eleganckie — widać nano-szkło w zbliżeniu; brak zdjęć klinicznych efektów przed/po.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">80px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="80" onclick="scrollShot(80)">
+        <td class="col-lp">5</td>
+        <td class="col-etyk">Depilator z nano szkła GLOV</td>
+        <td class="col-el">Tytuł produktu (H1)</td>
+        <td class="col-zaw">Główny tytuł produktu — H1 z pełną nazwą.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Duży czarny tekst; format: benefit + materiał + brand; "nano szkła" jako wyróżnik technologiczny w tytule; brak wariantu w nazwie.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">80px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="110" onclick="scrollShot(110)">
+        <td class="col-lp">6</td>
+        <td class="col-etyk">★★★★★ 4.X (N opinii)</td>
+        <td class="col-el">Oceny / gwiazdki</td>
+        <td class="col-zaw">Agregat ocen z gwiazdkami i klikalnym linkiem do sekcji recenzji.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Gwiazdki wypełnione; liczba recenzji jako link; bezpośrednio pod tytułem; Okendo lub Judge.me jako silnik reviews Shopify.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">110px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="135" onclick="scrollShot(135)">
+        <td class="col-lp">7</td>
+        <td class="col-etyk">XX,XX PLN</td>
+        <td class="col-el">Cena</td>
+        <td class="col-zaw">Wyświetlenie ceny produktu — PLN. Ewentualna cena przekreślona przy promocji.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Cena wyraźna; brak przekreślonej ceny (lub jest jeśli trwa promo); czerwony/coral kolor ceny promocyjnej zgodny z brandingiem GLOV.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">135px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="160" onclick="scrollShot(160)">
+        <td class="col-lp">8</td>
+        <td class="col-etyk">Dodaj do koszyka</td>
+        <td class="col-el">CTA główne</td>
+        <td class="col-zaw">Przycisk Dodaj do koszyka — główny CTA zakupowy.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Pełnoszerokościowy lub szeroki przycisk; kolor ciemny (czarny lub coral — brand GLOV); biały tekst; wyraźny; bezpośrednio pod ceną — brak opcji "kup teraz" PayPal widocznej przy scrollu.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">160px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="195" onclick="scrollShot(195)">
+        <td class="col-lp">9</td>
+        <td class="col-etyk">Darmowa dostawa od X PLN</td>
+        <td class="col-el">Informacja o dostawie</td>
+        <td class="col-zaw">Krótki komunikat o warunkach dostawy pod CTA.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Mały szary tekst; ikonka paczki; brak ikon trust (brak Visa/Mastercard logo w tej strefie); prosty Shopify standard.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">195px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="260" onclick="scrollShot(260)">
+        <td class="col-lp">10</td>
+        <td class="col-etyk">Opis produktu</td>
+        <td class="col-el">Opis krótki / tagline</td>
+        <td class="col-zaw">Tekst opisujący działanie i korzyści produktu — kilka akapitów lub bullet lista pod informacją o dostawie.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Tekst benefit-focused; wspomnienie nano-szkła; bullets: bezbolesny / bez chemii / wielorazowy / eco; kontra vs kremów depilacyjnych; ciągły akapit lub listy; czarny tekst na białym tle.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">260px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="480" onclick="scrollShot(480)">
+        <td class="col-lp">11</td>
+        <td class="col-etyk">Jak działa nano szkło?</td>
+        <td class="col-el">Sekcja edukacyjna — nano_glass_explainer</td>
+        <td class="col-zaw">Sekcja wyjaśniająca mechanizm działania — ikony lub infografika z opisem jak nano-szkło delikatnie usuwa włosy przez tarcie.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Ikony + krótkie teksty; 3–4 punkty; styl: uproszczona infografika; brak zdjęć klinicznych; skupiony na "bezpieczne i delikatne" przekazie; tło jasne szare lub białe.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#2563eb18;color:#2563eb">scroll 1</span><br><span class="dim">480px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="700" onclick="scrollShot(700)">
+        <td class="col-lp">12</td>
+        <td class="col-etyk">[zdjęcia lifestyle]</td>
+        <td class="col-el">Sekcja lifestyle / użytkowa</td>
+        <td class="col-zaw">Zdjęcia modelki używającej urządzenia — stosowanie na nodze, łydce, pod pachą. Naturalne lub studiowe oświetlenie.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Jasne, naturalne tło; neutralna paleta; diverse modele lub jedna modelka; styl "codzienne beauty" a nie kliniczny; full-bleed layout sekcji; brak tekstu nakładanego na zdjęcia.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#2563eb18;color:#2563eb">scroll 1</span><br><span class="dim">700px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="920" onclick="scrollShot(920)">
+        <td class="col-lp">13</td>
+        <td class="col-etyk">Bez chemii / Eco / Wielorazowy</td>
+        <td class="col-el">Blok USP — eco_usp_block</td>
+        <td class="col-zaw">Rząd lub grid 3–4 ikon z krótkimi opisami: produkt bez chemii, wielorazowy, eco-friendly, bezbolesny.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Ikony minimalistyczne; kolor ikon coral/czerwony GLOV; teksty krótkie 2–4 słowa; białe tło; umieszczone w środkowej części PDP; buduje różnicowanie vs kremy Veet/Braun.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#2563eb18;color:#2563eb">scroll 1</span><br><span class="dim">920px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="1150" onclick="scrollShot(1150)">
+        <td class="col-lp">14</td>
+        <td class="col-etyk">Jak używać?</td>
+        <td class="col-el">Instrukcja użycia / kroki</td>
+        <td class="col-zaw">Instrukcja krok po kroku jak korzystać z nano-szkła — zwilż, masuj okrężnymi ruchami, spłucz.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Numerowane kroki lub ikonografika; 3–4 kroki; minimalistyczny styl; jasne tło; krótkie teksty per krok; brak video instruktażowego widocznego w tej sekcji.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#7c3aed18;color:#7c3aed">scroll 2</span><br><span class="dim">1150px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="1400" onclick="scrollShot(1400)">
+        <td class="col-lp">15</td>
+        <td class="col-etyk">★★★★★ Opinie klientów</td>
+        <td class="col-el">Recenzje klientów</td>
+        <td class="col-zaw">Sekcja z recenzjami — agregat ocen + lista indywidualnych recenzji z gwiazdkami, datą, treścią, imieniem.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Okendo lub Judge.me; filtry gwiazdkowe; sortowanie; recenzje ze zdjęciami klientów (jeśli Okendo); imię + data; brak weryfikacji zakupu widocznej. Objętość: duża sekcja.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#7c3aed18;color:#7c3aed">scroll 2</span><br><span class="dim">1400px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="1750" onclick="scrollShot(1750)">
+        <td class="col-lp">16</td>
+        <td class="col-etyk">Może Ci się spodobać</td>
+        <td class="col-el">Cross-sell / Produkty powiązane</td>
+        <td class="col-zaw">Karuzela lub grid produktów powiązanych z linii GLOV — inne produkty do ciała lub zestawy.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Kafelki produktów z zdjęciem + nazwa + cena; CTA per kafelek (Dodaj do koszyka lub link); Shopify "Related products" lub ReConvert/Frequently bought together app; 4–8 produktów.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#64748b18;color:#64748b">scroll 3+</span><br><span class="dim">1750px</span></td>
+      </tr>
+
+      </tbody>
+    </table>
+
+    <!-- DEVELOPER VIEW -->
+    <table class="scan-table" id="tbl-developer">
+      <thead><tr>
+        <th class="col-lp">LP</th>
+        <th class="col-etyk">Etykieta</th>
+        <th class="col-el">Typ elementu</th>
+        <th class="col-sel">Selektor CSS</th>
+        <th class="col-track">Tracking</th>
+        <th class="col-gtm">Parametry GTM / data-*</th>
+        <th class="col-obs-h">Obserwacje dev</th>
+      </tr></thead>
+      <tbody>
+      <tr class="el-row" data-top="0" onclick="scrollShot(0)">
+        <td class="col-lp">1</td><td class="col-etyk">Header</td><td class="col-el">nav</td>
+        <td class="col-sel"><code>header.site-header</code></td>
+        <td class="col-track"><span class="tbadge" style="background:#dbeafe;color:#1d4ed8">brak</span></td>
+        <td class="col-gtm">–</td>
+        <td class="col-obs" contenteditable="true" data-ph="selektor, eventy, data-*…">Shopify Liquid header; sticky via JS scroll listener; brak GTM datalayer push przy otwarciu nav.</td>
+      </tr>
+      <tr class="el-row" data-top="160" onclick="scrollShot(160)">
+        <td class="col-lp">8</td><td class="col-etyk">Dodaj do koszyka</td><td class="col-el">form[action="/cart/add"]</td>
+        <td class="col-sel"><code>form.product-form button[type="submit"]</code></td>
+        <td class="col-track"><span class="tbadge" style="background:#dcfce7;color:#166534">add_to_cart</span></td>
+        <td class="col-gtm"><span class="gtm">dataLayer.push({event:'add_to_cart'})</span></td>
+        <td class="col-obs" contenteditable="true" data-ph="selektor, eventy, data-*…">Shopify native form submit; event Klaviyo + GA4 add_to_cart; brak checkout widget (brak Shop Pay inline).</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- COMMENTS VIEW -->
+    <table class="scan-table" id="tbl-comments">
+      <thead><tr>
+        <th class="col-lp">LP</th>
+        <th class="col-etyk">Etykieta</th>
+        <th class="col-el">Typ</th>
+        <th class="col-obs-h">Komentarz strategiczny</th>
+      </tr></thead>
+      <tbody>
+      <tr class="el-row" data-top="80" onclick="scrollShot(80)">
+        <td class="col-lp">4</td><td class="col-etyk">Galeria</td><td class="col-el">Galeria produktu</td>
+        <td class="col-obs" contenteditable="true" data-ph="komentarz strategiczny…">SZANSA: brak zdjęć efektów (gładka skóra przed/po) — dodanie result shots zwiększyłoby konwersję w segmencie "wyniki" zamiast "technologia".</td>
+      </tr>
+      <tr class="el-row" data-top="920" onclick="scrollShot(920)">
+        <td class="col-lp">13</td><td class="col-etyk">USP Eco</td><td class="col-el">eco_usp_block</td>
+        <td class="col-obs" contenteditable="true" data-ph="komentarz strategiczny…">MOCNA RÓŻNICA vs Veet (jednorazowe kremy) i Braun (prąd/ładowarka) — "bez chemii / bez prądu / eco" to wyróżnik kategoryczny, nie tylko brandowy. Powinno być above fold.</td>
+      </tr>
+      <tr class="el-row" data-top="1400" onclick="scrollShot(1400)">
+        <td class="col-lp">15</td><td class="col-etyk">Recenzje</td><td class="col-el">Reviews</td>
+        <td class="col-obs" contenteditable="true" data-ph="komentarz strategiczny…">LUKA: brak UGC zdjęć "w użyciu" widocznych na PDP (vs LadyMakeup/konkurencja). Okendo umożliwia — warto aktywować photos w reviews widget.</td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="split-shot">
+    <img id="shot-img" class="shot-img"
+      data-desktop="depilator/research/screens/glov_desktop.png"
+      data-mobile="depilator/research/screens/glov_mobile.png"
+      src="depilator/research/screens/glov_desktop.png"
+      alt="GLOV Depilator screenshot">
+  </div>
+</div>
+
+<script>
+function scrollShot(px){
+  document.querySelector('.split-shot').scrollTop=px;
+  document.querySelectorAll('.el-row').forEach(r=>r.classList.remove('active'));
+  const rows=document.querySelectorAll('.el-row[data-top="'+px+'"]');
+  rows.forEach(r=>r.classList.add('active'));
+}
+function setView(v,btn){
+  document.body.className='';
+  if(v==='dev')document.body.classList.add('dev');
+  if(v==='comments')document.body.classList.add('comments');
+  document.querySelectorAll('.view-toggle .tbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function setVP(vp,btn){
+  const img=document.getElementById('shot-img');
+  img.src=img.dataset[vp];
+  document.querySelectorAll('.vp-toggle .tbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

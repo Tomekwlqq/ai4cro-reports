@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head><meta charset="UTF-8"><title>Veet — Vision Scan</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f8fafc;color:#1e293b;font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.page-header{padding:10px 20px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.client-name{font-size:16px;font-weight:800}
+.scan-meta{color:#94a3b8;font-size:11px}
+.header-right{margin-left:auto;display:flex;gap:8px}
+.toggle-group{display:flex;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden}
+.tbtn{padding:5px 12px;background:#fff;border:none;cursor:pointer;font-size:12px;font-weight:500;color:#64748b;border-right:1px solid #e2e8f0;transition:all .12s}
+.tbtn:last-child{border-right:none}
+.tbtn.active{background:#1e293b;color:#fff}
+.new-block{margin:8px 16px;padding:8px 12px;background:#fef3c7;border:1px solid #fde68a;border-radius:6px;font-size:12px;flex-shrink:0}
+.new-block ul{margin-top:4px;padding-left:18px;line-height:1.8}
+.split-view{display:flex;flex:1;overflow:hidden}
+.split-table{flex:0 0 62%;overflow-y:auto}
+.split-shot{flex:0 0 38%;border-left:2px solid #e2e8f0;overflow-y:auto;background:#f1f5f9;scroll-behavior:smooth}
+.shot-img{width:100%;display:block}
+.scan-table{width:100%;border-collapse:collapse}
+.scan-table thead{position:sticky;top:0;z-index:5}
+.scan-table th{background:#f1f5f9;padding:8px 10px;text-align:left;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+.scan-table td{padding:7px 10px;border-bottom:1px solid #f1f5f9;vertical-align:top;font-size:12px}
+.el-row{cursor:pointer;transition:background .1s}
+.el-row:hover td{background:#f0f9ff}
+.el-row.active td{background:#e0f2fe}
+.col-lp{width:28px;color:#94a3b8;font-size:11px;text-align:right;padding-right:6px}
+.col-el{width:170px;font-weight:600;color:#0f172a}
+.col-etyk{width:200px;color:#0f172a;font-weight:600}
+.col-zaw{color:#475569;line-height:1.5;font-size:12.5px}
+.col-p{width:34px;text-align:center;font-size:15px}
+.th-sub{font-weight:400;color:#94a3b8;font-size:10px}
+.col-pos{width:110px;white-space:nowrap}
+.zbadge{font-size:10px;font-weight:600;padding:2px 5px;border-radius:3px}
+.dim{color:#94a3b8;font-size:10px}
+.view-toggle{margin-right:8px}
+.stack-panel{margin:8px 16px;padding:8px 12px;background:#ecfeff;border:1px solid #a5f3fc;border-radius:6px;font-size:11.5px;flex-shrink:0;line-height:2}
+.chip{display:inline-block;background:rgba(14,116,144,.08);color:var(--c,#0e7490);border:1px solid rgba(14,116,144,.25);font-weight:600;font-size:11px;padding:2px 8px;border-radius:5px;margin:0 4px}
+.col-sel{width:230px}.col-sel code{font-size:11px;color:#0f766e;background:#f0fdfa;padding:1px 5px;border-radius:4px;word-break:break-all}
+.col-track{width:100px}.tbadge{font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;white-space:nowrap}
+.col-gtm{width:180px}.gtm{font-size:10.5px;color:#92400e;background:#fef3c7;padding:1px 5px;border-radius:4px}
+#tbl-developer{display:none}
+#tbl-comments{display:none}
+body.dev #tbl-shopper{display:none}
+body.dev #tbl-developer{display:table}
+body.comments #tbl-shopper{display:none}
+body.comments #tbl-comments{display:table}
+.col-obs,.col-obs-h{width:240px;border-left:2px solid #f3e8ff}
+.col-obs{background:#faf5ff;color:#6b21a8;font-size:12px;line-height:1.5;cursor:text;outline:none}
+.col-obs:empty::before{content:attr(data-ph);color:#c4b5d4;font-style:italic}
+.col-obs:focus{background:#f3e8ff;box-shadow:inset 0 0 0 2px #d8b4fe}
+.col-obs-h{color:#7c3aed}
+</style></head>
+<body>
+<div class="page-header">
+  <div>
+    <span class="client-name">Veet — Krem do depilacji</span>
+    <span class="scan-meta"> — Vision Scan — 2026-08-06 — <a href="https://www.veet.pl/produkty/kremy-do-depilacji/09-23veet-professional-krem-do-depilacji-do-wszystkich-rodzajow-skory-400-ml/" target="_blank">veet.pl/produkty/…/09-23veet-professional-krem-do-depilacji-400-ml/</a> — platforma: Sitecore/custom FMCG</span>
+  </div>
+  <div class="header-right">
+    <div class="toggle-group view-toggle">
+      <button class="tbtn active" onclick="setView('shopper',this)">🛍 Shopper</button>
+      <button class="tbtn" onclick="setView('dev',this)">⚙️ Dev</button>
+      <button class="tbtn" onclick="setView('comments',this)">💬 Comments</button>
+    </div>
+    <div class="toggle-group vp-toggle">
+      <button class="tbtn active" onclick="setVP('desktop',this)">🖥 Desktop</button>
+      <button class="tbtn" onclick="setVP('mobile',this)">📱 Mobile</button>
+    </div>
+  </div>
+</div>
+
+<div class="stack-panel"><b>🔧 Tech stack:</b>
+  <span class="chip" style="--c:#7c3aed">Sitecore/Custom CMS</span>
+  <span class="chip" style="--c:#dc2626">Reckitt (global brand)</span>
+  <span class="chip" style="--c:#0369a1">PL locale</span>
+  <span class="chip" style="--c:#64748b">Brak koszyka</span>
+  <span class="chip" style="--c:#b45309">Redirect do retailerów</span>
+</div>
+
+<div class="new-block"><b>🆕 Nowe typy elementów (do elements_master.json):</b><ul>
+  <li><b>retailer_redirect_cta</b> — CTA "Kup teraz" / "Gdzie kupić" otwiera listę retailerów (Rossmann, Hebe, Allegro, Drogerie) zamiast bezpośredniego koszyka; model FMCG brand site bez D2C</li>
+  <li><b>inci_ingredients_block</b> — pełna lista składników INCI (wymagana prawnie dla kosmetyków); nieobecna u urządzeń mechanicznych (GLOV/Braun); specyfika chemicznych kremów depilacyjnych</li>
+  <li><b>regulatory_warning_block</b> — blok ostrzeżeń bezpieczeństwa i środków ostrożności; wymagany regulatoryjnie dla kosmetyków z aktywnymi składnikami chemicznymi (thioglycolate)</li>
+</ul></div>
+
+<div class="split-view">
+  <div class="split-table">
+
+    <table class="scan-table" id="tbl-shopper">
+      <thead><tr>
+        <th class="col-lp">LP</th>
+        <th class="col-etyk">Etykieta <span class="th-sub">(jak jest)</span></th>
+        <th class="col-el">Typ / rola obiektu</th>
+        <th>Zawartość / akcje</th>
+        <th class="col-obs-h">Obserwacje <span class="th-sub">(→ baza)</span></th>
+        <th class="col-p" title="personalizacja">P</th>
+        <th class="col-pos">Pozycja</th>
+      </tr></thead>
+      <tbody>
+
+      <tr class="el-row" data-top="0" onclick="scrollShot(0)">
+        <td class="col-lp">1</td>
+        <td class="col-etyk">Veet</td>
+        <td class="col-el">Header / nawigacja</td>
+        <td class="col-zaw">Logo Veet (zielono-białe), menu (Produkty, Jak depilować, Twoja skóra, Porady, FAQ), ikony wyszukiwania.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Zielone logo Veet na białym tle; menu brand-site (nie e-commerce); brak ikony koszyka — brand site bez sklepu; nawigacja edukacyjna (Porady, Jak depilować) zamiast kategorii produktowych.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">0px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="60" onclick="scrollShot(60)">
+        <td class="col-lp">2</td>
+        <td class="col-etyk">Produkty / Kremy / Professional</td>
+        <td class="col-el">Breadcrumbs</td>
+        <td class="col-zaw">Ścieżka: Strona główna / Produkty / Kremy do depilacji / Veet Professional.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">PL breadcrumbs; strukturalizacja pod "Kremy do depilacji" (kategoria); "Professional" jako pod-tier.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">60px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="100" onclick="scrollShot(100)">
+        <td class="col-lp">3</td>
+        <td class="col-etyk">[packshot FMCG]</td>
+        <td class="col-el">Galeria packshot</td>
+        <td class="col-zaw">Zdjęcia opakowania produktu — tuba/butelka kremu na białym tle. Widok przód i tył.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">FMCG packshot — zdjęcia opakowania (tuby), nie urządzenia; białe tło; widok frontu + tyłu z etykietą; brak zdjęć lifestyle czy modeli; styl: katalog produktowy, nie aspiracyjny.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">100px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="100" onclick="scrollShot(100)">
+        <td class="col-lp">4</td>
+        <td class="col-etyk">Veet Professional — Krem do depilacji do wszystkich rodzajów skóry 400 ml</td>
+        <td class="col-el">Tytuł produktu (H1)</td>
+        <td class="col-zaw">H1 z brand + tier + opis + pojemność.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Długi opisowy tytuł; "Professional" = tier jakościowy; "do wszystkich rodzajów skóry" = szeroki claim; "400 ml" = wartość/size w nazwie; format FMCG (brand + opis użycia + rozmiar); brak benefit "bezbolesny" w tytule.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">100px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="140" onclick="scrollShot(140)">
+        <td class="col-lp">5</td>
+        <td class="col-etyk">Delikatna formuła / 3 minuty wystarczą</td>
+        <td class="col-el">Opis krótki / key claims</td>
+        <td class="col-zaw">Krótki tekst z kluczowymi claimami produktu pod tytułem.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">3-4 zdania lub bullets; "3 minuty wystarczą" jako UTP czasowy; "delikatna formuła" jako kontra dla szkodliwości; brak ceny (brand site nie sprzedaje direct); claims aspiracyjne.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">140px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="200" onclick="scrollShot(200)">
+        <td class="col-lp">6</td>
+        <td class="col-etyk">Gdzie kupić / Kup teraz</td>
+        <td class="col-el">CTA "Gdzie kupić" — retailer_redirect_cta</td>
+        <td class="col-zaw">Przycisk/link otwierający listę sprzedawców: Rossmann, Hebe, Allegro, Biedronka, Drogerie.pl itp.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Zielony przycisk "Gdzie kupić" lub "Kup teraz"; brak koszyka na stronie; po kliknięciu: lista retailerów z linkami; model FMCG brand site — Reckitt nie sprzedaje direct w PL; shopper musi przejść do Rossmann/Hebe/Allegro; jeden click więcej vs GLOV/Malowidło.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">200px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="360" onclick="scrollShot(360)">
+        <td class="col-lp">7</td>
+        <td class="col-etyk">Jak używać w 3 krokach</td>
+        <td class="col-el">Instrukcja użycia / kroki</td>
+        <td class="col-zaw">Sekcja "Jak używać" — 3 kroki: Nanieś / Odczekaj / Usuń szpatułką.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Numerowane kroki 1-2-3; ikony lub piktogramy per krok; czas: 3-10 minut (zależy od strefy); tekst instruktażowy; tło kolorowe (zielone Veet lub białe); kluczowe dla edukacji nowych użytkowników kremów depilacyjnych.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#2563eb18;color:#2563eb">scroll 1</span><br><span class="dim">360px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="560" onclick="scrollShot(560)">
+        <td class="col-lp">8</td>
+        <td class="col-etyk">Kluczowe korzyści</td>
+        <td class="col-el">Sekcja korzyści / USP grid</td>
+        <td class="col-zaw">Grid 3-4 ikon z opisami korzyści — delikatna skóra po, 3 min, do wszystkich stref ciała, bez bólu.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Ikony zielone Veet; krótkie teksty per ikona; tło białe lub jasnozielone; benefit-focused; "bez bólu" jako claim — rywalizacja z epilatorami elektrycznymi (Braun).</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#2563eb18;color:#2563eb">scroll 1</span><br><span class="dim">560px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="760" onclick="scrollShot(760)">
+        <td class="col-lp">9</td>
+        <td class="col-etyk">Składniki / INCI</td>
+        <td class="col-el">Lista składników — inci_ingredients_block</td>
+        <td class="col-zaw">Pełna lista składników INCI produktu — wymagana prawnie dla kosmetyków.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Lista INCI w małej czcionce; format: "Aqua, Calcium Thioglycolate..."; wymagana prawnie; nieatrakcyjna wizualnie ale niezbędna; specyfika kremów (nieobecna u GLOV/Braun); shopper niezainteresowany typowo.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#2563eb18;color:#2563eb">scroll 1</span><br><span class="dim">760px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="950" onclick="scrollShot(950)">
+        <td class="col-lp">10</td>
+        <td class="col-etyk">Środki ostrożności / Ostrzeżenia</td>
+        <td class="col-el">Blok ostrzeżeń — regulatory_warning_block</td>
+        <td class="col-zaw">Blok ostrzeżeń bezpieczeństwa — nie stosować na twarz/okolice intymne, test skórny przed użyciem, unikać kontaktu z oczami.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Tekst czarny lub na żółtym/czerwonym tle ostrzegawczym; wymagany regulatoryjnie dla thioglycolate; duży blok tekstu; nieobecny u GLOV/Braun — urządzenia mechaniczne nie wymagają; wzmacnia postrzegane ryzyko chemikaliów.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#7c3aed18;color:#7c3aed">scroll 2</span><br><span class="dim">950px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="1150" onclick="scrollShot(1150)">
+        <td class="col-lp">11</td>
+        <td class="col-etyk">Najczęściej zadawane pytania</td>
+        <td class="col-el">FAQ / akordeony</td>
+        <td class="col-zaw">Sekcja FAQ z rozwijalnymi pytaniami — kiedy efekty, dla jakiej skóry, jak często stosować.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Akordeony; pytania: zastosowanie, bezpieczeństwo, efekty, czas; tło białe; typowy edukacyjny element brand site; obsługuje obawy user pre-purchase; brak FAQ na GLOV.co PDP.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#7c3aed18;color:#7c3aed">scroll 2</span><br><span class="dim">1150px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="1400" onclick="scrollShot(1400)">
+        <td class="col-lp">12</td>
+        <td class="col-etyk">Inne produkty Veet</td>
+        <td class="col-el">Cross-sell / brand range</td>
+        <td class="col-zaw">Karuzela lub grid innych produktów Veet — inne kremy, żele, zestawy.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Kafelki produktów Veet; linkuje do PDP innych wariantów; brak CTA "Kup teraz" na kartach (brand site); podtrzymanie w ekosystemie Veet; brak produktów partnerów/konkurencji.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#64748b18;color:#64748b">scroll 3+</span><br><span class="dim">1400px</span></td>
+      </tr>
+
+      </tbody>
+    </table>
+
+    <table class="scan-table" id="tbl-developer">
+      <thead><tr>
+        <th class="col-lp">LP</th><th class="col-etyk">Etykieta</th><th class="col-el">Typ</th>
+        <th class="col-sel">Selektor</th><th class="col-track">Tracking</th>
+        <th class="col-gtm">GTM</th><th class="col-obs-h">Dev notes</th>
+      </tr></thead>
+      <tbody>
+      <tr class="el-row" data-top="200" onclick="scrollShot(200)">
+        <td class="col-lp">6</td><td class="col-etyk">Gdzie kupić</td><td class="col-el">a.retailer-cta</td>
+        <td class="col-sel"><code>.buy-now-cta, .where-to-buy button</code></td>
+        <td class="col-track"><span class="tbadge" style="background:#dcfce7;color:#166534">click event</span></td>
+        <td class="col-gtm"><span class="gtm">GA4: click, category=where_to_buy</span></td>
+        <td class="col-obs" contenteditable="true" data-ph="dev notes…">Kliknięcie śledzone GA4/GTM jako event; otwiera modal lub nową stronę z listą retailerów; Reckitt global tracking via GTM.</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <table class="scan-table" id="tbl-comments">
+      <thead><tr>
+        <th class="col-lp">LP</th><th class="col-etyk">Etykieta</th><th class="col-el">Typ</th>
+        <th class="col-obs-h">Komentarz strategiczny</th>
+      </tr></thead>
+      <tbody>
+      <tr class="el-row" data-top="200" onclick="scrollShot(200)">
+        <td class="col-lp">6</td><td class="col-etyk">Gdzie kupić</td><td class="col-el">retailer_redirect_cta</td>
+        <td class="col-obs" contenteditable="true" data-ph="komentarz…">KLUCZOWA RÓŻNICA MODELU: Veet = brand site bez sklepu → 2 kliki więcej do zakupu niż GLOV/Malowidło. Shopper musi: (1) kliknąć "Gdzie kupić" → (2) wybrać retailera → (3) iść do innej strony → (4) kupić. Tarcie zakupowe x4 vs GLOV add_to_cart. Kompensowane masową dystrybucją offline.</td>
+      </tr>
+      <tr class="el-row" data-top="950" onclick="scrollShot(950)">
+        <td class="col-lp">10</td><td class="col-etyk">Ostrzeżenia</td><td class="col-el">regulatory_warning_block</td>
+        <td class="col-obs" contenteditable="true" data-ph="komentarz…">INSIGHT konkurencyjny: duży blok ostrzeżeń chemicznych to implicite argument ZA GLOV/epilatorami mechanicznymi. "Bez chemii" GLOV jako antyteza. Veet musi te ostrzeżenia pokazywać (prawo) — GLOV nie musi (urządzenie). Asymetria prawna = szansa copywritingowa dla GLOV.</td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="split-shot">
+    <img id="shot-img" class="shot-img"
+      data-desktop="depilator/research/screens/veet_desktop.png"
+      data-mobile="depilator/research/screens/veet_mobile.png"
+      src="depilator/research/screens/veet_desktop.png"
+      alt="Veet Depilator screenshot">
+  </div>
+</div>
+
+<script>
+function scrollShot(px){
+  document.querySelector('.split-shot').scrollTop=px;
+  document.querySelectorAll('.el-row').forEach(r=>r.classList.remove('active'));
+  document.querySelectorAll('.el-row[data-top="'+px+'"]').forEach(r=>r.classList.add('active'));
+}
+function setView(v,btn){
+  document.body.className='';
+  if(v==='dev')document.body.classList.add('dev');
+  if(v==='comments')document.body.classList.add('comments');
+  document.querySelectorAll('.view-toggle .tbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function setVP(vp,btn){
+  const img=document.getElementById('shot-img');
+  img.src=img.dataset[vp];
+  document.querySelectorAll('.vp-toggle .tbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

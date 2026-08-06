@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head><meta charset="UTF-8"><title>Malowidło — Vision Scan</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f8fafc;color:#1e293b;font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.page-header{padding:10px 20px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.client-name{font-size:16px;font-weight:800}
+.scan-meta{color:#94a3b8;font-size:11px}
+.header-right{margin-left:auto;display:flex;gap:8px}
+.toggle-group{display:flex;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden}
+.tbtn{padding:5px 12px;background:#fff;border:none;cursor:pointer;font-size:12px;font-weight:500;color:#64748b;border-right:1px solid #e2e8f0;transition:all .12s}
+.tbtn:last-child{border-right:none}
+.tbtn.active{background:#1e293b;color:#fff}
+.new-block{margin:8px 16px;padding:8px 12px;background:#fef3c7;border:1px solid #fde68a;border-radius:6px;font-size:12px;flex-shrink:0}
+.new-block ul{margin-top:4px;padding-left:18px;line-height:1.8}
+.split-view{display:flex;flex:1;overflow:hidden}
+.split-table{flex:0 0 62%;overflow-y:auto}
+.split-shot{flex:0 0 38%;border-left:2px solid #e2e8f0;overflow-y:auto;background:#f1f5f9;scroll-behavior:smooth}
+.shot-img{width:100%;display:block}
+.scan-table{width:100%;border-collapse:collapse}
+.scan-table thead{position:sticky;top:0;z-index:5}
+.scan-table th{background:#f1f5f9;padding:8px 10px;text-align:left;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+.scan-table td{padding:7px 10px;border-bottom:1px solid #f1f5f9;vertical-align:top;font-size:12px}
+.el-row{cursor:pointer;transition:background .1s}
+.el-row:hover td{background:#f0f9ff}
+.el-row.active td{background:#e0f2fe}
+.col-lp{width:28px;color:#94a3b8;font-size:11px;text-align:right;padding-right:6px}
+.col-el{width:170px;font-weight:600;color:#0f172a}
+.col-etyk{width:200px;color:#0f172a;font-weight:600}
+.col-zaw{color:#475569;line-height:1.5;font-size:12.5px}
+.col-p{width:34px;text-align:center;font-size:15px}
+.th-sub{font-weight:400;color:#94a3b8;font-size:10px}
+.col-pos{width:110px;white-space:nowrap}
+.zbadge{font-size:10px;font-weight:600;padding:2px 5px;border-radius:3px}
+.dim{color:#94a3b8;font-size:10px}
+.new-badge{background:#fde68a;color:#92400e;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:6px;vertical-align:middle}
+.view-toggle{margin-right:8px}
+.stack-panel{margin:8px 16px;padding:8px 12px;background:#ecfeff;border:1px solid #a5f3fc;border-radius:6px;font-size:11.5px;flex-shrink:0;line-height:2}
+.chip{display:inline-block;background:rgba(14,116,144,.08);color:var(--c,#0e7490);border:1px solid rgba(14,116,144,.25);font-weight:600;font-size:11px;padding:2px 8px;border-radius:5px;margin:0 4px}
+.col-sel{width:230px}.col-sel code{font-size:11px;color:#0f766e;background:#f0fdfa;padding:1px 5px;border-radius:4px;word-break:break-all}
+.col-track{width:100px}.tbadge{font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;white-space:nowrap}
+.col-gtm{width:180px}.gtm{font-size:10.5px;color:#92400e;background:#fef3c7;padding:1px 5px;border-radius:4px}
+.col-cls{color:#94a3b8}
+#tbl-developer{display:none}
+#tbl-comments{display:none}
+body.dev #tbl-shopper{display:none}
+body.dev #tbl-developer{display:table}
+body.comments #tbl-shopper{display:none}
+body.comments #tbl-comments{display:table}
+.col-kom{color:#475569;line-height:1.55;font-size:12.5px}
+.col-obs,.col-obs-h{width:240px;border-left:2px solid #f3e8ff}
+.col-obs{background:#faf5ff;color:#6b21a8;font-size:12px;line-height:1.5;cursor:text;outline:none}
+.col-obs:empty::before{content:attr(data-ph);color:#c4b5d4;font-style:italic}
+.col-obs:focus{background:#f3e8ff;box-shadow:inset 0 0 0 2px #d8b4fe}
+.col-obs-h{color:#7c3aed}
+</style></head>
+<body>
+<div class="page-header">
+  <div>
+    <span class="client-name">Malowidło — Depilator</span>
+    <span class="scan-meta"> — Vision Scan — 2026-08-06 — <a href="https://malowidlo.pl/bezbolesny-depilator-depilacja-zluszczajaca-p-582.html" target="_blank">malowidlo.pl/bezbolesny-depilator-depilacja-zluszczajaca-p-582.html</a> — platforma: PrestaShop</span>
+  </div>
+  <div class="header-right">
+    <div class="toggle-group view-toggle">
+      <button class="tbtn active" onclick="setView('shopper',this)">🛍 Shopper</button>
+      <button class="tbtn" onclick="setView('dev',this)">⚙️ Dev</button>
+      <button class="tbtn" onclick="setView('comments',this)">💬 Comments</button>
+    </div>
+    <div class="toggle-group vp-toggle">
+      <button class="tbtn active" onclick="setVP('desktop',this)">🖥 Desktop</button>
+      <button class="tbtn" onclick="setVP('mobile',this)">📱 Mobile</button>
+    </div>
+  </div>
+</div>
+
+<div class="stack-panel"><b>🔧 Tech stack:</b>
+  <span class="chip" style="--c:#dc2626">PrestaShop</span>
+  <span class="chip" style="--c:#64748b">PHP</span>
+  <span class="chip" style="--c:#0369a1">Native reviews</span>
+  <span class="chip" style="--c:#0891b2">PL locale</span>
+</div>
+
+<div class="new-block"><b>🆕 Nowe typy elementów (do elements_master.json):</b><ul>
+  <li><b>ps_sku_reference</b> — pole SKU/Reference widoczne na karcie produktu; standard PrestaShop; nieobecne u Shopify/premium brandów</li>
+  <li><b>ps_social_share</b> — rząd przycisków social sharing (FB/Tweet/Pinterest) pod CTA; natywny PS moduł; typowy feature starego e-commerce PL</li>
+  <li><b>ps_tabs_desc</b> — zakładki Opis / Dane techniczne / Recenzje jako nawigacja po treści PDP; standard PrestaShop zamiast continuous scroll</li>
+</ul></div>
+
+<div class="split-view">
+  <div class="split-table">
+
+    <table class="scan-table" id="tbl-shopper">
+      <thead><tr>
+        <th class="col-lp">LP</th>
+        <th class="col-etyk">Etykieta <span class="th-sub">(jak jest)</span></th>
+        <th class="col-el">Typ / rola obiektu</th>
+        <th>Zawartość / akcje</th>
+        <th class="col-obs-h">Obserwacje <span class="th-sub">(→ baza)</span></th>
+        <th class="col-p" title="personalizacja">P</th>
+        <th class="col-pos">Pozycja</th>
+      </tr></thead>
+      <tbody>
+
+      <tr class="el-row" data-top="0" onclick="scrollShot(0)">
+        <td class="col-lp">1</td>
+        <td class="col-etyk">Malowidło</td>
+        <td class="col-el">Header / nawigacja</td>
+        <td class="col-zaw">Logo Malowidło po lewej, menu poziome (Makijaż, Pielęgnacja, Narzędzia, Marki, Sale), ikony koszyka i konta po prawej. Wyszukiwarka.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Białe lub jasne tło; logo brand; menu poziome z kategoriami beauty; klasyczny układ PrestaShop; brak sticky w starszych szablonach PS.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">0px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="45" onclick="scrollShot(45)">
+        <td class="col-lp">2</td>
+        <td class="col-etyk">Strona główna / Depilacja</td>
+        <td class="col-el">Breadcrumbs</td>
+        <td class="col-zaw">Ścieżka: Strona główna > Pielęgnacja > Depilacja > Bezbolesny Depilator.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Standardowy PS breadcrumb; mały szary tekst; linkowany; chevron separator.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">45px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="75" onclick="scrollShot(75)">
+        <td class="col-lp">3</td>
+        <td class="col-etyk">[packshot produkt]</td>
+        <td class="col-el">Galeria produktu</td>
+        <td class="col-zaw">Zdjęcia produktu — główne na białym tle, miniaturki pod lub obok. Depilator z nano-szkła lub podobne urządzenie.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">2–4 zdjęcia packshot; białe tło dominuje; brak lifestyle shots; średnia jakość fotografii vs GLOV; miniaturki poziome pod zdjęciem (PS standard); brak zoom przy hover lub basic lightbox.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">75px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="75" onclick="scrollShot(75)">
+        <td class="col-lp">4</td>
+        <td class="col-etyk">Bezbolesny Depilator — Depilacja Złuszczająca</td>
+        <td class="col-el">Tytuł produktu (H1)</td>
+        <td class="col-zaw">Tytuł produktu z benefit "bezbolesny" i opisem metody "złuszczająca".</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Benefit-led tytuł (bezbolesny); metoda w tytule (złuszczająca); brak brand name w H1; format: benefit + metoda; czarny tekst, standard PS.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">75px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="105" onclick="scrollShot(105)">
+        <td class="col-lp">5</td>
+        <td class="col-etyk">Ref: XXXX</td>
+        <td class="col-el">SKU / Reference — ps_sku_reference</td>
+        <td class="col-zaw">Numer referencyjny produktu wyświetlony na karcie — natywny PS feature.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Mały szary tekst "Ref: [numer]"; brak u GLOV/Braun/Veet; typowy relikt PS; nieistotny dla shopperów, ale widoczny; obniża premium feel.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">105px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="120" onclick="scrollShot(120)">
+        <td class="col-lp">6</td>
+        <td class="col-etyk">Dostępny</td>
+        <td class="col-el">Status dostępności</td>
+        <td class="col-zaw">Wskaźnik dostępności produktu — "Dostępny" lub "Niedostępny".</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Zielony badge "Dostępny" lub czerwony; natywny PS stock status; brak dokładnej ilości; standard PS.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">120px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="140" onclick="scrollShot(140)">
+        <td class="col-lp">7</td>
+        <td class="col-etyk">XX,XX PLN</td>
+        <td class="col-el">Cena</td>
+        <td class="col-zaw">Wyświetlenie ceny produktu w PLN. Ewentualna cena przekreślona.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Cena wyraźna; ciemny tekst lub czerwony akcent promo; PS standardowy format PLN; brak wyceny ratalne / pay later.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">140px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="165" onclick="scrollShot(165)">
+        <td class="col-lp">8</td>
+        <td class="col-etyk">Ilość: [1] Dodaj do koszyka</td>
+        <td class="col-el">Selektor ilości + CTA</td>
+        <td class="col-zaw">Spinner/pole ilości + przycisk "Dodaj do koszyka" — natywny PS zakup.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Spinner ilości (+-) obok pola; przycisk CTA; brak "Kup teraz"; brak Shop Pay/BLIK; standard PS bez dodatkowych płatności express; niższa konwersja vs Shopify z Shop Pay.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">165px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="200" onclick="scrollShot(200)">
+        <td class="col-lp">9</td>
+        <td class="col-etyk">f t p</td>
+        <td class="col-el">Social sharing — ps_social_share</td>
+        <td class="col-zaw">Rząd przycisków udostępniania: Facebook, Twitter/X, Pinterest.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Natywny PS social share moduł; małe ikony; brak Instagram/TikTok; umieszczone zaraz po CTA — zużywa cenną przestrzeń strefy decyzyjnej na nieistotny feature; charakterystyczny relikt starszego e-commerce.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">200px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="280" onclick="scrollShot(280)">
+        <td class="col-lp">10</td>
+        <td class="col-etyk">Opis / Dane techniczne / Recenzje</td>
+        <td class="col-el">Zakładki treści PDP — ps_tabs_desc</td>
+        <td class="col-zaw">System zakładek do nawigowania między opisem produktu, specyfikacją techniczną i recenzjami.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Natywny PS tab system; domyślna zakładka: Opis; tekst opisowy w zakładce Opis (nie visible on scroll jak u Shopify); shopper musi kliknąć zakładkę by zobaczyć spec/recenzje — niższy discovery treści.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">280px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="350" onclick="scrollShot(350)">
+        <td class="col-lp">11</td>
+        <td class="col-etyk">[tekst opisowy]</td>
+        <td class="col-el">Opis produktu (zakładka Opis)</td>
+        <td class="col-zaw">Dłuższy tekst opisujący produkt — korzyści, sposób działania, materiały.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Tekst ciągły lub bullets; brak wyraźnej infografiki; styl: opisowy, nie benefit-driven; jakość kopii przeciętna; brak wyróżnień benefitów; HTML tekst bez dodatkowej typografii.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#2563eb18;color:#2563eb">scroll 1</span><br><span class="dim">350px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="550" onclick="scrollShot(550)">
+        <td class="col-lp">12</td>
+        <td class="col-etyk">[tabela spec]</td>
+        <td class="col-el">Dane techniczne (zakładka)</td>
+        <td class="col-zaw">Tabela z parametrami: materiał, wymiary, kolor, waga itp.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Klasyczna tabela PS; wiersze: parametr / wartość; szare paski alternating; zawiera dane SKU, materiał, wymiary; minimum informacji przydatnych dla shopperów.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#2563eb18;color:#2563eb">scroll 1</span><br><span class="dim">550px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="750" onclick="scrollShot(750)">
+        <td class="col-lp">13</td>
+        <td class="col-etyk">Recenzje (N)</td>
+        <td class="col-el">Recenzje klientów (zakładka)</td>
+        <td class="col-zaw">Sekcja recenzji — gwiazdki + lista opinii klientów. Natywny system recenzji PS lub brak.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Natywny PS reviews lub brak recenzji; brak zaawansowanych filtrów; brak zdjęć klientów; brak weryfikacji zakupu; prosty system lub zupełny brak — słaby trust builder vs Shopify z Okendo.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#2563eb18;color:#2563eb">scroll 1</span><br><span class="dim">750px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="950" onclick="scrollShot(950)">
+        <td class="col-lp">14</td>
+        <td class="col-etyk">Klienci kupili też</td>
+        <td class="col-el">Produkty powiązane</td>
+        <td class="col-zaw">Grid produktów powiązanych lub "klienci kupili też" — natywny PS cross-sell.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">PS standard cross-sell; kafelki z zdjęciem + nazwa + cena; brak "Quick Add"; bez zaawansowanego algorytmu rekomendacji (brak ML/AI-powered suggestions jak u Shopify).</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#7c3aed18;color:#7c3aed">scroll 2</span><br><span class="dim">950px</span></td>
+      </tr>
+
+      </tbody>
+    </table>
+
+    <table class="scan-table" id="tbl-developer">
+      <thead><tr>
+        <th class="col-lp">LP</th><th class="col-etyk">Etykieta</th><th class="col-el">Typ</th>
+        <th class="col-sel">Selektor CSS</th><th class="col-track">Tracking</th>
+        <th class="col-gtm">Parametry GTM</th><th class="col-obs-h">Obserwacje dev</th>
+      </tr></thead>
+      <tbody>
+      <tr class="el-row" data-top="165" onclick="scrollShot(165)">
+        <td class="col-lp">8</td><td class="col-etyk">Dodaj do koszyka</td><td class="col-el">form[action*="/cart"]</td>
+        <td class="col-sel"><code>#add_to_cart, button.btn-cart</code></td>
+        <td class="col-track"><span class="tbadge" style="background:#fef3c7;color:#92400e">nieznany</span></td>
+        <td class="col-gtm">–</td>
+        <td class="col-obs" contenteditable="true" data-ph="selektor, eventy…">PrestaShop native cart add; brak GTM datalayer pewne; brak GA4 enhanced ecommerce; prawdopodobnie tylko UA lub brak śledzenia.</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <table class="scan-table" id="tbl-comments">
+      <thead><tr>
+        <th class="col-lp">LP</th><th class="col-etyk">Etykieta</th><th class="col-el">Typ</th>
+        <th class="col-obs-h">Komentarz strategiczny</th>
+      </tr></thead>
+      <tbody>
+      <tr class="el-row" data-top="200" onclick="scrollShot(200)">
+        <td class="col-lp">9</td><td class="col-etyk">Social share</td><td class="col-el">ps_social_share</td>
+        <td class="col-obs" contenteditable="true" data-ph="komentarz…">PROBLEM: social share przyciski zajmują miejsce w strefie decyzyjnej CTA — nikt ich nie używa (CTR social share < 0.1%). Powinny być ukryte lub przeniesione do footera PDP.</td>
+      </tr>
+      <tr class="el-row" data-top="280" onclick="scrollShot(280)">
+        <td class="col-lp">10</td><td class="col-etyk">Zakładki</td><td class="col-el">ps_tabs_desc</td>
+        <td class="col-obs" contenteditable="true" data-ph="komentarz…">PROBLEM: zakładkowy układ treści chowa opis i recenzje — shopper musi aktywnie klikać by zobaczyć kluczowe treści. W Shopify/Braun treści są "on scroll" (wyższy discovery). Zakładki = friction.</td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="split-shot">
+    <img id="shot-img" class="shot-img"
+      data-desktop="depilator/research/screens/malowidlo_desktop.png"
+      data-mobile="depilator/research/screens/malowidlo_mobile.png"
+      src="depilator/research/screens/malowidlo_desktop.png"
+      alt="Malowidło Depilator screenshot">
+  </div>
+</div>
+
+<script>
+function scrollShot(px){
+  document.querySelector('.split-shot').scrollTop=px;
+  document.querySelectorAll('.el-row').forEach(r=>r.classList.remove('active'));
+  document.querySelectorAll('.el-row[data-top="'+px+'"]').forEach(r=>r.classList.add('active'));
+}
+function setView(v,btn){
+  document.body.className='';
+  if(v==='dev')document.body.classList.add('dev');
+  if(v==='comments')document.body.classList.add('comments');
+  document.querySelectorAll('.view-toggle .tbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function setVP(vp,btn){
+  const img=document.getElementById('shot-img');
+  img.src=img.dataset[vp];
+  document.querySelectorAll('.vp-toggle .tbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

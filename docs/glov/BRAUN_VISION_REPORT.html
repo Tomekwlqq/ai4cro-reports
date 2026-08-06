@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head><meta charset="UTF-8"><title>Braun Silk-épil 9 — Vision Scan</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f8fafc;color:#1e293b;font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.page-header{padding:10px 20px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.client-name{font-size:16px;font-weight:800}
+.scan-meta{color:#94a3b8;font-size:11px}
+.header-right{margin-left:auto;display:flex;gap:8px}
+.toggle-group{display:flex;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden}
+.tbtn{padding:5px 12px;background:#fff;border:none;cursor:pointer;font-size:12px;font-weight:500;color:#64748b;border-right:1px solid #e2e8f0;transition:all .12s}
+.tbtn:last-child{border-right:none}
+.tbtn.active{background:#1e293b;color:#fff}
+.new-block{margin:8px 16px;padding:8px 12px;background:#fef3c7;border:1px solid #fde68a;border-radius:6px;font-size:12px;flex-shrink:0}
+.new-block ul{margin-top:4px;padding-left:18px;line-height:1.8}
+.split-view{display:flex;flex:1;overflow:hidden}
+.split-table{flex:0 0 62%;overflow-y:auto}
+.split-shot{flex:0 0 38%;border-left:2px solid #e2e8f0;overflow-y:auto;background:#f1f5f9;scroll-behavior:smooth}
+.shot-img{width:100%;display:block}
+.scan-table{width:100%;border-collapse:collapse}
+.scan-table thead{position:sticky;top:0;z-index:5}
+.scan-table th{background:#f1f5f9;padding:8px 10px;text-align:left;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+.scan-table td{padding:7px 10px;border-bottom:1px solid #f1f5f9;vertical-align:top;font-size:12px}
+.el-row{cursor:pointer;transition:background .1s}
+.el-row:hover td{background:#f0f9ff}
+.el-row.active td{background:#e0f2fe}
+.col-lp{width:28px;color:#94a3b8;font-size:11px;text-align:right;padding-right:6px}
+.col-el{width:170px;font-weight:600;color:#0f172a}
+.col-etyk{width:200px;color:#0f172a;font-weight:600}
+.col-zaw{color:#475569;line-height:1.5;font-size:12.5px}
+.col-p{width:34px;text-align:center;font-size:15px}
+.th-sub{font-weight:400;color:#94a3b8;font-size:10px}
+.col-pos{width:110px;white-space:nowrap}
+.zbadge{font-size:10px;font-weight:600;padding:2px 5px;border-radius:3px}
+.dim{color:#94a3b8;font-size:10px}
+.view-toggle{margin-right:8px}
+.stack-panel{margin:8px 16px;padding:8px 12px;background:#ecfeff;border:1px solid #a5f3fc;border-radius:6px;font-size:11.5px;flex-shrink:0;line-height:2}
+.chip{display:inline-block;background:rgba(14,116,144,.08);color:var(--c,#0e7490);border:1px solid rgba(14,116,144,.25);font-weight:600;font-size:11px;padding:2px 8px;border-radius:5px;margin:0 4px}
+.col-sel{width:230px}.col-sel code{font-size:11px;color:#0f766e;background:#f0fdfa;padding:1px 5px;border-radius:4px;word-break:break-all}
+.col-track{width:100px}.tbadge{font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;white-space:nowrap}
+.col-gtm{width:180px}.gtm{font-size:10.5px;color:#92400e;background:#fef3c7;padding:1px 5px;border-radius:4px}
+#tbl-developer{display:none}
+#tbl-comments{display:none}
+body.dev #tbl-shopper{display:none}
+body.dev #tbl-developer{display:table}
+body.comments #tbl-shopper{display:none}
+body.comments #tbl-comments{display:table}
+.col-obs,.col-obs-h{width:240px;border-left:2px solid #f3e8ff}
+.col-obs{background:#faf5ff;color:#6b21a8;font-size:12px;line-height:1.5;cursor:text;outline:none}
+.col-obs:empty::before{content:attr(data-ph);color:#c4b5d4;font-style:italic}
+.col-obs:focus{background:#f3e8ff;box-shadow:inset 0 0 0 2px #d8b4fe}
+.col-obs-h{color:#7c3aed}
+</style></head>
+<body>
+<div class="page-header">
+  <div>
+    <span class="client-name">Braun — Silk-épil 9</span>
+    <span class="scan-meta"> — Vision Scan — 2026-08-06 — <a href="https://braun.pl/pl-pl/female-hair-removal/epilators/silk-epil-9/silk-epil-9-9-000" target="_blank">braun.pl/…/silk-epil-9/silk-epil-9-9-000</a> — platforma: SAP Commerce/custom</span>
+  </div>
+  <div class="header-right">
+    <div class="toggle-group view-toggle">
+      <button class="tbtn active" onclick="setView('shopper',this)">🛍 Shopper</button>
+      <button class="tbtn" onclick="setView('dev',this)">⚙️ Dev</button>
+      <button class="tbtn" onclick="setView('comments',this)">💬 Comments</button>
+    </div>
+    <div class="toggle-group vp-toggle">
+      <button class="tbtn active" onclick="setVP('desktop',this)">🖥 Desktop</button>
+      <button class="tbtn" onclick="setVP('mobile',this)">📱 Mobile</button>
+    </div>
+  </div>
+</div>
+
+<div class="stack-panel"><b>🔧 Tech stack:</b>
+  <span class="chip" style="--c:#7c3aed">SAP Commerce</span>
+  <span class="chip" style="--c:#0369a1">Procter &amp; Gamble</span>
+  <span class="chip" style="--c:#64748b">Redirect do retailerów</span>
+  <span class="chip" style="--c:#b45309">Bazaarvoice Reviews</span>
+  <span class="chip" style="--c:#0891b2">PL locale</span>
+</div>
+
+<div class="new-block"><b>🆕 Nowe typy elementów (do elements_master.json):</b><ul>
+  <li><b>model_comparison_table</b> — tabela porównawcza modeli w obrębie tej samej serii produktowej (Silk-épil 7 vs 9 vs 9 Flex); premium brand upsell; buduje hierarchię i wartość wybranego modelu</li>
+  <li><b>accessories_grid</b> — grid akcesoriów uzupełniających i spare parts do urządzenia; specyfika electronic hair removal devices; generuje LTV; nieobecny w cremach ani nano-glass</li>
+  <li><b>360_product_viewer</b> — interaktywny widok 360° produktu w galerii; premium device standard; nieobecny u GLOV/Malowidło/LadyMakeup</li>
+  <li><b>brand_site_buy_cta</b> — "Kup teraz" / "Znajdź sklep" bez własnego koszyka — analogicznie do Veet, brand site Braun nie sprzedaje direct</li>
+</ul></div>
+
+<div class="split-view">
+  <div class="split-table">
+
+    <table class="scan-table" id="tbl-shopper">
+      <thead><tr>
+        <th class="col-lp">LP</th>
+        <th class="col-etyk">Etykieta <span class="th-sub">(jak jest)</span></th>
+        <th class="col-el">Typ / rola obiektu</th>
+        <th>Zawartość / akcje</th>
+        <th class="col-obs-h">Obserwacje <span class="th-sub">(→ baza)</span></th>
+        <th class="col-p" title="personalizacja">P</th>
+        <th class="col-pos">Pozycja</th>
+      </tr></thead>
+      <tbody>
+
+      <tr class="el-row" data-top="0" onclick="scrollShot(0)">
+        <td class="col-lp">1</td>
+        <td class="col-etyk">Braun</td>
+        <td class="col-el">Header / nawigacja</td>
+        <td class="col-zaw">Logo Braun (czarne), mega-menu (Hair Removal, Face, Body Grooming, Oral Care, Personal Care), wyszukiwarka, ikony konta i listy życzeń.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Białe tło; czarne logo Braun; mega-menu z kategoriami urządzeń; brak ikony koszyka (brand site); wyszukiwarka z autosuggest; sticky header; klasa premium electronics brand site.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">0px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="50" onclick="scrollShot(50)">
+        <td class="col-lp">2</td>
+        <td class="col-etyk">Epilatory / Silk-épil 9</td>
+        <td class="col-el">Breadcrumbs</td>
+        <td class="col-zaw">Ścieżka: Strona główna / Depilacja / Epilatory / Silk-épil 9 / Silk-épil 9 9-000.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">PL breadcrumbs; 5-poziomowa ścieżka (głęboka hierarchia); model number w ścieżce; chevron separator; standard premium brand site.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">50px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="80" onclick="scrollShot(80)">
+        <td class="col-lp">3</td>
+        <td class="col-etyk">[galeria + 360°]</td>
+        <td class="col-el">Galeria produktu + 360° viewer</td>
+        <td class="col-zaw">Galeria zdjęć urządzenia — packshot na białym tle, miniaturki boczne + ikonka 360° widoku interaktywnego.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Wysoka jakość fotografii; białe tło; 5+ zdjęć; widok 360° jako premium feature (wyróżnik vs pozostałych); zdjęcia akcesoriów w zestawie; lifestyle shot w użyciu; złote akcenty (premium kolory Braun).</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">80px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="80" onclick="scrollShot(80)">
+        <td class="col-lp">4</td>
+        <td class="col-etyk">Braun Silk-épil 9 9-000</td>
+        <td class="col-el">Tytuł produktu (H1)</td>
+        <td class="col-zaw">H1: Brand + Product Line + Model number.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Brand + model line + model number; brak benefitu w tytule; format premium tech: marka + seria + SKU; "Silk-épil" jako brand equity; nie mówi co robi — zakłada brand awareness; kontrast z GLOV ("Depilator z nano szkła") który benefit-first.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">80px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="108" onclick="scrollShot(108)">
+        <td class="col-lp">5</td>
+        <td class="col-etyk">★★★★★ X opinii</td>
+        <td class="col-el">Oceny / gwiazdki</td>
+        <td class="col-zaw">Agregat ocen z Bazaarvoice — gwiazdki + liczba recenzji.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Bazaarvoice widget; wysoka liczba recenzji (duży brand); link do sekcji reviews; gwiazdki half-star lub pełne; duże liczby recenzji = social proof; brak photo reviews widocznych w agregacie.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">108px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="130" onclick="scrollShot(130)">
+        <td class="col-lp">6</td>
+        <td class="col-etyk">Rekomendowana cena: XXX PLN</td>
+        <td class="col-el">Cena referencyjna</td>
+        <td class="col-zaw">Rekomendowana cena detaliczna — bez możliwości zakupu na stronie producenta.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">"Rekomendowana cena" zamiast "Cena" — brand site, nie sklep; najwyższa cena wśród porównywanych (premium segment epilatorów elektrycznych); brak koszyka; PLN widoczne.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">130px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="160" onclick="scrollShot(160)">
+        <td class="col-lp">7</td>
+        <td class="col-etyk">Kup teraz / Znajdź sklep</td>
+        <td class="col-el">CTA — brand_site_buy_cta</td>
+        <td class="col-zaw">Przycisk "Kup teraz" lub "Znajdź sklep" — redirect do partnerów (Media Expert, RTV Euro AGD, Amazon PL, Allegro).</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Czarny przycisk CTA "Kup teraz"; brak koszyka na stronie; kliknięcie otwiera listę autoryzowanych sprzedawców; model analogiczny do Veet ale kanał premium electronics (nie drogeryjny); 2+ kliki do zakupu.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">160px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="200" onclick="scrollShot(200)">
+        <td class="col-lp">8</td>
+        <td class="col-etyk">9x głębiej / Pincety Flex-Adapt / AktywClip</td>
+        <td class="col-el">USP highlights / product claims</td>
+        <td class="col-zaw">Rząd 3-4 ikon z kluczowymi claimami produktu bezpośrednio pod CTA.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Ikony + krótkie texty; "9x głębiej niż golenie" jako benchmark claim; tech-specific claims (Flex-Adapt pincets); premium feature names (AktywClip); tło białe; above fold; kontra dla GLOV: korzyści technologiczne urządzenia elektrycznego.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#16a34a18;color:#16a34a">above fold</span><br><span class="dim">200px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="420" onclick="scrollShot(420)">
+        <td class="col-lp">9</td>
+        <td class="col-etyk">Dlaczego Braun Silk-épil 9?</td>
+        <td class="col-el">Sekcja edukacyjna / hero feature</td>
+        <td class="col-zaw">Sekcja z video lub animacją mechanizmu działania epilatora — pincety, głębokość usuwania włosa, gładkość efektu.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Video lub animacja GIF/CSS; wizualizacja pincet w akcji; styl kliniczny/techniczny; tekst edukacyjny o mechanizmie; duża sekcja; buduje zrozumienie i zaufanie do technologii; poziom premium content nieporównywalny z PS/Malowidło.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#2563eb18;color:#2563eb">scroll 1</span><br><span class="dim">420px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="700" onclick="scrollShot(700)">
+        <td class="col-lp">10</td>
+        <td class="col-etyk">Specyfikacja techniczna</td>
+        <td class="col-el">Specyfikacja / tabela tech</td>
+        <td class="col-zaw">Tabela lub lista parametrów: liczba pincet, prędkości, czas ładowania, wodoszczelność IPX, akcesoria w zestawie, zasilanie.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Tabela parametrów; wiersze: Pincety: 40 / Prędkości: 2 / IPX7 wodoszczelny / Czas ładowania: 1h / Czas pracy: 40min; bardzo szczegółowa vs GLOV/Malowidło; premium device = kupujący porównują spec.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#2563eb18;color:#2563eb">scroll 1</span><br><span class="dim">700px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="950" onclick="scrollShot(950)">
+        <td class="col-lp">11</td>
+        <td class="col-etyk">Co zawiera zestaw</td>
+        <td class="col-el">Zawartość zestawu</td>
+        <td class="col-zaw">Grid zdjęć zawartości opakowania — urządzenie + akcesoria: głowice, etui, szczoteczka, adaptery.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Zdjęcia per akcesorium + nazwa; "co dostajesz" sekcja; buduje perceived value zestawu; charakterystyczne dla premium electronics; brak analogicznego elementu u GLOV (nie ma "zestawu" — to jedno urządzenie).</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#7c3aed18;color:#7c3aed">scroll 2</span><br><span class="dim">950px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="1250" onclick="scrollShot(1250)">
+        <td class="col-lp">12</td>
+        <td class="col-etyk">Porównaj modele Silk-épil 7 / 9 / 9 Flex</td>
+        <td class="col-el">Tabela porównawcza modeli — model_comparison_table</td>
+        <td class="col-zaw">Tabela porównawcza modeli w serii — kolumny: cechy / Silk-épil 7 / Silk-épil 9 / Silk-épil 9 Flex.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Tabela kolumnowa; tick/cross per feature; buduje hierarchię modeli (Silk-épil 9 > 7); upsell do droższego modelu 9 Flex; nieobecna u wszystkich innych konkurentów; typowy Braun/P&G conversion tactic; anchor na "premium" modelu.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#7c3aed18;color:#7c3aed">scroll 2</span><br><span class="dim">1250px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="1600" onclick="scrollShot(1600)">
+        <td class="col-lp">13</td>
+        <td class="col-etyk">Akcesoria / Spare parts</td>
+        <td class="col-el">Grid akcesoriów — accessories_grid</td>
+        <td class="col-zaw">Sekcja z akcesoriami do kupienia osobno — zapasowe głowice, etui, szczoteczki, adaptery.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Kafelki akcesoriów z ceną; link do sklepu partnera (brak direct add-to-cart); LTV model — akcesoria kupowane co 3-6 mies.; nieobecny w kategoriach jednorazowych (kremy Veet); nieobecny u GLOV (brak eco-systemu akcesoriów).</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#64748b18;color:#64748b">scroll 3+</span><br><span class="dim">1600px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="1900" onclick="scrollShot(1900)">
+        <td class="col-lp">14</td>
+        <td class="col-etyk">Opinie (N recenzji)</td>
+        <td class="col-el">Recenzje Bazaarvoice</td>
+        <td class="col-zaw">Sekcja recenzji — agregat + lista recenzji ze zdjęciami, filtrowaniem, sortowaniem (Bazaarvoice).</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Bazaarvoice widget; duża liczba recenzji (brand awareness); filtrowanie po gwiazdkach; sortowanie; zdjęcia klientów możliwe; recenzje weryfikowane zakupem (u autoryzowanych sprzedawców); syndication z innych regionów.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#64748b18;color:#64748b">scroll 3+</span><br><span class="dim">1900px</span></td>
+      </tr>
+
+      <tr class="el-row" data-top="2300" onclick="scrollShot(2300)">
+        <td class="col-lp">15</td>
+        <td class="col-etyk">FAQ</td>
+        <td class="col-el">FAQ / akordeony</td>
+        <td class="col-zaw">Sekcja FAQ — pytania o użytkowanie, ból, serwis, gwarancję, kompatybilność akcesoriów.</td>
+        <td class="col-obs" contenteditable="true" data-ph="obserwacje wizualne → baza…">Akordeony; pytania premium-brand specific: gwarancja, autoryzowany serwis, gdzie kupić akcesoria, czas do regrowth; obsługuje post-purchase też; dłuższa sekcja niż u GLOV/Malowidło.</td>
+        <td class="col-p">–</td>
+        <td class="col-pos"><span class="zbadge" style="background:#64748b18;color:#64748b">scroll 3+</span><br><span class="dim">2300px</span></td>
+      </tr>
+
+      </tbody>
+    </table>
+
+    <table class="scan-table" id="tbl-developer">
+      <thead><tr>
+        <th class="col-lp">LP</th><th class="col-etyk">Etykieta</th><th class="col-el">Typ</th>
+        <th class="col-sel">Selektor</th><th class="col-track">Tracking</th>
+        <th class="col-gtm">GTM</th><th class="col-obs-h">Dev notes</th>
+      </tr></thead>
+      <tbody>
+      <tr class="el-row" data-top="160" onclick="scrollShot(160)">
+        <td class="col-lp">7</td><td class="col-etyk">Kup teraz</td><td class="col-el">a.buy-now-btn</td>
+        <td class="col-sel"><code>.buy-now, .cta-buy</code></td>
+        <td class="col-track"><span class="tbadge" style="background:#dcfce7;color:#166534">click</span></td>
+        <td class="col-gtm"><span class="gtm">GA4: select_item lub custom click</span></td>
+        <td class="col-obs" contenteditable="true" data-ph="dev notes…">SAP Commerce GTM integration; P&G global tracking; GA4 select_item lub custom click event; otwiera modal lub nowy tab z retailerami.</td>
+      </tr>
+      <tr class="el-row" data-top="1900" onclick="scrollShot(1900)">
+        <td class="col-lp">14</td><td class="col-etyk">Reviews</td><td class="col-el">Bazaarvoice</td>
+        <td class="col-sel"><code>#BVRRContainer, .bv-content-summary</code></td>
+        <td class="col-track"><span class="tbadge" style="background:#dcfce7;color:#166534">BV tracking</span></td>
+        <td class="col-gtm"><span class="gtm">Bazaarvoice native events</span></td>
+        <td class="col-obs" contenteditable="true" data-ph="dev notes…">Bazaarvoice third-party widget; own tracking system; syndication z globalnych rynków; PageView + UGC events własne BV.</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <table class="scan-table" id="tbl-comments">
+      <thead><tr>
+        <th class="col-lp">LP</th><th class="col-etyk">Etykieta</th><th class="col-el">Typ</th>
+        <th class="col-obs-h">Komentarz strategiczny</th>
+      </tr></thead>
+      <tbody>
+      <tr class="el-row" data-top="1250" onclick="scrollShot(1250)">
+        <td class="col-lp">12</td><td class="col-etyk">Tabela porównawcza</td><td class="col-el">model_comparison_table</td>
+        <td class="col-obs" contenteditable="true" data-ph="komentarz…">BRAUN UNICUM: tabela porównawcza modeli to P&G standard (Gillette, Oral-B też). Tworzy "anchor" — shopper widzi Silk-épil 7 vs 9 vs 9 Flex i wybiera środek lub górę. GLOV nie ma analogu (1 produkt). Szansa GLOV: comparison "nano-szkło vs krem vs epilator elektryczny" jako kategorialna alternatywa do tej samej techniki anchor.</td>
+      </tr>
+      <tr class="el-row" data-top="80" onclick="scrollShot(80)">
+        <td class="col-lp">3</td><td class="col-etyk">Galeria 360°</td><td class="col-el">360_product_viewer</td>
+        <td class="col-obs" contenteditable="true" data-ph="komentarz…">360° viewer = premium signals w galerii (dopamine przy interakcji). Tylko Braun w tym porównaniu go ma. Implementacja nie jest droga (Spinware, Sirv, natywny) — GLOV Shopify może łatwo dodać. Efekt: podniesiony AOV i zmniejszony return rate.</td>
+      </tr>
+      <tr class="el-row" data-top="160" onclick="scrollShot(160)">
+        <td class="col-lp">7</td><td class="col-etyk">CTA</td><td class="col-el">brand_site_buy_cta</td>
+        <td class="col-obs" contenteditable="true" data-ph="komentarz…">Braun + Veet = brand sites bez koszyka. GLOV + Malowidło + LadyMakeup = direct purchase. GLOV ma tutaj MEGA PRZEWAGĘ — zero tarcia zakupowego vs 2-3 kliki extra u Braun/Veet. To powinno być komunikowane w kontekście "łatwość zakupu" jeśli GLOV testuje ads vs Braun.</td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="split-shot">
+    <img id="shot-img" class="shot-img"
+      data-desktop="depilator/research/screens/braun_desktop.png"
+      data-mobile="depilator/research/screens/braun_mobile.png"
+      src="depilator/research/screens/braun_desktop.png"
+      alt="Braun Silk-épil 9 screenshot">
+  </div>
+</div>
+
+<script>
+function scrollShot(px){
+  document.querySelector('.split-shot').scrollTop=px;
+  document.querySelectorAll('.el-row').forEach(r=>r.classList.remove('active'));
+  document.querySelectorAll('.el-row[data-top="'+px+'"]').forEach(r=>r.classList.add('active'));
+}
+function setView(v,btn){
+  document.body.className='';
+  if(v==='dev')document.body.classList.add('dev');
+  if(v==='comments')document.body.classList.add('comments');
+  document.querySelectorAll('.view-toggle .tbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function setVP(vp,btn){
+  const img=document.getElementById('shot-img');
+  img.src=img.dataset[vp];
+  document.querySelectorAll('.vp-toggle .tbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
