@@ -1,0 +1,398 @@
+<!DOCTYPE html><html lang="pl"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Depilatory nano szkło — Vision Scan v5 (5 konkurentów)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:#1e293b;font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:10px 20px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap}
+.client-name{font-size:16px;font-weight:800;color:#0f172a}
+.scan-meta{color:#94a3b8;font-size:11px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.health-strip{display:flex;gap:10px;font-size:12px;font-weight:600;color:#334155}
+
+.tabs-bar{padding:6px 20px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:6px;flex-shrink:0;overflow-x:auto}
+.tab-btn{padding:6px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:#64748b;transition:.1s;white-space:nowrap}
+.tab-btn.active{background:#0f172a;color:#fff;border-color:#0f172a}
+.tabs-spacer{margin-left:auto}
+.toggle-group{display:flex;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden}
+.tbtn{padding:5px 12px;background:#fff;border:none;cursor:pointer;font-size:12px;font-weight:500;color:#64748b}
+.tbtn.active{background:#0f172a;color:#fff}
+
+.split-view{display:flex;flex:1;overflow:hidden}
+.split-list{flex:0 0 58%;overflow-y:auto;background:#fff;padding:8px 0}
+.split-shot{flex:0 0 42%;border-left:2px solid #e2e8f0;overflow-y:auto;background:#f8fafc;scroll-behavior:smooth}
+.shot-img{display:block;margin:20px auto}
+.shot-img.mobile{width:390px;max-width:390px}
+.shot-img.desktop{width:100%;max-width:100%}
+
+.wnioski-banner{margin:0 16px 12px;border-radius:8px;overflow:hidden;border:1px solid #fecaca}
+.wnioski-header{padding:10px 14px;background:#fef2f2;color:#991b1b;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.wnioski-body{padding:10px 14px;background:#fff}
+.alarm-card{border-left:3px solid #dc2626;background:#fef2f2;border-radius:0 6px 6px 0;padding:10px 12px;margin-bottom:10px}
+.alarm-problem{font-weight:700;color:#0f172a;margin-bottom:6px;font-size:13px}
+.alarm-insight{color:#475569;font-size:12.5px;line-height:1.6}
+.dz-block{background:#eff6ff;border-left:3px solid #3b82f6;border-radius:0 6px 6px 0;padding:10px 12px}
+
+.el-item{border-bottom:1px solid #f1f5f9}
+.el-row{cursor:pointer;padding:11px 16px;display:flex;align-items:center;gap:10px;transition:background .1s}
+.el-row:hover{background:#f0f9ff}
+.el-row.active{background:#e0f2fe}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.el-name{font-weight:700;color:#0f172a;flex-shrink:0}
+.el-etyk{color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:40%;flex:1}
+.zone-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;flex-shrink:0}
+.el-top{color:#94a3b8;font-size:11px;flex-shrink:0}
+.chevron{margin-left:auto;color:#94a3b8;flex-shrink:0;transition:transform .15s}
+.el-row.expanded .chevron{transform:rotate(180deg)}
+
+.el-accordion{background:#fafafa;padding:4px 20px 12px 40px;display:none}
+.el-row.expanded+.el-accordion{display:block}
+.acc-section{padding:8px 0}
+.acc-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#94a3b8;margin-bottom:5px}
+.acc-content{font-size:13px;color:#334155;line-height:1.6}
+.acc-zaw{color:#334155;font-size:13px;line-height:1.6}
+.acc-zaw ul{margin:3px 0;padding-left:16px}.acc-zaw li{margin:2px 0}
+.obs-insight{background:#faf5ff;color:#4c1d95;padding:8px 10px;border-left:2px solid #a78bfa;border-radius:4px;font-size:13px;line-height:1.6;margin:4px 0}
+.acc-footer{color:#94a3b8;font-size:10.5px;padding-top:6px}
+
+@media(max-width:899px){
+  body{height:auto;overflow:visible}
+  .split-view{flex-direction:column;overflow:visible}
+  .split-shot{order:-1;flex:0 0 auto;position:sticky;top:0;z-index:10;max-height:38vh;border-left:none;border-bottom:2px solid #e2e8f0}
+  .split-list{order:1;flex:0 0 auto;overflow:visible}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <span class="client-name">Depilatory nano szkło</span>
+    <span class="scan-meta"> — Vision Scan v5 — 5 konkurentów — 2026-08-06 — Playwright capture</span>
+  </div>
+  <div class="topbar-right">
+    <div class="health-strip"><span class="health-item">🔴4</span><span class="health-item">🟠3</span><span class="health-item">🟡1</span></div>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <button class="tab-btn active" data-i="0" onclick="switchTab(0,this)">GLOV</button>
+  <button class="tab-btn" data-i="1" onclick="switchTab(1,this)">Malowidło</button>
+  <button class="tab-btn" data-i="2" onclick="switchTab(2,this)">LadyMakeup</button>
+  <button class="tab-btn" data-i="3" onclick="switchTab(3,this)">Veet</button>
+  <button class="tab-btn" data-i="4" onclick="switchTab(4,this)">Braun</button>
+  <div class="tabs-spacer"></div>
+  <div class="toggle-group">
+    <button class="tbtn active" onclick="setVp('desktop',this)">Desktop</button>
+    <button class="tbtn" onclick="setVp('mobile',this)">Mobile</button>
+  </div>
+</div>
+
+<div class="split-view">
+  <div class="split-list" id="listPane"></div>
+  <div class="split-shot" id="shotPane">
+    <img class="shot-img desktop" id="shotImg" src="" alt="screenshot">
+  </div>
+</div>
+
+<script>
+const DATA = [
+  {
+    name:'GLOV Depilator z Nano Szkła', url:'screens/glov', health:'#22c55e', badge:'above',
+    wnioski:[
+      {problem:'Brak FAQ / instrukcji na widoku', insight:'„Jak Używać" schowane w zwiniętym accordionie — shopper musi szukać. W kategorii gdzie technika użycia jest barierą zakupową (strach przed bólem, nieznany produkt), to poważna luka konwersji.'},
+      {problem:'12 bullets bez hierarchii — ściana tekstu', insight:'Najważniejsze benefity (bezbolesność, zero kabli, działanie) giną w długiej liście. Shopper skanuje, nie czyta — 3-5 top bullets + rozwijana lista byłaby efektywniejsza.'}
+    ],
+    dz:'GLOV PDP jest gold standard kategorii: benefit-first tytuł, galeria lifestylowa, widoczne recenzje (4.7★/62), CTA czerwony i prominentny. Główna praca do zrobienia: wyeksponować instrukcję użycia i skrócić bullets.',
+    elements:[
+      {el:'E1',etyk:'Tytuł PDP',zone:'above',top:'~60px',dot:'#22c55e',
+       zaw:'<ul><li>„Depilator z nano szkła GLOV" — benefit pojawia się pośrednio (nano szkło = tech claim)</li><li>Kategoria breadcrumb: Strona główna / Depilator z nano szkła GLOV</li></ul>',
+       obs:'Benefit-first (nano szkło) + brand-last. Kategoria jasna. Brak explicit <em>„bezbolesny"</em> w tytule — shopper musi się domyślić z kontekstu.',
+       ocena:{w:'OK',o:'Tytuł czytelny, brand last — poprawna hierarchia dla kategorii niszowej.'},
+       dev:'title tag powinien zawierać „bezbolesny" dla SEO — np. „Bezbolesny depilator z nano szkła GLOV"'},
+      {el:'E2',etyk:'Hero galeria',zone:'above',top:'~80px',dot:'#22c55e',
+       zaw:'<ul><li>Główne zdjęcie: packshot produktu na jasnym tle</li><li>Galeria: 5 thumbnails — packshot + lifestylowe + sposób użycia + kolor black</li><li>Selektor koloru: Pink / Black</li></ul>',
+       obs:'Galeria pokazuje jak produkt wygląda i jak go używać — dobra sekwencja narracyjna. Kolor selector poprawnie oddziela warianty.',
+       ocena:{w:'OK',o:'Galeria spełnia funkcję informacyjną i emocjonalną jednocześnie.'},
+       dev:'Sprawdź alt text per zdjęcie — obrazki lifestylowe często mają auto-generated alt.'},
+      {el:'E3',etyk:'Cena + promocja',zone:'above',top:'~120px',dot:'#22c55e',
+       zaw:'<ul><li>39,90 zł (przekreślone 49,90 zł)</li><li>Badge: WYPRZEDAŻ</li><li>„Najniższa cena z 30 dni: 49,90 zł" (wymóg prawny UE)</li><li>Darmowa dostawa od 150 zł</li></ul>',
+       obs:'Cenowa narracja jest kompletna: cena, rabat, legalność, próg darmowej dostawy. Badge „WYPRZEDAŻ" tworzy urgency. To jest powyżej rynkowego standardu.',
+       ocena:{w:'OK',o:'Idealna struktura cenowa — urgency + legalność + benefit logistyczny.'},
+       dev:'Sprawdź czy badge WYPRZEDAŻ odpowiada rzeczywistym datom promocji — UE wymaga udokumentowania.'},
+      {el:'E4',etyk:'Bullety / opis',zone:'scroll',top:'~300px',dot:'#eab308',
+       zaw:'<ul><li>12 bulletów benefitowych (bardzo długa lista)</li><li>Tematy: działa jak salon / efekt złuszczający / nano szkło / bezbolesny / nie potrzeba innych produktów / regularne stosowanie / gładka skóra / bez chemii / przydatny w podróży</li></ul>',
+       obs:'12 bullets = przysypanie shopera informacjami. Najważniejszy benefit (bezbolesny) jest na środku listy — nie na początku. Shopper skanuje 2-3 pierwsze bullety i przechodzi dalej.',
+       ocena:{w:'POPRAW',o:'Zredukuj do 5 top bullets. Bezbolesność na #1. Reszta w rozwijalnym „więcej".'},
+       dev:'Structured data: listItem per bullet — poprawi rich snippets w Google.'},
+      {el:'E5',etyk:'CTA i badge konwersji',zone:'above',top:'~170px',dot:'#22c55e',
+       zaw:'<ul><li>„DODAJ DO KOSZYKA" — czerwony, pełna szerokość</li><li>Badge: „Opinie Kupujących 4.79" (widget Trusted Shops)</li><li>Quantity selector: - 1 +</li></ul>',
+       obs:'CTA jest prominentny i czytelny. Badge Trusted Shops dodaje credibility obok CTA — dobra pozycja. Kolor (czerwony = brand GLOV) spójny z identyfikacją.',
+       ocena:{w:'OK',o:'CTA i trust signal w bezpośrednim sąsiedztwie — model konwersyjny.'},
+       dev:'Sprawdź czy CTA jest klikalny na mobile przy otwartym sticky header.'},
+      {el:'E6',etyk:'Recenzje klientów',zone:'scroll',top:'~800px',dot:'#22c55e',
+       zaw:'<ul><li>4.70★ (62 recenzje)</li><li>Rozkład gwiazdek widoczny</li><li>3 wyróżnione opinie z datami i awatarami</li><li>Przycisk „Subskrybuj" (powiadomienia)</li></ul>',
+       obs:'Recenzje widoczne i bogato stylizowane. 62 recenzji = wiarygodność dla kategorii niszowej. Brakuje filtrowania po gwiazdkach i odpowiedzi od marki.',
+       ocena:{w:'OK',o:'Recenzje w dolnej części PDP — wystarczające dla obecnego etapu.'},
+       dev:'Dodaj schema.org AggregateRating — pozwoli na gwiazdki w SERP.'},
+      {el:'E7',etyk:'Jak Używać (instrukcja)',zone:'scroll',top:'~600px',dot:'#eab308',
+       zaw:'<ul><li>Sekcja „Jak Używać" w formie zwijanego accordionu</li><li>Treść niewidoczna bez kliknięcia</li></ul>',
+       obs:'W kategorii gdzie technika użycia jest główną barierą zakupową (shopper nie wie jak to działa, boi się bólu), schowanie instrukcji w accordionie to konwersyjna bomba. Shopper odchodzi zanim dotrze.',
+       ocena:{w:'ALARM',o:'Instrukcja użycia musi być widoczna bez kliknięcia — to jest argument sprzedażowy #1 w tej kategorii.'},
+       dev:'Rozwiń sekcję Jak Używać domyślnie LUB dodaj steps widget above-the-fold z ikonami (3 kroki).'}
+    ]
+  },
+  {
+    name:'Malowidło — nano glass direct', url:'screens/malowidlo', health:'#dc2626', badge:'scroll',
+    wnioski:[
+      {problem:'OOS + tytuł CAPS = podwójny bloker konwersji', insight:'Produkt niedostępny (OOS) i tytuł keyword-stuffing bez benefitu. Shopper trafia z wyszukiwarki i widzi „DEPILATOR Depilacja ZŁUSZCZAJĄCA" w caps-lock — nie rozumie co kupuje.'},
+      {problem:'Zero recenzji = zero dowodu społecznego', insight:'W kategorii gdzie shopper nie zna produktu, 0 recenzji = 0 zaufania. Konkurent z 1 recenzją (LadyMakeup) i tak wyprzedza.'},
+      {problem:'Cookie banner zasłania CTA przy wejściu', insight:'PrestaShop cookie modal pojawia się natychmiast i zasłania obszar above-the-fold. Na mobile totalnie blokuje widok produktu.'}
+    ],
+    dz:'Malowidło ma najgorszy PDP w kategorii: OOS, caps-lock tytuł, 0 recenzji, cookie banner agresywny. Dla GLOV to brak zagrożenia konwersyjnego — ale uwaga na SEO, mogą rankować na kluczowe frazy.',
+    elements:[
+      {el:'E1',etyk:'Tytuł PDP',zone:'above',top:'~120px',dot:'#dc2626',
+       zaw:'<ul><li>„Bezbolesny DEPILATOR Depilacja ZŁUSZCZAJĄCA"</li><li>Caps-lock na kluczowych słowach</li><li>Podtytuł: „6 dostępnych kolorów"</li></ul>',
+       obs:'Keyword stuffing widoczny gołym okiem. CAPS na środku zdania to sygnał niskiej jakości — trust killer. „Złuszczająca" to tech-claim nierozumiany przez shopera.',
+       ocena:{w:'ALARM',o:'Tytuł odrzuca zamiast przyciągać. GLOV ma tu przewagę jakościową.'},
+       dev:'Brak proper H1 hierarchy. CAPS = accessibility issue (screen readers czytają jako akronim).'},
+      {el:'E2',etyk:'Galeria i prezentacja',zone:'above',top:'~100px',dot:'#eab308',
+       zaw:'<ul><li>Lifestyle zdjęcia produktu w użyciu</li><li>Mała galeria thumbnails</li><li>Kolory: Light Blue, Gold, Rose Red, Silver, Black, Sky Blue</li></ul>',
+       obs:'Zdjęcia pokazują produkt w użyciu — to mocna strona. Ale galeria jest mała i nie komunikuje benefit. Selektor 6 kolorów bez preview koloru.',
+       ocena:{w:'SPRAWDŹ',o:'Galeria OK, ale kolory bez wizualizacji. Sprawdź czy klikalne.'},
+       dev:'Brak alt text na zdjęciach produktowych = SEO gap.'},
+      {el:'E3',etyk:'Cena i dostępność',zone:'above',top:'~150px',dot:'#dc2626',
+       zaw:'<ul><li>34,99 zł (najtańszy w segmencie nano direct)</li><li>Status: OOS (chwilowo niedostępny)</li><li>Brak komunikatu kiedy wróci</li></ul>',
+       obs:'OOS bez daty powrotu i bez możliwości zapisania się na powiadomienie = utracony shopper. Dla GLOV szansa: ktoś szuka nano glass, znajdzie Malowidło OOS, trafi do GLOV.',
+       ocena:{w:'ALARM',o:'OOS bez notifier = konwersja zerowa. Blokuje też indeksację przez Google (może wypaść z Shopping).'},
+       dev:'Dodaj availability:OutOfStock schema + "Powiadom mnie" formularz email.'},
+      {el:'E4',etyk:'Opis produktu',zone:'scroll',top:'~400px',dot:'#eab308',
+       zaw:'<ul><li>6 dostępnych kolorów + opis użycia</li><li>Tech-heavy: „nano szkło usuwa martwy naskórek"</li><li>Sekcja „Jak prawidłowo korzystać" (3 kroki)</li><li>Sekcja „Wypróbuj nowoczesną technologię"</li></ul>',
+       obs:'Opis jest informatywny i ma instrukcję (to przewaga nad LadyMakeup!). Ale styl techniczny — brak emocji i narracji benefit. Shopper musi się domyślić po co mu to.',
+       ocena:{w:'POPRAW',o:'Dobra treść techniczna, brakuje emocjonalnego benefit-layer.'},
+       dev:'Użyj nagłówków H2/H3 w opisie — SEO + czytelność.'},
+      {el:'E5',etyk:'Cookie banner UX',zone:'above',top:'~0px',dot:'#dc2626',
+       zaw:'<ul><li>Cookie modal pojawia się natychmiast</li><li>Zasłania cały widok produktu</li><li>2 opcje: „Nie pozwalaj" / „Potwierdzam" (dark pattern)</li></ul>',
+       obs:'Dark pattern cookie: opcja odmowy jest po lewej (niestandard), „Potwierdzam" jest po prawej. Modal zasłania CTA. Na mobile = zabójca bounce rate.',
+       ocena:{w:'ALARM',o:'Cookie banner blokuje first impression. Dark pattern. Naruszenie DSGVO/RODO.'},
+       dev:'Cookie banner powinien być sticky na dole, nie fullscreen modal.'},
+      {el:'E6',etyk:'Recenzje',zone:'scroll',top:'~500px',dot:'#dc2626',
+       zaw:'<ul><li>„Recenzje produktu (0)" — zero recenzji</li><li>Brak sekcji UGC</li></ul>',
+       obs:'Zero recenzji w kategorii gdzie shopper nie zna produktu = brak wiarygodności. LadyMakeup ma 1 recenzję (i to w hebrajskim) — i nawet to jest lepiej niż zero.',
+       ocena:{w:'ALARM',o:'Zero social proof = brak konwersji dla new visitors. Priorytet: zebrać pierwsze recenzje.'},
+       dev:'Zintegruj Trusted Shops / Opineo. Wyślij post-purchase email z prośbą o recenzję.'}
+    ]
+  },
+  {
+    name:'LadyMakeup — nano direct (retailer)', url:'screens/ladymakeup', health:'#dc2626', badge:'above',
+    wnioski:[
+      {problem:'EN content na PL sklepie — shopper się gubi', insight:'Tytuł, opis i bullets są po angielsku na polskim sklepie z polską ceną. To sygnał automatycznego importu katalogu bez lokalizacji. Shopper nie rozumie co kupuje.'},
+      {problem:'1 recenzja w języku hebrajskim', insight:'Jedyna recenzja jest po hebrajsku — pokazuje że sklep sprzedaje globalnie bez kontroli jakości. Dla polskiego shopera to czerwona lampka: „kto to kupuje?".'},
+      {problem:'OOS + 4 produkty GLOV w „polecanych"', insight:'Produkt niedostępny, a sekcja „IT MAY ALSO INTEREST YOU" pokazuje 4 produkty GLOV (rywal!). Sklep zarabia na GLOV bardziej niż na własnym produkcie.'}
+    ],
+    dz:'LadyMakeup Painless Epilator to najsłabszy PDP w kategorii: EN content, OOS, hebrajska recenzja, nieznany brand Lewer. Ale uwaga: cena 15,90 zł = najtańszy punkt wejścia w kategorii. Tani traffic może się kliknąć.',
+    elements:[
+      {el:'E1',etyk:'Tytuł PDP',zone:'above',top:'~90px',dot:'#dc2626',
+       zaw:'<ul><li>„Painless Full Body Epilator - Lilac" — po angielsku</li><li>Brand: Lewer (nieznany w PL)</li><li>Breadcrumb: Shop / Care / Depilation / Painless Full Body Epilator - Lilac</li></ul>',
+       obs:'Angielski tytuł na polskim sklepie = czerwona lampka dla shopera. „Lewer" to nieznana marka — brak brand equity. Shopper nie wie co dostaje.',
+       ocena:{w:'ALARM',o:'EN tytuł + unknown brand = zero trust. Powinno być: „Bezbolesny depilator nano glass do całego ciała — Lila".'},
+       dev:'hreflang i18n issue. Jeśli to ten sam produkt co EN store — potrzeba osobnej PL wersji z lokalizowanym contentem.'},
+      {el:'E2',etyk:'Galeria produktu',zone:'above',top:'~80px',dot:'#eab308',
+       zaw:'<ul><li>1 zdjęcie produktowe: bryłka na fioletowym tle</li><li>Brak lifestyle / brak pokazania w użyciu</li><li>Brak galerii thumbnails</li></ul>',
+       obs:'Jedno suche packshot-zdjęcie nie komunikuje jak produkt działa ani jak wygląda w dłoni. Shopper musi wyobrazić sobie zastosowanie — to bariera konwersji w kategorii.',
+       ocena:{w:'POPRAW',o:'Min. 3-4 zdjęcia: packshot + hand + sposób użycia + obszar ciała.'},
+       dev:'missing-image-alt i single-image PDP to SEO gap dla Google Images.'},
+      {el:'E3',etyk:'Cena i dostępność',zone:'above',top:'~140px',dot:'#dc2626',
+       zaw:'<ul><li>15,90 zł (najtańszy w segmencie)</li><li>„Not in stock" (w języku angielskim)</li><li>Brak komunikatu kiedy wróci</li></ul>',
+       obs:'Najtańszy punkt cenowy w kategorii (15,90 zł vs 34,99 zł Malowidło vs 39,90 zł GLOV) — ale OOS. Cena mogłaby być konwersyjnym hakiem gdyby produkt był dostępny.',
+       ocena:{w:'ALARM',o:'OOS + EN „Not in stock" = podwójny bloker. Brak powiadomienia email.'},
+       dev:'Availability schema: OutOfStock. „Not in stock" powinno być po polsku.'},
+      {el:'E4',etyk:'Opis / bullets',zone:'scroll',top:'~320px',dot:'#dc2626',
+       zaw:'<ul><li>4 bullety po angielsku:<br>• Epilator.<br>• Made of nano glass.<br>• Removes unwanted hair.<br>• Available in lilac color.</li><li>Krótki lead text w EN</li></ul>',
+       obs:'4 bullety to absolutne minimum i są po angielsku. „Removes unwanted hair" to opis funkcji produktu, nie benefit dla shopera. Brak emocji, brak technologii, brak instrukcji.',
+       ocena:{w:'ALARM',o:'EN content + generic bullets = brak konwersji. GLOV ma 12 benefitów po polsku.'},
+       dev:'Content duplication risk — dokładnie ten sam tekst może być na EN sklepie.'},
+      {el:'E5',etyk:'Recenzje',zone:'scroll',top:'~900px',dot:'#dc2626',
+       zaw:'<ul><li>1 recenzja: michalo, 3/5, <strong>po hebrajsku</strong></li><li>„Reviews of Painless Full Body Epilator - Lilac" — nagłówek EN</li></ul>',
+       obs:'Jedyna recenzja jest w hebrajskim — widoczny sygnał globalnego multi-channel sprzedawcy bez kontroli jakości. Polski shopper widzi: nieznana marka, obcy język, 3 gwiazdki = odchodzi.',
+       ocena:{w:'ALARM',o:'1 recenzja w obcym języku = 0 trust. Gorzej niż brak recenzji.'},
+       dev:'Moderacja recenzji per locale. Recenzje z innych krajów powinny być filtrowane lub oznaczane.'},
+      {el:'E6',etyk:'Cross-sell „IT MAY ALSO INTEREST YOU"',zone:'scroll',top:'~500px',dot:'#eab308',
+       zaw:'<ul><li>4 produkty GLOV w polecanych:<br>• GLOV Nano Glass Depilator (Pink, Black)<br>• GLOV Nano Twist Duo (pumeks + depilator)<br>• Painless Full Body Epilator Blue (własna marka)</li></ul>',
+       obs:'Ironia: sklep poleca 3 produkty GLOV (rywal po 49,90 zł) zamiast własnego. Algorytm cross-sell działa przeciwko własnemu produktowi.',
+       ocena:{w:'POPRAW',o:'Cross-sell musi priorytetyzować własne produkty / bundle własnej marki.'},
+       dev:'Sprawdź algorytm rekomendacji — jeśli GLOV jest bestsellerem sklepu, to go faworyzuje.'}
+    ]
+  },
+  {
+    name:'Veet Professional — substytut krem', url:'screens/veet', health:'#eab308', badge:'above',
+    wnioski:[
+      {problem:'Brak CTA / koszyka — to brand site, nie sklep', insight:'Veet PDP to strona brandowa bez możliwości zakupu. Shopper musi przejść do Rossmann/Allegro/dm. To tarcie zakupowe — GLOV.co sprzedaje bezpośrednio.'},
+      {problem:'Treść schowana w accordionach', insight:'4 sekcje (Opis, Lista Składników, Wskazówki jak używać, Bezpieczeństwo) są zamknięte. Shopper widzi tylko 6 hero bullets. Porównanie „wiem co kupuję" jest trudne.'}
+    ],
+    dz:'Veet to inny segment (krem chemiczny vs nano glass) — shopper wybierający Veet prawdopodobnie nie szuka nano. Ale oba produkty rozwiązują ten sam job-to-be-done (usunąć włosy). GLOV komunikuje: bezbolesny, bez chemii, wielorazowy — to jest differentiation vs Veet.',
+    elements:[
+      {el:'E1',etyk:'Tytuł PDP',zone:'above',top:'~100px',dot:'#22c55e',
+       zaw:'<ul><li>„VEET PROFESSIONAL™ KREM DO DEPILACJI DO WSZYSTKICH RODZAJÓW SKÓRY 400 ML"</li><li>Breadcrumb: Home / Wszystkie produkty / Kremy Do Depilacji</li></ul>',
+       obs:'Tytuł ALL-CAPS ale czytelny — brand-first, potem zastosowanie, potem rozmiar. „Do wszystkich rodzajów skóry" = benefit. PROFESSIONAL™ = claim. Długi ale kompletny.',
+       ocena:{w:'OK',o:'Keyword-rich tytuł z benefit. W CAPS ale to brand standard Veet.'},
+       dev:'Title tag prawdopodobnie zbyt długi (>60 znaków) — SEO truncation risk.'},
+      {el:'E2',etyk:'Hero i galeria',zone:'above',top:'~80px',dot:'#22c55e',
+       zaw:'<ul><li>Duże zdjęcie produktu na białym/różowym tle</li><li>Pink brand background — silna identyfikacja</li><li>Brak galerii lifestyle / brak „w użyciu"</li></ul>',
+       obs:'Packshot na brand kolorze — czysta identyfikacja Veet. Brak zdjęć w użyciu (krem nakładany, skóra po zabiegu). W kategorii beauty to duże pominięcie.',
+       ocena:{w:'SPRAWDŹ',o:'Dobry packshot, brak lifestyle. Dla shopera: wiem jak wygląda, nie wiem jak działa.'},
+       dev:'Dodaj obrazy pokazujące aplikację kremu (3 kroki) — to redukcja bariery zakupowej.'},
+      {el:'E3',etyk:'Hero bullets (6)',zone:'above',top:'~200px',dot:'#22c55e',
+       zaw:'<ul><li>Do wszystkich rodzajów skóry, w tym wrażliwej</li><li>Czas zabiegu od 2 minut</li><li>Usuwa nawet grubsze włosy</li><li>Nawilżanie naturalne + masło Shea</li><li>Gładka skóra w 3 prostych krokach</li><li>Testowany dermatologicznie</li></ul>',
+       obs:'6 benefitowych bullets above-the-fold — lepiej niż GLOV pod względem zwięzłości. „2 minuty" to konkretny claim, „derm tested" to trust signal. To jest dobra komunikacja.',
+       ocena:{w:'OK',o:'Efektywna lista benefitów: konkretna, derm-tested, szybkość zabiegu.'},
+       dev:'Structured data: lisitem dla każdego bullet — rich snippet okazja.'},
+      {el:'E4',etyk:'Accordiony — treść schowana',zone:'scroll',top:'~460px',dot:'#eab308',
+       zaw:'<ul><li>4 zamknięte sekcje: Opis / Lista Składników / Wskazówki jak używać / Informacje bezpieczeństwa</li><li>Wszystkie domyślnie ZAMKNIĘTE</li></ul>',
+       obs:'Ważna treść (szczególnie „Wskazówki jak używać" i „Informacje bezpieczeństwa") jest ukryta. W kategorii krem depilacyjny bezpieczeństwo użycia jest kluczowe — shopper powinien to widzieć bez kliknięcia.',
+       ocena:{w:'POPRAW',o:'Otwórz domyślnie accordion „Wskazówki jak używać" — to redukcja bariery i obaw.'},
+       dev:'Schema FAQ z pytaniami z accordionów = rich snippet okazja.'},
+      {el:'E5',etyk:'Brak CTA / zakupu',zone:'above',top:'~350px',dot:'#dc2626',
+       zaw:'<ul><li>Brak przycisku „Do koszyka"</li><li>Brak ceny na PDP</li><li>Redirect do zewnętrznych sklepów (Rossmann, Allegro)</li></ul>',
+       obs:'Brand site bez e-comm = tarcie zakupowe. Shopper musi przejść do zewnętrznego sklepu. GLOV.co sprzedaje bezpośrednio — to konwersyjna przewaga GLOV.',
+       ocena:{w:'ALARM',o:'Brak direct-to-consumer channel. Każde tarcie = utrata konwersji.'},
+       dev:'Dodaj „Kup w sklepach" widget z partnerami + deeplink do konkretnego produktu.'},
+      {el:'E6',etyk:'Recenzje / trust',zone:'scroll',top:'N/A',dot:'#dc2626',
+       zaw:'<ul><li>Brak sekcji recenzji na PDP</li><li>Brak badge Trusted Shops / Allegro</li></ul>',
+       obs:'Brak recenzji na brand site. Shopper musi szukać opinii na Allegro/Ceneo — to dodatkowe tarcie. 37 recenzji Veet istnieje na Ceneo (4.6★) ale nie jest eksponowane.',
+       ocena:{w:'ALARM',o:'Brak social proof na własnej stronie = oddanie pola rywalom.'},
+       dev:'Osadź widget Opineo/Ceneo na PDP. Link do recenzji Allegro.'}
+    ]
+  },
+  {
+    name:'Braun Silk·épil 9 — substytut elektryczny', url:'screens/braun', health:'#eab308', badge:'above',
+    wnioski:[
+      {problem:'Tytuł model-number-heavy — shopper nie wie co dostaje', insight:'„Silk-épil 9 9-000" jest bez sensu dla shopera który nie zna linii produktowej Braun. Benefit „mokro i sucho" jest na końcu. Shopper musi kliknąć żeby zrozumieć co kupuje.'},
+      {problem:'Brak ceny + redirect „Kup teraz" do Morele', insight:'Brand site Braun nie sprzedaje bezpośrednio. Redirect do Morele to tarcie zakupowe. Shopper traci kontekst PDP (recenzje, opis) gdy przechodzi.'}
+    ],
+    dz:'Braun to premium substytut (479 zł = 12× droższy niż GLOV). Segment inny — kto szuka epilatora elektrycznego nie szuka nano glass. Ale „gładkość przez miesiąc" vs „regularność" GLOV to różne obietnice. GLOV: zero bólu, codzienne. Braun: jeden raz na miesiąc, ale boli.',
+    elements:[
+      {el:'E1',etyk:'Tytuł PDP',zone:'above',top:'~50px',dot:'#eab308',
+       zaw:'<ul><li>„Braun Silk-épil 9 9-000 depilator na mokro i sucho"</li><li>Breadcrumb: Braun / Depilatory elektryczne / Silk-épil 9 / Depilator…</li></ul>',
+       obs:'Brand-first + model number + benefit (mokro/sucho) na końcu. „9-000" jest bez znaczenia dla shopera — to wewnętrzna numeracja Braun. Benefit (mokro i sucho, miesiąc gładkości) powinien być na pierwszym miejscu.',
+       ocena:{w:'POPRAW',o:'Przebuduj tytuł: benefit-first → „1 miesiąc gładkości — Braun Silk-épil 9 na mokro i sucho".'},
+       dev:'Long-tail SEO: „epilator do użycia pod prysznicem" / „epilator na mokro" — dobry do targetowania.'},
+      {el:'E2',etyk:'Galeria i warianty',zone:'above',top:'~60px',dot:'#22c55e',
+       zaw:'<ul><li>Duży packshot: biały epilator na białym tle</li><li>Galeria: 7 thumbnails — różne kąty + lifestyle</li><li>4 dostępne modele z opisami</li></ul>',
+       obs:'Bogata galeria z różnymi kątami. Warianty dobrze opisane (z trimerami, z nakładkami). Premium prezentacja odpowiednia dla ceny 479 zł.',
+       ocena:{w:'OK',o:'Galeria spełnia standard premium — wielokąt, warianty, lifestyle.'},
+       dev:'Sprawdź czy alt text opisuje co widać na każdym zdjęciu (nie tylko „Braun Silk-épil 9\").'},
+      {el:'E3',etyk:'Brak ceny / Kup teraz',zone:'above',top:'~150px',dot:'#eab308',
+       zaw:'<ul><li>Brak ceny na PDP</li><li>„Kup teraz" — redirect (Morele, prawdopodobnie)</li><li>Nie wiadomo ile kosztuje bez klikania</li></ul>',
+       obs:'Prestiżowa marka ukrywa cenę. Shopper musi kliknąć „Kup teraz" żeby zobaczyć cenę — to tarcie. Dla premium produktu (479 zł) ważne jest żeby shopper był mentalnie przygotowany na cenę.',
+       ocena:{w:'POPRAW',o:'Cena powinna być widoczna na PDP — nawet jeśli to redirect do partnera.'},
+       dev:'Structured data (Product schema) może wyciągnąć cenę z Morele do SERP przez AggregateOffer.'},
+      {el:'E4',etyk:'Opis produktu (4 bullets)',zone:'scroll',top:'~400px',dot:'#22c55e',
+       zaw:'<ul><li>Długotrwała gładka skóra: nawet przez 1 miesiąc</li><li>Wydajny i dokładny: szeroka ruchoma głowica, 40 pęset, 0.5mm włosy</li><li>Nasz najlepszy depilator dla skóry wrażliwej</li><li>Łatwy w użyciu na mokro i sucho</li></ul>',
+       obs:'4 precyzyjne bullets z konkretnymi claimami: „40 pęset", „0.5mm", „1 miesiąc". To jest premium storytelling — sprzedaje przez specyfikację. Dobry kontrast z GLOV który sprzedaje przez benefit.',
+       ocena:{w:'OK',o:'Spec-driven storytelling odpowiedni dla premium + technicznie świadomego shopera.'},
+       dev:'FAQ sekcja mogłaby odpowiedzieć na „Czy boli?" — kluczowy objection w kategorii epilatorów.'},
+      {el:'E5',etyk:'„Co jest w pudełku" + Specs',zone:'scroll',top:'~700px',dot:'#22c55e',
+       zaw:'<ul><li>4 elementy: Depilator + Szczotka + Ładowarka + Saszetka</li><li>Szczegóły techniczne: waga 179g, wymiary, napięcie 100-240V, akumulator Li-ion</li></ul>',
+       obs:'Sekcja zawartości pudełka ważna przy cenie 479 zł. Shopper sprawdza czy dostaje akcesoria. Specs techniczne potwierdzają globalne użycie (100-240V).',
+       ocena:{w:'OK',o:'Kompletna sekcja zawartości — odpowiednia dla kategorii premium.'},
+       dev:'Dodaj FAQ: „Jak długo ładuje się akumulator?" — często wyszukiwane pytanie.'},
+      {el:'E6',etyk:'Oceny i recenzje',zone:'scroll',top:'~900px',dot:'#22c55e',
+       zaw:'<ul><li>Sekcja „Oceny i recenzje" widoczna</li><li>Na screenshocie: recenzje załadowane, ale małe</li></ul>',
+       obs:'Braun ma recenzje na własnej stronie. Na Wizaz: 4.8★ (104 recenzje) — to jest mocny social proof nieeksponowany dostatecznie na PDP.',
+       ocena:{w:'OK',o:'Recenzje są, ale mogą być więcej eksponowane (widget Wizaz lub importowane).'},
+       dev:'Rozważ embed Wizaz widget lub schema AggregateRating z external source.'}
+    ]
+  }
+];
+
+let curTab = 0;
+let curVp = 'desktop';
+
+function switchTab(i, btn) {
+  curTab = i;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTab();
+}
+
+function setVp(vp, btn) {
+  curVp = vp;
+  document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderShot();
+}
+
+function renderShot() {
+  const d = DATA[curTab];
+  const img = document.getElementById('shotImg');
+  img.src = d.url + '_' + curVp + '.png';
+  img.className = 'shot-img ' + curVp;
+  document.getElementById('shotPane').scrollTop = 0;
+}
+
+function renderTab() {
+  const d = DATA[curTab];
+  const list = document.getElementById('listPane');
+
+  // wnioski banner
+  let html = `<div class="wnioski-banner">
+    <div class="wnioski-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+      🔴 Główne problemy — ${d.name} <span>▼</span>
+    </div>
+    <div class="wnioski-body">`;
+  d.wnioski.forEach(w => {
+    html += `<div class="alarm-card"><div class="alarm-problem">${w.problem}</div><div class="alarm-insight">${w.insight}</div></div>`;
+  });
+  html += `<div class="dz-block"><strong>DZ dla GLOV:</strong> ${d.dz}</div></div></div>`;
+
+  // elements
+  d.elements.forEach((el, i) => {
+    const zoneClr = el.zone === 'above' ? '#dbeafe' : '#fef9c3';
+    const zoneTxt = el.zone === 'above' ? '#1e40af' : '#854d0e';
+    html += `<div class="el-item">
+      <div class="el-row" onclick="toggleEl(this,${i})">
+        <span class="dot" style="background:${el.dot}"></span>
+        <span class="el-name">${el.el}</span>
+        <span class="el-etyk">${el.etyk}</span>
+        <span class="zone-badge" style="background:${zoneClr};color:${zoneTxt}">${el.zone}</span>
+        <span class="el-top">${el.top}</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="el-accordion">
+        <div class="acc-section">
+          <div class="acc-title">Zawartość / akcje shopera</div>
+          <div class="acc-zaw">${el.zaw}</div>
+        </div>
+        <div class="acc-section">
+          <div class="acc-title">Obserwacja</div>
+          <div class="obs-insight">${el.obs}</div>
+        </div>
+        <div class="acc-section">
+          <div class="acc-title">Ocena</div>
+          <div class="acc-content"><strong>${el.ocena.w}:</strong> ${el.ocena.o}</div>
+        </div>
+        <div class="acc-section">
+          <div class="acc-title">Developer / Tech</div>
+          <div class="acc-footer">${el.dev}</div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  list.innerHTML = html;
+  renderShot();
+}
+
+function toggleEl(row, i) {
+  const wasExp = row.classList.contains('expanded');
+  document.querySelectorAll('.el-row').forEach(r => r.classList.remove('expanded','active'));
+  if (!wasExp) {
+    row.classList.add('expanded', 'active');
+  }
+}
+
+renderTab();
+</script>
+</body>
+</html>
