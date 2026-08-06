@@ -1,0 +1,378 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECOMMS 5.0 — Tech Stack Template</title>
+<style>
+  :root{--ink:#1a1d23;--muted:#5c6470;--line:#e3e6ea;--bg:#fafbfc;--card:#ffffff;--accent:#0b6e4f;--accent2:#b45309;--warn:#b91c1c;--chip:#eef2f6}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;padding:0 0 80px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+  header{background:linear-gradient(135deg,#0b6e4f 0%,#0d5240 100%);color:#fff;padding:44px 0 36px;margin-bottom:36px}
+  header .wrap{max-width:1080px}
+  h1{font-size:1.9rem;font-weight:700;letter-spacing:-.5px}
+  .sub{opacity:.85;margin-top:6px;font-size:.98rem}
+  .meta{opacity:.65;margin-top:14px;font-size:.82rem}
+  h2{font-size:1.35rem;margin:44px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--line);letter-spacing:-.3px}
+  h3{font-size:1.05rem;margin:24px 0 8px;color:var(--accent)}
+  p{margin:10px 0;color:var(--ink)}
+  .lead{font-size:1.06rem}
+  table{width:100%;border-collapse:collapse;margin:16px 0;background:var(--card);font-size:.92rem}
+  th{background:#f1f4f7;text-align:left;padding:10px 12px;border:1px solid var(--line);font-weight:600}
+  td{padding:10px 12px;border:1px solid var(--line);vertical-align:top}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 22px;margin:14px 0}
+  .card.gold{border-left:4px solid var(--accent)}
+  .card.amber{border-left:4px solid var(--accent2)}
+  .card.red{border-left:4px solid var(--warn)}
+  .chip{display:inline-block;background:var(--chip);border-radius:20px;padding:2px 12px;font-size:.8rem;margin:2px 4px 2px 0;color:var(--muted)}
+  .pick{font-weight:700;color:var(--accent)}
+  .dim{color:var(--muted);font-size:.88rem}
+  code{background:#eef1f4;padding:1px 6px;border-radius:4px;font-size:.86em;font-family:'SF Mono',Menlo,monospace}
+  .arch{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:24px;margin:18px 0;overflow-x:auto}
+  .arch svg{min-width:760px;width:100%;height:auto}
+  ul,ol{margin:8px 0 8px 24px}
+  li{margin:5px 0}
+  .tc{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:20px 24px;margin:24px 0}
+  .tc h2{border:none;margin-top:0;color:#92400e}
+  .tc b{color:#92400e}
+  .kpi{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0}
+  .kpi>div{flex:1 1 200px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+  .kpi .n{font-size:1.5rem;font-weight:700;color:var(--accent)}
+  .kpi .l{font-size:.82rem;color:var(--muted)}
+</style>
+
+<header><div class="wrap">
+  <h1>ECOMMS 5.0 — Tech Stack Template</h1>
+  <div class="sub">Blueprint do stawiania DOWOLNEGO sklepu · content-first · AI jako CMS i integrator · zero abonamentów · pilot: Own_shop (energetyka domowa)</div>
+  <div class="meta">2026-08-05 · źródła: 8 researchy (silniki / AI-CMS / architektury / dropship PL / analityka / LLM discovery / moduły, sierpień 2026) + stan projektu Own_shop</div>
+</div></header>
+
+<div class="wrap">
+
+<p class="lead"><b>Teza w jednym zdaniu:</b> jeden template-repo (silnik Medusa + storefront Astro + treść w plikach + warstwa integracji jako pluginy) i plik konfiguracyjny per sklep — nowy sklep to <b>fork + config + CS kategorii</b>, nie nowy projekt od zera.</p>
+
+<div class="card gold">
+<h3 style="margin-top:0">§0 To jest TEMPLATE, nie jeden sklep</h3>
+<p>Zasada z Twojego kanonu jednolitości: <b>core jest jeden i wspólny</b> — poprawka w core (lepszy szablon PDP, nowy adapter, lepszy schemat JSON-LD) dziedziczy każda instancja. <b>Sklep to konfiguracja</b>, nie kod:</p>
+<table>
+  <tr><th style="width:30%">CORE (wspólny, wersjonowany)</th><th>CONFIG (per sklep)</th></tr>
+  <tr><td>silnik commerce + storefront + szablony PDP/kategorii/poradników (standard GEO) · framework adapterów dostawców · rules engine cen · order relay · moduły: konfigurator, kalkulatory, recenzje, newsletter, popupy, lead-flow · feedy out (GMC/Bing/Ceneo/ChatGPT/IndexNow) · analityka (GA4 hybrid + CMP) · schematy JSON-LD</td><td><code>shop.config</code>: domena, branding (tokeny CSS), rynek/język/waluta, klucze płatności, włączone moduły (flagi) · <b>CS kategorii</b> (metodologia v3.1 → engine → drzewa doboru + pole pytań) · adaptery dostawców (które i z jakimi credentialami) · treść MDX instancji</td></tr>
+</table>
+<p class="dim">Own_shop (energetyka) = instancja pilotażowa, na której template powstaje. Drugi sklep (dowolna kategoria: termowizja, lasery, cokolwiek) = test czy template jest prawdziwy.</p>
+</div>
+
+<div class="kpi">
+  <div><div class="n">~0 zł/mies</div><div class="l">licencje i abonamenty (MIT/BSD, zero GMV fee)</div></div>
+  <div><div class="n">€5–8/mies</div><div class="l">jedyny stały koszt: VPS Hetzner (backend)</div></div>
+  <div><div class="n">100%</div><div class="l">treści i produktów zarządzane przez API/pliki — zero klikania w panel</div></div>
+</div>
+
+<h2>1. Architektura</h2>
+<div class="arch">
+<svg viewBox="0 0 860 400" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,sans-serif">
+  <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#5c6470"/></marker></defs>
+  <!-- Claude Code operator -->
+  <rect x="20" y="20" width="240" height="110" rx="10" fill="#eef7f2" stroke="#0b6e4f" stroke-width="2"/>
+  <text x="140" y="48" text-anchor="middle" font-size="15" font-weight="700" fill="#0b6e4f">CLAUDE CODE = CMS</text>
+  <text x="140" y="72" text-anchor="middle" font-size="12" fill="#1a1d23">pisze MDX · skrypty API produktów</text>
+  <text x="140" y="92" text-anchor="middle" font-size="12" fill="#1a1d23">generuje konfigi narzędzi (CS engine)</text>
+  <text x="140" y="112" text-anchor="middle" font-size="12" fill="#5c6470">git push = publikacja</text>
+  <!-- Repo -->
+  <rect x="330" y="20" width="220" height="110" rx="10" fill="#fff" stroke="#e3e6ea" stroke-width="2"/>
+  <text x="440" y="48" text-anchor="middle" font-size="14" font-weight="700">REPO (GitHub)</text>
+  <text x="440" y="72" text-anchor="middle" font-size="12">MDX: poradniki · FAQ · strony</text>
+  <text x="440" y="92" text-anchor="middle" font-size="12">JSON: drzewa doboru (§8 CS)</text>
+  <text x="440" y="112" text-anchor="middle" font-size="12">komponenty narzędzi (islands)</text>
+  <!-- Storefront -->
+  <rect x="620" y="20" width="220" height="110" rx="10" fill="#fff" stroke="#0b6e4f" stroke-width="2"/>
+  <text x="730" y="48" text-anchor="middle" font-size="14" font-weight="700">ASTRO STOREFRONT</text>
+  <text x="730" y="72" text-anchor="middle" font-size="12">SSG: setki stron pre-render</text>
+  <text x="730" y="92" text-anchor="middle" font-size="12">islands: konfigurator, kalkulatory</text>
+  <text x="730" y="112" text-anchor="middle" font-size="12" fill="#5c6470">Cloudflare Pages (free)</text>
+  <!-- Medusa -->
+  <rect x="330" y="200" width="220" height="110" rx="10" fill="#fff" stroke="#b45309" stroke-width="2"/>
+  <text x="440" y="228" text-anchor="middle" font-size="14" font-weight="700">MEDUSA (VPS)</text>
+  <text x="440" y="252" text-anchor="middle" font-size="12">produkty · ceny · koszyk</text>
+  <text x="440" y="272" text-anchor="middle" font-size="12">zamówienia · klienci</text>
+  <text x="440" y="292" text-anchor="middle" font-size="12" fill="#5c6470">Admin REST API + eventy</text>
+  <!-- Ops -->
+  <rect x="620" y="200" width="220" height="150" rx="10" fill="#fff" stroke="#e3e6ea" stroke-width="2"/>
+  <text x="730" y="228" text-anchor="middle" font-size="14" font-weight="700">OPS PL</text>
+  <text x="730" y="252" text-anchor="middle" font-size="12">Stripe: BLIK · P24 · karty</text>
+  <text x="730" y="272" text-anchor="middle" font-size="12">Fakturownia API (faktury)</text>
+  <text x="730" y="292" text-anchor="middle" font-size="12">InPost ShipX / kurier</text>
+  <text x="730" y="312" text-anchor="middle" font-size="12">Baselinker (opcja, multi-channel)</text>
+  <text x="730" y="336" text-anchor="middle" font-size="11" fill="#5c6470">lead-flow: wycena + montaż</text>
+  <!-- arrows -->
+  <line x1="260" y1="75" x2="325" y2="75" stroke="#5c6470" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="550" y1="75" x2="615" y2="75" stroke="#5c6470" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="140" y1="130" x2="330" y2="240" stroke="#5c6470" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="200" y="205" font-size="11" fill="#5c6470">skrypty → Admin API</text>
+  <line x1="440" y1="200" x2="440" y2="135" stroke="#5c6470" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="450" y="172" font-size="11" fill="#5c6470">dane produktów @ build</text>
+  <line x1="670" y1="135" x2="560" y2="230" stroke="#5c6470" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="590" y="168" font-size="11" fill="#5c6470">koszyk/checkout API</text>
+  <line x1="550" y1="255" x2="615" y2="255" stroke="#5c6470" stroke-width="2" marker-end="url(#ar)"/>
+</svg>
+</div>
+
+<h2>2. Warstwy — wybory i alternatywy</h2>
+<table>
+  <tr><th style="width:16%">Warstwa</th><th style="width:22%">Wybór</th><th>Dlaczego</th><th style="width:22%">Alternatywa (kiedy)</th></tr>
+  <tr><td><b>Silnik commerce</b></td><td class="pick">Medusa v2 (MIT, Node/TS)</td><td>35.5K★, żywy (v2.18, lipiec 2026), oficjalny starter storefrontu, Admin REST API + eventy/Automations — AI steruje produktami skryptem. Zero GMV fee.</td><td>Vendure (GraphQL type-safe) — gdy Medusa okaże się oporna na VPS; technicznie najlepsze API dla agenta, mniejszy ekosystem</td></tr>
+  <tr><td><b>Storefront</b></td><td class="pick">Astro 5 + islands</td><td>Content-first: zero JS domyślnie, SSG setek stron = najlepsze Core Web Vitals i najlepszy materiał dla AI search (GEO). Interaktywne narzędzia jako wyspy React — reszta strony statyczna.</td><td>Next.js (starter Medusy) — gdy narzędzi interaktywnych będzie tyle, że „wyspy" przestaną wystarczać (mało prawdopodobne)</td></tr>
+  <tr><td><b>Treść</b></td><td class="pick">MDX w repo (content collections)</td><td>To jest „AI jako CMS": Claude pisze/edytuje pliki, git push → build → live. Wersjonowanie za darmo, zero panelu, zero limitów API.</td><td>Payload CMS (MIT, oficjalny MCP) — gdyby doszedł drugi, nietechniczny edytor treści (Bartek?)</td></tr>
+  <tr><td><b>Dane narzędzi</b></td><td class="pick">JSON z enginu CS</td><td><code>decision_tree_v4.py</code> już generuje drzewa doboru (§8, oś kanału, wagi). Ten sam output karmi konfigurator na froncie. Jedno źródło prawdy: CS → engine → JSON → UI.</td><td>—</td></tr>
+  <tr><td><b>Płatności</b></td><td class="pick">Stripe (BLIK + P24 + karty)</td><td>Jedna integracja pokrywa polskie metody. Payment Links odpadają (limit 20 pozycji) — pełny Stripe Checkout przez Medusę.</td><td>PayU/Przelewy24 wprost — gdy prowizje Stripe za BLIK zabolą przy wolumenie; decyzja odkładalna</td></tr>
+  <tr><td><b>Faktury</b></td><td class="pick">Fakturownia API</td><td>Webhook z Medusy (order.placed) → skrypt → faktura VAT. Silnik tego nie robi i nie musi.</td><td>wFirma / inFakt API — to samo, kwestia gustu</td></tr>
+  <tr><td><b>Wysyłka</b></td><td class="pick">InPost ShipX API + kurier paletowy</td><td>Pompa/magazyn = paleta (kurier), akcesoria = paczkomat. Etykiety skryptem z webhooka.</td><td>Baselinker jako hub — gdy dojdzie Allegro/multi-channel (znasz z GLOV)</td></tr>
+  <tr><td><b>Hosting front</b></td><td class="pick">Cloudflare Pages (free)</td><td>SSG = statyki na CDN. Free tier wystarczy (500 buildów/mies). Vercel Hobby odpada — zakaz komercji.</td><td>Vercel Pro €20/mies — gdyby CF Pages uwierał (nie uwiera)</td></tr>
+  <tr><td><b>Hosting backend</b></td><td class="pick">Hetzner VPS CX22 (€5–8)</td><td>2 vCPU / 4 GB RAM ciągnie Medusę + Postgres spokojnie przy setkach SKU. Docker Compose, backup snapshotem.</td><td>Medusa Cloud $29/mies — gdy DevOps zacznie żreć czas zamiast go oszczędzać</td></tr>
+</table>
+
+<h2>3. Super opcje kontentowe — tu się wygrywa</h2>
+<p>High-ticket energetyka to zakup researchowany tygodniami. Klient nie „kupuje pompy", klient <b>szuka odpowiedzi</b>. Sklep, który jest jednocześnie najlepszym źródłem odpowiedzi w kategorii, przechwytuje decyzję zanim konkurencja pokaże cenę. Wszystko poniżej masz już metodologicznie gotowe — CS v3.1 dostarcza treść, stack ją tylko serwuje.</p>
+
+<div class="card gold">
+  <h3 style="margin-top:0">3.1 Konfigurator doboru — rdzeń przewagi (STATUS: „nikt na PL tego nie ma")</h3>
+  <p>„Mam falownik X → które magazyny pasują" · „dobór mocy pompy do domu" · + cena + dotacja + montaż w jednym flow. Mechanika: engine CS generuje drzewo decyzyjne jako JSON → React island renderuje kroki → wynik to lista SKU z Medusy + CTA (koszyk lub wycena). Aktualizacja CS = aktualizacja konfiguratora, zero przepisywania UI.</p>
+</div>
+
+<div class="card gold">
+  <h3 style="margin-top:0">3.2 Kalkulatory osadzone w treści</h3>
+  <ul>
+    <li><b>Kalkulator dotacji</b> — KPO (min 2 kWh, do 50%/16k) vs Fundusz Modernizacyjny (min 10 kWh, 800 zł/kWh + EPS): wpisujesz pojemność → wychodzi realna dopłata i który program. Dane programów w jednym JSON — zmiana ustawy = edycja jednego pliku.</li>
+    <li><b>Kalkulator oszczędności pompy</b> — metraż, ocieplenie, obecne źródło → szacunek rachunków (CEP z CS: EPBD 2028/2030/2040 jako trigger).</li>
+    <li><b>Porównywarka produktów</b> — generowana z danych katalogu (API Medusy @ build), nie pisana ręcznie. Setki SKU = setki porównań bez pracy.</li>
+  </ul>
+</div>
+
+<div class="card gold">
+  <h3 style="margin-top:0">3.3 Content silnik: CS → strony</h3>
+  <ul>
+    <li><b>Discovery Questions z CS = FAQ i klastry poradników.</b> Pole pytań już istnieje dla obu kategorii — każde pytanie to strona/sekcja MDX z odpowiedzią i schema FAQPage.</li>
+    <li><b>PDP wg standardu GEO</b> — tytuły/bullets Tier-1, specyfikacje w tabelach, JSON-LD (Product, Offer, FAQPage, HowTo) — z automatu, bo strony generuje szablon, nie człowiek.</li>
+    <li><b>Huby kategorii</b> (masz live: pompy, magazyny) wpinają się jako sekcja edukacyjna sklepu — z huba GEO robi się top-funnel sklepu.</li>
+    <li><b>SSG = każda strona pre-renderowana</b> — AI search (i Google) widzi pełną treść bez JS. Twoja własna teza GEO, tu na własnym poligonie.</li>
+  </ul>
+</div>
+
+<div class="card amber">
+  <h3 style="margin-top:0">3.4 High-ticket = dwa flow, nie jeden</h3>
+  <p>Koszyk to nie jedyna konwersja. Pompa z montażem = <b>lead-flow</b>: konfigurator → wycena → kontakt (model „warstwowy wybór montażu" z Idei — 3 poziomy). Magazyn/akcesoria = klasyczny checkout. Architektura musi mieć oba od dnia zero: Medusa robi checkout, formularz wyceny leci do prostego CRM (na start: Supabase tabela + Discord DM — infrastrukturę masz).</p>
+</div>
+
+<h2>4. Czego świadomie NIE bierzemy</h2>
+<table>
+  <tr><th style="width:24%">Odrzucone</th><th>Powód</th></tr>
+  <tr><td>Shopify / SaaS</td><td>Abonament + prowizje + appki za każdą funkcję; konfigurator i tak trzeba by pisać samemu, tylko w gorszym środowisku (Liquid)</td></tr>
+  <tr><td>WooCommerce</td><td>„Darmowy" na papierze, realnie $1.8–15K/rok w pluginach; od ~10K produktów problemy wydajności; słaby agentycznie</td></tr>
+  <tr><td>Headless CMS na start (Strapi/Sanity)</td><td>Druga baza treści obok repo = dwie prawdy. MDX w repo wystarcza dopóki jedynym edytorem jest Claude Code + Ty</td></tr>
+  <tr><td>Stripe Payment Links / static-only commerce</td><td>Limit 20 pozycji, brak koszyka, brak VAT-logiki — zabawka dla 1–2 SKU</td></tr>
+  <tr><td>Magento (starter graycore.io „drive with Claude")</td><td>Ciekawostka z HN, ale Magento = moloch PHP; koszt utrzymania zjada każdą oszczędność</td></tr>
+</table>
+
+<h2>5. Koszty rocznie</h2>
+<table>
+  <tr><th>Pozycja</th><th style="width:20%">Koszt/rok</th><th>Uwagi</th></tr>
+  <tr><td>Licencje (Medusa, Astro, wszystko)</td><td><b>0 zł</b></td><td>MIT/BSD</td></tr>
+  <tr><td>VPS Hetzner CX22</td><td>~€60–96</td><td>backend + Postgres; ceny po podwyżce z lipca 2026</td></tr>
+  <tr><td>Cloudflare Pages</td><td>0 zł</td><td>free tier: 500 buildów/mies</td></tr>
+  <tr><td>Domena .pl</td><td>~60–100 zł</td><td></td></tr>
+  <tr><td>Fakturownia</td><td>~0–300 zł</td><td>plan zależny od liczby faktur</td></tr>
+  <tr><td>Stripe</td><td>% od transakcji</td><td>brak stałej opłaty; prowizja tylko gdy sprzedajesz</td></tr>
+  <tr><td colspan="3"><b>Razem stałe: ~400–600 zł/rok</b> — vs Shopify Basic ~1 900 zł/rok + appki + prowizje</td></tr>
+</table>
+
+<h2>6. PROCES budowy template'u — kolejność, bramki, zależności</h2>
+<p>Poniżej budowa <b>core'u</b> — robiona raz. Stawianie kolejnych sklepów z gotowego template'u to §10 (7 kroków, powtarzalne). Każdy etap ma <b>bramkę</b>: dopóki nie przechodzi, następny nie startuje. Bramka to dowód działania (screenshot, przejście testu, walidator), nie „skrypt się wykonał".</p>
+
+<div class="arch">
+<svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,sans-serif">
+  <defs><marker id="a2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#0b6e4f"/></marker>
+  <marker id="a3" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#94a3b8"/></marker></defs>
+  <text x="20" y="22" font-size="12" font-weight="700" fill="#0b6e4f">ŚCIEŻKA KRYTYCZNA (sekwencyjnie)</text>
+  <g font-size="12" font-weight="600">
+    <rect x="20" y="34" width="120" height="46" rx="8" fill="#eef7f2" stroke="#0b6e4f" stroke-width="2"/>
+    <text x="80" y="53" text-anchor="middle">E0 Proof</text><text x="80" y="69" text-anchor="middle" font-size="10" font-weight="400" fill="#5c6470">1 wieczór</text>
+    <rect x="180" y="34" width="120" height="46" rx="8" fill="#eef7f2" stroke="#0b6e4f" stroke-width="2"/>
+    <text x="240" y="53" text-anchor="middle">E1 Szkielet</text><text x="240" y="69" text-anchor="middle" font-size="10" font-weight="400" fill="#5c6470">monorepo + config</text>
+    <rect x="340" y="34" width="120" height="46" rx="8" fill="#eef7f2" stroke="#0b6e4f" stroke-width="2"/>
+    <text x="400" y="53" text-anchor="middle">E2 Katalog</text><text x="400" y="69" text-anchor="middle" font-size="10" font-weight="400" fill="#5c6470">schemat + import</text>
+    <rect x="500" y="34" width="120" height="46" rx="8" fill="#eef7f2" stroke="#0b6e4f" stroke-width="2"/>
+    <text x="560" y="53" text-anchor="middle">E3 Storefront</text><text x="560" y="69" text-anchor="middle" font-size="10" font-weight="400" fill="#5c6470">szablony + JSON-LD</text>
+    <rect x="660" y="34" width="180" height="46" rx="8" fill="#fff7ed" stroke="#b45309" stroke-width="2"/>
+    <text x="750" y="53" text-anchor="middle">E7 Discovery + content</text><text x="750" y="69" text-anchor="middle" font-size="10" font-weight="400" fill="#5c6470">feedy · IndexNow · masówka</text>
+  </g>
+  <line x1="140" y1="57" x2="176" y2="57" stroke="#0b6e4f" stroke-width="2" marker-end="url(#a2)"/>
+  <line x1="300" y1="57" x2="336" y2="57" stroke="#0b6e4f" stroke-width="2" marker-end="url(#a2)"/>
+  <line x1="460" y1="57" x2="496" y2="57" stroke="#0b6e4f" stroke-width="2" marker-end="url(#a2)"/>
+  <line x1="620" y1="57" x2="656" y2="57" stroke="#0b6e4f" stroke-width="2" marker-end="url(#a2)"/>
+  <text x="20" y="132" font-size="12" font-weight="700" fill="#5c6470">RÓWNOLEGLE (po E3, w dowolnej kolejności)</text>
+  <g font-size="12" font-weight="600">
+    <rect x="20" y="144" width="180" height="46" rx="8" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+    <text x="110" y="163" text-anchor="middle">E4 Moduły interaktywne</text><text x="110" y="179" text-anchor="middle" font-size="10" font-weight="400" fill="#5c6470">konfigurator · kalkulatory</text>
+    <rect x="230" y="144" width="180" height="46" rx="8" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+    <text x="320" y="163" text-anchor="middle">E5 Komercja + ops</text><text x="320" y="179" text-anchor="middle" font-size="10" font-weight="400" fill="#5c6470">płatność · faktura · wysyłka</text>
+    <rect x="440" y="144" width="180" height="46" rx="8" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+    <text x="530" y="163" text-anchor="middle">E6 Warstwa dostawców</text><text x="530" y="179" text-anchor="middle" font-size="10" font-weight="400" fill="#5c6470">adaptery · sync · relay</text>
+    <rect x="650" y="144" width="190" height="46" rx="8" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+    <text x="745" y="163" text-anchor="middle">E8 Hardening + sklep #2</text><text x="745" y="179" text-anchor="middle" font-size="10" font-weight="400" fill="#5c6470">dowód, że to template</text>
+  </g>
+  <line x1="560" y1="80" x2="110" y2="140" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#a3)"/>
+  <line x1="560" y1="80" x2="320" y2="140" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#a3)"/>
+  <line x1="560" y1="80" x2="530" y2="140" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#a3)"/>
+  <text x="20" y="232" font-size="11" fill="#b45309" font-weight="600">Reguła nadrzędna: E6 pracuje na MOCK-adapterze do skutku — czekanie na umowę z hurtownią nie może blokować budowy.</text>
+  <text x="20" y="252" font-size="11" fill="#5c6470">Content (E7) startuje równolegle z E3, gdy tylko stoi szablon poradnika — to najdłuższy proces, więc rusza najwcześniej.</text>
+</svg>
+</div>
+
+<table>
+  <tr><th style="width:6%">Etap</th><th style="width:19%">Cel</th><th>Kroki po kolei</th><th style="width:26%">BRAMKA (dowód przejścia)</th></tr>
+  <tr>
+    <td><b>E0</b><br><span class="dim">proof</span></td>
+    <td>Zweryfikować fundament zanim powstanie kod, który trudno cofnąć</td>
+    <td>1. Medusa v2 lokalnie (docker compose: API + Postgres)<br>2. skrypt: 20 SKU → Admin API<br>3. drugi run tego samego skryptu</td>
+    <td>Katalog widoczny przez API, drugi run <b>nie duplikuje</b> produktów (idempotencja). Jeśli Medusa opiera się na tym etapie → decyzja o Vendure zapada TU, nie później</td>
+  </tr>
+  <tr>
+    <td><b>E1</b><br><span class="dim">szkielet</span></td>
+    <td>Fizyczny podział core ↔ config (bez niego to nie jest template)</td>
+    <td>1. monorepo: <code>core/</code>, <code>suppliers/</code>, <code>shops/&lt;nazwa&gt;/</code><br>2. schemat <code>shop.config</code> + walidator (brak pola = błąd na starcie, nie w produkcji)<br>3. <code>make dev</code> / <code>make build</code> czytające config<br>4. tokeny CSS z configu</td>
+    <td>Dwa configi (<code>shops/energetyka</code>, <code>shops/demo</code>) podnoszą <b>dwa różne sklepy z tego samego kodu</b> — inna nazwa, kolory, waluta. To jedyny prawdziwy test „czy to template"</td>
+  </tr>
+  <tr>
+    <td><b>E2</b><br><span class="dim">dane</span></td>
+    <td>Model danych i import — fundament, którego się potem nie przepisuje</td>
+    <td>1. schemat kanoniczny ofert (SKU, EAN, stock, cena, paczka/paleta)<br>2. mapowanie EAN → own_sku<br>3. importer: plik/API → schemat → Medusa<br>4. rules engine cen (marża, zaokrąglenia) w JSON</td>
+    <td>Import 200 pozycji z pliku testowego; produkt bez EAN i produkt-duplikat obsłużone <b>świadomie</b> (log + reguła), nie wyjątkiem</td>
+  </tr>
+  <tr>
+    <td><b>E3</b><br><span class="dim">storefront</span></td>
+    <td>Szablony, które decydują o LLM discovery — najważniejszy etap dla celu głównego</td>
+    <td>1. Astro + content collections + routing<br>2. szablony: PDP · kategoria · poradnik · FAQ · hub<br>3. JSON-LD w szablonie (Product, Offer, FAQPage, HowTo, Organization, Breadcrumb)<br>4. reguła formatu: odpowiedź w pierwszych 30% tekstu, tabele, listy<br>5. deploy CF Pages</td>
+    <td>Build statyczny przechodzi walidator Rich Results; <b>data parity</b> JSON-LD ↔ HTML potwierdzone skryptem; podgląd źródła strony pokazuje pełną treść bez JS (tak widzi ją GPTBot)</td>
+  </tr>
+  <tr>
+    <td><b>E4</b><br><span class="dim">moat</span></td>
+    <td>Konfigurator i kalkulatory — jedyna rzecz, której konkurencja nie skopiuje w tydzień</td>
+    <td>1. kontrakt danych: engine CS → JSON drzewa<br>2. island konfiguratora (kroki → wynik = lista SKU)<br>3. kalkulatory z danymi w JSON (dotacje, oszczędności)<br>4. porównywarka generowana z katalogu</td>
+    <td>Konfigurator przechodzi ścieżkę end-to-end na prawdziwym drzewie CS i zwraca SKU z katalogu; zmiana drzewa w CS zmienia UI <b>bez dotykania kodu</b></td>
+  </tr>
+  <tr>
+    <td><b>E5</b><br><span class="dim">komercja</span></td>
+    <td>Pieniądze i dokumenty — etap, w którym błąd kosztuje realnie</td>
+    <td>1. Stripe (BLIK/P24/karty) + koszyk/checkout<br>2. webhook <code>order.placed</code> → Fakturownia<br>3. wysyłka (etykieta/awizacja palety)<br>4. lead-flow wyceny (formularz → baza → Discord DM)<br>5. GA4 Measurement Protocol na purchase</td>
+    <td>Transakcja testowa przechodzi całą drogę: płatność → zamówienie → faktura → mail → event w GA4. Sprawdzone też, co się dzieje przy <b>nieudanej</b> płatności i przy padniętym webhooku (kolejka, retry)</td>
+  </tr>
+  <tr>
+    <td><b>E6</b><br><span class="dim">dostawcy</span></td>
+    <td>Moduł dropshippingowy jako pluginy (architektura w §7.1)</td>
+    <td>1. interfejs adaptera + <b>mock adapter</b><br>2. sync engine (diff + batch do Medusy, retry)<br>3. nocny full-sync (reconciliation)<br>4. order relay + kolejka<br>5. watchdog „feed starszy niż 2h" → Discord<br>6. dopiero teraz: pierwszy prawdziwy adapter</td>
+    <td>Mock zmienia stan → produkt znika ze sklepu w &lt;30 min; feed celowo zepsuty (zły format, cena −40%, pusty plik) → <b>alert zamiast cichego wgrania śmieci</b>. Podmiana mocka na realnego dostawcę nie rusza reszty systemu</td>
+  </tr>
+  <tr>
+    <td><b>E7</b><br><span class="dim">discovery</span></td>
+    <td>Cel główny: obecność w LLM-ach i skala contentu</td>
+    <td>1. generator feedów z jednego źródła: GMC → Bing → Ceneo → JSONL (ChatGPT)<br>2. sitemap + IndexNow push przy zmianie URL<br>3. analityka: gtag + CMP (Consent Mode v2) + Clarity<br>4. masówka MDX z pola pytań CS (szkielet skryptem, sloty LLM)<br>5. cron świeżości: ceny/dotacje/daty w treściach</td>
+    <td>Feed przyjęty przez Merchant Center bez błędów krytycznych; IndexNow zwraca 200; pierwsza partia treści live i widoczna w źródle HTML; cron świeżości podbija daty automatycznie</td>
+  </tr>
+  <tr>
+    <td><b>E8</b><br><span class="dim">dowód</span></td>
+    <td>Utwardzenie + test, czy template jest prawdziwy</td>
+    <td>1. backup (snapshot VPS + dump bazy) i restore <b>przetestowany</b><br>2. CI: build + walidatory schema na każdy push<br>3. runbook awarii (co robić gdy padnie VPS / dostawca / płatności)<br>4. <b>fork na drugą kategorię</b></td>
+    <td>Restore z backupu odtwarza sklep; drugi sklep (inna branża) staje wg §10 <b>bez zmian w core</b> — jeśli trzeba było ruszyć core, to nie był template i wracamy do E1</td>
+  </tr>
+</table>
+
+<div class="card amber">
+<p style="margin:0"><b>Trzy zasady procesu:</b> (1) <b>Nie czekaj na dostawców</b> — E6 na mocku, rozmowy handlowe idą równolegle i niczego nie blokują. (2) <b>Content startuje najwcześniej</b> — gdy tylko stoi szablon poradnika (koniec E3), bo to najdłuższy proces i główna przewaga. (3) <b>Bramka = dowód</b>, nie deklaracja: przechodzi dopiero, gdy widać wynik (walidator, transakcja, screenshot), a nie gdy skrypt zwrócił zero.</p>
+</div>
+<p class="dim">Metoda per etap: E0 i E1 → „buduj light"; E2, E3, E6 → GSD (wieloplikowe, z DB i kontraktami); E4, E5 → „buduj" pełne; E7 → batch skryptowy. Ustalane na starcie każdego etapu, nie z góry na wszystkie.</p>
+
+<h2>7. Integracje — integratorem jest AI</h2>
+<p>Zamiast middleware'ów (Zapier, Make, na start nawet Baselinker) każda integracja to <b>skrypt w repo + cron/launchd + webhook + alert na Discord DM</b> — wzorzec, który już masz przetestowany na GLOV (refresh + watchdog gdy dane starsze niż 2h, launchd przez <code>python3</code> wprost). AI pisze skrypty, monitoruje logi, obsługuje wyjątki (nowy format feedu dostawcy, brak produktu w mapowaniu) i raportuje. Middleware kupuje się dopiero wtedy, gdy skrypt przestaje wystarczać — nie odwrotnie.</p>
+
+<h3>7.1 Moduł dropshippingowy — architektura techniczna</h3>
+<p>Warstwa dostawców to osobny serwis w repo (<code>suppliers/</code>), niezależny od Medusy i od konkretnej hurtowni. Dostawca jest wymienialny — to plugin, nie fundament.</p>
+<table>
+  <tr><th style="width:22%">Komponent</th><th>Projekt</th></tr>
+  <tr><td><b>Adaptery dostawców</b></td><td><code>suppliers/&lt;nazwa&gt;/adapter.py</code> — wspólny interfejs: <code>fetch()</code> (API / XML / CSV — źródło obojętne) → <code>normalize()</code> → produkty w <b>schemacie kanonicznym</b>. Nowy dostawca = jeden plik, reszta systemu nietknięta</td></tr>
+  <tr><td><b>Schemat kanoniczny</b></td><td>jedna tabela ofert: <code>supplier_sku · own_sku (mapowanie po EAN/GTIN, fallback: matching AI) · stock · price_net · delivery_days · package_type (paczka/paleta)</code>. Ten sam produkt u N dostawców = N ofert do jednego SKU</td></tr>
+  <tr><td><b>Sync engine</b></td><td>scheduler (launchd/cron) per adapter, częstotliwość per źródło (API: 10–30 min, XML: 60 min) → diff vs stan poprzedni → <b>batch mutacje do Medusa Admin API</b> (idempotentne, retry z backoff). Nocny full-sync jako reconciliation — diff-y kumulują błędy</td></tr>
+  <tr><td><b>Rules engine (ceny)</b></td><td>reguły w JSON: marża minimalna per kategoria, cena zakupu → cena sprzedaży, zaokrąglenia psychologiczne. Stan 0 lub marża poniżej progu → auto-unpublish. Zero decyzji cenowych zaszytych w kodzie</td></tr>
+  <tr><td><b>Order relay</b></td><td>webhook <code>order.placed</code> → router wybiera ofertę (cena/dostępność/czas dostawy) → złożenie zamówienia u dostawcy (API; fallback: strukturalny mail-to-order) → nasłuch trackingu → status do klienta + Fakturownia. Stan pośredni trzymany w kolejce (SQLite) — awaria nie gubi zamówienia</td></tr>
+  <tr><td><b>Observability</b></td><td>log JSONL per adapter · watchdog „feed starszy niż 2h" → Discord DM (wzorzec z GLOV) · anomalie (zmiana formatu, cena −40%, feed pusty) → alert zamiast cichego wgrania śmieci</td></tr>
+</table>
+<p class="dim">Baselinker (50 zł/mies za hurtownię po pierwszej) = ewentualny gotowy konektor przy multi-channel, nie mózg systemu. Mózgiem jest repo.</p>
+<details style="margin:14px 0"><summary class="dim" style="cursor:pointer">Załącznik: rozpoznani dostawcy PL/EU (input do adapterów, z recon-u 08.2026)</summary>
+<p class="dim" style="margin-top:10px">Dropship potwierdzony: <b>TIM SA</b> (API, sync 10 min, 370K SKU) · <b>Onninen</b> (OnnShop 2.0, 500K SKU, bazy produktowe) · LUMOS.ENERGY · Ekowolt. Mocne B2B (dropship do negocjacji): Hydrosolar24, Memodo, Krannich (Wrocław), BayWa r.e. (Gdańsk), Z-Ecoenergy, GVOLT, EcoGral, Grodno, Emiter, Iglotech, Klima-Therm. Zamknięte: Daikin, Mitsubishi (tylko autoryzacja). Regulacyjnie: monoblok bez ograniczeń online; split wymaga oświadczenia o montażu certyfikowanym + od 2027 zakaz R32 &lt;12 kW → techniczne wsparcie dla flagi <code>requires_installation_declaration</code> w checkout.</p>
+</details>
+
+<h3>7.2 Lista feedów — komplet</h3>
+<table>
+  <tr><th style="width:26%">Feed</th><th style="width:8%">Kierunek</th><th style="width:14%">Priorytet</th><th>Uwagi</th></tr>
+  <tr><td><b>TIM API</b> (stany/ceny)</td><td>IN</td><td>P1</td><td>sync 10 min; fundament dropshipu</td></tr>
+  <tr><td>Feedy pozostałych hurtowni (XML/CSV)</td><td>IN</td><td>P2</td><td>cron 30–60 min; standard PL to XML</td></tr>
+  <tr><td><b>Google Merchant Center</b></td><td>OUT</td><td>P1</td><td>XML z Medusy; obowiązkowe: id/title/description/link/image (min <b>500×500</b> od 04.2026)/availability/price/brand; karmi Shopping <i>i</i> AI Overviews</td></tr>
+  <tr><td><b>Microsoft Merchant Center</b></td><td>OUT</td><td>P1</td><td>ten sam plik co GMC; karmi Bing Copilot Checkout — mała konkurencja, tania przewaga</td></tr>
+  <tr><td><b>sitemap.xml + IndexNow</b></td><td>OUT</td><td>P1</td><td><code>@astrojs/sitemap</code> + push IndexNow przy każdej zmianie URL; Bing indeks zasila ChatGPT Search, Copilot i DuckDuckGo (Google IndexNow ignoruje)</td></tr>
+  <tr><td>Ceneo XML</td><td>OUT</td><td>P2</td><td>polska porównywarka; generator z tego samego źródła co GMC</td></tr>
+  <tr><td>ChatGPT Shopping feed (JSONL, SFTP)</td><td>OUT</td><td>P2</td><td>Instant Checkout live w USA (4% prowizji), EU-launch niepotwierdzony — feed przygotować, być pierwszym w kolejce</td></tr>
+  <tr><td>Meta catalog</td><td>OUT</td><td>P3</td><td>dopiero przy remarketingu dynamicznym</td></tr>
+  <tr><td>RSS/Atom contentu</td><td>OUT</td><td>P3</td><td>tani sygnał świeżości dla agregatorów i crawlerów</td></tr>
+</table>
+<p class="dim">Allegro to nie feed, tylko osobny kanał przez API (od 06.2026 obowiązkowy User-Agent) — osobna decyzja biznesowa, bo prowizje Allegro zjadają marżę high-ticket.</p>
+
+<h3>7.3 Analityka</h3>
+<ul>
+  <li><b>GA4 hybrid</b> — gtag client-side (sesje, źródła, UTM) + <b>Measurement Protocol z webhooka</b> <code>order.placed</code> na purchase (odporne na blokery/ITP). Sam MP nie wystarczy — bez gtag nie ma atrybucji źródeł. Eventy commerce standardowo: view_item → add_to_cart → purchase.</li>
+  <li><b>Consent Mode v2 (advanced)</b> — obowiązek EU; wymaga certyfikowanego CMP (darmowy tier np. CookieYes) — własny banerek nie wystarczy Google'owi.</li>
+  <li><b>Clarity</b> (free, heatmapy + nagrania) + opcjonalnie <b>PostHog</b> (znasz z Cleangang) na product analytics.</li>
+  <li><b>Server-side GTM: skip</b> poniżej ~1000 zamówień/mies — koszt Cloud Run &gt; korzyść.</li>
+</ul>
+
+<h2>8. Moduły marketingowe — sam piszę vs kupujemy</h2>
+<table>
+  <tr><th style="width:18%">Moduł</th><th style="width:14%">Werdykt</th><th>Rozwiązanie</th><th style="width:16%">Koszt</th></tr>
+  <tr><td><b>Recenzje</b></td><td class="pick">SAM PISZĘ</td><td>formularz po zakupie (mail z webhooka) + moderacja + schema <code>Review</code>/<code>AggregateRating</code> = gwiazdki przy produktach w SERP/AI. Uwaga: <b>Seller Ratings w Google Ads wymaga certyfikowanego partnera</b> — TrustMate (35 zł/mies) dopinamy dopiero gdy ruszą płatne kampanie</td><td>0 zł → 35 zł/mies później</td></tr>
+  <tr><td><b>Newsletter</b></td><td class="pick">SELF-HOST</td><td><b>Listmonk</b> na tym samym VPS-ie + Amazon SES jako relay ($0.10/1000 maili; free tier SES skasowany 07.2026). SPF/DKIM/DMARC konfigurujemy raz. Treść kampanii piszę ja, wysyłka przez API</td><td>~$1–5/mies</td></tr>
+  <tr><td><b>Automation</b><br><span class="dim">(porzucony koszyk, winback, "produkt dostępny")</span></td><td class="pick">SAM PISZĘ</td><td>webhooki Medusy + cron + Listmonk API — trzy scenariusze to trzy skrypty, nie platforma. n8n (free self-host) tylko jeśli zechcesz wizualny podgląd flow</td><td>0 zł</td></tr>
+  <tr><td><b>Rekomendacje</b></td><td class="pick">SAM PISZĘ</td><td>reguły z katalogu (akcesoria per produkt, cross-sell z drzew CS, bestsellery) — konfigurator doboru <i>jest</i> najlepszym rekomendatorem w tej kategorii. SaaS (Clerk.io $99/feature/mies) nie ma nic, czego nie mamy w CS</td><td>0 zł</td></tr>
+  <tr><td><b>Popupy / exit-intent</b></td><td class="pick">SAM PISZĘ</td><td>island ~50 linii (mouseleave + zapis do Listmonk); lead magnet: "kalkulator dotacji na maila" — OptiMonk ($19/mies) daje tylko szablony i A/B, które i tak zrobimy w PostHog</td><td>0 zł</td></tr>
+</table>
+
+<h2>9. LLM Discovery — plan wygranej (Twój cel główny)</h2>
+<div class="card gold">
+<p><b>Fundament techniczny już sprzyja:</b> crawlery AI (GPTBot, ClaudeBot, PerplexityBot) <b>nie renderują JavaScriptu</b> — czytają goły HTML. Astro SSG serwuje 100% treści w HTML, więc konkurencja na SPA-frontach jest niewidzialna tam, gdzie Ty jesteś cały.</p>
+<ul>
+  <li><b>Schema Tier-1 wszędzie</b> (Product, Offer, FAQPage, HowTo, Organization): strony ze schematem cytowane <b>2.5–2.7× częściej</b> (+157%); JSON-LD musi być 1:1 z HTML (data parity), inaczej sygnał nieufności.</li>
+  <li><b>Świeżość:</b> content &lt;3 mies = <b>3× częściej cytowany</b> → cron odświeżania: ceny, dotacje, daty w poradnikach aktualizowane automatycznie (AI-integrator robi to za darmo, konkurencja ręcznie — czyli wcale).</li>
+  <li><b>Format pod cytowanie:</b> 63% cytacji to listicles; pierwsze 30% tekstu zbiera 44% cytowań (odpowiedź z góry, nie po wstępie); tabele porównawcze + multi-modal = +156% selection rate. Standard szablonu MDX, nie dobra wola autora.</li>
+  <li><b>Pole pytań CS = mapa contentu:</b> każde Discovery Question → strona z odpowiedzią w pierwszym akapicie + FAQPage schema. Ogrom × jakość × struktura — dokładnie to, co chcesz, tylko wykonalne masowo dzięki temu, że CMS-em jest AI.</li>
+  <li><b>Kanały danych:</b> IndexNow → Bing → ChatGPT Search / Copilot / DuckDuckGo; feed do Microsoft Merchant = obecność w Copilot Checkout przy małej konkurencji; feed JSONL gotowy na EU-launch ChatGPT Shopping.</li>
+  <li><b>llms.txt: skip</b> — Google oficjalnie "nie wspieramy i nie planujemy", 97% plików llms.txt ma zero ruchu (Ahrefs, 137K stron). Zgodne z naszym kanonem audytu. UCP Google: na razie US-only, monitorujemy.</li>
+</ul>
+</div>
+
+<h2>10. Stawianie nowego sklepu z template'u — procedura docelowa</h2>
+<table>
+  <tr><th style="width:6%">#</th><th style="width:30%">Krok</th><th>Co się dzieje</th></tr>
+  <tr><td>1</td><td>Fork template + <code>shop.config</code></td><td>domena, branding, rynek, płatności, flagi modułów — jeden plik</td></tr>
+  <tr><td>2</td><td>CS kategorii</td><td>metodologia v3.1 → engine → drzewa doboru (konfigurator) + pole pytań (mapa contentu) — jedyny krok wymagający realnego myślenia</td></tr>
+  <tr><td>3</td><td>Adaptery dostawców</td><td>plik per hurtownia wg wspólnego interfejsu; credentiale do <code>.env</code></td></tr>
+  <tr><td>4</td><td>Import katalogu</td><td>skrypt: feed dostawcy → schemat kanoniczny → Medusa Admin API</td></tr>
+  <tr><td>5</td><td>Masówka contentu</td><td>batch z pola pytań CS: szkielet skryptem, sloty myślące LLM; PDP/FAQ/poradniki wg szablonów core</td></tr>
+  <tr><td>6</td><td>Deploy</td><td>docker compose na VPS (silnik) + CF Pages (front); feedy out i sitemap+IndexNow generują się same</td></tr>
+  <tr><td>7</td><td>Analityka</td><td>GA4 property + CMP + Clarity z konfiguracji szablonowej; eventy commerce są w core</td></tr>
+</table>
+<p class="dim">Cel docelowy: kroki 1, 3–7 = mechanika (dzień roboczy, wykonuje AI); krok 2 = CS, czyli tam gdzie faktycznie powstaje przewaga. Template zamienia „budowę sklepu" w „budowę CS-a".</p>
+
+<div class="tc">
+<h2>TRUTH CHECKER</h2>
+<p><b>— Co wiem z tego co mi podałeś:</b> cel = <b>template tech-stacku do stawiania dowolnego sklepu</b>, gotowy na przyszłość; bez abonamentów; super opcje kontentowe; AI jako CMS i integrator; wygrana w LLM discovery ogromem i jakością contentu. Pilot: Own_shop (pompy+magazyny, CS v3.1 + engine drzew gotowe, konfigurator = luka rynkowa, wspólnik Bartek). Fakty o silnikach/cenach/integracjach z 8 researchy z linkowanymi źródłami (08.2026).</p>
+<p><b>— Co zakładam:</b> że sklep = Own_shop (energetyka), nie nowa kategoria; że sprzedaż PL-only na start (VAT-OSS nieistotny do progu €10K cross-border); że Ty+Claude jesteście jedynymi edytorami treści (stąd MDX zamiast CMS); że akceptujesz €5–8/mies za VPS jako „darmowy w duchu".</p>
+<p><b>— Co może być błędne:</b> gładkość Medusa v2 na jednym VPS-ie to teza z docs, nie z przejechania; prowizje Stripe za BLIK mogą być wyraźnie wyższe niż PayU przy wolumenie; „nikt nie ma konfiguratora" bazuje na researchu konkurencji z czerwca — mogło się zmienić; warunki dropship TIM (marże, dostęp do API, czy w ogóle przyjmą mały sklep) to informacje z ich strony marketingowej, nie z podpisanej umowy; free tiery tną się szybko (MailerLite ściął limity w lipcu, SES skasował free tier) — każda cena z tego dokumentu ma datę ważności; liczby o cytowaniach AI (+157%, 3× świeżość) to badania korelacyjne, nie gwarancje.</p>
+<p><b>— Co musiałbyś zweryfikować przed działaniem:</b> Faza 0 (1 wieczór, 0 zł) weryfikuje najgrubsze ryzyko techniczne; rozmowa handlowa z TIM (i Avrii) o warunkach dropship — to weryfikuje cały model biznesowy taniej niż jakikolwiek kod; prowizje BLIK Stripe vs PayU na realnym koszyku; zwroty 14 dni przy paletach (koszt reverse logistics potrafi zjeść marżę pojedynczej sztuki — kto płaci za transport zwrotny pompy?); dostępność ChatGPT Shopping w EU zanim zainwestujesz w feed ponad minimum.</p>
+<p><b>— Co poprawiłbym z jednym inputem:</b> decyzja asortymentowa monoblok vs split (wisząca pętla w STATUS) — od niej zależy struktura katalogu i pierwsze drzewo konfiguratora, czyli fundament modelu danych.</p>
+</div>
+
+</div>
