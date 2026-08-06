@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ekspresy do kawy v5.7 — Mapa Percepcji · 264 Pytań</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; display: flex; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+#sidebar {
+  width: 220px; min-width: 220px; background: #fff; border-right: 1px solid #e2e8f0;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.brand {
+  padding: 14px 16px 10px;
+  font-weight: 700; font-size: 13px; color: #1e293b;
+  border-bottom: 1px solid #e2e8f0; line-height: 1.3;
+}
+.brand small { display: block; font-weight: 400; font-size: 11px; color: #64748b; margin-top: 2px; }
+.total-badge {
+  margin: 8px 12px; background: #f1f5f9; border-radius: 6px;
+  padding: 5px 10px; font-size: 11px; color: #475569; font-weight: 500;
+}
+.paths-header { padding: 10px 16px 4px; font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .6px; }
+.paths-list { overflow-y: auto; flex: 1; }
+.path-all {
+  display: flex; align-items: center; gap: 8px; padding: 7px 12px;
+  cursor: pointer; border-radius: 6px; margin: 2px 8px;
+  font-size: 12px; font-weight: 600; color: #334155;
+}
+.path-all.active, .path-all:hover { background: #f1f5f9; }
+.path-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+  cursor: pointer; border-radius: 6px; margin: 1px 8px;
+  font-size: 12px; color: #475569; transition: background .1s;
+}
+.path-item:hover, .path-item.active { background: #f1f5f9; color: #1e293b; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.plabel { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pcount { font-size: 11px; font-weight: 600; color: #94a3b8; min-width: 20px; text-align: right; }
+
+.legend { padding: 10px 12px; border-top: 1px solid #e2e8f0; }
+.legend-title { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+.legend-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #475569; margin: 2px 0; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* MAIN */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* TOPBAR */
+#topbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  padding: 8px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 4px; }
+.filter-label { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-right: 2px; }
+.fbtn {
+  font-size: 11px; padding: 3px 8px; border: 1px solid #e2e8f0; border-radius: 4px;
+  background: #fff; cursor: pointer; color: #475569; transition: all .1s;
+}
+.fbtn:hover { border-color: #94a3b8; }
+.fbtn.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+.search-wrap { margin-left: auto; }
+#search { border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 10px; font-size: 12px; width: 180px; outline: none; }
+#search:focus { border-color: #3b82f6; }
+.counter { font-size: 12px; color: #64748b; white-space: nowrap; }
+
+/* STATS BAR */
+#statsbar {
+  background: #fff; border-bottom: 1px solid #e2e8f0;
+  display: flex; gap: 0; overflow-x: auto;
+}
+.stat { flex: 1; padding: 10px 16px; border-right: 1px solid #e2e8f0; min-width: 120px; }
+.stat:last-child { border-right: none; }
+.stat .val { font-size: 24px; font-weight: 700; color: #1e293b; }
+.stat .val.green { color: #10b981; }
+.stat .val.red { color: #ef4444; }
+.stat-lbl { font-size: 11px; color: #64748b; margin-top: 1px; }
+
+/* BOARD */
+#board { flex: 1; overflow-x: auto; overflow-y: auto; padding: 12px; }
+.state-block { margin-bottom: 16px; }
+.state-header {
+  font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase;
+  letter-spacing: .5px; padding: 6px 0 8px; display: flex; align-items: center; gap: 8px;
+}
+.state-code { background: #e2e8f0; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: #64748b; }
+.state-cnt { color: #94a3b8; font-weight: 400; font-size: 11px; }
+.cards-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.ang { margin-top:7px; padding:7px 9px; background:#f6f8fa; border-left:3px solid #0969da;
+        border-radius:4px; font-size:11.5px; line-height:1.45; color:#1f2328; }
+.ang b { color:#0969da; font-weight:650; }
+.sil { float:right; padding:1px 7px; border-radius:10px; font-size:9.5px; font-weight:700; }
+
+.card {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 10px 12px; width: 280px; flex-shrink: 0;
+  cursor: default; transition: box-shadow .15s;
+}
+.card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.card .nr { font-size: 10px; color: #94a3b8; margin-bottom: 4px; }
+.card .qt { font-size: 13px; line-height: 1.45; color: #1e293b; margin-bottom: 8px; }
+.card .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600;
+  border: 1px solid; letter-spacing: .2px;
+}
+.tag-p1 { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-p2 { color: #f97316; border-color: #fdba74; background: #fff7ed; }
+.tag-p3 { color: #d97706; border-color: #fcd34d; background: #fffbeb; }
+.tag-p4 { color: #94a3b8; border-color: #cbd5e1; background: #f8fafc; }
+.tag-info  { color: #3b82f6; border-color: #93c5fd; background: #eff6ff; }
+.tag-komerc { color: #8b5cf6; border-color: #c4b5fd; background: #f5f3ff; }
+.tag-trans { color: #14b8a6; border-color: #5eead4; background: #f0fdfa; }
+.tag-brak { color: #ef4444; border-color: #fca5a5; background: #fff1f2; }
+.tag-istnieje { color: #10b981; border-color: #6ee7b7; background: #ecfdf5; }
+.card.hidden { display: none; }
+
+/* TABS */
+#tabs { display: flex; border-bottom: 2px solid #e2e8f0; background: #fff; }
+.tab { padding: 8px 20px; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.tab.active { color: #1e293b; border-bottom-color: #3b82f6; }
+.tab-panel { display: none; }
+.tab-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+/* LIST VIEW */
+#list-panel { overflow-y: auto; padding: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 8px 12px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; position: sticky; top: 0; }
+td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; }
+tr:hover td { background: #f8fafc; }
+tr.hidden { display: none; }
+
+/* INFO */
+/* FIX 2026-07-30: było `display:flex` — selektor ID bije `.tab-panel{display:none}`,
+   więc panel Info wyświetlał się ZAWSZE, zasłaniając 348 kafelków mapy.
+   Widocznością rządzi wyłącznie `.tab-panel.active`. */
+#info-panel { overflow: hidden; font-size: 13px; line-height: 1.6; }
+.info-section { margin-bottom: 16px; }
+.info-section h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #64748b; margin-bottom: 8px; }
+.info-section ul { padding-left: 16px; color: #475569; }
+.info-section li { margin: 3px 0; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin: 2px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="brand">
+    Ekspresy do kawy
+    <small>v5.7 · Analiza CEP i Pytań</small>
+  </div>
+  <div class="total-badge" id="total-badge">264 pytań · 13 ścieżek</div>
+  <div class="paths-header">Ścieżki zakupowe</div>
+  <div class="paths-list">
+    <div class="path-all active" onclick="filterPath(this)" data-path="ALL">
+      <span class="dot" style="background:#64748b"></span>
+      <span class="plabel">Wszystkie ścieżki</span>
+      <span class="pcount" id="cnt-all">0</span>
+    </div>
+    
+        <div class="path-item" data-path="A" onclick="filterPath(this)" title="Nigdy nie miałem ekspresu — od czego zacząć?">
+          <span class="dot" style="background:#3b82f6"></span>
+          <span class="plabel">A · Nigdy nie miałem ekspresu — od czego zacząć?</span>
+          <span class="pcount" id="cnt-A">0</span>
+        </div>
+        <div class="path-item" data-path="B" onclick="filterPath(this)" title="Chcę robić espresso jak w kawiarni — z cremą i kontrolą">
+          <span class="dot" style="background:#8b5cf6"></span>
+          <span class="plabel">B · Chcę robić espresso jak w kawiarni — z cremą i kontrolą</span>
+          <span class="pcount" id="cnt-B">0</span>
+        </div>
+        <div class="path-item" data-path="C" onclick="filterPath(this)" title="Uwielbiam cappuccino i latte — jak zrobić piankę w domu?">
+          <span class="dot" style="background:#ec4899"></span>
+          <span class="plabel">C · Uwielbiam cappuccino i latte — jak zrobić piankę w domu?</span>
+          <span class="pcount" id="cnt-C">0</span>
+        </div>
+        <div class="path-item" data-path="D" onclick="filterPath(this)" title="Chcę dobrą kawę bez fatygi — jeden przycisk i koniec">
+          <span class="dot" style="background:#14b8a6"></span>
+          <span class="plabel">D · Chcę dobrą kawę bez fatygi — jeden przycisk i koniec</span>
+          <span class="pcount" id="cnt-D">0</span>
+        </div>
+        <div class="path-item" data-path="E" onclick="filterPath(this)" title="W biurze 15 osób — Nescafé już nie wystarcza">
+          <span class="dot" style="background:#f59e0b"></span>
+          <span class="plabel">E · W biurze 15 osób — Nescafé już nie wystarcza</span>
+          <span class="pcount" id="cnt-E">0</span>
+        </div>
+        <div class="path-item" data-path="F" onclick="filterPath(this)" title="Stary ekspres padł po 7 latach — co teraz?">
+          <span class="dot" style="background:#10b981"></span>
+          <span class="plabel">F · Stary ekspres padł po 7 latach — co teraz?</span>
+          <span class="pcount" id="cnt-F">0</span>
+        </div>
+        <div class="path-item" data-path="G" onclick="filterPath(this)" title="Kupuję prezent dla kogoś kto 'kocha kawę' — nie chcę się sk">
+          <span class="dot" style="background:#f43f5e"></span>
+          <span class="plabel">G · Kupuję prezent dla kogoś kto 'kocha kawę' — nie chcę się sk</span>
+          <span class="pcount" id="cnt-G">0</span>
+        </div>
+        <div class="path-item" data-path="H" onclick="filterPath(this)" title="Wydaję 500 zł/mc w kawiarniach — ekspres zwróci się w 4 mie">
+          <span class="dot" style="background:#eab308"></span>
+          <span class="plabel">H · Wydaję 500 zł/mc w kawiarniach — ekspres zwróci się w 4 mie</span>
+          <span class="pcount" id="cnt-H">0</span>
+        </div>
+        <div class="path-item" data-path="I" onclick="filterPath(this)" title="Tyle palarni kraftowych i gatunków — jak tego wszystkiego s">
+          <span class="dot" style="background:#6366f1"></span>
+          <span class="plabel">I · Tyle palarni kraftowych i gatunków — jak tego wszystkiego s</span>
+          <span class="pcount" id="cnt-I">0</span>
+        </div>
+        <div class="path-item" data-path="J" onclick="filterPath(this)" title="Remont kuchni — potrzebuję ekspresu który wygląda jak mebel">
+          <span class="dot" style="background:#d946ef"></span>
+          <span class="plabel">J · Remont kuchni — potrzebuję ekspresu który wygląda jak mebel</span>
+          <span class="pcount" id="cnt-J">0</span>
+        </div>
+        <div class="path-item" data-path="K" onclick="filterPath(this)" title="Lubię zapraszać gości na kawę — chcę sprzętu który robi wra">
+          <span class="dot" style="background:#06b6d4"></span>
+          <span class="plabel">K · Lubię zapraszać gości na kawę — chcę sprzętu który robi wra</span>
+          <span class="pcount" id="cnt-K">0</span>
+        </div>
+        <div class="path-item" data-path="L" onclick="filterPath(this)" title="Nie chcę generować kapsułkowych śmieci — szukam alternatywy">
+          <span class="dot" style="background:#84cc16"></span>
+          <span class="plabel">L · Nie chcę generować kapsułkowych śmieci — szukam alternatywy</span>
+          <span class="pcount" id="cnt-L">0</span>
+        </div>
+        <div class="path-item" data-path="M" onclick="filterPath(this)" title="Nie wiem co wsypują do kawy w kawiarni — wolę kontrolować s">
+          <span class="dot" style="background:#a855f7"></span>
+          <span class="plabel">M · Nie wiem co wsypują do kawy w kawiarni — wolę kontrolować s</span>
+          <span class="pcount" id="cnt-M">0</span>
+        </div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Statusy</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>BRAK — do stworzenia</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#10b981"></span>ISTNIEJE — opublikowany</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>ROZBUDOWAĆ — wymaga rozbudowy</div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Priorytety</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#ef4444"></span>P1 — krytyczne (blokery)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#f97316"></span>P2 — ważne (decyzja)</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#eab308"></span>P3 — standardowe</div>
+    <div class="legend-row"><span class="legend-dot" style="background:#94a3b8"></span>P4 — niski priorytet</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <span class="filter-label">Priorytet</span>
+    <div class="filter-group" id="fg-pr">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="P1">P1</button>
+      <button class="fbtn" data-val="P2">P2</button>
+      <button class="fbtn" data-val="P3">P3</button>
+      <button class="fbtn" data-val="P4">P4</button>
+    </div>
+    <span class="filter-label" style="margin-left:8px">Typ</span>
+    <div class="filter-group" id="fg-typ">
+      <button class="fbtn active" data-val="ALL">Wszystkie</button>
+      <button class="fbtn" data-val="INFO">INFO</button>
+      <button class="fbtn" data-val="KOMERC">KOMERC</button>
+      <button class="fbtn" data-val="TRANS">TRANS</button>
+    </div>
+    <div class="search-wrap">
+      <input id="search" type="text" placeholder="Szukaj artykułu..." oninput="applyFilters()">
+    </div>
+    <div class="counter">Widoczne: <strong id="visibleCount">0</strong> / 264</div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div id="statsbar">
+    <div class="stat"><div class="val" id="stat-total">0</div><div class="stat-lbl">Widocznych pytań</div></div>
+    <div class="stat"><div class="val red" id="stat-p1">0</div><div class="stat-lbl">Priorytet P1 (blokery)</div></div>
+    <div class="stat"><div class="val" id="stat-brak">0</div><div class="stat-lbl">Status BRAK (do stworzenia)</div></div>
+    <div class="stat"><div class="val green" id="stat-istnieje">0</div><div class="stat-lbl">ISTNIEJE + ROZBUDOWAĆ</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div id="tabs">
+    <button class="tab active" onclick="switchTab('mapa')">🗺️ Mapa</button>
+    <button class="tab" onclick="switchTab('lista')">📋 Lista</button>
+    <button class="tab" onclick="switchTab('info')">ℹ️ Info</button>
+  </div>
+
+  <!-- MAPA PANEL -->
+  <div id="mapa-panel" class="tab-panel active">
+    <div id="board"></div>
+  </div>
+
+  <!-- LISTA PANEL -->
+  <div id="lista-panel" class="tab-panel">
+    <div id="list-panel">
+      <table id="list-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Pytanie</th><th>Ścieżka</th><th>Stan</th><th>Priorytet</th><th>Typ</th>
+          </tr>
+        </thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INFO PANEL -->
+  <div id="info-panel" class="tab-panel">
+    <div style="overflow-y:auto;padding:16px;flex:1">
+    <div class="info-section">
+      <h3>Kategoria</h3>
+      <p style="font-size:14px"><strong>Ekspresy do kawy</strong></p>
+      <p style="font-size:12px;color:#64748b;margin-top:4px">v5.7 · 264 pytań · 13 ścieżek zakupowych (CEP)</p>
+    </div>
+    <div class="info-section">
+      <h3>Struktura pytań wg stanu</h3>
+      <div id="info-states" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
+    </div>
+    <div class="info-section">
+      <h3>Ścieżki zakupowe — pełne profile CEP</h3>
+      <div id="info-paths" style="margin-top:8px"></div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DANE ──────────────────────────────────────────────────────────────────────
+const A = [
+{"nr": 1, "t": "Czy jest ekspres, który da mi taką samą kremę jak w kawiarni, czy to tylko chwyt marketingowy?", "p": "B", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 2, "t": "Jak pachnie kawa z domowego ekspresu w porównaniu do tej z profesjonalnego – czy zapach jest równie intensywny i świeży?", "p": "B", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 3, "t": "Czy po zakupie ekspresu będę w końcu robić espresso, które wygląda i smakuje jak z mojej ulubionej kawiarni, czy to nierealne?", "p": "B", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 4, "t": "Jaki typ ekspresu (kolbowy, automatyczny, kapsułkowy) daje największą kontrolę nad cremą i temperaturą, a nie tylko wygodę?", "p": "B", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 5, "t": "Czy ekspres kolbowy dla amatora faktycznie pozwoli mi wyczarować espresso z gęstą, orzechową cremą, czy skończy się na fusach?", "p": "B", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 6, "t": "Jakie parametry (ciśnienie, temperatura, czas ekstrakcji) są kluczowe, żeby kawa z ekspresu smakowała jak z kawiarni – i które modele je spełniają?", "p": "B", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 7, "t": "Czy ekspres za 3000 zł z pompą rotacyjną i PID faktycznie daje lepszą cremę i aromat niż model za 1500 z pompą wibracyjną?", "p": "B", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 8, "t": "Jak wygląda różnica wizualna i zapachowa między espresso z ekspresu automatycznego a kolbowego – czy kolbowy naprawdę pachnie bardziej intensywnie?", "p": "B", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 9, "t": "Czy do ekspresu kolbowego muszę dokupić młynek i tamper, żeby uzyskać kawiarnianą cremę, czy wystarczy gotowa kawa mielona?", "p": "B", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 10, "t": "Który model ekspresu (konkretna marka i typ) ma najlepsze opinie za oddawanie zapachu świeżo palonej kawy i gęstość cremy?", "p": "B", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 11, "t": "Czy ekspres z wbudowanym młynkiem i regulacją ciśnienia (jak Sage Barista Pro) pozwoli mi robić espresso z cremą taką jak w kawiarni, czy to tylko bajery?", "p": "B", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 12, "t": "W którym sklepie stacjonarnym mogę poprosić o zaparzenie espresso na test, żeby sprawdzić, jak pachnie i wygląda crema przed zakupem?", "p": "B", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 13, "t": "Czy na Allegro lub w Media Expert są modele ekspresów kolbowych z gwarancją zwrotu, jeśli kawa nie będzie smakować jak z kawiarni?", "p": "B", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 14, "t": "Który sklep internetowy ma najlepsze porównania parametrów (ciśnienie, temperatura, rodzaj pompy) i zdjęcia cremy z różnych ekspresów?", "p": "B", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 15, "t": "Czy opłaca się kupić używany ekspres kolbowy (np. Gaggia Classic) od kogoś z forum kawowego, żeby zaoszczędzić i dostać lepszą kontrolę?", "p": "B", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 16, "t": "Gdzie znajdę poradnik wideo pokazujący, jak wygląda i pachnie espresso z różnych ekspresów w cenie do 2000 zł – żeby ocenić efekt przed zakupem?", "p": "B", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 17, "t": "Czy istnieje jakiś ekspres, który odtworzy ten niesamowity zapach palonej kawy z palarni, czy to zawsze będzie inaczej pachnieć?", "p": "I", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 18, "t": "Jak wygląda kawa z ekspresu w porównaniu do tej z kraftowej kawiarni – czy ma to samo kremowe body i intensywny kolor?", "p": "I", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 19, "t": "Czy kupując ekspres, w końcu poczuję się jak barista i zrobię kawę, która smakuje lepiej niż ta z sieciówki, czy to tylko mit?", "p": "I", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 20, "t": "Skoro palarnie mają tyle single originów, to czy ekspres automatyczny z wbudowanym młynkiem poradzi sobie z tak różnymi ziarnami, czy lepiej kupić osobny młynek?", "p": "I", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 21, "t": "Czy kawa z ekspresu kolbowego może pachnieć i smakować tak samo jak ta z palarni, czy to tylko dla profesjonalistów?", "p": "I", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 22, "t": "Jak zmieni się moje codzienne picie kawy, gdy zamiast kapsułek zacznę mielić świeże ziarna z palarni – czy to w ogóle odczuję w smaku i aromacie?", "p": "I", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 23, "t": "Czy ekspres za 3000 zł z palarni da mi ten sam efekt wizualny (gęsta crema, warstwy) co kawa z ekspresu kolbowego za 1500 zł?", "p": "I", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 24, "t": "Który typ ekspresu (automat, kolbowy, przelewowy) najlepiej wydobędzie nuty owocowe i kwiatowe z lekkich palonych ziaren, a który podkreśli czekoladowo-orzechowe?", "p": "I", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 25, "t": "Czy przy ekspresie automatycznym stracę kontrolę nad zapachem i smakiem, bo wszystko robi maszyna, czy wręcz przeciwnie – łatwiej powtórzyć ulubiony efekt?", "p": "I", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 26, "t": "Jak wygląda różnica w wyglądzie kawy (kolor, konsystencja pianki) między ekspresem kapsułkowym a świeżo mieloną z palarni – czy to widać gołym okiem?", "p": "I", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 27, "t": "Czy inwestycja w droższy ekspres sprawi, że w końcu przestanę chodzić do kawiarni i poczuję, że mam „swoją palarnię” w kuchni?", "p": "I", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 28, "t": "Który sklep internetowy ma najlepsze opinie o tym, jak dany ekspres radzi sobie z ziarnami z małych palarni – czy sprzedawca testuje je na różnych rodzajach kawy?", "p": "I", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 29, "t": "Czy w sklepie stacjonarnym mogę powąchać i zobaczyć, jak wygląda kawa z różnych ekspresów, zanim kupię, czy to tylko w palarni?", "p": "I", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 30, "t": "Który sprzedawca oferuje możliwość zwrotu, jeśli okaże się, że kawa z ekspresu nie ma tego samego aromatu co w kawiarni – czy to standard?", "p": "I", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 31, "t": "Czy kupując ekspres w zestawie z młynkiem i akcesoriami, dostanę gwarancję, że osiągnę ten sam efekt smakowy i wizualny co w profesjonalnej palarni?", "p": "I", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 32, "t": "Który sklep ma w ofercie ekspresy, które są łatwe do czyszczenia, żeby zapach starej kawy nie psuł wrażenia z nowych, delikatnych ziaren?", "p": "I", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 33, "t": "Czy jest jakiś ekspres, który zrobi mi kawę jednym przyciskiem i nie będę musiał niczego sprzątać?", "p": "D", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 34, "t": "Który ekspres do kawy jest tak prosty, że nawet nie trzeba czytać instrukcji, a kawa smakuje jak z kawiarni?", "p": "D", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 35, "t": "Jaki sprzęt do kawy da mi efekt 'wow' bez żadnego wysiłku i bałaganu?", "p": "D", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 36, "t": "Który typ ekspresu (kapsułkowy, automatyczny, kolbowy) wymaga najmniej fatygi i daje najlepszy smak jednym kliknięciem?", "p": "D", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 37, "t": "Czy ekspres automatyczny za 1500 zł faktycznie zrobi kawę taką jak z kawiarni, bez żadnego ustawiania?", "p": "D", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 38, "t": "Jaki ekspres do kawy ma najmniej części do mycia i nie wymaga codziennego czyszczenia, a kawa pachnie obłędnie?", "p": "D", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 39, "t": "Ekspres kapsułkowy czy automatyczny – który jest szybszy i mniej fatygujący przy 2-3 kawach dziennie?", "p": "D", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 40, "t": "Ile kosztują kapsułki miesięcznie i czy to wyjdzie taniej niż kawa na mieście, a przy okazji pachnie w całym domu?", "p": "D", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 41, "t": "Czy do ekspresu automatycznego muszę dokupić młynek, czy on sam wszystko robi i jak wygląda efekt końcowy w filiżance?", "p": "D", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 42, "t": "Jaki ekspres do małej kuchni zmieści się pod szafką i nie zajmie blatu, a zrobi kawę bez fatygi?", "p": "D", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 43, "t": "Czy kawa z ekspresu za 1000 zł może pachnieć i smakować jak z ekspresu za 3000 zł, jeśli tylko nacisnę jeden przycisk?", "p": "D", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 44, "t": "Który model ekspresu automatycznego ma najlepsze opinie, że działa bez awarii i robi kawę jednym przyciskiem, a przy tym ładnie wygląda na blacie?", "p": "D", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 45, "t": "Jaki ekspres kapsułkowy (Nespresso czy Dolce Gusto) jest tańszy w eksploatacji i daje bardziej kremową kawę bez żadnej fatygi?", "p": "D", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 46, "t": "Czy jest ekspres, który sam się czyści i robi cappuccino jednym przyciskiem, a efekt wizualny i zapach są jak z kawiarni?", "p": "D", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 47, "t": "Który ekspres automatyczny do 2000 zł ma najlepszy smak kawy i parzy tak, że pachnie w całym mieszkaniu, a nie wymaga mycia młynka?", "p": "D", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 48, "t": "Czy ekspres kolbowy jest w ogóle opcją dla kogoś, kto nie chce się uczyć, czy jednak amator da radę i efekt będzie lepszy niż z kapsułek?", "p": "D", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 49, "t": "Jaki model ekspresu (konkretna marka) ma najcichsze działanie i robi kawę w 30 sekund, a przy tym wygląda elegancko?", "p": "D", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 50, "t": "Który ekspres do kawy dla 2 osób daje najbardziej kremową piankę i intensywny aromat, a obsługa to jeden przycisk?", "p": "D", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 51, "t": "Czy kawa z ekspresu automatycznego za 2500 zł smakuje i pachnie tak samo jak z kawiarni, czy jednak trzeba dopłacić za lepszy model?", "p": "D", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 52, "t": "Gdzie kupić ekspres automatyczny z możliwością zwrotu, jeśli kawa nie będzie smakować tak jak oczekiwałem?", "p": "D", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 53, "t": "Który sklep ma najlepsze promocje na ekspresy kapsułkowe i czy dołączają darmowe kapsułki do testu zapachu?", "p": "D", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 54, "t": "Czy lepiej kupić ekspres online czy w salonie stacjonarnym, żeby zobaczyć jak wygląda i powąchać kawę na żywo?", "p": "D", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 55, "t": "Który sklep oferuje najszybszą dostawę i montaż, żebym mógł od razu zrobić kawę bez fatygi?", "p": "D", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 56, "t": "Czy w Media Expert czy RTV Euro AGD mają lepszy wybór ekspresów automatycznych z funkcją jednego przycisku i jakie są opinie o serwisie?", "p": "D", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 57, "t": "Czy ten ekspres na pewno zrobi kawę jednym przyciskiem i czy w pudełku jest wszystko, żeby od razu zaparzyć?", "p": "D", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 58, "t": "Jak sprawdzić przed zakupem, czy kawa z tego modelu pachnie i smakuje tak, jak obiecują w reklamie?", "p": "D", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 59, "t": "Czy do tego ekspresu są dostępne kapsułki lub ziarna w supermarkecie, żeby nie fatygować się z zamawianiem?", "p": "D", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 60, "t": "Czy istnieje ekspres do kawy, który nie generuje w ogóle odpadów kapsułkowych?", "p": "L", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 61, "t": "Jak zrobić kawę w domu bez plastikowych śmieci, ale żeby smakowała jak z kawiarni?", "p": "L", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 62, "t": "Czy przejście z kapsułek na coś innego to duży krok i czy w ogóle warto dla środowiska?", "p": "L", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 63, "t": "Który typ ekspresu (kolbowy, przelewowy, automatyczny) jest najbardziej ekologiczny i nie produkuje kapsułkowych odpadów?", "p": "L", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 64, "t": "Czy kawa z ekspresu automatycznego smakuje lepiej niż z kapsułek, a przy tym nie zostawia śmieci?", "p": "L", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 65, "t": "Jakie są realne alternatywy dla Nespresso/Dolce Gusto, które nie wymagają jednorazowych kapsułek?", "p": "L", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 66, "t": "Czy ekspres kolbowy dla amatora to dobry wybór, jeśli chcę uniknąć śmieci, ale boję się trudnej nauki?", "p": "L", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 67, "t": "Jak wygląda i pachnie kawa z ekspresu przelewowego w porównaniu do kapsułkowej – czy to ta sama przyjemność?", "p": "L", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 68, "t": "Czy ekspres automatyczny z wbudowanym młynkiem generuje jakieś odpady poza fusami (np. filtry)?", "p": "L", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 69, "t": "Ile kosztuje miesięcznie kawa ziarnista do ekspresu automatycznego przy 2–3 kawach dziennie vs kapsułki?", "p": "L", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 70, "t": "Czy kawa z ekspresu ciśnieniowego (bez kapsułek) może mieć taką samą kremę i intensywność jak z kawiarni?", "p": "L", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 71, "t": "Który model ekspresu automatycznego do 2000 zł jest najłatwiejszy w czyszczeniu i nie wymaga jednorazowych wkładów?", "p": "L", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 72, "t": "Czy ekspres kolbowy z dedykowanym młynkiem da mi lepszy smak i mniej śmieci niż tani automat?", "p": "L", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 73, "t": "Jaki ekspres do kawy dla 2 osób wybrać, żeby był ekologiczny, ładnie wyglądał w kuchni i nie zajmował dużo miejsca?", "p": "L", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 74, "t": "Gdzie kupić ekspres kolbowy dla początkującego, żeby dostać poradę i nie przepłacić za zbędne akcesoria?", "p": "L", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 75, "t": "Czy w sklepie stacjonarnym mogę powąchać/zobaczyć kawę z ekspresu automatycznego przed zakupem?", "p": "L", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 76, "t": "Jaki sklep internetowy ma najlepsze opinie o ekologicznych ekspresach i szybką dostawę?", "p": "L", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 77, "t": "Czy warto kupić używany ekspres automatyczny od kogoś, kto przechodzi na kapsułki – czy to ryzyko?", "p": "L", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 78, "t": "Jakie certyfikaty ekologiczne lub oznaczenia producenta świadczą, że ekspres jest faktycznie bezodpadowy?", "p": "L", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 79, "t": "Czy kawa z ekspresu domowego może pachnieć i smakować jak z ulubionej kawiarni?", "p": "A", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 80, "t": "Jak wygląda poranna kawa z ekspresu – czy to zmieni moją rutynę i sprawi, że poczuję się bardziej dorosło?", "p": "A", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 81, "t": "Czy kupno ekspresu to pierwszy krok do bycia 'osobą, która zna się na kawie'?", "p": "A", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 82, "t": "Nigdy nie miałem ekspresu – od czego w ogóle zacząć, żeby nie żałować wydanych pieniędzy?", "p": "A", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 83, "t": "Czy lepiej od razu celować w automat, czy na początek wystarczy prostszy sprzęt, żeby zobaczyć, czy mi się spodoba?", "p": "A", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 84, "t": "Jakie są podstawowe typy ekspresów i który z nich da mi efekt 'wow' bez nauki baristy?", "p": "A", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 85, "t": "Ekspres kapsułkowy czy automatyczny – czym się różnią i który da mi lepszy zapach i smak przy 2 kawach dziennie?", "p": "A", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 86, "t": "Czy kawa z ekspresu za 1500 zł smakuje tak samo jak z kawiarni, czy to tylko ściema?", "p": "A", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 87, "t": "Jak zrobić cappuccino w domu – czy potrzebuję osobnego spieniacza, czy ekspres sam to ogarnie?", "p": "A", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 88, "t": "Czy do ekspresu automatycznego muszę kupować też młynek, czy on już mieli ziarna?", "p": "A", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 89, "t": "Nespresso czy Dolce Gusto – który system kapsułek daje bardziej kremową i pachnącą kawę?", "p": "A", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 90, "t": "Jaki ekspres do domu dla 2 osób – mały, ładny, który nie zajmie pół blatu i da efekt jak z kawiarni?", "p": "A", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 91, "t": "Czy amator da radę nauczyć się obsługi ekspresu kolbowego, czy lepiej od razu iść w automat dla wygody?", "p": "A", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 92, "t": "Ile kosztują kapsułki miesięcznie przy 2–3 kawach dziennie – czy to się opłaca w porównaniu do kawiarni?", "p": "A", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 93, "t": "Który model ekspresu automatycznego do 2000 zł ma najlepszy system spieniania mleka i robi gęstą piankę?", "p": "A", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 94, "t": "Czy ekspres kapsułkowy może dorównać smakiem i zapachem automatycznemu, czy to przepaść?", "p": "A", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 95, "t": "Jaki ekspres do małej kuchni – który model zmieści się pod szafką i nie będzie brzydko wyglądał?", "p": "A", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 96, "t": "Ekspres do biura dla 10–15 osób – co wybrać, żeby nikt nie czekał w kolejce i kawa była gorąca?", "p": "A", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 97, "t": "Który ekspres daje najbardziej intensywny aromat i ładną cremę – porównanie top modeli w moim budżecie?", "p": "A", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 98, "t": "Gdzie kupić ekspres, żeby móc go zwrócić, jeśli kawa nie będzie smakować tak, jak oczekiwałem?", "p": "A", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 99, "t": "Czy lepiej zamówić ekspres online (tańszy?), czy iść do sklepu i zobaczyć go na żywo, powąchać kawę?", "p": "A", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 100, "t": "Który sklep stacjonarny w Warszawie ma największy wybór ekspresów i pozwala zapytać sprzedawcy 'od czego zacząć'?", "p": "A", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 101, "t": "Czy warto kupić ekspres z drugiej ręki, czy ryzyko, że kawa będzie niesmaczna, jest za duże?", "p": "A", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 102, "t": "Jaki sklep oferuje darmową dostawę i montaż, żebym nie musiał sam rozpakowywać i ustawiać?", "p": "A", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 103, "t": "Czy przy zakupie ekspresu dostanę jakieś próbki kawy, żeby od razu poczuć ten zapach i efekt?", "p": "A", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 104, "t": "Który model wybrać, żeby po pierwszym włączeniu poczuć się jak w kawiarni – ładny design i łatwa obsługa?", "p": "A", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 105, "t": "Czy warto dopłacić do ekspresu z młykiem ceramicznym, żeby kawa była cichsza i lepiej pachniała?", "p": "A", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 106, "t": "Czy ekspres do kawy to dobry prezent dla kogoś, kto już ma wszystko do kawy?", "p": "G", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 107, "t": "Jaki prezent sprawi, że ktoś, kto kocha kawę, poczuje się naprawdę wyjątkowo?", "p": "G", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 108, "t": "Czy kupno ekspresu zrobi ze mnie kogoś, kto zna się na kawie, czy raczej wyjdzie na to, że się nie znam?", "p": "G", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 109, "t": "Jak sprawić, żeby prezent nie był 'kolejnym ekspresem', tylko czymś, co podniesie jego kawowe doświadczenie?", "p": "G", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 110, "t": "Czy lepiej kupić ekspres, który robi wrażenie na gościach, czy taki, który daje lepszy smak?", "p": "G", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 111, "t": "Jaki ekspres pokaże, że naprawdę znam jego gust, a nie tylko wydałem pieniądze?", "p": "G", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 112, "t": "Czy ekspres kolbowy dla amatora to ryzyko, że prezent będzie frustrujący, czy raczej fajne wyzwanie?", "p": "G", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 113, "t": "Jaki typ ekspresu (automatyczny, kapsułkowy, kolbowy) daje efekt 'wow' przy pierwszym użyciu?", "p": "G", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 114, "t": "Czy kawa z ekspresu za 1500 zł smakuje jak z kawiarni, czy to tylko ściema?", "p": "G", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 115, "t": "Jak wygląda ekspres, który pasuje do małej kuchni i nie zasłania blatu – czy jest ładny?", "p": "G", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 116, "t": "Czy do ekspresu automatycznego trzeba dokupić młynek, żeby kawa pachniała świeżo?", "p": "G", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 117, "t": "Który ekspres do kawy jako prezent dla kawosza ma najlepsze opinie i nie wygląda tanio?", "p": "G", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 118, "t": "Jaki model ekspresu (konkretna marka) robi kawę, która pachnie jak w ulubionej kawiarni?", "p": "G", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 119, "t": "Czy ekspres z mlecznym systemem (np. cappuccino) jest łatwy w czyszczeniu, żeby nie zniechęcić obdarowanego?", "p": "G", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 120, "t": "Sage Barista Express vs De'Longhi Magnifica – który daje bardziej 'kawiarniany' efekt wizualny i smakowy?", "p": "G", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 121, "t": "Czy ekspres kapsułkowy Nespresso ma lepszy zapach kawy niż Dolce Gusto, czy to mit?", "p": "G", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 122, "t": "Jaki ekspres automatyczny do 2000 zł robi piankę jak z profesjonalnego sprzętu?", "p": "G", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 123, "t": "Czy ekspres kolbowy Gaggia Classic zmieni dom w małą palarnię, czy to tylko dla hardkorowców?", "p": "G", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 124, "t": "Który ekspres jako prezent ma najfajniejszy design i robi wrażenie na pierwszy rzut oka?", "p": "G", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 125, "t": "Gdzie kupić ekspres do kawy, żeby mieć pewność, że to oryginał i dostanę fakturę na prezent?", "p": "G", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 126, "t": "Czy lepiej zamówić ekspres online z darmową dostawą, czy kupić w sklepie stacjonarnym, żeby zobaczyć jak wygląda?", "p": "G", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 127, "t": "Który sklep oferuje możliwość zwrotu, jeśli obdarowany nie polubi smaku kawy z danego modelu?", "p": "G", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 128, "t": "Czy warto dopłacić do ekspresu w Media Expert, żeby mieć gwarancję 'przedłużoną' na prezent?", "p": "G", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 129, "t": "Jaki sklep ma najszybszą wysyłkę, żeby ekspres dotarł przed urodzinami/świętami?", "p": "G", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 130, "t": "Czy przy zakupie ekspresu jako prezentu dostanę ładne opakowanie, czy muszę dokupić osobne pudełko?", "p": "G", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 131, "t": "Czy mogę dołożyć do zamówienia próbki kawy, żeby obdarowany od razu poczuł ten zapach?", "p": "G", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 132, "t": "Jak zapakować ekspres, żeby efekt 'rozpakowywania' był spektakularny i podkreślił, że to prezent?", "p": "G", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 133, "t": "Czy kawa z kawiarni to naprawdę tylko mieszanka jakichś nieznanych ziaren, czy można to sprawdzić?", "p": "M", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 134, "t": "Po co płacić 15 zł za kawę, skoro nie wiem, co dokładnie wsypują do filiżanki?", "p": "M", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 135, "t": "Czy istnieje sposób, żeby mieć w domu kawę smakującą jak z kawiarni, ale z pełną kontrolą nad składnikami?", "p": "M", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 136, "t": "Jakie są objawy, że kawiarniana kawa jest gorsza, bo nie wiem, jakie ziarna i palenie użyto?", "p": "M", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 137, "t": "Czy to normalne, że czuję niepewność, gdy barista mówi 'nasza mieszanka' – czy inni też chcą wiedzieć, co piją?", "p": "M", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 138, "t": "Czy istnieje ekspres, który pozwoli mi samemu decydować o rodzaju ziaren, stopniu palenia i świeżości?", "p": "M", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 139, "t": "Jaki typ ekspresu (automatyczny, kolbowy, przelewowy) daje mi największą kontrolę nad tym, co wsypuję?", "p": "M", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 140, "t": "Czy ekspres kapsułkowy to oszustwo – przecież nie wiem, co jest w kapsułce, a chcę kontrolować skład?", "p": "M", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 141, "t": "Czy ekspres automatyczny z młynkiem pozwoli mi używać własnych ziaren i widzieć, co mielę?", "p": "M", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 142, "t": "Jakie parametry kawy (ziarna, palenie, mielenie) mogę kontrolować w różnych typach ekspresów?", "p": "M", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 143, "t": "Czy istnieje ekspres, który pokazuje na wyświetlaczu dokładny skład kawy (np. procent arabiki, data palenia)?", "p": "M", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 144, "t": "Który ekspres do 2000 zł daje mi pełną kontrolę nad rodzajem ziaren i stopniem mielenia, a nie tylko gotowe programy?", "p": "M", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 145, "t": "Czy ekspres kolbowy jest trudny w obsłudze, ale za to pozwala mi samemu decydować o każdym gramie kawy?", "p": "M", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 146, "t": "Jaki model ekspresu automatycznego ma przezroczysty pojemnik na ziarna, żebym widział, co wsypuję?", "p": "M", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 147, "t": "Czy kawa z ekspresu automatycznego za 1500 zł smakuje tak samo jak z kawiarni, gdy sam wybiorę ziarna?", "p": "M", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 148, "t": "Jakie modele ekspresów (np. De'Longhi, Jura, Philips) mają funkcję ręcznego dozowania kawy, a nie tylko automatyczne przepisy?", "p": "M", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 149, "t": "Czy ekspres z wbudowanym młynkiem pozwala mi regulować grubość mielenia, żeby dopasować do konkretnych ziaren?", "p": "M", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 150, "t": "Który ekspres kolbowy ma manometr, żebym widział ciśnienie i kontrolował ekstrakcję jak w kawiarni?", "p": "M", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 151, "t": "Czy istnieje ekspres, który parzy kawę z pojedynczych ziaren (single origin) i pokazuje na wyświetlaczu profil smaku?", "p": "M", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 152, "t": "Gdzie kupić ekspres, żeby móc przed zakupem zobaczyć, jak wygląda proces wsypywania ziaren i czy jest łatwy?", "p": "M", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 153, "t": "Czy w sklepie stacjonarnym mogę przetestować, jak pachnie kawa z danego modelu, zanim go kupię?", "p": "M", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 154, "t": "Który sklep internetowy ma filmy pokazujące, jak wygląda wsypywanie kawy i czyszczenie pojemnika na ziarna?", "p": "M", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 155, "t": "Czy warto kupić ekspres z drugiej ręki, jeśli chcę mieć pewność, że poprzedni właściciel używał tylko dobrych ziaren?", "p": "M", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 156, "t": "Jaki sklep oferuje możliwość zwrotu ekspresu, jeśli kawa nie smakuje tak, jak oczekiwałem po własnych ziarnach?", "p": "M", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 157, "t": "Czy przy zakupie ekspresu dostanę próbkę różnych ziaren, żeby od razu sprawdzić, jak kontroluję smak?", "p": "M", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 158, "t": "Jakie akcesoria muszę dokupić, żeby móc od razu wsypać własne ziarna i zrobić kawę lepszą niż w kawiarni?", "p": "M", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 159, "t": "Czy w zestawie jest instrukcja, jak samemu dobrać mielenie i dawkę, żeby osiągnąć efekt 'kawiarnianego' smaku?", "p": "M", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 160, "t": "Czy jest ekspres do kawy, który robi wrażenie na gościach i wygląda jak mebel?", "p": "K", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 161, "t": "Jaki sprzęt do kawy sprawi, że zaproszenie na kawę będzie małym show?", "p": "K", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 162, "t": "Czy istnieje ekspres, który pachnie i wygląda jak z kawiarni, żeby goście od razu czuli atmosferę?", "p": "K", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 163, "t": "Który typ ekspresu (automatyczny, kolbowy, kapsułkowy) robi najlepsze wrażenie wizualne i zapachowe?", "p": "K", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 164, "t": "Czy ekspres kolbowy da się opanować na tyle, żeby zrobić kawę z pianką jak barista i zaskoczyć gości?", "p": "K", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 165, "t": "Jaki ekspres do kawy podkreśli mój styl i sprawi, że poczuję się jak lepsza wersja siebie – gościnny i elegancki?", "p": "K", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 166, "t": "Który model ekspresu ma najbardziej efektowny wygląd i przyciąga wzrok gości?", "p": "K", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 167, "t": "Czy kawa z ekspresu za 3000 zł pachnie i smakuje lepiej niż z tańszego – czy to tylko wygląd robi wrażenie?", "p": "K", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 168, "t": "Jaki ekspres do kawy daje możliwość parzenia z pokazem (np. ręczne spienianie mleka) i robi wrażenie zmysłowe?", "p": "K", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 169, "t": "Czy są ekspresy, które mają podświetlenie, parę lub inne efekty wizualne podczas parzenia?", "p": "K", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 170, "t": "Który ekspres sprawi, że goście zapamiętają nie tylko smak, ale i cały rytuał – jak to zmieni moją rolę gospodarza?", "p": "K", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 171, "t": "W którym sklepie stacjonarnym mogę zobaczyć ekspres na żywo i sprawdzić, jak wygląda oraz jak pachnie podczas pracy?", "p": "K", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 172, "t": "Czy lepiej kupić ekspres w salonie firmowym (np. De’Longhi, Jura) żeby mieć pewność efektu wizualnego i serwis?", "p": "K", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 173, "t": "Który sklep internetowy ma najlepsze zdjęcia i filmy pokazujące ekspres w akcji – żeby ocenić wrażenie?", "p": "K", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 174, "t": "Czy warto dopłacić do ekspresu z wyższej półki w sklepie, żeby mieć gwarancję, że zrobi wrażenie na gościach?", "p": "K", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 175, "t": "Jaki sposób zakupu (np. z montażem, z pokazem w domu) zapewni, że ekspres będzie idealnie pasował do mojej kuchni i stylu?", "p": "K", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 176, "t": "Czy da się zrobić kawiarnianą piankę do cappuccino bez drogiego ekspresu?", "p": "C", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 177, "t": "Jaki sprzęt kupić, żeby w końcu mieć puszystą, gęstą piankę jak w kawiarni, a nie tylko gorące mleko?", "p": "C", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 178, "t": "Czy zwykły spieniacz ręczy da radę, czy muszę od razu celować w ekspres z dyszą parową?", "p": "C", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 179, "t": "Ekspres kolbowy vs automatyczny — który zrobi lepszą piankę do latte i czy amator ogarnie parzenie?", "p": "C", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 180, "t": "Czy ekspres za 1500 zł z dyszą parową spieni mleko tak samo jak model za 4000 zł?", "p": "C", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 181, "t": "Jaki typ ekspresu (kapsułkowy, kolbowy, automatyczny) daje największą kontrolę nad konsystencją pianki?", "p": "C", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 182, "t": "Czy do ekspresu automatycznego z pianomatem mogę użyć dowolnego mleka, żeby pianka była gęsta i stabilna?", "p": "C", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 183, "t": "Który model ekspresu ma najlepsze opinie o zapachu i smaku kawy po spienieniu — czy czuć różnicę w aromacie?", "p": "C", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 184, "t": "Gdzie kupić ekspres, żeby móc przed zakupem zobaczyć, jak wygląda pianka na żywo i powąchać kawę?", "p": "C", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 185, "t": "Który sklep stacjonarny ma stanowiska demonstracyjne, gdzie samodzielnie zrobię cappuccino?", "p": "C", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 186, "t": "Czy w Media Expert czy RTV Euro AGD mają ekspresy z możliwością testu pianki przed zakupem?", "p": "C", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 187, "t": "Jaki sklep oferuje darmową dostawę i zwrot, jeśli pianka nie będzie taka, jakiej oczekiwałem?", "p": "C", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 188, "t": "Gdzie kupić ekspres, żeby dostać gratis młynek lub spieniacz — czy to wpłynie na jakość pianki?", "p": "C", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 189, "t": "Czy po zakupie od razu będę umiał zrobić idealną piankę, czy muszę liczyć się z krzywymi próbami?", "p": "C", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 190, "t": "Jak szybko po rozpakowaniu poczuję ten zapach świeżej kawy i zobaczę efekt w filiżance?", "p": "C", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 191, "t": "Czy ten konkretny model zmieni moje poranne rytuały i sprawi, że poczuję się jak barista w domu?", "p": "C", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 192, "t": "Czy istnieje ekspres do kawy, który wygląda jak mebel i nie zepsuje mi nowej kuchni?", "p": "J", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 193, "t": "Jaki ekspres pasuje do stylu kuchni, żeby nie odstawał jak plastikowy gadżet?", "p": "J", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 194, "t": "Czy mogę znaleźć ekspres, który będzie pasował do moich szafek i blatu, a nie tylko stał obok?", "p": "J", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 195, "t": "Które marki robią ekspresy, które wyglądają jak designerski mebel, a nie jak sprzęt AGD?", "p": "J", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 196, "t": "Czy ekspres w obudowie z drewna lub stali szczotkowanej będzie pasował do mojej kuchni po remoncie?", "p": "J", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 197, "t": "Jakie modele ekspresów mają opcje zabudowy lub maskowania, żeby zniknęły w meblach?", "p": "J", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 198, "t": "Czy ekspres kolbowy z miedzianymi akcentami będzie wyglądał lepiej w nowoczesnej kuchni niż automatyczny?", "p": "J", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 199, "t": "Który ekspres ma najładniejsze wykończenie – matowe, błyszczące czy z fakturą drewna?", "p": "J", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 200, "t": "Czy są ekspresy, które można zamontować pod szafką lub w szafce, żeby nie zajmowały blatu?", "p": "J", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 201, "t": "Jakie kolory i materiały ekspresów są teraz modne w kuchniach po remoncie?", "p": "J", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 202, "t": "Czy ekspres za 3000 zł wygląda jak mebel, a za 1500 zł jak zabawka – czy to widać gołym okiem?", "p": "J", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 203, "t": "Który sklep ma w ofercie ekspresy, które mogę zobaczyć na żywo i ocenić, czy pasują do mojej kuchni?", "p": "J", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 204, "t": "Czy w salonie stacjonarnym mogę sprawdzić, jak ekspres wygląda na tle różnych blatów i szafek?", "p": "J", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 205, "t": "Który sklep internetowy pokazuje zdjęcia ekspresów w aranżacjach kuchni, a nie tylko na białym tle?", "p": "J", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 206, "t": "Czy mogę zamówić próbkę materiału obudowy (np. drewna lub stali) przed zakupem ekspresu?", "p": "J", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 207, "t": "Który sprzedawca pomoże mi dobrać ekspres do konkretnego stylu kuchni – skandynawskiego, industrialnego czy klasycznego?", "p": "J", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 208, "t": "Czy Nescafé instant w biurze na 15 osób to już wstyd, skoro ludzie wolą iść do kawiarni po prawdziwe espresso?", "p": "E", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 209, "t": "Jak bardzo wzrośnie morale i produktywność w biurze, jeśli zamiast saszetek będzie stał porządny ekspres i zapach świeżo mielonej kawy?", "p": "E", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 210, "t": "Czy to normalne, że przy 15 osobach kawa z czajnika i proszku już nie robi wrażenia na gościach i klientach?", "p": "E", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 211, "t": "Dla 15 osób w biurze – jaki typ ekspresu (automatyczny, kapsułkowy, kolbowy) zapewni szybką kawę bez kolejek i bez ciągłego uzupełniania wody?", "p": "E", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 212, "t": "Czy ekspres kapsułkowy dla 15 osób wyjdzie taniej w eksploatacji niż automatyczny, biorąc pod uwagę, że każdy pije 2-3 kawy dziennie?", "p": "E", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 213, "t": "Jaki ekspres do biura na 15 osób wybrać, żeby nikt nie czekał dłużej niż minutę na kawę i żeby nie trzeba było go serwisować co tydzień?", "p": "E", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 214, "t": "Czy ekspres automatyczny za 3000 zł dla 15 osób w biurze da radę bez awarii, czy lepiej celować w modele za 5000+ z większym zapasem wody i ziaren?", "p": "E", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 215, "t": "Który system kapsułek (Nespresso, Dolce Gusto, inny) ma najniższy koszt kapsułki przy 30-40 kawach dziennie w biurze?", "p": "E", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 216, "t": "Czy do biura lepiej sprawdzi się ekspres z mlekiem w proszku czy z osobnym spieniaczem – co jest szybsze i mniej brudzące?", "p": "E", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 217, "t": "Jakie parametry techniczne (pojemność zbiornika na wodę, pojemność na ziarna, moc) są krytyczne, żeby ekspres dla 15 osób nie przerywał pracy w środku dnia?", "p": "E", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 218, "t": "Czy istnieją ekspresy biurowe z funkcją zapamiętywania profili dla kilku użytkowników, żeby każdy dostał swoją kawę bez ustawiania od nowa?", "p": "E", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 219, "t": "Który model ekspresu automatycznego do biura (np. Jura, De’Longhi, Philips) ma najlepsze opinie w kontekście niezawodności przy dużym obciążeniu 15 osób?", "p": "E", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 220, "t": "Czy ekspres kapsułkowy dla biura (np. Nescafé Alegria) jest w stanie obsłużyć 15 osób bez ciągłego uzupełniania kapsułek i opróżniania odpadów?", "p": "E", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 221, "t": "Jaki ekspres do biura na 15 osób wybrać, żeby kawa smakowała jak z kawiarni, a nie jak z automatu – czy to w ogóle możliwe w tej cenie?", "p": "E", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 222, "t": "Porównaj Jura E8 vs De’Longhi Dinamica vs Philips 5400 – który z nich przy 15 osobach w biurze będzie szybszy, cichszy i mniej awaryjny?", "p": "E", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 223, "t": "Czy ekspres kapsułkowy Nescafé Alegria 160 ma sens dla 15 osób, skoro koszt kapsułki to ok. 1,5 zł, a przy 30 kawach dziennie miesięcznie wyjdzie 1350 zł – czy to się opłaca?", "p": "E", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 224, "t": "Który ekspres do biura ma największy zbiornik na wodę (min. 2,5 l) i pojemnik na ziarna (min. 300 g), żeby nie trzeba było uzupełniać co godzinę?", "p": "E", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 225, "t": "Czy ekspres automatyczny z mlekiem w proszku (np. Jura WE8) jest łatwiejszy w utrzymaniu czystości niż model z mlekiem świeżym dla 15 osób?", "p": "E", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 226, "t": "Jak wygląda zapach i wygląd kawy z ekspresu automatycznego za 4000 zł w porównaniu do kapsułkowego – czy różnica w smaku jest warta wyższej ceny urządzenia?", "p": "E", "s": 6, "sn": "Porównywanie", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 227, "t": "Gdzie kupić ekspres do biura dla 15 osób z możliwością testu na miejscu i fachowym doradztwem – czy lepiej w Media Expert, RTV Euro AGD, czy w sklepie specjalistycznym?", "p": "E", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 228, "t": "Czy warto zamówić ekspres do biura online z dostawą i montażem, czy lepiej pojechać do sklepu i zobaczyć, jak pachnie kawa z danego modelu?", "p": "E", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 229, "t": "Który sklep oferuje najdłuższą gwarancję i serwis dla ekspresów biurowych (np. 3 lata z dojazdem) – czy to ma znaczenie przy 15 osobach?", "p": "E", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 230, "t": "Czy lepiej kupić ekspres od razu, czy wynająć go w abonamencie z serwisem i kapsułkami – co wyjdzie taniej dla biura 15-osobowego?", "p": "E", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 231, "t": "Gdzie znaleźć realne opinie firm, które kupiły ekspres do biura na 15 osób i są zadowolone – czy są jakieś grupy lub fora dla biur?", "p": "E", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 232, "t": "Czy przy zakupie ekspresu do biura dla 15 osób dostanę rabat ilościowy na kapsułki lub ziarna przy pierwszym zamówieniu?", "p": "E", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 233, "t": "Jaki model ekspresu wybrać, żeby po zakupie od razu móc zrobić pierwszą kawę i poczuć ten zapach w biurze – czy trzeba go najpierw kalibrować?", "p": "E", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 234, "t": "Czy mogę dostać fakturę VAT i odliczyć koszt ekspresu jako wydatek firmowy – jakie dokumenty są potrzebne przy zakupie dla biura?", "p": "E", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 235, "t": "Czy nowy ekspres będzie smakował tak samo dobrze jak ten stary, czy technologia poszła do przodu i mogę liczyć na lepszy aromat?", "p": "F", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 236, "t": "Jak pachnie kawa z nowoczesnego ekspresu automatycznego w porównaniu do mojego starego – czy te zapachy są intensywniejsze i bardziej kawiarniane?", "p": "F", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 237, "t": "Czy po 7 latach mogę w końcu mieć ekspres, który zrobi mi kawę jak z włoskiej kawiarni i sprawi, że poranna rutyna będzie przyjemniejsza?", "p": "F", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 238, "t": "Który sklep stacjonarny pozwoli mi powąchać świeżo zmieloną kawę z ekspozycji i ocenić, czy aromat jest bogatszy niż w starym modelu?", "p": "F", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 239, "t": "Czy w internecie znajdę opinie z opisem wyglądu kawy – np. czy crema jest gęsta i błyszcząca, a nie rzadka i blada?", "p": "F", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 240, "t": "Gdzie kupić ekspres, żeby mieć pewność, że kawa będzie smakować lepiej niż ta z 7-letniego sprzętu i nie będę żałować wydatku?", "p": "F", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 241, "t": "Czy w sklepie mogę zobaczyć, jak ekspres wygląda w akcji – czy strumień pary jest mocny, a kawa leci gładko, bez pryskania?", "p": "F", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 242, "t": "Który sprzedawca oferuje test smaku lub zwrot, jeśli kawa nie będzie tak aromatyczna, jak obiecują w reklamie?", "p": "F", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 243, "t": "Czy po zakupie tego modelu moje poranne espresso będzie pachniało tak intensywnie, że od razu poczuję się jak w lepszej wersji siebie?", "p": "F", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 244, "t": "Jak będzie wyglądać pierwsza kawa z nowego ekspresu – czy crema będzie idealnie gęsta, a zapach wypełni całą kuchnię?", "p": "F", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 245, "t": "Czy ta inwestycja sprawi, że przestanę tęsknić za kawiarnianym smakiem i wreszcie poczuję, że mam w domu coś lepszego niż stary ekspres?", "p": "F", "s": 8, "sn": "Zakup", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 246, "t": "Czy naprawdę wydaję 500 zł miesięcznie na kawę na mieście i ile to jest w skali roku?", "p": "H", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 247, "t": "Gdybym kupił ekspres, to czy kawa w domu smakowałaby tak samo dobrze jak ta z kawiarni?", "p": "H", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 248, "t": "Czy oszczędność 500 zł miesięcznie jest warta zachodu, czy jednak wyjście do kawiarni to też przyjemność, której nie chcę stracić?", "p": "H", "s": 2, "sn": "Potrzeba/impuls", "y": "INFO", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 249, "t": "Ile dokładnie miesięcznie wydaję na kawę w kawiarniach i jak szybko ekspres zwróci mi te 500 zł?", "p": "H", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 250, "t": "Czy ekspres za 2000 zł zwróci się w 4 miesiące, jeśli piję 2 kawy dziennie po 12 zł?", "p": "H", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 251, "t": "Jakie są ukryte koszty (kapsułki, ziarna, serwis) które wydłużą czas zwrotu inwestycji?", "p": "H", "s": 3, "sn": "Rozpoznanie CEP", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 252, "t": "Ekspres automatyczny czy kapsułkowy – który ma niższy koszt kawy na porcję przy 2–3 kawach dziennie?", "p": "H", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 253, "t": "Czy kawa z ekspresu automatycznego za 1500 zł smakuje tak samo jak z kawiarni, czy jednak trzeba wydać więcej?", "p": "H", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 254, "t": "Jak pachnie i smakuje kawa z ekspresu kolbowego w porównaniu do kawiarnianej – czy amator to ogarnie?", "p": "H", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 255, "t": "Czy do ekspresu automatycznego muszę dokupić młynek, czy to już w środku i jak to wpływa na smak?", "p": "H", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 256, "t": "Jaki typ ekspresu daje najlepszy efekt wizualny i zapachowy – jak wygląda crema i czy pachnie jak w kawiarni?", "p": "H", "s": 4, "sn": "Nauka kategorii", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 257, "t": "Który model ekspresu (konkretna marka i cena) ma najlepszy stosunek ceny do smaku kawy i zwrotu w 4 miesiące?", "p": "H", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 258, "t": "Czy ekspres za 2000 zł z wbudowanym młynkiem i spieniaczem mleka da mi cappuccino jak z kawiarni, czy muszę celować w droższy?", "p": "H", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 259, "t": "Jakie modele mają najmniejsze ryzyko, że kawa będzie gorzka lub wodnista – żeby nie żałować wydanych pieniędzy?", "p": "H", "s": 5, "sn": "Preselekcja", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 260, "t": "Gdzie kupić ekspres, żeby dostać najniższą cenę i szybką dostawę – MediaMarkt, Amazon czy sklep producenta?", "p": "H", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 261, "t": "Czy warto kupić ekspres używany z gwarancją, żeby szybciej się zwrócił, czy ryzyko awarii jest za duże?", "p": "H", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 262, "t": "Który sklep oferuje darmowy zwrot, jeśli kawa nie będzie smakować jak z kawiarni i chcę oddać sprzęt?", "p": "H", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 263, "t": "Czy w promocji Black Friday ekspres za 1500 zł będzie kosztował 1000 zł i czy to przyspieszy zwrot inwestycji?", "p": "H", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""},{"nr": 264, "t": "Jakie opinie o smaku i zapachu kawy mają modele dostępne w sklepach stacjonarnych – czy mogę przyjść i powąchać przed zakupem?", "p": "H", "s": 7, "sn": "Wybór sklepu/sposobu zakupu", "y": "KOMERC", "pr": "P2", "st": "BRAK", "ang": "", "sila": ""}
+];
+
+const PATHS = [{"letter": "A", "label": "Nigdy nie miałem ekspresu — od czego zacząć?", "cep_id": "cep_first_machine", "typ": "sytuacyjny", "color": "#3b82f6", "count": 27, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "B", "label": "Chcę robić espresso jak w kawiarni — z cremą i kontrolą", "cep_id": "cep_barista_at_home", "typ": "tozsamosciowy", "color": "#8b5cf6", "count": 16, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "C", "label": "Uwielbiam cappuccino i latte — jak zrobić piankę w domu?", "cep_id": "cep_milk_drinks", "typ": "sytuacyjny", "color": "#ec4899", "count": 16, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "D", "label": "Chcę dobrą kawę bez fatygi — jeden przycisk i koniec", "cep_id": "cep_comfort_one_touch", "typ": "sytuacyjny", "color": "#14b8a6", "count": 27, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "E", "label": "W biurze 15 osób — Nescafé już nie wystarcza", "cep_id": "cep_office_team", "typ": "sytuacyjny", "color": "#f59e0b", "count": 27, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "F", "label": "Stary ekspres padł po 7 latach — co teraz?", "cep_id": "cep_replacement_upgrade", "typ": "sytuacyjny", "color": "#10b981", "count": 11, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "G", "label": "Kupuję prezent dla kogoś kto 'kocha kawę' — nie chcę się sk", "cep_id": "cep_gift_coffee_lover", "typ": "sytuacyjny", "color": "#f43f5e", "count": 27, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "H", "label": "Wydaję 500 zł/mc w kawiarniach — ekspres zwróci się w 4 mie", "cep_id": "cep_save_money_cafe", "typ": "ekonomiczny", "color": "#eab308", "count": 19, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "I", "label": "Tyle palarni kraftowych i gatunków — jak tego wszystkiego s", "cep_id": "cep_coffee_explorer", "typ": "tozsamosciowy", "color": "#6366f1", "count": 16, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "J", "label": "Remont kuchni — potrzebuję ekspresu który wygląda jak mebel", "cep_id": "cep_new_kitchen_design", "typ": "tozsamosciowy", "color": "#d946ef", "count": 16, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "K", "label": "Lubię zapraszać gości na kawę — chcę sprzętu który robi wra", "cep_id": "cep_host_identity", "typ": "tozsamosciowy", "color": "#06b6d4", "count": 16, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "L", "label": "Nie chcę generować kapsułkowych śmieci — szukam alternatywy", "cep_id": "cep_eco_alternative", "typ": "ekologiczny", "color": "#84cc16", "count": 19, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "M", "label": "Nie wiem co wsypują do kawy w kawiarni — wolę kontrolować s", "cep_id": "cep_health_control", "typ": "zdrowotny", "color": "#a855f7", "count": 27, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}];
+const STATE_ORDER = [2, 3, 4, 5, 6, 7, 8];
+const STATE_LABELS = {"2": "Potrzeba/impuls", "3": "Rozpoznanie CEP", "6": "Porównywanie", "7": "Wybór sklepu/sposobu zakupu", "4": "Nauka kategorii", "5": "Preselekcja", "8": "Zakup"};
+
+// ── STAN FILTRÓW ──────────────────────────────────────────────────────────────
+let activePath = 'ALL';
+let activePr   = 'ALL';
+let activeTyp  = 'ALL';
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildBoard();
+  buildList();
+  buildInfoPaths();
+  buildInfoStates();
+  applyFilters();
+});
+
+function buildBoard() {
+  const board = document.getElementById('board');
+  // Zbierz stany wg kolejności
+  const stateGroups = {};
+  for (const a of A) {
+    if (!stateGroups[a.s]) stateGroups[a.s] = [];
+    stateGroups[a.s].push(a);
+  }
+  const orderedStates = STATE_ORDER.filter(s => stateGroups[s]);
+  for (const sid of orderedStates) {
+    const label = STATE_LABELS[sid] || sid;
+    const arts = stateGroups[sid];
+    const block = document.createElement('div');
+    block.className = 'state-block';
+    block.dataset.state = sid;
+    block.innerHTML = `<div class="state-header">
+      <span class="state-code">S${sid}</span>
+      <span>${label}</span>
+      <span class="state-cnt" id="scnt-${sid}"></span>
+    </div><div class="cards-row" id="cards-${sid}"></div>`;
+    board.appendChild(block);
+    const row = document.getElementById('cards-' + sid);
+    for (const a of arts) {
+      const tagPr  = `<span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span>`;
+      const tagTyp = `<span class="tag tag-${a.y.toLowerCase()}">${a.y}</span>`;
+      const tagSt  = `<span class="tag tag-${a.st.toLowerCase()}">${a.st}</span>`;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.nr = a.nr;
+      card.dataset.p  = a.p;
+      card.dataset.s  = a.s;
+      card.dataset.pr = a.pr;
+      card.dataset.y  = a.y;
+      card.dataset.st = a.st;
+      card.dataset.t  = a.t.toLowerCase();
+      const SIL = {green:['🟢','#dafbe1','#1a7f37'],yellow:['🟡','#fff8c5','#9a6700'],red:['🔴','#ffebe9','#cf222e']};
+      const sv = SIL[a.sila] || null;
+      const silBadge = sv ? `<span class="sil" style="background:${sv[1]};color:${sv[2]}">${sv[0]} ${a.sila}</span>` : '';
+      const angBlock = a.ang ? `<div class="ang"><b>Przekierowanie:</b> ${a.ang}</div>` : '';
+      card.innerHTML = `<div class="nr">#${a.nr} · ${a.p} ${silBadge}</div>
+        <div class="qt">${a.t}</div>
+        <div class="tags">${tagPr}${tagTyp}${tagSt}</div>
+        ${angBlock}`;
+      row.appendChild(card);
+    }
+  }
+}
+
+function buildList() {
+  const tbody = document.getElementById('list-body');
+  for (const a of A) {
+    const tr = document.createElement('tr');
+    tr.dataset.nr = a.nr;
+    tr.dataset.p  = a.p;
+    tr.dataset.s  = a.s;
+    tr.dataset.pr = a.pr;
+    tr.dataset.y  = a.y;
+    tr.dataset.st = a.st;
+    tr.dataset.t  = a.t.toLowerCase();
+    tr.innerHTML = `<td>${a.nr}</td>
+      <td>${a.t}</td>
+      <td>${a.p}</td>
+      <td>${STATE_LABELS[a.s] || a.s}</td>
+      <td><span class="tag tag-${a.pr.toLowerCase()}">${a.pr}</span></td>
+      <td><span class="tag tag-${a.y.toLowerCase()}">${a.y}</span></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function buildInfoPaths() {
+  const wrap = document.getElementById('info-paths');
+  for (const p of PATHS) {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:12px;border-left:4px solid '+p.color;
+    // Składowe HTML karty CEP
+    const typBadge = p.typ
+      ? `<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-left:6px">${p.typ}</span>`
+      : '';
+    const verbHTML = p.verbatim
+      ? `<div style="margin-top:8px;font-size:12px;color:#374151;background:#f8fafc;border-radius:6px;padding:8px 10px;border-left:3px solid ${p.color};line-height:1.5;font-style:italic">${p.verbatim}</div>`
+      : '';
+    const detailRows = [];
+    if (p.kontekst) detailRows.push(['Kontekst', p.kontekst]);
+    if (p.concern)  detailRows.push(['Główna troska', p.concern]);
+    if (p.bloker)   detailRows.push(['Bloker decyzji', p.bloker]);
+    const detailHTML = detailRows.length
+      ? `<table style="margin-top:8px;width:100%;border-collapse:collapse;font-size:12px">` +
+        detailRows.map(([k,v]) =>
+          `<tr><td style="width:120px;color:#94a3b8;font-weight:600;padding:3px 8px 3px 0;vertical-align:top;white-space:nowrap">${k}</td>` +
+          `<td style="color:#334155;padding:3px 0;line-height:1.5">${v}</td></tr>`
+        ).join('') + `</table>`
+      : '';
+    // Rozkład pytań per stan
+    const statCnts = {};
+    for (const a of A) if (a.p === p.letter) statCnts[a.s] = (statCnts[a.s]||0)+1;
+    const stateBar = STATE_ORDER.filter(s=>statCnts[s]).map(s=>
+      `<span style="font-size:10px;padding:1px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-right:4px">${STATE_LABELS[s]||s} ${statCnts[s]}</span>`
+    ).join('');
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="width:26px;height:26px;border-radius:50%;background:${p.color};color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${p.letter}</span>
+        <strong style="font-size:14px;color:#1e293b">${p.label}</strong>
+        ${typBadge}
+        <span style="margin-left:auto;font-size:11px;color:#94a3b8">${p.count} pytań</span>
+      </div>
+      <div style="font-size:10px;color:#64748b;margin-top:4px;font-family:monospace">${p.cep_id||''}</div>
+      ${verbHTML}
+      ${detailHTML}
+      <div style="margin-top:8px">${stateBar}</div>`;
+    wrap.appendChild(card);
+  }
+}
+
+function buildInfoStates() {
+  const wrap = document.getElementById('info-states');
+  const counts = {};
+  for (const a of A) counts[a.s] = (counts[a.s]||0)+1;
+  for (const s of STATE_ORDER) {
+    if (!counts[s]) continue;
+    const el = document.createElement('div');
+    el.style.cssText = 'background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 14px;text-align:center;min-width:100px';
+    el.innerHTML = `<div style="font-size:20px;font-weight:700;color:#1e293b">${counts[s]}</div><div style="font-size:11px;color:#64748b;margin-top:2px">${STATE_LABELS[s]||s}</div>`;
+    wrap.appendChild(el);
+  }
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+function filterPath(el) {
+  document.querySelectorAll('.path-item, .path-all').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  activePath = el.dataset.path;
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  let vis = 0, p1 = 0, brak = 0, istnieje = 0;
+  const pathCounts = {};
+
+  const allEls = [...document.querySelectorAll('.card, #list-body tr')];
+  for (const el of allEls) {
+    const match =
+      (activePath === 'ALL' || el.dataset.p === activePath) &&
+      (activePr   === 'ALL' || el.dataset.pr === activePr) &&
+      (activeTyp  === 'ALL' || el.dataset.y  === activeTyp) &&
+      (!q || el.dataset.t.includes(q));
+    el.classList.toggle('hidden', !match);
+    if (match) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pathCounts[el.dataset.p] = (pathCounts[el.dataset.p] || 0) + 1;
+    }
+  }
+  // Odejmij duplikaty (card + tr)
+  vis = Math.round(vis / (document.querySelector('#list-body tr') ? 2 : 1));
+  if (document.querySelector('#list-body tr')) vis = Math.round(vis / 2);
+  // Policz raz — cards only
+  vis = 0; p1 = 0; brak = 0; istnieje = 0;
+  const pcounts2 = {};
+  document.querySelectorAll('.card').forEach(el => {
+    if (!el.classList.contains('hidden')) {
+      vis++;
+      if (el.dataset.pr === 'P1') p1++;
+      if (el.dataset.st === 'BRAK') brak++;
+      if (el.dataset.st === 'ISTNIEJE' || el.dataset.st === 'ROZBUDOWAĆ') istnieje++;
+      pcounts2[el.dataset.p] = (pcounts2[el.dataset.p] || 0) + 1;
+    }
+  });
+
+  document.getElementById('stat-total').textContent   = vis;
+  document.getElementById('stat-p1').textContent      = p1;
+  document.getElementById('stat-brak').textContent    = brak;
+  document.getElementById('stat-istnieje').textContent = istnieje;
+  document.getElementById('visibleCount').textContent  = vis;
+
+  // Liczniki ścieżek — FIX 2026-07-30, wzór z DZIAŁAJĄCEJ mapy (render_mapa.py: visNoPath).
+  // BYŁO: licznik czytany z klasy `.hidden`, którą ustawia m.in. filtr ŚCIEŻKI →
+  // klik w ścieżkę A zerował B–L i psuł „Wszystkie ścieżki" (348 → 29).
+  // JEST: liczone z DANYCH (A) predykatem BEZ warunku ścieżki — pozostałe filtry
+  // (priorytet, typ, szukaj) nadal działają, a liczniki mówią „ile jest w tej ścieżce".
+  const visNoPath = a =>
+    (activePr  === 'ALL' || a.pr === activePr) &&
+    (activeTyp === 'ALL' || a.y  === activeTyp) &&
+    (!q || String(a.t).toLowerCase().includes(q));
+  const pathTotals = {};
+  let allCnt = 0;
+  for (const a of A) {
+    if (!visNoPath(a)) continue;
+    pathTotals[a.p] = (pathTotals[a.p] || 0) + 1;
+    allCnt++;
+  }
+  for (const p of PATHS) {
+    const el = document.getElementById('cnt-' + p.letter);
+    if (el) el.textContent = pathTotals[p.letter] || 0;
+  }
+  const cntAll = document.getElementById('cnt-all');
+  if (cntAll) cntAll.textContent = allCnt;
+
+  // State block counts (tylko mapa)
+  for (const sid of STATE_ORDER) {
+    const el = document.getElementById('scnt-' + sid);
+    if (el) {
+      const cnt = document.querySelectorAll(`#cards-${sid} .card:not(.hidden)`).length;
+      el.textContent = cnt ? cnt + ' art.' : '';
+    }
+  }
+}
+
+// Filtry przyciski
+document.getElementById('fg-pr').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-pr .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activePr = e.target.dataset.val;
+  applyFilters();
+});
+document.getElementById('fg-typ').addEventListener('click', e => {
+  if (!e.target.classList.contains('fbtn')) return;
+  document.querySelectorAll('#fg-typ .fbtn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeTyp = e.target.dataset.val;
+  applyFilters();
+});
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['mapa','lista','info'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(name + '-panel').classList.add('active');
+  applyFilters();
+}
+</script>
+</body>
+</html>
