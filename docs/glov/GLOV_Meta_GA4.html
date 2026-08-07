@@ -4389,6 +4389,40 @@ function aggregateRange(fromDate, toDate){
   return {total, campaigns};
 }
 
+/* Adsets z timeseries (fallback gdy brak PROXY_TRUTH) */
+function aggregateRangeAdsets(fromDate, toDate){
+  const TS = window.META_TS;
+  if(!TS || !TS.days) return null;
+  const adsetMap = {};
+  const campNames = {};
+  Object.entries(TS.days).forEach(([d,day])=>{
+    if(d < fromDate || d > toDate) return;
+    (day.campaigns||[]).forEach(c=>{ if(c.id&&c.name) campNames[c.id]=c.name; });
+    (day.adsets||[]).forEach(a=>{
+      if(!adsetMap[a.id]) adsetMap[a.id]={
+        id:a.id, name:a.name, campaign_id:a.campaign_id,
+        spend:0, impressions:0, clicks:0, reach:0, purchases:0, revenue:0
+      };
+      const am=adsetMap[a.id];
+      am.spend       +=a.spend||0;
+      am.impressions +=a.impressions||0;
+      am.clicks      +=a.clicks||0;
+      am.reach       +=a.reach||0;
+      am.purchases   +=a.purchases||0;
+      am.revenue     +=a.revenue||0;
+    });
+  });
+  const adsets = Object.values(adsetMap).map(a=>{
+    a.spend   = Math.round(a.spend*100)/100;
+    a.revenue = Math.round(a.revenue*100)/100;
+    a.ctr     = a.impressions>0 ? Math.round(a.clicks/a.impressions*10000)/100 : 0;
+    a.roas    = a.spend>0&&a.revenue>0 ? Math.round(a.revenue/a.spend*100)/100 : 0;
+    a.campaign_name = campNames[a.campaign_id]||'—';
+    return a;
+  }).sort((a,b)=>b.spend-a.spend);
+  return adsets.length ? {adsets, source:'timeseries'} : null;
+}
+
 /* Helper: pobierz daty z pickera */
 function getPickerDates(){
   const f = document.getElementById('picker-from').value;
@@ -4884,20 +4918,25 @@ function renderPeriodTableAdsets(){
   if(!tbody) return;
 
   const proxy = aggregateProxyRangeAdsets(from, to);
-  if(!proxy || !proxy.adsets || proxy.adsets.length===0){
+  const tsData = (!proxy||!proxy.adsets||!proxy.adsets.length) ? aggregateRangeAdsets(from, to) : null;
+  const src = (proxy&&proxy.adsets&&proxy.adsets.length) ? proxy : tsData;
+  const isProxy = !!(proxy&&proxy.adsets&&proxy.adsets.length);
+
+  if(!src || !src.adsets || src.adsets.length===0){
     tbody.innerHTML='<tr><td colspan="18" style="text-align:center;padding:12px;color:var(--muted)">Brak danych dla wybranego zakresu</td></tr>';
     return;
   }
 
-  tbody.innerHTML = proxy.adsets.map(a=>{
-    const m = a.meta;
+  tbody.innerHTML = src.adsets.map(a=>{
+    /* proxy: nested a.meta; timeseries: flat a */
+    const m = isProxy ? a.meta : a;
     const spend = m.spend||0;
     const roas_meta = m.roas||0;
     const rpCls = roas_meta>=2?'rp-ok':roas_meta>0?'rp-bad':'rp-na';
     const rpTxt = roas_meta>0?roas_meta.toFixed(2)+'×':'—';
 
     let ga4Html = '';
-    if(a.has_ga4){
+    if(isProxy && a.has_ga4){
       const g = a.ga4;
       const rg = g.roas_ga4||0;
       const rgCls = rg>=2?'rp-ok':rg>0?'rp-bad':'rp-na';
@@ -4908,12 +4947,14 @@ function renderPeriodTableAdsets(){
         <td class="ga4 num">${g.revenue>0?fmt(g.revenue,'zl'):'—'}</td>
         <td class="ga4 num"><span class="${rgCls}">${rg>0?rg.toFixed(2)+'×':'—'}</span></td>
         <td class="ga4 num muted" colspan="2" style="font-size:10px">${utmPills||'—'}</td>`;
-    } else {
+    } else if(isProxy){
       ga4Html = `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">brak utm match</td>`;
+    } else {
+      ga4Html = `<td class="ga4 num muted" colspan="6" style="font-style:italic;color:var(--muted)">tylko Meta · brak UTM</td>`;
     }
 
     return `<tr class="row-match" data-status="ACTIVE">
-      <td class="name-cell"><span class="camp-name">${a.name}</span></td>
+      <td class="name-cell"><span class="camp-name">${a.name||'—'}</span></td>
       <td class="muted" style="font-size:11px;max-width:180px;white-space:normal;word-break:break-word">${a.campaign_name||'—'}</td>
       <td><span class="badge-active">ACTIVE</span></td>
       <td class="meta num">${fmt(spend,'zl')}</td>
