@@ -4282,6 +4282,7 @@ const META_URL   = 'https://tomekwlqq.github.io/eel-reports/glov/glov_meta_times
 const PROXY_URL  = 'https://tomekwlqq.github.io/eel-reports/glov/glov_proxy_truth.json';
 const LIVE2_URL  = 'https://tomekwlqq.github.io/eel-reports/glov/glov_live2.json';
 const SALES_URL  = 'https://tomekwlqq.github.io/eel-reports/glov_hub_sales.json';
+const DAILY_URL  = 'https://tomekwlqq.github.io/eel-reports/glov/glov_pl_daily.json'; /* GA4+Shopify auto-refresh */
 
 let currentDay = 'today';
 let currentDayTab = 'kampanie';
@@ -4316,6 +4317,36 @@ function dlt(cur, prev){
 }
 
 /* ===== LIVE SECTION: Toggle Dziś / Wczoraj ===== */
+
+/* ===== AGGREGACJA ZAKRESU Z DAILY (glov_pl_daily.json) ===== */
+function aggregateDailyRange(fromDate, toDate){
+  const D = window.DAILY_DATA;
+  if(!D || !D.days) return null;
+  const tot = {sessions:0,transactions:0,revenue:0,shopify_orders:0,shopify_revenue:0,paid_social_sessions:0,paid_social_transactions:0,paid_social_revenue:0};
+  let count = 0;
+  Object.entries(D.days).forEach(([d, day])=>{
+    if(d < fromDate || d > toDate) return;
+    count++;
+    const kpi = day.kpi || {};
+    tot.sessions          += kpi.sessions          || 0;
+    tot.transactions      += kpi.transactions      || 0;
+    tot.revenue           += kpi.totalRevenue      || 0;
+    tot.shopify_orders    += kpi.shopify_orders    || 0;
+    tot.shopify_revenue   += kpi.shopify_revenue   || 0;
+    (day.channels || []).forEach(ch=>{
+      if(ch.channel === 'Paid Social'){
+        tot.paid_social_sessions     += ch.sessions     || 0;
+        tot.paid_social_transactions += ch.transactions || 0;
+        tot.paid_social_revenue      += ch.revenue      || 0;
+      }
+    });
+  });
+  if(!count) return null;
+  tot.revenue          = Math.round(tot.revenue*100)/100;
+  tot.shopify_revenue  = Math.round(tot.shopify_revenue*100)/100;
+  tot.paid_social_revenue = Math.round(tot.paid_social_revenue*100)/100;
+  return tot;
+}
 
 /* ===== AGGREGACJA ZAKRESU Z TIMESERIES ===== */
 function aggregateRange(fromDate, toDate){
@@ -4426,90 +4457,72 @@ function cloneEtlToDay(panelId, sourceId){
 }
 
 function renderPeriodKpi(){
-  const L = window.LIVE2;
-  const S = window.SALES;
   const bar = document.getElementById('period-kpi-bar');
-  if(!window.META_TS || !bar) return;
+  if(!bar) return;
 
   const {from, to} = getPickerDates();
-  const agg = aggregateRange(from, to);
+  const agg  = aggregateRange(from, to);       /* Meta timeseries */
+  const dagg = aggregateDailyRange(from, to);  /* GA4+Shopify daily */
   const md = agg ? agg.total : null;
 
-  /* GA4 — dostępne tylko gdy single-day = yesterday (1d lag) */
-  const TS = window.META_TS;
-  const days = TS && TS.days ? Object.keys(TS.days) : [];
-  const latest = days[0]||'';
-  const prevDay = days[1]||latest;
-  let lv = null;
-  if(from===to && from===prevDay && L && L.today && L.today.date === prevDay) lv = L.today;
+  /* Meta */
+  const spend   = md ? md.spend : null;
+  const roas_m  = md ? md.roas  : null;
 
-  /* GA4: płatne sesje Meta (source=meta, medium=cpc) + atrybucja */
-  let paidSess=null, zestSess=null, reklSess=null;
-  if(lv && lv.ga4 && lv.ga4.channels){
-    const metaCpc = lv.ga4.channels.filter(c => c.source==='meta' && c.medium==='cpc');
-    paidSess  = metaCpc.reduce((a,c)=>a+(c.sessions||0),0);
-    zestSess  = metaCpc.filter(c=>c.content && c.content!=='').reduce((a,c)=>a+(c.sessions||0),0);
-    /* reklamy: content + any term/ad signal — uproszczone: content ≠ 'advantage' */
-    reklSess  = metaCpc.filter(c=>c.content && c.content!=='' && c.content!=='advantage').reduce((a,c)=>a+(c.sessions||0),0);
-  }
-  const zestPct = (paidSess && zestSess!=null) ? (zestSess/paidSess*100).toFixed(1)+'%' : null;
-  const reklPct = (paidSess && reklSess!=null) ? (reklSess/paidSess*100).toFixed(1)+'%' : null;
+  /* GA4 + Shopify z daily (auto-refresh) */
+  const ga4sessions = dagg ? dagg.sessions          : null;
+  const paidSess    = dagg ? dagg.paid_social_sessions    : null;
+  const paidTxn     = dagg ? dagg.paid_social_transactions: null;
+  const paidRev     = dagg ? dagg.paid_social_revenue     : null;
+  const shopOrders  = dagg ? dagg.shopify_orders     : null;
+  const shopRev     = dagg ? dagg.shopify_revenue    : null;
 
-  /* BL — dla single-day (yesterday): live2.today.shopify */
-  let blOrders=null, blRev=null, blChannels=null, blChStr='';
-  if(lv && lv.shopify && lv.shopify.kpi){
-    blOrders = lv.shopify.kpi.orders;
-    blRev    = lv.shopify.kpi.net_sales;
-  }
-  if(from===to && from===prevDay && S && S.today_d){
-    const chActive = Object.entries(S.today_d).filter(([,v])=>v.orders>0);
-    blChannels = chActive.length;
-    blChStr = chActive.map(([k,v])=>`${k} ${v.orders}`).join(', ');
-  }
+  /* ROAS ogółem = Shopify przychód / Meta spend */
+  const roasOg = (shopRev && spend && spend>0) ? shopRev/spend : null;
 
-  /* ROAS ogółem = BL net_sales / Meta spend */
-  const roasOg = (blRev && md && md.spend>0) ? (blRev/md.spend) : null;
+  /* CTR% Paid Social vs wszystkich sesji */
+  const paidPct = (paidSess!=null && ga4sessions && ga4sessions>0) ? (paidSess/ga4sessions*100).toFixed(1)+'%' : null;
 
   bar.innerHTML = `
     <div class="pkpi pkpi-meta">
       <div class="pkpi-lbl">Wydatek Meta</div>
-      <div class="pkpi-val">${md?fmt(md.spend,'zl'):'—'}</div>
-      <div class="pkpi-sub">${md&&md.reach?'zasięg '+fmt(md.reach,'n'):''}</div>
+      <div class="pkpi-val">${spend!=null?fmt(spend,'zl'):'—'}</div>
+      <div class="pkpi-sub">${md&&md.reach?'zasięg '+fmt(md.reach,'n'):'—'}</div>
     </div>
     <div class="pkpi pkpi-meta">
-      <div class="pkpi-lbl">ROAS Meta</div>
-      <div class="pkpi-val">${md&&md.roas?fmt(md.roas,'roas'):'—'}</div>
-      <div class="pkpi-sub">${md&&md.purchases!=null?md.purchases+' zakupów · '+(md.revenue?fmt(md.revenue,'zl'):''): ''}</div>
+      <div class="pkpi-lbl">ROAS Meta px</div>
+      <div class="pkpi-val">${roas_m?fmt(roas_m,'roas'):'—'}</div>
+      <div class="pkpi-sub">${md&&md.purchases?md.purchases+' zakupów px':'pixel attribution'}</div>
     </div>
     <div class="pkpi pkpi-meta">
       <div class="pkpi-lbl">ROAS ogółem</div>
       <div class="pkpi-val">${roasOg?fmt(roasOg,'roas'):'—'}</div>
-      <div class="pkpi-sub">${blRev?fmt(blRev,'zl')+' sprzedaż BL':'BL revenue / Meta spend'}</div>
+      <div class="pkpi-sub">${shopRev?fmt(shopRev,'zl')+' Shopify net':'Shopify / Meta spend'}</div>
     </div>
     <div class="pkpi pkpi-ga4">
-      <div class="pkpi-lbl">Sesje GA4 płatny</div>
+      <div class="pkpi-lbl">Sesje GA4 ogółem</div>
+      <div class="pkpi-val">${ga4sessions!=null?fmt(ga4sessions,'n'):'—'}</div>
+      <div class="pkpi-sub">${dagg?from+' – '+to:'brak daily data'}</div>
+    </div>
+    <div class="pkpi pkpi-ga4">
+      <div class="pkpi-lbl">Paid Social GA4</div>
       <div class="pkpi-val">${paidSess!=null?fmt(paidSess,'n'):'—'}</div>
-      <div class="pkpi-sub">${paidSess!=null?'meta · cpc':'brak GA4 za ten okres'}</div>
+      <div class="pkpi-sub">${paidPct?paidPct+' ruchu':(paidTxn?paidTxn+' txn':'GA4 channel')}</div>
     </div>
     <div class="pkpi pkpi-ga4">
-      <div class="pkpi-lbl">Atrybucja zestawy</div>
-      <div class="pkpi-val">${zestPct||'—'}</div>
-      <div class="pkpi-sub">${zestSess!=null&&paidSess?zestSess+'/'+paidSess+' sesji':'brak GA4'}</div>
-    </div>
-    <div class="pkpi pkpi-ga4">
-      <div class="pkpi-lbl">Atrybucja reklamy</div>
-      <div class="pkpi-val">${reklPct||'—'}</div>
-      <div class="pkpi-sub">${reklSess!=null&&paidSess?reklSess+'/'+paidSess+' sesji':'brak GA4'}</div>
+      <div class="pkpi-lbl">GA4 transakcje</div>
+      <div class="pkpi-val">${dagg?fmt(dagg.transactions,'n'):'—'}</div>
+      <div class="pkpi-sub">${paidTxn!=null?'w tym PS: '+paidTxn:'wszystkie kanały'}</div>
     </div>
     <div class="pkpi pkpi-bl">
-      <div class="pkpi-lbl">Zamówienia BL</div>
-      <div class="pkpi-val">${blOrders!=null?blOrders:'—'}</div>
+      <div class="pkpi-lbl">Shopify zamówienia</div>
+      <div class="pkpi-val">${shopOrders!=null?shopOrders:'—'}</div>
       <div class="pkpi-sub">wszystkie kanały</div>
     </div>
     <div class="pkpi pkpi-bl">
-      <div class="pkpi-lbl">Kanały BL</div>
-      <div class="pkpi-val">${blChannels!=null?blChannels:'—'}</div>
-      <div class="pkpi-sub">${blChStr||''}</div>
+      <div class="pkpi-lbl">Shopify przychód</div>
+      <div class="pkpi-val">${shopRev!=null?fmt(shopRev,'zl'):'—'}</div>
+      <div class="pkpi-sub">${shopOrders!=null&&shopOrders>0?'AOV '+fmt(shopRev/shopOrders,'zl'):'net sales'}</div>
     </div>
   `;
 }
@@ -5001,8 +5014,12 @@ function setPreset(p){
   const el = document.getElementById(presetIdMap[p]); if(el) el.classList.add('active');
 
   const TS = window.META_TS;
-  if(!TS || !TS.days) return;
-  const days = Object.keys(TS.days).sort();  /* rosnąco */
+  const DD = window.DAILY_DATA;
+  const metaDays  = (TS && TS.days) ? Object.keys(TS.days).sort() : [];
+  const dailyDays = (DD && DD.days) ? Object.keys(DD.days).sort() : [];
+  /* prefer daily (auto-refresh, always fresher) */
+  const days = dailyDays.length ? dailyDays : metaDays;
+  if(!days.length) return;
   const latest = days[days.length-1]||'';
 
   let fromDate='', toDate=latest;
@@ -5097,30 +5114,33 @@ async function refreshAllData(force=false){
   const updEl = document.getElementById('live-meta-updated');
   if(updEl) updEl.textContent = 'Ładowanie…';
   try {
-    const [TS, PT, L, S] = await Promise.all([
+    const [TS, PT, L, S, DD] = await Promise.all([
       fetchJson(META_URL, force),
       fetchJson(PROXY_URL, force).catch(()=>null),
       fetchJson(LIVE2_URL, force).catch(()=>null),
       fetchJson(SALES_URL, force).catch(()=>null),
+      fetchJson(DAILY_URL, force).catch(()=>null),
     ]);
     window.META_TS      = TS;
     window.PROXY_TRUTH  = PT;
     window.LIVE2 = L;
     window.SALES = S;
+    window.DAILY_DATA = DD;
 
-    /* Ustaw datepicker na ostatni dostępny dzień */
-    if(TS && TS.days){
-      const days = Object.keys(TS.days);
-      const latest = days[0]||'';
-      const td = document.getElementById('lbl-today-date');
-      if(td) td.textContent = latest ? '('+latest.slice(5)+')' : '';
-      /* picker-from/to jeśli puste → ustaw na latest */
-      const pf = document.getElementById('picker-from');
-      const pt = document.getElementById('picker-to');
-      if(pf && !pf.value) pf.value = latest;
-      if(pt && !pt.value) pt.value = latest;
-    }
-    if(updEl) updEl.textContent = 'Aktualizacja: '+(TS._meta?.updated||'');
+    /* Ustaw datepicker — używaj daily (świeższe) jeśli dostępne */
+    const metaDays   = (TS && TS.days) ? Object.keys(TS.days).sort() : [];
+    const dailyDays  = (DD && DD.days) ? Object.keys(DD.days).sort() : [];
+    /* latest = późniejsza z obu (daily auto-refresh, meta manual) */
+    const latestMeta  = metaDays.length  ? metaDays[metaDays.length-1]  : '';
+    const latestDaily = dailyDays.length ? dailyDays[dailyDays.length-1] : '';
+    const latest = latestDaily > latestMeta ? latestDaily : latestMeta;
+    const td = document.getElementById('lbl-today-date');
+    if(td) td.textContent = latest ? '('+latest.slice(5)+')' : '';
+    const pf = document.getElementById('picker-from');
+    const pt = document.getElementById('picker-to');
+    if(pf && !pf.value) pf.value = latest;
+    if(pt && !pt.value) pt.value = latest;
+    if(updEl) updEl.textContent = 'GA4: '+(latestDaily||'?')+' · Meta: '+(latestMeta||'?');
 
     renderDayCampanel();
     setPreset(currentPreset);
