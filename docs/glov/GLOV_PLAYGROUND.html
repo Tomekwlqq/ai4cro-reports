@@ -23961,5 +23961,104 @@ kr</span>
   else init();
 })();
 </script>
+
+<style>
+/* ── Panel sterowania (CRO tuner) ── */
+.play-panel { position: fixed; top: 10px; right: 10px; z-index: 99999; width: 250px; max-height: 88vh; overflow-y: auto;
+  background: #fff; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,.2);
+  font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: #222; padding: 12px; }
+.play-panel h3 { margin: 0 0 8px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.play-panel .grp { border-top: 1px solid #eee; padding: 8px 0; }
+.play-panel label { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 4px 0; }
+.play-panel label span { flex: 1; }
+.play-panel input[type=range] { width: 110px; }
+.play-panel input[type=color] { width: 40px; height: 22px; border: none; padding: 0; }
+.play-panel input[type=checkbox] { width: 16px; height: 16px; }
+.play-panel .val { font-size: 10px; color: #888; min-width: 26px; text-align: right; }
+.play-panel button { width: 100%; margin-top: 6px; padding: 7px; border: 1px solid #333; background: #fff; cursor: pointer; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.play-panel button:hover { background: #333; color: #fff; }
+.play-panel-toggle { position: fixed; top: 10px; right: 10px; z-index: 100000; padding: 8px 12px; background: #333; color: #fff; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; }
+</style>
+
+<div class="play-panel" id="playPanel">
+  <h3>🎛 CRO Tuner</h3>
+  <div class="grp">
+    <label><span>CTA wysokość</span><input type="range" id="ctl-cta-pad" min="6" max="28" value="13"><span class="val" id="v-cta-pad">13</span></label>
+    <label><span>CTA font</span><input type="range" id="ctl-cta-fs" min="9" max="22" value="14"><span class="val" id="v-cta-fs">14</span></label>
+    <label><span>CTA kolor</span><input type="color" id="ctl-cta-bg" value="#4c4c4c"></label>
+    <label><span>CTA tekst</span><input type="text" id="ctl-cta-text" value="PRZEJDŹ DO KASY" style="width:110px;font-size:10px"></label>
+  </div>
+  <div class="grp">
+    <label><span>Logo szerokość</span><input type="range" id="ctl-logo" min="30" max="160" value="60"><span class="val" id="v-logo">60</span></label>
+    <label><span>Odstęp ikon</span><input type="range" id="ctl-icons" min="0" max="60" value="6"><span class="val" id="v-icons">6</span></label>
+  </div>
+  <div class="grp">
+    <label><span>Qty rozmiar</span><input type="range" id="ctl-qty" min="20" max="50" value="30"><span class="val" id="v-qty">30</span></label>
+    <label><span>Nagłówek „Twój koszyk"</span><input type="range" id="ctl-h1" min="16" max="48" value="28"><span class="val" id="v-h1">28</span></label>
+  </div>
+  <div class="grp">
+    <label><span>Gift box</span><input type="checkbox" id="ctl-gift" checked></label>
+    <label><span>Wiadomość dla sprzedającego</span><input type="checkbox" id="ctl-notes" checked></label>
+    <label><span>Przyciski dolne (Kontynuuj/Zaktualizuj)</span><input type="checkbox" id="ctl-btns" checked></label>
+  </div>
+  <button id="ctl-reset">Reset</button>
+</div>
+<button class="play-panel-toggle" id="playPanelToggle">🎛</button>
+
+<script>
+(function(){
+  var panel = document.getElementById('playPanel');
+  var toggle = document.getElementById('playPanelToggle');
+  function showPanel(v){ panel.style.display = v ? 'block' : 'none'; toggle.style.display = v ? 'none' : 'block'; }
+  showPanel(false);
+  toggle.addEventListener('click', function(){ showPanel(true); });
+  function on(id, fn){ var el = document.getElementById(id); el.addEventListener('input', function(){ fn(el); }); return el; }
+  function bindVal(slider, valId, fmt){ var v = document.getElementById(valId); var f = fmt||function(x){return x;}; slider.addEventListener('input', function(){ v.textContent = f(slider.value); }); }
+
+  var ctaPad = on('ctl-cta-pad', function(el){
+    document.querySelectorAll('.cart__footer__checkout .btn, .btn--primary, .checkout__button').forEach(function(b){
+      b.style.paddingTop = el.value+'px'; b.style.paddingBottom = el.value+'px';
+    });
+    document.getElementById('v-cta-pad').textContent = el.value;
+  });
+  var ctaFs = on('ctl-cta-fs', function(el){
+    document.querySelectorAll('.cart__footer__checkout .btn, .btn--primary, .checkout__button').forEach(function(b){ b.style.fontSize = el.value+'px'; });
+    document.getElementById('v-cta-fs').textContent = el.value;
+  });
+  var ctaBg = on('ctl-cta-bg', function(el){
+    document.querySelectorAll('.cart__footer__checkout .btn, .btn--primary, .checkout__button').forEach(function(b){ b.style.background = el.value; });
+  });
+  var ctaText = on('ctl-cta-text', function(el){
+    var b = document.querySelector('.cart__footer__checkout .btn, .btn--primary, .checkout__button');
+    if(b) b.innerHTML = el.value + ' - <span data-cta-price>' + ((b.querySelector('[data-cta-price]')||{}).textContent || '75,80zł') + '</span>';
+  });
+  var logo = on('ctl-logo', function(el){
+    document.querySelectorAll('.logo__img').forEach(function(i){ i.style.width = el.value+'px'; });
+    document.getElementById('v-logo').textContent = el.value;
+  });
+  var icons = on('ctl-icons', function(el){
+    document.querySelectorAll('.header__mobile__right .header__desktop__button').forEach(function(b){ b.style.marginLeft = el.value+'px'; });
+    document.getElementById('v-icons').textContent = el.value;
+  });
+  var qty = on('ctl-qty', function(el){
+    document.querySelectorAll('.play-qty').forEach(function(b){ b.style.width = el.value+'px'; b.style.height = el.value+'px'; });
+    document.getElementById('v-qty').textContent = el.value;
+  });
+  var h1 = on('ctl-h1', function(el){
+    document.querySelectorAll('.cart__heading').forEach(function(h){ h.style.fontSize = el.value+'px'; });
+    document.getElementById('v-h1').textContent = el.value;
+  });
+  on('ctl-gift', function(el){
+    document.querySelectorAll('.gift-wrap, .play-gift, [data-gift]').forEach(function(g){ g.style.display = el.checked ? '' : 'none'; });
+  });
+  on('ctl-notes', function(el){
+    document.querySelectorAll('.cart__notes').forEach(function(n){ n.style.display = el.checked ? '' : 'none'; });
+  });
+  on('ctl-btns', function(el){
+    document.querySelectorAll('.cart_return, .cart__update, .cart__footer__update, a[href*="cart/update"], a[href*="collections/all"]').forEach(function(b){ b.style.display = el.checked ? '' : 'none'; });
+  });
+  document.getElementById('ctl-reset').addEventListener('click', function(){ location.reload(); });
+})();
+</script>
 </body>
 </html>
