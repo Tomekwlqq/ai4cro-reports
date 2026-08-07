@@ -22544,7 +22544,27 @@ teraz!">
         </div>
       
 
-      <div class="cart__items__grid cart__heading__wrapper">
+      
+<div class="play-upsell" style="max-width:1200px;margin:14px auto 0;padding:0 16px">
+  <div style="border:1px solid #000;border-radius:6px;padding:12px 14px;background:#fff">
+    <p style="margin:0 0 10px;text-align:center;font-size:13px;color:#4c4c4c;font-weight:600">
+      Do darmowej dostawy brakuje Ci <b id="upsell-missing" style="font-weight:700">44,20zł!</b></p>
+    <div style="height:8px;background:#dbe4ec;border-radius:99px;overflow:hidden">
+      <div id="upsell-bar" style="height:100%;width:63%;background:#000;border-radius:99px;transition:width .4s ease"></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;padding:12px 2px 0">
+    <span class="upsell-arr" data-d="-1" style="font-size:18px;color:#888;cursor:pointer;user-select:none">&#8249;</span>
+    <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+      <img src="https://cdn.shopify.com/s/files/1/0583/4057/3373/products/GLOV__StarterPack__PACKSHOT__05__600x600px.png?v=1638226760" style="width:36px;height:36px;object-fit:contain;flex-shrink:0" alt="Starter Set">
+      <span style="flex:1;min-width:0;font-size:13px;color:#4c4c4c;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Zestaw wielorazowych płatków kosmetycznych Starter Set GLOV&reg;</span>
+      <span style="font-size:13px;color:#4c4c4c;font-weight:600;white-space:nowrap">69,90zł</span>
+      <button type="button" class="upsell-add" style="flex-shrink:0;border:1px solid #000;background:#fff;color:#000;font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:7px 10px;cursor:pointer;white-space:nowrap">Dobierz</button>
+    </div>
+    <span class="upsell-arr" data-d="1" style="font-size:18px;color:#888;cursor:pointer;user-select:none">&#8250;</span>
+  </div>
+</div>
+<div class="cart__items__grid cart__heading__wrapper">
         <div class="cart__heading__back"></div>
         <div class="cart__items__price">
           <p class="cart__heading">Cena</p>
@@ -24004,6 +24024,8 @@ kr</span>
     <label><span>Nagłówek „Twój koszyk"</span><input type="range" id="ctl-h1" min="16" max="48" value="28"><span class="val" id="v-h1">28</span></label>
   </div>
   <div class="grp">
+    <label><span>Upsell dostawy</span><input type="checkbox" id="ctl-upsell" checked></label>
+    <label><span>Próg darmowej dostawy (zł)</span><input type="number" id="ctl-threshold" value="120" min="50" max="500" style="width:60px"></label>
     <label><span>Gift box</span><input type="checkbox" id="ctl-gift" checked></label>
     <label><span>Wiadomość dla sprzedającego</span><input type="checkbox" id="ctl-notes" checked></label>
     <label><span>Przyciski dolne (Kontynuuj/Zaktualizuj)</span><input type="checkbox" id="ctl-btns" checked></label>
@@ -24073,6 +24095,22 @@ kr</span>
     document.querySelectorAll('.cart__items__row').forEach(function(e){ e.style.paddingBottom = el.value+'px'; e.style.paddingTop = el.value+'px'; });
     document.getElementById('v-row-pad').textContent = el.value;
   });
+  on('ctl-upsell', function(el){
+    document.querySelectorAll('.play-upsell').forEach(function(u){ u.style.display = el.checked ? '' : 'none'; });
+  });
+  on('ctl-threshold', function(el){
+    if(window.__playPrices && window.__playTotal){
+      var sum = 0;
+      document.querySelectorAll('.cart__items__row').forEach(function(r){
+        var idx = r.getAttribute('data-play-idx');
+        if(idx != null && window.__playPrices[idx]) sum += window.__playPrices[idx] * parseInt(r.getAttribute('data-qty')||'1',10);
+      });
+      var bar = document.getElementById('upsell-bar');
+      var miss = document.getElementById('upsell-missing');
+      if(bar) bar.style.width = Math.min(100, sum/parseFloat(el.value||120)*100) + '%';
+      if(miss){ var left = parseFloat(el.value||120) - sum; miss.textContent = (left > 0 ? left.toLocaleString('pl-PL',{minimumFractionDigits:2, maximumFractionDigits:2}).replace(/\u00a0/g,' ') : '0,00') + 'zł!'; }
+    }
+  });
   on('ctl-gift', function(el){
     document.querySelectorAll('.gift-wrap, .play-gift, [data-gift]').forEach(function(g){ g.style.display = el.checked ? '' : 'none'; });
   });
@@ -24083,6 +24121,106 @@ kr</span>
     document.querySelectorAll('.cart_return, .cart__update, .cart__footer__update, a[href*="cart/update"], a[href*="collections/all"]').forEach(function(b){ b.style.display = el.checked ? '' : 'none'; });
   });
   document.getElementById('ctl-reset').addEventListener('click', function(){ location.reload(); });
+})();
+</script>
+
+<script>
+(function(){
+  var UPSELL_THRESHOLD = 120;
+  function updateUpsell(sum){
+    var bar = document.getElementById('upsell-bar');
+    var miss = document.getElementById('upsell-missing');
+    if(!bar || !miss) return;
+    var pct = Math.min(100, sum/UPSELL_THRESHOLD*100);
+    bar.style.width = pct + '%';
+    var left = UPSELL_THRESHOLD - sum;
+    miss.textContent = (left > 0 ? left.toLocaleString('pl-PL',{minimumFractionDigits:2, maximumFractionDigits:2}).replace(/\u00a0/g,' ') : '0,00') + 'zł!';
+  }
+  // hook do istniejącego total() — wywołuj po każdym przeliczeniu
+  var origTotal = window.__playTotal || null;
+  function hookedTotal(){
+    var sum = 0;
+    document.querySelectorAll('.cart__items__row').forEach(function(r){
+      var idx = r.getAttribute('data-play-idx');
+      if(idx == null) return;
+      sum += (window.__playPrices && window.__playPrices[idx] || 0) * parseInt(r.getAttribute('data-qty')||'1',10);
+    });
+    updateUpsell(sum);
+    return sum;
+  }
+  window.__playTotal = hookedTotal;
+  // Dobierz — dodaje Starter Set (69,90)
+  function hookAdd(){
+    var add = document.querySelector('.upsell-add');
+    if(!add || add.__hooked) return;
+    add.__hooked = true;
+    add.addEventListener('click', function(){
+      var n = document.querySelectorAll('.cart__items__row').length;
+      window.__playPrices = window.__playPrices || {0:15.90,1:59.90};
+      window.__playPrices[n] = 69.90;
+      var div = document.createElement('div');
+      div.className = 'cart__items__row';
+      div.setAttribute('data-play-idx', n);
+      div.setAttribute('data-qty', '1');
+      div.style.cssText = 'padding:20px 0 15px;border-bottom:1px solid rgba(76,76,76,.2);flex-wrap:wrap;display:flex;align-items:center';
+      div.innerHTML = '<div class="cart__items__image" style="align-self:flex-start"><img class="cart__items__img" src="https://cdn.shopify.com/s/files/1/0583/4057/3373/products/GLOV__StarterPack__PACKSHOT__05__600x600px.png?v=1638226760" alt="Starter Set" style="width:90px;height:90px;object-fit:contain"></div>' +
+        '<div class="cart__items__title" style="flex:1;min-width:200px;padding-right:20px"><p style="font-size:14px;color:#4c4c4c;line-height:1.5">Zestaw wielorazowych płatków kosmetycznych Starter Set GLOV®</p>' +
+        '<span class="line__price" style="display:block;margin-top:6px;font-size:16px;color:#4c4c4c">69,90zł</span>' +
+        '<div style="display:inline-flex;align-items:center;border:1.5px solid #d9d9d9;margin-top:8px">' +
+        '<button type="button" class="play-qty" data-d="-1" style="width:32px;height:32px;border:none;background:none;font-size:17px;color:#4c4c4c;cursor:pointer">−</button>' +
+        '<span class="play-qty-val" style="min-width:26px;text-align:center;font-size:14px;color:#4c4c4c">1</span>' +
+        '<button type="button" class="play-qty" data-d="1" style="width:32px;height:32px;border:none;background:none;font-size:17px;color:#4c4c4c;cursor:pointer">+</button></div></div>' +
+        '<div class="cart__items__quantity" style="min-width:110px"></div>';
+      var cart = document.querySelector('.cart__items, [data-line-items] .cart__items');
+      if(cart) cart.appendChild(div);
+      // podepnij qty do nowego wiersza
+      div.querySelectorAll('.play-qty').forEach(function(bb){
+        bb.addEventListener('click', function(){
+          var d = parseInt(bb.getAttribute('data-d'),10);
+          var q = parseInt(div.getAttribute('data-qty')||'1',10) + d;
+          q = Math.max(1, Math.min(99, q));
+          div.setAttribute('data-qty', q);
+          var v = div.querySelector('.play-qty-val'); if(v) v.textContent = q;
+          var lp = div.querySelector('.line__price'); if(lp) lp.textContent = (69.90*q).toLocaleString('pl-PL',{minimumFractionDigits:2, maximumFractionDigits:2}).replace(/\u00a0/g,' ')+'zł';
+          if(window.__playTotal) window.__playTotal();
+          var f = document.querySelector('[data-cart-final]'); if(f) f.textContent = '';
+        });
+      });
+      if(window.__playTotal) window.__playTotal();
+      // aktualizacja final
+      var sum = 0;
+      document.querySelectorAll('.cart__items__row').forEach(function(r){
+        var idx = r.getAttribute('data-play-idx');
+        if(idx != null && window.__playPrices[idx]) sum += window.__playPrices[idx] * parseInt(r.getAttribute('data-qty')||'1',10);
+      });
+      var el = document.querySelector('[data-cart-final]'); if(el) el.textContent = sum.toLocaleString('pl-PL',{minimumFractionDigits:2, maximumFractionDigits:2}).replace(/\u00a0/g,' ')+'zł';
+    });
+  }
+  // strzałki karuzeli (rotacja placeholderów — na razie wizualne)
+  function hookArrows(){
+    document.querySelectorAll('.upsell-arr').forEach(function(a){
+      if(a.__hooked) return; a.__hooked = true;
+      a.addEventListener('click', function(){ /* karuzela wieloitemowa — kolejny krok */ });
+    });
+  }
+  function initUpsell(){
+    window.__playPrices = window.__playPrices || {0:15.90, 1:59.90};
+    hookAdd(); hookArrows();
+    if(window.__playTotal) window.__playTotal();
+    // pierwsze przeliczenie paska
+    var sum0 = 0;
+    document.querySelectorAll('.cart__items__row').forEach(function(r){
+      var idx = r.getAttribute('data-play-idx');
+      if(idx != null && window.__playPrices[idx]) sum0 += window.__playPrices[idx];
+    });
+    updateUpsell(sum0);
+    // nasłuch na zmiany final (qty z istniejącego playground)
+    var obs = new MutationObserver(function(){ if(window.__playTotal) window.__playTotal(); });
+    var f = document.querySelector('[data-cart-final]');
+    if(f) obs.observe(f, {childList:true, characterData:true, subtree:true});
+  }
+  if(document.readyState == 'loading') document.addEventListener('DOMContentLoaded', initUpsell);
+  else initUpsell();
 })();
 </script>
 </body>
