@@ -23993,6 +23993,13 @@ kr</span>
     <label><span>Odstęp ikon</span><input type="range" id="ctl-icons" min="0" max="60" value="6"><span class="val" id="v-icons">6</span></label>
   </div>
   <div class="grp">
+    <label><span>Kolor tekstu</span><input type="color" id="ctl-color-txt" value="#4c4c4c"></label>
+    <label><span>Kolor ceny</span><input type="color" id="ctl-color-price" value="#4c4c4c"></label>
+    <label><span>Nazwa produktu (px)</span><input type="range" id="ctl-name-fs" min="10" max="22" value="14"><span class="val" id="v-name-fs">14</span></label>
+    <label><span>Cena (px)</span><input type="range" id="ctl-price-fs" min="11" max="24" value="16"><span class="val" id="v-price-fs">16</span></label>
+    <label><span>Odstęp wierszy (px)</span><input type="range" id="ctl-row-pad" min="4" max="30" value="15"><span class="val" id="v-row-pad">15</span></label>
+  </div>
+  <div class="grp">
     <label><span>Qty rozmiar</span><input type="range" id="ctl-qty" min="20" max="50" value="30"><span class="val" id="v-qty">30</span></label>
     <label><span>Nagłówek „Twój koszyk"</span><input type="range" id="ctl-h1" min="16" max="48" value="28"><span class="val" id="v-h1">28</span></label>
   </div>
@@ -24047,6 +24054,24 @@ kr</span>
   var h1 = on('ctl-h1', function(el){
     document.querySelectorAll('.cart__heading').forEach(function(h){ h.style.fontSize = el.value+'px'; });
     document.getElementById('v-h1').textContent = el.value;
+  });
+  on('ctl-color-txt', function(el){
+    document.querySelectorAll('.cart__items__title p, .cart__items__meta, .ship-msg, .cart__heading, .cart__footer__label, .cart__items__title a').forEach(function(e){ e.style.color = el.value; });
+  });
+  on('ctl-color-price', function(el){
+    document.querySelectorAll('.line__price, .cart__footer__value, [data-cart-final], [data-cart-subtotal]').forEach(function(e){ e.style.color = el.value; });
+  });
+  on('ctl-name-fs', function(el){
+    document.querySelectorAll('.cart__items__title p').forEach(function(e){ e.style.fontSize = el.value+'px'; });
+    document.getElementById('v-name-fs').textContent = el.value;
+  });
+  on('ctl-price-fs', function(el){
+    document.querySelectorAll('.line__price').forEach(function(e){ e.style.fontSize = el.value+'px'; });
+    document.getElementById('v-price-fs').textContent = el.value;
+  });
+  on('ctl-row-pad', function(el){
+    document.querySelectorAll('.cart__items__row').forEach(function(e){ e.style.paddingBottom = el.value+'px'; e.style.paddingTop = el.value+'px'; });
+    document.getElementById('v-row-pad').textContent = el.value;
   });
   on('ctl-gift', function(el){
     document.querySelectorAll('.gift-wrap, .play-gift, [data-gift]').forEach(function(g){ g.style.display = el.checked ? '' : 'none'; });
