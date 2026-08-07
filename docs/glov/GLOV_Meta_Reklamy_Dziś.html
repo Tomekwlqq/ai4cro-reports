@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GLOV — Meta Ads · 2026-08-07</title>
+<style>
+/* ── Tokens ─────────────────────────────────────────────── */
+:root {
+  --bg:        #F7F8FA;
+  --surface:   #FFFFFF;
+  --border:    #E4E7ED;
+  --text:      #111827;
+  --text-muted:#6B7280;
+  --accent:    #0866FF;
+  --accent-s:  #E8F0FE;
+  --green:     #16A34A;
+  --green-s:   #DCFCE7;
+  --red:       #DC2626;
+  --red-s:     #FEE2E2;
+  --amber:     #D97706;
+  --amber-s:   #FEF3C7;
+  --navy:      #1B2B4B;
+  --navy-t:    rgba(27,43,75,.06);
+  --shadow:    0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --radius:    6px;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:        #0D1117;
+    --surface:   #161B22;
+    --border:    #2D3240;
+    --text:      #F3F4F6;
+    --text-muted:#9CA3AF;
+    --accent:    #3B82F6;
+    --accent-s:  rgba(59,130,246,.12);
+    --green-s:   rgba(22,163,74,.15);
+    --red-s:     rgba(220,38,38,.15);
+    --amber-s:   rgba(217,119,6,.15);
+    --navy:      #1E2D4A;
+    --navy-t:    rgba(30,45,74,.2);
+    --shadow:    0 1px 4px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #0D1117;
+  --surface:   #161B22;
+  --border:    #2D3240;
+  --text:      #F3F4F6;
+  --text-muted:#9CA3AF;
+  --accent:    #3B82F6;
+  --accent-s:  rgba(59,130,246,.12);
+  --green-s:   rgba(22,163,74,.15);
+  --red-s:     rgba(220,38,38,.15);
+  --amber-s:   rgba(217,119,6,.15);
+  --navy:      #1E2D4A;
+  --navy-t:    rgba(30,45,74,.2);
+  --shadow:    0 1px 4px rgba(0,0,0,.4);
+}
+:root[data-theme="light"] {
+  --bg:        #F7F8FA;
+  --surface:   #FFFFFF;
+  --border:    #E4E7ED;
+  --text:      #111827;
+  --text-muted:#6B7280;
+  --accent:    #0866FF;
+  --accent-s:  #E8F0FE;
+  --green:     #16A34A;
+  --green-s:   #DCFCE7;
+  --red:       #DC2626;
+  --red-s:     #FEE2E2;
+  --amber:     #D97706;
+  --amber-s:   #FEF3C7;
+  --navy:      #1B2B4B;
+  --navy-t:    rgba(27,43,75,.06);
+  --shadow:    0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+}
+
+/* ── Reset ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.header {
+  background: var(--navy);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo {
+  font-weight: 700;
+  font-size: 16px;
+  color: #FFFFFF;
+  letter-spacing: -.3px;
+}
+.header-badge {
+  background: rgba(255,255,255,.12);
+  color: rgba(255,255,255,.75);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+.header-meta {
+  color: rgba(255,255,255,.5);
+  font-size: 12px;
+}
+.header-right { display: flex; align-items: center; gap: 10px; }
+.theme-btn {
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.15);
+  color: rgba(255,255,255,.8);
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background .15s;
+}
+.theme-btn:hover { background: rgba(255,255,255,.18); }
+
+/* ── Main ───────────────────────────────────────────────── */
+.main { padding: 24px; max-width: 1600px; margin: 0 auto; }
+
+/* ── Alert ──────────────────────────────────────────────── */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--red-s);
+  border: 1px solid rgba(220,38,38,.3);
+  border-left: 4px solid var(--red);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 24px;
+}
+.alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.alert-title { font-weight: 700; color: var(--red); font-size: 13px; }
+.alert-body { color: var(--text-muted); font-size: 12.5px; margin-top: 3px; line-height: 1.5; }
+
+/* ── KPI row ─────────────────────────────────────────────── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+.kpi-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 600;
+}
+.kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.5px;
+}
+.kpi-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.kpi.red .kpi-value { color: var(--red); }
+.kpi.green .kpi-value { color: var(--green); }
+.kpi.amber .kpi-value { color: var(--amber); }
+
+/* ── Section ─────────────────────────────────────────────── */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.section-count {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ── Legend ──────────────────────────────────────────────── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+.legend-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+/* ── Table wrapper ───────────────────────────────────────── */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+thead {
+  background: var(--navy-t);
+  border-bottom: 2px solid var(--border);
+}
+thead th {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+thead th.num { text-align: right; }
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background .1s;
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--navy-t); }
+td { padding: 10px 12px; vertical-align: middle; }
+td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum";
+}
+
+/* ── Thumbnail ───────────────────────────────────────────── */
+.thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  display: block;
+  flex-shrink: 0;
+}
+.thumb-placeholder {
+  width: 52px;
+  height: 52px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.thumb-cell { width: 64px; }
+
+/* ── Ad name cell ────────────────────────────────────────── */
+.ad-name {
+  max-width: 240px;
+}
+.ad-name-main {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+.ad-name-id {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: monospace;
+  margin-top: 2px;
+}
+.ad-decoded {
+  font-size: 11px;
+  color: var(--accent);
+  margin-top: 3px;
+}
+
+/* ── Badges ──────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-family: monospace;
+  white-space: nowrap;
+}
+.badge-b { background: #EDE9FE; color: #6D28D9; }
+.badge-v { background: #FFE4E6; color: #BE123C; }
+.badge-k { background: #FEF3C7; color: #92400E; }
+.badge-ugc { background: #DCFCE7; color: #166534; }
+.badge-f { background: #E0F2FE; color: #0369A1; }
+.badge-dpa { background: var(--accent-s); color: var(--accent); }
+
+/* ── Number cells ────────────────────────────────────────── */
+.spend-val { font-weight: 700; font-size: 13px; }
+.roas-high { color: var(--green); font-weight: 700; }
+.roas-mid  { color: var(--amber); font-weight: 600; }
+.roas-zero { color: var(--text-muted); }
+.conv-pos  { color: var(--green); font-weight: 700; }
+.conv-zero { color: var(--text-muted); }
+.freq-alarm { color: var(--red); font-weight: 700; }
+.freq-warn  { color: var(--amber); font-weight: 600; }
+
+/* ── UTM cell ────────────────────────────────────────────── */
+.utm-cell { max-width: 160px; }
+.utm-tag {
+  font-size: 10.5px;
+  padding: 3px 7px;
+  border-radius: 3px;
+  display: inline-block;
+  white-space: nowrap;
+}
+.utm-dpa  { background: var(--accent-s); color: var(--accent); }
+.utm-miss { background: var(--amber-s);  color: var(--amber);  }
+.utm-ok   { background: var(--green-s);  color: var(--green);  }
+
+/* ── Filters ─────────────────────────────────────────────── */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--font-sans);
+  transition: all .15s;
+}
+.filter-btn:hover, .filter-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ── UTM section ─────────────────────────────────────────── */
+.utm-section {
+  margin-top: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.utm-section h3 { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+.utm-insight {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+.utm-insight-item {
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 12px;
+}
+.utm-insight-item .label { font-weight: 700; margin-bottom: 4px; }
+.utm-insight-item .val { color: var(--text-muted); }
+
+@media (max-width: 900px) {
+  .kpi-row { grid-template-columns: repeat(3, 1fr); }
+  .utm-insight { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .main { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Header ─── -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo">GLOV</div>
+    <span class="header-badge">Meta Ads</span>
+    <span class="header-meta">2026-08-07 · Phenicoptere PL · act_414505328896049</span>
+  </div>
+  <div class="header-right">
+    <span class="header-meta" id="last-update">Pobrano live</span>
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙 Ciemny</button>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- ── Alert ─── -->
+  <div class="alert">
+    <div class="alert-icon">⚠️</div>
+    <div>
+      <div class="alert-title">RED FLAG: Pixel Meta prawie nieaktywny</div>
+      <div class="alert-body">
+        Z ~1000 aktywnych reklam tylko <strong>2 mają offsite_conversion_fb_pixel_purchase &gt; 0</strong> (0.2%).
+        Konwersje są raportowane przez Meta Pixel, który albo: (a) nie jest wdrożony przez Shopify Customer Events, albo (b) nie przesyła event Purchase do Meta.
+        Sprawdź: Shopify Admin → Customer Events → Meta Pixel. Bez Purchase event optymalizacja Advantage+ jest ślepa.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── KPI ─── -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-label">Łączny spend</div>
+      <div class="kpi-value">422 zł</div>
+      <div class="kpi-sub">Dziś (29 reklam z danymi)</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Impresje</div>
+      <div class="kpi-value">29 143</div>
+      <div class="kpi-sub">Suma z raportujących reklam</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Zasięg</div>
+      <div class="kpi-value">26 264</div>
+      <div class="kpi-sub">Unikalnych użytkowników</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Konwersje (pixel)</div>
+      <div class="kpi-value red" style="color: var(--red);">5</div>
+      <div class="kpi-sub">2 reklamy z conv &gt; 0</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Najlepszy ROAS</div>
+      <div class="kpi-value green" style="color: var(--green);">3.79×</div>
+      <div class="kpi-sub">b_p_body_rekawica-cialo</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-label">Reklamy bez konwersji</div>
+      <div class="kpi-value" style="color: var(--amber);">98%</div>
+      <div class="kpi-sub">Pixel lub atrybucja problem</div>
+    </div>
+  </div>
+
+  <!-- ── Legend ─── -->
+  <div class="legend">
+    <strong style="font-size:11px; color:var(--text-muted); margin-right:4px;">FORMAT:</strong>
+    <div class="legend-item"><span class="badge badge-b">b</span> Image/banner</div>
+    <div class="legend-item"><span class="badge badge-v">v</span> Video</div>
+    <div class="legend-item"><span class="badge badge-k">k</span> Carousel</div>
+    <div class="legend-item"><span class="badge badge-ugc">ugc</span> UGC</div>
+    <div class="legend-item"><span class="badge badge-f">f</span> Feed katalog</div>
+    <div style="width:1px;background:var(--border);margin:0 4px;height:16px;"></div>
+    <strong style="font-size:11px; color:var(--text-muted); margin-right:4px;">LANDING:</strong>
+    <div class="legend-item"><span style="font-size:11px; font-family:monospace;">p</span> = PDP</div>
+    <div class="legend-item"><span style="font-size:11px; font-family:monospace;">plp</span> = Listing</div>
+    <div class="legend-item"><span style="font-size:11px; font-family:monospace;">c</span> = Kategoria</div>
+    <div class="legend-item"><span style="font-size:11px; font-family:monospace;">h</span> = Retargeting</div>
+  </div>
+
+  <!-- ── Filters ─── -->
+  <div class="filter-row">
+    <span style="font-size:11px;color:var(--text-muted);font-weight:600;">FILTRUJ:</span>
+    <button class="filter-btn active" onclick="filterTable('all',this)">Wszystkie (15)</button>
+    <button class="filter-btn" onclick="filterTable('conv',this)">Z konwersją</button>
+    <button class="filter-btn" onclick="filterTable('high-freq',this)">Freq alarm (&gt;3×)</button>
+    <button class="filter-btn" onclick="filterTable('video',this)">Video</button>
+    <button class="filter-btn" onclick="filterTable('ugc',this)">UGC</button>
+  </div>
+
+  <!-- ── Table ─── -->
+  <div class="section-head">
+    <span class="section-title">Reklamy z miniaturami</span>
+    <span class="section-count">15 reklam · posortowane po wydatkach ↓</span>
+  </div>
+  <div class="table-wrap">
+    <table id="ads-table">
+      <thead>
+        <tr>
+          <th class="thumb-cell">Mini</th>
+          <th>Nazwa reklamy</th>
+          <th>Format</th>
+          <th class="num">Spend<br><small>PLN</small></th>
+          <th class="num">Impresje</th>
+          <th class="num">Zasięg</th>
+          <th class="num">Freq</th>
+          <th class="num">Konwersje<br><small>pixel</small></th>
+          <th class="num">ROAS</th>
+          <th>UTM / Typ kreacji</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+
+        <!-- 1: zerogravity — top spend + konwersja -->
+        <tr data-format="ugc" data-conv="4" data-freq="1.14">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw5-2.xx.fbcdn.net/v/t15.5256-10/708877434_1371165548192849_2899709816756712136_n.jpg?_nc_cat=104&ccb=1-7&_nc_ohc=97LviKMzYO8Q7kNvwEAET3r&_nc_oc=AdpPivE2C_7KFwY8Vwv3D9sT8FdgpT6iG3Be1KU4NdXgXIQSHTTrrB21fI3Psln1HD4&_nc_zt=23&_nc_ht=scontent-dfw5-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQGiL41bUf4zCd8rgKKxrI0UiTtqxhtOG3Fvv1CvH7lPtXbKrZFPsa2QrnkHMmIeFKH3r6gJoCcX6A&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_AQHfQhqtZq57rl2eM02dOhO1Rzbg7xiypEf8_kn1W-f_Mw&oe=6A7BA87B" alt="Zero Gravity" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🎥</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">ugc_p_hair_zerogravity_objetosc_v1_3107</div>
+            <div class="ad-decoded">🔑 UGC · PDP · Włosy · Zero Gravity · Objętość</div>
+            <div class="ad-name-id">ID 120248762994140495</div>
+          </td>
+          <td><span class="badge badge-ugc">ugc</span></td>
+          <td class="num"><span class="spend-val">112,46</span></td>
+          <td class="num">3 679</td>
+          <td class="num">3 241</td>
+          <td class="num">1,14</td>
+          <td class="num"><span class="conv-pos">4 ✓</span></td>
+          <td class="num"><span class="roas-mid">1,48×</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-dpa">⚡ DPA · UTM = adset_name</span><br><small style="color:var(--text-muted);font-size:10px;">Advantage+ → brak utm_content</small></td>
+        </tr>
+
+        <!-- 2: darmowa dostawa — DPA katalog -->
+        <tr data-format="f" data-conv="0" data-freq="1.24">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw6-2.xx.fbcdn.net/v/t39.2147-6/75341531_494485104475166_2751028116179648512_n.png?_nc_cat=108&ccb=1-7&_nc_ohc=jxKAx8h_7DsQ7kNvwHsVzdH&_nc_oc=AdqER-h37aWvp4mYed5gh_iCGPS3wfErbDEmOJDvsHS5YYSxcZPxdjhhqkaXwMrI09w&_nc_zt=14&_nc_ht=scontent-dfw6-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQGDhERZCUNQYtk1WTZcR16_a6emTKG9K-wK_Lnzcer_f94Un6pDwXsy5kpn-o3dZlmKtNlK13QoEA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=39b8c1&_nc_sid=58080a&oh=00_AQGVghZH-RhFYcqQ9GR1RQhiX6MdzN55akAPq5ZE2eN2cg&oe=6A7B9E04" alt="Darmowa dostawa" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">📦</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">f_p_wszystkie-produkty_darmowa-dostawa_v1_3107</div>
+            <div class="ad-decoded">📦 Feed katalog · Wszystkie produkty · Darmowa dostawa</div>
+            <div class="ad-name-id">ID 120248765731800495</div>
+          </td>
+          <td><span class="badge badge-f">f</span></td>
+          <td class="num"><span class="spend-val">57,92</span></td>
+          <td class="num">2 304</td>
+          <td class="num">1 860</td>
+          <td class="num">1,24</td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-dpa">⚡ DPA · {{product.name}}</span><br><small style="color:var(--text-muted);font-size:10px;">Dynamic product link, brak stałego URL</small></td>
+        </tr>
+
+        <!-- 3: wielopaki -->
+        <tr data-format="ugc" data-conv="0" data-freq="1.08">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw5-2.xx.fbcdn.net/v/t15.13418-10/497100444_1181085053793070_9011744110182416377_n.jpg?_nc_cat=100&ccb=1-7&_nc_ohc=ejfYfAiT4YMQ7kNvwExRMN-&_nc_oc=Adr2JWcoWsHKowemZn7N3btKpOGG7RCEpxQNigftwfQa12DJEOpOuP09BZjqGYvipiQ&_nc_zt=23&_nc_ht=scontent-dfw5-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQE4daGDAkfciHd3dpVD3AyIrSU_RmYF2yh1fN50PMfE_BhzsEp-1cn-0LcNCwEVj2ghuumVnUi-Sg&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=c3b633&_nc_sid=58080a&oh=00_AQHhUNsh1nYNQgKrzkWLNVj_mzGKWXtqLEFn3_u0cw5hfA&oe=6A7BC64E" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🎥</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">ugc_plp_oczyszczanie_rekawica-twarz_wielopaki_v1_3107</div>
+            <div class="ad-decoded">🎥 UGC · Listing · Oczyszczanie · Rękawica twarz · Wielopaki</div>
+            <div class="ad-name-id">ID 120248764901990495</div>
+          </td>
+          <td><span class="badge badge-ugc">ugc</span></td>
+          <td class="num"><span class="spend-val">44,50</span></td>
+          <td class="num">1 445</td>
+          <td class="num">1 333</td>
+          <td class="num">1,08</td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-dpa">⚡ DPA · {{product.name}}</span></td>
+        </tr>
+
+        <!-- 4: sleeping beauty bez zmarszczek -->
+        <tr data-format="b" data-conv="0" data-freq="1.16">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw5-2.xx.fbcdn.net/v/t45.1600-4/628058224_25841293058859084_5845468824047417288_n.png?_nc_cat=100&ccb=1-7&_nc_ohc=4oecw0_5J2IQ7kNvwEqS2WU&_nc_oc=AdqZNIU4mIQfzgB-u7sm1YP7ImMQJrEpn6nRbC-RLVr_DXXjM3RA17I2pN72Y8Qbi2U&_nc_zt=1&_nc_ht=scontent-dfw5-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQFXFz6M_Uu_rdoVS-KGJj0wQTe-bOllboW6N52eLu5QT0jn9ZHRkxrCiTaeOtrE0TW6Jn6j7nMjAA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_AQHw_vY3gYdTz6-FnDjkksfEL7OT2QtzquR6hwS9nd207A&oe=6A7BA09A" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🖼️</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">b_p_sleepingbeauty_bez-zmarszczek_v1_3107</div>
+            <div class="ad-decoded">🖼️ Image · PDP · Sleeping Beauty · Bez zmarszczek</div>
+            <div class="ad-name-id">ID 120248763700140495</div>
+          </td>
+          <td><span class="badge badge-b">b</span></td>
+          <td class="num"><span class="spend-val">30,93</span></td>
+          <td class="num">1 250</td>
+          <td class="num">1 079</td>
+          <td class="num">1,16</td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-dpa">⚡ DPA · {{product.name}}</span></td>
+        </tr>
+
+        <!-- 5: body rekawica — ROAS 3.79 ⭐ -->
+        <tr data-format="b" data-conv="1" data-freq="1.12">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw5-2.xx.fbcdn.net/v/t45.1600-4/567267372_31897417759904052_7729117779219839551_n.png?_nc_cat=107&ccb=1-7&_nc_ohc=A1FxdUqd9DcQ7kNvwECapnj&_nc_oc=AdrlgR5rK7W5w8KWdq4Jd0E4nFi6QzDG9rqQNd2j5xezAUgEXIfTvdIpK7DWZF1fRkk&_nc_zt=1&_nc_ht=scontent-dfw5-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQGfqIFQ0p4s082JtI77UrKNHky5D3y1ie33GZQirfi3431DADi4tb143U9XD121dAC1BJQ0RKNrdQ&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_AQEBumtqGIvCCHTAco6GfD_3p3P7qLCLsUjLbIHXP2U4bg&oe=6A7BA14C" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🖼️</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">b_p_body_rekawica-cialo_truskawkowe-nogi_v1_3107</div>
+            <div class="ad-decoded">🖼️ Image · PDP · Body · Rękawica ciało · Truskawkowe nogi ⭐</div>
+            <div class="ad-name-id">ID 120248762329240495</div>
+          </td>
+          <td><span class="badge badge-b">b</span></td>
+          <td class="num"><span class="spend-val">26,22</span></td>
+          <td class="num">1 085</td>
+          <td class="num">969</td>
+          <td class="num">1,12</td>
+          <td class="num"><span class="conv-pos">1 ✓</span></td>
+          <td class="num"><span class="roas-high">3,79×</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-dpa">⚡ DPA · {{product.name}}</span></td>
+        </tr>
+
+        <!-- 6: nanotwistduo -->
+        <tr data-format="ugc" data-conv="0" data-freq="1.14">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw5-2.xx.fbcdn.net/v/t15.5256-10/679787519_1511101770691035_4889934608936200351_n.jpg?_nc_cat=104&ccb=1-7&_nc_ohc=ahmqzNJytdQQ7kNvwGhrZAQ&_nc_oc=AdrNhS6YaZGk5YSRd3IsJomnPWzscgRxzdeHP9-yB11t0I1qhLQSMBgu28bYpWLVka4&_nc_zt=23&_nc_ht=scontent-dfw5-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQGt5w1af79M0havmw6hzYsFi9Jt2zM38fVq3zhMKNHjSyZDBHcIqkhAw7lT2YogfyYUTdwOO0Xs6Q&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=b696e2&_nc_sid=58080a&oh=00_AQFNEqLQGrB1m7VBi7cFQLRnC6LMrVd9LutPU0YCsUGDXg&oe=6A7B9C4A" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🎥</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">ugc_p_nanoglass_nanotwistduo_miekkie-stopy_v1_3107</div>
+            <div class="ad-decoded">🎥 UGC · PDP · Nanoglass · NanoTwist Duo · Miękkie stopy</div>
+            <div class="ad-name-id">ID 120248763134970495</div>
+          </td>
+          <td><span class="badge badge-ugc">ugc</span></td>
+          <td class="num"><span class="spend-val">24,73</span></td>
+          <td class="num">743</td>
+          <td class="num">649</td>
+          <td class="num">1,14</td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-dpa">⚡ DPA · {{product.name}}</span></td>
+        </tr>
+
+        <!-- 7: luna eye -->
+        <tr data-format="k" data-conv="0" data-freq="1.06">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw5-2.xx.fbcdn.net/v/t45.1600-4/757548968_27963905896577184_3707650792225724305_n.png?_nc_cat=107&ccb=1-7&_nc_ohc=7E8OHdumfWUQ7kNvwEQRq1l&_nc_oc=AdqS_DD8i5diGX7Yj3nlRi4n9DvNK9JubqpVZRbJS9BXS1k5BRPHFifBp3N87Je6FyE&_nc_zt=1&_nc_ht=scontent-dfw5-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQEcMAVFkgRdOYQTj_9XnM3R7ClYBJHyCuA7rGE12psOjAW9-V0P_G5EuvO0hF5vJQMu94wq80L2bA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_AQFM98Nx-cmApFucC0wMe9YXjIyTlM0nDICRWN2y3CPsag&oe=6A7BB726" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🎠</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">k_p_luna-eye_lunaeye_efekty_v1_3107</div>
+            <div class="ad-decoded">🎠 Carousel · PDP · Luna Eye · Efekty</div>
+            <div class="ad-name-id">ID 120248771280380495</div>
+          </td>
+          <td><span class="badge badge-k">k</span></td>
+          <td class="num"><span class="spend-val">22,24</span></td>
+          <td class="num">942</td>
+          <td class="num">892</td>
+          <td class="num">1,06</td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-dpa">⚡ DPA · {{product.name}}</span></td>
+        </tr>
+
+        <!-- 8: koszyk kod15 — retargeting -->
+        <tr data-format="b" data-conv="0" data-freq="2.39">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw5-2.xx.fbcdn.net/v/t45.1600-4/627861801_25784686164519774_6341053656973514135_n.png?_nc_cat=107&ccb=1-7&_nc_ohc=ERlFzdtxbCAQ7kNvwFjThPK&_nc_oc=AdoXEXnGHsAANO7Xj_64vUImq9JLpU_OmSHP07gGIDgAwWtEqMi2-qhGhqwh4HQbfoo&_nc_zt=1&_nc_ht=scontent-dfw5-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQGFmXwtuhGRGgoPmnaHjsUOvQ11VdrsBxzXELfdwVi1s041OmxRMnXUOF5m0VmCLuOrW-0Yfk8vrw&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_AQEGhKpxmLNqTSzS3SUH_Qbc8TaHyUKVAEEpWIjMzsr1aQ&oe=6A7BABE8" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🛒</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">b_h_koszyk_kod15_powrot-do-koszyka_v1_3107</div>
+            <div class="ad-decoded">🛒 Image · Retargeting koszyk · KOD15 · Powrót do koszyka</div>
+            <div class="ad-name-id">ID 120248766308040495</div>
+          </td>
+          <td><span class="badge badge-b">b</span></td>
+          <td class="num"><span class="spend-val">18,78</span></td>
+          <td class="num">468</td>
+          <td class="num">196</td>
+          <td class="num">2,39</td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-dpa">⚡ DPA · {{product.name}}</span></td>
+        </tr>
+
+        <!-- 9: bawelna bambooleo baner -->
+        <tr data-format="b" data-conv="0" data-freq="1.07">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw6-2.xx.fbcdn.net/v/t45.1600-4/746485091_27751541221146987_2396245274243442478_n.png?_nc_cat=110&ccb=1-7&_nc_ohc=J1ceXpoUgJgQ7kNvwEs2oRn&_nc_oc=AdqheWe__Xh6DodcOgXhYzhUNgPAVlPQkf504ugpn-NcijPG7LR3DR7Z9YikCQVSkz8&_nc_zt=1&_nc_ht=scontent-dfw6-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQE7KyvFyUwLVd8ItLQKqlgU4FUOpxqt4XsuE-WkBgw6hM0jJDkI0GzY-LB0Iro83qDPhGkXTVjvFg&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_AQEoLnD0APCxk5TA-UKJvdG8BDOkA5C3aLIvwPzUUnNr2A&oe=6A7BAFDF" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🖼️</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">b_p_bawelna_bambooleoset_waciki-wielorazowe_v1_promo_STOP0508</div>
+            <div class="ad-decoded">🖼️ Image · PDP · Bawełna · BambooleOset · Waciki wielorazowe · Promo</div>
+            <div class="ad-name-id">ID 120248767686220495</div>
+          </td>
+          <td><span class="badge badge-b">b</span></td>
+          <td class="num"><span class="spend-val">16,79</span></td>
+          <td class="num">3 468</td>
+          <td class="num">3 239</td>
+          <td class="num">1,07</td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-dpa">⚡ DPA · {{product.name}}</span></td>
+        </tr>
+
+        <!-- 10: bawelna bambooleo video -->
+        <tr data-format="v" data-conv="0" data-freq="1.05">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw5-2.xx.fbcdn.net/v/t15.5256-10/745906941_1366669048733173_2489384430444012969_n.jpg?_nc_cat=104&ccb=1-7&_nc_ohc=ad6pBZ9bvGAQ7kNvwE0t6kt&_nc_oc=AdpQE8qt7OGkdWmT62_Z52G2STTzP-pPSsgJFRHkXO50RwSTnVF_1XK31tZF6X12VLM&_nc_zt=23&_nc_ht=scontent-dfw5-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQGXkc3vD7mp1269d7PN7ZDJtH0SVKqfBG9kjeFRUX5J1mrU92kQ1dkmw3a2RVPSxAJ9s7jDE497Gg&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=b696e2&_nc_sid=58080a&oh=00_AQHtzI0Ut-SmXY9aXePDq4KgC3hEUyAS1cGfo9xv_nzPTA&oe=6A7BB4C1" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🎥</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">v_p_bawelna_bambooleoset_waciki-wielorazowe_v1_promo_STOP0508</div>
+            <div class="ad-decoded">🎥 Video · PDP · Bawełna · BambooleOset · Promo</div>
+            <div class="ad-name-id">ID 120248768183100495</div>
+          </td>
+          <td><span class="badge badge-v">v</span></td>
+          <td class="num"><span class="spend-val">14,26</span></td>
+          <td class="num">8 143</td>
+          <td class="num">7 792</td>
+          <td class="num">1,05</td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-dpa">⚡ DPA · {{product.name}}</span></td>
+        </tr>
+
+        <!-- 11: oczyszczanie zestaw — FREQ ALARM 8× -->
+        <tr data-format="b" data-conv="0" data-freq="8.05">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw5-2.xx.fbcdn.net/v/t45.1600-4/761549078_27965416993092741_8433276215535769270_n.png?_nc_cat=100&ccb=1-7&_nc_ohc=0AX_eBo8Q_AQ7kNvwFy6dKw&_nc_oc=AdoZLjp-m4ouXXjvZW7XQTowbC__MhI5iCklaUI9dW92SGU3Z-h932zLxm6JkV_LbL4&_nc_zt=1&_nc_ht=scontent-dfw5-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQGASUi9ip-Hxry0A3B6VbNmbnWtyecqAhQw8BP56tOYE3Jl4BH_-S-xZYdNKHdv9Oc0yN_tGfP6OQ&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_AQHGMuIkvd0eWG4GymWf50BmBMsivJriRSn7W_JtcGVBmw&oe=6A7B9BB9" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🖼️</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">b_c_oczyszczanie_zestaw_next-problem_v1_0108</div>
+            <div class="ad-decoded">🖼️ Image · Kategoria · Oczyszczanie · Zestaw · Next Problem</div>
+            <div class="ad-name-id">ID 120248773314920495</div>
+          </td>
+          <td><span class="badge badge-b">b</span></td>
+          <td class="num"><span class="spend-val">10,09</span></td>
+          <td class="num">153</td>
+          <td class="num">19</td>
+          <td class="num"><span class="freq-alarm">8,05 ⚠️</span></td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-miss">⚠️ Freq bardzo wysoka · audience zbyt wąska</span></td>
+        </tr>
+
+        <!-- 12: body zestaw next problem -->
+        <tr data-format="k" data-conv="0" data-freq="3.13">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://external-dfw5-2.xx.fbcdn.net/emg1/v/t13/4726769515657071529?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJDMWl8GUsdUOOrgTk8djSm2rbvz_uI_cUfbM9nGqK5LZa9cCRawofYiC0MPg6mk6csK8uiTJvAqoXWOaVA0OAxlGweZPT9UFtP_o368-f1l6eTv8NH7m_uilzcFJj74TgFhWKbcn-FsQsgQcpxqiXV&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_oc=AdrjKnpkuJy8UqCSh7wuqsArevLb5itkPJoYnKCJhGt3iGFvDMkIL9CiKQlNo2zu4zA&ccb=13-1&oh=06_Q3_CAVprhp3nrwLNQ8E0HAhCAk9kU9Cjn0C1HpSKVEKXhHCQ&oe=6A77C78A&_nc_sid=58080a" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🎠</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">k_p_body_zestaw_next-problem_v1_0108</div>
+            <div class="ad-decoded">🎠 Carousel · PDP · Body · Zestaw · Next Problem</div>
+            <div class="ad-name-id">ID 120248773226640495</div>
+          </td>
+          <td><span class="badge badge-k">k</span></td>
+          <td class="num"><span class="spend-val">9,43</span></td>
+          <td class="num">329</td>
+          <td class="num">105</td>
+          <td class="num"><span class="freq-alarm">3,13 ⚠️</span></td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-miss">⚠️ Freq wysoka · audience wąska</span></td>
+        </tr>
+
+        <!-- 13: luna infinity carousel -->
+        <tr data-format="k" data-conv="0" data-freq="1.39">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw5-1.xx.fbcdn.net/v/t45.1600-4/757040721_27963856546582119_9206231216194345482_n.png?_nc_cat=105&ccb=1-7&_nc_ohc=dDBVxJ_sa2oQ7kNvwEIFmra&_nc_oc=AdohDAlE0Wp45iqwbVy9S4YzAe9IbZZVjMd041-dDJBvcSTi0oAoL3BCUVWSFMCj8B4&_nc_zt=1&_nc_ht=scontent-dfw5-1.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQHQJLh4hfOtBGk_sakpDhOvxAdfEkbDd5CHpBZIMZDVEHlwAWPJs3n9BP4T12QWrqEdtuz9EJct1w&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_AQGJH9RwD7dT00hVe7m2gIKgtgVCMiFz1IHkC8aUbZbrtw&oe=6A7BA7FB" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🎠</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">k_p_luna-eye_infinity_efekty_v1_3107</div>
+            <div class="ad-decoded">🎠 Carousel · PDP · Luna Eye · Infinity · Efekty</div>
+            <div class="ad-name-id">ID 120248771280370495</div>
+          </td>
+          <td><span class="badge badge-k">k</span></td>
+          <td class="num"><span class="spend-val">7,73</span></td>
+          <td class="num">256</td>
+          <td class="num">184</td>
+          <td class="num">1,39</td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-dpa">⚡ DPA · {{product.name}}</span></td>
+        </tr>
+
+        <!-- 14: hair zestaw -->
+        <tr data-format="b" data-conv="0" data-freq="5.38">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw6-2.xx.fbcdn.net/v/t45.1600-4/762693008_27965322013102239_8821652515554127636_n.png?_nc_cat=110&ccb=1-7&_nc_ohc=VIz_zE8nTdgQ7kNvwHROLIL&_nc_oc=AdqQ_jX85Ce0FtuPCB_PUmUvYF4Cz5fEAQYfzqL1dqNWHq6G9p07r6lF4b8ZPPh8yyI&_nc_zt=1&_nc_ht=scontent-dfw6-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQEkBKDJANw0yglAkLd3zs8CTn_Ro7lAtDyCecUEUuavjd_zc9cQjd1XGOKgpcj0ikBU5ZGG-qf-UA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_AQGJeCMCG-eUXp2xm7EAbtETLWdpcDSGAvTaDe226qGnSw&oe=6A7B9DB0" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🖼️</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">b_c_hair_zestaw_next-problem_v1_0108</div>
+            <div class="ad-decoded">🖼️ Image · Kategoria · Hair · Zestaw · Next Problem</div>
+            <div class="ad-name-id">ID 120248773248260495</div>
+          </td>
+          <td><span class="badge badge-b">b</span></td>
+          <td class="num"><span class="spend-val">5,32</span></td>
+          <td class="num">113</td>
+          <td class="num">21</td>
+          <td class="num"><span class="freq-alarm">5,38 ⚠️</span></td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-miss">⚠️ Freq krytyczna · rozszerz audience</span></td>
+        </tr>
+
+        <!-- 15: hair turban / soft hair wrap -->
+        <tr data-format="ugc" data-conv="0" data-freq="1.00">
+          <td class="thumb-cell">
+            <img class="thumb" src="https://scontent-dfw6-2.xx.fbcdn.net/v/t15.5256-10/680386098_1493835549077939_6224424115988286711_n.jpg?_nc_cat=110&ccb=1-7&_nc_ohc=yMEWAeGkQg0Q7kNvwGEtqT_&_nc_oc=AdovZf-j3u4FFR2PRxz0HM5wVl7q133u5om3LmoFj6WWCh-lmmiKeZpNu30fJsdL6FA&_nc_zt=23&_nc_ht=scontent-dfw6-2.xx&edm=AEZPnVgEAAAA&_nc_gid=SXMC6aXby9eXhyeyAYufSw&_nc_tpa=Q5bMBQFToUA1__HmHs7UW9ojAeONd_T4WuWh_UAs-tNKuHS8ObhYPwnRQLIcD72vlvb3dvESJ7LIoSR1hw&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_AQFTPX8D_PTk1q2691FarLGCHdem5HUKhxgBTEUR8NgB9A&oe=6A7BA788" alt="Soft Hair Wrap" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none">🎥</div>
+          </td>
+          <td class="ad-name">
+            <div class="ad-name-main">ugc_p_hair_turban-wlosy_puszenie_v1_3107</div>
+            <div class="ad-decoded">🎥 UGC · PDP · Hair · Turban / Soft Hair Wrap · Puszenie</div>
+            <div class="ad-name-id">ID 120248762994160495</div>
+          </td>
+          <td><span class="badge badge-ugc">ugc</span></td>
+          <td class="num"><span class="spend-val">0,30</span></td>
+          <td class="num">15</td>
+          <td class="num">15</td>
+          <td class="num">1,00</td>
+          <td class="num"><span class="conv-zero">0</span></td>
+          <td class="num"><span class="roas-zero">—</span></td>
+          <td class="utm-cell"><span class="utm-tag utm-dpa">⚡ DPA · {{product.name}}</span><br><small style="color:var(--text-muted);font-size:10px;">Creative: GLOV Soft Hair Wrap (namedowa)</small></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── UTM analysis ─── -->
+  <div class="utm-section">
+    <h3>🔗 Analiza UTM — kluczowe wnioski</h3>
+    <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:8px;">
+      Wszystkie 15 sprawdzonych kreacji używają szablonu <code style="background:var(--bg);padding:2px 5px;border-radius:3px;">{{product.name}}</code> jako nazwy — to kreacje <strong>DPA/Advantage+</strong>. Oznacza to:
+    </p>
+    <div class="utm-insight">
+      <div class="utm-insight-item">
+        <div class="label">⚡ DPA / Advantage+ (100% sprawdzonych)</div>
+        <div class="val">Brak statycznego <code>link_url</code> w API — URL generowany dynamicznie per produkt. UTM tracking oparty o <code>adset_name</code>, nie <code>ad_name</code>. To tłumaczy dlaczego GA4 nie matchuje na poziomie reklamy — <code>sessionManualAdContent</code> = pusty lub adset_name.</div>
+      </div>
+      <div class="utm-insight-item">
+        <div class="label">🔴 Skutek dla atrybucji</div>
+        <div class="val">GA4 widzi kampanię i adset, ale <strong>nie widzi konkretnej reklamy</strong>. Dual ROAS per kreacja = niemożliwy bez manulanego tagowania <code>utm_content = ad_name</code> w non-Advantage+ kampaniach. Advantage+ zawsze będzie ślepą plamką na poziomie reklamy.</div>
+      </div>
+      <div class="utm-insight-item">
+        <div class="label">✅ Co działało (1 match z 31.07)</div>
+        <div class="val"><code>konwersje_v-ugc_lunaeye</code> = 8 sesji w GA4 — ta kampania ma manualny utm_content = ad_name. To dowód że tagowanie działa; problem jest u pozostałych kampaniach Advantage+.</div>
+      </div>
+      <div class="utm-insight-item">
+        <div class="label">🛠️ Rekomendacja</div>
+        <div class="val">Dla Advantage+: użyj parametru <code>url_tags</code> na poziomie adset z <code>utm_content={{ad.name}}</code>. Dla standardowych kampanii: wymóź <code>utm_content</code> w każdym ad URL = <code>ad_name</code> (zgodnie z konwencją w naming convention). </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const next = current === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('glov-theme', next);
+  document.getElementById('theme-btn').textContent = next === 'dark' ? '☀️ Jasny' : '🌙 Ciemny';
+}
+
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('glov-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('theme-btn').textContent = saved === 'dark' ? '☀️ Jasny' : '🌙 Ciemny';
+});
+
+function filterTable(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const rows = document.querySelectorAll('#table-body tr');
+  rows.forEach(row => {
+    const format = row.dataset.format || '';
+    const conv = parseFloat(row.dataset.conv || 0);
+    const freq = parseFloat(row.dataset.freq || 0);
+    let show = true;
+    if (type === 'conv') show = conv > 0;
+    else if (type === 'high-freq') show = freq > 3;
+    else if (type === 'video') show = format === 'v';
+    else if (type === 'ugc') show = format === 'ugc';
+    row.style.display = show ? '' : 'none';
+  });
+}
+</script>
+
+</body>
+</html>
