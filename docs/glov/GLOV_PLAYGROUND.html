@@ -24260,20 +24260,28 @@ kr</span>
   function mobileLayout(){
     if(window.innerWidth > 767) return;
     var gift = document.querySelector('.gift-wrap, [data-gift]');
-    // 1) własny heading "TWÓJ KOSZYK" przed gift
-    if(gift && !document.getElementById('m-heading')){
-      var h = document.createElement('div');
+    var items = document.querySelector('.cart__items');
+    var up = document.querySelector('.play-upsell');
+    // 1) heading "TWÓJ KOSZYK"
+    var h = document.getElementById('m-heading');
+    if(!h){
+      h = document.createElement('div');
       h.id = 'm-heading';
       h.textContent = 'TWÓJ KOSZYK';
-      h.style.cssText = 'text-align:center;font-size:24px;font-weight:400;letter-spacing:3px;text-transform:uppercase;margin:14px 16px 10px;color:#000;font-family:Moderat,Helvetica,Arial,sans-serif';
-      gift.parentNode.insertBefore(h, gift);
+      h.style.cssText = 'text-align:center;font-size:17px;font-weight:400;letter-spacing:2.5px;text-transform:uppercase;margin:8px 16px 6px;color:#000;font-family:Moderat,Helvetica,Arial,sans-serif';
     }
-    // 2) upsell (shipping+karuzela) PO gift, PRZED produkty
-    var up = document.querySelector('.play-upsell');
-    var items = document.querySelector('.cart__items');
-    if(up && items){
-      var target = gift && gift.nextElementSibling ? gift.nextElementSibling : items;
-      if(up !== target && !up.contains(target)) target.parentNode.insertBefore(up, target);
+    // 2) KOLEJNOŚĆ wg oryginału GLOV: [upsell: shipping+karuzela] → [heading] → [gift] → [produkty]
+    // upsell NA GÓRZE (przed headingiem)
+    var first = document.querySelector('.cart__items, .gift-wrap, [data-gift]') || items;
+    var container = first ? first.parentNode : null;
+    if(container){
+      if(up && up.parentNode !== container) container.insertBefore(up, container.firstChild);
+      else if(up) container.insertBefore(up, container.firstChild);
+      // heading po upsell, przed gift
+      if(h && h.parentNode !== container) container.insertBefore(h, up ? up.nextSibling : container.firstChild);
+      else if(h && up && h !== up.nextSibling) container.insertBefore(h, up.nextSibling);
+      // gift po heading
+      if(gift && h && gift !== h.nextSibling) container.insertBefore(gift, h.nextSibling);
     }
   }
   if(document.readyState == 'loading') document.addEventListener('DOMContentLoaded', mobileLayout);
