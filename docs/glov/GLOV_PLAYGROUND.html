@@ -22576,25 +22576,7 @@ teraz!">
       
 
       
-<div class="play-upsell" style="max-width:1200px;margin:14px auto 0;padding:0 16px">
-  <div style="border:1px solid #000;border-radius:6px;padding:12px 14px;background:#fff">
-    <p style="margin:0 0 10px;text-align:center;font-size:13px;color:#4c4c4c;font-weight:600">
-      Do darmowej dostawy brakuje Ci <b id="upsell-missing" style="font-weight:700">44,20zł!</b></p>
-    <div style="height:8px;background:#dbe4ec;border-radius:99px;overflow:hidden">
-      <div id="upsell-bar" style="height:100%;width:63%;background:#000;border-radius:99px;transition:width .4s ease"></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;padding:12px 2px 0;border-top:1px solid #eee;margin-top:12px">
-      <span class="upsell-arr" data-d="-1" style="font-size:18px;color:#888;cursor:pointer;user-select:none">&#8249;</span>
-      <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
-        <img src="https://cdn.shopify.com/s/files/1/0583/4057/3373/products/GLOV__StarterPack__PACKSHOT__05__600x600px.png?v=1638226760" style="width:36px;height:36px;object-fit:contain;flex-shrink:0" alt="Starter Set">
-        <span style="flex:1;min-width:0;font-size:13px;color:#4c4c4c;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Zestaw wielorazowych płatków kosmetycznych Starter Set GLOV&reg;</span>
-        <span style="font-size:13px;color:#4c4c4c;font-weight:600;white-space:nowrap">69,90zł</span>
-        <button type="button" class="upsell-add" style="flex-shrink:0;border:1px solid #000;background:#fff;color:#000;font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:7px 10px;cursor:pointer;white-space:nowrap">Dobierz</button>
-      </div>
-      <span class="upsell-arr" data-d="1" style="font-size:18px;color:#888;cursor:pointer;user-select:none">&#8250;</span>
-    </div>
-  </div>
-</div>
+
   <div style="display:flex;align-items:center;gap:10px;padding:12px 2px 0">
     <span class="upsell-arr" data-d="-1" style="font-size:18px;color:#888;cursor:pointer;user-select:none">&#8249;</span>
     <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
@@ -24270,30 +24252,46 @@ kr</span>
 (function(){
   function mobileLayout(){
     if(window.innerWidth > 767) return;
-    var gift = document.querySelector('.gift-wrap, [data-gift]');
-    var items = document.querySelector('.cart__items');
-    var up = document.querySelector('.play-upsell');
-    // 1) heading "TWÓJ KOSZYK"
-    var h = document.getElementById('m-heading');
-    if(!h){
-      h = document.createElement('div');
-      h.id = 'm-heading';
-      h.textContent = 'TWÓJ KOSZYK';
-      h.style.cssText = 'text-align:center;font-size:17px;font-weight:400;letter-spacing:2.5px;text-transform:uppercase;margin:8px 16px 6px;color:#000;font-family:Moderat,Helvetica,Arial,sans-serif';
+    // 0) usuń duplikaty (jeśli z poprzedniej wersji)
+    var oldH = document.getElementById('m-heading'); if(oldH) oldH.remove();
+    var oldUp = document.querySelector('.play-upsell'); if(oldUp) oldUp.remove();
+    var cart = document.querySelector('.cart');
+    if(!cart) return;
+    var heading = cart.querySelector('.cart__heading, h3--body, h3');
+    var gift = cart.querySelector('.gift-wrap-wrapper, .gift-wrap, [data-gift]');
+    // 1) LIVE karuzela: kontener z przyciskiem "Dobierz"
+    var dobierz = null;
+    cart.querySelectorAll('button, a, span').forEach(function(b){
+      if(!dobierz && /Dobierz|DOBIERZ/i.test(b.textContent) && b.textContent.length < 20) dobierz = b;
+    });
+    var carBlock = dobierz ? dobierz.closest('div[class], .xs, [class*=sell], [class*=cross], [class*=up]') || dobierz.parentElement.parentElement : null;
+    // 2) znajdź karuzelę live (DIV z "Zestaw") i samotny button Dobierz
+    var carBlock = null;
+    cart.querySelectorAll('div').forEach(function(d){
+      if(!carBlock && /Zestaw wielorazowy/.test(d.textContent)) carBlock = d;
+    });
+    var strayBtn = null;
+    cart.querySelectorAll('button.upsell-add').forEach(function(b){ strayBtn = b; });
+    // wsuń samotny button DO karuzeli (koniec)
+    if(strayBtn && carBlock && !carBlock.contains(strayBtn)) carBlock.appendChild(strayBtn);
+    // 3) pasek dostawy
+    var ship = document.getElementById('m-ship');
+    if(!ship){
+      ship = document.createElement('div');
+      ship.id = 'm-ship';
+      ship.innerHTML = '<div style="border:1px solid #000;border-radius:6px;padding:10px 12px;margin:10px 16px 0;background:#fff">' +
+        '<p style="margin:0 0 8px;text-align:center;font-size:12px;color:#4c4c4c;font-weight:600">Do darmowej dostawy brakuje Ci <b id="upsell-missing" style="font-weight:700">44,20zł!</b></p>' +
+        '<div style="height:7px;background:#dbe4ec;border-radius:99px;overflow:hidden"><div id="upsell-bar" style="height:100%;width:63%;background:#000;border-radius:99px;transition:width .4s ease"></div></div></div>';
     }
-    // 2) KOLEJNOŚĆ wg oryginału GLOV: [upsell: shipping+karuzela] → [heading] → [gift] → [produkty]
-    // upsell NA GÓRZE (przed headingiem)
-    var first = document.querySelector('.cart__items, .gift-wrap, [data-gift]') || items;
-    var container = first ? first.parentNode : null;
-    if(container){
-      if(up && up.parentNode !== container) container.insertBefore(up, container.firstChild);
-      else if(up) container.insertBefore(up, container.firstChild);
-      // heading po upsell, przed gift
-      if(h && h.parentNode !== container) container.insertBefore(h, up ? up.nextSibling : container.firstChild);
-      else if(h && up && h !== up.nextSibling) container.insertBefore(h, up.nextSibling);
-      // gift po heading
-      if(gift && h && gift !== h.nextSibling) container.insertBefore(gift, h.nextSibling);
+    // 4) KOLEJNOŚĆ: shipping → karuzela → heading → gift → produkty
+    if(heading && heading.parentNode){
+      if(ship && ship.parentNode !== heading.parentNode) heading.parentNode.insertBefore(ship, heading);
+      if(carBlock && carBlock.parentNode !== heading.parentNode) heading.parentNode.insertBefore(carBlock, heading);
+      if(ship && carBlock && carBlock !== ship.nextSibling) heading.parentNode.insertBefore(carBlock, ship.nextSibling);
+      if(gift && gift !== heading.nextSibling) heading.parentNode.insertBefore(gift, heading.nextSibling);
     }
+    // 5) przelicz pasek
+    if(window.__playTotal) window.__playTotal();
   }
   if(document.readyState == 'loading') document.addEventListener('DOMContentLoaded', mobileLayout);
   else mobileLayout();
