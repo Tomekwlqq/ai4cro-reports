@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECOMMS 5.0 — Knowledge Board</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #ffffff; color: #1a1a1a; font-size: 18px; line-height: 1.5; padding: 40px 48px 80px; }
+  .wrap { max-width: 1280px; margin: 0 auto; }
+
+  /* ── Header ── */
+  h1 { font-size: 40px; font-weight: 800; letter-spacing: -0.5px; }
+  .sub { color: #666; font-size: 19px; margin-top: 6px; }
+  .meta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 22px; }
+  .stat { border: 2px solid #111; border-radius: 12px; padding: 10px 18px; font-weight: 700; font-size: 18px; background: #fff; }
+  .stat b { font-size: 26px; }
+  .stat.wiem { border-color: #1a7f37; color: #1a7f37; }
+  .stat.nie { border-color: #cf222e; color: #cf222e; }
+  .stat.dia { border-color: #0a5fa8; color: #0a5fa8; }
+  .progress { margin-top: 16px; background: #eaeaea; border-radius: 999px; height: 26px; overflow: hidden; }
+  .progress > div { background: #1a7f37; height: 100%; border-radius: 999px; display: flex; align-items: center; justify-content: flex-end; padding-right: 14px; color: #fff; font-size: 14px; font-weight: 700; min-width: 60px; }
+
+  /* ── Taby ── */
+  .tabs { display: flex; gap: 12px; margin: 34px 0 26px; flex-wrap: wrap; }
+  .tab { border: 2px solid #111; background: #fff; color: #111; font-size: 20px; font-weight: 800; padding: 12px 26px; border-radius: 999px; cursor: pointer; }
+  .tab.active { background: #111; color: #fff; }
+  .tab .cnt { opacity: 0.6; font-size: 15px; }
+
+  /* ── Karty WIEMY ── */
+  .group-label { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #888; margin: 30px 0 12px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+  .card { border: 1.5px solid #ddd; border-radius: 14px; padding: 18px 20px; background: #fff; }
+  .card.w { border-left: 6px solid #1a7f37; }
+  .card.q { border-left: 6px solid #cf222e; }
+  .card.q.done { border-left-color: #1a7f37; opacity: 0.75; }
+  .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+  .card .proof { font-size: 15px; color: #555; margin-top: 8px; }
+  .card .proof b { color: #333; }
+  .card .tag { display: inline-block; font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 999px; margin-right: 6px; margin-top: 6px; }
+  .tag.src { background: #eef1f5; color: #444; }
+  .tag.done { background: #dafbe1; color: #1a7f37; }
+  .tag.open { background: #ffebe9; color: #cf222e; }
+  .tag.wip { background: #fff8c5; color: #7a5b00; }
+  .tag.hi { background: #cf222e; color: #fff; }
+  .tag.mid { background: #fff8c5; color: #7a5b00; }
+  .tag.lo { background: #eaeef2; color: #57606a; }
+  .q-main { font-size: 19px; font-weight: 700; margin-bottom: 6px; }
+  .q-ctx { font-size: 15.5px; color: #444; margin-bottom: 6px; }
+  .q-close { font-size: 15px; background: #f6f8fa; border-radius: 8px; padding: 8px 12px; margin-top: 8px; }
+  .q-close b { color: #1a7f37; }
+  .q-dialog { font-size: 14px; color: #0a5fa8; margin-top: 8px; font-weight: 600; }
+
+  /* ── Dialog / oś czasu ── */
+  .timeline { border-left: 3px solid #0a5fa8; margin-left: 12px; padding-left: 26px; display: flex; flex-direction: column; gap: 22px; }
+  .tl-item { position: relative; }
+  .tl-item::before { content: ""; position: absolute; left: -33px; top: 6px; width: 13px; height: 13px; border-radius: 50%; background: #0a5fa8; }
+  .tl-date { font-size: 14px; font-weight: 800; color: #0a5fa8; text-transform: uppercase; letter-spacing: 1px; }
+  .tl-title { font-size: 20px; font-weight: 800; margin: 2px 0 4px; }
+  .tl-body { font-size: 16px; color: #333; }
+  .tl-out { margin-top: 6px; font-size: 15.5px; background: #f6f8fa; border-radius: 8px; padding: 8px 12px; }
+  .tl-out b { color: #1a7f37; }
+
+  /* ── Filtry ── */
+  .filters { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; font-size: 16px; font-weight: 600; }
+  .filters label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .filters input { width: 20px; height: 20px; }
+  .hidden { display: none !important; }
+  .foot { margin-top: 50px; color: #888; font-size: 15px; border-top: 1px solid #eee; padding-top: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>🧠 ECOMMS 5.0 — Knowledge Board</h1>
+  <div class="sub">Żywy rejestr: co wiemy (z dowodami) · czego nie wiemy (z definicją domknięcia) · dialog, który to produkuje. Aktualizacja: 2026-08-11</div>
+
+  <div class="meta">
+    <div class="stat wiem">✅ <b id="cWiem">16</b> WIEMY</div>
+    <div class="stat nie">❓ <b id="cNie">14</b> NIE WIEMY <span style="font-weight:600;font-size:15px">(+2 zamknięte)</span></div>
+    <div class="stat dia">💬 <b id="cDia">6</b> WPISÓW DIALOGU</div>
+  </div>
+  <div class="progress"><div id="pbar" style="width:12%">12%</div></div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="wiem">✅ WIEMY <span class="cnt">16</span></div>
+    <div class="tab" data-tab="nie">❓ NIE WIEMY <span class="cnt">16</span></div>
+    <div class="tab" data-tab="dialog">💬 DIALOG <span class="cnt">6</span></div>
+  </div>
+
+  <!-- ════════════ TAB 1: WIEMY ════════════ -->
+  <section id="tab-wiem">
+    <div class="group-label">Stack &amp; Architektura</div>
+    <div class="cards">
+      <div class="card w"><h3>Medusa v2.18.0 działa lokalnie</h3>Docker + Postgres 16, Admin API + auth emailpass, porty 5434/9000 (izolowane od honcho/supabase). <div class="proof"><b>Dowód:</b> `test_e0.py` — health 200, login OK, 20 SKU widoczne. <b>Data:</b> 07.08.2026</div></div>
+      <div class="card w"><h3>Import jest idempotentny</h3>Skrypt `import_skus.py` (stdlib, zero zależności): run 1 = 20 created, run 2 = 0 created / 20 skipped. <div class="proof"><b>Dowód:</b> BRAMKA E0: PASS ×3 runy (w tym w teście). <b>Data:</b> 07.08.2026</div></div>
+      <div class="card w"><h3>Silnik rozstrzygnięty: Medusa v2</h3>Reguła z blueprintu: „jeśli Medusa opiera się na E0 → Vendure". Nie oparła się. <div class="proof"><b>Dowód:</b> E0 PASS. Odpadły: Vendure, własny lekki backend (FastAPI+Stripe+Supabase). <b>Data:</b> 07.08.2026</div></div>
+      <div class="card w"><h3>Blueprint stacku zatwierdzony</h3>Medusa (MIT) + Astro 5 SSG (CF Pages) + treść MDX w repo (AI=CMS) + integracje jako pluginy (AI=integrator). Podział core ↔ `shop.config`. <div class="proof"><b>Dowód:</b> ECOMMS5_TECH_STACK.html live, 8 researchy 08.2026. <b>Data:</b> 05.08.2026</div></div>
+      <div class="card w"><h3>E1 TEMPLATE: PASS — repo żyje</h3>Decyzja o repo: **`Tomekwlqq/ecomms5-template`** (private, `is_template=true` → „Use this template" = nowy sklep). Monorepo core/ + suppliers/ + shops/&lt;slug&gt;/ · walidator `shop.config` (brak pola / nieznane pole = błąd na starcie, zero deps) · `make validate-all/build/dev/gate/new-shop` · tokeny CSS z configu. <div class="proof"><b>Dowód:</b> BRAMKA E1: `make gate` PASS — demo (teal) ≠ energetyka (green), 2 sklepy z jednego kodu; testy negatywne walidatora. Commit `8d9d873`. <b>Data:</b> 11.08.2026</div></div>
+      <div class="card w"><h3>Kanon CS = v6.1 (5 torów CEP) + PIPELINE CS_CQF_CJ</h3>METODOLOGIA_CS v6.1 (11.08): **KROK 3e pięć torów CEP** — T0 rdzeń kategorii (zawsze #1, poza rankingiem wolumenu) + T1 dedukcyjny + T2 soczewki+EDS + T3 harvest + T4 agnostyczny; wynik = SUMA po dedup; wolumen = WAGA nie bramka. PIPELINE_CS_CQF_CJ v1.1: J0–J13b (touchpointy 31, TORY, oś 2–10). <div class="proof"><b>Dowód:</b> METODOLOGIA_CS.md v6.1 + PIPELINE_CS_CQF_CJ.md (przeczytane 11.08); stare CS pomp (v3.1) → regeneracja OD NOWA. <b>Data:</b> 11.08.2026</div></div>
+      <div class="card w"><h3>Metoda Kulkowskiego (SERP recon) zlokalizowana</h3>Transkrypt: `TW_vault/transkrypty/2026-06-18-kulkowski-serp-recon-crawl4ai_FULL.txt`. Metoda: SERP API → crawl top10 (PruningContentFilter) → agregacja (intencja, wspólne elementy, sugerowana struktura strony). Nasze zamienniki: **Senuto API (klucz w ~/.claude.json) = NotesHub** · web_extract/crawl4ai = Crawl4AI · DataForSEO (klucze do dopięcia). <div class="proof"><b>Dowód:</b> transkrypt przeczytany + mapowanie na stack (BUILD_PLAN A2). <b>Data:</b> 11.08.2026</div></div>
+      <div class="card w"><h3>Plan wykonania: tory A/B z mapą na E0–E8</h3>BUILD_PLAN.md przepisany wg blueprintu: Tor A (content machine: research + Kulkowski RE → CS pomp v6.1 → CQF → CJ → klon blog-writera z SejfZone) mapuje na **E4+E7**; Tor B (sklep: Medusa przykład → 200 pozycji testowych → import → storefront) mapuje na **E2+E3**. Bramki wprost z blueprintu (dowód, nie rc=0). <div class="proof"><b>Dowód:</b> BUILD_PLAN.md + ONBOARDING_ECOMMS5.md (11.08). <b>Data:</b> 11.08.2026</div></div>
+      <div class="card w"><h3>Pitfall środowiskowy: npm E429</h3>Rate limit registry.npmjs.org — burst install medusy (>2000 pkg) + wiszące `npm exec` MCP na maszynie. Fix: `--prefer-offline --maxsockets=2 --fetch-retries=6` (1430 pkg w 51s z cache 3.4GB). <div class="proof"><b>Dowód:</b> instalacja przeszła po zmianie flag; wpis w STATUS. <b>Data:</b> 07.08.2026</div></div>
+    </div>
+
+    <div class="group-label">Rynek &amp; CS</div>
+    <div class="cards">
+      <div class="card w"><h3>Monoblok-first (pompy)</h3>Monoblok sprzedaje się online bez ograniczeń; split wymaga oświadczenia o montażu + od 2027 zakaz R32 &lt;12 kW; marki premium (Daikin/Mitsubishi) mają zamkniętą dystrybucję. <div class="proof"><b>Dowód:</b> research + regulacja (wpis STATUS 05.08). <b>Data:</b> 05.08.2026</div></div>
+      <div class="card w"><h3>CS v3.1 RICH gotowe: pompy + magazyny</h3>Pełne wpisy 14 sekcji (źródła pierwotne, oś kanału B2B/Bezpośredni, CEV, KCF, drzewa doboru z engine v5). Huby live: POMPY_CIEPLA_HUB, MAGAZYNY_ENERGII_HUB. <div class="proof"><b>Dowód:</b> live na GitHub Pages + testy engine (pompy/magazyny/rowery). <b>Data:</b> 07–08.2026</div></div>
+      <div class="card w"><h3>Konfigurator doboru = luka rynkowa</h3>„Mam falownik X → które magazyny pasują" / „dobór mocy pompy" — nikt na PL nie ma (GeoPower/NEXBE najbliżej). Rdzeń przewagi Own_shop. <div class="proof"><b>Dowód:</b> research konkurencji VI.2026 — <b>wymaga re-weryfikacji</b> (patrz NIE WIEMY #6). <b>Data:</b> 06–08.2026</div></div>
+      <div class="card w"><h3>Regulacja działa na korzyść</h3>Dotacje (KPO / Fundusz Modernizacyjny) napędzają popyt zamiast blokować — odwrócenie pułapki MDR z wątku beauty. <div class="proof"><b>Dowód:</b> wątek own_ecomms + research rynku. <b>Data:</b> 30.06–08.2026</div></div>
+      <div class="card w"><h3>Soczewka doboru potwierdzona</h3>High-ticket + długi cykl + config-driven (typ→parametr→wybór) — energetyka spełnia komplet kryteriów; test config-driven przeszedł dla obu kategorii. <div class="proof"><b>Dowód:</b> wątek own_ecomms + CS. <b>Data:</b> 30.06.2026</div></div>
+    </div>
+
+    <div class="group-label">Dostawcy &amp; Koszty</div>
+    <div class="cards">
+      <div class="card w"><h3>Dropship potwierdzony: TIM SA + Onninen</h3>TIM: API, sync 10 min, 370K SKU. Onninen: OnnShop 2.0, 500K SKU. Kolejni do negocjacji: LUMOS.ENERGY, Ekowolt, Hydrosolar24, Memodo. <div class="proof"><b>Dowód:</b> recon dostawców 08.2026 (załącznik do blueprintu). <b>Data:</b> 08.2026</div></div>
+      <div class="card w"><h3>Koszty stałe: ~400–600 zł/rok</h3>VPS Hetzner CX22 €5–8/mies + domena ~60–100 zł + Fakturownia 0–300 zł. Zero licencji (MIT/BSD), zero GMV fee. Stripe: % od transakcji. <div class="proof"><b>Dowód:</b> tabela kosztów blueprintu. <b>Data:</b> 08.2026</div></div>
+      <div class="card w"><h3>Medusa udźwignie setki SKU</h3>E0 na 18GB Macu — 40 SKU (20 seed + 20 nasze) bez mrugnięcia; teza o 4GB VPS-ie wciąż do przejechania (NIE WIEMY #7). <div class="proof"><b>Dowód:</b> E0 test. <b>Data:</b> 07.08.2026</div></div>
+    </div>
+  </section>
+
+  <!-- ════════════ TAB 2: NIE WIEMY ════════════ -->
+  <section id="tab-nie" class="hidden">
+    <div class="filters">
+      <span>Status:</span>
+      <label><input type="checkbox" class="f-status" value="open" checked> 🔴 otwarte</label>
+      <label><input type="checkbox" class="f-status" value="wip" checked> 🟡 w toku</label>
+      <label><input type="checkbox" class="f-status" value="done" checked> ✅ zamknięte</label>
+      <span style="margin-left:14px">Priorytet:</span>
+      <label><input type="checkbox" class="f-prio" value="hi" checked> 🔥 wysoki</label>
+      <label><input type="checkbox" class="f-prio" value="mid" checked> średni</label>
+      <label><input type="checkbox" class="f-prio" value="lo" checked> niski</label>
+    </div>
+    <div class="cards" id="qcards">
+
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag hi">🔥 BLOKUJE E2</span><span class="tag src">STATUS 05.08</span></div>
+        <div class="q-main" style="margin-top:8px">1. Monoblok vs split — rozstrzygnięcie</div>
+        <div class="q-ctx">Research rynku: „monoblok +42% dominanta" vs konkurencja: „splity rosną, monobloki tracą". Od tego zależy struktura katalogu i pierwsze drzewo konfiguratora — fundament modelu danych.</div>
+        <div class="q-close"><b>Domknięcie:</b> dane PORT PC o sprzedaży 2025/26 + decyzja asortymentowa Tomka</div>
+        <div class="q-dialog">💬 Wątek: STATUS 05.08 · TRUTH CHECKER „co poprawiłbym z jednym inputem"</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag hi">🔥 BLOKUJE MODEL</span><span class="tag src">TRUTH CHECKER</span></div>
+        <div class="q-main" style="margin-top:8px">2. Warunki dropship TIM SA (i Avrii)</div>
+        <div class="q-ctx">Marże, dostęp do API, czy w ogóle przyjmą mały sklep. Obecne dane = strona marketingowa, nie umowa. Weryfikuje cały model biznesowy taniej niż jakikolwiek kod.</div>
+        <div class="q-close"><b>Domknięcie:</b> rozmowa handlowa → cennik + umowa dropship</div>
+        <div class="q-dialog">💬 Wątek: TRUTH CHECKER blueprintu · idzie RÓWNOLEGLE (E6 na mocku)</div>
+      </div>
+
+      <div class="card q done" data-s="done" data-p="hi">
+        <div><span class="tag done">✅ ZAMKNIĘTE</span><span class="tag src">E1 · 11.08</span></div>
+        <div class="q-main" style="margin-top:8px">3. Gdzie żyje template (repo i struktura)</div>
+        <div class="q-ctx">Nowe repo GitHub (np. `ecomms5-template`?) vs fork e0_proof. Struktura monorepo: core/ · suppliers/ · shops/&lt;nazwa&gt;/ + schemat `shop.config` + walidator.</div>
+        <div class="q-close"><b>Dowód domknięcia:</b> **`Tomekwlqq/ecomms5-template`** (private, `is_template=true`) — monorepo core/suppliers/shops + walidator shop.config + make gate PASS (demo ≠ energetyka, commit 8d9d873). E1 zamknięte z dowodami w repo</div>
+        <div class="q-dialog">💬 Wątek: dialog 07.08 → decyzja 11.08 → E1 PASS</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="mid">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">TRUTH CHECKER + DIALOG</span></div>
+        <div class="q-main" style="margin-top:8px">4. Stripe vs PayU/Przelewy24 na high-ticket</div>
+        <div class="q-ctx">Stripe ~2,9% z 20–40k zł = ~580–1160 zł od transakcji. P24/PayU wprost potrafi być 2× tańsze na dużych ticketach. Ale API Stripe najlepsze dla LLM-integratora.</div>
+        <div class="q-close"><b>Domknięcie:</b> realne stawki (BLIK/P24/karty) na koszyku testowym — decyzja w E5, nie z góry</div>
+        <div class="q-dialog">💬 Wątek: alternatywa #2 z dialogu 07.08</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="mid">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">TRUTH CHECKER</span></div>
+        <div class="q-main" style="margin-top:8px">5. Zwroty 14 dni przy paletach</div>
+        <div class="q-ctx">Koszt reverse logistics pompy (paleta!) potrafi zjeść marżę pojedynczej sztuki. Kto płaci za transport zwrotny?</div>
+        <div class="q-close"><b>Domknięcie:</b> regulamin zwrotów + symulacja kosztu na realnej palecie</div>
+        <div class="q-dialog">💬 Wątek: TRUTH CHECKER blueprintu</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="mid">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">TRUTH CHECKER</span></div>
+        <div class="q-main" style="margin-top:8px">6. „Nikt nie ma konfiguratora" — re-weryfikacja</div>
+        <div class="q-ctx">Research konkurencji z czerwca 2026 — mogło się zmienić. To rdzeń przewagi, więc musi być świeży.</div>
+        <div class="q-close"><b>Domknięcie:</b> ponowny skan konkurencji (GeoPower, NEXBE, +2 nowe) przed E4</div>
+        <div class="q-dialog">💬 Wątek: TRUTH CHECKER blueprintu · STATUS „Luka = produkt do zbudowania"</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="mid">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">TRUTH CHECKER</span></div>
+        <div class="q-main" style="margin-top:8px">7. Gładkość Medusy na VPS 4GB</div>
+        <div class="q-ctx">E0 przeszedł na Macu (18GB RAM). Teza „CX22 4GB wystarczy" pochodzi z docs, nie z przejechania. Medusa + Postgres + Listmonk na jednym VPS = do sprawdzenia.</div>
+        <div class="q-close"><b>Domknięcie:</b> deploy testowy na Hetzner (albo Oracle Free — patrz #9) + pomiar RAM/CPU przy pracy</div>
+        <div class="q-dialog">💬 Wątek: TRUTH CHECKER „gładkość Medusa v2 na jednym VPS-ie to teza z docs"</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="mid">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">STATUS 05.08</span></div>
+        <div class="q-main" style="margin-top:8px">8. KPO vs Fundusz Modernizacyjny — weryfikacja CS magazynów</div>
+        <div class="q-ctx">KPO: min 2 kWh, do 50%/16k. Fundusz Modernizacyjny (2026): min 10 kWh, 30%/800 zł/kWh + wymóg EPS. CS magazynów musi uwzględniać OBA programy (kalkulator dotacji!).</div>
+        <div class="q-close"><b>Domknięcie:</b> przegląd WPIS_CS_magazyn_energii pod kątem 2 programów + aktualizacja</div>
+        <div class="q-dialog">💬 Wątek: STATUS 05.08 „Dotacje magazyny = 2 programy"</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="mid">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">DIALOG 07.08</span></div>
+        <div class="q-main" style="margin-top:8px">9. CRO/EEL kanon na własnym sklepie — jak wpiąć</div>
+        <div class="q-ctx">Rozkminka traktuje CRO po macoszemu, a sklep-polipgon to był cały sens Own_shop. Brakuje: audyt wizualny PDP wg EEL → mock 1:1 → live + PostHog (A/B + feature flags) jako kanon.</div>
+        <div class="q-close"><b>Domknięcie:</b> akceptacja Tomka + wpis do blueprintu (E3/E4)</div>
+        <div class="q-dialog">💬 Wątek: alternatywa #4 z dialogu 07.08</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="mid">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">BLUEPRINT</span></div>
+        <div class="q-main" style="margin-top:8px">10. Storefront: Astro 5 vs oficjalny Next.js starter</div>
+        <div class="q-ctx">Astro wybrany (content-first, zero JS, GEO), ale oficjalny starter Medusy to Next.js — integracja koszyk/checkout z Astro to ręczna robota przez REST. Do potwierdzenia w E3.</div>
+        <div class="q-close"><b>Domknięcie:</b> E3 — działający koszyk na Astro z checkoutem Medusy</div>
+        <div class="q-dialog">💬 Wątek: blueprint §2 (alternatywa Next.js, „mało prawdopodobne")</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="mid">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">E2</span></div>
+        <div class="q-main" style="margin-top:8px">11. Realny asortyment: ceny, EAN-y, duplikaty</div>
+        <div class="q-ctx">Testowe 20 SKU to placeholder. E2 wymaga realnych ofert (TIM API): schemat kanoniczny, mapowanie EAN→own_sku, reguły dla produktu bez EAN i duplikatów.</div>
+        <div class="q-close"><b>Domknięcie:</b> import 200 realnych pozycji z pliku testowego + świadome reguły (log, nie wyjątek)</div>
+        <div class="q-dialog">💬 Wątek: blueprint E2 bramka</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="lo">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag lo">NISKI</span><span class="tag src">TRUTH CHECKER</span></div>
+        <div class="q-main" style="margin-top:8px">12. ChatGPT Shopping w EU — czy w ogóle wystartuje</div>
+        <div class="q-ctx">Instant Checkout live w USA (4% prowizji), EU-launch niepotwierdzony. Feed JSONL przygotować i być pierwszym w kolejce.</div>
+        <div class="q-close"><b>Domknięcie:</b> oficjalny komunikat OpenAI o EU-launch; feed gotowy niezależnie (E7)</div>
+        <div class="q-dialog">💬 Wątek: TRUTH CHECKER · blueprint §7.2</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="lo">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag lo">NISKI</span><span class="tag src">DIALOG 07.08</span></div>
+        <div class="q-main" style="margin-top:8px">13. Backend 0 zł: Oracle Cloud Free Tier vs Hetzner</div>
+        <div class="q-ctx">Oracle Free (ARM 4×vCPU/24GB, 0 zł) = jedyna droga do literalnie 0 zł; ryzyko terminacji free tiera. Hetzner CX22 = pewny, €5–8/mies.</div>
+        <div class="q-close"><b>Domknięcie:</b> decyzja przy E6/deploy; Oracle jako test, Hetzner jako produkcja (albo odwrotnie)</div>
+        <div class="q-dialog">💬 Wątek: alternatywa #1 z dialogu 07.08</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="lo">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag lo">NISKI</span><span class="tag src">DIALOG 07.08</span></div>
+        <div class="q-main" style="margin-top:8px">14. CF Pages: 500 buildów/mies vs masówka contentu</div>
+        <div class="q-ctx">AI-CMS = każdy push to build. Masówka 200 stron może zjeść limit. Rozwiązanie: batch-commity (1 push = N stron) jako reguła procesu E7.</div>
+        <div class="q-close"><b>Domknięcie:</b> reguła batch-commitów wpisana do procesu E7 (formalnie)</div>
+        <div class="q-dialog">💬 Wątek: alternatywa #3 z dialogu 07.08</div>
+      </div>
+
+      <div class="card q" data-s="open" data-p="mid">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">DIALOG 10.08</span></div>
+        <div class="q-main" style="margin-top:8px">16. Nazwa projektu / sklepu — pomysły</div>
+        <div class="q-ctx">
+          <b>Sklep (energetyka domowa):</b> NiezależnyDom (niezależność energetyczna = emocja) · CiepłyDom (pompy) · EnergetycznyDom (całość) · KlimatDomu · DomBezRachunków (ROI/payback hook) · TermoDom · DobryPrąd ⚠️ kolizja z programem „Mój Prąd" — odpada.
+          <br><b>Template (produkt narzędziowy):</b> Skel („skel ecommerce" z wątku) · ForkShop (mechanika: nowy sklep = fork + config) · StoreFactory · OneCore · StoreConfig · ECOMMS 5.0 (roboczo).
+          <br><b>Co ma komunikować:</b> sklep → niezależność energetyczną i ROI, NIE „eko-pocztówkę"; template → jeden core, sklepy z configu.
+        </div>
+        <div class="q-close"><b>Domknięcie:</b> decyzja Tomka — nazwa sklepu (przed E2/brandingiem) i nazwa template'u (przy zakładaniu repo, E1)</div>
+        <div class="q-dialog">💬 Wątek: dialog 10.08 „dodaj do boardu pomysły na nazwę"</div>
+      </div>
+
+      <div class="card q done" data-s="done" data-p="hi">
+        <div><span class="tag done">✅ ZAMKNIĘTE</span><span class="tag src">E0 · 07.08</span></div>
+        <div class="q-main" style="margin-top:8px">15. Medusa vs Vendure (wybór silnika)</div>
+        <div class="q-ctx">Było najgrubszym ryzykiem technicznym. E0 zweryfikował: Medusa działa, idempotencja OK, API wygodne.</div>
+        <div class="q-close"><b>Dowód domknięcia:</b> BRAMKA E0: PASS — Medusa v2.18 zostaje; Vendure i własny backend odpadają</div>
+        <div class="q-dialog">💬 Wątek: dialog 07.08 (alternatywa #1) → E0 → PASS</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════ TAB 3: DIALOG ════════════ -->
+  <section id="tab-dialog" class="hidden">
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">30.06.2026</div>
+        <div class="tl-title">Start projektu + wątek own_ecomms</div>
+        <div class="tl-body">Wątek z Claude Desktop (beauty B2B — porzucony przez MDR) → zapisany jako soczewka doboru niszy. Kryteria: high-ticket, długi cykl, config-driven, regulacja = fosa albo paliwo.</div>
+        <div class="tl-out"><b>Wynik:</b> decyzja — energetyka domowa (pompy + magazyny); regulacja = paliwo (dotacje)</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">05.08.2026</div>
+        <div class="tl-title">ECOMMS 5.0 — Tech Stack Template zatwierdzony</div>
+        <div class="tl-body">Blueprint stawiania dowolnego sklepu: Medusa + Astro + MDX + pluginy, proces E0–E8 z bramkami, moduł dropshippingowy, feedy, LLM discovery. Podstawa: 8 researchy.</div>
+        <div class="tl-out"><b>Wynik:</b> własny sklep = pilot template'u; następny krok: E0 proof</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">07.08.2026</div>
+        <div class="tl-title">Ocena rozkminki — 4 alternatywy</div>
+        <div class="tl-body">Krytyczny przegląd: (1) Oracle Free Tier jako backend 0 zł / opcja C: lekki backend własny, (2) Stripe drogi na high-ticket → sprawdzić P24/PayU w E5, (3) CF Pages limit 500 buildów → batch-commity, (4) brak CRO/EEL kanonu w stacku → dopiąć. Zgoda na llms.txt: skip.</div>
+        <div class="tl-out"><b>Wynik:</b> fundament bez zmian; 4 pytania weszły do NIE WIEMY (#4, #9, #13, #14)</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">07.08.2026</div>
+        <div class="tl-title">E0 PROOF — Medusa v2.18 + Postgres 16</div>
+        <div class="tl-body">Docker compose (izolowane porty 5434/9000), create-medusa-app (walka z npm E429 → prefer-offline), migracje, admin user, `import_skus.py`: 20 SKU → Admin API, drugi run bez duplikatów. Kanoniczny test: `test_e0.py` (4/4 PASS).</div>
+        <div class="tl-out"><b>Wynik:</b> BRAMKA E0: PASS — silnik rozstrzygnięty (Medusa); pytanie #15 zamknięte</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">07.08.2026</div>
+        <div class="tl-title">Knowledge Board — ten artefakt</div>
+        <div class="tl-body">Pomysł Tomka: łączyć „co wiemy" z „czego nie wiemy" i dialogiem, który je produkuje — iteracyjnie, w jednym miejscu.</div>
+        <div class="tl-out"><b>Wynik:</b> żywy rejestr; aktualizowany na końcu każdej sesji ECOMMS</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">11.08.2026</div>
+        <div class="tl-title">Kickoff: Content Machine + Sklep („zaczynamy na poważnie")</div>
+        <div class="tl-body">E1 PASS (repo `ecomms5-template`, bramka: demo ≠ energetyka). Plan A/B z mapą na E0–E8 (BUILD_PLAN.md): Tor A = research pomp + **RE Kulkowskiego (SERP recon)** + CS pompy OD NOWA (kanon v6.1, 5 torów CEP, T0 rdzeń) + CQF (engine v5) + CJ (TORY) + **klon blog-writera z SejfZone** (pipeline + agent + humanizer + hub). Tor B = przykład Medusy + 200 pozycji testowych (bramka E2) + import + storefront. Metodologia v6.1 i pipeline przeczytane.</div>
+        <div class="tl-out"><b>Wynik:</b> pytanie #3 ZAMKNIĘTE (repo) · 4 nowe fakty WIEMY · kolejne: r2 (serp_full_analysis pomp) + A3 (CS od zera)</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">ECOMMS 5.0 Knowledge Board · zasada: każdy fakt ma dowód i datę · każde pytanie ma definicję domknięcia · aktualizacja po każdej sesji (tomek-wrapup) · źródła: ECOMMS5_TECH_STACK.html · STATUS.md · dialogi sesji</div>
+</div>
+
+<script>
+  // Taby
+  document.querySelectorAll('.tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('.tab').forEach(function (x) { x.classList.remove('active'); });
+      t.classList.add('active');
+      document.querySelectorAll('section[id^="tab-"]').forEach(function (s) { s.classList.add('hidden'); });
+      document.getElementById('tab-' + t.dataset.tab).classList.remove('hidden');
+    });
+  });
+
+  // Filtry NIE WIEMY
+  function applyFilters() {
+    var st = {}; var pr = {};
+    document.querySelectorAll('.f-status').forEach(function (c) { st[c.value] = c.checked; });
+    document.querySelectorAll('.f-prio').forEach(function (c) { pr[c.value] = c.checked; });
+    document.querySelectorAll('#qcards .card.q').forEach(function (c) {
+      c.classList.toggle('hidden', !(st[c.dataset.s] && pr[c.dataset.p]));
+    });
+  }
+  document.querySelectorAll('.f-status, .f-prio').forEach(function (c) { c.addEventListener('change', applyFilters); });
+</script>
+</body>
+</html>
