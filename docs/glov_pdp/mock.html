@@ -5075,7 +5075,11 @@ kr</span>
   }
   function setTitle(t){ var h = document.querySelector('[data-product-title], h1, .product__title'); if(h) h.textContent = t; }
   function setPrice(p){
-    document.querySelectorAll('[data-product-price], .product__price, .price').forEach(function(e){ e.textContent = p; });
+    document.querySelectorAll('[data-product-price]').forEach(function(e){ e.textContent = p; });
+    // rodzice (.price/.product__price) — tylko jeśli NIE zawierają [data-product-price] (nie zabijaj dziecka)
+    document.querySelectorAll('.product__price, .price').forEach(function(e){
+      if(!e.querySelector('[data-product-price]')) e.textContent = p;
+    });
   }
   function akordeony(){
     return document.querySelectorAll('.product-accordion .accordion-row, .product-accordion .accordion, .accordion-row, .accordion');
@@ -5166,4 +5170,4 @@ kr</span>
 })();
 </script>
 </body>
-</html><!-- MOCKUP_1786436219 -->
+</html><!-- MOCKUP_1786436441 -->
