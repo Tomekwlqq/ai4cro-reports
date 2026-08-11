@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dobry Dach — mapa narracyjna v0.5 · wszystko widoczne + pytanie o bazę</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --ink:#0a0a0a; --muted:#5b6472; --faint:#8b93a2; --line:#e6e6e9;
+    --green:#16a34a; --green-d:#15803d; --green-soft:#e7f6ec; --green-line:#b7e3c4;
+    --violet:#7c5cff; --violet-d:#5a3ff0; --violet-soft:#efeaff; --violet-line:#d4c9ff;
+    --amber:#b8862b; --amber-soft:#fdf5e6; --amber-line:#e9d3a3;
+    --red:#e5484d; --red-soft:#fdecec; --red-line:#f5c2c4;
+    --grotesk:'Space Grotesk',-apple-system,sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--grotesk);background:var(--bg);color:var(--ink);line-height:1.75;font-size:17px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1020px;margin:0 auto;padding:46px 30px 90px}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);font-weight:600;margin-bottom:14px}
+  h1{font-size:clamp(32px,4.6vw,46px);font-weight:700;letter-spacing:-.03em;line-height:1.05;margin-bottom:14px}
+  .sub{color:var(--muted);font-size:19px;margin-bottom:26px;max-width:880px}
+  .sub strong{color:var(--ink)}
+  .chip{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:5px 12px;background:#fafbfd;margin-right:8px}
+  .chip b{color:var(--ink)}
+  .note{font-size:15px;color:var(--muted);background:#fafbfd;border:1px solid var(--line);border-radius:13px;padding:16px 20px;margin-bottom:34px}
+  .note b{color:var(--ink)}
+
+  .node{background:#fff;border:1px solid var(--line);border-left:5px solid var(--violet);border-radius:16px;margin-bottom:30px;overflow:hidden}
+  .node-h{display:flex;align-items:center;gap:14px;padding:16px 22px;border-bottom:1px solid var(--line);background:#fafbfd}
+  .node-nr{font-family:var(--mono);font-size:19px;font-weight:700;color:var(--violet);min-width:44px;text-align:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 4px}
+  .node-t{flex:1}
+  .node-t h3{font-size:21px;font-weight:700}
+  .node-meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.04em}
+  .badge{font-family:var(--mono);font-size:11.5px;font-weight:600;border-radius:999px;padding:4px 12px;background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-line);white-space:nowrap}
+  .badge.green{background:var(--green-soft);color:var(--green-d);border-color:var(--green-line)}
+
+  .story{padding:24px 28px}
+  .step{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--violet);font-weight:700;margin:26px 0 4px}
+  .step:first-child{margin-top:0}
+  .tale{font-size:17.5px;line-height:2.1;margin-bottom:8px}
+
+  .mchip{font-family:var(--mono);font-size:13.5px;color:var(--muted);background:#fff;border:1.5px solid var(--violet-line);border-radius:999px;padding:4px 13px;cursor:pointer;transition:.15s;line-height:1.5;margin:1px 2px;white-space:nowrap}
+  .mchip:hover{border-color:var(--violet);color:var(--violet-d)}
+  .mchip.on{background:var(--violet);border-color:var(--violet);color:#fff}
+
+  /* gałęzie — ZAWSZE WIDOCZNE (nic nie ukryte); aktywacja = odpowiedź */
+  .branch{margin:8px 0 12px;padding:12px 18px 12px 22px;border-left:3px solid var(--green-line);background:var(--green-soft);border-radius:0 12px 12px 0;font-size:16px;line-height:2}
+  .branch .subq{margin:6px 0 0 18px;padding:6px 12px;background:#fff;border:1px dashed var(--green-line);border-radius:8px;font-size:15px;line-height:1.9}
+  .give{margin-top:9px;font-size:13.5px;color:var(--muted);line-height:1.65}
+  .give b{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--faint)}
+  .give .p{color:var(--green-d)}
+  .give .m{color:var(--red)}
+  .auto-note{margin-top:8px;font-size:13px;color:var(--green-d);background:#fff;border:1px dashed var(--green-line);border-radius:8px;padding:7px 12px;line-height:1.55}
+  .auto-note b{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em}
+
+  .pct{font-family:var(--mono);font-size:15px;border:1.5px dashed var(--violet-line);background:var(--violet-soft);border-radius:9px;padding:3px 8px;width:74px;text-align:center;color:var(--ink)}
+  .pct:focus{outline:none;border-style:solid;border-color:var(--violet);background:#fff}
+  .pct-suffix{font-family:var(--mono);font-size:13px;color:var(--muted)}
+  .inline-ta{font-family:var(--mono);font-size:14px;border:1.5px dashed var(--amber-line);background:var(--amber-soft);border-radius:9px;width:100%;padding:9px 13px;color:var(--ink);resize:vertical;min-height:40px;margin:6px 0}
+  .inline-ta:focus{outline:none;border-style:solid;border-color:var(--violet);background:#fff}
+
+  .foot{max-width:1020px;margin:0 auto;padding:0 30px 50px;font-family:var(--mono);font-size:11.5px;color:var(--faint);text-align:center;line-height:1.8}
+
+  /* zakładki */
+  .tab-bar{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap}
+  .tab-btn{font-family:var(--mono);font-size:14px;font-weight:600;padding:11px 24px;border-radius:999px;border:1.5px solid var(--line);background:#fafbfd;color:var(--muted);cursor:pointer;transition:.15s}
+  .tab-btn:hover{border-color:var(--violet);color:var(--violet-d)}
+  .tab-btn.on{background:var(--violet);border-color:var(--violet);color:#fff}
+  /* dropdown węzłów */
+  .node-dd{border:1px solid var(--line);border-left:5px solid var(--violet);border-radius:16px;margin-bottom:14px;background:#fff;overflow:hidden}
+  .node-dd[open]{box-shadow:0 8px 28px rgba(10,10,10,.07)}
+  .node-dd summary{list-style:none;cursor:pointer}
+  .node-dd summary::-webkit-details-marker{display:none}
+  .node-dd summary .arrow{font-family:var(--mono);color:var(--violet);font-size:17px;transition:.15s;margin-left:2px}
+  .node-dd[open] summary .arrow{transform:rotate(90deg)}
+  .node-h{display:flex;align-items:center;gap:14px;padding:15px 20px;border-bottom:1px solid transparent;background:#fff}
+  .node-dd[open] .node-h{border-bottom-color:var(--line);background:#fafbfd}
+  /* przycisk nieistotne */
+  .irr{font-family:var(--mono);font-size:10.5px;color:var(--faint);border:1px dashed var(--line);background:#fff;border-radius:999px;padding:2px 9px;cursor:pointer;margin:0 2px 0 7px;vertical-align:2px;transition:.15s}
+  .irr:hover{border-color:var(--red);color:var(--red)}
+  .irr.on{background:var(--red-soft);border-color:var(--red-line);color:var(--red);border-style:solid}
+  .mchip.irr{opacity:.38;text-decoration:line-through;pointer-events:none}
+  .branch.irr{opacity:.4;filter:grayscale(1)}
+  /* karty automatyzacji */
+  .auto-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:880px){.auto-grid{grid-template-columns:1fr}}
+  .auto-card{border:1px solid var(--line);border-left:4px solid var(--green);border-radius:13px;background:#fafbfd;padding:15px 18px}
+  .auto-card h3{font-size:17px;margin-bottom:4px}
+  .ac-tag{font-family:var(--mono);font-size:10.5px;color:var(--green-d);background:var(--green-soft);border:1px solid var(--green-line);border-radius:999px;padding:2px 10px;display:inline-block;margin-bottom:8px}
+  .auto-card p{font-size:14.5px;color:var(--muted);line-height:1.65;margin-bottom:6px}
+  .auto-card p:last-child{margin-bottom:0}
+  .ac-w{font-size:13px;color:var(--amber)}
+  .ac-s{font-size:13px;color:var(--green-d)}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">Dobry Dach · mapa procesów MAŁE · wersja narracyjna</div>
+  <h1>Opowieść procesu — 18 węzłów</h1>
+  <p class="sub">Cały proces MAŁY jako <strong>opowieść węzeł po węźle</strong> — wszystko widoczne, klik = odpowiedź. Każdy węzeł: pytania aktywowane wyborem, bilans <strong>daje/odbiera</strong> (co wersja otwiera/zamyka) i bramka <strong>czy idzie do bazy</strong> (automat czyta tylko bazę). Automatyzacje znajdziesz w drugiej zakładce.</p>
+  <div class="chip">v0.8 · pełna mapa · 2026-08-08</div>
+  <div class="chip">zapis: localStorage <b>dd_mapa_narracja_v5</b></div>
+
+  
+<div class="tab-bar">
+  <button class="tab-btn on" data-tab="form">📋 Formularz · 18 węzłów</button>
+  <button class="tab-btn" data-tab="auto">⚙️ Automatyzacje A0–A7</button>
+</div>
+<div id="tab-auto" style="display:none">
+  <div class="auto-grid">
+<div class="auto-card"><span class="ac-tag">A0 · węzeł 00 · koncepcja</span><h3>Rejestr zapytań = baza klientów</h3><p>Łapie każde zapytanie (kanał, forma, typ klienta), przypomina o follow-up, buduje bazę klientów — każde zapytanie dopisane to potencjalny przyszły klient.</p><p class="ac-w">Warunki: wpis do bazy (bez niego nie ma źródła) · kanały cyfrowe (mail / WhatsApp Business) = łapanie automatyczne</p><p class="ac-s">ROI: % przepadających zapytań</p></div>
+<div class="auto-card"><span class="ac-tag">A1 · węzeł 01 · koncepcja</span><h3>Odczyt projektu (scan + Vision)</h3><p>Czyta projekt (PDF/zdjęcie/DWG) i wyciąga wymiary, powierzchnię, krycie — kasuje ręczne przepisywanie.</p><p class="ac-w">Warunki: cyfrowa forma projektu (nie segregator) · rozkład form decyduje o głębokości</p><p class="ac-s">ROI: minuty odczytu × liczba projektów</p></div>
+<div class="auto-card"><span class="ac-tag">A2 · węzeł 03 · koncepcja</span><h3>Oferta z danych ZK</h3><p>Pozycje ze starego ZK klienta + aktualne ceny z tw_Cena → oferta PDF wysłana mailem, ślad w bazie.</p><p class="ac-w">Warunki: oferty w ZK (bramka: 9 657 otwartych ZK, 529 mln zł) · wysyłka cyfrowa</p><p class="ac-s">ROI: % ofert wymagających korekty po wysyłce</p></div>
+<div class="auto-card"><span class="ac-tag">A3 · węzeł 02 · koncepcja</span><h3>Marża z bazy</h3><p>Wycena z tw_Cena: cena zakupu vs sprzedaży + narzut/marża per towar (np. blacha 56,46 → 80,66).</p><p class="ac-w">Warunki: plik Tomasza (reguły marży) · ceny zakupu uzupełnione (część kartotek = 0)</p><p class="ac-s">ROI: % wycen robionych „na czuja”</p></div>
+<div class="auto-card"><span class="ac-tag">A4 · węzły 08–09 · koncepcja</span><h3>Terminy + zamówienia</h3><p>Akceptacja (05) → event w kalendarzu + notyfikacja ekipy; zamówienie z pozycji ZK do dostawcy.</p><p class="ac-w">Warunki: wspólny kalendarz cyfrowy · rezerwacja towarów (dziś WYŁĄCZONA: su_StatusDokZK=6)</p><p class="ac-s">ROI: % terminów zmienianych w ostatniej chwili · postój ekipy</p></div>
+<div class="auto-card"><span class="ac-tag">A5 · węzły 10–11 · mock gotowy</span><h3>WZ → informacja do PH</h3><p>Nowe WZ → wiadomość: „Dla ZK #1234 wyszło WZ #56, postęp 34%” — PH nie dzwoni do magazynu.</p><p class="ac-w">Warunki: WZ w Subiekcie + powiązanie z ZK (dziś 62% WZ bez ZK) · kanał do ustalenia (mail/SMS/WA)</p><p class="ac-s">ROI: % WZ, o których PH nie wie w dniu wydania</p></div>
+<div class="auto-card"><span class="ac-tag">A6 · węzły 12, 13, 16 · PROTOTYP</span><h3>Płatności + raport poranny</h3><p>Rozrachunki z bazy: „BRAKUJE 3 200 zł” + przypomnienia zaległości; raport PH rano (prototyp auto4 działa 11/11).</p><p class="ac-w">Warunki: SMTP, godzina i odbiorcy do decyzji · KSeF (ksef_* w bazie) opcjonalnie</p><p class="ac-s">ROI: % faktur płaconych po terminie (6,5 mln zł nieopłaconych)</p></div>
+<div class="auto-card"><span class="ac-tag">A7 · węzły 14–15 · koncepcja</span><h3>Ślad zmian + różnice ZK vs WZ</h3><p>Rejestr zmian (zgłoszenie → wycena → akceptacja → aneks) + zestawienie ZK vs WZ per pozycja przed finalizacją.</p><p class="ac-w">Warunki: ślad decyzji (dziś brak — brief) · powiązanie ZK↔WZ (6 648 / 19 314)</p><p class="ac-s">ROI: % ZK z różnicą względem WZ > 5%</p></div>
+  </div>
+</div>
+<div id="tab-form">
+<div class="note"><b>Zasady:</b> zielone ramki = gałęzie opowieści (widoczne zawsze, odpowiadasz chipami) · <b>↳ DAJE / ODBIERA</b> = co wersja otwiera/zamyka · <b>[automat]</b> = wymaganie dla automatyzacji · „+ Inne…" nie ma — jak brakuje opcji, dopisz w polu problemu.</div>
+
+  <!-- ══════════════ WĘZEŁ 00 ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">00</span>
+      <div class="node-t"><h3>Kontakt klienta / zapytanie</h3><div class="node-meta">proces MAŁY · węzeł 00/17 · pełna opowieść · A0: rejestr zapytań</div></div>
+      <span class="badge green">✅ A0: rejestr zapytań</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+
+      <div class="step">Punkt 1 — kim jest klient?</div>
+      <p class="tale">Klient — <span class="mchip" data-k="typ" data-v="nowy">nowy</span><span class="mchip" data-k="typ" data-v="istniejacy">istniejący</span><span class="mchip" data-k="typ" data-v="powracajacy">powracający</span><button class="irr" data-irk="typ">nieistotne</button> — zgłasza się z zapytaniem.</p>
+
+      <div class="branch">
+        <b>Jeśli nowy:</b> czy rejestrujecie go w bazie, zanim wyślecie ofertę?
+        <span class="mchip" data-k="rej" data-v="subiekt">tak — w Subiekcie</span><span class="mchip" data-k="rej" data-v="excel">tak — w Excelu</span><span class="mchip" data-k="rej" data-v="nie">nie</span><button class="irr" data-irk="rej">nieistotne</button>
+        <div class="subq">→ „tak — w Subiekcie": kto zakłada kartotekę? <span class="mchip" data-k="kto_rej" data-v="biuro">biuro</span><span class="mchip" data-k="kto_rej" data-v="ph">PH</span><span class="mchip" data-k="kto_rej" data-v="tomek">Tomek</span><button class="irr" data-irk="kto_rej">nieistotne</button></div>
+        <div class="subq">→ „tak — w Excelu": jaki plik i kto wpisuje? <span class="mchip" data-k="excel_kto" data-v="biuro">biuro</span><span class="mchip" data-k="excel_kto" data-v="ph">PH</span><button class="irr" data-irk="excel_kto">nieistotne</button></div>
+        <div class="subq">→ „nie": czemu nie? <span class="mchip" data-k="dlaczego" data-v="czas">brak czasu</span><span class="mchip" data-k="dlaczego" data-v="nie_wracaja">i tak nie wracają</span><span class="mchip" data-k="dlaczego" data-v="po_co">po co — nie wiemy</span><button class="irr" data-irk="dlaczego">nieistotne</button></div>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ rejestracja w Subiekcie: klient w bazie (NIP, adres, historia) — A0 dopisze zapytanie do jego kartoteki</span> &nbsp;<span class="m">− bez rejestracji: oferta „w głowie", niewidoczna, po 3 miesiącach od zera</span></div>
+        <div class="auto-note"><b>[automat A0]</b> utworzenie kontrahenta = ZAPIS przez Sferę — A0 nie założy kartoteki sam, może tylko ostrzegać „klient spoza kartoteki".</div>
+      </div>
+
+      <div class="branch">
+        <b>Jeśli istniejący:</b> sprawdzacie coś przed ofertą?
+        <span class="mchip" data-k="chk" data-v="saldo">saldo / zaległości</span><span class="mchip" data-k="chk" data-v="historia">historię zleceń</span><span class="mchip" data-k="chk" data-v="nic">nic — oferta od razu</span><button class="irr" data-irk="chk">nieistotne</button>
+        <div class="subq">→ „saldo": gdzie patrzycie? <span class="mchip" data-k="gdzie_saldo" data-v="subiekt">Subiekt — rozrachunki</span><span class="mchip" data-k="gdzie_saldo" data-v="ksiegowa">pytamy księgowej</span><span class="mchip" data-k="gdzie_saldo" data-v="excel">osobny Excel</span><button class="irr" data-irk="gdzie_saldo">nieistotne</button></div>
+        <div class="subq">→ „historia": jak szukacie? <span class="mchip" data-k="jak_hist" data-v="subiekt">Subiekt — ZK po kliencie</span><span class="mchip" data-k="jak_hist" data-v="pamiec">z pamięci</span><button class="irr" data-irk="jak_hist">nieistotne</button></div>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ saldo i historia są w bazie (19 314 ZK, rozrachunki) — A0 podpowie „ma zaległości X zł" i „ostatni projekt z [data]"</span> &nbsp;<span class="m">− oferta „na ślepo" = sprzedaż komuś, kto nie płaci (a 6,5 mln już wisi)</span></div>
+        <div class="auto-note"><b>[automat A0]</b> rozrachunki i historia ZK = czysty ODCZYT SQL (darmowy) — podpowiedź tania i bezpieczna.</div>
+      </div>
+
+      <div class="branch">
+        <b>Jeśli powraca:</b> oferta z historii?
+        <span class="mchip" data-k="powr" data-v="hist">tak — „masz podobny projekt"</span><span class="mchip" data-k="powr" data-v="od_zera">nie — liczymy od zera</span><button class="irr" data-irk="powr">nieistotne</button>
+        <div class="subq">→ „tak": skąd stara wycena? <span class="mchip" data-k="stara" data-v="subiekt">Subiekt — stare ZK</span><span class="mchip" data-k="stara" data-v="excel">plik Tomasza / Excel</span><span class="mchip" data-k="stara" data-v="pamiec">z pamięci</span><button class="irr" data-irk="stara">nieistotne</button></div>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ stare ZK klienta z pozycjami i cenami = gotowa wycena z korektą</span> &nbsp;<span class="m">− liczenie od zera = stracony czas; cena z pamięci = inna marża, a klient porówna</span></div>
+        <div class="auto-note"><b>[automat A0]</b> „masz podobny projekt z [data]" — wyszukiwanie ZK po kliencie (dok_OdbiorcaId), czysty odczyt.</div>
+      </div>
+
+      <div class="step">Punkt 2 — czy zapytanie idzie do bazy?</div>
+      <p class="tale">Zapytanie trafia do bazy (Subiekt): <span class="mchip" data-k="baza" data-v="od_razu">od razu — wpisujemy</span><span class="mchip" data-k="baza" data-v="przy_ofercie">dopiero przy ofercie (ZK)</span><span class="mchip" data-k="baza" data-v="nigdy">nigdy — żyje w głowie / Excelu</span><button class="irr" data-irk="baza">nieistotne</button>.</p>
+
+      <div class="branch">
+        <b>„od razu — wpisujemy":</b> co wpisujecie — klienta, zapytanie, oba? <span class="mchip" data-k="co_wpis" data-v="klient">klienta</span><span class="mchip" data-k="co_wpis" data-v="zapytanie">zapytanie</span><span class="mchip" data-k="co_wpis" data-v="oba">oba</span><button class="irr" data-irk="co_wpis">nieistotne</button>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ pełny ślad: A0 czyta bazę i widzi każde zapytanie, klienta, historię — rejestr buduje się sam</span></div>
+      </div>
+      <div class="branch">
+        <b>„dopiero przy ofercie (ZK)":</b> zapytania bez oferty nie zostawiają śladu?
+        <span class="mchip" data-k="zk_slad" data-v="tak">tak, przepadają</span><span class="mchip" data-k="zk_slad" data-v="nie">nie — notujemy osobno</span><button class="irr" data-irk="zk_slad">nieistotne</button>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ ZK = ślad w bazie, automat widzi oferty</span> &nbsp;<span class="m">− zapytania „na tak" bez oferty giną — a to one są większością rynku</span></div>
+      </div>
+      <div class="branch">
+        <b>„nigdy — głowa / Excel":</b> skąd wiecie za 3 miesiące, że klient pytał?
+        <span class="mchip" data-k="nigdy_skad" data-v="nie_wiemy">nie wiemy</span><span class="mchip" data-k="nigdy_skad" data-v="excel">mamy swój Excel</span><button class="irr" data-irk="nigdy_skad">nieistotne</button>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− zero śladu = automat nie ma źródła; A0 musi zacząć od ręcznego wpisu — to jest koszt, który widać od razu</span></div>
+        <div class="auto-note"><b>[automat A0]</b> baza klientów = rejestr zapytań: dopisywanie nowych zapytań do bazy → automatyczna analiza (kto pyta, skąd, ile przepada). BEZ wpisu do bazy nie ma A0.</div>
+      </div>
+
+      <div class="step">Punkt 3 — czego chce?</div>
+      <p class="tale">I chce <span class="mchip" data-k="chec" data-v="oferta">zapytać o ofertę</span><span class="mchip" data-k="chec" data-v="termin">sprawdzić termin</span><span class="mchip" data-k="chec" data-v="cena">zapytać o cenę materiału</span><button class="irr" data-irk="chec">nieistotne</button>.</p>
+
+      <div class="branch">
+        <b>Oferta:</b> ma już projekt? <span class="mchip" data-k="proj" data-v="tak">tak</span><span class="mchip" data-k="proj" data-v="nie">nie — trzeba prosić</span><button class="irr" data-irk="proj">nieistotne</button>
+        <div class="subq">→ „nie": co robicie? <span class="mchip" data-k="nie_proj" data-v="prosba">prosicie o projekt</span><span class="mchip" data-k="nie_proj" data-v="spotkanie">umawiacie spotkanie</span><span class="mchip" data-k="nie_proj" data-v="wstepna">oferta wstępna</span><button class="irr" data-irk="nie_proj">nieistotne</button></div>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ „ma projekt" = najkrótsza ścieżka (wariacja 01, scan)</span> &nbsp;<span class="m">− „nie ma" = ryzyko, że nie wróci — moment na follow-up</span></div>
+        <div class="auto-note"><b>[automat A0]</b> rozgałęzienie w rejestrze: „czeka na projekt" → przypomnienie po X dniach. Rdzeń A0.</div>
+      </div>
+
+      <div class="branch">
+        <b>Termin:</b> sprawdzacie kalendarz przy telefonie? <span class="mchip" data-k="term" data-v="tak">tak — od razu</span><span class="mchip" data-k="term" data-v="oddzwaniamy">nie — oddzwaniamy</span><button class="irr" data-irk="term">nieistotne</button>
+        <div class="subq">→ „oddzwaniamy": kto i w jakim czasie? <textarea class="inline-ta" data-save placeholder="np. biuro, tego samego dnia…"></textarea></div>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ termin to nie oferta — osobny wątek (kalendarze, 08)</span> &nbsp;<span class="m">− nie oddać terminu = klient dzwoni do konkurencji; „oddzwonimy" bez wpisu = zapomniane</span></div>
+        <div class="auto-note"><b>[automat A0]</b> pytanie o termin nie tworzy ZK — w rejestrze tylko adnotacja, zero oferty.</div>
+      </div>
+
+      <div class="branch">
+        <b>Cena materiału:</b> odpowiadacie od ręki? <span class="mchip" data-k="cena" data-v="cennik">tak — z cennika</span><span class="mchip" data-k="cena" data-v="glowa">tak — z głowy</span><span class="mchip" data-k="cena" data-v="szukamy">nie — sprawdzamy</span><button class="irr" data-irk="cena">nieistotne</button>
+        <div class="subq">→ „sprawdzamy": ile to trwa? <input class="pct" type="number" min="0" placeholder="min"> <span class="pct-suffix">minut</span></div>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ cennik w bazie (tw_Cena: zakup vs sprzedaż + marża) — odpowiedź natychmiastowa</span> &nbsp;<span class="m">− cena z głowy = ryzyko: za nisko = tracicie marżę, za wysoko = klient ucieka</span></div>
+        <div class="auto-note"><b>[automat A0]</b> tw_Cena = czysty odczyt — cena materiału do odpowiedzi w sekundę (ręcznie lub w pełni automatycznie).</div>
+      </div>
+
+      <div class="step">Punkt 4 — jak się kontaktuje?</div>
+      <p class="tale">Kontaktuje się <span class="mchip" data-k="kanal" data-v="tel">telefonicznie</span><span class="mchip" data-k="kanal" data-v="mail">mailem</span><span class="mchip" data-k="kanal" data-v="wa">przez WhatsApp</span><span class="mchip" data-k="kanal" data-v="osob">osobiście w biurze</span><button class="irr" data-irk="kanal">nieistotne</button>.</p>
+
+      <div class="branch">
+        <b>Telefon:</b> zostaje ślad? <span class="mchip" data-k="slad" data-v="notatka">notatka ręczna</span><span class="mchip" data-k="slad" data-v="nic">nic — w głowie</span><button class="irr" data-irk="slad">nieistotne</button>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− bez notatki nie ma śladu — A0 potrzebuje RĘCZNEGO wpisu, inaczej nie ma czego łapać</span></div>
+      </div>
+
+      <div class="branch">
+        <b>Mail:</b> firmowa skrzynka? <span class="mchip" data-k="skrz" data-v="tak">tak — wspólna</span><span class="mchip" data-k="skrz" data-v="nie">nie — prywatne</span><button class="irr" data-irk="skrz">nieistotne</button>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ ślad cyfrowy — A0 może łapać zapytania ze skrzynki bez ręcznego wpisywania</span> &nbsp;<span class="m">− prywatne skrzynki = brak wspólnego źródła</span></div>
+      </div>
+
+      <div class="branch">
+        <b>WhatsApp:</b> <span class="mchip" data-k="wa_biz" data-v="tak">WhatsApp Business</span><span class="mchip" data-k="wa_biz" data-v="nie">prywatne numery PH</span><button class="irr" data-irk="wa_biz">nieistotne</button>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ Business ma API — A0 czyta i odpowiada</span> &nbsp;<span class="m">− prywatne numery = brak wspólnego źródła</span></div>
+      </div>
+
+      <div class="branch">
+        <b>Wizyta w biurze:</b> notujecie po rozmowie? <span class="mchip" data-k="osob_w" data-v="notatka">tak</span><span class="mchip" data-k="osob_w" data-v="nic">nic nie zostaje</span><button class="irr" data-irk="osob_w">nieistotne</button>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− bez notatki — jak telefon: A0 nie ma źródła</span></div>
+      </div>
+
+      <div class="step">Punkt 5 — forma zapytania i rozkład</div>
+      <p class="tale">Zapytanie przychodzi jako <span class="mchip" data-k="forma" data-v="ustna">ustne</span><span class="mchip" data-k="forma" data-v="pisemna">pisemne</span><span class="mchip" data-k="forma" data-v="projekt">z projektem</span><button class="irr" data-irk="forma">nieistotne</button> — mniej więcej
+      <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% ustne</span>
+      <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% pisemne</span>
+      <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% z projektem</span>.</p>
+
+      <div class="branch">
+        <b>Z projektem</b> → wariacja 01 (przyjęcie projektu). Forma skanu: <span class="mchip" data-k="skan" data-v="pdf">PDF techniczny</span><span class="mchip" data-k="skan" data-v="zdj">zdjęcie z telefonu</span><span class="mchip" data-k="skan" data-v="dwg">DWG</span><span class="mchip" data-k="skan" data-v="papier">papier</span><button class="irr" data-irk="skan">nieistotne</button>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ „% z projektem" mówi, czy scan (Vision) jest sercem systemu, czy dodatkiem</span></div>
+      </div>
+
+      <div class="step">Punkt 6 — koniec zapytania</div>
+      <p class="tale">Zapytanie zamykacie, gdy <span class="mchip" data-k="koniec" data-v="spotkanie">umówione spotkanie</span><span class="mchip" data-k="koniec" data-v="projekt">dosłany projekt</span><span class="mchip" data-k="koniec" data-v="oferta">wysłana oferta</span><span class="mchip" data-k="koniec" data-v="urywa">kontakt się urywa</span><button class="irr" data-irk="koniec">nieistotne</button>.</p>
+
+      <div class="branch">
+        <b>Kontakt się urywa:</b> co robicie? <span class="mchip" data-k="urywa" data-v="nic">nic — szkoda czasu</span><span class="mchip" data-k="urywa" data-v="przyp">dzwonicie po X dniach</span><span class="mchip" data-k="urywa" data-v="czasem">czasem przypominamy</span><button class="irr" data-irk="urywa">nieistotne</button>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ to jest moment na przypomnienie — rdzeń rejestru zapytań</span> &nbsp;<span class="m">− nic nie robicie = zapytania przepadają bez śladu</span></div>
+        <div class="auto-note"><b>[automat A0]</b> „kontakt się urywa" = kiedy A0 ma zacząć przypominać (follow-up).</div>
+      </div>
+
+      <div class="step">Punkt 7 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. co 2-3 tygodnie klient dzwoni drugi raz, bo nikt nie oddzwonił…"></textarea>
+      Szacunkowo przepada <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% zapytań</span></p>
+      <div class="auto-note"><b>[automat A0]</b> to jest bramka: „nie ma problemu" = A0 wypada z zakresu, nie budujemy rejestru. A0 = budowa bazy klientów: każde zapytanie dopisane do bazy to potencjalny przyszły klient — rejestr to inwestycja w bazę, nie koszt.</div>
+
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 01 — WARIACJA 00 ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">01</span>
+      <div class="node-t"><h3>Przyjęcie projektu</h3><div class="node-meta">proces MAŁY · węzeł 01/17 · WARIACJA 00 — klient ma projekt · A1: odczyt projektu</div></div>
+      <span class="badge green">✅ A1: odczyt projektu (scan)</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+
+      <div class="step">Punkt 1 — forma projektu</div>
+      <p class="tale">Klient z 00 <b>ma projekt</b> i przynosi go do biura. Forma: <span class="mchip" data-k="n01_forma" data-v="pdf">PDF techniczny</span><span class="mchip" data-k="n01_forma" data-v="zdj">zdjęcie z telefonu</span><span class="mchip" data-k="n01_forma" data-v="dwg">DWG</span><span class="mchip" data-k="n01_forma" data-v="papier">papier</span><button class="irr" data-irk="n01_forma">nieistotne</button> — mniej więcej
+      <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% PDF</span>
+      <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% zdjęcie</span>
+      <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% papier</span>
+      <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% DWG</span>.</p>
+
+      <div class="branch">
+        <b>PDF techniczny:</b> czysty, wektorowy — automat czyta wprost.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ najłatwiejsza forma dla A1 — odczyt bez przygotowania</span></div>
+      </div>
+      <div class="branch">
+        <b>Zdjęcie z telefonu:</b> przekrzywione, cień, słaba rozdzielczość.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− A1 musi prostować i czytać z szumu — wolniej, mniej pewnie; rozkład % zdecyduje, czy warto</span></div>
+      </div>
+      <div class="branch">
+        <b>Papier:</b> trzeba skanować ręcznie.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− dodatkowa robota przed A1 — skaner/biurko to koszt operacyjny</span></div>
+      </div>
+      <div class="branch">
+        <b>DWG:</b> plik projektowy, nie rysunek.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ dane wektorowe — wymiary można czytać wprost (osobny parser)</span></div>
+      </div>
+
+      <div class="step">Punkt 2 — kto i jak odczytuje</div>
+      <p class="tale">Projekt odbiera <span class="mchip" data-k="n01_kto" data-v="biuro">biuro</span><span class="mchip" data-k="n01_kto" data-v="ph">PH</span><span class="mchip" data-k="n01_kto" data-v="tomek">Tomek</span><button class="irr" data-irk="n01_kto">nieistotne</button>
+      i trafia do <span class="mchip" data-k="n01_liczy" data-v="tomek">Tomka (wycena)</span><span class="mchip" data-k="n01_liczy" data-v="kto_inny">osoby liczącej wycenę</span><button class="irr" data-irk="n01_liczy">nieistotne</button>.</p>
+
+      <div class="branch">
+        <b>Odczyt wymiarów:</b> <span class="mchip" data-k="n01_odczyt" data-v="recznie">ręcznie z projektu</span><span class="mchip" data-k="n01_odczyt" data-v="opis">z opisu klienta</span><button class="irr" data-irk="n01_odczyt">nieistotne</button> — ile to trwa na jeden projekt?
+        <input class="pct" type="number" min="0" placeholder="min"> <span class="pct-suffix">minut</span>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− ręczny odczyt = pomyłki przy przepisywaniu wymiarów i powierzchni; „z opisu klienta" = wycena na wiarę</span> &nbsp;<span class="p">+ czas odczytu to wprost ROI A1: ile minut oszczędza scan</span></div>
+      </div>
+      <div class="branch">
+        <b>Wynik odczytu:</b> <span class="mchip" data-k="n01_wynik" data-v="notatka">notatka</span><span class="mchip" data-k="n01_wynik" data-v="excel">wpis w Excelu</span><span class="mchip" data-k="n01_wynik" data-v="glowa">od razu wycena „w głowie"</span><button class="irr" data-irk="n01_wynik">nieistotne</button>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− „w głowie" = zero śladu, wycena ginie z pamięcią</span> &nbsp;<span class="p">+ Excel/notatka = coś zostaje, ale poza bazą</span></div>
+      </div>
+
+      <div class="step">Punkt 3 — czy projekt idzie do bazy?</div>
+      <p class="tale">Projekt (skan/plik) ląduje: <span class="mchip" data-k="n01_baza" data-v="subiekt">w Subiekcie — załącznik do ZK</span><span class="mchip" data-k="n01_baza" data-v="dysk">na dysku / w mailu</span><span class="mchip" data-k="n01_baza" data-v="segregator">w segregatorze — papier</span><button class="irr" data-irk="n01_baza">nieistotne</button>.</p>
+
+      <div class="branch">
+        <b>Subiekt:</b> projekt wisi przy dokumencie.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ A1 sięga po załącznik i czyta; ślad w bazie</span></div>
+      </div>
+      <div class="branch">
+        <b>Dysk / mail:</b> jest plik, ale poza systemem.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ A1 może czytać z folderu/maila</span> &nbsp;<span class="m">− nie widać go w bazie, łatwo zgubić</span></div>
+      </div>
+      <div class="branch">
+        <b>Segregator:</b> papier ląduje w szafie.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− A1 nie sięgnie do szafy — skanowanie staje się warunkiem wstępnym automatu</span></div>
+        <div class="auto-note"><b>[automat A1]</b> BEZ cyfrowej formy projektu nie ma A1 — to jest ta sama bramka co „czy idzie do bazy" w 00.</div>
+      </div>
+
+      <div class="step">Punkt 4 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. pomyłki przy przepisywaniu wymiarów, nieczytelne skany, brak wymiarów na rysunku…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% projektów wymaga dopytywania klienta</span></p>
+      <div class="auto-note"><b>[automat A1]</b> scan + Vision odczytuje wymiary i powierzchnię z projektu — A1 kasuje ręczne przepisywanie. ROI = punkty 2 (minuty) × liczba projektów.</div>
+
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 03 — OFERTA (ZK) ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">03</span>
+      <div class="node-t"><h3>Oferta (ZK)</h3><div class="node-meta">proces MAŁY · węzeł 03/17 · A2: oferta z bazy</div></div>
+      <span class="badge green">✅ A2: oferta z danych ZK</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+
+      <div class="step">Punkt 1 — kto tworzy ofertę</div>
+      <p class="tale">Z wyceny (02) powstaje oferta. W systemie to <b>ZK</b> — tworzy je <span class="mchip" data-k="n03_kto" data-v="ph">PH</span><span class="mchip" data-k="n03_kto" data-v="tomek">Tomek</span><span class="mchip" data-k="n03_kto" data-v="biuro">biuro</span><button class="irr" data-irk="n03_kto">nieistotne</button>.
+      (Baza: 19 314 ZK, 17 wystawców — wiemy, że tworzą handlowcy i Tomek.)</p>
+
+      <div class="branch">
+        <b>Oferta poza systemem:</b> <span class="mchip" data-k="n03_gdzie" data-v="excel">Excel</span><span class="mchip" data-k="n03_gdzie" data-v="glowa">w głowie / na kartce</span>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− zero śladu w bazie — A2 nie ma czego wysłać ani policzyć; nie widać w historii klienta</span></div>
+      </div>
+      <div class="branch">
+        <b>Oferta w Subiekcie (ZK):</b> <span class="mchip" data-k="n03_gdzie" data-v="zk">tak — ZK od razu</span><button class="irr" data-irk="n03_gdzie">nieistotne</button>
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ ZK = ślad w bazie, ceny i pozycje policzalne, historia klienta się buduje</span></div>
+        <div class="auto-note"><b>[automat A2]</b> baza wie, ile ZK wisi (9 657 otwartych, 529 mln zł ofert) — ale czy każda oferta jest w ZK, czy część „z głowy"? To pytanie rozstrzyga, czy A2 obejmie wszystkie oferty.</div>
+      </div>
+
+      <div class="step">Punkt 2 — postać oferty dla klienta</div>
+      <p class="tale">Klient dostaje ofertę jako <span class="mchip" data-k="n03_postac" data-v="excel">Excel</span><span class="mchip" data-k="n03_postac" data-v="pdf">PDF</span><span class="mchip" data-k="n03_postac" data-v="wydruk">wydruk</span><span class="mchip" data-k="n03_postac" data-v="mail">mail / WhatsApp</span><button class="irr" data-irk="n03_postac">nieistotne</button>.</p>
+
+      <div class="branch">
+        <b>Excel:</b> ręcznie robiony, edytowalny.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− brak śladu wysyłki, łatwo wysłać starą wersję</span> &nbsp;<span class="p">+ klient może dopisać uwagi</span></div>
+      </div>
+      <div class="branch">
+        <b>PDF / mail:</b> finalna forma, wysyłka cyfrowa.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ A2 generuje PDF z danych ZK i wysyła mailem — ślad wysyłki w skrzynce</span></div>
+      </div>
+      <div class="branch">
+        <b>Wydruk:</b> papier na spotkaniu.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− zero śladu cyfrowego; wersje się rozjeżdżają</span></div>
+      </div>
+
+      <div class="step">Punkt 3 — skąd biorą się pozycje</div>
+      <p class="tale">Nową ofertę robicie <span class="mchip" data-k="n03_powiela" data-v="od_zera">od zera</span><span class="mchip" data-k="n03_powiela" data-v="kopia">kopiując starą ofertę</span><span class="mchip" data-k="n03_powiela" data-v="stary_zk">na bazie starego ZK klienta</span><button class="irr" data-irk="n03_powiela">nieistotne</button>.</p>
+
+      <div class="branch">
+        <b>Kopiowanie starej:</b> baza startowa, ale bez wersjonowania.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− błędy po kopii, stare ceny, „a ile to było ostatnio?" — tw_CenaHistoria w bazie jest pusta (zmiany cen niearchiwizowane)</span></div>
+      </div>
+      <div class="branch">
+        <b>Stary ZK klienta:</b> pozycje i ceny w bazie.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ A2 bierze pozycje ze starego ZK, aktualizuje ceny z tw_Cena (zakup vs sprzedaż + marża) i liczy ofertę — marża policzalna wprost</span></div>
+        <div class="auto-note"><b>[automat A2]</b> „często powielanie starego ZK" — potwierdzone w pptx; to jest dokładnie przypadek, który A2 automatyzuje: stary ZK → nowa oferta z aktualnymi cenami.</div>
+      </div>
+
+      <div class="step">Punkt 4 — wersje oferty</div>
+      <p class="tale">Stare wersje ofert: <span class="mchip" data-k="n03_wersje" data-v="historia">zostają w historii</span><span class="mchip" data-k="n03_wersje" data-v="nadpis">nadpisujecie</span><span class="mchip" data-k="n03_wersje" data-v="nie_wiem">nie wiemy — jak kto</span><button class="irr" data-irk="n03_wersje">nieistotne</button>.</p>
+
+      <div class="branch">
+        <b>Nadpisujecie:</b> po negocjacjach zostaje tylko ostatnia wersja.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− nie widać, ile klient wynegocjował; spory „mówiliście inaczej"</span></div>
+      </div>
+      <div class="branch">
+        <b>Historia:</b> każda runda zostaje.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ A2 trzyma wersje i pokazuje przebieg negocjacji (ile zeszliście z ceny)</span></div>
+      </div>
+
+      <div class="step">Punkt 5 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. wysyłka oferty się przeciąga, klient dzwoni „a ile tam u was wyszło?”, zdarza się wysłać starą wersję…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% ofert wymaga korekty po wysyłce</span></p>
+      <div class="auto-note"><b>[automat A2]</b> oferta generowana z danych ZK + cennika — klient dostaje PDF mailem w minutę, a w bazie zostaje ślad. Bramka: czy oferty w ogóle są w ZK.</div>
+
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 02 — WYCENA + MARŻA ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">02</span>
+      <div class="node-t"><h3>Wycena + marża</h3><div class="node-meta">proces MAŁY · węzeł 02/17 · A3: marża z bazy</div></div>
+      <span class="badge green">✅ A3: marża z bazy</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — skąd ceny</div>
+      <p class="tale">Z odczytanego projektu (01) powstaje wycena. Ceny bierzecie z: <span class="mchip" data-k="n02_ceny" data-v="excel">pliku Tomasza (Excel)</span><span class="mchip" data-k="n02_ceny" data-v="subiekt">cennika w Subiekcie</span><span class="mchip" data-k="n02_ceny" data-v="glowa">głowy</span><button class="irr" data-irk="n02_ceny">nieistotne</button>.</p>
+      <div class="branch"><b>Plik Tomasza:</b> osobny Excel, ręcznie prowadzony.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− osobny plik = dwie prawdy (Excel vs Subiekt), brak wersji; automat go nie czyta bez zgody na udostępnienie</span></div>
+      </div>
+      <div class="branch"><b>Cennik w Subiekcie:</b> tw_Cena — cena zakupu vs sprzedaży + narzut/marża/zysk per towar.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ marża policzalna wprost z bazy (np. blacha 56,46 → 80,66: narzut 43%, marża 30%) — A3 liczy wycenę bez otwierania Excela</span> &nbsp;<span class="m">− część kartotek ma cenę zakupu 0 (luka w danych)</span></div>
+        <div class="auto-note"><b>[automat A3]</b> tw_Cena = czysty odczyt — wycena generowana z bazy z marżą per pozycja. Warunek: ceny zakupu uzupełnione.</div>
+      </div>
+      <div class="branch"><b>Z głowy:</b> wycena na pamięć.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− ryzyko: za nisko = tracicie marżę, za wysoko = klient ucieka; zero audytu</span></div>
+      </div>
+      <div class="step">Punkt 2 — marża</div>
+      <p class="tale">Marżę liczycie: <span class="mchip" data-k="n02_marza" data-v="recznie">ręcznie per pozycja</span><span class="mchip" data-k="n02_marza" data-v="mniej">mniej więcej</span><span class="mchip" data-k="n02_marza" data-v="nie">nie liczymy</span><button class="irr" data-irk="n02_marza">nieistotne</button>.</p>
+      <div class="branch"><b>Ręcznie:</b> czas i pomyłki; <b>„mniej więcej"</b>: marża na wyczucie.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− „mniej więcej" = część projektów wyceniona poniżej progu — A3 daje liczbę zamiast wyczucia</span></div>
+      </div>
+      <div class="step">Punkt 3 — czy wycena idzie do bazy</div>
+      <p class="tale">Wycena trafia do Subiekta: <span class="mchip" data-k="n02_baza" data-v="zk">od razu — jako ZK</span><span class="mchip" data-k="n02_baza" data-v="po_akc">po akceptacji klienta</span><span class="mchip" data-k="n02_baza" data-v="nigdy">nigdy — żyje w Excelu</span><button class="irr" data-irk="n02_baza">nieistotne</button>.</p>
+      <div class="branch"><b>Po akceptacji:</b> wyceny, które nie przeszły, nie zostawiają śladu.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− „ile ofert zrobiliśmy, a ile weszło?" — nie wiadomo; historia wycen niekompletna</span></div>
+      </div>
+      <div class="branch"><b>Nigdy:</b> wycena tylko w Excelu.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− A3 nie ma czego liczyć — baza nie zna wyceny, dopóki nie ma ZK</span></div>
+        <div class="auto-note"><b>[automat A3]</b> powielanie starych ZK (potwierdzone: „często powielanie starego ZK") — stary ZK w bazie = baza wyceny; bez ZK wycena jest jednorazowa.</div>
+      </div>
+      <div class="step">Punkt 4 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. plik Tomasza nieaktualny, ceny zakupu puste w części kartotek, wycena z pamięci…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% wycen robionych „na czuja”</span></p>
+      <div class="auto-note"><b>[automat A3]</b> bramka: plik Tomasza (algorytm marży) — bez niego A3 liczy z tw_Cena, ale nie wie o Waszych regułach. tw_CenaHistoria pusta — zmiany cen niearchiwizowane.</div>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 04 — NEGOCJACJE ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">04</span>
+      <div class="node-t"><h3>Negocjacje</h3><div class="node-meta">proces MAŁY · węzeł 04/17</div></div>
+      <span class="badge">🟨 do potwierdzenia</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — korekty</div>
+      <p class="tale">Klient dostał ofertę (03) i chce ją zmienić. Korekty zgłasza: <span class="mchip" data-k="n04_korekty" data-v="tel">telefonem</span><span class="mchip" data-k="n04_korekty" data-v="mail">mailem</span><span class="mchip" data-k="n04_korekty" data-v="spotkanie">na spotkaniu</span><button class="irr" data-irk="n04_korekty">nieistotne</button>.</p>
+      <div class="branch"><b>Telefon/spotkanie:</b> ustnie.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− ustne korekty nie zostawiają śladu — „klient pamięta inaczej niż firma"</span></div>
+      </div>
+      <div class="step">Punkt 2 — zapis korekt</div>
+      <p class="tale">Korekty zapisujecie: <span class="mchip" data-k="n04_zapis" data-v="notatka">w notatce</span><span class="mchip" data-k="n04_zapis" data-v="excel">w Excelu</span><span class="mchip" data-k="n04_zapis" data-v="zk">w ZK — aktualizacja pozycji</span><span class="mchip" data-k="n04_zapis" data-v="glowa">w głowie</span><button class="irr" data-irk="n04_zapis">nieistotne</button>.</p>
+      <div class="branch"><b>W ZK:</b> korekta = zmiana pozycji w systemie.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ ślad w bazie, A2 widzi wersje</span> &nbsp;<span class="m">− zmiana statusu/pozycji przez Sferę (zapis)</span></div>
+      </div>
+      <div class="branch"><b>W głowie:</b> zero śladu.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− korekta ginie, negocjacje od nowa przy każdej rozmowie</span></div>
+      </div>
+      <div class="step">Punkt 3 — wersje oferty</div>
+      <p class="tale">Stara wersja po korekcie: <span class="mchip" data-k="n04_wersje" data-v="zostaje">zostaje</span><span class="mchip" data-k="n04_wersje" data-v="nadpis">nadpisujecie</span><button class="irr" data-irk="n04_wersje">nieistotne</button>.</p>
+      <div class="branch"><b>Nadpisujecie:</b> tylko ostatnia wersja.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− nie widać przebiegu negocjacji; spory „mówiliście 30 zł, nie 35"</span></div>
+      </div>
+      <div class="step">Punkt 4 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. klient dzwoni drugi raz z inną korektą, a poprzedniej nikt nie zapisał…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% korekt, które wymagają ponowienia ustaleń</span></p>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 05 — AKCEPTACJA ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">05</span>
+      <div class="node-t"><h3>Akceptacja oferty</h3><div class="node-meta">proces MAŁY · węzeł 05/17</div></div>
+      <span class="badge">🟨 do potwierdzenia</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — jak klient akceptuje</div>
+      <p class="tale">Klient akceptuje ofertę: <span class="mchip" data-k="n05_akc" data-v="tel">ustnie — telefon</span><span class="mchip" data-k="n05_akc" data-v="mail">mailem</span><span class="mchip" data-k="n05_akc" data-v="papier">podpisuje papier</span><button class="irr" data-irk="n05_akc">nieistotne</button>.</p>
+      <div class="step">Punkt 2 — ślad akceptacji</div>
+      <p class="tale">Ślad zostaje: <span class="mchip" data-k="n05_slad" data-v="tak">tak — mail/podpis</span><span class="mchip" data-k="n05_slad" data-v="nie">nie — na wiarę</span><button class="irr" data-irk="n05_slad">nieistotne</button>.</p>
+      <div class="branch"><b>Na wiarę:</b> akceptacja ustna.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− brak twardego śladu → spory o zakres później („ja się nie zgadzałem na taki dach")</span></div>
+      </div>
+      <div class="step">Punkt 3 — co w systemie</div>
+      <p class="tale">Po akceptacji w Subiekcie: <span class="mchip" data-k="n05_sys" data-v="nic">nic nie zmieniamy</span><span class="mchip" data-k="n05_sys" data-v="status">zmieniamy status ZK</span><span class="mchip" data-k="n05_sys" data-v="rezerwacja">rezerwujemy towar</span><button class="irr" data-irk="n05_sys">nieistotne</button>.</p>
+      <div class="branch"><b>Status ZK:</b> pamiętajcie — Subiekt nie ma statusu „zaakceptowany".
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ natywne statusy: 6 niezrealizowane · 7 z rezerwacją · 8 zrealizowane (klient używa tylko 6/7/8, zero anulowań)</span> &nbsp;<span class="m">− akceptacja to decyzja PROCESOWA, nie status — trzeba ustalić, co ją oznacza (np. status 8 przy wydaniu)</span></div>
+        <div class="auto-note"><b>[automat A2/A4]</b> akceptacja = trigger: start realizacji, kalendarze, zamówienie. Bez znacznika w systemie automat nie wie, że oferta przeszła.</div>
+      </div>
+      <div class="step">Punkt 4 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. klient mówi „dobra, robimy” i znika na 3 tygodnie; potem „myślałem, że już zaczęliście”…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% akceptacji bez śladu na piśmie</span></p>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 06 — UMOWA ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">06</span>
+      <div class="node-t"><h3>Umowa</h3><div class="node-meta">proces MAŁY · węzeł 06/17</div></div>
+      <span class="badge">🟨 do potwierdzenia</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — szablon</div>
+      <p class="tale">Umowa: <span class="mchip" data-k="n06_szablon" data-v="word">szablon z Worda</span><span class="mchip" data-k="n06_szablon" data-v="klient">szablon klienta</span><span class="mchip" data-k="n06_szablon" data-v="od_zera">pisana od zera</span><button class="irr" data-irk="n06_szablon">nieistotne</button>.</p>
+      <div class="step">Punkt 2 — obieg</div>
+      <p class="tale">Obieg do podpisu: <span class="mchip" data-k="n06_obieg" data-v="druk">druk → podpis → skan → mail</span><span class="mchip" data-k="n06_obieg" data-v="elektron">podpis elektroniczny</span><span class="mchip" data-k="n06_obieg" data-v="miejscu">podpis na miejscu</span><button class="irr" data-irk="n06_obieg">nieistotne</button>.</p>
+      <div class="step">Punkt 3 — gdzie ląduje</div>
+      <p class="tale">Podpisana umowa: <span class="mchip" data-k="n06_lad" data-v="segregator">segregator</span><span class="mchip" data-k="n06_lad" data-v="dysk">dysk / EDB</span><span class="mchip" data-k="n06_lad" data-v="subiekt">załącznik w Subiekcie</span><button class="irr" data-irk="n06_lad">nieistotne</button>.</p>
+      <div class="branch"><b>Segregator:</b> papier.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− automat nie sięgnie do szafy — warunki umowy (terminy, aneksy) poza systemem</span></div>
+      </div>
+      <div class="step">Punkt 4 — zmiany po podpisaniu</div>
+      <p class="tale">Zmiany w trakcie: <span class="mchip" data-k="n06_zmiany" data-v="aneks">aneksem</span><span class="mchip" data-k="n06_zmiany" data-v="ustnie">ustnie</span><span class="mchip" data-k="n06_zmiany" data-v="mail">mailem</span><button class="irr" data-irk="n06_zmiany">nieistotne</button>.</p>
+      <div class="branch"><b>Aneks:</b> jak w umowie referencyjnej 13937/25/01.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ zmiany TYLKO aneksem; drobne prace ≤ 1,2% wynagrodzenia w cenie — jasne zasady</span> &nbsp;<span class="m">− umowa bez aneksu przy zmianie = ryzyko (wykonawca może ograniczyć zakres)</span></div>
+      </div>
+      <div class="step">Punkt 5 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. braki formalne wykrywane po fakcie, klient zwleka z podpisem…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% umów z wykrytym brakiem po podpisaniu</span></p>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 07 — STATUS → REALIZACJA ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">07</span>
+      <div class="node-t"><h3>Status → start realizacji</h3><div class="node-meta">proces MAŁY · węzeł 07/17</div></div>
+      <span class="badge">🟨 do potwierdzenia</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — kto zmienia status</div>
+      <p class="tale">Status ZK w Subiekcie zmienia: <span class="mchip" data-k="n07_kto" data-v="tomek">Tomek</span><span class="mchip" data-k="n07_kto" data-v="biuro">biuro</span><span class="mchip" data-k="n07_kto" data-v="nikt">nikt — ZK wisi na 6</span><button class="irr" data-irk="n07_kto">nieistotne</button>.</p>
+      <div class="branch"><b>Nikt:</b> status nie nadąża za rzeczywistością.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− zakres startuje, a ZK wisi na „niezrealizowane" — PH i magazyn działają na starych danych; w bazie: 9 657 otwartych ZK, 0 anulowań, portfel 529 mln zł</span></div>
+      </div>
+      <div class="step">Punkt 2 — co odpala zmianę</div>
+      <p class="tale">Zmianę odpala: <span class="mchip" data-k="n07_odpala" data-v="umowa">podpis umowy</span><span class="mchip" data-k="n07_odpala" data-v="wz">pierwsze WZ</span><span class="mchip" data-k="n07_odpala" data-v="recznie">wpis ręczny</span><span class="mchip" data-k="n07_odpala" data-v="nic">nic — nie zmieniamy</span><button class="irr" data-irk="n07_odpala">nieistotne</button>.</p>
+      <div class="step">Punkt 3 — rezerwacja towarów</div>
+      <p class="tale">Rezerwacja towarów na ZK: <span class="mchip" data-k="n07_rez" data-v="wlaczona">włączona</span><span class="mchip" data-k="n07_rez" data-v="wylaczona">wyłączona</span><button class="irr" data-irk="n07_rez">nieistotne</button>.</p>
+      <div class="branch"><b>Wyłączona (stan z bazy: su_StatusDokZK=6):</b> towar nie jest blokowany dla ZK.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− ten sam towar może zostać sprzedany komuś innemu; materiały nie na czas = postój ekipy</span></div>
+        <div class="auto-note"><b>[automat A4]</b> rezerwacja to decyzja klienta (2 przyciski: włącz/wyłącz) — automat tylko raportuje stan; bez rezerwacji zamówienie materiałów musi być szybsze.</div>
+      </div>
+      <div class="step">Punkt 4 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. nikt nie wie, co jest w realizacji; statusy nie są aktualizowane…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% ZK ze statusem zgodnym z rzeczywistością</span></p>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 08 — KALENDARZE ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">08</span>
+      <div class="node-t"><h3>Kalendarze / terminy</h3><div class="node-meta">proces MAŁY · węzeł 08/17 · A4: terminy</div></div>
+      <span class="badge green">✅ A4: terminy</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — gdzie żyją terminy</div>
+      <p class="tale">Terminy realizacji żyją w: <span class="mchip" data-k="n08_gdzie" data-v="google">kalendarzu Google</span><span class="mchip" data-k="n08_gdzie" data-v="papier">kalendarzu papierowym</span><span class="mchip" data-k="n08_gdzie" data-v="excel">Excelu</span><span class="mchip" data-k="n08_gdzie" data-v="glowa">głowie PH</span><button class="irr" data-irk="n08_gdzie">nieistotne</button>.</p>
+      <div class="branch"><b>Papier / głowa:</b> zero cyfrowego śladu.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− A4 nie ma skąd czytać terminów — warunkiem startu jest cyfrowy kalendarz</span></div>
+      </div>
+      <div class="step">Punkt 2 — kto widzi</div>
+      <p class="tale">Eventy widzą: <span class="mchip" data-k="n08_widza" data-v="wszyscy">wszyscy — wspólny kalendarz</span><span class="mchip" data-k="n08_widza" data-v="kazdy">każdy swój</span><span class="mchip" data-k="n08_widza" data-v="nikt">nikt — tylko wpisujący</span><button class="irr" data-irk="n08_widza">nieistotne</button>.</p>
+      <div class="branch"><b>Każdy swój / nikt:</b> rozjazd terminów.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− podwójne wpisy, terminy zmieniane bez informowania ekipy — potwierdzony pain z pptx</span></div>
+      </div>
+      <div class="step">Punkt 3 — ekipa</div>
+      <p class="tale">Ekipa dostaje termin: <span class="mchip" data-k="n08_ekipa" data-v="notyfikacja">zaproszenie / notyfikację</span><span class="mchip" data-k="n08_ekipa" data-v="telefon">telefon dzień wcześniej</span><span class="mchip" data-k="n08_ekipa" data-v="nic">nic — sama pilnuje</span><button class="irr" data-irk="n08_ekipa">nieistotne</button>.</p>
+      <div class="branch"><b>Telefon dzień wcześniej:</b> reaktywnie.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ działa dziś</span> &nbsp;<span class="m">− zapominane, koszt telefonów, brak historii</span></div>
+      </div>
+      <div class="step">Punkt 4 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. dwa terminy na ten sam dzień, ekipa dowiaduje się na budowie…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% terminów zmienianych w ostatniej chwili</span></p>
+      <div class="auto-note"><b>[automat A4]</b> terminy z akceptacji (05) → event w kalendarzu → notyfikacja ekipy. Warunek: wspólny kalendarz cyfrowy.</div>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 09 — ZAMÓWIENIE MATERIAŁÓW ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">09</span>
+      <div class="node-t"><h3>Zamówienie materiałów</h3><div class="node-meta">proces MAŁY · węzeł 09/17 · A4: zamówienie</div></div>
+      <span class="badge green">✅ A4: zamówienie</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — jak zamawiacie</div>
+      <p class="tale">Materiały zamawiacie: <span class="mchip" data-k="n09_zamow" data-v="telefon">telefonem do hurtowni</span><span class="mchip" data-k="n09_zamow" data-v="mail">mailem</span><span class="mchip" data-k="n09_zamow" data-v="portal">portalem dostawcy</span><span class="mchip" data-k="n09_zamow" data-v="subiekt">z Subiekta — zamówienie do dostawcy</span><button class="irr" data-irk="n09_zamow">nieistotne</button>.</p>
+      <div class="branch"><b>Telefon:</b> najczęstsze, zero śladu.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− nie ma historii zamówień, ceny „z ust" — automat nie ma czego analizować</span></div>
+      </div>
+      <div class="branch"><b>Z Subiekta:</b> zamówienie generowane z ZK.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ pozycje z ZK, ślad w systemie — A4 może przygotować zamówienie z listy materiałów</span></div>
+      </div>
+      <div class="step">Punkt 2 — kanał do dostawcy</div>
+      <p class="tale">Kanał: <span class="mchip" data-k="n09_kanal" data-v="mail">mail</span><span class="mchip" data-k="n09_kanal" data-v="tel">telefon</span><span class="mchip" data-k="n09_kanal" data-v="portal">portal</span><button class="irr" data-irk="n09_kanal">nieistotne</button>.</p>
+      <div class="step">Punkt 3 — rezerwacja</div>
+      <p class="tale">Rezerwacja towarów na ZK: <span class="mchip" data-k="n09_rez" data-v="tak">włączona</span><span class="mchip" data-k="n09_rez" data-v="nie">wyłączona (stan z bazy)</span><button class="irr" data-irk="n09_rez">nieistotne</button>.</p>
+      <div class="branch"><b>Wyłączona (su_StatusDokZK=6):</b> towar nieblokowany.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− towar może zostać sprzedany komuś innemu zanim wy zamówicie; postój ekipy = koszt dni</span></div>
+      </div>
+      <div class="step">Punkt 4 — czas</div>
+      <p class="tale">Czas od akceptacji do zamówienia: <input class="pct" type="number" min="0" placeholder="dni"> <span class="pct-suffix">dni</span></p>
+      <div class="step">Punkt 5 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. materiał niedostępny, zamiennik bez konsultacji, zamówienie po terminie…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% zamówień opóźnionych względem harmonogramu</span></p>
+      <div class="auto-note"><b>[automat A4]</b> akceptacja (05) → zamówienie z pozycji ZK + rezerwacja. Bez rezerwacji i bez cyfrowego zamówienia A4 zostaje przy „przypomnij, że trzeba zamówić".</div>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 10 — WZ ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">10</span>
+      <div class="node-t"><h3>Wydanie towaru (WZ)</h3><div class="node-meta">proces MAŁY · węzeł 10/17 · A5: WZ → PH</div></div>
+      <span class="badge green">✅ A5: WZ → PH</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — kto wydaje</div>
+      <p class="tale">Towar wydaje: <span class="mchip" data-k="n10_wydaje" data-v="magazynier">magazynier</span><span class="mchip" data-k="n10_wydaje" data-v="kto_inny">ktoś inny (biuro / ekipa)</span><button class="irr" data-irk="n10_wydaje">nieistotne</button>.</p>
+      <div class="step">Punkt 2 — WZ a ZK</div>
+      <p class="tale">WZ powstaje: <span class="mchip" data-k="n10_z_zk" data-v="tak">z ZK — powiązany</span><span class="mchip" data-k="n10_z_zk" data-v="nie">osobno — bez ZK</span><button class="irr" data-irk="n10_z_zk">nieistotne</button>.</p>
+      <div class="branch"><b>Osobno — bez ZK:</b> najczęstsze dziś.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− baza: 62% WZ z 2026 nie ma ZK; tylko ~1/3 ZK ma WZ (6 648 z 19 314) — niezgodności wykrywane na końcu</span></div>
+        <div class="auto-note"><b>[automat A5]</b> WZ powiązane z ZK = automat widzi postęp (wartość wydana vs umowna); bez powiązania nie wie, czego dotyczy wydanie.</div>
+      </div>
+      <div class="step">Punkt 3 — gdzie WZ</div>
+      <p class="tale">WZ w systemie: <span class="mchip" data-k="n10_wz_sys" data-v="subiekt">Subiekt — typ 11</span><span class="mchip" data-k="n10_wz_sys" data-v="excel">Excel</span><span class="mchip" data-k="n10_wz_sys" data-v="kartka">ręcznie na kartce</span><button class="irr" data-irk="n10_wz_sys">nieistotne</button>.</p>
+      <div class="branch"><b>Excel / kartka:</b> poza systemem.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− A5 nie widzi wydania — raporty i postępy martwe</span></div>
+      </div>
+      <div class="step">Punkt 4 — kto się dowiaduje</div>
+      <p class="tale">Po wydaniu PH się dowiaduje: <span class="mchip" data-k="n10_ph_wie" data-v="tak">tak — od razu</span><span class="mchip" data-k="n10_ph_wie" data-v="nie">nie — dzwoni do magazynu</span><button class="irr" data-irk="n10_ph_wie">nieistotne</button>.</p>
+      <div class="branch"><b>Dzwoni:</b> potwierdzony pain.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− PH traci czas, klient pyta o postęp a PH nie wie; potwierdzone w pptx: „PH powinien wiedzieć, ale nie wie — mimo że mają narzędzia"</span></div>
+        <div class="auto-note"><b>[automat A5]</b> to jest sedno A5: nowe WZ → wiadomość do PH (kanał z 11).</div>
+      </div>
+      <div class="step">Punkt 5 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. WZ ręczne, błędy w pozycjach, niezgodność z ZK na końcu…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% WZ z pomyłką wykrytą po wydaniu</span></p>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 11 — INFO DO PH ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">11</span>
+      <div class="node-t"><h3>Informacja do PH</h3><div class="node-meta">proces MAŁY · węzeł 11/17 · A5: powiadomienia</div></div>
+      <span class="badge green">✅ A5: powiadomienia</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — po co PH wie</div>
+      <p class="tale">PH ma wiedzieć o WZ, bo: <span class="mchip" data-k="n11_po_co" data-v="klient">klient pyta o postęp</span><span class="mchip" data-k="n11_po_co" data-v="terminy">PH obiecuje terminy</span><span class="mchip" data-k="n11_po_co" data-v="rozliczenie">rozliczenie z klientem</span><button class="irr" data-irk="n11_po_co">nieistotne</button>.</p>
+      <div class="step">Punkt 2 — kanał</div>
+      <p class="tale">Kanał (do ustalenia — kluczowa decyzja): <span class="mchip" data-k="n11_kanal" data-v="mail">mail</span><span class="mchip" data-k="n11_kanal" data-v="sms">SMS</span><span class="mchip" data-k="n11_kanal" data-v="wa">WhatsApp</span><span class="mchip" data-k="n11_kanal" data-v="tel">telefon</span><button class="irr" data-irk="n11_kanal">nieistotne</button>.</p>
+      <div class="branch"><b>Mail:</b> najprostszy, SMTP.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ tani, ślad w skrzynce</span> &nbsp;<span class="m">− PH może nie czytać na budowie</span></div>
+      </div>
+      <div class="branch"><b>SMS/WhatsApp:</b> dociera na telefon.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ otworzy na budowie</span> &nbsp;<span class="m">− koszt (SMS) / wymaga WhatsApp Business (API)</span></div>
+      </div>
+      <div class="step">Punkt 3 — kiedy</div>
+      <p class="tale">Wiadomość: <span class="mchip" data-k="n11_kiedy" data-v="dzien">ten sam dzień</span><span class="mchip" data-k="n11_kiedy" data-v="rano">rano następnego dnia</span><span class="mchip" data-k="n11_kiedy" data-v="tydzien">raz w tygodniu</span><button class="irr" data-irk="n11_kiedy">nieistotne</button>.</p>
+      <div class="step">Punkt 4 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. PH dowiaduje się o wydaniu od klienta, a nie od magazynu…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% WZ, o których PH nie wie w dniu wydania</span></p>
+      <div class="auto-note"><b>[automat A5]</b> mock gotowy: „Dla ZK #1234 (Kowalski, 400m²) wyszło WZ #56: materiały X, wartość Y. Postęp: 34%." — do decyzji: kanał, godzina, kopie.</div>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 12 — FV ZALICZKOWE ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">12</span>
+      <div class="node-t"><h3>FV zaliczkowe</h3><div class="node-meta">proces MAŁY · węzeł 12/17 · A6: płatności</div></div>
+      <span class="badge green">✅ A6: płatności</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — jak wystawiacie</div>
+      <p class="tale">FV zaliczkowe wystawiacie: <span class="mchip" data-k="n12_fv" data-v="subiekt">z Subiekta — FZ</span><span class="mchip" data-k="n12_fv" data-v="excel">ręcznie w Excelu</span><span class="mchip" data-k="n12_fv" data-v="ksiegowa">księgowa zewnętrznie</span><button class="irr" data-irk="n12_fv">nieistotne</button>.</p>
+      <div class="branch"><b>Subiekt — FZ:</b> model potwierdzony w bazie (8 123 FZ).
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ ślad w bazie — A6 widzi faktury i płatności</span></div>
+      </div>
+      <div class="step">Punkt 2 — model rozliczeń</div>
+      <p class="tale">Model: ~90% w zaliczkach w trakcie + ~10% na koniec (pptx; umowa: rozliczenie miesięczne wg zaawansowania, protokół częściowy do 10. dnia miesiąca).</p>
+      <div class="step">Punkt 3 — wysyłka</div>
+      <p class="tale">Wysyłka FV: <span class="mchip" data-k="n12_wysylka" data-v="mail">mail</span><span class="mchip" data-k="n12_wysylka" data-v="poczta">poczta</span><span class="mchip" data-k="n12_wysylka" data-v="osob">osobiście</span><button class="irr" data-irk="n12_wysylka">nieistotne</button>.</p>
+      <div class="step">Punkt 4 — kto ściga</div>
+      <p class="tale">Zaległości ściga: <span class="mchip" data-k="n12_sciga" data-v="nikt">nikt</span><span class="mchip" data-k="n12_sciga" data-v="ksiegowa">księgowa</span><span class="mchip" data-k="n12_sciga" data-v="tomek">Tomek</span><button class="irr" data-irk="n12_sciga">nieistotne</button>.</p>
+      <div class="branch"><b>Nikt:</b> i tak wisi 6,5 mln zł.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− nieopłacone faktury ~6,5 mln zł przy spłatach ~8 mln — bez przypomnień windykacja jest reaktywna</span></div>
+        <div class="auto-note"><b>[automat A6]</b> rozrachunki w bazie (nz_Finanse) — A6 widzi „BRAKUJE 3 200 PLN" i przypomina o zaległości (mock już istnieje).</div>
+      </div>
+      <div class="step">Punkt 5 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. klient płaci po terminie, nikt nie wie komu przypomnieć…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% faktur płaconych po terminie</span></p>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 13 — SUMMARY PH ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">13</span>
+      <div class="node-t"><h3>Summary PH (raport)</h3><div class="node-meta">proces MAŁY · węzeł 13/17 · A6: raport poranny</div></div>
+      <span class="badge green">✅ A6: raport poranny</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — dziś</div>
+      <p class="tale">Dziś PH dowiaduje się o stanie zleceń: <span class="mchip" data-k="n13_dzis" data-v="telefon">dzwoniąc do biura/magazynu</span><span class="mchip" data-k="n13_dzis" data-v="sam">samemu sprawdzając</span><span class="mchip" data-k="n13_dzis" data-v="nic">w ogóle nie wie</span><button class="irr" data-irk="n13_dzis">nieistotne</button>.</p>
+      <div class="branch"><b>Dzwoniąc:</b> potwierdzony pain.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− PH traci czas, klient dostaje info z opóźnieniem, decyzje na nieaktualnych danych</span></div>
+      </div>
+      <div class="step">Punkt 2 — godzina</div>
+      <p class="tale">Raport ma przychodzić: <span class="mchip" data-k="n13_godzina" data-v="7">7:00</span><span class="mchip" data-k="n13_godzina" data-v="8">8:00</span><span class="mchip" data-k="n13_godzina" data-v="koniec">koniec dnia</span><button class="irr" data-irk="n13_godzina">nieistotne</button>.</p>
+      <div class="step">Punkt 3 — kopie</div>
+      <p class="tale">Kopie: <span class="mchip" data-k="n13_kopie" data-v="ph">tylko PH</span><span class="mchip" data-k="n13_kopie" data-v="tomek">PH + Tomek</span><button class="irr" data-irk="n13_kopie">nieistotne</button>.</p>
+      <div class="step">Punkt 4 — zawartość</div>
+      <p class="tale">Zawartość (mock gotowy): nowe ZK, wartość, WZ (postęp %), wpłaty, „BRAKUJE: X zł", portfel otwarty. Raport on demand: „szczegóły ZK#1201".</p>
+      <div class="step">Punkt 5 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. PH dowiaduje się o problemie od klienta, nie od Was…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% dni, gdy PH nie zna aktualnego stanu zleceń</span></p>
+      <div class="auto-note"><b>[automat A6]</b> prototyp działa (auto4_summary_ph.py, 11/11) — czeka na decyzję: kanał, godzina, odbiorcy, SMTP.</div>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 14 — ZMIANY ZAKRESU ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">14</span>
+      <div class="node-t"><h3>Zmiany zakresu</h3><div class="node-meta">proces MAŁY · węzeł 14/17 · A7: ślad zmian</div></div>
+      <span class="badge green">✅ A7: ślad zmian</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — jak zgłaszane</div>
+      <p class="tale">Zmiany w trakcie realizacji: <span class="mchip" data-k="n14_zmiana" data-v="aneks">aneksem</span><span class="mchip" data-k="n14_zmiana" data-v="ustnie">ustnie na budowie</span><span class="mchip" data-k="n14_zmiana" data-v="mail">mailem</span><button class="irr" data-irk="n14_zmiana">nieistotne</button>.</p>
+      <div class="branch"><b>Ustnie:</b> zero śladu.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− „robiłem, bo tak mówiliście" — spory o zakres i marżę</span></div>
+      </div>
+      <div class="branch"><b>Aneks:</b> zgodnie z umową 13937/25/01.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ zmiany TYLKO aneksem; wykonawca może jednostronnie ograniczyć zakres (wynagrodzenie proporcjonalnie)</span></div>
+      </div>
+      <div class="step">Punkt 2 — wycena zmiany</div>
+      <p class="tale">Wycena zmiany: <span class="mchip" data-k="n14_wycena" data-v="excel">Excel</span><span class="mchip" data-k="n14_wycena" data-v="glowa">w głowie</span><span class="mchip" data-k="n14_wycena" data-v="cennik">z cennika (tw_Cena)</span><button class="irr" data-irk="n14_wycena">nieistotne</button>.</p>
+      <div class="step">Punkt 3 — ślad decyzji</div>
+      <p class="tale">Kto, kiedy i co zatwierdził: <span class="mchip" data-k="n14_slad" data-v="jest">jest ślad</span><span class="mchip" data-k="n14_slad" data-v="brak">brak</span><button class="irr" data-irk="n14_slad">nieistotne</button>.</p>
+      <div class="branch"><b>Brak:</b> brief discovery wprost pytał o twardy ślad.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− brak śladu = spory i utrata marży (potwierdzone w briefie)</span></div>
+        <div class="auto-note"><b>[automat A7]</b> rejestr zmian: zgłoszenie → wycena → akceptacja → aneks. Bez śladu automat nie ma czego pilnować.</div>
+      </div>
+      <div class="step">Punkt 4 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. zmiana zrobiona, a aneksu nie ma — rozliczenie później się sypie…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% zmian bez dokumentu po zakończeniu</span></p>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 15 — FINALIZACJA ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">15</span>
+      <div class="node-t"><h3>Finalizacja (ZK vs WZ)</h3><div class="node-meta">proces MAŁY · węzeł 15/17 · A7: różnice</div></div>
+      <span class="badge green">✅ A7: różnice ZK vs WZ</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — porównanie</div>
+      <p class="tale">Na koniec porównujecie plan z wydaniem: <span class="mchip" data-k="n15_por" data-v="tak">tak — ZK vs suma WZ</span><span class="mchip" data-k="n15_por" data-v="nie">nie — na wyczucie</span><button class="irr" data-irk="n15_por">nieistotne</button>.</p>
+      <div class="branch"><b>Tak:</b> baza to umie policzyć.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ różnice policzalne: ZK→WZ 6 648, WZ→FS 16 834; zrealizowane ZK bez WZ ~2 200 (całość) / ~370 (2026); WZ bez FS ~30%</span></div>
+      </div>
+      <div class="branch"><b>Nie:</b> różnice odkrywane po fakcie.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− marża rzeczywista ≠ planowana, brak wiedzy które pozycje się rozjechały</span></div>
+        <div class="auto-note"><b>[automat A7]</b> zestawienie ZK vs WZ per pozycja — automat pokazuje różnicę zanim ruszy finalizacja.</div>
+      </div>
+      <div class="step">Punkt 2 — różnica</div>
+      <p class="tale">Różnica: <span class="mchip" data-k="n15_roznica" data-v="akcept">akceptujecie</span><span class="mchip" data-k="n15_roznica" data-v="negocjujecie">negocjujecie z klientem</span><button class="irr" data-irk="n15_roznica">nieistotne</button><span class="mchip" data-k="n15_roznica" data-v="auto">automatycznie jeśli < X%</span>.</p>
+      <div class="step">Punkt 3 — kto zatwierdza</div>
+      <p class="tale">Zatwierdza: <span class="mchip" data-k="n15_kto" data-v="tomek">Tomek</span><span class="mchip" data-k="n15_kto" data-v="ph">PH</span><span class="mchip" data-k="n15_kto" data-v="nikt">nikt — idzie dalej</span><button class="irr" data-irk="n15_kto">nieistotne</button>.</p>
+      <div class="step">Punkt 4 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. różnica wyszła dopiero przy rozliczeniu końcowym…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% ZK z różnicą względem WZ > 5%</span></p>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 16 — FV FINALNA ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">16</span>
+      <div class="node-t"><h3>FV finalna</h3><div class="node-meta">proces MAŁY · węzeł 16/17 · A6: płatności</div></div>
+      <span class="badge green">✅ A6: płatności</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — jak</div>
+      <p class="tale">Po protokole końcowym FV finalna: <span class="mchip" data-k="n16_fv" data-v="subiekt">z Subiekta — FS</span><span class="mchip" data-k="n16_fv" data-v="korekta">jako korekta</span><span class="mchip" data-k="n16_fv" data-v="excel">ręcznie w Excelu</span><button class="irr" data-irk="n16_fv">nieistotne</button>.</p>
+      <div class="branch"><b>Subiekt — FS:</b> model w bazie (FS ~7 200; łańcuch ZK→WZ→FS 6 152 kompletnych).
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ ślad w bazie, A6 widzi cały łańcuch</span></div>
+      </div>
+      <div class="step">Punkt 2 — KSeF</div>
+      <p class="tale">E-faktury: <span class="mchip" data-k="n16_ksef" data-v="tak">wysyłacie KSeF</span><span class="mchip" data-k="n16_ksef" data-v="nie">papier / PDF mailem</span><span class="mchip" data-k="n16_ksef" data-v="nie_wiem">nie wiemy</span><button class="irr" data-irk="n16_ksef">nieistotne</button>.</p>
+      <div class="branch"><b>KSeF:</b> struktura w bazie istnieje (ksef_*).
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="p">+ wysyłka ustrukturyzowana, automat może ją wystawić</span> &nbsp;<span class="m">− wymaga konfiguracji i podpisu</span></div>
+      </div>
+      <div class="step">Punkt 3 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. rozliczenie ciągnie się tygodniami po zakończeniu robót…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% rozliczeń końcowych po terminie z umowy</span></p>
+    </div>
+  </details>
+
+  <!-- ══════════════ WĘZEŁ 17 — ZAMKNIĘCIE ══════════════ -->
+  <details class="node-dd" open>
+    <summary class="node-h">
+      <span class="node-nr">17</span>
+      <div class="node-t"><h3>Zamknięcie / dokumentacja</h3><div class="node-meta">proces MAŁY · węzeł 17/17</div></div>
+      <span class="badge">🟨 do potwierdzenia</span><span class="arrow">▶</span>
+    </summary>
+    <div class="story">
+      <div class="step">Punkt 1 — dokumentacja</div>
+      <p class="tale">Dokumentacja powykonawcza: <span class="mchip" data-k="n17_dok" data-v="papier">4 egz. papier + 2 elektroniczne (umowa)</span><span class="mchip" data-k="n17_dok" data-v="segregator">segregator</span><span class="mchip" data-k="n17_dok" data-v="edb">EDB / dysk</span><button class="irr" data-irk="n17_dok">nieistotne</button>.</p>
+      <div class="branch"><b>Wymóg z umowy:</b> 4 egz. papier + 2 elektroniczne (pendrive + CD/DVD), rysunki DWG + PDF, deklaracje właściwości użytkowych, KOT/ETA, certyfikaty, DTR, instrukcje — składane w Biurze Budowy.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− komplet bez listy kontrolnej = brakujące certyfikaty i powtórne odbiory</span></div>
+        <div class="auto-note"><b>[automat]</b> lista kontrolna dokumentów per projekt — odhaczanie w trakcie robót zamiast na końcu.</div>
+      </div>
+      <div class="step">Punkt 2 — kiedy startuje kompletowanie</div>
+      <p class="tale">Kompletowanie startuje: <span class="mchip" data-k="n17_start" data-v="koniec">na końcu robót</span><span class="mchip" data-k="n17_start" data-v="trakcie">w trakcie</span><button class="irr" data-irk="n17_start">nieistotne</button>.</p>
+      <div class="branch"><b>Na końcu:</b> pośpiech.
+        <div class="give"><b>↳ DAJE / ODBIERA</b> &nbsp;<span class="m">− brakujące dokumenty = powtórne odbiory, opóźnienie FV finalnej</span></div>
+      </div>
+      <div class="step">Punkt 3 — odbiór</div>
+      <p class="tale">Odbiór: <span class="mchip" data-k="n17_odbior" data-v="od_razu">od razu OK</span><span class="mchip" data-k="n17_odbior" data-v="punch">punch lista — poprawki</span><button class="irr" data-irk="n17_odbior">nieistotne</button>.</p>
+      <div class="step">Punkt 4 — problemy</div>
+      <p class="tale">Problemy na tym etapie?
+      <textarea class="inline-ta" data-save placeholder="np. certyfikat okien znaleziony po odbiorze, wizyta poprawkowa…"></textarea>
+      Szacunkowo <input class="pct" type="number" min="0" max="100" placeholder="%"> <span class="pct-suffix">% projektów z powtórnym odbiorem</span></p>
+    </div>
+  </details>
+
+</div>
+
+  <div class="foot">
+    Dobry Dach · mapa procesów MAŁE · wersja narracyjna v0.8 · 18 węzłów · 2026-08-08 · automatyzacje A0–A7: zakładka „Automatyzacje”
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY = "dd_mapa_narracja_v5";
+  var chips = Array.prototype.slice.call(document.querySelectorAll(".mchip"));
+  var fields = Array.prototype.slice.call(document.querySelectorAll(".pct, .inline-ta"));
+  var SINGLE = {"typ":1,"rej":1,"kto_rej":1,"excel_kto":1,"dlaczego":1,"chk":1,"gdzie_saldo":1,"jak_hist":1,
+                "powr":1,"stara":1,"baza":1,"co_wpis":1,"zk_slad":1,"nigdy_skad":1,"proj":1,"nie_proj":1,
+                "term":1,"cena":1,"slad":1,"skrz":1,"wa_biz":1,"osob_w":1,"skan":1,"koniec":1,"urywa":1,
+                "n01_forma":1,"n01_kto":1,"n01_liczy":1,"n01_odczyt":1,"n01_wynik":1,"n01_baza":1,
+                "n03_kto":1,"n03_gdzie":1,"n03_postac":1,"n03_powiela":1,"n03_wersje":1,
+                "n02_ceny":1,"n02_marza":1,"n02_baza":1,
+                "n04_korekty":1,"n04_zapis":1,"n04_wersje":1,
+                "n05_akc":1,"n05_slad":1,"n05_sys":1,
+                "n06_szablon":1,"n06_obieg":1,"n06_lad":1,"n06_zmiany":1,
+                "n07_kto":1,"n07_odpala":1,"n07_rez":1,
+                "n08_gdzie":1,"n08_widza":1,"n08_ekipa":1,
+                "n09_zamow":1,"n09_kanal":1,"n09_rez":1,
+                "n10_wydaje":1,"n10_z_zk":1,"n10_wz_sys":1,"n10_ph_wie":1,
+                "n11_po_co":1,"n11_kiedy":1,
+                "n12_fv":1,"n12_wysylka":1,"n12_sciga":1,
+                "n13_dzis":1,"n13_godzina":1,"n13_kopie":1,
+                "n14_zmiana":1,"n14_wycena":1,"n14_slad":1,
+                "n15_por":1,"n15_roznica":1,"n15_kto":1,
+                "n16_fv":1,"n16_ksef":1,
+                "n17_dok":1,"n17_start":1,"n17_odbior":1};
+
+  function load(){
+    var data = {};
+    try { data = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){}
+    if(Object.keys(data).length === 0){ return; }
+    chips.forEach(function(c){ if(data[c.id]) c.classList.add("on"); });
+    fields.forEach(function(f){ if(data[f.id] !== undefined) f.value = data[f.id]; });
+    document.querySelectorAll(".irr").forEach(function(b){ if(data["irr_" + b.getAttribute("data-irk")]) b.classList.add("on"); });
+    applyIrr();
+  }
+  function persist(){
+    var data = {};
+    chips.forEach(function(c){ data[c.id] = c.classList.contains("on") ? 1 : 0; });
+    fields.forEach(function(f){ data[f.id] = f.value; });
+    document.querySelectorAll(".irr").forEach(function(b){ data["irr_" + b.getAttribute("data-irk")] = b.classList.contains("on") ? 1 : 0; });
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){}
+  }
+  var t;
+  function schedule(){ clearTimeout(t); t = setTimeout(function(){ persist(); }, 250); }
+  window.addEventListener("pagehide", function(){ clearTimeout(t); persist(); });
+
+  chips.forEach(function(c, i){
+    if(!c.id) c.id = "c" + i;
+    c.addEventListener("click", function(){
+      var k = c.getAttribute("data-k");
+      if(SINGLE[k]){
+        chips.forEach(function(x){
+          if(x !== c && x.getAttribute("data-k") === k) x.classList.remove("on");
+        });
+      }
+      c.classList.toggle("on");
+      schedule();
+    });
+  });
+  fields.forEach(function(f, i){
+    if(!f.id) f.id = "f" + i;
+    f.addEventListener("input", schedule);
+  });
+
+  // TABY
+  var tabBtns = Array.prototype.slice.call(document.querySelectorAll(".tab-btn"));
+  tabBtns.forEach(function(b){ b.addEventListener("click", function(){
+    tabBtns.forEach(function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    var show = b.getAttribute("data-tab");
+    document.getElementById("tab-auto").style.display = show === "auto" ? "block" : "none";
+    document.getElementById("tab-form").style.display = show === "form" ? "block" : "none";
+  }); });
+  // NIEISTOTNE — wyłączenie pytania z logiki
+  function applyIrr(){
+    document.querySelectorAll(".irr").forEach(function(btn){
+      var k = btn.getAttribute("data-irk");
+      var on = btn.classList.contains("on");
+      document.querySelectorAll('.mchip[data-k="' + k + '"]').forEach(function(c){ c.classList.toggle("irr", on); });
+      document.querySelectorAll(".branch").forEach(function(b){
+        if(b.querySelector('.mchip[data-k="' + k + '"]')) b.classList.toggle("irr", on);
+      });
+    });
+  }
+  Array.prototype.slice.call(document.querySelectorAll(".irr")).forEach(function(btn){
+    btn.addEventListener("click", function(){ btn.classList.toggle("on"); applyIrr(); schedule(); });
+  });
+  load();
+})();
+</script>
+</body>
+</html>
