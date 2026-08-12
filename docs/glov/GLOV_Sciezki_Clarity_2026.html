@@ -105,6 +105,30 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
 .m-chip.ok{background:#ecfdf5;border-color:#6ee7b7;color:#047857;}
 .m-chip.warn{background:#fff7ed;border-color:#fdba74;color:#9a3412;}
 .page-footer{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--textB);font-size:.72rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem;}
+.ga4ct{width:100%;border-collapse:collapse;font-size:.77rem;font-variant-numeric:tabular-nums;}
+.ga4ct th{text-align:right;padding:.4rem .6rem;border-bottom:2px solid var(--border);font-size:.67rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--textB);white-space:nowrap;}
+.ga4ct th:first-child,.ga4ct td:first-child{text-align:left;}
+.ga4ct td{padding:.38rem .6rem;border-bottom:1px solid var(--border);vertical-align:middle;text-align:right;}
+.ga4ct tr:last-child td{border-bottom:none;}
+.ga4ct tr:hover td{background:var(--surfaceB);}
+.idx-pill{display:inline-flex;align-items:center;justify-content:center;border-radius:4px;padding:.14rem .38rem;font-size:.73rem;font-weight:800;min-width:40px;font-variant-numeric:tabular-nums;}
+.idx-xhi{background:#d1fae5;color:#065f46;}.idx-hi{background:#dcfce7;color:#166534;}
+.idx-mid{background:#f0fdf4;color:#15803d;}.idx-neu{background:var(--surfaceB);color:var(--textB);}
+.idx-low{background:#fef3c7;color:#92400e;}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .idx-xhi{background:#064e3b;color:#6ee7b7;}
+:root:not([data-theme="light"]) .idx-hi{background:#14532d;color:#86efac;}
+:root:not([data-theme="light"]) .idx-mid{background:#052e16;color:#4ade80;}
+:root:not([data-theme="light"]) .idx-neu{background:var(--surfaceB);color:var(--textB);}
+:root:not([data-theme="light"]) .idx-low{background:#451a03;color:#fcd34d;}}
+:root[data-theme="dark"] .idx-xhi{background:#064e3b;color:#6ee7b7;}
+:root[data-theme="dark"] .idx-hi{background:#14532d;color:#86efac;}
+:root[data-theme="dark"] .idx-mid{background:#052e16;color:#4ade80;}
+:root[data-theme="dark"] .idx-low{background:#451a03;color:#fcd34d;}
+.ns-box{background:#fff7ed;border:1px solid #fed7aa;border-radius:9px;padding:1rem 1.25rem;margin-top:.75rem;box-shadow:var(--shadow);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .ns-box{background:#431407;border-color:#7c2d12;}}
+:root[data-theme="dark"] .ns-box{background:#431407;border-color:#7c2d12;}
+.ns-title{font-size:.77rem;font-weight:700;color:#c2410c;margin-bottom:.4rem;}
+.ga4ct td.int-col{text-align:left;font-size:.71rem;color:var(--textB);max-width:180px;}
 </style>
 <script>
 const SEQ_DATA=[
@@ -310,8 +334,92 @@ document.addEventListener('DOMContentLoaded',()=>{
     </div>
   </div>
 
+  <div class="section">
+    <div class="sec-lbl">Kontrast: GA4 cały ruch vs Clarity nabywcy · który punkt wejścia konwertuje ponadproporcjonalnie?</div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="overflow-x:auto;">
+        <table class="ga4ct">
+          <thead><tr>
+            <th style="text-align:left">Typ wejścia</th>
+            <th>GA4 sesje</th>
+            <th>GA4 %</th>
+            <th>GA4 CR</th>
+            <th>Clarity nabywcy %</th>
+            <th>Index ×</th>
+            <th style="text-align:left;min-width:160px">Signal</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="chip RUTYNA">RUTYNA</span></td>
+              <td>388</td><td>0,3%</td><td>0,77%</td><td>1,3%</td>
+              <td><span class="idx-pill idx-xhi">×4,3</span></td>
+              <td class="int-col">Ekstremalny over-index — mały ruch, ale kupujący regularnie startują z rutyna-*</td>
+            </tr>
+            <tr>
+              <td><span class="chip HP">HP</span></td>
+              <td>5 137</td><td>4,2%</td><td>3,47%</td><td>9,0%</td>
+              <td><span class="idx-pill idx-xhi">×2,1</span></td>
+              <td class="int-col">Strona główna = silny sygnał zakupowy; wejście przez HP prowadzi do zakupu ponad 2× częściej niż udział w ruchu</td>
+            </tr>
+            <tr>
+              <td><span class="chip LP">LP</span></td>
+              <td>762</td><td>0,6%</td><td>2,49%</td><td>1,2%</td>
+              <td><span class="idx-pill idx-hi">×2,0</span></td>
+              <td class="int-col">Landing pages specjalistyczne konwertują silnie — dedykowana oferta działa</td>
+            </tr>
+            <tr>
+              <td><span class="chip PDP">PDP</span></td>
+              <td>31 507</td><td>25,5%</td><td>2,26%</td><td>32,3%</td>
+              <td><span class="idx-pill idx-mid">×1,3</span></td>
+              <td class="int-col">Wejście na kartę produktu = buying intent — over-index zakupowy</td>
+            </tr>
+            <tr>
+              <td><span class="chip OTHER">OTHER</span></td>
+              <td>9 632</td><td>7,8%</td><td>0,21%</td><td>8,2%</td>
+              <td><span class="idx-pill idx-neu">×1,1</span></td>
+              <td class="int-col">Neutralny — CR GA4 prawie zerowe (strony account, FAQ, regulamin)</td>
+            </tr>
+            <tr>
+              <td><span class="chip KOLEKCJA">KOLEKCJA</span></td>
+              <td>53 147</td><td>43,0%</td><td>1,44%</td><td>39,5%</td>
+              <td><span class="idx-pill idx-low">×0,9</span></td>
+              <td class="int-col">Dominuje ruch, lekki under-index zakupowy — duży wolumen browsing bez zakupu</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:.6rem 1.25rem;background:var(--surfaceB);border-top:1px solid var(--border);font-size:.69rem;color:var(--textB);">GA4 property 342844459 · 123 642 sesji łącznie · indeks = (Clarity nabywcy %) / (GA4 sesje%) · NOT_SET wyłączony z tabeli (patrz niżej)</div>
+    </div>
+
+    <div class="ns-box">
+      <div class="ns-title">Martwa strefa: NOT_SET w GA4 — prawdopodobnie ruch Meta Ads przez in-app browser</div>
+      <div style="display:flex;gap:1.75rem;flex-wrap:wrap;align-items:flex-start;">
+        <div style="display:flex;flex-direction:column;gap:.5rem;flex-shrink:0;">
+          <div style="text-align:center;">
+            <div style="font-size:1.6rem;font-weight:800;color:#c2410c;line-height:1;font-variant-numeric:tabular-nums;">21 591</div>
+            <div style="font-size:.68rem;color:#9a3412;margin-top:.1rem;">sesji bez landing page</div>
+            <div style="font-size:.68rem;color:#9a3412;">17,5% całego ruchu</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.5rem;flex-shrink:0;">
+          <div style="background:#fee2e2;border-radius:6px;padding:.45rem .7rem;text-align:center;">
+            <div style="font-size:1.25rem;font-weight:800;color:#991b1b;font-variant-numeric:tabular-nums;">36,5%</div>
+            <div style="font-size:.67rem;color:#991b1b;">transakcji GA4</div>
+          </div>
+          <div style="background:#fee2e2;border-radius:6px;padding:.45rem .7rem;text-align:center;">
+            <div style="font-size:1.25rem;font-weight:800;color:#991b1b;font-variant-numeric:tabular-nums;">4,58%</div>
+            <div style="font-size:.67rem;color:#991b1b;">CR — najwyższy segment</div>
+          </div>
+        </div>
+        <div style="flex:1;min-width:220px;font-size:.76rem;color:var(--textB);line-height:1.65;">
+          GA4 nie widzi landing page dla 17,5% sesji — to typowy objaw ruchu Meta Ads przez Instagram/Facebook in-app browser, który nie wysyła <code>page_view</code> przy starcie sesji. Ten segment generuje <strong>36,5% wszystkich transakcji</strong> przy CR 4,58% — dwukrotnie wyższym niż KOLEKCJA (1,44%) i wyższym niż PDP (2,26%). <strong>W Clarity ta martwa strefa nie istnieje</strong> — nagrania są po URL, nie po UTM, więc nabywcy z Meta trafiają do KOLEKCJA/PDP/HP zgodnie z rzeczywistym landing page. Reko: Meta Conversions API (CAPI) lub Shopify server-side events dla pełnej atrybucji.
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="page-footer">
-    <span>GLOV Ecomms Lab · Clarity Analysis v1.4 · 2026-08-12</span>
-    <span>sciezki_clarity.py · sciezki_join.py</span>
+    <span>GLOV Ecomms Lab · Clarity Analysis v1.5 · 2026-08-12</span>
+    <span>sciezki_clarity.py · sciezki_join.py · GA4 342844459</span>
   </div>
 </div>
