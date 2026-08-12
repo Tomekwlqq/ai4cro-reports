@@ -1,217 +1,245 @@
 <title>GLOV — Ścieżki Zakupowe · Clarity 2026</title>
 <style>
-/* ── tokens ──────────────────────────────────────────────────────── */
 :root {
-  --bg:      #f7f8fc;
-  --surface: #ffffff;
-  --surfaceB:#f0f2f8;
-  --text:    #1c2230;
-  --textB:   #5a6880;
-  --border:  #dde1ec;
-  --shadow:  0 1px 3px rgba(28,34,48,.07), 0 4px 12px rgba(28,34,48,.05);
+  --bg:#f7f8fc; --surface:#fff; --surfaceB:#f0f2f8; --text:#1c2230; --textB:#5a6880; --border:#dde1ec;
+  --shadow:0 1px 3px rgba(28,34,48,.07),0 4px 12px rgba(28,34,48,.05);
+  --cHP:#f59e0b; --cPDP:#3b82f6; --cKOL:#10b981; --cCART:#6366f1; --cOTH:#94a3b8;
+  --cLAND:#ef4444; --cRUT:#8b5cf6; --cLP:#f97316;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141924;--surface:#1e2740;--surfaceB:#252f47;--text:#e4eaf7;--textB:#8a95aa;--border:#2d3a54;
+  --shadow:0 1px 3px rgba(0,0,0,.25),0 4px 12px rgba(0,0,0,.2);
+}}
+:root[data-theme="dark"]{--bg:#141924;--surface:#1e2740;--surfaceB:#252f47;--text:#e4eaf7;--textB:#8a95aa;--border:#2d3a54;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:14px;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',system-ui,sans-serif;line-height:1.5;padding-bottom:3rem;}
 
-  --cH: #f59e0b;   /* Ś-H quick-add */
-  --cB: #3b82f6;   /* Ś-B PDP */
-  --cF: #6366f1;   /* Ś-F cart recovery */
-  --cA: #10b981;   /* Ś-A listing pełny */
-  --cC: #8b5cf6;   /* Ś-C search */
-  --cD: #ec4899;   /* Ś-D HP */
-  --cE: #ef4444;   /* Ś-E landing */
-  --cX: #94a3b8;   /* inne */
-}
+.container{max-width:1040px;margin:0 auto;padding:0 1.25rem;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+@media(max-width:640px){.grid-3,.grid-2{grid-template-columns:1fr;}}
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg:      #141924;
-    --surface: #1e2740;
-    --surfaceB:#252f47;
-    --text:    #e4eaf7;
-    --textB:   #8a95aa;
-    --border:  #2d3a54;
-    --shadow:  0 1px 3px rgba(0,0,0,.25), 0 4px 12px rgba(0,0,0,.2);
-  }
-}
-:root[data-theme="dark"] {
-  --bg:      #141924;
-  --surface: #1e2740;
-  --surfaceB:#252f47;
-  --text:    #e4eaf7;
-  --textB:   #8a95aa;
-  --border:  #2d3a54;
-  --shadow:  0 1px 3px rgba(0,0,0,.25), 0 4px 12px rgba(0,0,0,.2);
-}
+.page-header{background:var(--surface);border-bottom:1px solid var(--border);padding:1.75rem 0 1.25rem;margin-bottom:1.75rem;}
+.inner{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:.75rem;}
+.page-title{font-size:1.4rem;font-weight:800;letter-spacing:-.025em;}
+.page-sub{font-size:.78rem;color:var(--textB);margin-top:.2rem;}
+.badge{display:inline-flex;align-items:center;gap:.35rem;background:var(--surfaceB);border:1px solid var(--border);border-radius:5px;padding:.3rem .65rem;font-size:.72rem;font-weight:600;color:var(--textB);}
+.dot{width:6px;height:6px;border-radius:50%;background:#0078d4;}
 
-/* ── reset + base ────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 15px; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
-  line-height: 1.55;
-  padding: 0 0 3rem;
-}
+.section{margin-bottom:1.75rem;}
+.sec-lbl{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--textB);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--border);}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:1.1rem 1.25rem;box-shadow:var(--shadow);}
 
-/* ── layout ──────────────────────────────────────────────────────── */
-.container { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
-.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-@media (max-width: 640px) {
-  .grid-3 { grid-template-columns: 1fr; }
-  .grid-2 { grid-template-columns: 1fr; }
-}
+.kpi-value{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;}
+.kpi-label{font-size:.75rem;color:var(--textB);margin-top:.35rem;}
 
-/* ── header ──────────────────────────────────────────────────────── */
-.page-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 2rem 0 1.5rem;
-  margin-bottom: 2rem;
-}
-.page-header .inner { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-.page-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -.02em; text-wrap: balance; }
-.page-sub { font-size: .82rem; color: var(--textB); margin-top: .25rem; font-variant-numeric: tabular-nums; }
-.badge-clarity {
-  display: inline-flex; align-items: center; gap: .4rem;
-  background: var(--surfaceB); border: 1px solid var(--border);
-  border-radius: 6px; padding: .35rem .75rem;
-  font-size: .78rem; font-weight: 600; letter-spacing: .03em; color: var(--textB);
-}
-.dot-ms { width: 7px; height: 7px; border-radius: 50%; background: #0078d4; }
+/* correction */
+.corr-wrap{background:var(--surface);border:1px solid var(--border);border-radius:9px;overflow:hidden;box-shadow:var(--shadow);}
+.corr-head{padding:.7rem 1.25rem;border-bottom:1px solid var(--border);font-size:.78rem;color:var(--textB);display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.tag-fix{background:#fef3c7;color:#92400e;border-radius:3px;padding:.1rem .45rem;font-size:.66rem;font-weight:800;flex-shrink:0;}
+.corr-grid{display:grid;grid-template-columns:1fr 44px 1fr;padding:1.1rem 1.25rem;gap:.75rem;align-items:center;}
+.ba-side{display:flex;flex-direction:column;gap:.42rem;}
+.ba-lbl{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--textB);}
+.ba-row{display:flex;align-items:center;gap:.45rem;font-size:.75rem;font-variant-numeric:tabular-nums;}
+.ba-pct{width:32px;text-align:right;flex-shrink:0;font-weight:700;}
+.ba-bar{height:7px;border-radius:3px;}
+.ba-name{font-size:.7rem;color:var(--textB);width:72px;}
+.arr{display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--border);}
 
-/* ── section ─────────────────────────────────────────────────────── */
-.section { margin-bottom: 2rem; }
-.section-label {
-  font-size: .72rem; font-weight: 700; letter-spacing: .08em;
-  text-transform: uppercase; color: var(--textB);
-  margin-bottom: .875rem; display: flex; align-items: center; gap: .5rem;
-}
-.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+/* sequences table */
+.seq-table{width:100%;border-collapse:collapse;font-size:.78rem;}
+.seq-table th{text-align:left;padding:.45rem .6rem;border-bottom:2px solid var(--border);font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--textB);white-space:nowrap;}
+.seq-table td{padding:.36rem .6rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.seq-table tr:last-child td{border-bottom:none;}
+.seq-table tr:hover td{background:var(--surfaceB);}
+.rank{color:var(--textB);font-variant-numeric:tabular-nums;text-align:right;min-width:22px;font-size:.7rem;}
+.seq-n{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;min-width:30px;}
+.seq-pct{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;min-width:40px;}
+.seq-cum{font-variant-numeric:tabular-nums;text-align:right;min-width:40px;color:var(--textB);font-size:.71rem;}
 
-/* ── card ────────────────────────────────────────────────────────── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1.25rem 1.5rem;
-  box-shadow: var(--shadow);
-}
+.chips{display:flex;flex-wrap:wrap;align-items:center;gap:3px;}
+.chip{display:inline-flex;align-items:center;padding:.08rem .38rem;border-radius:3px;font-size:.67rem;font-weight:600;white-space:nowrap;line-height:1.4;font-family:-apple-system,'Segoe UI',system-ui,sans-serif;}
+.CART{background:#ede9fe;color:#4338ca;} .PDP{background:#dbeafe;color:#1d4ed8;}
+.KOLEKCJA{background:#d1fae5;color:#065f46;} .HP{background:#fef3c7;color:#92400e;}
+.OTHER{background:#f1f5f9;color:#475569;} .LANDING{background:#fee2e2;color:#991b1b;}
+.RUTYNA{background:#f3e8ff;color:#6d28d9;} .LP{background:#ffedd5;color:#9a3412;}
+.CHECKOUT{background:#f0fdf4;color:#166534;} .BLOG{background:#f1f5f9;color:#64748b;}
+.SEARCH{background:#ede9fe;color:#6d28d9;} .UNKNOWN{background:#f1f5f9;color:#475569;}
+.arrow{color:var(--textB);font-size:.63rem;padding:0 1px;}
+.repeat-num{background:var(--surfaceB);color:var(--textB);border:1px solid var(--border);font-size:.63rem;padding:.05rem .3rem;border-radius:3px;font-weight:700;}
 
-/* ── kpi cards ───────────────────────────────────────────────────── */
-.kpi-value {
-  font-size: 2.1rem; font-weight: 800; letter-spacing: -.03em;
-  font-variant-numeric: tabular-nums; line-height: 1;
-}
-.kpi-label { font-size: .8rem; color: var(--textB); margin-top: .4rem; }
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .CART{background:#2e1065;color:#c4b5fd;}
+:root:not([data-theme="light"]) .PDP{background:#1e3a5f;color:#93c5fd;}
+:root:not([data-theme="light"]) .KOLEKCJA{background:#064e3b;color:#6ee7b7;}
+:root:not([data-theme="light"]) .HP{background:#451a03;color:#fcd34d;}
+:root:not([data-theme="light"]) .OTHER{background:#1e293b;color:#94a3b8;}
+:root:not([data-theme="light"]) .LANDING{background:#450a0a;color:#fca5a5;}
+:root:not([data-theme="light"]) .RUTYNA{background:#2e1065;color:#c4b5fd;}
+:root:not([data-theme="light"]) .LP{background:#431407;color:#fdba74;}}
+:root[data-theme="dark"] .CART{background:#2e1065;color:#c4b5fd;}
+:root[data-theme="dark"] .PDP{background:#1e3a5f;color:#93c5fd;}
+:root[data-theme="dark"] .KOLEKCJA{background:#064e3b;color:#6ee7b7;}
+:root[data-theme="dark"] .HP{background:#451a03;color:#fcd34d;}
+:root[data-theme="dark"] .RUTYNA{background:#2e1065;color:#c4b5fd;}
+:root[data-theme="dark"] .LP{background:#431407;color:#fdba74;}
 
-/* ── KOREKTA — before/after ──────────────────────────────────────── */
-.correction-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-.correction-title {
-  padding: .9rem 1.5rem;
-  border-bottom: 1px solid var(--border);
-  font-size: .85rem; font-weight: 700; color: var(--textB); letter-spacing: .02em;
-  display: flex; align-items: center; gap: .5rem;
-}
-.correction-title .tag-fix {
-  background: #fef3c7; color: #92400e;
-  border-radius: 4px; padding: .15rem .5rem; font-size: .7rem; font-weight: 800;
-}
-:root[data-theme="dark"] .correction-title .tag-fix,
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .correction-title .tag-fix }
-{ background: #422006; color: #fbbf24; }
+.bar-cell{width:90px;}
+.mini-track{height:5px;background:var(--surfaceB);border-radius:2px;overflow:hidden;}
+.mini-fill{height:100%;border-radius:2px;background:var(--cKOL);}
 
-.correction-grid {
-  display: grid; grid-template-columns: 1fr 60px 1fr;
-  padding: 1.5rem;
-  gap: 1rem;
-  align-items: center;
-}
-.ba-side { display: flex; flex-direction: column; gap: .6rem; }
-.ba-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--textB); }
-.ba-title { font-size: .95rem; font-weight: 700; }
-.ba-bar-wrap { display: flex; flex-direction: column; gap: .35rem; }
-.ba-bar-row { display: flex; align-items: center; gap: .5rem; font-size: .78rem; font-variant-numeric: tabular-nums; }
-.ba-bar-row span:first-child { width: 24px; text-align: right; flex-shrink: 0; }
-.ba-bar-inner { height: 8px; border-radius: 3px; transition: width .3s; }
-.ba-bar-name { color: var(--textB); font-size: .74rem; width: 40px; }
-.arrow-col { display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: var(--border); }
-.highlight-fix { color: var(--cF); font-weight: 800; }
-.highlight-good { color: #10b981; font-weight: 800; }
+.sing-row td{color:var(--textB);font-style:italic;background:var(--surfaceB);}
 
-/* ── path distribution bars ──────────────────────────────────────── */
-.path-bar-row {
-  display: grid;
-  grid-template-columns: 80px 1fr 50px 50px;
-  align-items: center; gap: .75rem;
-  padding: .5rem 0;
-  border-bottom: 1px solid var(--border);
-  font-size: .83rem;
-}
-.path-bar-row:last-child { border-bottom: none; }
-.path-code {
-  font-weight: 700; font-size: .88rem;
-  display: flex; align-items: center; gap: .5rem;
-}
-.path-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.path-track { height: 10px; background: var(--surfaceB); border-radius: 4px; overflow: hidden; }
-.path-fill { height: 100%; border-radius: 4px; }
-.path-n { font-variant-numeric: tabular-nums; text-align: right; color: var(--textB); }
-.path-pct { font-variant-numeric: tabular-nums; text-align: right; font-weight: 700; }
-.path-desc { font-size: .75rem; color: var(--textB); grid-column: 2; margin-top: -.2rem; padding-bottom: .3rem; }
+/* entry bars */
+.e-row{display:flex;align-items:center;gap:.6rem;padding:.38rem 0;border-bottom:1px solid var(--border);font-size:.78rem;}
+.e-row:last-child{border-bottom:none;}
+.e-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.e-name{width:76px;font-weight:600;font-size:.75rem;}
+.e-track{flex:1;height:7px;background:var(--surfaceB);border-radius:3px;overflow:hidden;}
+.e-fill{height:100%;border-radius:3px;}
+.e-pct{width:38px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;}
+.e-n{width:28px;text-align:right;color:var(--textB);font-size:.71rem;font-variant-numeric:tabular-nums;}
 
-/* ── entry points ────────────────────────────────────────────────── */
-.entry-row { display: flex; align-items: center; gap: .75rem; padding: .45rem 0; border-bottom: 1px solid var(--border); font-size: .83rem; }
-.entry-row:last-child { border-bottom: none; }
-.entry-name { width: 80px; font-weight: 600; font-size: .8rem; }
-.entry-track { flex: 1; height: 8px; background: var(--surfaceB); border-radius: 4px; overflow: hidden; }
-.entry-fill { height: 100%; border-radius: 4px; background: var(--cB); }
-.entry-pct { width: 42px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
-.entry-n { width: 36px; text-align: right; color: var(--textB); font-size: .75rem; font-variant-numeric: tabular-nums; }
+/* bf */
+.bf-box{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;}
+.bf-m{text-align:center;}
+.bf-big{font-size:1.75rem;font-weight:800;letter-spacing:-.03em;line-height:1;}
+.bf-lbl{font-size:.7rem;color:var(--textB);margin-top:.2rem;}
+.bf-div{width:1px;height:40px;background:var(--border);}
 
-/* ── sequences ───────────────────────────────────────────────────── */
-.seq-row { display: flex; align-items: baseline; gap: .75rem; padding: .42rem 0; border-bottom: 1px solid var(--border); font-size: .8rem; }
-.seq-row:last-child { border-bottom: none; }
-.seq-rank { width: 18px; color: var(--textB); font-variant-numeric: tabular-nums; font-size: .72rem; text-align: right; }
-.seq-path { flex: 1; font-family: 'SF Mono', 'Consolas', monospace; font-size: .74rem; color: var(--text); word-break: break-word; }
-.seq-n { width: 32px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; color: var(--textB); }
-.seq-pct { width: 42px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+/* method */
+.m-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem;}
+.m-chip{font-size:.68rem;padding:.14rem .5rem;border-radius:20px;border:1px solid var(--border);background:var(--surfaceB);color:var(--textB);font-weight:600;}
+.m-chip.ok{background:#ecfdf5;border-color:#6ee7b7;color:#047857;}
+.m-chip.warn{background:#fff7ed;border-color:#fdba74;color:#9a3412;}
 
-/* ── BF metric ───────────────────────────────────────────────────── */
-.bf-box {
-  display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
-}
-.bf-metric { text-align: center; }
-.bf-big { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
-.bf-lbl { font-size: .72rem; color: var(--textB); margin-top: .25rem; }
-.bf-divider { width: 1px; height: 48px; background: var(--border); }
-
-/* ── methods note ────────────────────────────────────────────────── */
-.method-chips { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
-.chip {
-  font-size: .72rem; padding: .2rem .65rem; border-radius: 20px; border: 1px solid var(--border);
-  background: var(--surfaceB); color: var(--textB); font-weight: 600;
-}
-.chip.ok { background: #ecfdf5; border-color: #6ee7b7; color: #047857; }
-.chip.warn { background: #fff7ed; border-color: #fdba74; color: #9a3412; }
-
-/* ── footer ──────────────────────────────────────────────────────── */
-.page-footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); color: var(--textB); font-size: .75rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; }
+.page-footer{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--textB);font-size:.72rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem;}
 </style>
 
-<!-- HEADER -->
+<script>
+const SEQ_DATA = [
+  [118,13.4,"CART"],
+  [98,11.1,"PDP → CART"],
+  [88,10.0,"KOLEKCJA → CART"],
+  [24,2.7,"OTHER → CART"],
+  [18,2.0,"HP → CART"],
+  [18,2.0,"PDP → CART → PDP"],
+  [14,1.6,"CART → CART"],
+  [13,1.5,"KOLEKCJA → CART → CART"],
+  [12,1.4,"PDP → CART → CART"],
+  [11,1.2,"OTHER"],
+  [10,1.1,"KOLEKCJA → KOLEKCJA → CART"],
+  [8,0.9,"PDP → PDP → CART"],
+  [5,0.6,"KOLEKCJA → KOLEKCJA → KOLEKCJA → CART"],
+  [5,0.6,"RUTYNA → CART"],
+  [5,0.6,"KOLEKCJA → CART → PDP"],
+  [5,0.6,"KOLEKCJA → KOLEKCJA → KOLEKCJA → KOLEKCJA → CART"],
+  [5,0.6,"PDP → CART → PDP → PDP"],
+  [4,0.5,"PDP → CART → HP"],
+  [4,0.5,"PDP → PDP → PDP → CART"],
+  [4,0.5,"KOLEKCJA → CART → KOLEKCJA"],
+  [3,0.3,"OTHER → CART → CART"],
+  [3,0.3,"KOLEKCJA × 10 → CART"],
+  [3,0.3,"KOLEKCJA → CART → KOLEKCJA → KOLEKCJA → KOLEKCJA"],
+  [3,0.3,"CART → PDP → CART"],
+  [3,0.3,"KOLEKCJA → CART → CART → CART"],
+  [3,0.3,"KOLEKCJA → CART → KOLEKCJA → KOLEKCJA"],
+  [3,0.3,"OTHER × 6"],
+  [3,0.3,"HP → CART → CART"],
+  [3,0.3,"CART → KOLEKCJA"],
+  [3,0.3,"PDP → CART → KOLEKCJA"],
+  [3,0.3,"CART → PDP"],
+  [3,0.3,"KOLEKCJA → KOLEKCJA → CART → CART"],
+  [2,0.2,"KOLEKCJA × 5 → CART"],
+  [2,0.2,"PDP → CART → CART → PDP → PDP"],
+  [2,0.2,"HP → CART → PDP → PDP"],
+  [2,0.2,"HP → CART → PDP"],
+  [2,0.2,"KOLEKCJA × 7 → CART"],
+  [2,0.2,"PDP → PDP → PDP → CART → CART → CART"],
+  [2,0.2,"KOLEKCJA → HP → CART"],
+  [2,0.2,"KOLEKCJA × 9 → CART → CART"],
+  [2,0.2,"CART → CART → HP"],
+  [2,0.2,"CART → HP → HP"],
+  [2,0.2,"HP → CART → HP → CART"],
+  [2,0.2,"PDP → PDP → CART → PDP"],
+  [2,0.2,"PDP × 4 → CART"],
+  [2,0.2,"KOLEKCJA × 9 → CART → HP"],
+  [2,0.2,"CART × 3"],
+  [2,0.2,"CART → PDP → PDP"],
+  [2,0.2,"PDP → PDP → CART → CART"],
+  [2,0.2,"OTHER → CART → PDP"],
+  [2,0.2,"KOLEKCJA → KOLEKCJA → PDP → PDP → CART → CART"],
+  [2,0.2,"KOLEKCJA → CART → KOLEKCJA → KOLEKCJA → CART"],
+  [2,0.2,"KOLEKCJA → CART → PDP → KOLEKCJA"],
+  [2,0.2,"PDP → CART → CART → CART"],
+  [2,0.2,"KOLEKCJA × 4 → CART → CART → KOLEKCJA"],
+  [2,0.2,"HP → KOLEKCJA → KOLEKCJA → KOLEKCJA → CART"],
+  [2,0.2,"PDP → CART → PDP → CART"],
+];
+
+const CHIP_COLORS = {
+  CART:'CART',PDP:'PDP',KOLEKCJA:'KOLEKCJA',HP:'HP',OTHER:'OTHER',
+  LANDING:'LANDING',RUTYNA:'RUTYNA',LP:'LP',CHECKOUT:'CHECKOUT',
+  BLOG:'BLOG',SEARCH:'SEARCH',
+};
+
+function makeChip(label) {
+  // Handle compressed labels like "KOLEKCJA × 10", "KOLEKCJA × 7", "OTHER × 6", "PDP × 4", "CART × 3"
+  const multMatch = label.match(/^(\w+)\s*[×x]\s*(\d+)$/);
+  if (multMatch) {
+    const [, type, count] = multMatch;
+    const cls = CHIP_COLORS[type] || 'UNKNOWN';
+    return `<span class="chip ${cls}">${type}</span><span class="repeat-num">×${count}</span>`;
+  }
+  const cls = CHIP_COLORS[label.trim()] || 'UNKNOWN';
+  return `<span class="chip ${cls}">${label}</span>`;
+}
+
+function renderSeq(seq) {
+  // Check for pre-compressed labels first (contains ×)
+  const parts = seq.split(' → ');
+  const out = [];
+  for (let i = 0; i < parts.length; i++) {
+    out.push(makeChip(parts[i]));
+    if (i < parts.length - 1) out.push('<span class="arrow">→</span>');
+  }
+  return out.join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const tbody = document.getElementById('seqTbody');
+  const maxN = SEQ_DATA[0][0];
+  let cum = 0;
+  SEQ_DATA.forEach(([cnt, pct, seq], idx) => {
+    cum += pct;
+    const bw = Math.round(cnt / maxN * 100);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="rank">${idx+1}</td>
+      <td><div class="chips">${renderSeq(seq)}</div></td>
+      <td class="bar-cell"><div class="mini-track"><div class="mini-fill" style="width:${bw}%"></div></div></td>
+      <td class="seq-n">${cnt}</td>
+      <td class="seq-pct">${pct.toFixed(1)}%</td>
+      <td class="seq-cum">${cum.toFixed(1)}%</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  // singletons row
+  const sr = document.createElement('tr');
+  sr.className = 'sing-row';
+  sr.innerHTML = `<td>—</td><td colspan="2">328 unikalnych ścieżek (singletony — każda dokładnie 1 raz)</td><td class="seq-n">328</td><td class="seq-pct">37,1%</td><td class="seq-cum">100%</td>`;
+  tbody.appendChild(sr);
+});
+</script>
+
 <header class="page-header">
   <div class="container inner">
     <div>
-      <div class="page-title">Ścieżki Zakupowe GLOV</div>
-      <div class="page-sub">Microsoft Clarity · 883 sesji z Checkout · 20 maj – 12 sierpień 2026</div>
+      <div class="page-title">Ścieżki Zakupowe GLOV — Microsoft Clarity</div>
+      <div class="page-sub">883 sesji z Checkout event · 20 maj – 12 sierpień 2026 · każda ścieżka liczona oddzielnie</div>
     </div>
-    <div class="badge-clarity"><span class="dot-ms"></span>Clarity wu1nvuvh9y</div>
+    <div class="badge"><span class="dot"></span>Clarity wu1nvuvh9y</div>
   </div>
 </header>
 
@@ -224,328 +252,167 @@ body {
       <div class="kpi-label">sesji zakupowych (Checkout event)</div>
     </div>
     <div class="card">
-      <div class="kpi-value">5,6</div>
-      <div class="kpi-label">śr. kroków na sesję do checkoutu</div>
+      <div class="kpi-value">385</div>
+      <div class="kpi-label">unikalnych ścieżek — każda inny start/przebieg</div>
     </div>
     <div class="card">
-      <div class="kpi-value">11%</div>
-      <div class="kpi-label">sesji z back-and-forth (PDP ↔ Listing)</div>
+      <div class="kpi-value">57</div>
+      <div class="kpi-label">ścieżek powtarzalnych (N≥2) — tabela poniżej</div>
     </div>
   </div>
 
   <!-- KOREKTA -->
   <div class="section">
-    <div class="section-label">Korekta fragmentacji sesji</div>
-    <div class="correction-wrap">
-      <div class="correction-title">
-        <span>Clarity dzieli sesje na 15-min przerwy inaktywności — "CART-entry" był zawyżony o sesje fragmentowane</span>
+    <div class="sec-lbl">Korekta fragmentacji sesji</div>
+    <div class="corr-wrap">
+      <div class="corr-head">
+        Clarity kończy sesję po 15 min inaktywności — CART-entry było zawyżone o fragmenty sesji przeglądania
         <span class="tag-fix">POPRAWIONE</span>
       </div>
-      <div class="correction-grid">
+      <div class="corr-grid">
         <div class="ba-side">
-          <div class="ba-label">Przed korektą (raw)</div>
-          <div class="ba-bar-wrap">
-            <div class="ba-bar-row">
-              <span class="highlight-fix">51%</span>
-              <div class="ba-bar-inner" style="background:var(--cF); width:100%; max-width:180px;"></div>
-              <span class="ba-bar-name">Ś-F</span>
-            </div>
-            <div class="ba-bar-row">
-              <span>15%</span>
-              <div class="ba-bar-inner" style="background:var(--cH); width:30%; max-width:180px;"></div>
-              <span class="ba-bar-name">Ś-H</span>
-            </div>
-            <div class="ba-bar-row">
-              <span>15%</span>
-              <div class="ba-bar-inner" style="background:var(--cB); width:30%; max-width:180px;"></div>
-              <span class="ba-bar-name">Ś-B</span>
-            </div>
-            <div class="ba-bar-row">
-              <span>9%</span>
-              <div class="ba-bar-inner" style="background:var(--cA); width:18%; max-width:180px;"></div>
-              <span class="ba-bar-name">Ś-A</span>
-            </div>
-          </div>
+          <div class="ba-lbl">Przed korektą (raw)</div>
+          <div class="ba-row"><span class="ba-pct" style="color:var(--cCART)">51%</span><div class="ba-bar" style="background:var(--cCART);width:100px"></div><span class="ba-name">CART-entry</span></div>
+          <div class="ba-row"><span class="ba-pct" style="color:var(--cKOL)">23%</span><div class="ba-bar" style="background:var(--cKOL);width:45px"></div><span class="ba-name">KOLEKCJA-entry</span></div>
+          <div class="ba-row"><span class="ba-pct" style="color:var(--cPDP)">16%</span><div class="ba-bar" style="background:var(--cPDP);width:31px"></div><span class="ba-name">PDP-entry</span></div>
         </div>
-        <div class="arrow-col">→</div>
+        <div class="arr">→</div>
         <div class="ba-side">
-          <div class="ba-label">Po korekcji referrera</div>
-          <div class="ba-bar-wrap">
-            <div class="ba-bar-row">
-              <span>28%</span>
-              <div class="ba-bar-inner" style="background:var(--cH); width:55%; max-width:180px;"></div>
-              <span class="ba-bar-name" style="color:var(--cH); font-weight:700;">Ś-H</span>
-            </div>
-            <div class="ba-bar-row">
-              <span>27%</span>
-              <div class="ba-bar-inner" style="background:var(--cB); width:53%; max-width:180px;"></div>
-              <span class="ba-bar-name" style="color:var(--cB); font-weight:700;">Ś-B</span>
-            </div>
-            <div class="ba-bar-row">
-              <span class="highlight-good">20%</span>
-              <div class="ba-bar-inner" style="background:var(--cF); width:39%; max-width:180px;"></div>
-              <span class="ba-bar-name">Ś-F</span>
-            </div>
-            <div class="ba-bar-row">
-              <span>10%</span>
-              <div class="ba-bar-inner" style="background:var(--cA); width:20%; max-width:180px;"></div>
-              <span class="ba-bar-name">Ś-A</span>
-            </div>
-          </div>
+          <div class="ba-lbl">Po korekcji referrera (+join)</div>
+          <div class="ba-row"><span class="ba-pct" style="color:var(--cKOL)">34%</span><div class="ba-bar" style="background:var(--cKOL);width:100px"></div><span class="ba-name">KOLEKCJA-entry</span></div>
+          <div class="ba-row"><span class="ba-pct" style="color:var(--cPDP)">28%</span><div class="ba-bar" style="background:var(--cPDP);width:82px"></div><span class="ba-name">PDP-entry</span></div>
+          <div class="ba-row"><span class="ba-pct" style="color:var(--cCART)">20%</span><div class="ba-bar" style="background:var(--cCART);width:59px"></div><span class="ba-name" style="font-weight:600;color:#10b981">CART-entry</span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- PATH DISTRIBUTION -->
+  <!-- LEGENDA TYPÓW -->
   <div class="section">
-    <div class="section-label">Rozkład ścieżek zakupowych</div>
-    <div class="card">
-      <div class="path-bar-row" style="border-bottom:1px solid var(--border); padding-bottom:.3rem; margin-bottom:.3rem; font-size:.72rem; color:var(--textB); font-weight:600; text-transform:uppercase; letter-spacing:.05em;">
-        <div>Typ</div><div>Udział</div><div>N</div><div>%</div>
-      </div>
-
-      <div class="path-bar-row">
-        <div class="path-code"><span class="path-dot" style="background:var(--cH)"></span>Ś-H</div>
-        <div>
-          <div class="path-track"><div class="path-fill" style="background:var(--cH); width:100%"></div></div>
-          <div class="path-desc">Quick-add — Listing / HP → bezpośrednio koszyk (brak PDP)</div>
-        </div>
-        <div class="path-n">246</div>
-        <div class="path-pct" style="color:var(--cH)">27,9%</div>
-      </div>
-
-      <div class="path-bar-row">
-        <div class="path-code"><span class="path-dot" style="background:var(--cB)"></span>Ś-B</div>
-        <div>
-          <div class="path-track"><div class="path-fill" style="background:var(--cB); width:97%"></div></div>
-          <div class="path-desc">PDP-driven — wejście bezpośrednio na produkt (reklama)</div>
-        </div>
-        <div class="path-n">239</div>
-        <div class="path-pct" style="color:var(--cB)">27,1%</div>
-      </div>
-
-      <div class="path-bar-row">
-        <div class="path-code"><span class="path-dot" style="background:var(--cF)"></span>Ś-F</div>
-        <div>
-          <div class="path-track"><div class="path-fill" style="background:var(--cF); width:73%"></div></div>
-          <div class="path-desc">Cart Recovery — powrót bezpośrednio do koszyka</div>
-        </div>
-        <div class="path-n">179</div>
-        <div class="path-pct" style="color:var(--cF)">20,3%</div>
-      </div>
-
-      <div class="path-bar-row">
-        <div class="path-code"><span class="path-dot" style="background:var(--cA)"></span>Ś-A</div>
-        <div>
-          <div class="path-track"><div class="path-fill" style="background:var(--cA); width:36%"></div></div>
-          <div class="path-desc">Discovery pełny — Listing → PDP → Koszyk</div>
-        </div>
-        <div class="path-n">89</div>
-        <div class="path-pct" style="color:var(--cA)">10,1%</div>
-      </div>
-
-      <div class="path-bar-row">
-        <div class="path-code"><span class="path-dot" style="background:var(--cX)"></span>Inne</div>
-        <div>
-          <div class="path-track"><div class="path-fill" style="background:var(--cX); width:26%"></div></div>
-          <div class="path-desc">Niesklasyfikowane</div>
-        </div>
-        <div class="path-n">64</div>
-        <div class="path-pct" style="color:var(--cX)">7,2%</div>
-      </div>
-
-      <div class="path-bar-row">
-        <div class="path-code"><span class="path-dot" style="background:var(--cC)"></span>Ś-C</div>
-        <div>
-          <div class="path-track"><div class="path-fill" style="background:var(--cC); width:10.5%"></div></div>
-          <div class="path-desc">Search-driven — wejście przez wyszukiwarkę</div>
-        </div>
-        <div class="path-n">26</div>
-        <div class="path-pct" style="color:var(--cC)">2,9%</div>
-      </div>
-
-      <div class="path-bar-row">
-        <div class="path-code"><span class="path-dot" style="background:var(--cD)"></span>Ś-D</div>
-        <div>
-          <div class="path-track"><div class="path-fill" style="background:var(--cD); width:8%"></div></div>
-          <div class="path-desc">Homepage-driven — wejście na stronę główną</div>
-        </div>
-        <div class="path-n">20</div>
-        <div class="path-pct" style="color:var(--cD)">2,3%</div>
-      </div>
-
-      <div class="path-bar-row">
-        <div class="path-code"><span class="path-dot" style="background:var(--cE)"></span>Ś-E</div>
-        <div>
-          <div class="path-track"><div class="path-fill" style="background:var(--cE); width:8%"></div></div>
-          <div class="path-desc">Landing-driven — wejście przez stronę lądowania</div>
-        </div>
-        <div class="path-n">20</div>
-        <div class="path-pct" style="color:var(--cE)">2,3%</div>
+    <div class="sec-lbl">Typy stron — legenda</div>
+    <div class="card" style="padding:.85rem 1.25rem;">
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;font-size:.75rem;">
+        <span class="chip KOLEKCJA">KOLEKCJA</span><span style="color:var(--textB)">/collections/* — strona kategorii (sklep, twarz, ciało, włosy…)</span>
+        <span style="color:var(--border)">·</span>
+        <span class="chip PDP">PDP</span><span style="color:var(--textB)">/products/* — karta produktu</span>
+        <span style="color:var(--border)">·</span>
+        <span class="chip RUTYNA">RUTYNA</span><span style="color:var(--textB)">/pages/rutyna-* — LP rutyn (coolnails, ciało, wieczorna)</span>
+        <span style="color:var(--border)">·</span>
+        <span class="chip LP">LP</span><span style="color:var(--textB)">/pages/terapia-swiatlem-led, /pages/iconic-mitt… — LP kolekcji produktowej</span>
+        <span style="color:var(--border)">·</span>
+        <span class="chip HP">HP</span><span style="color:var(--textB)">/ — strona główna</span>
+        <span style="color:var(--border)">·</span>
+        <span class="chip CART">CART</span><span style="color:var(--textB)">/cart — koszyk</span>
       </div>
     </div>
   </div>
 
-  <!-- ENTRY + SEQUENCES -->
+  <!-- GŁÓWNA TABELA SEKWENCJI -->
+  <div class="section">
+    <div class="sec-lbl">Wszystkie ścieżki powtarzalne (N≥2) — HP→KOLEKCJA→CART ≠ KOLEKCJA→CART</div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="overflow-x:auto;">
+        <table class="seq-table">
+          <thead>
+            <tr>
+              <th style="width:26px">#</th>
+              <th>Sekwencja (każdy krok = typ strony)</th>
+              <th style="width:90px">Bar</th>
+              <th class="seq-n">N</th>
+              <th class="seq-pct">%</th>
+              <th class="seq-cum">Cum%</th>
+            </tr>
+          </thead>
+          <tbody id="seqTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENTRY + BF -->
   <div class="section grid-2">
-
-    <!-- entry points -->
     <div>
-      <div class="section-label">Punkty wejścia</div>
+      <div class="sec-lbl">Punkty wejścia (po korekcji)</div>
       <div class="card">
-        <div class="entry-row">
-          <div class="entry-name">LISTING</div>
-          <div class="entry-track"><div class="entry-fill" style="width:100%; background:var(--cH)"></div></div>
-          <div class="entry-pct" style="color:var(--cH)">34,2%</div>
-          <div class="entry-n">302</div>
+        <div class="e-row">
+          <span class="e-dot" style="background:var(--cKOL)"></span>
+          <span class="e-name">KOLEKCJA</span>
+          <div class="e-track"><div class="e-fill" style="width:100%;background:var(--cKOL)"></div></div>
+          <span class="e-pct" style="color:var(--cKOL)">34,2%</span><span class="e-n">302</span>
         </div>
-        <div class="entry-row">
-          <div class="entry-name">PDP</div>
-          <div class="entry-track"><div class="entry-fill" style="width:82%; background:var(--cB)"></div></div>
-          <div class="entry-pct" style="color:var(--cB)">28,0%</div>
-          <div class="entry-n">247</div>
+        <div class="e-row">
+          <span class="e-dot" style="background:var(--cPDP)"></span>
+          <span class="e-name">PDP</span>
+          <div class="e-track"><div class="e-fill" style="width:82%;background:var(--cPDP)"></div></div>
+          <span class="e-pct" style="color:var(--cPDP)">28,0%</span><span class="e-n">247</span>
         </div>
-        <div class="entry-row">
-          <div class="entry-name">CART</div>
-          <div class="entry-track"><div class="entry-fill" style="width:59%; background:var(--cF)"></div></div>
-          <div class="entry-pct" style="color:var(--cF)">20,3%</div>
-          <div class="entry-n">179</div>
+        <div class="e-row">
+          <span class="e-dot" style="background:var(--cCART)"></span>
+          <span class="e-name">CART</span>
+          <div class="e-track"><div class="e-fill" style="width:59%;background:var(--cCART)"></div></div>
+          <span class="e-pct" style="color:var(--cCART)">20,3%</span><span class="e-n">179</span>
         </div>
-        <div class="entry-row">
-          <div class="entry-name">HP</div>
-          <div class="entry-track"><div class="entry-fill" style="width:23%; background:var(--cD)"></div></div>
-          <div class="entry-pct" style="color:var(--cD)">7,8%</div>
-          <div class="entry-n">69</div>
+        <div class="e-row">
+          <span class="e-dot" style="background:var(--cHP)"></span>
+          <span class="e-name">HP</span>
+          <div class="e-track"><div class="e-fill" style="width:23%;background:var(--cHP)"></div></div>
+          <span class="e-pct" style="color:var(--cHP)">7,8%</span><span class="e-n">69</span>
         </div>
-        <div class="entry-row">
-          <div class="entry-name">OTHER</div>
-          <div class="entry-track"><div class="entry-fill" style="width:21%; background:var(--cX)"></div></div>
-          <div class="entry-pct" style="color:var(--cX)">7,1%</div>
-          <div class="entry-n">63</div>
+        <div class="e-row">
+          <span class="e-dot" style="background:var(--cOTH)"></span>
+          <span class="e-name">OTHER</span>
+          <div class="e-track"><div class="e-fill" style="width:21%;background:var(--cOTH)"></div></div>
+          <span class="e-pct" style="color:var(--cOTH)">7,1%</span><span class="e-n">63</span>
         </div>
-        <div class="entry-row">
-          <div class="entry-name">LANDING</div>
-          <div class="entry-track"><div class="entry-fill" style="width:7%; background:var(--cE)"></div></div>
-          <div class="entry-pct" style="color:var(--cE)">2,4%</div>
-          <div class="entry-n">21</div>
+        <div class="e-row">
+          <span class="e-dot" style="background:var(--cRUT)"></span>
+          <span class="e-name">RUTYNA</span>
+          <div class="e-track"><div class="e-fill" style="width:3.3%;background:var(--cRUT)"></div></div>
+          <span class="e-pct" style="color:var(--cRUT)">1,1%</span><span class="e-n">10</span>
+        </div>
+        <div class="e-row">
+          <span class="e-dot" style="background:var(--cLP)"></span>
+          <span class="e-name">LP</span>
+          <div class="e-track"><div class="e-fill" style="width:3%;background:var(--cLP)"></div></div>
+          <span class="e-pct" style="color:var(--cLP)">1,0%</span><span class="e-n">9</span>
+        </div>
+        <div class="e-row">
+          <span class="e-dot" style="background:var(--cLAND)"></span>
+          <span class="e-name">LANDING</span>
+          <div class="e-track"><div class="e-fill" style="width:0.6%;background:var(--cLAND)"></div></div>
+          <span class="e-pct" style="color:var(--cLAND)">0,2%</span><span class="e-n">2</span>
         </div>
       </div>
     </div>
 
-    <!-- top sequences -->
     <div>
-      <div class="section-label">Top sekwencje (typy stron)</div>
-      <div class="card">
-        <div class="seq-row">
-          <span class="seq-rank">1</span>
-          <span class="seq-path">CART</span>
-          <span class="seq-n">118</span>
-          <span class="seq-pct">13,4%</span>
-        </div>
-        <div class="seq-row">
-          <span class="seq-rank">2</span>
-          <span class="seq-path">PDP → CART</span>
-          <span class="seq-n">98</span>
-          <span class="seq-pct">11,1%</span>
-        </div>
-        <div class="seq-row">
-          <span class="seq-rank">3</span>
-          <span class="seq-path">LISTING → CART</span>
-          <span class="seq-n">88</span>
-          <span class="seq-pct">10,0%</span>
-        </div>
-        <div class="seq-row">
-          <span class="seq-rank">4</span>
-          <span class="seq-path">OTHER → CART</span>
-          <span class="seq-n">24</span>
-          <span class="seq-pct">2,7%</span>
-        </div>
-        <div class="seq-row">
-          <span class="seq-rank">5</span>
-          <span class="seq-path">HP → CART</span>
-          <span class="seq-n">18</span>
-          <span class="seq-pct">2,0%</span>
-        </div>
-        <div class="seq-row">
-          <span class="seq-rank">6</span>
-          <span class="seq-path">PDP → CART → PDP</span>
-          <span class="seq-n">18</span>
-          <span class="seq-pct">2,0%</span>
-        </div>
-        <div class="seq-row">
-          <span class="seq-rank">7</span>
-          <span class="seq-path">CART → CART</span>
-          <span class="seq-n">14</span>
-          <span class="seq-pct">1,6%</span>
-        </div>
-        <div class="seq-row">
-          <span class="seq-rank">8</span>
-          <span class="seq-path">LISTING → CART → CART</span>
-          <span class="seq-n">13</span>
-          <span class="seq-pct">1,5%</span>
-        </div>
-        <div class="seq-row">
-          <span class="seq-rank">9</span>
-          <span class="seq-path">PDP → CART → CART</span>
-          <span class="seq-n">12</span>
-          <span class="seq-pct">1,4%</span>
-        </div>
-        <div class="seq-row">
-          <span class="seq-rank">10</span>
-          <span class="seq-path">LISTING → LISTING → CART</span>
-          <span class="seq-n">10</span>
-          <span class="seq-pct">1,1%</span>
+      <div class="sec-lbl">Back-and-forth (PDP ↔ KOLEKCJA)</div>
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div class="bf-box">
+          <div class="bf-m"><div class="bf-big" style="color:var(--cKOL)">97</div><div class="bf-lbl">sesji z cofnięciem</div></div>
+          <div class="bf-div"></div>
+          <div class="bf-m"><div class="bf-big">11%</div><div class="bf-lbl">udział w całości</div></div>
+          <div class="bf-div"></div>
+          <div class="bf-m"><div class="bf-big">1,3×</div><div class="bf-lbl">śr. ruchów gdy jest</div></div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- BACK AND FORTH -->
-  <div class="section">
-    <div class="section-label">Back-and-forth (PDP ↔ Listing)</div>
-    <div class="card">
-      <div class="bf-box">
-        <div class="bf-metric">
-          <div class="bf-big" style="color:var(--cA)">97</div>
-          <div class="bf-lbl">sesji z cofnięciem</div>
+      <div class="sec-lbl">Metodologia</div>
+      <div class="card" style="font-size:.76rem;color:var(--textB);line-height:1.6;">
+        <p>Clarity MCP <code>wu1nvuvh9y</code>, filtr <code>smartEvents:Checkout</code>, 13 plików (weekly windows). Clarity nagrywa <strong>100% sesji</strong>. Retencja nagrań po 30 dniach spada do 1%.</p>
+        <p style="margin-top:.45rem"><strong>Korekta:</strong> 270 sesji CART-entry z Internal referrerem zrekonstruowane z <code>referrerUrl</code> + 3 full-join po user_id.</p>
+        <p style="margin-top:.45rem"><strong>Typy stron:</strong> KOLEKCJA=/collections/*, RUTYNA=/pages/rutyna-*, LP=specyficzne /pages/ kolekcji produktowej, reszta oddzielnie.</p>
+        <div class="m-chips">
+          <span class="m-chip ok">883 sesji zakupowych</span>
+          <span class="m-chip ok">273 korekty fragmentacji</span>
+          <span class="m-chip warn">Starsze dane >30 dni = 1% retencji nagrań</span>
         </div>
-        <div class="bf-divider"></div>
-        <div class="bf-metric">
-          <div class="bf-big">11%</div>
-          <div class="bf-lbl">udział w całości</div>
-        </div>
-        <div class="bf-divider"></div>
-        <div class="bf-metric">
-          <div class="bf-big">1,3×</div>
-          <div class="bf-lbl">śr. ruchów PDP→Listing gdy jest</div>
-        </div>
-        <div style="flex:1; min-width:200px; font-size:.8rem; color:var(--textB);">
-          Cofnięcie PDP→Listing najczęściej w Ś-A (34 sesje) i Ś-B (33) — logiczne, to ścieżki gdzie użytkownik faktycznie porównuje produkty przed zakupem.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- METODOLOGIA -->
-  <div class="section">
-    <div class="section-label">Metodologia i ograniczenia</div>
-    <div class="card" style="font-size:.8rem; color:var(--textB); line-height:1.65;">
-      <p style="margin-bottom:.75rem;">Dane z Clarity MCP (projekt <code>wu1nvuvh9y</code>), filtr <code>smartEvents: Checkout</code>, zakres 12 tygodniowych okien (2026-05-20 → 2026-08-12). Clarity nagrywa <strong>100% sesji</strong> — brak samplingowania. Po 30 dniach retencja spada do 1% nagrań, stąd niższa gęstość danych dla maja-czerwca.</p>
-      <p style="margin-bottom:.75rem;"><strong>Korekta fragmentacji:</strong> Clarity kończy sesję po 15 min inaktywności. Sesje CART-entry z Internal referrerem zidentyfikowano jako fragmenty — entry type zrekonstruowany z <code>referrerUrl</code> pierwszej strony (270 sesji metodą referrer-reconstruct, 3 sesje full-join po user_id).</p>
-      <div class="method-chips">
-        <span class="chip ok">883 sesji zakupowych</span>
-        <span class="chip ok">12 tygodni danych</span>
-        <span class="chip ok">273 korekty fragmentacji</span>
-        <span class="chip warn">Starsze dane (>30 dni) = 1% retencji</span>
-        <span class="chip warn">Ś-A i Ś-H mogą się zlewać przy ATC bez pagePath</span>
       </div>
     </div>
   </div>
 
   <div class="page-footer">
-    <span>GLOV Ecomms Lab · Clarity Analysis v1.1 · 2026-08-12</span>
-    <span>Skrypty: sciezki_clarity.py · sciezki_join.py</span>
+    <span>GLOV Ecomms Lab · Clarity Analysis v1.3 · 2026-08-12</span>
+    <span>sciezki_clarity.py · sciezki_join.py</span>
   </div>
-
 </div>
