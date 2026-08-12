@@ -5102,15 +5102,39 @@ kr&lt;/span&gt;
   }
   function akordeonToggle(el){
     if(el.__hooked) return; el.__hooked = true;
+    // content = dziecko .accordion-content (GLOV: row &gt; toggle + content) LUB następny brat
+    var content = el.querySelector(&#x27;.accordion-content, .accordion__content&#x27;);
+    if(!content){
+      content = el.nextElementSibling;
+      while(content &amp;&amp; !/accordion-content|accordion__content/.test(content.className)) content = content.nextElementSibling;
+    }
+    if(!content) return;
     el.addEventListener(&#x27;click&#x27;, function(){
-      var content = el.nextElementSibling;
-      if(content &amp;&amp; /accordion-content|accordion__content/.test(content.className)){
-        var vis = content.style.display !== &#x27;none&#x27;;
-        content.style.display = vis ? &#x27;none&#x27; : &#x27;&#x27;;
-      }
+      var vis = content.style.display !== &#x27;none&#x27;;
+      content.style.setProperty(&#x27;display&#x27;, vis ? &#x27;none&#x27; : &#x27;block&#x27;, &#x27;important&#x27;);
+      el.classList.toggle(&#x27;is-open&#x27;, !vis);
     });
   }
-  document.querySelectorAll(&#x27;.accordion-toggle, .accordion__title, .accordion-row &gt; *&#x27;).forEach(akordeonToggle);
+  document.querySelectorAll(&#x27;.accordion-toggle, .accordion__title, .accordion-row, .accordion-row &gt; *&#x27;).forEach(akordeonToggle);
+  // THUMBNAILS — klik zmienia główny packshot (secondary images)
+  function hookThumbs(){
+    document.querySelectorAll(&#x27;.media__thumb&#x27;).forEach(function(th){
+      if(th.__th) return; th.__th = true;
+      th.addEventListener(&#x27;click&#x27;, function(){
+        var img = th.querySelector(&#x27;img&#x27;);
+        if(!img) return;
+        // Shopify CDN: _200x200_crop_center → pełny rozmiar
+        var full = (img.src||&#x27;&#x27;).replace(/_[0-9]+x[0-9]+_crop_center/, &#x27;_360x&#x27;);
+        var main = mainProductImg();
+        if(main &amp;&amp; full &amp;&amp; full.indexOf(main.src) !== 0 &amp;&amp; main.src.indexOf(full) !== 0){
+          main.src = full;
+          main.setAttribute(&#x27;data-orig&#x27;, full);
+        }
+        document.querySelectorAll(&#x27;.media__thumb&#x27;).forEach(function(t){ t.classList.remove(&#x27;is-active&#x27;); });
+        th.classList.add(&#x27;is-active&#x27;);
+      });
+    });
+  }
   function init(){
     var img = mainProductImg();
     if(img) img.setAttribute(&#x27;data-orig&#x27;, img.src);
@@ -5122,6 +5146,7 @@ kr&lt;/span&gt;
     all.forEach(function(c){ c.style.display = &#x27;none&#x27;; });
     var first = document.querySelector(&#x27;.accordion-content&#x27;);
     if(first) first.style.display = &#x27;&#x27;;
+    hookThumbs();
     // opinie (widget JS-owy — wstrzykujemy rendered HTML z live)
     var jr = document.getElementById(&#x27;judgeme_product_reviews&#x27;);
     if(jr &amp;&amp; window.__REVIEWS){
@@ -5201,4 +5226,4 @@ kr&lt;/span&gt;
 })();
 &lt;/script&gt;
 &lt;/body&gt;
-&lt;/html&gt;" title="mock DESKTOP"></iframe></body></html><!-- MOCKUP_1786538250 -->
+&lt;/html&gt;" title="mock DESKTOP"></iframe></body></html><!-- MOCKUP_1786544024 -->
