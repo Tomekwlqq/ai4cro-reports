@@ -178,7 +178,6 @@ tr.hot td{background:rgba(22,163,74,.05)}tr.danger td{background:rgba(220,38,38,
 </style>
 </head>
 <body>
-<a href="glov/GLOV_HUB.html" style="position:fixed;top:10px;left:10px;z-index:9999;background:#fff;border:1px solid #ddd;border-radius:20px;padding:5px 13px;font-size:12px;color:#444;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.13);white-space:nowrap">← GLOV HUB</a>
 <div class="topbar">
   <div class="logo">glov<b>.</b>live <span class="flag">🇵🇱 PL only</span></div>
   <div class="topright">
@@ -202,11 +201,11 @@ tr.hot td{background:rgba(22,163,74,.05)}tr.danger td{background:rgba(220,38,38,
     <div class="dpanel-row">
       <div class="dp-group">
         <label>Od</label>
-        <input type="date" id="dateS" min="2026-01-01" max="2026-07-19">
+        <input type="date" id="dateS" min="2026-01-01" max="2026-08-11">
       </div>
       <div class="dp-group">
         <label>Do</label>
-        <input type="date" id="dateE" min="2026-01-01" max="2026-07-19">
+        <input type="date" id="dateE" min="2026-01-01" max="2026-08-11">
       </div>
       <div class="dp-group">
         <label>Preset</label>
@@ -226,11 +225,11 @@ tr.hot td{background:rgba(22,163,74,.05)}tr.danger td{background:rgba(220,38,38,
     <div class="cmp-row" id="cmpRow">
       <div class="dp-group">
         <label>Porównanie Od</label>
-        <input type="date" id="cmpS" min="2026-01-01" max="2026-07-19">
+        <input type="date" id="cmpS" min="2026-01-01" max="2026-08-11">
       </div>
       <div class="dp-group">
         <label>Porównanie Do</label>
-        <input type="date" id="cmpE" min="2026-01-01" max="2026-07-19">
+        <input type="date" id="cmpE" min="2026-01-01" max="2026-08-11">
       </div>
     </div>
   </div>
@@ -276,7 +275,6 @@ function delta(cur,prev){
 // ── Live section ──────────────────────────────────────────────────────────────
 
 function switchLiveTab(key,btn){
-  currentLiveTab=key;
   document.querySelectorAll('.live-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderLive(key);
@@ -296,9 +294,14 @@ function renderLive(key){
   let h='';
 
   // Shopify KPI
+  const sfun=sh.funnel||{};
+  const completedCO=sfun.purchase||0;
+  const tiktokOrd=Math.max(0,(shk.orders||0)-completedCO);
   h+=`<div class="lsep"><span class="sbadge sbadge-shp">SHOPIFY</span>Zamówienia &amp; Przychód — source of truth</div>
-  <div class="lkgrid lkgrid-4">
+  <div class="lkgrid lkgrid-3">
     <div class="lkcard"><div class="ll">Zamówienia</div><div class="lv">${n(shk.orders)}</div></div>
+    <div class="lkcard"><div class="ll">Completed Checkout</div><div class="lv">${n(completedCO)}</div></div>
+    <div class="lkcard"><div class="ll">TikTok Shop</div><div class="lv">${n(tiktokOrd)}</div><div class="ls">zam. spoza checkoutu</div></div>
     <div class="lkcard"><div class="ll">Total Sales</div><div class="lv">${money(shk.gross_sales)}</div></div>
     <div class="lkcard"><div class="ll">AOV</div><div class="lv">${n(shk.aov)} zł</div></div>
     <div class="lkcard"><div class="ll">Bounce Rate</div><div class="lv">${pct(shk.bounce_rate||0)}</div><div class="ls">${pct(g4k.bounce_rate)} GA4</div></div>
@@ -306,15 +309,15 @@ function renderLive(key){
 
   // GA4 KPI
   const durFmt=s=>s?Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0'):'—';
+  const crPL=g4k.sessions>0?(completedCO/g4k.sessions*100).toFixed(2)+'%':'—';
   h+=`<div class="lsep"><span class="sbadge sbadge-ga4">GA4</span>Ruch &amp; Zachowanie — filtr 🇵🇱 PL</div>
   <div class="lkgrid lkgrid-3">
     <div class="lkcard"><div class="ll">Sesje PL</div><div class="lv">${n(g4k.sessions)}</div></div>
-    <div class="lkcard"><div class="ll">ATC</div><div class="lv">${n(g4k.atc)}</div></div>
+    <div class="lkcard"><div class="ll">CR PL</div><div class="lv">${crPL}</div><div class="ls">checkout / sesje PL</div></div>
     <div class="lkcard"><div class="ll">Avg. Sesja</div><div class="lv">${durFmt(g4k.avg_session_s)}</div></div>
   </div>`;
 
   // Shopify Funnel
-  const sfun=sh.funnel||{};
   if(sfun.sessions){
     const fmax=sfun.sessions||1;
     const fsteps=[
@@ -396,33 +399,13 @@ function renderLive(key){
   initLiveCollapse();
 }
 
-// ── LIVE Shopify KPI przez Workera (Odśwież ściąga realne dane, nie snapshot) ──
-const CHAT_WORKER='https://glov-chat.waleqq.workers.dev';
-let currentLiveTab='today';
-function applyLiveKPI(k){
-  if(!k||!LIVE)return;
-  ['today','yesterday'].forEach(day=>{
-    if(k[day]&&LIVE[day]&&LIVE[day].shopify&&LIVE[day].shopify.kpi){
-      const kpi=LIVE[day].shopify.kpi;
-      kpi.orders=k[day].orders;
-      kpi.gross_sales=k[day].gross_sales;
-      kpi.aov=k[day].aov;
-    }
-  });
-}
-function fetchLiveKPI(){
-  return fetch(CHAT_WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'live_kpi'})})
-    .then(r=>r.ok?r.json():null).then(applyLiveKPI).catch(()=>{});
-}
-
 function initLive(){
   if(!LIVE)return;
   const td=document.getElementById('lt-today-date');
   const yd=document.getElementById('lt-yesterday-date');
   if(td&&LIVE.today)td.textContent=LIVE.today.date||'';
   if(yd&&LIVE.yesterday)yd.textContent=LIVE.yesterday.date||'';
-  renderLive(currentLiveTab);                                  // od razu ze snapshotu
-  fetchLiveKPI().then(()=>renderLive(currentLiveTab));         // potem nadpisz live z Shopify
+  renderLive('today');
 }
 
 function aggregateRange(s,e){
@@ -1188,8 +1171,6 @@ function loadData(showSpinner){
     LIVE=live;
     const dk=Object.keys(DAILY).sort();
     FIRST=dk[0]||'';LAST=dk[dk.length-1]||'';
-    // min/max dynamicznie z danych — NIE hardcode (inaczej zamraża się na dacie generacji)
-    ['dateS','dateE','cmpS','cmpE'].forEach(id=>{const el=document.getElementById(id);if(el){el.min=FIRST;el.max=LAST;}});
     const d30=new Date(LAST+'T00:00:00');d30.setDate(d30.getDate()-29);
     LAST30=d30.toISOString().slice(0,10);
     document.getElementById('dateS').value=LAST30;
@@ -1212,14 +1193,7 @@ function loadData(showSpinner){
 function refreshData(){
   const rb=document.getElementById('refreshBtn');
   if(rb){rb.disabled=true;rb.textContent='⏳...';}
-  // Odśwież = re-fetch glov_live2.json (świeże GA4 z ostatniego ETL)
-  //         + LIVE Shopify KPI z Workera (nadpisuje zamówienia/sprzedaż na żywo)
-  fetch(BASE_URL+'glov_live2.json?t='+Date.now()).then(r=>r.json()).then(live=>{LIVE=live;}).catch(()=>{})
-    .then(()=>fetchLiveKPI())
-    .then(()=>{
-      renderLive(currentLiveTab);
-      if(rb){rb.disabled=false;rb.textContent='🔄 Odśwież';}
-    });
+  loadData(false);
 }
 document.addEventListener('DOMContentLoaded',()=>loadData(true));
 
