@@ -273,13 +273,6 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
     <p>Zweryfikowana Clarity 04.08. Fix33 (błąd JS) pinned #1, fix12 (TUTAJ koszyk) pinned #2, fix24 przeramowany — search konwertuje LEPIEJ niż browsing. Numeracja, pin-sort, komentarze CNB.</p>
     <div class="go">→</div>
   </a>
-  <a class="feat fix" href="koszyk_od_nowa.html">
-    <span class="badge2">🛒 3 warianty · interaktywne</span>
-    <div class="ico">🛒</div>
-    <h3>Koszyk od nowa — rekomendacja UX</h3>
-    <p>3 interaktywne makiety koszyka: V1 cleanup (bez upsell/trust bar), V2 prezent pod CTA, V3 cs-bar na górze koszyka. Każda z pełną logiką qty/usuwania/giftu.</p>
-    <div class="go">→</div>
-  </a>
   <a class="feat ads" href="GLOV_kampanie_cross_source.html">
     <span class="badge2">📊 Cross-source</span>
     <div class="ico">🔗</div>
@@ -606,7 +599,7 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
 </div>
 
 <!-- @BL_SALES -->
-<script id="bl-sales-data">window.BL_SALES={"updated": "2026-07-28 19:27", "today": "2026-07-28", "month": "2026-07", "year": "2026", "range": "2026-07-01 – 2026-07-28", "sources": ["shop", "allegro", "tiktokeu", "hebe"], "labels": {"shop": "Shopify", "allegro": "Allegro", "tiktokeu": "TikTok", "hebe": "Hebe"}, "today_d": {"shop": {"orders": 42, "items": 71, "revenue": 3308.6300000000015}, "allegro": {"orders": 24, "items": 48, "revenue": 1767.3300000000008}, "hebe": {"orders": 6, "items": 7, "revenue": 344.35}}, "month_d": {"allegro": {"orders": 728, "items": 1367, "revenue": 50896.91000000038}, "shop": {"orders": 1052, "items": 1913, "revenue": 83643.52999999875}, "hebe": {"orders": 305, "items": 336, "revenue": 15960.899999999929}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}, "year_d": {"allegro": {"orders": 728, "items": 1367, "revenue": 50896.91000000038}, "shop": {"orders": 1052, "items": 1913, "revenue": 83643.52999999875}, "hebe": {"orders": 305, "items": 336, "revenue": 15960.899999999929}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}, "all_d": {"allegro": {"orders": 728, "items": 1367, "revenue": 50896.91000000038}, "shop": {"orders": 1052, "items": 1913, "revenue": 83643.52999999875}, "hebe": {"orders": 305, "items": 336, "revenue": 15960.899999999929}, "tiktokeu": {"orders": 356, "items": 391, "revenue": 13949.999999999918}}};</script>
+<script id="bl-sales-data">window.BL_SALES={"updated":"2026-08-12 14:56","today":"2026-08-12","month":"2026-08","prev_month":"2026-07","year":"2026","range":"2026-04-26 – 2026-08-12","sources":["shop","allegro","tiktokeu","hebe"],"labels":{"shop":"Shopify","allegro":"Allegro","tiktokeu":"TikTok","hebe":"Hebe"},"today_d":{"allegro":{"orders":28,"items":58,"revenue":1669.53},"hebe":{"orders":3,"items":3,"revenue":149.7},"shop":{"orders":30,"items":68,"revenue":2525.2},"tiktokeu":{"orders":9,"items":10,"revenue":359.1}},"month_d":{"allegro":{"orders":476,"items":922,"revenue":30560.25},"shop":{"orders":533,"items":966,"revenue":40615.58},"hebe":{"orders":93,"items":98,"revenue":4495.83},"tiktokeu":{"orders":134,"items":145,"revenue":5408.4}},"prev_month_d":{"allegro":{"orders":852,"items":1595,"revenue":59568.79},"shop":{"orders":1188,"items":2155,"revenue":94740.98},"hebe":{"orders":342,"items":377,"revenue":17651.85},"tiktokeu":{"orders":356,"items":391,"revenue":13950.0}},"year_d":{"hebe":{"orders":1339,"items":1442,"revenue":65919.61},"allegro":{"orders":2404,"items":4575,"revenue":167076.89},"shop":{"orders":3245,"items":6992,"revenue":338833.11},"tiktokeu":{"orders":490,"items":536,"revenue":19358.4}},"all_d":{"hebe":{"orders":1339,"items":1442,"revenue":65919.61},"allegro":{"orders":2404,"items":4575,"revenue":167076.89},"shop":{"orders":3245,"items":6992,"revenue":338833.11},"tiktokeu":{"orders":490,"items":536,"revenue":19358.4}}};</script>
 
 
 <script>
@@ -628,7 +621,12 @@ const SRC_COLORS={'shop':'#7c5cff','allegro':'#f5751a','tiktokeu':'#16a34a','heb
 const MONTHS_PL=['','Sty','Lut','Mar','Kwi','Maj','Cze','Lip','Sie','Wrz','Paź','Lis','Gru'];
 
 function blCell(period_d, src){
-  const v=(period_d||{})[src]||{orders:0,items:0,revenue:0};
+  let v={...((period_d||{})[src]||{orders:0,items:0,revenue:0})};
+  // TikTok trafia też przez Shopify — odejmij duplikat
+  if(src==='shop'){
+    const tt=(period_d||{})['tiktokeu']||{};
+    v={orders:(v.orders||0)-(tt.orders||0),items:(v.items||0)-(tt.items||0),revenue:(v.revenue||0)-(tt.revenue||0)};
+  }
   const z=!v.orders;
   return `<td class="bl-val${z?' bl-zero':''}">
     <div class="bl-r bl-r-kasa">${zl(v.revenue)}</div>
@@ -638,7 +636,14 @@ function blCell(period_d, src){
 }
 function blSumCell(period_d, srcs){
   const total={orders:0,items:0,revenue:0};
-  srcs.forEach(s=>{const v=(period_d||{})[s]||{};total.orders+=(v.orders||0);total.items+=(v.items||0);total.revenue+=(v.revenue||0);});
+  srcs.forEach(s=>{
+    let v={...((period_d||{})[s]||{})};
+    if(s==='shop'){
+      const tt=(period_d||{})['tiktokeu']||{};
+      v={orders:(v.orders||0)-(tt.orders||0),items:(v.items||0)-(tt.items||0),revenue:(v.revenue||0)-(tt.revenue||0)};
+    }
+    total.orders+=(v.orders||0);total.items+=(v.items||0);total.revenue+=(v.revenue||0);
+  });
   const z=!total.orders;
   return `<td class="bl-val bl-sum-cell${z?' bl-zero':''}">
     <div class="bl-r bl-r-kasa">${zl(total.revenue)}</div>
@@ -657,6 +662,9 @@ function renderBLSales(){
   const mNum=parseInt((d.month||'').split('-')[1]||0);
   const mName=MONTHS_PL[mNum]||d.month;
   const yr=d.year||'';
+  const prevMNum=parseInt((d.prev_month||'').split('-')[1]||0);
+  const prevMName=MONTHS_PL[prevMNum]||d.prev_month||'';
+  const prevYr=(d.prev_month||'').split('-')[0]||yr;
   const todayShort=d.today?(()=>{const p=d.today.split('-');return p[2]+'-'+p[1]+'-'+p[0].slice(-2);})():'-';
 
   const thCh=src.map(s=>{
@@ -669,6 +677,11 @@ function renderBLSales(){
     ${src.map(s=>blCell(d.year_d,s)).join('')}
     ${blSumCell(d.year_d,src)}
   </tr>`;
+  const rowPrevMies=d.prev_month_d?`<tr class="row-mies" style="opacity:0.65">
+    <td class="bl-lbl"><div class="bl-period">${prevMName}</div><div class="bl-psub">${prevMName} ${prevYr}</div></td>
+    ${src.map(s=>blCell(d.prev_month_d,s)).join('')}
+    ${blSumCell(d.prev_month_d,src)}
+  </tr>`:'';
   const rowMies=`<tr class="row-mies">
     <td class="bl-lbl"><div class="bl-period">${mName}</div><div class="bl-psub">${mName} ${yr}</div></td>
     ${src.map(s=>blCell(d.month_d,s)).join('')}
@@ -687,7 +700,7 @@ function renderBLSales(){
 
   el.innerHTML=`<table class="bl-matrix">
   <thead><tr><th class="bl-lbl-h"></th>${thCh}<th class="bl-sum-hdr">SUMA</th></tr></thead>
-  <tbody>${rowRok}${rowMies}${rowDzis}</tbody>
+  <tbody>${rowRok}${rowPrevMies}${rowMies}${rowDzis}</tbody>
   </table>${foot}`;
 }
 
