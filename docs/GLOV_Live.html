@@ -517,7 +517,10 @@ function aggregateRange(s,e){
 
 function renderKPI(d,cmp){
   const k=d.kpi,ck=cmp&&cmp.kpi;
-  const crv=k.sessions?(k.transactions/k.sessions*100):0;
+  const f=d.funnel||{};
+  const ga4Pur=f.purchase||0;  // GA4 PL native checkout — true PL metric
+  const nonWebEst=Math.max(0,(k.transactions||0)-ga4Pur);  // non-PL / not tracked by GA4
+  const crv=k.sessions?(ga4Pur/k.sessions*100):0;  // FIXED: PL purchases / PL sessions
   const aov=k.transactions?Math.round(k.totalRevenue/k.transactions):0;
   const atcP=k.sessions?(k.addToCarts/k.sessions*100):0;
   return `<h2><span class="r">R01</span> Lejek startowy &amp; KPI <span class="badge b-good">🇵🇱 PL</span></h2>
@@ -525,7 +528,7 @@ function renderKPI(d,cmp){
   <span class="dl">sessions (GA4) · transactions &amp; revenue <span class="sbadge sbadge-shp">SHOPIFY</span> gdy dostępne · addToCarts · bounceRate (GA4) · country=Poland</span>
   <div class="kpis">
     <div class="kpi"><div class="l">Sesje PL <span class="sbadge sbadge-ga4">GA4</span></div><div class="v">${n(k.sessions)}</div>${ck?delta(k.sessions,ck.sessions):''}</div>
-    <div class="kpi"><div class="l">Konwersja</div><div class="v" style="color:var(--good)">${crv.toFixed(2)}%</div><div class="s">${n(k.transactions)} zak. <span class="sbadge sbadge-shp">SHP</span></div></div>
+    <div class="kpi"><div class="l">Konwersja PL</div><div class="v" style="color:var(--good)">${crv.toFixed(2)}%</div><div class="s">${n(ga4Pur)} GA4&nbsp;·&nbsp;<span style="color:var(--muted)" title="Shopify ALL countries (w tym spoza PL)">${n(k.transactions)} SHP ▲</span></div></div>
     <div class="kpi"><div class="l">Przychód <span class="sbadge sbadge-shp">SHP</span></div><div class="v">${money(k.totalRevenue)}</div>${ck?delta(k.totalRevenue,ck.totalRevenue):''}</div>
     <div class="kpi"><div class="l">AOV</div><div class="v">${n(aov)} zł</div><div class="s">próg darmowej: 150 zł</div></div>
     <div class="kpi"><div class="l">Bounce</div><div class="v">${pct(k.bounceRate)}</div><div class="s">eng. ${pct(1-(k.bounceRate||0))}</div></div>
@@ -536,7 +539,8 @@ function renderKPI(d,cmp){
 }
 
 function renderFunnel(d){
-  const f=d.funnel||{};
+  // Wejście = GA4 sessions (spójne z R01) — session_start event może się różnić
+  const f={...(d.funnel||{}), session_start: (d.kpi&&d.kpi.sessions)||(d.funnel||{}).session_start||0};
   const steps=[
     ['session_start','Wejście','#5b8def','sesji'],
     ['view_item','PDP (view_item)','#7c5cff','Wejście'],
@@ -764,22 +768,29 @@ function renderLandingShopify(d){
 function renderNewRet(d){
   const nr=d.newret||[];
   const nw=nr.find(x=>x.segment==='new'),rt=nr.find(x=>x.segment==='returning');
-  if(!nw||!rt)return '';
-  const crN=nw.sessions>0?nw.transactions/nw.sessions*100:0;
-  const crR=rt.sessions>0?rt.transactions/rt.sessions*100:0;
+  if(!nw&&!rt)return '';
+  const nwSess=(nw&&nw.sessions)||0,rtSess=(rt&&rt.sessions)||0;
+  const totalSess=(d.kpi&&d.kpi.sessions)||0;
+  const unclassSess=Math.max(0,totalSess-nwSess-rtSess);
+  const crN=nwSess>0?(nw.transactions/nwSess*100):0;
+  const crR=rtSess>0?(rt.transactions/rtSess*100):0;
   const mult=crN>0?(crR/crN).toFixed(1):'∞';
-  return `<h2><span class="r">R05</span> Nowi vs powracający</h2>
-  <div class="what">Czy GLOV ma problem z retencją? CR i przychód per segment.</div>
-  <span class="dl">dimension newVsReturning · sessions · transactions · revenue · country=Poland</span>
-  <div class="cards2">
+  const unclassPct=totalSess>0?Math.round(unclassSess/totalSess*100):0;
+  return `<h2><span class="r">R01c</span> Nowi vs Powracający</h2>
+  <div class="what">Podział sesji GA4 na segmenty. Suma Nowi+Powracający może być niższa od łącznych sesji — pozostałe to Nieprzypisane (GA4 nie sklasyfikowało użytkownika).</div>
+  <span class="dl">dimension newVsReturning · sessions · transactions · revenue · country=Poland · sesje łącznie GA4: ${n(totalSess)}</span>
+  <div class="cards3">
     <div class="dcard"><h4>🆕 Nowi</h4><div class="big">${crN.toFixed(2)}%</div>
-      <div class="row"><span>Sesje</span><b>${n(nw.sessions)}</b></div>
-      <div class="row"><span>Zakupy</span><b>${n(nw.transactions)}</b></div>
-      <div class="row"><span>Przychód</span><b>${money(nw.revenue)}</b></div></div>
+      <div class="row"><span>Sesje</span><b>${n(nwSess)}</b></div>
+      <div class="row"><span>Zakupy</span><b>${n(nw?nw.transactions:0)}</b></div>
+      <div class="row"><span>Przychód</span><b>${money(nw?nw.revenue:0)}</b></div></div>
     <div class="dcard"><h4>🔁 Powracający</h4><div class="big" style="color:var(--good)">${crR.toFixed(2)}%</div>
-      <div class="row"><span>Sesje</span><b>${n(rt.sessions)}</b></div>
-      <div class="row"><span>Zakupy</span><b>${n(rt.transactions)}</b></div>
-      <div class="row"><span>Przychód</span><b>${money(rt.revenue)}</b></div></div>
+      <div class="row"><span>Sesje</span><b>${n(rtSess)}</b></div>
+      <div class="row"><span>Zakupy</span><b>${n(rt?rt.transactions:0)}</b></div>
+      <div class="row"><span>Przychód</span><b>${money(rt?rt.revenue:0)}</b></div></div>
+    <div class="dcard"><h4>❓ Nieprzypisane</h4><div class="big" style="color:var(--muted)">${unclassPct}%</div>
+      <div class="row"><span>Sesje</span><b>${n(unclassSess)}</b></div>
+      <div class="row"><span>z sesji GA4</span><b>${n(totalSess)}</b></div></div>
   </div>
   <div class="concl c-green"><span class="lab">Główny wniosek</span><b>Powracający konwertują ${mult}× lepiej</b> (${crR.toFixed(2)}% vs ${crN.toFixed(2)}%). Post-purchase flow to najłatwiejsze +X% przychodu.</div>
   <div class="reco"><b>⚙️ Rekomendacja:</b> Post-purchase email flow (D7 uzupełnienie + D30 −10%), Klaviyo/MailerLite.<div class="meta">Właściciel: CRM · miernik: udział powracających &gt;25%</div></div>`;
@@ -905,12 +916,12 @@ function renderReport(s,e,cmpS,cmpE){
   let h='';
   h+=renderKPI(d,cmp);
   h+=renderFunnel(d);
+  h+=renderNewRet(d);
   h+=renderProducts(d);
   h+=renderChannels(d);
   h+=renderRepeat(d);
   h+=renderLanding(d);
   h+=renderLandingShopify(d);
-  h+=renderNewRet(d);
   h+=renderDevices(d);
   h+=renderSearch(d);
   h+=renderWindow(d);
