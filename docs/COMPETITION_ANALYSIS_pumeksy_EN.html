@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pumice Stones Market Analysis (EN)</title>
+<style>
+  :root{
+    --bg:#faf8f5;--card:#fff;--ink:#1c1a17;--mut:#6b6457;--line:#e7e1d8;--chip:#f0ebe2;
+    --ok:#2f8f5b;--warn:#c0392b;--info:#1a6fb5;
+    --glov:#c0392b;--scholl:#2563eb;--killys:#e07a10;--ewas:#7b3fa0;--soulima:#2e8b57;
+    --deni:#0891b2;--mawe:#d97706;--laroxy:#6b7280;--neonail:#8b5cf6;--gold:#b8860b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:32px 18px}
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-size:24px;margin:0 0 4px;color:var(--ink)}
+  .sub{color:var(--mut);margin:0 0 22px;font-size:13px}
+  h2{font-size:17px;margin:32px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--line)}
+  h3{font-size:15px;margin:20px 0 8px}
+
+  /* NAV */
+  .topnav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+  .topnav a{font:600 13px/1 inherit;padding:8px 14px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--mut);cursor:pointer;transition:all .15s;text-decoration:none}
+  .topnav a:hover{opacity:.85;border-color:var(--glov);color:var(--glov)}
+
+  /* BRAND TABS */
+  .btabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+  .btab{font:600 13px/1 inherit;padding:8px 16px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--mut);cursor:pointer;transition:all .15s}
+  .btab:hover{opacity:.85}
+  .btab[data-brand="glov"].active,.btab[data-brand="glov"]:hover{border-color:var(--glov);color:var(--glov)}
+  .btab[data-brand="glov"].active{background:var(--glov);color:#fff}
+  .btab[data-brand="scholl"].active,.btab[data-brand="scholl"]:hover{border-color:var(--scholl);color:var(--scholl)}
+  .btab[data-brand="scholl"].active{background:var(--scholl);color:#fff}
+  .btab[data-brand="killys"].active,.btab[data-brand="killys"]:hover{border-color:var(--killys);color:var(--killys)}
+  .btab[data-brand="killys"].active{background:var(--killys);color:#fff}
+  .btab[data-brand="ewas"].active,.btab[data-brand="ewas"]:hover{border-color:var(--ewas);color:var(--ewas)}
+  .btab[data-brand="ewas"].active{background:var(--ewas);color:#fff}
+  .btab[data-brand="soulima"].active,.btab[data-brand="soulima"]:hover{border-color:var(--soulima);color:var(--soulima)}
+  .btab[data-brand="soulima"].active{background:var(--soulima);color:#fff}
+  .btab[data-brand="deni"].active,.btab[data-brand="deni"]:hover{border-color:var(--deni);color:var(--deni)}
+  .btab[data-brand="deni"].active{background:var(--deni);color:#fff}
+  .btab[data-brand="neonail"].active,.btab[data-brand="neonail"]:hover{border-color:var(--neonail);color:var(--neonail)}
+  .btab[data-brand="neonail"].active{background:var(--neonail);color:#fff}
+  .btab[data-brand="gold"].active,.btab[data-brand="gold"]:hover{border-color:var(--gold);color:var(--gold)}
+  .btab[data-brand="gold"].active{background:var(--gold);color:#fff}
+
+  /* CARDS */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .card-head{padding:12px 16px;font-weight:700;font-size:14px;color:#fff}
+  .card-head.glov{background:var(--glov)}
+  .card-head.scholl{background:var(--scholl)}
+  .card-head.killys{background:var(--killys)}
+  .card-head.ewas{background:var(--ewas)}
+  .card-head.soulima{background:var(--soulima)}
+  .card-head.deni{background:var(--deni)}
+  .card-head.neonail{background:var(--neonail)}
+  .card-head.gold{background:var(--gold)}
+  .card-head.blocked{background:#999}
+  .card-body{padding:14px 16px}
+
+  /* MATRIX TABLE */
+  .matrix{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0;font-size:13px}
+  .matrix th,.matrix td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  .matrix th{background:var(--chip);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);font-weight:700}
+  .matrix tr:last-child td{border-bottom:none}
+  .matrix td:first-child{font-weight:600;color:var(--ink);width:130px;min-width:100px}
+  .dim-glov{border-left:3px solid var(--glov)}
+  .dim-scholl{border-left:3px solid var(--scholl)}
+  .dim-killys{border-left:3px solid var(--killys)}
+  .dim-ewas{border-left:3px solid var(--ewas)}
+  .dim-soulima{border-left:3px solid var(--soulima)}
+  .dim-deni{border-left:3px solid var(--deni)}
+  .dim-neonail{border-left:3px solid var(--neonail)}
+  .dim-gold{border-left:3px solid var(--gold)}
+
+  /* LABELS / CHIPS */
+  .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);margin:12px 0 4px}
+  .chip{display:inline-block;background:var(--chip);border-radius:6px;padding:2px 8px;margin:2px 3px 2px 0;font-size:11.5px}
+  .chip.ok{background:#e8f5ee;color:#1a6b3c}
+  .chip.warn{background:#fdecea;color:#a52828}
+  .chip.info{background:#e8f0fb;color:#1a4fa0}
+  .chip.gold{background:#fef3c7;color:#92400e}
+
+  /* QUOTES */
+  .q{font-style:italic;color:#3a352d;background:var(--chip);border-radius:6px;padding:7px 11px;margin:5px 0;font-size:13px;line-height:1.5}
+  .q b{font-style:normal;color:var(--ink)}
+  .q.neg{background:#fdecea;color:#a52828}
+  .q.pos{background:#e8f5ee;color:#1a6b3c}
+  .q.nd{background:#f5f5f5;color:#888;font-style:normal}
+
+  /* BOXES */
+  .box{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--glov);border-radius:8px;padding:14px 16px;margin:14px 0;font-size:14px}
+  .box.gap{border-left-color:var(--warn)}
+  .box.ok{border-left-color:var(--ok)}
+  .box.info{border-left-color:var(--info)}
+
+  /* RIVAL PANELS */
+  .rival-panel{display:none}
+  .rival-panel.active{display:block}
+
+  ul{margin:4px 0;padding-left:18px}li{margin:3px 0;font-size:13.5px}
+  .meta{font-size:12px;color:var(--mut);margin:0 0 8px}
+  .stars{font-weight:700}
+  a{color:var(--info);text-decoration:none}
+
+  /* GAPS SECTION */
+  .gaps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:12px 0}
+  .gap-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+  .gap-card h4{margin:0 0 8px;font-size:14px}
+  .gap-card p{margin:0;font-size:13px;color:var(--mut)}
+  .p0{border-top:3px solid #c0392b}.p1{border-top:3px solid #e07a10}.p2{border-top:3px solid #2e6fb5}
+
+  /* META TABLE */
+  .meta-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px}
+  .meta-table td{padding:5px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  .meta-table td:first-child{font-weight:600;color:var(--mut);width:110px;white-space:nowrap}
+
+  /* VISUAL ROW */
+  .vis-row{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0}
+  .vis-badge{background:var(--chip);border-radius:6px;padding:4px 10px;font-size:11.5px;font-weight:600;border-left:3px solid var(--ok)}
+
+  /* PRODUCT TILE */
+  .ptile{display:flex;gap:14px;align-items:center;background:var(--chip);border-radius:10px;padding:10px 14px;margin:0 0 14px;border:1px solid var(--line)}
+  .ptile-img{width:90px;height:90px;object-fit:contain;border-radius:8px;background:#fff;flex:none}
+  .ptile-info{flex:1;min-width:0}
+  .ptile-info .pt-name{font-weight:700;font-size:14px;color:var(--ink);line-height:1.3}
+  .ptile-info .pt-price{font-weight:700;font-size:13px;color:var(--warn);margin:2px 0}
+  .ptile-info .pt-link{font-size:12px;color:var(--info);display:inline-block;word-break:break-all}
+  .ptile-info .pt-link:hover{text-decoration:underline}
+  .ptile-info .pt-meta{font-size:11.5px;color:var(--mut);margin:2px 0}
+  .ptile-info .pt-stars{color:var(--ok);font-weight:700}
+
+  @media(max-width:760px){.cols{grid-template-columns:1fr}.gaps-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Pumice Stones for Feet — Full Market Analysis (US/EN) <span style="font-size:11px;background:#dbeafe;color:#1e40af;border-radius:4px;padding:1px 6px;margin-left:8px">EN</span></h1>
+<p class="sub">Category: pumice stones for feet (L1) + nano glass (L2) · <b>9 competitors</b> (1 GLOV hero + 8 rivals: Scholl, KillyS, Ewa Schmitt, Soulima, Deni Carte, Mawe, Laroxy, NeoNail) · data: 2026-07-17 · scrape: Ceneo, Allegro, Rossmann, dm, glov.co</p>
+
+<div class="box info">
+<strong>Head-to-head: GLOV Nano Glass vs rival (choose brand).</strong> Left card = GLOV Nano Glass Foot File (fixed). Right = selected competitor. 7 citability dimensions + reviews. Data: PDP text scrape + Ceneo/Allegro. Category split into: <b>nano glass</b> (direct competition), <b>electric</b> (premium alternative), <b>budget/traditional</b> (low alternative).
+</div>
+
+<!-- BRAND SELECTOR -->
+<div class="btabs">
+  <button class="btab active" data-brand="scholl" onclick="setRival('scholl',this)">Scholl Nano Glass</button>
+  <button class="btab" data-brand="killys" onclick="setRival('killys',this)">KillyS Nano</button>
+  <button class="btab" data-brand="ewas" onclick="setRival('ewas',this)">Ewa Schmitt ProCare+</button>
+  <button class="btab" data-brand="soulima" onclick="setRival('soulima',this)">Soulima Nano</button>
+  <button class="btab" data-brand="deni" onclick="setRival('deni',this)">Deni Carte Crystal</button>
+  <button class="btab" data-brand="neonail" onclick="setRival('neonail',this)">NeoNail Electric</button>
+</div>
+
+<!-- HEAD-TO-HEAD COLS -->
+<div class="cols">
+
+<!-- LEFT: GLOV (fixed) -->
+<div class="card">
+  <div class="card-head glov">GLOV — Nano Glass Foot File (hero product)</div>
+  <div class="card-body">
+    <div class="ptile">
+      <img class="ptile-img" src="https://pro-fra-s3-productsassets.rossmann.pl/product_1_medium/2131378_360_350_1770805621.webp" alt="GLOV Nano Glass Foot File" loading="lazy">
+      <div class="ptile-info">
+        <div class="pt-name">GLOV® Nano Glass Foot File</div>
+        <div class="pt-price">~41 zł (Rossmann) / 39-55 zł</div>
+        <div class="pt-stars">★★★★★ 4.9★ (26 reviews)</div>
+        <div class="pt-meta">Nano glass · laser 3D · ABS</div>
+        <a class="pt-link" href="https://glov.co/collections/pumeksy" target="_blank">glov.co</a>
+      </div>
+    </div>
+    <p class="meta"><a href="https://glov.co/collections/pumeksy" target="_blank">glov.co</a> · 40,99 zł (Rossmann) / ~39-55 zł (Allegro) · scrape: Rossmann + Ceneo, 2026-07-17</p>
+
+    <div class="lbl">1. PDP Title</div>
+    <div>"Glov, pumice stone for feet in nano glass, Pink" — simple, brand-first</div>
+
+    <div class="lbl">2. Description / structure</div>
+    <ul>
+      <li>6 feature bullets: wet/dry use, no mess, hygienic, ergonomic, durable</li>
+      <li>Section "Construction and materials" (laser-cut 3D nano glass + ABS body)</li>
+      <li>Preparation and use section (short 3-step instructions)</li>
+      <li>No named narrative H2/H3 sections (as in GLOV makeup removal)</li>
+    </ul>
+    <span class="chip warn">no FAQ section</span><span class="chip warn">no narrative H2 sections</span>
+
+    <div class="lbl">3. Claims / proof</div>
+    <ul>
+      <li>"Laser-cut 3D nano glass" — unique texture</li>
+      <li>"Vegan product"</li>
+      <li>"Does not crumble and leaves no dust"</li>
+      <li>"Hygienic — does not harbor bacteria"</li>
+    </ul>
+    <span class="chip warn">no clinical proof</span><span class="chip warn">no certifications</span><span class="chip info">vegan = differentiator</span>
+
+    <div class="lbl">4. FAQ</div>
+    <span class="chip warn">NO FAQ section on PDP</span>
+
+    <div class="lbl">5. Material</div>
+    <div>Nano Glass + ABS (body) · laser-cut 3D surface · dimensions approx. 10.5 × 6.5 cm</div>
+    <span class="chip info">3D laser unique in segment</span>
+
+    <div class="lbl">6. Price / value</div>
+    <ul>
+      <li>40,99 zł (Rossmann promo) · reg. 49,99 zł</li>
+      <li>~39-55 zł (Allegro, depending on color/variant)</li>
+      <li>No cost-per-use calculation (as in GLOV makeup removal)</li>
+      <li>Lifespan: reusable (not declared in years)</li>
+    </ul>
+
+    <div class="lbl">7. Trust / reviews</div>
+    <ul>
+      <li><span class="stars">4.9★ · 8 reviews (Ceneo)</span></li>
+      <li>Wizaż: 4.8★ · 18 reviews (product: Glov nano glass pumice)</li>
+      <li>Rossmann: no text reviews</li>
+      <li>100% 5★ recommendations on Ceneo</li>
+    </ul>
+
+    <div class="lbl">Review patterns — Wizaż 4.8★ / 18 reviews</div>
+    <div class="q pos">"Very effectively removes calluses, leaves feet smooth and soft"</div>
+    <div class="q pos">"Works on both wet and dry feet — best results after soaking"</div>
+    <div class="q pos">"Unlike regular pumice, it doesn't crumble or leave a paste"</div>
+
+    <div class="lbl">PDP Visual mapping</div>
+    <div><span class="chip ok">product photo on white background</span><span class="chip ok">lifestyle: woman using on foot</span><span class="chip ok">color variants</span></div>
+    <div>Format: professional product photos + 2 in-use shots. No comparative infographics, no before/after section. Packaging with QR code.</div>
+  </div>
+</div>
+
+<!-- RIGHT: RIVAL PANELS -->
+<div>
+
+<!-- SCHOLL NANO GLASS -->
+<div class="rival-panel active" id="panel-scholl">
+  <div class="card">
+    <div class="card-head scholl">Scholl — Expert Care Nano Glass (global, premium)</div>
+    <div class="card-body">
+    <div class="ptile">
+      <img class="ptile-img" src="https://pro-fra-s3-productsassets.rossmann.pl/product_1_medium/2098033_360_350_1757054049.webp" alt="Scholl Expert Care Nano Glass" loading="lazy">
+      <div class="ptile-info">
+        <div class="pt-name">Scholl Expert Care Nano Glass</div>
+        <div class="pt-price">~44 zł (Allegro) / 49,99 zł (Rossmann)</div>
+        <div class="pt-stars">★★★★☆ 4.8★ (Wizaż)</div>
+        <div class="pt-meta">Nano glass · anti-slip · brand 100+ years</div>
+        <a class="pt-link" href="https://www.rossmann.pl/Produkt/Pumeksy-pilniki-i-tarki/Scholl-ExpertCare-pilnik-do-stop-z-nanoszkla-1-szt,2098033,13142" target="_blank">rossmann.pl</a>
+      </div>
+    </div>
+    <p class="meta"><a href="https://www.rossmann.pl/Produkt/Pumeksy-pilniki-i-tarki/Scholl-ExpertCare-pilnik-do-stop-z-nanoszkla-1-szt,2098033,13142" target="_blank">rossmann.pl</a> · 43,80 zł (Allegro) / 49,99 zł (Rossmann) · scrape: Ceneo + Allegro, 2026-07-17</p>
+
+      <div class="lbl">1. PDP Title</div>
+      <div>"Scholl ExpertCare nano glass foot file" / "Scholl Nano Glass file for hard foot skin"</div>
+
+      <div class="lbl">2. Description / structure</div>
+      <ul>
+        <li>Product description: nano glass file for hard foot skin</li>
+        <li>Feature bullets — effectiveness, hygiene, ease of cleaning</li>
+        <li>No named narrative sections</li>
+        <li>Section: for use on dry and moist skin</li>
+      </ul>
+      <span class="chip warn">poor PDP content</span><span class="chip warn">no FAQ</span>
+
+      <div class="lbl">3. Claims / proof</div>
+      <ul>
+        <li>"Nano Glass Technology" — proprietary technology</li>
+        <li>"Removes hard skin more effectively than traditional files"</li>
+        <li>"Rust-resistant"</li>
+        <li>"Easy to wash — hygienic"</li>
+      </ul>
+      <span class="chip warn">no clinical proof</span><span class="chip ok">Scholl brand = trust (100+ years)</span>
+
+      <div class="lbl">4. Material</div>
+      <div>Nano Glass Technology · waterproof · anti-slip handle</div>
+
+      <div class="lbl">5. Price / value</div>
+      <ul>
+        <li>43,80 zł (Allegro Nano Glass version) — comparable to GLOV</li>
+        <li>139,99 zł (Rossmann — Expert Care electric version + replaceable Nano disc)</li>
+        <li>No cost-per-use calculation</li>
+      </ul>
+      <span class="chip warn">confusing price structure (Nano vs electric)</span>
+
+      <div class="lbl">6. Trust / reviews</div>
+      <ul>
+        <li><span class="stars">4.8★ (Wizaż) — Scholl Expert Care Nano Foot File</span></li>
+        <li>Allegro: positive — "better than traditional Scholl files"</li>
+        <li>Wizaż: 4.8★, reviews for the Nano Glass model</li>
+      </ul>
+
+      <div class="lbl">Review patterns</div>
+      <div class="q pos">"Better than traditional Scholl files (metal or ceramic) — more effective"</div>
+      <div class="q pos">"Doesn't rust, easy to clean — hygienic"</div>
+      <div class="q nd">Small review sample (product relatively new on the market)</div>
+    </div>
+  </div>
+</div>
+
+<!-- KILLYS NANO -->
+<div class="rival-panel" id="panel-killys">
+  <div class="card">
+    <div class="card-head killys">KillyS — Nano Glass File (mass-market, dm/Allegro)</div>
+    <div class="card-body">
+    <div class="ptile">
+      <img class="ptile-img" src="https://products.dm-static.com/images/f_auto,q_auto,c_fit,h_440,w_500/v1756728341/assets/pas/images/a6abf41c-98ec-40b4-9e23-e0c0d03cf65d/killys-tarka-do-stop-z-nano-szk-a" alt="KillyS Tarka z nano szkła" loading="lazy">
+      <div class="ptile-info">
+        <div class="pt-name">KillyS Nano Glass File</div>
+        <div class="pt-price">~25 zł (dm) / 15-20 zł (Allegro)</div>
+        <div class="pt-stars">★★★★★ 4.94★ (175 reviews)</div>
+        <div class="pt-meta">Nano glass · grit 100 · contoured</div>
+        <a class="pt-link" href="https://killys.pl/produkt/tarka-do-stop-z-nano-szkla/" target="_blank">killys.pl</a>
+      </div>
+    </div>
+    <p class="meta"><a href="https://killys.pl/produkt/tarka-do-stop-z-nano-szkla/" target="_blank">killys.pl</a> · 24,95 zł (dm) / ~15-20 zł (Allegro) · scrape: killys.pl + dm.pl, 2026-07-17</p>
+
+      <div class="lbl">1. PDP Title</div>
+      <div>"Nano glass foot file" — simple, no brand in title</div>
+
+      <div class="lbl">2. Description / structure</div>
+      <ul>
+        <li>Short description (1 narrative paragraph: "Take care of your feet with the nano glass file!")</li>
+        <li>4 feature bullets: nano glass surface, grit 100, comfortable handle, design</li>
+        <li>Instructions: 2 steps (on dry skin, wash after use)</li>
+        <li><b>Similar products section — cross-sell</b></li>
+      </ul>
+      <span class="chip ok">cross-sell</span><span class="chip warn">no FAQ</span><span class="chip warn">no claims</span>
+
+      <div class="lbl">3. Claims / proof</div>
+      <span class="chip warn">NONE — zero marketing claims or proof</span>
+      <div>Technical description: "grit 100, which removes dead skin, leaving skin cared for and smooth"</div>
+
+      <div class="lbl">4. Material</div>
+      <div>Nano glass · grit 100 · contoured handle · product code 500951</div>
+
+      <div class="lbl">5. Price / value</div>
+      <ul>
+        <li>24,95 zł (dm) / ~15-20 zł (Allegro) — <b>cheapest nano glass in comparison</b></li>
+        <li>No declared lifespan</li>
+        <li>No cost-per-use calculation</li>
+      </ul>
+      <span class="chip ok">price 60% lower than GLOV</span>
+
+      <div class="lbl">6. Trust / reviews</div>
+      <ul>
+        <li><span class="stars">4.94★ (Allegro) · 175 ratings · 47 reviews</span> — <b>highest review volume for nano</b></li>
+        <li>5.0★ (dm) — 1 review</li>
+      </ul>
+
+      <div class="lbl">Review patterns — Allegro 4.94★ / 47 reviews</div>
+      <div class="q pos">"Amazing — the best foot file I've had. Results after just a few days"</div>
+      <div class="q pos">"Fits well in hand, pretty, effective, and cheap"</div>
+      <div class="q pos">"I also recommend foot soaking salts — dead skin comes off even easier"</div>
+    </div>
+  </div>
+</div>
+
+<!-- EWA SCHMITT PROCARE+ -->
+<div class="rival-panel" id="panel-ewas">
+  <div class="card">
+    <div class="card-head ewas">Ewa Schmitt — ProCare+ Nano Glass File (Rossmann, mid)</div>
+    <div class="card-body">
+    <div class="ptile">
+      <img class="ptile-img" src="https://pro-fra-s3-productsassets.rossmann.pl/product_8_medium/2072029_360_350_1782434405.webp" alt="Ewa Schmitt ProCare+ nano" loading="lazy">
+      <div class="ptile-info">
+        <div class="pt-name">Ewa Schmitt ProCare+ nano</div>
+        <div class="pt-price">~29 zł (ProCare+) / 25 zł (FunCare)</div>
+        <div class="pt-stars">★★★★★ 4.9★ (Rossmann)</div>
+        <div class="pt-meta">Nano glass · Rossmann house brand · 2 lines</div>
+        <a class="pt-link" href="https://www.rossmann.pl/Produkt/Pumeksy-pilniki-i-tarki/Ewa-Schmitt-ProCare-tarka-do-stop-z-nano-szkla-rozne-kolory-1-szt,2072029,13142" target="_blank">rossmann.pl</a>
+      </div>
+    </div>
+    <p class="meta"><a href="https://www.rossmann.pl/Produkt/Pumeksy-pilniki-i-tarki/Ewa-Schmitt-ProCare-tarka-do-stop-z-nano-szkla-rozne-kolory-1-szt,2072029,13142" target="_blank">rossmann.pl</a> · 28,99 zł (ProCare+) / 24,99 zł (FunCare) · scrape: Rossmann, 2026-07-17</p>
+
+      <div class="lbl">1. PDP Title</div>
+      <div>"EWA SCHMITT ProCare+ nano glass foot file, various colors"</div>
+
+      <div class="lbl">2. Description / structure</div>
+      <ul>
+        <li>Description: short, functional (available Rossmann)</li>
+        <li>Feature bullets: nano glass, ergonomics, hygiene, ease of cleaning</li>
+        <li>No named narrative sections</li>
+        <li>Color variants (ProCare+ = white, FunCare = cow print)</li>
+      </ul>
+      <span class="chip warn">poor content</span><span class="chip info">2 lines: ProCare+ and FunCare</span>
+
+      <div class="lbl">3. Claims / proof</div>
+      <span class="chip warn">NONE — zero marketing claims</span>
+
+      <div class="lbl">4. Material</div>
+      <div>Nano glass · various colors · ergonomic handle</div>
+
+      <div class="lbl">5. Price / value</div>
+      <ul>
+        <li>28,99 zł (ProCare+) / 24,99 zł (FunCare)</li>
+        <li>Rossmann brand product — available in-store and online</li>
+      </ul>
+      <span class="chip ok">widest distribution (Rossmann = everywhere in Poland)</span>
+
+      <div class="lbl">6. Trust / reviews</div>
+      <ul>
+        <li><span class="stars">4.9★ (Rossmann) — ProCare+ and FunCare</span></li>
+        <li>No text reviews available online</li>
+        <li>Low visibility in rankings (Rossmann product, not heavily promoted)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SOULIMA NANO -->
+<div class="rival-panel" id="panel-soulima">
+  <div class="card">
+    <div class="card-head soulima">Soulima — 3D Nano Glass Pumice (Allegro, mid)</div>
+    <div class="card-body">
+    <div class="ptile">
+      <img class="ptile-img" src="https://image.ceneostatic.pl/data/products/182789475/f-pumeks-z-nano-szkla-tarka-szklana-do-stop-piet-pilnik-krysztalowy-rak-nog.jpg" alt="Soulima Pumeks 3D nano" loading="lazy">
+      <div class="ptile-info">
+        <div class="pt-name">Soulima 3D Nano Pumice</div>
+        <div class="pt-price">~35-39 zł (Allegro) / 45 zł (Ceneo)</div>
+        <div class="pt-stars">★★★★☆ (few reviews)</div>
+        <div class="pt-meta">Nano glass · 3D · spinel care</div>
+        <a class="pt-link" href="https://allegro.pl/kategoria/akcesoria-i-przybory-pilniki-tarki-pumeksy-do-stop-260718?string=soulima%20z%20nano%20szk%C5%82a" target="_blank">allegro.pl</a>
+      </div>
+    </div>
+    <p class="meta"><a href="https://allegro.pl/kategoria/akcesoria-i-przybory-pilniki-tarki-pumeksy-do-stop-260718?string=soulima%20z%20nano%20szk%C5%82a" target="_blank">allegro.pl</a> · ~34,99-39,48 zł (Allegro) · scrape: Allegro + Ceneo, 2026-07-17</p>
+
+      <div class="lbl">1. PDP Title</div>
+      <div>"Smart! PUMICE STONE FOR FEET 3D NANO GLASS CRYSTAL FILE FOR HEELS SPINEL CARE" / "Nano Glass Pumice Crystal Glass File for Feet Heels Hands" — keyword-stuffing, long title</div>
+
+      <div class="lbl">2. Description / structure</div>
+      <ul>
+        <li>Manufacturer description (Gold Dust): technical spec</li>
+        <li>Feature bullets on Allegro/Ceneo — auto-generated</li>
+        <li>No narrative sections</li>
+        <li>0 marketing claims</li>
+      </ul>
+      <span class="chip warn">poorest content in nano segment</span><span class="chip warn">no FAQ</span>
+
+      <div class="lbl">3. Material</div>
+      <div>Nano glass · plastic handle · manufacturer: Gold Dust (Soulima brand)</div>
+
+      <div class="lbl">4. Price / value</div>
+      <ul>
+        <li>~34,99-39,48 zł (Allegro) — mid-range nano</li>
+        <li>Last Ceneo price: 45,00 zł (currently no offers)</li>
+        <li>Availability: Allegro, Empik</li>
+      </ul>
+
+      <div class="lbl">5. Trust / reviews</div>
+      <ul>
+        <li>No reviews on Ceneo (new product)</li>
+        <li>Sold as "Smart!" on Allegro (recommended)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- DENI CARTE -->
+<div class="rival-panel" id="panel-deni">
+  <div class="card">
+    <div class="card-head deni">Deni Carte — Crystal Glass Pumice (Allegro, budget+)</div>
+    <div class="card-body">
+    <div class="ptile">
+      <img class="ptile-img" src="https://image.ceneostatic.pl/data/products/184659621/f-deni-carte-pumeks-do-stop-ze-szkla-krysztalowego.jpg" alt="Deni Carte Exclusive Gold" loading="lazy">
+      <div class="ptile-info">
+        <div class="pt-name">Deni Carte Exclusive Gold</div>
+        <div class="pt-price">~17 zł (Allegro)</div>
+        <div class="pt-stars">★★★★★ 4.95★ (221 reviews)</div>
+        <div class="pt-meta">Crystal glass · Exclusive Gold</div>
+        <a class="pt-link" href="https://allegro.pl/produkt/tarka-do-stop-deni-carte-exclusive-gold-a5670e86-e399-4f41-8c68-29ef954493a4" target="_blank">allegro.pl</a>
+      </div>
+    </div>
+    <p class="meta"><a href="https://www.ceneo.pl/184659621" target="_blank">ceneo.pl</a> · ~16,87 zł (Allegro) · scrape: Ceneo, 2026-07-17</p>
+
+      <div class="lbl">1. PDP Title</div>
+      <div>"Deni Carte Crystal Glass Pumice Stone for Feet" / "Deni Carte Exclusive Gold Foot File"</div>
+
+      <div class="lbl">2. Description / structure</div>
+      <ul>
+        <li>Description: functional — "ideal for home pedicure"</li>
+        <li>Bullets: anti-slip surface, easy cleaning, durability</li>
+        <li>No narrative H2/H3 sections</li>
+        <li>Positioned as "crystal" glass (not nano — different naming convention)</li>
+      </ul>
+      <span class="chip warn">no FAQ</span><span class="chip info">"crystal" positioning instead of "nano"</span>
+
+      <div class="lbl">3. Claims / proof</div>
+      <span class="chip warn">NONE — zero marketing claims or proof</span>
+
+      <div class="lbl">4. Material</div>
+      <div>Crystal glass · anti-slip surface · Exclusive Gold variant</div>
+
+      <div class="lbl">5. Price / value</div>
+      <ul>
+        <li>~16,87 zł (Allegro Exclusive Gold) — <b>budget nano</b></li>
+        <li>No lifespan / cost-per-use</li>
+        <li>Exclusive Gold variant = "premium" positioning despite low price</li>
+      </ul>
+
+      <div class="lbl">6. Trust / reviews</div>
+      <ul>
+        <li><span class="stars">4.95★ (Allegro) · 221 ratings · 57 reviews</span> — high volume</li>
+        <li>Ceneo: 1 offer (ezebra.pl)</li>
+      </ul>
+
+      <div class="lbl">Review patterns — Allegro 4.95★ / 57 reviews</div>
+      <div class="q pos">"Great file — perfectly smooths heels, doesn't crumble like regular pumice"</div>
+      <div class="q pos">"Pretty, gold — looks nice in the bathroom, easy to grip"</div>
+    </div>
+  </div>
+</div>
+
+<!-- NEONAIL ELECTRIC -->
+<div class="rival-panel" id="panel-neonail">
+  <div class="card">
+    <div class="card-head neonail">NeoNail — Waterproof Electric File (premium alternative)</div>
+    <div class="card-body">
+    <div class="ptile">
+      <img class="ptile-img" src="https://pro-fra-s3-productsassets.rossmann.pl/product_8_medium/2126272_360_350_1782512147.webp" alt="NeoNail Pilnik elektryczny" loading="lazy">
+      <div class="ptile-info">
+        <div class="pt-name">NeoNail Electric File</div>
+        <div class="pt-price">~88-115 zł (Allegro/Rossmann)</div>
+        <div class="pt-stars">★★★★☆ 4.81★ (1048 reviews)</div>
+        <div class="pt-meta">Electric · IPX7 · 150min · 3 discs</div>
+        <a class="pt-link" href="https://www.rossmann.pl/Produkt/Pumeksy-pilniki-i-tarki/NeoNail-pilnik-do-piet-elektryczny-wodoodporny-1-szt,2126272,13142" target="_blank">rossmann.pl</a>
+      </div>
+    </div>
+    <p class="meta"><a href="https://allegro.pl/produkt/neonail-wodoodporny-pilnik-elektryczny-do-piet-bialy-e421f4ed-4eca-4dcc-94a5-362e2fb09248" target="_blank">allegro.pl</a> · 87,99-114,99 zł · scrape: Allegro + Rossmann + Ceneo, 2026-07-17</p>
+
+      <div class="lbl">1. PDP Title</div>
+      <div>"NEONAIL Waterproof Electric File for heels white" / "Waterproof electric heel file"</div>
+
+      <div class="lbl">2. Description / structure</div>
+      <ul>
+        <li>Description: functional — technical spec</li>
+        <li>Bullets: 3 discs, 150 minutes runtime, USB-C, waterproof IPX7</li>
+        <li>No named narrative sections</li>
+        <li>No FAQ</li>
+      </ul>
+      <span class="chip warn">no FAQ</span><span class="chip info">3 discs included</span>
+
+      <div class="lbl">3. Claims / proof</div>
+      <ul>
+        <li>"Waterproof IPX7 — use in the shower"</li>
+        <li>"Up to 150 minutes of use on a single charge"</li>
+        <li>"USB-C — easy charging"</li>
+      </ul>
+      <span class="chip ok">concrete technical specs</span><span class="chip warn">no medical certifications</span>
+
+      <div class="lbl">4. Material / specs</div>
+      <div>Li-Ion battery · 150 min runtime · USB-C · IPX7 · 3 abrasive discs</div>
+
+      <div class="lbl">5. Price / value</div>
+      <ul>
+        <li>87,99-114,99 zł — <b>most expensive in comparison</b></li>
+        <li>3 discs included + replaceable (additional cost)</li>
+        <li>No cost-per-use calculation</li>
+      </ul>
+      <span class="chip warn">high entry cost + cost of replacement discs</span>
+
+      <div class="lbl">6. Trust / reviews</div>
+      <ul>
+        <li><span class="stars">4.81★ (Allegro) · 1048 ratings · 255 reviews</span> — <b>HIGHEST review volume in the entire category</b></li>
+        <li>Rossmann: available, 114,99 zł</li>
+        <li>Media Expert: 109,99 zł</li>
+      </ul>
+
+      <div class="lbl">Review patterns — Allegro 4.81★ / 255 reviews</div>
+      <div class="q pos">"Works great — entire foot dry and wet :)"</div>
+      <div class="q pos">"Nice design, easy to use, comfortable handle"</div>
+      <div class="q pos">"Heels smooth after first use — wow effect"</div>
+      <div class="q neg">"Noisy operation — not for evening use in an apartment block"</div>
+      <div class="q neg">"Discs wear out quickly — need to be repurchased"</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /right col -->
+</div><!-- /cols -->
+
+<!-- ========================================== -->
+<!-- 8-DIMENSION MATRIX -->
+<!-- ========================================== -->
+<h2>8-Dimension Matrix — all brands at once</h2>
+<p style="font-size:13px;color:var(--mut);margin:0 0 12px">GEO citability matrix: how each brand covers 8 key decision dimensions. Data from PDP text scrape + Ceneo/Allegro. 2026-07-17.</p>
+
+<div style="overflow-x:auto">
+<table class="matrix">
+  <thead>
+    <tr>
+      <th>Dimension</th>
+      <th style="border-left:3px solid var(--glov)">GLOV Nano Glass</th>
+      <th style="border-left:3px solid var(--scholl)">Scholl Nano Glass</th>
+      <th style="border-left:3px solid var(--killys)">KillyS Nano</th>
+      <th style="border-left:3px solid var(--ewas)">Ewa Schmitt ProCare+</th>
+      <th style="border-left:3px solid var(--soulima)">Soulima Nano</th>
+      <th style="border-left:3px solid var(--deni)">Deni Carte</th>
+      <th style="border-left:3px solid var(--neonail)">NeoNail Electric</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PDP Title</td>
+      <td class="dim-glov">Brand-first, simple, no keywords</td>
+      <td class="dim-scholl">Brand + technology (Nano Glass)</td>
+      <td class="dim-killys">Functional, no brand</td>
+      <td class="dim-ewas">Brand + function + variants</td>
+      <td class="dim-soulima"><b>Keyword-stuffing</b>, long, chaotic</td>
+      <td class="dim-deni">Brand + material (crystal)</td>
+      <td class="dim-neonail">Functional + waterproof</td>
+    </tr>
+    <tr>
+      <td>Description / structure</td>
+      <td class="dim-glov">Bullets (6) + materials. No H2/H3. Average.</td>
+      <td class="dim-scholl">Bullets + technical description. No narrative.</td>
+      <td class="dim-killys">1 paragraph + 4 bullets + instructions. <b>Cross-sell</b>. Average.</td>
+      <td class="dim-ewas">Bullets + description. Poorest structure.</td>
+      <td class="dim-soulima"><b>Poorest:</b> spec only. Zero narrative.</td>
+      <td class="dim-deni">Functional description. Bullets. Average.</td>
+      <td class="dim-neonail">Technical spec + bullets. No narrative.</td>
+    </tr>
+    <tr>
+      <td>Claims / proof</td>
+      <td class="dim-glov">Laser 3D, vegan, dust-free. No clinical proof.</td>
+      <td class="dim-scholl">Nano Glass Technology. No clinical proof. <b>Brand trust 100+ years.</b></td>
+      <td class="dim-killys"><b>NONE</b> — zero claims</td>
+      <td class="dim-ewas"><b>NONE</b> — zero claims</td>
+      <td class="dim-soulima"><b>NONE</b></td>
+      <td class="dim-deni"><b>NONE</b></td>
+      <td class="dim-neonail">Technical specs (IPX7, 150min, USB-C). Concrete.</td>
+    </tr>
+    <tr>
+      <td>FAQ</td>
+      <td class="dim-glov"><span class="chip warn">NONE</span></td>
+      <td class="dim-scholl"><span class="chip warn">NONE</span></td>
+      <td class="dim-killys"><span class="chip warn">NONE</span></td>
+      <td class="dim-ewas"><span class="chip warn">NONE</span></td>
+      <td class="dim-soulima"><span class="chip warn">NONE</span></td>
+      <td class="dim-deni"><span class="chip warn">NONE</span></td>
+      <td class="dim-neonail"><span class="chip warn">NONE</span></td>
+    </tr>
+    <tr>
+      <td>Material / composition</td>
+      <td class="dim-glov">Nano Glass + ABS · laser 3D · 10.5×6.5 cm</td>
+      <td class="dim-scholl">Nano Glass · anti-slip</td>
+      <td class="dim-killys">Nano glass · grit 100</td>
+      <td class="dim-ewas">Nano glass</td>
+      <td class="dim-soulima">Nano glass · plastic</td>
+      <td class="dim-deni">Crystal glass</td>
+      <td class="dim-neonail">Battery 150min · USB-C · IPX7 · 3 discs</td>
+    </tr>
+    <tr>
+      <td>Price</td>
+      <td class="dim-glov"><b>~41 zł</b> (Rossmann promo) / reg. 50 zł</td>
+      <td class="dim-scholl"><b>~44 zł</b> (nano) / 140 zł (electric)</td>
+      <td class="dim-killys"><b>~25 zł</b> (dm) — cheapest nano</td>
+      <td class="dim-ewas"><b>~29 zł</b> — second cheapest nano</td>
+      <td class="dim-soulima">~35-45 zł</td>
+      <td class="dim-deni"><b>~17 zł</b> — budget</td>
+      <td class="dim-neonail"><b>~88-115 zł</b> — most expensive</td>
+    </tr>
+    <tr>
+      <td>Trust / reviews</td>
+      <td class="dim-glov">4.9★ (Ceneo · 8 reviews) · 4.8★ (Wizaż · 18 reviews)</td>
+      <td class="dim-scholl">4.8★ (Wizaż) · small sample</td>
+      <td class="dim-killys"><b>4.94★ (Allegro · 175 ratings · 47 reviews)</b></td>
+      <td class="dim-ewas">4.9★ (Rossmann) · <b>no text reviews</b></td>
+      <td class="dim-soulima">No significant reviews</td>
+      <td class="dim-deni"><b>4.95★ (Allegro · 221 ratings · 57 reviews)</b></td>
+      <td class="dim-neonail"><b>4.81★ (Allegro · 1048 ratings · 255 reviews)</b> ⇐ HIGHEST</td>
+    </tr>
+    <tr>
+      <td>PDP Visual format</td>
+      <td class="dim-glov">Product on white + lifestyle in use. Professional.</td>
+      <td class="dim-scholl">Product + packaging. Drugstore standard.</td>
+      <td class="dim-killys">Product on white. E-commerce standard.</td>
+      <td class="dim-ewas">Product on white. Rossmann standard.</td>
+      <td class="dim-soulima">Product photos. Allegro standard.</td>
+      <td class="dim-deni">Product + packaging. Standard.</td>
+      <td class="dim-neonail">Product + packaging + accessories. Standard.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ========================================== -->
+<!-- COMPARISON TABLE features -->
+<!-- ========================================== -->
+<h2>Comparison Table — features &amp; pricing</h2>
+
+<div style="overflow-x:auto">
+<table class="matrix">
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th style="border-left:3px solid var(--glov)">GLOV Nano</th>
+      <th style="border-left:3px solid var(--scholl)">Scholl Nano</th>
+      <th style="border-left:3px solid var(--killys)">KillyS Nano</th>
+      <th style="border-left:3px solid var(--ewas)">Ewa Schmitt</th>
+      <th style="border-left:3px solid var(--deni)">Deni Carte</th>
+      <th style="border-left:3px solid var(--neonail)">NeoNail Electric</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Type</td>
+      <td class="dim-glov">Nano glass</td>
+      <td class="dim-scholl">Nano glass</td>
+      <td class="dim-killys">Nano glass</td>
+      <td class="dim-ewas">Nano glass</td>
+      <td class="dim-deni">Crystal glass</td>
+      <td class="dim-neonail">Electric (rollers)</td>
+    </tr>
+    <tr>
+      <td>Price (PLN)</td>
+      <td class="dim-glov">~41</td>
+      <td class="dim-scholl">~44</td>
+      <td class="dim-killys">~25</td>
+      <td class="dim-ewas">~29</td>
+      <td class="dim-deni">~17</td>
+      <td class="dim-neonail">~100</td>
+    </tr>
+    <tr>
+      <td>Price segment</td>
+      <td class="dim-glov"><b>Premium nano</b></td>
+      <td class="dim-scholl"><b>Premium nano</b></td>
+      <td class="dim-killys">Mid nano</td>
+      <td class="dim-ewas">Mid nano</td>
+      <td class="dim-deni">Budget nano</td>
+      <td class="dim-neonail">Premium electric</td>
+    </tr>
+    <tr>
+      <td>Surface</td>
+      <td class="dim-glov"><b>Laser 3D nano glass</b> — unique</td>
+      <td class="dim-scholl">Nano Glass (flat)</td>
+      <td class="dim-killys">Nano glass grit 100</td>
+      <td class="dim-ewas">Nano glass</td>
+      <td class="dim-deni">Crystal glass</td>
+      <td class="dim-neonail">Abrasive roller (replaceable)</td>
+    </tr>
+    <tr>
+      <td>Double-sided</td>
+      <td class="dim-glov"><span class="chip ok">Yes (3D — both sides)</span></td>
+      <td class="dim-scholl"><span class="chip warn">No (single-sided)</span></td>
+      <td class="dim-killys"><span class="chip warn">No</span></td>
+      <td class="dim-ewas"><span class="chip warn">No</span></td>
+      <td class="dim-deni"><span class="chip warn">No</span></td>
+      <td class="dim-neonail">Replaceable discs (3 grits)</td>
+    </tr>
+    <tr>
+      <td>Ergonomic handle</td>
+      <td class="dim-glov"><span class="chip ok">Yes (ABS body)</span></td>
+      <td class="dim-scholl"><span class="chip ok">Yes (anti-slip)</span></td>
+      <td class="dim-killys"><span class="chip ok">Yes (contoured handle)</span></td>
+      <td class="dim-ewas"><span class="chip ok">Yes</span></td>
+      <td class="dim-deni"><span class="chip ok">Yes (anti-slip)</span></td>
+      <td class="dim-neonail"><span class="chip ok">Yes (comfortable handle)</span></td>
+    </tr>
+    <tr>
+      <td>Wet / dry</td>
+      <td class="dim-glov"><span class="chip ok">Both</span></td>
+      <td class="dim-scholl"><span class="chip ok">Both</span></td>
+      <td class="dim-killys"><span class="chip warn">Dry only</span></td>
+      <td class="dim-ewas"><span class="chip ok">Both</span></td>
+      <td class="dim-deni"><span class="chip ok">Both</span></td>
+      <td class="dim-neonail"><span class="chip ok">Both (+ IPX7)</span></td>
+    </tr>
+    <tr>
+      <td>Hygienic (non-porous)</td>
+      <td class="dim-glov"><span class="chip ok">Yes</span></td>
+      <td class="dim-scholl"><span class="chip ok">Yes</span></td>
+      <td class="dim-killys"><span class="chip ok">Yes</span></td>
+      <td class="dim-ewas"><span class="chip ok">Yes</span></td>
+      <td class="dim-deni"><span class="chip ok">Yes</span></td>
+      <td class="dim-neonail"><span class="chip ok">Yes (waterproof)</span></td>
+    </tr>
+    <tr>
+      <td>Vegan</td>
+      <td class="dim-glov"><span class="chip ok">Yes</span></td>
+      <td class="dim-scholl"><span class="chip info">No info</span></td>
+      <td class="dim-killys"><span class="chip info">No info</span></td>
+      <td class="dim-ewas"><span class="chip info">No info</span></td>
+      <td class="dim-deni"><span class="chip info">No info</span></td>
+      <td class="dim-neonail"><span class="chip info">No info</span></td>
+    </tr>
+    <tr>
+      <td>Declared lifespan</td>
+      <td class="dim-glov"><span class="chip warn">None</span></td>
+      <td class="dim-scholl"><span class="chip warn">None</span></td>
+      <td class="dim-killys"><span class="chip warn">None</span></td>
+      <td class="dim-ewas"><span class="chip warn">None</span></td>
+      <td class="dim-deni"><span class="chip warn">None</span></td>
+      <td class="dim-neonail">Replaceable discs (consumable)</td>
+    </tr>
+    <tr>
+      <td>Review volume</td>
+      <td class="dim-glov">26 (Ceneo+Wizaż)</td>
+      <td class="dim-scholl">Small sample</td>
+      <td class="dim-killys"><b>175+ reviews</b></td>
+      <td class="dim-ewas">Ratings only</td>
+      <td class="dim-deni"><b>221 reviews</b></td>
+      <td class="dim-neonail"><b>1048 reviews</b> ⇐ HIGHEST</td>
+    </tr>
+    <tr>
+      <td>Average rating</td>
+      <td class="dim-glov">4.9★</td>
+      <td class="dim-scholl">4.8★</td>
+      <td class="dim-killys">4.94★</td>
+      <td class="dim-ewas">4.9★</td>
+      <td class="dim-deni">4.95★</td>
+      <td class="dim-neonail">4.81★</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ========================================== -->
+<!-- POSITIONING MAP -->
+<!-- ========================================== -->
+<h2>Positioning Map — price vs content quality</h2>
+
+<div class="box info">
+  <strong>X axis = price (left cheap, right expensive). Y axis = content richness (low = poor, high = rich).</strong>
+</div>
+
+<div style="overflow-x:auto">
+<table class="matrix">
+  <thead>
+    <tr>
+      <th>Quadrant</th>
+      <th style="border-left:3px solid var(--glov)">GLOV Nano</th>
+      <th style="border-left:3px solid var(--scholl)">Scholl Nano</th>
+      <th style="border-left:3px solid var(--killys)">KillyS Nano</th>
+      <th style="border-left:3px solid var(--ewas)">Ewa Schmitt</th>
+      <th style="border-left:3px solid var(--soulima)">Soulima</th>
+      <th style="border-left:3px solid var(--deni)">Deni Carte</th>
+      <th style="border-left:3px solid var(--neonail)">NeoNail Electric</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Price</td>
+      <td class="dim-glov">41 zł</td>
+      <td class="dim-scholl">44 zł</td>
+      <td class="dim-killys">25 zł</td>
+      <td class="dim-ewas">29 zł</td>
+      <td class="dim-soulima">35 zł</td>
+      <td class="dim-deni">17 zł</td>
+      <td class="dim-neonail">100 zł</td>
+    </tr>
+    <tr>
+      <td>Content Quality Score</td>
+      <td class="dim-glov"><b>★★★☆☆</b> (average)</td>
+      <td class="dim-scholl"><b>★★☆☆☆</b> (low)</td>
+      <td class="dim-killys"><b>★★★☆☆</b> (average)</td>
+      <td class="dim-ewas"><b>★★☆☆☆</b> (low)</td>
+      <td class="dim-soulima"><b>★☆☆☆☆</b> (very low)</td>
+      <td class="dim-deni"><b>★★☆☆☆</b> (low)</td>
+      <td class="dim-neonail"><b>★★★☆☆</b> (average)</td>
+    </tr>
+    <tr>
+      <td>Position</td>
+      <td class="dim-glov"><b>Premium content</b></td>
+      <td class="dim-scholl">Trust over content</td>
+      <td class="dim-killys"><b>Sweet spot price/quality</b></td>
+      <td class="dim-ewas">Distribution over quality</td>
+      <td class="dim-soulima">Low visibility</td>
+      <td class="dim-deni">Budget with volume</td>
+      <td class="dim-neonail">Premium hardware</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ========================================== -->
+<!-- KEY GAPS -->
+<!-- ========================================== -->
+<h2>Key Gaps — what competitors do well vs. what they miss</h2>
+
+<div class="gaps-grid">
+
+<div class="gap-card p0">
+  <h4>🔴 P0 — No FAQ at ANY competitor</h4>
+  <p>None of the 7 analyzed products has an FAQ section on PDP. This is a HUGE content gap in a category that generates many questions ("wet or dry?", "how to clean?", "for sensitive skin?", "how often to use?"). <b>GLOV can dominate GEO with its FAQ.</b></p>
+</div>
+
+<div class="gap-card p0">
+  <h4>🔴 P0 — No competitor has clinical proof</h4>
+  <p>The entire pumice category relies on consumer proof (reviews, stars). Zero clinical studies, zero dermatological certifications (except Scholl — brand trust, but no specific certificate on PDP). <b>GLOV did the same in makeup removal — and no one has it there either.</b></p>
+</div>
+
+<div class="gap-card p1">
+  <h4>🟡 P1 — No one communicates TCO / lifespan</h4>
+  <p>None of the manufacturers states a declared lifespan in years or a cost-per-use calculation. Yet nano glass lasts 2-5+ years vs. stone = 2-6 months. <b>GLOV has the chance to be the first to show true cost-per-use (as it did in makeup removal: "replaces 400 cotton pads").</b></p>
+</div>
+
+<div class="gap-card p1">
+  <h4>🟡 P1 — No "upgrade from stone" narrative</h4>
+  <p>None of the competitors directly addresses the <code>cep_upgrade_z_kamienia</code> path. This is the strongest CEP for nano — the user already has a stone pumice that crumbles/slips/smells, and is looking for something better. <b>No PDP says "tired of crumbling stone? Switch to nano."</b></p>
+</div>
+
+<div class="gap-card p1">
+  <h4>🟡 P1 — Complete absence of comparative content</h4>
+  <p>No manufacturer compares their product to alternatives (stone vs nano, file vs electric, budget vs premium). This leaves the customer with the question: "what's the difference?" without an answer. <b>GLOV can build a comparison table on PDP.</b></p>
+</div>
+
+<div class="gap-card p2">
+  <h4>🔵 P2 — No one has a before/after section</h4>
+  <p>No visual proof of effectiveness in before/after form at any competitor. Given that the effect is immediate and spectacular (calloused heel → smooth in 30 seconds), this is a massively underused persuasion tool.</p>
+</div>
+
+<div class="gap-card p2">
+  <h4>🔵 P2 — No one targets specific CEPs in PDP content</h4>
+  <p>CS analysis (11 CEP for L1, 8 CEP for L2 nano) vs competitor PDP content: 0 coverage. No PDP addresses <code>cep_wstyd_spoleczny</code>, <code>cep_pekajace_piety</code>, <code>cep_higiena_narzedzia</code> or <code>cep_domowy_pedicure</code>.</p>
+</div>
+
+<div class="gap-card p2">
+  <h4>🔵 P2 — Packaging / design not differentiated</h4>
+  <p>Most products look similar: white/black body + colored element. Only GLOV has a recognizable palette (pink/black), Deni Carte has Exclusive Gold. The rest are visual commodities. <b>GLOV can go further with strong brand packaging.</b></p>
+</div>
+
+</div>
+
+<!-- ========================================== -->
+<!-- RESPONSE STRATEGY -->
+<!-- ========================================== -->
+<h2>Response Strategy — what GLOV can do better</h2>
+
+<div class="box ok">
+<strong>1. FAQ as a GEO asset (P0)</strong><br>
+No competitor has FAQ. GLOV can build 10-15 questions with answers (how to use, how to clean, how often, for whom, wet or dry, for sensitive skin, how long it lasts). This will give GLOV an advantage in featured snippets.
+</div>
+
+<div class="box ok">
+<strong>2. Upgrade narrative (P1)</strong><br>
+"Tired of pumice that crumbles, turns black and smells? Switch to nano glass — non-porous, doesn't wear out, doesn't absorb bacteria." Directly addresses <code>cep_upgrade_z_kamienia</code> + <code>cep_higiena_nano</code>.
+</div>
+
+<div class="box ok">
+<strong>3. TCO Calculator (P1)</strong><br>
+"Stone = PLN 10 × 4 replacements/year × 2 years = PLN 80. Nano = PLN 41 × 2+ years = zero additional costs. You save PLN 39 and generate no waste."
+</div>
+
+<div class="box ok">
+<strong>4. Comparison table (P1)</strong><br>
+On PDP: stone vs nano vs electric. The customer sees the differences and chooses knowingly instead of comparing in 5 tabs.
+</div>
+
+<div class="box ok">
+<strong>5. Before/after section (P2)</strong><br>
+2 photos: heel before (calloused) and after (smooth). The effect is immediate — let the photo speak louder than words.
+</div>
+
+<div class="box ok">
+<strong>6. CEP targeting in content (P2)</strong><br>
+Each paragraph = one CEP. "Before sandal season" (cep_sezon_sandalowy), "Cracked heels hurt?" (cep_pekajace_piety), "Home pedicure instead of the salon" (cep_domowy_pedicure).
+</div>
+
+<div class="box ok">
+<strong>7. Certified / dermatologically tested (P3)</strong><br>
+Even if GLOV doesn't have a certificate — worth considering. Scholl relies on 100+ years of brand trust, but no product has a dermatological certificate on PDP. It would be the first.
+</div>
+
+<!-- ========================================== -->
+<!-- COMPETITOR LIST -->
+<!-- ========================================== -->
+<h2>Competitor List — quick stats</h2>
+
+<div style="overflow-x:auto">
+<table class="matrix">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Product</th>
+      <th>Type</th>
+      <th>Price (PLN)</th>
+      <th>Rating ★</th>
+      <th>Reviews</th>
+      <th>Content Quality</th>
+      <th>Visual Match</th>
+      <th>Distribution</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background:#fef2f2">
+      <td>★</td>
+      <td><b>GLOV Nano Glass Foot File</b></td>
+      <td>Nano glass</td>
+      <td>~41</td>
+      <td>4.9</td>
+      <td>26</td>
+      <td>★★★☆☆</td>
+      <td>★★★☆☆</td>
+      <td>Rossmann, glov.co, Allegro</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Scholl Expert Care Nano Glass</td>
+      <td>Nano glass</td>
+      <td>~44</td>
+      <td>4.8</td>
+      <td>Small</td>
+      <td>★★☆☆☆</td>
+      <td>★★☆☆☆</td>
+      <td>Rossmann, Hebe, Allegro</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>KillyS Nano Glass File</td>
+      <td>Nano glass</td>
+      <td>~25</td>
+      <td>4.94</td>
+      <td>175+</td>
+      <td>★★★☆☆</td>
+      <td>★★☆☆☆</td>
+      <td>dm, Allegro, drugstores</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Ewa Schmitt ProCare+ nano</td>
+      <td>Nano glass</td>
+      <td>~29</td>
+      <td>4.9</td>
+      <td>Ratings</td>
+      <td>★★☆☆☆</td>
+      <td>★★☆☆☆</td>
+      <td>Rossmann (wide)</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Ewa Schmitt FunCare nano</td>
+      <td>Nano glass</td>
+      <td>~25</td>
+      <td>4.9</td>
+      <td>Ratings</td>
+      <td>★★☆☆☆</td>
+      <td>★★☆☆☆</td>
+      <td>Rossmann (wide)</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Soulima 3D Nano Pumice</td>
+      <td>Nano glass</td>
+      <td>~35</td>
+      <td>—</td>
+      <td>None</td>
+      <td>★☆☆☆☆</td>
+      <td>★★☆☆☆</td>
+      <td>Allegro, Empik</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Deni Carte Exclusive Gold</td>
+      <td>Crystal glass</td>
+      <td>~17</td>
+      <td>4.95</td>
+      <td>221</td>
+      <td>★★☆☆☆</td>
+      <td>★★☆☆☆</td>
+      <td>Allegro</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Laroxy Nano Glass Pumice</td>
+      <td>Nano glass</td>
+      <td>~16</td>
+      <td>—</td>
+      <td>None</td>
+      <td>★☆☆☆☆</td>
+      <td>★☆☆☆☆</td>
+      <td>Ceneo/Allegro</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>NeoNail Electric File</td>
+      <td>Electric</td>
+      <td>~100</td>
+      <td>4.81</td>
+      <td>1048</td>
+      <td>★★★☆☆</td>
+      <td>★★★☆☆</td>
+      <td>Rossmann, Allegro, Media Expert</td>
+    </tr>
+    <tr style="background:#f5f5f5">
+      <td>—</td>
+      <td><i>Metal file (no-name)</i></td>
+      <td>Metal</td>
+      <td>~15</td>
+      <td>4.91</td>
+      <td>1127</td>
+      <td>★☆☆☆☆</td>
+      <td>★☆☆☆☆</td>
+      <td>Allegro (mass)</td>
+    </tr>
+    <tr style="background:#f5f5f5">
+      <td>—</td>
+      <td><i>Natural stone pumice</i></td>
+      <td>Stone</td>
+      <td>~8</td>
+      <td>4.8</td>
+      <td>Hundreds</td>
+      <td>★☆☆☆☆</td>
+      <td>★☆☆☆☆</td>
+      <td>Everywhere</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ========================================== -->
+<!-- KEY TAKEAWAYS -->
+<!-- ========================================== -->
+<h2>Key Takeaways</h2>
+
+<div class="box gap">
+<strong>Main conclusion: The category is completely underserved content-wise.</strong><br>
+The entire pumice market (L1 + nano L2) operates on <b>0 content marketing</b>. No PDP has FAQ, none has comparative narrative, none targets CEP, none has clinical proof. Customers buy pumice guided by star rating + price — zero decision support.
+</div>
+
+<div class="box ok">
+<strong>GLOV has an open highway:</strong> it can be the first brand in the category to build a truly citable PDP (FAQ, comparisons, TCO, CEP). In makeup removal, GLOV was also the content leader — in pumice the opportunity is even greater, as competition is weaker.
+</div>
+
+<div class="box info">
+<strong>Threat from below:</strong> KillyS (4.94★, 175 reviews, PLN 25) and Deni Carte (4.95★, 221 reviews, PLN 17) are collecting many positive reviews in the budget segment. GLOV must clearly communicate <b>WHY it is worth 2× more</b> — otherwise users will choose the budget option with a similar rating.
+</div>
+
+<div class="box info">
+<strong>Threat from above:</strong> NeoNail (1048 reviews, 4.81★) dominates the electric segment. This is not direct competition (electric ≠ manual nano), but customers compare options. GLOV must answer the question: "why nano when I can pay more and get an electric?"
+</div>
+
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--mut);font-size:12px">
+  <p><b>Method:</b> PDP scrape (Ceneo, Allegro, Rossmann, dm, glov.co) · own analysis · report template: <a href="../HUB_glov_demakijaz.html">HUB GLOV demakijaz</a></p>
+  <p><b>Source files:</b> <a href="../WPIS_CS_pumeksy_do_stop_V2.md">WPIS_CS_pumeksy_do_stop_V2.md</a> (L1, 11 CEP) · <a href="../WPIS_CS_pumeksy_nano_do_stop_V2_v5.md">WPIS_CS_pumeksy_nano_do_stop_V2_v5.md</a> (L2 nano, 8 CEP)</p>
+  <p>Date: 2026-07-17 · v1.0 · Generator: Hermes</p>
+</footer>
+
+</div><!-- /wrap -->
+
+<script>
+function setRival(brand, btn) {
+  // deactivate all tabs
+  document.querySelectorAll('.btab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // hide all panels
+  document.querySelectorAll('.rival-panel').forEach(p => p.classList.remove('active'));
+  // show selected
+  document.getElementById('panel-' + brand).classList.add('active');
+}
+</script>
+
+</body>
+</html>
