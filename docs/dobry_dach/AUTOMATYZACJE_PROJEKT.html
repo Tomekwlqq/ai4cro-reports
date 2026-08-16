@@ -1,0 +1,223 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8">
+<title>Projekt automatyzacji A0–A7 — Dobry Dach</title>
+<style>
+:root{--ink:#16181d;--mut:#667085;--line:#e4e7ec;--blue:#1f4e79;--green:#2e7d4f;--red:#b42318;--vio:#7c5cff;--amber:#9a6b00}
+body{font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:#fff;color:var(--ink);margin:0;padding:30px 22px 70px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.3px}
+.sub{color:var(--mut);font-size:14px;margin:0 0 20px}
+.legend{display:flex;gap:14px;font-size:12.5px;font-weight:600;margin-bottom:18px;flex-wrap:wrap}
+.badge{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 11px;white-space:nowrap}
+.ok{background:#e7f6ec;color:#1d7a3f;border:1px solid #bce6cc}
+.wip{background:#fff8c5;color:#7a5b00;border:1px solid #f2ddb0}
+.blk{background:#ffe9e7;color:#b42318;border:1px solid #f5c6c0}
+h2{font-size:19px;margin:34px 0 12px;border-bottom:2px solid #eee;padding-bottom:8px}
+.aut{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px}
+@media(max-width:900px){.aut{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:#fff}
+.card .h{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.card .h .id{background:#111;color:#fff;border-radius:9px;padding:4px 12px;font-weight:800;font-size:14px}
+.card .h h3{margin:0;font-size:17px}
+.card .h .badge{margin-left:auto}
+.card .pole{margin:7px 0;font-size:13.2px}
+.card .pole b{color:#333;font-weight:700;min-width:86px;display:inline-block}
+.card .pole .b{color:var(--red);font-weight:700}
+.card .pole .g{color:var(--green);font-weight:700}
+.card ul{margin:4px 0 0;padding-left:18px;font-size:13px}
+.card li{margin-bottom:3px}
+.flow{background:#f6f8fa;border:1px dashed #ccd3dc;border-radius:10px;padding:10px 14px;font-size:12.8px;font-family:ui-monospace,Menlo,monospace;color:#333;margin:8px 0}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+th{text-align:left;background:#f6f8fa;padding:8px 12px;border-bottom:2px solid var(--line);font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:#57606a}
+td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
+.foot{color:#98a2b3;font-size:11.5px;margin-top:30px;text-align:center;border-top:1px solid #eee;padding-top:12px}
+</style></head><body><div class="wrap">
+<h1>⚙️ Projekt automatyzacji A0–A7 — Dobry Dach</h1>
+<p class="sub">Kompletny projekt wszystkich automatów (wg wiedzy: procedury Jurewicza · baza Subiekt · kalendarze Google · plik marż Tomasza · warsztat) · setup: TECH_SETUP_WDROZENIOWY.md (VPS, konto read-only, cron) · blokery wiedzowe = pytania z pytania_robocze.html</p>
+<div class="legend">
+<span class="badge ok">✅ odblokowane (gotowe do wdrożenia)</span>
+<span class="badge wip">🟡 prawie (czeka decyzje/potwierdzenia)</span>
+<span class="badge blk">🔴 blokowane pytaniami (blokery wiedzowe)</span>
+</div>
+
+<h2>Architektura — skąd dane, gdzie działa</h2>
+<table>
+<tr><th>Źródło</th><th>Dostęp</th><th>Które automaty</th></tr>
+<tr><td>Baza Subiekt (SQL Server)</td><td>konto read-only <code>dd_auto</code> (SELECT) — przez pymssql, VPS</td><td>A0, A2, A3, A5, A6, A7</td></tr>
+<tr><td>Kalendarze Google (6 pojazdów)</td><td>OAuth (token działa, read/write)</td><td>A4</td></tr>
+<tr><td>SMTP poczta.dobry-dach.pl:587</td><td>loginy + hasła (.env)</td><td>A0, A4, A5, A6</td></tr>
+<tr><td>Plik marż Tomasza (2026-05)</td><td>algorytm: (Netto−Koszt)/Netto; RODZAJE</td><td>A3</td></tr>
+</table>
+<div class="flow">trigger (cron / event / mail) → skrypt (Python 3.11, venv) → odczyt SQL/API → logika → wyjście (mail / event / alert) → log do logs/ + healthcheck</div>
+
+<h2>A0 — Rejestr zapytań + follow-up</h2>
+<div class="aut"><div class="card">
+<div class="h"><span class="id">A0</span><h3>Rejestr zapytań = baza klientów</h3><span class="badge blk">🔴 blokowane</span></div>
+<div class="pole"><b>Pain:</b> kontakt się urywa — nikt nie oddzwania, klient dzwoni 2. raz; zapytania „na tak" bez oferty giną (większość rynku).</div>
+<div class="pole"><b>Trigger:</b> nowe zapytanie (telefon/mail) — ręczny wpis PH albo wykrycie w skrzynce.</div>
+<div class="pole"><b>Logika:</b> 1) zapisz zapytanie do rejestru (Subiekt: kontrahent jednorazowy / Excel — do ustalenia) → 2) harmonogram follow-up: D+1 i D+3 przypomnienie oddzwonienia → 3) brak kontaktu po X dni → alert do biura.</div>
+<div class="pole"><b>Wyjście:</b> wpis w bazie + mail przypomnienia („Zapytanie #X — oddzwonić do Kowalskiego").</div>
+<div class="pole"><b>ROI:</b> odzyskane zapytania = nowe oferty; A0 mierzy % przepadających (dziś nieznany).</div>
+</div><div class="card">
+<div class="pole"><b class="b">Blokery wiedzowe:</b></div>
+<ul>
+<li><b>00/1</b> — ile % zapytań realnie przepada przez brak oddzwonienia? (szacunek)</li>
+<li><b>00/2</b> — kto przyjmuje zapytania i wpisuje do bazy? (PH / biuro / oboje)</li>
+</ul>
+<div class="pole"><b>Zależne:</b> A2 (oferta z ZK) — rejestr jest wejściem.</div>
+</div></div>
+
+<h2>A1 — Scan projektu (Vision)</h2>
+<div class="aut"><div class="card">
+<div class="h"><span class="id">A1</span><h3>Scan projektu → metryki</h3><span class="badge blk">🔴 blokowane</span></div>
+<div class="pole"><b>Pain:</b> projekt przychodzi w różnych formach; wymiary/powierzchnia/krycie przepisywane ręcznie do wyceny.</div>
+<div class="pole"><b>Trigger:</b> projekt dotarł (PDF/zdjęcie/DWG/papier).</div>
+<div class="pole"><b>Logika:</b> OCR/Vision → wymiary, powierzchnia dachu, krycie, typ pokrycia → prefill wyceny (metryki do ZK).</div>
+<div class="pole"><b>Wyjście:</b> metryki + podgląd do wyceny.</div>
+<div class="pole"><b>ROI:</b> oszczędność ~30–60 min na projekcie; zero błędów przepisywania.</div>
+</div><div class="card">
+<div class="pole"><b class="b">Blokery wiedzowe:</b></div>
+<ul>
+<li><b>01/1</b> — rozkład form projektu w % (PDF/zdjęcie/DWG/papier)</li>
+<li><b>01/2</b> — gdzie ląduje projekt (Subiekt / dysk / segregator)</li>
+</ul>
+<div class="pole"><b>Warunek techniczny:</b> cyfrowa forma projektu (bez niej nie ma A1).</div>
+</div></div>
+
+<h2>A2 — Oferta z ZK + ślad negocjacji</h2>
+<div class="aut"><div class="card">
+<div class="h"><span class="id">A2</span><h3>Oferta z pozycji starego ZK</h3><span class="badge blk">🔴 blokowane</span></div>
+<div class="pole"><b>Pain:</b> oferty „z głowy" poza systemem; 9 657 otwartych ZK = 529 mln pipeline, ale część bez śladu; negocjacje bez historii.</div>
+<div class="pole"><b>Trigger:</b> akceptacja projektu / prośba o ofertę.</div>
+<div class="pole"><b>Logika:</b> 1) pozycje ze starego ZK klienta (lub szablon) → 2) ceny z tw_Cena → 3) PDF oferty → 4) zapis jako nowy ZK; negocjacje = wersje oferty (historia).</div>
+<div class="pole"><b>Wyjście:</b> oferta PDF + ślad w bazie (bramka: każda oferta w ZK).</div>
+<div class="pole"><b>ROI:</b> oferta w minuty zamiast godzin; pełny ślad → A6/A7 mają dane.</div>
+</div><div class="card">
+<div class="pole"><b class="b">Blokery wiedzowe:</b></div>
+<ul>
+<li><b>03/1</b> — jaki % ofert nie trafia do ZK (żyje w głowie/Excelu)?</li>
+<li><b>04/1</b> — czy negocjacje mają ślad (w ZK / mail / brak)?</li>
+</ul>
+<div class="pole"><b>Zależne:</b> A0 (rejestr) + A3 (ceny/marża w ofercie).</div>
+</div></div>
+
+<h2>A3 — Marża z bazy (algorytm Tomasza)</h2>
+<div class="aut"><div class="card">
+<div class="h"><span class="id">A3</span><h3>Marża per dokument + flaga &lt;5%</h3><span class="badge ok">✅ odblokowane</span></div>
+<div class="pole"><b>Pain:</b> 7% dokumentów TOWAR na minusie; marże 3–4% na dużych; wyceny „na oko".</div>
+<div class="pole"><b>Trigger:</b> każda wycena / dokument sprzedaży.</div>
+<div class="pole"><b>Logika (algorytm Tomasza):</b> marża = (Netto − Koszt) / Netto per dokument; RODZAJE: PNBM/inwestycja = 100% (koszt 0), TOWAR = realna, HURTOWA (do spółek) ~3–13%; flaga marży &lt;5% przed wysyłką oferty.</div>
+<div class="pole"><b>Wyjście:</b> alert „marża 3% — poniżej progu" przy wycenie.</div>
+<div class="pole"><b>ROI:</b> koniec sprzedaży poniżej kosztu; świadome decyzje cenowe.</div>
+</div><div class="card">
+<div class="pole"><b>Status:</b> algorytm wydobyty z pliku „sprzedaż 2026-05.xlsx" (301 dok., 2,66 mln netto).</div>
+<div class="pole"><b class="wip">🟡 Potwierdzenia (nie blokery):</b></div>
+<ul>
+<li><b>02/1</b> — czy każda wycena przechodzi przez arkusz kalkulacji?</li>
+<li><b>02/2</b> — skąd ceny w wycenie (tw_Cena / ręcznie / mieszane)?</li>
+</ul>
+</div></div>
+
+<h2>A4 — Terminy: kalendarz + porównywarka</h2>
+<div class="aut"><div class="card">
+<div class="h"><span class="id">A4</span><h3>Eventy terminów + porównywarka transportów</h3><span class="badge blk">🔴 blokowane</span></div>
+<div class="pole"><b>Pain:</b> terminy NIE żyją w bazie (dok_TerminRealizacji = data wystawienia, 100%); kalendarze per pojazd = jedyny rejestr; kto planuje — niejasne.</div>
+<div class="pole"><b>Trigger:</b> akceptacja umowy → event; cron co 15 min → porównywarka.</div>
+<div class="pole"><b>Logika:</b> 1) event z umowy (termin realizacji, ekipa) → kalendarz pojazdu (OAuth działa, read/write) → 2) przypomnienia ekipie (D-3, D-1) → 3) porównywarka: eventy („MR-ZK 95/MAG/07/2026") vs ZK w bazie — ZK bez transportu, konflikty pojazdów (2 eventy/dzień), ilości.</div>
+<div class="pole"><b>Wyjście:</b> event + alerty („ZK #1234 bez transportu", „konflikt VW CRAFTER 14.08").</div>
+<div class="pole"><b>ROI:</b> koniec zgadywania „czy każdy ZK ma transport"; postój ekipy = najdroższy koszt.</div>
+</div><div class="card">
+<div class="pole"><b class="b">Blokery wiedzowe (6):</b></div>
+<ul>
+<li><b>05/1</b> — umowa z klientem przed startem — zawsze?</li>
+<li><b>07/1</b> — czy flagowanie (czerwona/żółta/zielona) realnie działa?</li>
+<li><b>08/1</b> — kto planuje transporty w kalendarzach?</li>
+<li><b>08/2</b> — czy każdy ZK dostaje transport?</li>
+<li><b>09/1</b> — jak logistyk dostaje zamówienie (mail / telefon)?</li>
+<li><b>09/2</b> — czy zdarza się zamówienie towaru bez ZK w systemie?</li>
+</ul>
+</div></div>
+
+<h2>A5 — WZ → informacja do PH (postęp)</h2>
+<div class="aut"><div class="card">
+<div class="h"><span class="id">A5</span><h3>Nowe WZ → wiadomość o postępie</h3><span class="badge blk">🔴 blokowane</span></div>
+<div class="pole"><b>Pain:</b> 62% WZ bez ZK — PH nie wie o wydaniach; % realizacji liczony z palca.</div>
+<div class="pole"><b>Trigger:</b> nowe WZ (dok_Typ=11).</div>
+<div class="pole"><b>Logika:</b> 1) WZ → powiąż z ZK → 2) policz postęp (wartość wyjechała / wartość ZK) → 3) wiadomość do PH („Dla ZK #1234 wyszło WZ #56, postęp 34%").</div>
+<div class="pole"><b>Wyjście:</b> wiadomość (mail/WhatsApp — kanał do ustalenia).</div>
+<div class="pole"><b>ROI:</b> PH na bieżąco; raport „w realizacji" = ile ma wyjechać vs wyjechało — mock gotowy (34%).</div>
+</div><div class="card">
+<div class="pole"><b class="b">Blokery wiedzowe:</b></div>
+<ul>
+<li><b>10/1</b> — dlaczego WZ bywają bez ZK (celowe / błąd)?</li>
+<li><b>11/1</b> — jak PH dowiaduje się, że towar wyjechał (mail / telefon / nie)?</li>
+</ul>
+<div class="pole"><b>Zależne:</b> A7 (różnice ZK vs WZ) czyta te same dane.</div>
+</div></div>
+
+<h2>A6 — Raport PH (dzienny summary)</h2>
+<div class="aut"><div class="card">
+<div class="h"><span class="id">A6</span><h3>Dzienny summary per PH</h3><span class="badge ok">✅ odblokowane (działa end-to-end)</span></div>
+<div class="pole"><b>Pain:</b> nikt nie widzi całości: nowe ZK, portfel, wydania, faktury, wpłaty — per PH.</div>
+<div class="pole"><b>Trigger:</b> cron 7:00 (propozycja).</div>
+<div class="pole"><b>Logika:</b> 1) nowe ZK (wczoraj) → 2) portfel otwarty (ZK 6/7) → 3) WZ i FS → 4) wpłaty → 5) per PH = <b>kategoria dokumentu (dok_KatId)</b> — przestawione z dok_PersonelId (wystawca ≠ prowadzący — naturalne) → 6) SMTP na odbiorców.</div>
+<div class="pole"><b>Wyjście:</b> raport HTML (4 karty KPI) mailem — działa (wysyłka na 2 skrzynki potwierdzona).</div>
+<div class="pole"><b>ROI:</b> 30 min dziennie na ręcznym składaniu; zero ślepej sprzedaży (zaległości 6,5 mln widoczne).</div>
+</div><div class="card">
+<div class="pole"><b class="wip">🟡 Czeka decyzje (nie wiedza):</b></div>
+<ul>
+<li>godzina crona (propozycja 7:00) + odbiorcy (tomekw@ + tomekj@)</li>
+<li>kopia bazy JAWNEJ — A6 na danych B2C (sprzedaż usług tam żyje)</li>
+</ul>
+<div class="pole"><b class="b">Potwierdzenia:</b></div>
+<ul>
+<li><b>12/1</b> — kto pilnuje wpłat zaliczek?</li>
+<li><b>13/1</b> — kto dostaje dzienny raport PH?</li>
+<li><b>16/1</b> — czy stawki 23%/8% realnie działają?</li>
+</ul>
+</div></div>
+
+<h2>A7 — Różnice ZK vs WZ + ślad zmian</h2>
+<div class="aut"><div class="card">
+<div class="h"><span class="id">A7</span><h3>Rozjazdy przed finalizacją + komplet dokumentów</h3><span class="badge blk">🔴 blokowane</span></div>
+<div class="pole"><b>Pain:</b> finalizacja bez porównania ZK vs WZ; zmiany zakresu bez śladu (mail/telefon); archiwum dokumentów ręczne (teczka → Natalia).</div>
+<div class="pole"><b>Trigger:</b> tygodniowo (pon. 7:30) + przy zmianie zakresu.</div>
+<div class="pole"><b>Logika:</b> 1) porównaj pozycje ZK vs WZ per dokument (co zamówione vs co wyjechało) → 2) ślad zmian (zgłoszenie → wycena → akceptacja → aneks) → 3) lista dokumentów do kompletu (zamówienie, umowa, dokument 8%, FV, rozliczenie, FV dekarza).</div>
+<div class="pole"><b>Wyjście:</b> raport rozjazdów + checklista kompletu.</div>
+<div class="pole"><b>ROI:</b> zero niedomkniętych kontraktów; prowizje (Natalia) liczone z kompletów.</div>
+</div><div class="card">
+<div class="pole"><b class="b">Blokery wiedzowe (4):</b></div>
+<ul>
+<li><b>06/1</b> — czy umowa z dekarzem na każdą budowę?</li>
+<li><b>14/1</b> — jak dziś wygląda zmiana zakresu (aneks / mail / bez śladu)?</li>
+<li><b>15/1</b> — czy rozliczacie ZK vs WZ przed zamknięciem?</li>
+<li><b>17/1</b> — czy archiwum (teczka → Natalia) realnie się składa?</li>
+</ul>
+</div></div>
+
+<h2>Zależności między automatami</h2>
+<div class="flow">A0 (rejestr) → A2 (oferta z ZK) → A3 (marża w ofercie) → A4 (termin z umowy → kalendarz) → A5 (WZ → postęp) → A6 (raport: czyta wszystko) → A7 (finalizacja: ZK vs WZ + komplet)</div>
+<table>
+<tr><th>Automat</th><th>Karmi</th><th>Jest karmiony przez</th></tr>
+<tr><td>A0</td><td>A2 (rejestr = wejście ofert)</td><td>—</td></tr>
+<tr><td>A2</td><td>A4 (umowa), A6 (ZK), A7 (porównania)</td><td>A0, A3 (ceny)</td></tr>
+<tr><td>A3</td><td>A2 (marża w ofercie), A6 (raport)</td><td>—</td></tr>
+<tr><td>A4</td><td>A5 (termin vs wydania), A6</td><td>A2 (umowa)</td></tr>
+<tr><td>A5</td><td>A6 (postępy), A7 (WZ vs ZK)</td><td>A4 (terminy)</td></tr>
+<tr><td>A6</td><td>— (raport do ludzi)</td><td>A0–A5, A7</td></tr>
+<tr><td>A7</td><td>A6 (finalizacje)</td><td>A2, A5</td></tr>
+</table>
+
+<h2>Co jest potrzebne, żeby WSZYSTKIE działały (wymagania)</h2>
+<table>
+<tr><th>#</th><th>Wymaganie</th><th>Typ</th><th>Status</th></tr>
+<tr><td>1</td><td>VPS Linux + Python + pymssql + .env (TECH_SETUP)</td><td>infra</td><td>📋 projekt gotowy</td></tr>
+<tr><td>2</td><td>Konto SQL read-only <code>dd_auto</code> (SELECT) — u klienta</td><td>infra</td><td>⏳ czeka klient</td></tr>
+<tr><td>3</td><td>Godzina + odbiorcy raportu A6 (propozycja: 7:00, tomekw@ + tomekj@)</td><td>decyzja</td><td>⏳ czeka Tomek</td></tr>
+<tr><td>4</td><td>Publikacja aplikacji OAuth (stały token — 1 klik w Cloud Console)</td><td>decyzja</td><td>⏳ czeka Tomek</td></tr>
+<tr><td>5</td><td>Kopia bazy JAWNEJ (A6 na danych B2C)</td><td>dane</td><td>⏳ czeka klient</td></tr>
+<tr><td>6</td><td>Odpowiedzi na 23 pytania-blokery (pytania_robocze.html)</td><td>wiedza</td><td>⏳ jutro z Tomkiem</td></tr>
+<tr><td>7</td><td>Kanał wiadomości A5 (mail / WhatsApp)</td><td>decyzja</td><td>⏳ z odpowiedziami</td></tr>
+</table>
+
+<div class="foot">Dobry Dach · projekt automatyzacji A0–A7 · 2026-08-12 · źródła: mapa 3 kolumny, STRUKTURA_WEZLOW.json, PROCEDURY_FIRMOWE.md, TECH_SETUP_WDROZENIOWY.md, plik marż 2026-05</div>
+</div></body></html>
