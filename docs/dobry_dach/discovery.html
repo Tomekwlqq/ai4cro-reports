@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dobry Dach — Discovery</title>
+<style>
+  :root{
+    --blue:#1f4e79; --blue2:#2e5496; --accent:#e8911e; --bg:#f4f6f9;
+    --card:#fff; --ink:#1f2530; --mut:#5b6573; --line:#e3e8ef;
+    --green:#2e7d4f; --brown:#8a5a12; --red:#c0392b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.6;font-size:16px}
+  a{color:var(--blue2);text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+
+  header.hero{background:linear-gradient(135deg,#16395c,#1f4e79 55%,#2e5496);color:#fff;padding:46px 0 40px}
+  .hero .tag{display:inline-block;background:rgba(255,255,255,.15);padding:5px 13px;border-radius:30px;
+    font-size:13px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px}
+  .hero h1{font-size:40px;line-height:1.1;margin-bottom:10px;font-weight:800}
+  .hero p.sub{font-size:18px;opacity:.92;max-width:760px}
+
+  /* progress + nav */
+  nav.toc{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 6px rgba(0,0,0,.05)}
+  .prog{height:4px;background:#e3e8ef}
+  .prog .bar{height:100%;width:0;background:linear-gradient(90deg,#2e7d4f,#3a9d63);transition:width .3s}
+  nav.toc .links{display:flex;gap:4px;overflow-x:auto;padding:0 22px;max-width:1080px;margin:0 auto}
+  nav.toc a{padding:13px 12px;font-size:13.5px;font-weight:600;color:var(--mut);white-space:nowrap;border-bottom:3px solid transparent}
+  nav.toc a:hover{color:var(--blue)}
+
+  /* intro */
+  .intro{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px 26px;margin:26px 0}
+  .intro h2{color:var(--blue);font-size:22px;margin-bottom:8px}
+  .intro p{color:var(--mut);font-size:15.5px;margin-bottom:10px}
+  .roles-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+  @media(max-width:760px){.roles-legend{grid-template-columns:1fr}}
+  .rl{border-radius:10px;padding:12px 14px;color:#fff;font-size:13.5px}
+  .rl.k{background:linear-gradient(135deg,#2e7d4f,#3a9d63)}
+  .rl.b{background:linear-gradient(135deg,#1f4e79,#2e5496)}
+  .rl.f{background:linear-gradient(135deg,#7a4b13,#a9701f)}
+  .rl b{display:block;font-size:15px;margin-bottom:2px}
+
+  /* stage */
+  .stage{background:#fff;border:1px solid var(--line);border-radius:16px;margin-bottom:22px;overflow:hidden;scroll-margin-top:64px}
+  .stage .shead{padding:18px 24px;background:linear-gradient(135deg,#1f4e79,#2e5496);color:#fff;display:flex;align-items:center;gap:14px}
+  .stage .shead .snum{background:rgba(255,255,255,.2);width:38px;height:38px;border-radius:50%;display:flex;
+    align-items:center;justify-content:center;font-weight:800;font-size:17px;flex:none}
+  .stage .shead b{font-size:20px;display:block}
+  .stage .shead small{opacity:.9;font-size:13.5px}
+  .stage .sbody{padding:8px 24px 22px}
+  .stage .ctx{font-size:14.5px;color:var(--mut);font-style:italic;margin:14px 0 6px;padding:10px 14px;
+    background:#f7f9fc;border-left:3px solid var(--accent);border-radius:8px}
+
+  .qrole{border-top:1px solid var(--line);padding:16px 0 4px}
+  .qrole:first-of-type{border-top:none}
+  .qrole .rtag{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;
+    text-transform:uppercase;letter-spacing:.4px;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+  .qrole.k .rtag{background:#e6f4ec;color:var(--green)}
+  .qrole.b .rtag{background:#e7f0fb;color:var(--blue)}
+  .qrole.f .rtag{background:#fdeede;color:var(--brown)}
+  .qrole .q{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px}
+  .qrole textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 12px;
+    font-family:inherit;font-size:14.5px;color:var(--ink);resize:vertical;min-height:58px;background:#fcfdfe}
+  .qrole textarea:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 3px rgba(46,84,150,.12)}
+
+  /* files + bottom bar */
+  .files-blk{background:#fff;border:1px dashed #bcd0ea;border-radius:12px;padding:16px 20px;margin-top:6px}
+  .files-blk label.fl{display:block;font-size:14px;font-weight:700;margin-bottom:8px}
+  .filebtn{display:inline-flex;align-items:center;gap:8px;background:#eef4fb;color:var(--blue);
+    border:1px dashed #bcd0ea;border-radius:9px;padding:9px 14px;font-size:14px;font-weight:600;cursor:pointer}
+  .filebtn:hover{background:#e2edfa}
+  input[type=file]{display:none}
+  .filenames{font-size:13px;color:var(--mut);margin-top:8px}
+
+  .actionbar{position:sticky;bottom:0;z-index:25;background:#fff;border-top:1px solid var(--line);
+    box-shadow:0 -2px 10px rgba(0,0,0,.06);padding:12px 0;margin-top:10px}
+  .actionbar .inner{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .btn{background:var(--blue);color:#fff;border:none;border-radius:9px;padding:11px 20px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#163a5c}
+  .btn.ghost{background:#fff;color:var(--blue);border:1px solid var(--line)}
+  .savemsg{font-size:13.5px;color:var(--green);font-weight:600;margin-left:auto}
+
+  .optional{display:inline-block;background:rgba(255,255,255,.2);color:#fff;font-size:12px;font-weight:700;
+    padding:3px 10px;border-radius:20px;margin-left:8px;vertical-align:middle}
+  .note{background:#fff7ec;border:1px solid #f3dcb4;border-left:5px solid var(--accent);border-radius:10px;
+    padding:14px 18px;margin:18px 0;font-size:14.5px;color:#7a5512}
+  footer{padding:30px 0 90px;color:var(--mut);font-size:13.5px}
+
+  details.more{background:#fff;border:1px solid var(--line);border-radius:12px;margin:8px 0 26px}
+  details.more summary{cursor:pointer;padding:16px 20px;font-weight:700;color:var(--blue);list-style:none;display:flex;justify-content:space-between}
+  details.more summary::-webkit-details-marker{display:none}
+  details.more summary .arr{color:var(--accent);font-size:22px}
+  details.more[open] summary .arr{transform:rotate(45deg)}
+  details.more .mbody{padding:0 20px 18px;color:var(--mut);font-size:14.5px}
+  details.more .mbody a{font-weight:600}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <a href="index.html" style="color:#fff;opacity:.85;font-size:14px;display:inline-block;margin-bottom:10px;text-decoration:none">← Strona główna</a>
+    <span class="tag">Sesja discovery · kwestionariusz</span>
+    <h1>Dobry Dach — poznajmy Waszą firmę</h1>
+    <p class="sub">Kilka pytań ułożonych wzdłuż życia kontraktu — od umowy aż po gwarancję. Dla każdego etapu pytamy z trzech perspektyw. Wypełniajcie tyle, ile chcecie; nic nie jest obowiązkowe.</p>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="prog"><div class="bar" id="bar"></div></div>
+  <div class="links">
+    <a href="#start">Start</a>
+    <a href="#top3">★ Top 3</a>
+    <a href="#e1">1 · Kontrakt</a>
+    <a href="#e2">2 · Wykonanie</a>
+    <a href="#e3">3 · Zmiany</a>
+    <a href="#e4">4 · Odbiór</a>
+    <a href="#e5">5 · Gwarancja</a>
+    <a href="#e6">6 · Ogólne</a>
+    <a href="#tlo">O projekcie</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <div class="intro" id="start">
+    <h2>Jak to wypełnić</h2>
+    <p>Przejdźcie przez sześć bloków. Każdy dotyczy jednego etapu kontraktu i zawiera po jednym pytaniu dla każdej z trzech ról w firmie. <b>Każda osoba może wypełnić tylko swoje pola</b> — reszta może zostać pusta. Odpowiedzi zapisują się automatycznie w przeglądarce, więc można przerwać i wrócić.</p>
+    <p>Na koniec kliknijcie <b>„Pobierz odpowiedzi”</b> (pasek na dole) i odeślijcie nam plik. Pliki — umowy, raporty, zdjęcia — możecie wskazać przy odpowiednich etapach i dołączyć do maila.</p>
+    <div class="roles-legend">
+      <div class="rl k"><b>🔧 Kierownik budowy</b>Codzienna robota, raportowanie z dachu.</div>
+      <div class="rl b"><b>📐 Właściciel — budowlany</b>Jakość, zgodność z projektem i sztuką.</div>
+      <div class="rl f"><b>⚖️ Właściciel — finansowy</b>Umowa, kasa, zmiany, ryzyko prawne.</div>
+    </div>
+  </div>
+
+  <!-- TOP 3 per rola -->
+  <div class="stage" id="top3">
+    <div class="shead" style="background:linear-gradient(135deg,#7a4b13,#b8860b)"><span class="snum">★</span><span><b>Na rozgrzewkę — Wasze Top 3</b><small>Najpierw to, co najważniejsze, potem szczegóły w etapach niżej</small></span></div>
+    <div class="sbody">
+      <div class="ctx">Każda rola: wpiszcie trzy najważniejsze cele (co chcecie osiągnąć) i trzy największe problemy (co dziś najbardziej boli). To kręgosłup całej rozmowy.</div>
+
+      <div class="qrole k"><span class="rtag">🔧 Kierownik budowy</span>
+        <div class="q">3 główne cele — co system ma Wam dać w codziennej pracy?</div>
+        <textarea data-key="t3_k_cele" placeholder="1.&#10;2.&#10;3."></textarea>
+        <div class="q" style="margin-top:10px">3 główne problemy — co dziś najbardziej przeszkadza / zabiera czas?</div>
+        <textarea data-key="t3_k_prob" placeholder="1.&#10;2.&#10;3."></textarea>
+      </div>
+
+      <div class="qrole b"><span class="rtag">📐 Właściciel — budowlany</span>
+        <div class="q">3 główne cele — co chcecie kontrolować / osiągnąć w jakości?</div>
+        <textarea data-key="t3_b_cele" placeholder="1.&#10;2.&#10;3."></textarea>
+        <div class="q" style="margin-top:10px">3 główne problemy — gdzie najczęściej wychodzą kłopoty?</div>
+        <textarea data-key="t3_b_prob" placeholder="1.&#10;2.&#10;3."></textarea>
+      </div>
+
+      <div class="qrole f"><span class="rtag">⚖️ Właściciel — finansowy</span>
+        <div class="q">3 główne cele — co chcecie osiągnąć po stronie umów i kasy?</div>
+        <textarea data-key="t3_f_cele" placeholder="1.&#10;2.&#10;3."></textarea>
+        <div class="q" style="margin-top:10px">3 główne problemy — gdzie tracicie pieniądze lub ryzykujecie?</div>
+        <textarea data-key="t3_f_prob" placeholder="1.&#10;2.&#10;3."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAP 1 -->
+  <div class="stage" id="e1">
+    <div class="shead"><span class="snum">1</span><span><b>Kontrakt i start</b><small>Umowa, zakres, harmonogram, budżet bazowy</small></span></div>
+    <div class="sbody">
+      <div class="ctx">Punkt odniesienia całego projektu — to, względem czego później mierzymy rzeczywistość.</div>
+      <div class="qrole k"><span class="rtag">🔧 Kierownik budowy</span><div class="q">Co musisz wiedzieć na starcie kontraktu, żeby ruszyć z robotą bez dopytywania?</div><textarea data-key="e1_k" placeholder="Np. zakres, kto za co odpowiada, gdzie są materiały, terminy etapów…"></textarea></div>
+      <div class="qrole b"><span class="rtag">📐 Właściciel — budowlany</span><div class="q">Jak dziś ustalacie i zapisujecie zakres oraz wymagania jakościowe kontraktu?</div><textarea data-key="e1_b" placeholder="Np. projekt + ustalenia ustne, specyfikacja, normy, oczekiwania inwestora…"></textarea></div>
+      <div class="qrole f"><span class="rtag">⚖️ Właściciel — finansowy</span><div class="q">Jak wygląda umowa i budżet bazowy? Co bywa w nich niedoprecyzowane?</div><textarea data-key="e1_f" placeholder="Np. wzór umowy, kosztorys, warunki płatności, kary, co rodzi spory…"></textarea></div>
+      <div class="files-blk"><label class="fl">📎 Materiały do tego etapu (umowa, harmonogram, kosztorys)</label><label class="filebtn">Wskaż pliki<input type="file" multiple data-files="f1"></label><div class="filenames" data-fnames="f1">brak plików</div></div>
+    </div>
+  </div>
+
+  <!-- ETAP 2 -->
+  <div class="stage" id="e2">
+    <div class="shead"><span class="snum">2</span><span><b>Wykonanie i raportowanie</b><small>Codzienny postęp z dachu, przepływ informacji</small></span></div>
+    <div class="sbody">
+      <div class="ctx">Nasz najważniejszy obszar — chcemy, żeby wprowadzanie danych było ekstremalnie proste (głos, zdjęcie, jeden tap).</div>
+      <div class="qrole k"><span class="rtag">🔧 Kierownik budowy</span><div class="q">Jak dziś raportujesz postęp i ile czasu realnie możesz na to poświęcić? Co Cię zniechęca?</div><textarea data-key="e2_k" placeholder="Np. dzwonię/wysyłam zdjęcia wieczorem, pisanie w terenie jest męczące…"></textarea></div>
+      <div class="qrole b"><span class="rtag">📐 Właściciel — budowlany</span><div class="q">Jak chciałbyś „widzieć” postęp i jakość, nie będąc codziennie na budowie?</div><textarea data-key="e2_b" placeholder="Np. dzienny przegląd zdjęć z opisem etapu, alert gdy coś odbiega od projektu…"></textarea></div>
+      <div class="qrole f"><span class="rtag">⚖️ Właściciel — finansowy</span><div class="q">Jakich danych z wykonania potrzebujesz do rozliczeń i kontroli kosztów?</div><textarea data-key="e2_f" placeholder="Np. zużycie materiału, roboczogodziny, postęp do faktury częściowej…"></textarea></div>
+      <div class="files-blk"><label class="fl">📎 Materiały (wzór raportu, zdjęcia z budowy)</label><label class="filebtn">Wskaż pliki<input type="file" multiple data-files="f2"></label><div class="filenames" data-fnames="f2">brak plików</div></div>
+      <details class="more"><summary><span>💡 Pomysł do oceny: wieczorny bot dzwoniący</span><span class="arr">+</span></summary><div class="mbody">Rozważamy bota, który dzwoni wieczorem do brygadzisty i zadaje 3–5 pytań, a odpowiedzi same trafiają do systemu. Napiszcie w polu kierownika powyżej: czy brygadzista odebrałby taki telefon i o co warto pytać każdego wieczora?</div></details>
+    </div>
+  </div>
+
+  <!-- ETAP 3 -->
+  <div class="stage" id="e3">
+    <div class="shead"><span class="snum">3</span><span><b>Zmiany i rozliczenia</b><small>Odstępstwa od kontraktu, wycena, akceptacja</small></span></div>
+    <div class="sbody">
+      <div class="ctx">Zmiany to najczęstsze źródło sporów i utraty marży. Chcemy zrozumieć Wasz obieg.</div>
+      <div class="qrole k"><span class="rtag">🔧 Kierownik budowy</span><div class="q">Jak zgłaszasz, że na budowie trzeba zrobić coś inaczej / więcej niż w umowie?</div><textarea data-key="e3_k" placeholder="Np. dzwonię do właściciela, zapisuję na kartce, robię zdjęcie…"></textarea></div>
+      <div class="qrole b"><span class="rtag">📐 Właściciel — budowlany</span><div class="q">Jak oceniacie zasadność zmiany technicznie i co bywa problemem?</div><textarea data-key="e3_b" placeholder="Np. ocena na miejscu, brak dokumentacji „przed”, spory o to co było w zakresie…"></textarea></div>
+      <div class="qrole f"><span class="rtag">⚖️ Właściciel — finansowy</span><div class="q">Jak wyceniacie i zatwierdzacie zmiany? Czy macie twardy ślad ustaleń?</div><textarea data-key="e3_f" placeholder="Np. aneks, mail, ustnie; ile trwa akceptacja; jak dowodzicie ustaleń w sporze…"></textarea></div>
+      <div class="files-blk"><label class="fl">📎 Materiały (przykładowy aneks / zgłoszenie zmiany)</label><label class="filebtn">Wskaż pliki<input type="file" multiple data-files="f3"></label><div class="filenames" data-fnames="f3">brak plików</div></div>
+    </div>
+  </div>
+
+  <!-- ETAP 4 -->
+  <div class="stage" id="e4">
+    <div class="shead"><span class="snum">4</span><span><b>Odbiór</b><small>Lista usterek, protokoły, zgodność z projektem</small></span></div>
+    <div class="sbody">
+      <div class="ctx">Moment prawdy — czy wykonanie zgadza się z umową i projektem.</div>
+      <div class="qrole k"><span class="rtag">🔧 Kierownik budowy</span><div class="q">Jak wygląda Twój udział w odbiorze i poprawkach usterek?</div><textarea data-key="e4_k" placeholder="Np. obchód z inwestorem, lista usterek na kartce, poprawki w kolejnych dniach…"></textarea></div>
+      <div class="qrole b"><span class="rtag">📐 Właściciel — budowlany</span><div class="q">Jak prowadzicie listę usterek (punch listę) i kontrolę zgodności przy odbiorze?</div><textarea data-key="e4_b" placeholder="Np. Excel, zdjęcia, protokół; co najczęściej wraca jako usterka…"></textarea></div>
+      <div class="qrole f"><span class="rtag">⚖️ Właściciel — finansowy</span><div class="q">Jak odbiór wiąże się z płatnością i zabezpieczeniem (kaucja, gwarancja należytego wykonania)?</div><textarea data-key="e4_f" placeholder="Np. protokół = podstawa faktury, zatrzymanie kaucji, warunki zwrotu…"></textarea></div>
+      <div class="files-blk"><label class="fl">📎 Materiały (protokół odbioru, przykład punch listy)</label><label class="filebtn">Wskaż pliki<input type="file" multiple data-files="f4"></label><div class="filenames" data-fnames="f4">brak plików</div></div>
+    </div>
+  </div>
+
+  <!-- ETAP 5 -->
+  <div class="stage" id="e5">
+    <div class="shead"><span class="snum">5</span><span><b>Gwarancja</b><small>Nadzór roszczeń i napraw po odbiorze</small></span></div>
+    <div class="sbody">
+      <div class="ctx">Obszar, który większość narzędzi porzuca — a to realne pieniądze i ryzyko przez lata.</div>
+      <div class="qrole k"><span class="rtag">🔧 Kierownik budowy</span><div class="q">Jak wracacie na obiekt po latach? Czy łatwo odtworzyć, co i jak było robione?</div><textarea data-key="e5_k" placeholder="Np. z pamięci, ze zdjęć (jeśli są), trudno znaleźć kto był na budowie…"></textarea></div>
+      <div class="qrole b"><span class="rtag">📐 Właściciel — budowlany</span><div class="q">Jak oceniacie, czy usterka gwarancyjna to Wasza wina czy nie?</div><textarea data-key="e5_b" placeholder="Np. oględziny, brak dowodów wykonania utrudnia obronę, spory z inwestorem…"></textarea></div>
+      <div class="qrole f"><span class="rtag">⚖️ Właściciel — finansowy</span><div class="q">Jak zarządzacie zobowiązaniami i roszczeniami gwarancyjnymi? Co Was naraża?</div><textarea data-key="e5_f" placeholder="Np. brak rejestru gwarancji, terminy, koszty napraw, dowody do odrzucenia roszczeń…"></textarea></div>
+      <div class="files-blk"><label class="fl">📎 Materiały (warunki gwarancji, przykład roszczenia)</label><label class="filebtn">Wskaż pliki<input type="file" multiple data-files="f5"></label><div class="filenames" data-fnames="f5">brak plików</div></div>
+    </div>
+  </div>
+
+  <!-- ETAP 6 -->
+  <div class="stage" id="e6">
+    <div class="shead"><span class="snum">6</span><span><b>Przekrojowo — narzędzia i bolączki</b><small>To, co dotyczy całej firmy</small></span></div>
+    <div class="sbody">
+      <div class="ctx">Na koniec spojrzenie ponad etapami — i najważniejsze pytanie o to, co najbardziej boli.</div>
+      <div class="qrole k"><span class="rtag">🔧 Kierownik budowy</span><div class="q">Gdyby aplikacja miała zrobić dla Ciebie JEDNĄ rzecz idealnie — co to?</div><textarea data-key="e6_k" placeholder="Np. żeby raport robił się sam / w pół minuty…"></textarea></div>
+      <div class="qrole b"><span class="rtag">📐 Właściciel — budowlany</span><div class="q">Czego dziś brakuje, żebyś spał spokojnie o jakość na budowach?</div><textarea data-key="e6_b" placeholder="Np. bieżący podgląd, że wszystko idzie wg projektu…"></textarea></div>
+      <div class="qrole f"><span class="rtag">⚖️ Właściciel — finansowy</span><div class="q">Gdzie tracicie najwięcej pieniędzy lub ryzykujecie prawnie — i czy używaliście wcześniej jakiegoś oprogramowania (co działało, co wkurzało)?</div><textarea data-key="e6_f" placeholder="Np. spory o zakres, wolne rozliczenia; próbowaliśmy X, ale…"></textarea></div>
+      <div class="qrole f"><span class="rtag">⚖️ Wspólne — formalności PL</span><div class="q">Prowadzicie elektroniczny dziennik budowy (EDB/GUNB)? Korzystacie z KSeF? Gdzie trzymacie dokumenty?</div><textarea data-key="e6_pl" placeholder="Np. EDB tak/nie, KSeF tak/nie, dokumenty na dysku/segregatorze…"></textarea></div>
+    </div>
+  </div>
+
+  <div class="note">To statyczna strona — wpisany tekst zapisuje się <b>tylko w Waszej przeglądarce</b> i nie trafia do nas automatycznie. Żeby przekazać odpowiedzi, użyjcie przycisku <b>„Pobierz odpowiedzi”</b> poniżej i odeślijcie plik mailem (pliki dołączcie jako załączniki).</div>
+
+  <!-- O PROJEKCIE -->
+  <details class="more" id="tlo">
+    <summary><span>ℹ️ O projekcie — po co to robimy</span><span class="arr">+</span></summary>
+    <div class="mbody">
+      <p style="margin-bottom:10px">Budujemy system dla firmy dekarskiej, który prowadzi kontrakt przez cały cykl — od umowy, przez wykonanie i odbiór, aż po okres gwarancyjny. Dwie zasady: <b>ekstremalna prostota</b> wprowadzania danych dla ekipy (jak w narzędziach Hilti) oraz <b>pełna kontrola</b> dla zarządu.</p>
+      <p>Pełna analiza rynku, konkurencji i pozycjonowanie są na osobnej stronie: <a href="analiza.html">Analiza i strategia →</a></p>
+    </div>
+  </details>
+
+  <footer>Dobry Dach · kwestionariusz discovery · wersja 3.0 · czerwiec 2026</footer>
+</div>
+
+<div class="actionbar">
+  <div class="wrap inner">
+    <button class="btn" id="download">⬇️ Pobierz odpowiedzi</button>
+    <button class="btn ghost" id="clearall">Wyczyść</button>
+    <span class="savemsg" id="savemsg"></span>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY = "dobrydach_discovery_v3";
+  var areas = document.querySelectorAll("textarea[data-key]");
+  var msg = document.getElementById("savemsg");
+  var bar = document.getElementById("bar");
+
+  // restore
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){}
+  areas.forEach(function(a){ if(saved[a.dataset.key]) a.value = saved[a.dataset.key]; });
+
+  function progress(){
+    var filled = 0;
+    areas.forEach(function(a){ if(a.value.trim()) filled++; });
+    bar.style.width = Math.round(filled/areas.length*100) + "%";
+  }
+  function persist(){
+    var data = {};
+    areas.forEach(function(a){ data[a.dataset.key] = a.value; });
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){}
+    msg.textContent = "Zapisano ✓";
+    clearTimeout(window.__t); window.__t = setTimeout(function(){ msg.textContent=""; }, 1800);
+    progress();
+  }
+  areas.forEach(function(a){ a.addEventListener("input", persist); });
+  progress();
+
+  // file names
+  document.querySelectorAll("input[type=file][data-files]").forEach(function(inp){
+    inp.addEventListener("change", function(){
+      var span = document.querySelector('[data-fnames="'+inp.dataset.files+'"]');
+      if(!inp.files.length){ span.textContent = "brak plików"; return; }
+      span.textContent = "Wskazane: " + Array.prototype.map.call(inp.files,function(f){return f.name;}).join(", ");
+    });
+  });
+
+  // structure for export
+  var stages = [
+    ["★ TOP 3 — Kierownik budowy", [["t3_k_cele","3 cele"],["t3_k_prob","3 problemy"]], null],
+    ["★ TOP 3 — Właściciel (budowlany)", [["t3_b_cele","3 cele"],["t3_b_prob","3 problemy"]], null],
+    ["★ TOP 3 — Właściciel (finansowy)", [["t3_f_cele","3 cele"],["t3_f_prob","3 problemy"]], null],
+    ["1. Kontrakt i start", [["e1_k","Kierownik"],["e1_b","Właściciel — budowlany"],["e1_f","Właściciel — finansowy"]], "f1"],
+    ["2. Wykonanie i raportowanie", [["e2_k","Kierownik"],["e2_b","Właściciel — budowlany"],["e2_f","Właściciel — finansowy"]], "f2"],
+    ["3. Zmiany i rozliczenia", [["e3_k","Kierownik"],["e3_b","Właściciel — budowlany"],["e3_f","Właściciel — finansowy"]], "f3"],
+    ["4. Odbiór", [["e4_k","Kierownik"],["e4_b","Właściciel — budowlany"],["e4_f","Właściciel — finansowy"]], "f4"],
+    ["5. Gwarancja", [["e5_k","Kierownik"],["e5_b","Właściciel — budowlany"],["e5_f","Właściciel — finansowy"]], "f5"],
+    ["6. Przekrojowo", [["e6_k","Kierownik"],["e6_b","Właściciel — budowlany"],["e6_f","Właściciel — finansowy"],["e6_pl","Formalności PL"]], null],
+  ];
+  function val(k){ var el=document.querySelector('[data-key="'+k+'"]'); return el?el.value.trim():""; }
+  document.getElementById("download").addEventListener("click", function(){
+    var out = "DOBRY DACH — odpowiedzi z sesji discovery\n";
+    out += "Data: " + new Date().toLocaleString("pl-PL") + "\n";
+    out += "======================================================\n\n";
+    stages.forEach(function(s){
+      out += "### " + s[0] + "\n";
+      s[1].forEach(function(q){ out += "- " + q[1] + ": " + (val(q[0])||"(brak)") + "\n"; });
+      if(s[2]){ var sp=document.querySelector('[data-fnames="'+s[2]+'"]'); out += "- Pliki: " + (sp?sp.textContent:"brak") + "\n"; }
+      out += "\n";
+    });
+    out += "(Pliki prześlijcie jako załączniki do maila — tu są tylko ich nazwy.)\n";
+    var blob = new Blob([out], {type:"text/plain;charset=utf-8"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "dobry-dach-discovery-odpowiedzi.txt"; a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  document.getElementById("clearall").addEventListener("click", function(){
+    if(!confirm("Wyczyścić wszystkie odpowiedzi?")) return;
+    areas.forEach(function(a){ a.value=""; });
+    try { localStorage.removeItem(KEY); } catch(e){}
+    document.querySelectorAll("[data-fnames]").forEach(function(s){ s.textContent="brak plików"; });
+    document.querySelectorAll("input[type=file]").forEach(function(i){ i.value=""; });
+    progress(); msg.textContent="Wyczyszczono"; setTimeout(function(){msg.textContent="";},1800);
+  });
+})();
+</script>
+</body>
+</html>

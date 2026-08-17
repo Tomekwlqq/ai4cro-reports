@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dobry Dach — Analiza i strategia</title>
+<style>
+  :root{
+    --blue:#1f4e79; --blue2:#2e5496; --accent:#e8911e; --bg:#f4f6f9;
+    --card:#fff; --ink:#1f2530; --mut:#5b6573; --line:#e3e8ef;
+    --green:#2e7d4f; --red:#c0392b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;font-size:16px}
+  a{color:var(--blue2);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+
+  header.hero{background:linear-gradient(135deg,#16395c,#1f4e79 55%,#2e5496);color:#fff;padding:46px 0 40px}
+  .hero a.back{color:#fff;opacity:.85;font-size:14px;display:inline-block;margin-bottom:10px}
+  .hero .tag{display:inline-block;background:rgba(255,255,255,.15);padding:5px 13px;border-radius:30px;font-size:13px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px}
+  .hero h1{font-size:40px;line-height:1.1;margin-bottom:10px;font-weight:800}
+  .hero p.sub{font-size:18px;opacity:.92;max-width:780px}
+
+  nav.toc{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 6px rgba(0,0,0,.04)}
+  nav.toc .wrap{display:flex;gap:6px;overflow-x:auto;padding:0 22px}
+  nav.toc a{padding:13px 12px;font-size:13.5px;font-weight:600;color:var(--mut);white-space:nowrap;border-bottom:3px solid transparent}
+  nav.toc a:hover{color:var(--blue)}
+
+  section{padding:44px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:27px;color:var(--blue);margin-bottom:6px;font-weight:800}
+  section .lead{color:var(--mut);font-size:16.5px;max-width:840px;margin-bottom:24px}
+  h3{font-size:19px;color:var(--blue2);margin:26px 0 12px}
+
+  .grid{display:grid;gap:18px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:900px){.g3,.g2{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card .ic{font-size:26px;margin-bottom:8px} .card h4{font-size:17px;margin-bottom:6px} .card p{font-size:14.5px;color:var(--mut)}
+
+  .life{display:flex;flex-wrap:wrap;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .life .ph{flex:1;min-width:150px;background:#fff;padding:16px 14px;border-right:1px solid var(--line)}
+  .life .ph:last-child{border-right:none}
+  .life .ph .num{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:1px}
+  .life .ph b{display:block;color:var(--blue);font-size:15px;margin:4px 0} .life .ph span{font-size:13px;color:var(--mut)}
+
+  .dual{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:900px){.dual{grid-template-columns:1fr}}
+  .ux{border-radius:14px;padding:22px;border:1px solid var(--line)}
+  .ux.simple{background:linear-gradient(160deg,#eaf6ee,#fff);border-color:#bfe3cb}
+  .ux.deep{background:linear-gradient(160deg,#eef3fb,#fff);border-color:#c6d6ee}
+  .ux h4{font-size:19px;margin-bottom:4px} .ux.simple h4{color:var(--green)} .ux.deep h4{color:var(--blue)}
+  .ux .who{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+  .ux.simple .who{color:var(--green)} .ux.deep .who{color:var(--blue2)}
+  .ux ul{margin-left:18px} .ux li{margin:7px 0;font-size:14.5px}
+
+  .sw{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column}
+  .sw .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px}
+  .sw h4{font-size:18px;color:var(--blue)}
+  .sw .pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .pill.roof{background:#fdeaea;color:#b03a2e} .pill.ent{background:#e7f0fb;color:#1f4e79}
+  .pill.field{background:#e6f4ec;color:#2e7d4f} .pill.pl{background:#f0e9fb;color:#5b3aa0}
+  .sw .role{font-size:13px;color:var(--mut);margin-bottom:10px;font-style:italic}
+  .sw .lbl{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:8px 0 3px}
+  .sw .lbl.p{color:var(--green)} .sw .lbl.m{color:var(--red)}
+  .sw ul{margin-left:17px;font-size:13.8px} .sw li{margin:4px 0}
+  .sw .price{margin-top:auto;padding-top:12px;font-size:13px;color:var(--blue2);font-weight:600}
+
+  .callout{background:#eef4fb;border:1px solid #cfe0f3;border-left:5px solid var(--blue);border-radius:10px;padding:18px 20px;margin:8px 0}
+  .callout.warn{background:#fff7ec;border-color:#f3dcb4;border-left-color:var(--accent)}
+  .callout.gap{background:#fdecea;border-color:#f3c9c2;border-left-color:var(--red)}
+  .callout h4{color:var(--blue);margin-bottom:6px} .callout.warn h4{color:#9a5a07} .callout.gap h4{color:var(--red)}
+
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line);font-size:14px}
+  th{background:var(--blue);color:#fff;text-align:left;padding:10px 12px;font-weight:700;font-size:13px}
+  td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+  .matrix td.y{color:var(--green);font-weight:700;text-align:center}
+  .matrix td.n{color:var(--red);font-weight:700;text-align:center}
+  .matrix td.pp{color:var(--accent);font-weight:700;text-align:center}
+  .matrix td:first-child{font-weight:600} .matrix .us{background:#eaf6ee !important}
+
+  .bot{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+  @media(max-width:900px){.bot{grid-template-columns:1fr}}
+  .step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;position:relative}
+  .step .n{position:absolute;top:-12px;left:18px;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+  .step h4{margin:8px 0 6px;font-size:16px;color:var(--blue)} .step p{font-size:14px;color:var(--mut)}
+
+  ol.next{counter-reset:n;list-style:none}
+  ol.next li{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 16px 13px 52px;position:relative;margin-bottom:10px}
+  ol.next li::before{counter-increment:n;content:counter(n);position:absolute;left:14px;top:50%;transform:translateY(-50%);background:var(--blue);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+
+  .ctabar{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin:26px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .ctabar b{color:var(--blue);font-size:17px} .ctabar p{color:var(--mut);font-size:14px}
+  .btn{background:var(--blue);color:#fff;border-radius:9px;padding:11px 20px;font-size:15px;font-weight:700;display:inline-block}
+  .btn:hover{background:#163a5c;text-decoration:none;color:#fff}
+
+  footer{padding:30px 0 50px;color:var(--mut);font-size:13.5px}
+  .src{font-size:13px;color:var(--mut);margin-top:10px;line-height:1.9}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <a href="index.html" class="back">← Strona główna</a>
+    <span class="tag">Analiza rynku i strategia</span>
+    <h1>Dobry Dach — analiza i pozycjonowanie</h1>
+    <p class="sub">Dlaczego budujemy ten system, czym ma się różnić i gdzie są luki na rynku. Pełne tło produktu dla wykonawcy pokryć dachowych.</p>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#kim">Dla kogo</a>
+    <a href="#cykl">Cykl życia</a>
+    <a href="#filozofia">Filozofia</a>
+    <a href="#dual">Dwa UX</a>
+    <a href="#bot">Bot</a>
+    <a href="#rynek">Konkurencja</a>
+    <a href="#luki">Luki</a>
+    <a href="#wnioski">Pozycjonowanie</a>
+    <a href="#kroki">Kroki</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<section id="kim">
+  <h2>Dla kogo budujemy</h2>
+  <p class="lead">Odbiorcą jest <b>wykonawca — podwykonawca pokryć dachowych</b>. Nie inwestor. System prowadzi firmę dekarską przez cały kontrakt i nie kończy się na odbiorze — towarzyszy aż do końca okresu gwarancyjnego.</p>
+  <div class="grid g4" style="grid-template-columns:repeat(4,1fr)">
+    <div class="card"><div class="ic">📋</div><h4>Bieżące zarządzanie</h4><p>Status każdego kontraktu w jednym widoku.</p></div>
+    <div class="card"><div class="ic">🔁</div><h4>Trackowanie zmian</h4><p>Rejestr zmian z wyceną i akceptacją — dowód w sporach.</p></div>
+    <div class="card"><div class="ic">📐</div><h4>Plan vs. rzeczywistość</h4><p>Weryfikacja zgodności wykonania z projektem.</p></div>
+    <div class="card"><div class="ic">🛡️</div><h4>Dokumentacja + gwarancja</h4><p>Dowody zbierane od startu aż po roszczenia.</p></div>
+  </div>
+</section>
+
+<section id="cykl">
+  <h2>Cykl życia kontraktu</h2>
+  <p class="lead">System obejmuje pełną drogę — większość konkurencji urywa się na odbiorze albo skupia tylko na ofertowaniu.</p>
+  <div class="life">
+    <div class="ph"><span class="num">01</span><b>Kontrakt</b><span>Umowa, zakres, harmonogram, budżet bazowy.</span></div>
+    <div class="ph"><span class="num">02</span><b>Wykonanie</b><span>Postęp z dachu, zdjęcia, raporty ekipy.</span></div>
+    <div class="ph"><span class="num">03</span><b>Zmiany</b><span>Rejestr odstępstw z wyceną i akceptacją.</span></div>
+    <div class="ph"><span class="num">04</span><b>Odbiór</b><span>Punch list, protokoły, zgodność z projektem.</span></div>
+    <div class="ph"><span class="num">05</span><b>Gwarancja</b><span>Nadzór roszczeń i napraw przez cały okres.</span></div>
+  </div>
+</section>
+
+<section id="filozofia">
+  <h2>Filozofia: ekstremalna prostota inputu</h2>
+  <p class="lead">Fundament produktu, wzorowany na Hilti / Fieldwire. Najczęstszy powód, dla którego systemy w budownictwie upadają, to brak adopcji w terenie — ekipa nie wypełnia.</p>
+  <div class="grid g3">
+    <div class="card"><div class="ic">⏱️</div><h4>Zasada 5 / 2 minut</h4><p>Pierwszy raport pod 5 min bez pomocy; cel: raport gotowy w &lt;2 min.</p></div>
+    <div class="card"><div class="ic">🎙️</div><h4>Głos + zdjęcie + tap</h4><p>Wpis głosowy 3–5× szybszy od pisania; completion rate potrafi skoczyć z 40% do 95%.</p></div>
+    <div class="card"><div class="ic">📵</div><h4>Działa offline</h4><p>Na dachu nie ma zasięgu. Auto-synchronizacja po powrocie sieci.</p></div>
+  </div>
+  <div class="callout warn" style="margin-top:20px"><h4>Reguła: „trudny tylko dla nadzorców”</h4><p>Złożoność dopuszczalna wyłącznie po stronie zarządu. Kto raportuje pracę, nigdy nie powinien zobaczyć pełnej maszynerii. Jeśli wrzucenie zdjęcia wymaga trzech menu — nikt tego nie zrobi.</p></div>
+</section>
+
+<section id="dual">
+  <h2>Dwa interfejsy, jeden system</h2>
+  <p class="lead">Te same dane, dwa różne doświadczenia. To decyzja architektoniczna, nie kosmetyka.</p>
+  <div class="dual">
+    <div class="ux simple"><h4>⚡ Tryb prosty — wprowadzanie</h4><div class="who">Kierownik budowy / ekipy · biuro</div>
+      <ul><li>Jeden ekran: co zrobiono, zdjęcie, problem.</li><li>Input głosowy i fotograficzny.</li><li>Predefiniowane odpowiedzi, minimum pisania.</li><li>Offline, auto-sync.</li><li>Raport za całą ekipę jednym ruchem — lub przez bota.</li></ul></div>
+    <div class="ux deep"><h4>🎛️ Tryb pełny — nadzór</h4><div class="who">Właściciel / zarząd</div>
+      <ul><li>Wszystkie kontrakty: status, marże, ryzyka.</li><li>Weryfikacja plan vs. rzeczywistość.</li><li>Rejestr zmian i ślad decyzji do sporów.</li><li>Monitoring gwarancji i roszczeń.</li><li>Tu złożoność jest dozwolona.</li></ul></div>
+  </div>
+</section>
+
+<section id="bot">
+  <h2>Wieczorny bot dzwoniący</h2>
+  <p class="lead">Prostota doprowadzona do skrajności: zero apki do otwierania. Bot sam dzwoni i wyciąga informacje rozmową.</p>
+  <div class="bot">
+    <div class="step"><span class="n">1</span><h4>Dzwoni o ustalonej porze</h4><p>Wieczorny telefon do brygadzisty. Bez logowania.</p></div>
+    <div class="step"><span class="n">2</span><h4>Zadaje 3–5 pytań</h4><p>Co zrobiono, co jutro, czego brakuje, problemy.</p></div>
+    <div class="step"><span class="n">3</span><h4>Spisuje i zasila system</h4><p>Raport dzienny, postęp, flagi ryzyk dla zarządu.</p></div>
+  </div>
+</section>
+
+<section id="rynek">
+  <h2>Analiza konkurencji</h2>
+  <p class="lead">Trzy warstwy: narzędzia dekarskie, duże platformy budowlane, rynek polski. Dla każdej: mocne i słabe strony.</p>
+
+  <h3>Warstwa 1 — narzędzia dekarskie (roofing-specific)</h3>
+  <div class="grid g2">
+    <div class="sw"><div class="top"><h4>AccuLynx</h4><span class="pill roof">Roofing</span></div><div class="role">Najgłębsza platforma wyłącznie pod dekarstwo</div>
+      <div class="lbl p">Mocne</div><ul><li>Pomiary z lotu, estymacja, fakturowanie</li><li>Field App (2025) — ofertowanie z terenu</li><li>Głęboka pod ubezpieczeniowe restoration</li></ul>
+      <div class="lbl m">Słabe / luka</div><ul><li>Przeładowana, „overkill” dla ekip &lt;5 osób</li><li>Per-user pricing dławi marżę</li></ul><div class="price">Enterprise roofing · drogie przy skali</div></div>
+    <div class="sw"><div class="top"><h4>JobNimbus</h4><span class="pill roof">Roofing CRM</span></div><div class="role">Elastyczny CRM, łatwo wyginać pod proces</div>
+      <div class="lbl p">Mocne</div><ul><li>Łatwy onboarding, otwarte API</li><li>Konfigurowalne workflow</li></ul>
+      <div class="lbl m">Słabe / luka</div><ul><li>Estymacja podstawowa, wymaga integracji</li><li>Per-user; słaba faza gwarancyjna</li></ul><div class="price">Per-user · retail roofing</div></div>
+    <div class="sw"><div class="top"><h4>Roofr</h4><span class="pill roof">Roofing</span></div><div class="role">Błyskawiczne pomiary i oferty</div>
+      <div class="lbl p">Mocne</div><ul><li>Darmowe pomiary, kreator ofert</li><li>Czysty, szybki interfejs</li></ul>
+      <div class="lbl m">Słabe / luka</div><ul><li>Sprzedaż-first, słaby na wykonaniu i gwarancji</li><li>Nie prowadzi pełnego cyklu</li></ul><div class="price">Sales-first · luka po realizacji</div></div>
+    <div class="sw"><div class="top"><h4>Dataforma / RoofSnap / SiteCapture</h4><span class="pill roof">Roofing niche</span></div><div class="role">Pomiary, foto, zarządzanie zleceniem</div>
+      <div class="lbl p">Mocne</div><ul><li>Wyspecjalizowane, mobilne, terenowe</li></ul>
+      <div class="lbl m">Słabe / luka</div><ul><li>Rozdrobnione — każde robi wycinek</li><li>Brak obsługi gwarancji</li></ul><div class="price">Punktowe rozwiązania</div></div>
+  </div>
+
+  <h3>Warstwa 2 — duże platformy budowlane</h3>
+  <div class="grid g3">
+    <div class="sw"><div class="top"><h4>Procore</h4><span class="pill ent">Enterprise</span></div><div class="role">Kompleks dla dużych GW</div>
+      <div class="lbl p">Mocne</div><ul><li>Rysunki, RFI, punch listy, QA/QC</li></ul><div class="lbl m">Słabe</div><ul><li>~$499/mc/projekt; za dużo funkcji = bariera adopcji</li></ul></div>
+    <div class="sw"><div class="top"><h4>Fieldwire (Hilti)</h4><span class="pill field">Field-first</span></div><div class="role">Nasz wzorzec prostoty</div>
+      <div class="lbl p">Mocne</div><ul><li>Zadania z placu, offline, adnotacje</li></ul><div class="lbl m">Słabe</div><ul><li>Generyczny — nie zna dekarstwa, brak gwarancji jako osi</li></ul></div>
+    <div class="sw"><div class="top"><h4>Raken · CompanyCam</h4><span class="pill field">Field-first</span></div><div class="role">Raporty dzienne + foto</div>
+      <div class="lbl p">Mocne</div><ul><li>Raport &lt;2 min, foto AI</li></ul><div class="lbl m">Słabe</div><ul><li>Moduły, nie pełny system; brak nadzoru i gwarancji</li></ul></div>
+  </div>
+
+  <h3>Warstwa 3 — rynek polski</h3>
+  <div class="grid g3">
+    <div class="sw"><div class="top"><h4>EDB / GUNB</h4><span class="pill pl">Państwowy</span></div><div class="role">Elektroniczny Dziennik Budowy</div>
+      <div class="lbl p">Mocne</div><ul><li>Oficjalny, darmowy, wymóg prawny</li></ul><div class="lbl m">Rola</div><ul><li>Nie konkurent — punkt integracji i referencja prawna</li></ul></div>
+    <div class="sw"><div class="top"><h4>budow.app · SimplyBud</h4><span class="pill pl">PL all-in-one</span></div><div class="role">Dla firm, GW, deweloperów</div>
+      <div class="lbl p">Mocne</div><ul><li>Dziennik, kosztorys, KSeF, zgodność PL</li></ul><div class="lbl m">Słabe</div><ul><li>Generyczne, nie dekarskie; brak „input w 2 min”</li></ul></div>
+    <div class="sw"><div class="top"><h4>Worker-PRO · PlanRadar</h4><span class="pill pl">PL / EU</span></div><div class="role">Zlecenia, usterki, karty pracy</div>
+      <div class="lbl p">Mocne</div><ul><li>Karty zadań, foto, protokoły mobilne</li></ul><div class="lbl m">Słabe</div><ul><li>Szerokie usługowo, nie dekarskie; słaby wieczorny przepływ od ekipy</li></ul></div>
+  </div>
+</section>
+
+<section id="luki">
+  <h2>Luki w rynku — gdzie wchodzimy</h2>
+  <p class="lead">Synteza słabości całego rynku. To „dziury w całym”, na których budujemy przewagę.</p>
+  <div class="grid g2">
+    <div class="callout gap"><h4>1. Adopcja w terenie to nr 1 powód porażki</h4><p>Słaba adopcja ekipy to najczęstszy powód, dla którego wdrożenia padają. „Jeśli ekipa nie używa apki, cały system się sypie.” Bot dzwoniący to rozwiązuje.</p></div>
+    <div class="callout gap"><h4>2. Per-user pricing dławi marże</h4><p>AccuLynx, JobNimbus, ServiceTitan liczą za użytkownika — koszt cicho się podwaja przy każdym nowym pracowniku. Model flat = realna przewaga.</p></div>
+    <div class="callout gap"><h4>3. Enterprise za skomplikowane, nisza rozdrobniona</h4><p>Duże platformy przytłaczają, narzędzia dekarskie robią wycinki. Brak jednego prostego systemu na cały kontrakt.</p></div>
+    <div class="callout gap"><h4>4. Faza gwarancyjna porzucona</h4><p>Warranty/closeout obsługują głównie platformy dla homebuilderów. Dla wykonawcy dekarskiego to biała plama — a to pieniądze i ryzyko.</p></div>
+  </div>
+
+  <h3>Macierz: kto co realnie pokrywa</h3>
+  <table class="matrix">
+    <tr><th>Funkcja</th><th>Roofing CRM</th><th>Field apps</th><th>PL (budow.app)</th><th>Dobry Dach</th></tr>
+    <tr><td>Input ekipy &lt;2 min (głos/foto)</td><td class="n">częśc.</td><td class="y">tak</td><td class="n">nie</td><td class="y us">rdzeń</td></tr>
+    <tr><td>Bot zbierający dane sam</td><td class="n">nie</td><td class="n">nie</td><td class="n">nie</td><td class="y us">tak</td></tr>
+    <tr><td>Pełny cykl kontrakt→gwarancja</td><td class="pp">częśc.</td><td class="n">nie</td><td class="pp">częśc.</td><td class="y us">tak</td></tr>
+    <tr><td>Specjalizacja dekarska</td><td class="y">tak</td><td class="n">nie</td><td class="n">nie</td><td class="y us">tak</td></tr>
+    <tr><td>Nadzór gwarancji / roszczeń</td><td class="n">słabo</td><td class="pp">częśc.</td><td class="n">nie</td><td class="y us">tak</td></tr>
+    <tr><td>Bez kary per-user</td><td class="n">nie</td><td class="n">nie</td><td class="pp">różnie</td><td class="y us">cel</td></tr>
+    <tr><td>Zgodność PL (EDB, KSeF)</td><td class="n">nie</td><td class="n">nie</td><td class="y">tak</td><td class="y us">tak</td></tr>
+  </table>
+</section>
+
+<section id="wnioski">
+  <h2>Pozycjonowanie „Dobrego Dachu”</h2>
+  <div class="grid g3">
+    <div class="card"><div class="ic">🎯</div><h4>Wyspecjalizowany + pełny cykl</h4><p>Jeden system dekarski od umowy po gwarancję, zamiast sklejania trzech narzędzi.</p></div>
+    <div class="card"><div class="ic">📞</div><h4>Bot zamiast formularza</h4><p>Rozwiązujemy problem nr 1 — adopcję w terenie.</p></div>
+    <div class="card"><div class="ic">⚡</div><h4>Dual-UX jak Hilti</h4><p>Prosto dla raportujących, pełna moc dla zarządu.</p></div>
+    <div class="card"><div class="ic">💰</div><h4>Uczciwy model cenowy</h4><p>Brak kary za każdego pracownika w terenie.</p></div>
+    <div class="card"><div class="ic">🛡️</div><h4>Gwarancja jako oś</h4><p>Nadzór roszczeń przez cały okres — konkurencja to porzuca.</p></div>
+    <div class="card"><div class="ic">🇵🇱</div><h4>Zgodność z PL od startu</h4><p>Integracja z EDB/GUNB i KSeF jako standard.</p></div>
+  </div>
+</section>
+
+<section id="kroki" style="border-bottom:none">
+  <h2>Kolejne kroki</h2>
+  <ol class="next">
+    <li>Walidacja pozycjonowania dekarskiego na 2–3 rozmowach z firmami wykonawczymi.</li>
+    <li>Test „zasady 2 minut” — prototyp ekranu raportu i pomiar czasu na dachu.</li>
+    <li>Pilot wieczornego bota: jedna budowa, 3–5 pytań, pomiar completion rate.</li>
+    <li>Decyzja o modelu cenowym (flat / role-based).</li>
+    <li>Mapowanie integracji EDB/GUNB i KSeF — zakres i koszt.</li>
+  </ol>
+
+  <div class="ctabar">
+    <div><b>Gotowi na rozmowę?</b><p>Kwestionariusz discovery wypełnicie online — każda rola swoje pola.</p></div>
+    <a href="discovery.html" class="btn">Przejdź do kwestionariusza →</a>
+  </div>
+</section>
+
+<footer>
+  <p><b>Źródła researchu:</b></p>
+  <div class="src">
+    Roofing: RooferBase, JobNimbus, Ogline Digital, RoofingSoftwareGuide, OpsRev, Tooled Up Pro, RoofSnap, SiteCapture, Dataforma ·
+    Adopcja/UX: BuildLog, CompanyCam, GoAudits · Pricing/field-vs-office: Fuzen, QuoteIQ ·
+    Gwarancja/closeout: Buildr, WarrantyHub, Verisk Punchlist Manager, SnagID, Fieldwire ·
+    Duże platformy: Buildern, Capterra, Autodesk · PL: GUNB/RynekInstalacyjny, budow.app, SimplyBud, PlanRadar, Worker-PRO.
+  </div>
+  <p style="margin-top:16px">Dobry Dach · analiza i strategia · wersja 3.0 · czerwiec 2026</p>
+</footer>
+
+</div>
+</body>
+</html>
