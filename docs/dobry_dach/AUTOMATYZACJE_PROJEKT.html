@@ -7,6 +7,7 @@ h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;letter-spacing:-.2px}
 code,pre,.mono,label,.tab,.badge,.go,.meta,.cnt,th{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace}
 a{color:var(--sg-vio)}
 </style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Projekt automatyzacji A0–A7 — Dobry Dach</title>
 <style>
 :root{--ink:#16181d;--mut:#667085;--line:#e4e7ec;--blue:#1f4e79;--green:#2e7d4f;--red:#b42318;--vio:#7c5cff;--amber:#9a6b00}
@@ -38,6 +39,19 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
 th{text-align:left;background:#f6f8fa;padding:8px 12px;border-bottom:2px solid var(--line);font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:#57606a}
 td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 .foot{color:#98a2b3;font-size:11.5px;margin-top:30px;text-align:center;border-top:1px solid #eee;padding-top:12px}
+
+.start{border:2px solid #e4e7ec;border-left:5px solid #7c5cff;border-radius:10px;background:#fcfcfe;padding:14px 16px;margin:0 0 26px}
+.start h4{margin:0 0 10px;font-size:14px;letter-spacing:.3px;text-transform:uppercase;color:#3a4250}
+.start .gauge{float:right;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;border:1.5px solid}
+.start .g-ok{color:#177245;border-color:#9ad5b0;background:#eefaf2}
+.start .g-wip{color:#8a5a00;border-color:#f0cf8b;background:#fff8e8}
+.start .g-blk{color:#a12b2b;border-color:#f0b2b2;background:#fdeeee}
+.start .cat{margin:9px 0 0}
+.start .cat > b{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#667085;display:block;margin-bottom:3px}
+.start ul{margin:2px 0 0 18px;padding:0}
+.start li{margin:2px 0;font-size:14px}
+.start .verdict{margin-top:12px;padding-top:10px;border-top:1px dashed #e4e7ec;font-size:14px}
+@media(max-width:700px){.start .gauge{float:none;display:inline-block;margin-bottom:8px}}
 </style></head><body><div class="wrap">
 <h1>⚙️ Projekt automatyzacji A0–A7 — Dobry Dach</h1>
 <p class="sub">Kompletny projekt wszystkich automatów (wg wiedzy: procedury Jurewicza · baza Subiekt · kalendarze Google · plik marż Tomasza · warsztat) · setup: TECH_SETUP_WDROZENIOWY.md (VPS, konto read-only, cron) · blokery wiedzowe = pytania z pytania_robocze.html</p>
@@ -50,12 +64,32 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 <h2>Architektura — skąd dane, gdzie działa</h2>
 <table>
 <tr><th>Źródło</th><th>Dostęp</th><th>Które automaty</th></tr>
-<tr><td>Baza Subiekt (SQL Server)</td><td>konto read-only <code>dd_auto</code> (SELECT) — przez pymssql, VPS</td><td>A0, A2, A3, A5, A6, A7</td></tr>
+<tr><td>Baza Subiekt — <b>komandytowa</b></td><td>konto read-only <code>dd_auto</code> (SELECT) — pymssql</td><td>A0, A2, A3, A5, A6, A7</td></tr>
+<tr><td>Baza Subiekt — <b>jawna</b></td><td>to samo konto, SELECT na drugiej bazie — <b>do zdobycia</b></td><td>A6 (faktury do klienta), A7 (komplet)</td></tr>
 <tr><td>Kalendarze Google (6 pojazdów)</td><td>OAuth (token działa, read/write)</td><td>A4</td></tr>
 <tr><td>SMTP poczta.dobry-dach.pl:587</td><td>loginy + hasła (.env)</td><td>A0, A4, A5, A6</td></tr>
 <tr><td>Plik marż Tomasza (2026-05)</td><td>algorytm: (Netto−Koszt)/Netto; RODZAJE</td><td>A3</td></tr>
+<tr><td>Claude API (model)</td><td>klucz; <b>dostaje tylko treść skanu</b> — nie widzi bazy, nie liczy pieniędzy</td><td>A1</td></tr>
+<tr><td>Adresy PH (kategoria → osoba)</td><td>tabelka od klienta — <b>brak</b></td><td>A5</td></tr>
+<tr><td>Sfera (InsERT) — zapis</td><td>licencja + stanowisko Windows — <b>do rozstrzygnięcia</b></td><td>A2 (jedyny automat piszący)</td></tr>
 </table>
-<div class="flow">trigger (cron / event / mail) → skrypt (Python 3.11, venv) → odczyt SQL/API → logika → wyjście (mail / event / alert) → log do logs/ + healthcheck</div>
+<div class="flow">trigger (cron / event / mail) → skrypt (Python 3.11, venv) → odczyt SQL/API → logika → wyjście (mail / event / alert) → log do logs/ + watchdog</div>
+<p class="sub"><b>Runner ≠ model.</b> Liczy Python — deterministycznie, na bazie. Model (Claude) czyta wyłącznie skan projektu w A1 i dostaje tylko to, co mu wyślemy. Marże, salda, dane kontrahentów i kwoty faktur <b>nie opuszczają serwera</b>. Szczegóły: TECH_SETUP_WDROZENIOWY.md, sekcja 0.</p>
+
+<h2>🚦 Start-o-meter — co ruszy najszybciej</h2>
+<p class="sub">Kolejność nie wynika z tego, który automat jest najciekawszy, tylko z tego, który ma najmniej niewiadomych. Każda pozycja rozpisana szczegółowo niżej, w bloku „co brakuje do startu”.</p>
+<table><tr><th>#</th><th>Automat</th><th>Kod</th><th>Dane / dostęp</th><th>Decyzja</th><th>Stan</th></tr>
+<tr><td>Z0</td><td>fundament wdrożeniowy</td><td>—</td><td>host + konto <code>dd_auto</code> + .env</td><td>gdzie baza · kto zakłada konto · kto stawia host</td><td>🟠 czeka na 3 decyzje</td></tr>
+<tr><td>A6</td><td>raport dzienny PH</td><td>✅ działa (11/11)</td><td>dostęp do bazy jawnej</td><td>godzina + odbiorcy</td><td>🟢 <b>start w tygodniu 1</b></td></tr>
+<tr><td>A3</td><td>marża + flaga &lt;5%</td><td>algorytm gotowy</td><td>kompletność cen zakupu w tw_Cena</td><td>próg flagi + odbiorca alertu</td><td>🟡 blisko</td></tr>
+<tr><td>A4</td><td>terminy i transport</td><td>odczyt działa</td><td>publikacja aplikacji OAuth</td><td>czy automat pisze do kalendarzy</td><td>🟡 start jako raport</td></tr>
+<tr><td>A5</td><td>WZ → informacja do PH</td><td>mock gotowy</td><td><b>adresy PH</b> (kategoria → osoba)</td><td>kanał: mail czy WhatsApp</td><td>🔴 brak adresów</td></tr>
+<tr><td>A7</td><td>rozjazdy ZK vs WZ</td><td>—</td><td>obie bazy</td><td>definicja rozjazdu i progu</td><td>🔴 budować z A5</td></tr>
+<tr><td>A0</td><td>rejestr zapytań</td><td>—</td><td>baza + ewentualnie skrzynka</td><td>gdzie żyje rejestr</td><td>🔴 brak decyzji</td></tr>
+<tr><td>A2</td><td>oferta z ZK</td><td>—</td><td><b>Sfera</b> — zapis do Subiekta</td><td>oferta w ZK czy obok</td><td>🔴 wymaga licencji</td></tr>
+<tr><td>A1</td><td>scan projektu</td><td>—</td><td><b>próbki projektów</b> do testu</td><td>czy papier wchodzi w zakres</td><td>🔴 brak próbek</td></tr>
+</table>
+<div class="flow">Ścieżka najkrótsza do pierwszego działającego automatu: Z0 (host + konto read-only) → A6 na produkcji → A3 → A4 w trybie raportu</div>
 
 <h2>A0 — Rejestr zapytań + follow-up</h2>
 <div class="aut"><div class="card">
@@ -73,6 +107,8 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 </ul>
 <div class="pole"><b>Zależne:</b> A2 (oferta z ZK) — rejestr jest wejściem.</div>
 </div></div>
+<div class="start"><span class="gauge g-blk">gotowość 20%</span><h4>🚦 A0 — co brakuje do startu</h4><div class="cat"><b>🧠 wiedza — pytania do klienta</b><ul><li><b>00/1</b> — ile % zapytań przepada (wystarczy szacunek, nie pomiar)</li><li><b>00/2</b> — kto wpisuje zapytanie: PH czy biuro</li></ul></div><div class="cat"><b>🔌 dostęp i dane</b><ul><li>konto <code>dd_auto</code> (SELECT) na bazie komandytowej</li><li>jeśli zapytania mają być łapane automatycznie — dostęp do skrzynki firmowej (IMAP)</li></ul></div><div class="cat"><b>🎚️ decyzja do podjęcia</b><ul><li><b>gdzie żyje rejestr</b>: kontrahent jednorazowy w Subiekcie czy osobna tabela obok bazy</li><li>kanał przypomnienia (mail / WhatsApp) i rytm follow-up (propozycja: D+1, D+3, D+7)</li></ul></div><div class="cat"><b>🛠️ kod</b><ul><li>cały automat do napisania — rejestr + harmonogram przypomnień</li></ul></div><div class="verdict"><b>Werdykt:</b> Technicznie najprostszy, ale wymaga decyzji <b>gdzie trzymamy rejestr</b>. Bez niej automat nie ma źródła i nie ma czego pilnować.</div></div>
+
 
 <h2>A1 — Scan projektu (Vision)</h2>
 <div class="aut"><div class="card">
@@ -90,6 +126,8 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 </ul>
 <div class="pole"><b>Warunek techniczny:</b> cyfrowa forma projektu (bez niej nie ma A1).</div>
 </div></div>
+<div class="start"><span class="gauge g-blk">gotowość 10%</span><h4>🚦 A1 — co brakuje do startu</h4><div class="cat"><b>🧠 wiedza — pytania do klienta</b><ul><li><b>01/1</b> — która forma projektu przeważa (PDF / zdjęcie / DWG / papier)</li><li><b>01/2</b> — gdzie projekt ląduje po przyjęciu</li></ul></div><div class="cat"><b>🔌 dostęp i dane</b><ul><li><b>10–20 przykładowych projektów</b> do testu — bez próbek nie da się zmierzyć, czy Vision czyta poprawnie</li><li>klucz Claude API (zakładamy my)</li></ul></div><div class="cat"><b>🎚️ decyzja do podjęcia</b><ul><li>czy projekt papierowy wchodzi w zakres (wymaga skanowania po stronie firmy)</li><li>co robimy przy niskiej pewności odczytu — pytamy człowieka czy odrzucamy</li></ul></div><div class="cat"><b>🛠️ kod</b><ul><li>prompt Vision + walidacja wymiarów + mapowanie na pozycje — wszystko do napisania</li></ul></div><div class="verdict"><b>Werdykt:</b> Cyfrowa forma projektu to <b>bramka, nie preferencja</b>. Do decyzji o budowie potrzebujemy najpierw paczki prawdziwych projektów — inaczej licytujemy się na przypuszczenia.</div></div>
+
 
 <h2>A2 — Oferta z ZK + ślad negocjacji</h2>
 <div class="aut"><div class="card">
@@ -107,6 +145,8 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 </ul>
 <div class="pole"><b>Zależne:</b> A0 (rejestr) + A3 (ceny/marża w ofercie).</div>
 </div></div>
+<div class="start"><span class="gauge g-blk">gotowość 15%</span><h4>🚦 A2 — co brakuje do startu</h4><div class="cat"><b>🧠 wiedza — pytania do klienta</b><ul><li><b>03/1</b> — jaki % ofert nie trafia do ZK</li><li><b>04/1</b> — czy negocjacje zostawiają ślad</li></ul></div><div class="cat"><b>🔌 dostęp i dane</b><ul><li><code>dd_auto</code> (SELECT) do odczytu pozycji i cen</li><li><b>Sfera (InsERT) — zapis do Subiekta</b>: osobna licencja + stanowisko Windows</li></ul></div><div class="cat"><b>🎚️ decyzja do podjęcia</b><ul><li>wzór PDF oferty (firmowy szablon)</li><li>czy oferta powstaje <b>jako ZK w bazie</b>, czy jako dokument obok (wtedy bramka „każda oferta w ZK” nie działa)</li></ul></div><div class="cat"><b>🛠️ kod</b><ul><li>generator PDF + mapowanie pozycji + wersjonowanie wyceny — do napisania</li></ul></div><div class="verdict"><b>Werdykt:</b> <b>Jedyny automat, który musi PISAĆ do Subiekta.</b> Sfera to osobna licencja i osobna maszyna — trzeba rozstrzygnąć wcześnie, bo zmienia kształt całego wdrożenia.</div></div>
+
 
 <h2>A3 — Marża z bazy (algorytm Tomasza)</h2>
 <div class="aut"><div class="card">
@@ -124,6 +164,8 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 <li><b>02/2</b> — skąd ceny w wycenie (tw_Cena / ręcznie / mieszane)?</li>
 </ul>
 </div></div>
+<div class="start"><span class="gauge g-wip">gotowość 55%</span><h4>🚦 A3 — co brakuje do startu</h4><div class="cat"><b>🧠 wiedza — pytania do klienta</b><ul><li><b>02/1</b>, <b>02/2</b> — potwierdzenia praktyki, nie blokery (algorytm już mamy)</li></ul></div><div class="cat"><b>🔌 dostęp i dane</b><ul><li><code>dd_auto</code> (SELECT)</li><li><b>do sprawdzenia w bazie:</b> ile pozycji tw_Cena ma realnie wypełniony koszt zakupu — bez kosztu nie ma marży</li></ul></div><div class="cat"><b>🎚️ decyzja do podjęcia</b><ul><li>próg flagi (propozycja: marża &lt;5%)</li><li>kto dostaje alert i kiedy — przy wycenie czy zbiorczo raz dziennie</li></ul></div><div class="cat"><b>🛠️ kod</b><ul><li>algorytm wydobyty z pliku Tomasza; do przełożenia na zapytanie SQL + alert</li></ul></div><div class="verdict"><b>Werdykt:</b> Najbliżej startu spośród nowych automatów. Ryzyko jest w danych, nie w logice: jeśli ceny zakupu są dziurawe, marża policzy się z niczego.</div></div>
+
 
 <h2>A4 — Terminy: kalendarz + porównywarka</h2>
 <div class="aut"><div class="card">
@@ -144,6 +186,8 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 <li><b>09/2</b> — czy zdarza się zamówienie towaru bez ZK w systemie?</li>
 </ul>
 </div></div>
+<div class="start"><span class="gauge g-blk">gotowość 40%</span><h4>🚦 A4 — co brakuje do startu</h4><div class="cat"><b>🧠 wiedza — pytania do klienta</b><ul><li><b>05/1</b> umowa przed startem · <b>07/1</b> flagowanie · <b>08/1</b> kto prowadzi kalendarz</li><li><b>08/2</b> czy każdy ZK ma transport · <b>09/1</b> droga zamówienia · <b>09/2</b> zamówienia bez ZK</li></ul></div><div class="cat"><b>🔌 dostęp i dane</b><ul><li>OAuth Google Calendar — <b>działa</b> (zweryfikowane 17.08: 37 eventów z 6 kalendarzy)</li><li>publikacja aplikacji w Cloud Console — żeby dostęp nie zależał od trybu testowego</li></ul></div><div class="cat"><b>🎚️ decyzja do podjęcia</b><ul><li><b>czy automat PISZE do kalendarzy pojazdów</b> — dziś prowadzą je ludzie; wejście automatu w cudzy kalendarz to zmiana nawyku, nie funkcja</li><li>godziny przypomnień (propozycja D-3 i D-1)</li></ul></div><div class="cat"><b>🛠️ kod</b><ul><li>odczyt działa; porównywarka ZK ↔ transport i zapis eventów — do napisania</li></ul></div><div class="verdict"><b>Werdykt:</b> Technicznie odblokowany, <b>procesowo najbardziej ryzykowny</b>. Rekomendacja: start w trybie tylko-do-odczytu (raport „ZK bez transportu, konflikty pojazdów”), zapis eventów dopiero gdy logistycy zaufają liczbom.</div></div>
+
 
 <h2>A5 — WZ → informacja do PH (postęp)</h2>
 <div class="aut"><div class="card">
@@ -161,6 +205,8 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 </ul>
 <div class="pole"><b>Zależne:</b> A7 (różnice ZK vs WZ) czyta te same dane.</div>
 </div></div>
+<div class="start"><span class="gauge g-blk">gotowość 35%</span><h4>🚦 A5 — co brakuje do startu</h4><div class="cat"><b>🧠 wiedza — pytania do klienta</b><ul><li><b>10/1</b> — dlaczego 62% WZ nie ma ZK (celowo czy błąd)</li><li><b>11/1</b> — jak dziś PH dowiaduje się o wydaniu</li></ul></div><div class="cat"><b>🔌 dostęp i dane</b><ul><li><code>dd_auto</code> (SELECT)</li><li><b>mapowanie kategoria → osoba → adres</b>: mamy kody (CD, MR, LR, SM, GG, MP, GM, BK, LP) i nazwiska, nie mamy skrzynek/numerów</li></ul></div><div class="cat"><b>🎚️ decyzja do podjęcia</b><ul><li>kanał: mail czy WhatsApp (WhatsApp = osobna integracja i koszt, nie „przełącznik”)</li><li>częstotliwość: każde WZ osobno czy jedno zestawienie dziennie</li></ul></div><div class="cat"><b>🛠️ kod</b><ul><li>mock gotowy; trigger produkcyjny + powiązanie WZ↔ZK — do napisania</li></ul></div><div class="verdict"><b>Werdykt:</b> Brakuje rzeczy prozaicznej: <b>adresów PH</b>. Wiadomość nie ma dokąd iść, choć wie, co powiedzieć. To jedna tabelka od klienta.</div></div>
+
 
 <h2>A6 — Raport PH (dzienny summary)</h2>
 <div class="aut"><div class="card">
@@ -183,6 +229,8 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 <li><b>16/1</b> — czy stawki 23%/8% realnie działają?</li>
 </ul>
 </div></div>
+<div class="start"><span class="gauge g-ok">gotowość 90%</span><h4>🚦 A6 — co brakuje do startu</h4><div class="cat"><b>🧠 wiedza — pytania do klienta</b><ul><li><b>12/1</b>, <b>13/1</b>, <b>16/1</b> — potwierdzenia; <b>nie blokują startu</b></li></ul></div><div class="cat"><b>🔌 dostęp i dane</b><ul><li><code>dd_auto</code> (SELECT) na bazie produkcyjnej</li><li><b>dostęp do bazy JAWNEJ</b> — dziś mamy tylko komandytową, a faktury do klienta wychodzą z jawnej</li></ul></div><div class="cat"><b>🎚️ decyzja do podjęcia</b><ul><li>godzina raportu (propozycja 7:00)</li><li>odbiorcy (propozycja: tomekw@ + tomekj@)</li></ul></div><div class="cat"><b>🛠️ kod</b><ul><li>✅ <b>działa end-to-end</b> — prototyp 11/11, wysyłka SMTP na 2 skrzynki potwierdzona</li></ul></div><div class="verdict"><b>Werdykt:</b> <b>Jedyny automat gotowy do uruchomienia w tygodniu 1.</b> Kod jest napisany i sprawdzony — brakuje wyłącznie hosta, konta read-only i dwóch decyzji na jedno zdanie.</div></div>
+
 
 <h2>A7 — Różnice ZK vs WZ + ślad zmian</h2>
 <div class="aut"><div class="card">
@@ -201,6 +249,8 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 <li><b>17/1</b> — czy archiwum (teczka → Natalia) realnie się składa?</li>
 </ul>
 </div></div>
+<div class="start"><span class="gauge g-blk">gotowość 25%</span><h4>🚦 A7 — co brakuje do startu</h4><div class="cat"><b>🧠 wiedza — pytania do klienta</b><ul><li><b>06/1</b> umowa z dekarzem · <b>14/1</b> obieg zmiany zakresu</li><li><b>15/1</b> czy rozliczacie ZK vs WZ · <b>17/1</b> czy archiwum realnie się składa</li></ul></div><div class="cat"><b>🔌 dostęp i dane</b><ul><li><code>dd_auto</code> (SELECT) — <b>obie bazy</b>, bo komplet dokumentów rozkłada się na komandytową i jawną</li></ul></div><div class="cat"><b>🎚️ decyzja do podjęcia</b><ul><li>co znaczy „rozjazd”: różnica ilościowa, wartościowa, czy dowolna</li><li>próg tolerancji (100% zgodności czy ±x%) i kto dostaje raport</li></ul></div><div class="cat"><b>🛠️ kod</b><ul><li>porównanie pozycja po pozycji + checklista kompletu — do napisania</li></ul></div><div class="verdict"><b>Werdykt:</b> Czyta te same dane co A5 — sensownie budować je razem, jednym przejściem po powiązaniach ZK↔WZ.</div></div>
+
 
 <h2>Zależności między automatami</h2>
 <div class="flow">A0 (rejestr) → A2 (oferta z ZK) → A3 (marża w ofercie) → A4 (termin z umowy → kalendarz) → A5 (WZ → postęp) → A6 (raport: czyta wszystko) → A7 (finalizacja: ZK vs WZ + komplet)</div>
@@ -222,10 +272,12 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 <tr><td>2</td><td>Konto SQL read-only <code>dd_auto</code> (SELECT) — u klienta</td><td>infra</td><td>⏳ czeka klient</td></tr>
 <tr><td>3</td><td>Godzina + odbiorcy raportu A6 (propozycja: 7:00, tomekw@ + tomekj@)</td><td>decyzja</td><td>⏳ czeka Tomek</td></tr>
 <tr><td>4</td><td>Publikacja aplikacji OAuth (stały token — 1 klik w Cloud Console)</td><td>decyzja</td><td>⏳ czeka Tomek</td></tr>
-<tr><td>5</td><td>Kopia bazy JAWNEJ (A6 na danych B2C)</td><td>dane</td><td>⏳ czeka klient</td></tr>
-<tr><td>6</td><td>Odpowiedzi na 23 pytania-blokery (pytania_robocze.html)</td><td>wiedza</td><td>⏳ jutro z Tomkiem</td></tr>
-<tr><td>7</td><td>Kanał wiadomości A5 (mail / WhatsApp)</td><td>decyzja</td><td>⏳ z odpowiedziami</td></tr>
+<tr><td>5</td><td>Baza <b>JAWNA</b> — dostęp SELECT (nie tylko kopia): faktury do klienta wychodzą stamtąd</td><td>dane</td><td>⏳ czeka klient</td></tr>
+<tr><td>6</td><td>Tabela: kategoria PH (CD, MR, LR…) → osoba → mail/telefon</td><td>dane</td><td>⏳ czeka klient — blokuje A5</td></tr>
+<tr><td>7</td><td>Licencja Sfera (zapis do Subiekta) — dotyczy wyłącznie A2</td><td>decyzja</td><td>⏳ do rozstrzygnięcia</td></tr>
+<tr><td>8</td><td>Odpowiedzi na 23 pytania-blokery (pytania_robocze.html)</td><td>wiedza</td><td>⏳ jutro z Tomkiem</td></tr>
+<tr><td>9</td><td>Kanał wiadomości A5 (mail / WhatsApp)</td><td>decyzja</td><td>⏳ z odpowiedziami</td></tr>
 </table>
 
-<div class="foot">Dobry Dach · projekt automatyzacji A0–A7 · 2026-08-12 · źródła: mapa 3 kolumny, STRUKTURA_WEZLOW.json, PROCEDURY_FIRMOWE.md, TECH_SETUP_WDROZENIOWY.md, plik marż 2026-05</div>
+<div class="foot">Dobry Dach · projekt automatyzacji A0–A7 · 2026-08-17 · źródła: mapa 3 kolumny, STRUKTURA_WEZLOW.json, PROCEDURY_FIRMOWE.md, TECH_SETUP_WDROZENIOWY.md, plik marż 2026-05</div>
 </div></body></html>
