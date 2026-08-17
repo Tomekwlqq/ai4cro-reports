@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Air Fryers — Category Question Field &amp; Category Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --surface:#fafbfd; --line:#e6e6e9;
+    --ink:#0a0a0a; --muted:#5b6472; --faint:#8b93a2;
+    --v:#7c5cff; --v-d:#5a3ff0; --v-soft:#efeaff;
+    --grotesk:'Space Grotesk',-apple-system,sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{font-family:var(--grotesk);background:var(--bg);color:var(--ink);display:flex;flex-direction:column;overflow:hidden}
+
+  .topbar{
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    padding:12px 20px;border-bottom:1px solid var(--line);
+    background:rgba(255,255,255,.94);backdrop-filter:blur(12px);
+  }
+  .brand{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--v-d)}
+  .brand span{color:var(--faint);font-weight:400;letter-spacing:.08em;margin-left:9px}
+  .tabs{display:flex;gap:6px;margin-left:auto}
+  .tab{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);background:none;border:none;border-radius:9px;
+    padding:7px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;
+  }
+  .tab .nr{font-size:10px;color:var(--faint)}
+  .tab:hover{background:var(--v-soft);color:var(--v-d)}
+  .tab.on{background:var(--v);color:#fff}
+  .tab.on .nr{color:rgba(255,255,255,.65)}
+  .meta{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.08em}
+
+  .stage{flex:1;position:relative}
+  iframe{position:absolute;inset:0;width:100%;height:100%;border:none;display:none;background:#fff}
+  iframe.on{display:block}
+
+  @media (max-width:760px){
+    .tabs{margin-left:0;width:100%}
+    .tab{flex:1;justify-content:center;padding:8px 6px}
+    .meta{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">Air Fryers <span>UAE / KSA · EN</span></div>
+  <div class="meta">GeoContentWriter · category knowledge</div>
+  <nav class="tabs">
+    <button class="tab on" data-target="cqf"><span class="nr">01</span>Category Question Field</button>
+    <button class="tab" data-target="cs"><span class="nr">02</span>Category Analysis</button>
+  </nav>
+</header>
+
+<main class="stage">
+  <iframe id="cqf" class="on" src="cqf.html" title="Category Question Field"></iframe>
+  <iframe id="cs" src="cs.html" title="Category Analysis"></iframe>
+</main>
+
+<script>
+document.querySelectorAll('.tab').forEach(function (tab) {
+  tab.addEventListener('click', function () {
+    document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('on'); });
+    document.querySelectorAll('iframe').forEach(function (f) { f.classList.remove('on'); });
+    tab.classList.add('on');
+    document.getElementById(tab.dataset.target).classList.add('on');
+    history.replaceState(null, '', '#' + tab.dataset.target);
+  });
+});
+if (location.hash === '#cs') { document.querySelector('.tab[data-target="cs"]').click(); }
+</script>
+
+</body>
+</html>
