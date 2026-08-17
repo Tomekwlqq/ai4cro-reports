@@ -8,6 +8,16 @@ body{font-family:'Space Grotesk',-apple-system,'Segoe UI',Roboto,Arial,sans-seri
 h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;letter-spacing:-.2px}
 code,pre,.mono,label,.tab,.badge,.go,.meta,.cnt,th{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace}
 a{color:var(--sg-vio)}
+
+.pflow{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.pstep{display:flex;align-items:center;gap:12px;background:#f6f8fa;border:1.5px solid #e4e7ec;border-left:4px solid #7c5cff;border-radius:12px;padding:10px 14px;text-decoration:none;color:#16181d;transition:.15s}
+.pstep:hover{border-color:#7c5cff;background:#f4f0ff;transform:translateX(3px)}
+.pnum{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:15px;color:#7c5cff;min-width:34px;text-align:center;background:#fff;border:1.5px solid #7c5cff;border-radius:9px;padding:4px 0}
+.pbody{flex:1}
+.ptitle{font-weight:700;font-size:14.5px}
+.proc-auto{display:inline-block;background:#7c5cff;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;margin-left:8px;vertical-align:2px;font-family:'IBM Plex Mono',monospace}
+.pasis{color:#667085;font-size:12.3px;margin-top:2px}
+.parrow{color:#7c5cff;font-weight:700}
 </style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,44 +107,160 @@ a{color:var(--sg-vio)}
   <div class="progress"><div id="pbar" style="width:41%">41% wiedzy</div></div>
 
   <div class="tabs">
-    <div class="tab active" data-tab="opowiesc">📖 OPOWIEŚĆ <span class="cnt">18</span></div>
+    <div class="tab active" data-tab="opowiesc">⚙️ PROCES <span class="cnt">18</span></div>
     <div class="tab" data-tab="pytania">❓ PYTANIA <span class="cnt">23+16</span></div>
     <div class="tab" data-tab="wzrost">📈 WZROST WIEDZY <span class="cnt">16</span></div>
     <div class="tab" data-tab="rozmowy">💬 ROZMOWY <span class="cnt">8</span></div>
   </div>
 
   <!-- ════════════ TAB 1: OPOWIEŚĆ ════════════ -->
-  <section id="tab-opowiesc">
-    <div class="group-label">Proces — 18 kroków od zapytania do dokumentacji (klik = węzeł w mapie)</div>
-    <div class="path">
-      <div class="pstep auto"><span class="pn">00</span> Kontakt klienta <span class="pa">· A0 rejestr</span></div>
-      <div class="pstep auto"><span class="pn">01</span> Przyjęcie projektu <span class="pa">· A1 scan</span></div>
-      <div class="pstep auto"><span class="pn">02</span> Wycena + marża <span class="pa">· A3 marża</span></div>
-      <div class="pstep auto"><span class="pn">03</span> Oferta (ZK) <span class="pa">· A2</span></div>
-      <div class="pstep"><span class="pn">04</span> Negocjacje</div>
-      <div class="pstep"><span class="pn">05</span> Akceptacja oferty</div>
-      <div class="pstep"><span class="pn">06</span> Umowa</div>
-      <div class="pstep auto"><span class="pn">07</span> Status → realizacja <span class="pa">· A2</span></div>
-      <div class="pstep auto"><span class="pn">08</span> Kalendarze / terminy <span class="pa">· A4</span></div>
-      <div class="pstep auto"><span class="pn">09</span> Zamówienie mat. <span class="pa">· A4</span></div>
-      <div class="pstep auto"><span class="pn">10</span> Wydanie (WZ) <span class="pa">· A5</span></div>
-      <div class="pstep auto"><span class="pn">11</span> Info do PH <span class="pa">· A5</span></div>
-      <div class="pstep auto"><span class="pn">12</span> FV zaliczkowe <span class="pa">· A6</span></div>
-      <div class="pstep auto"><span class="pn">13</span> Summary PH <span class="pa">· A6 raport</span></div>
-      <div class="pstep auto"><span class="pn">14</span> Zmiany zakresu <span class="pa">· A7</span></div>
-      <div class="pstep auto"><span class="pn">15</span> Finalizacja ZK vs WZ <span class="pa">· A7</span></div>
-      <div class="pstep auto"><span class="pn">16</span> FV finalna <span class="pa">· A6</span></div>
-      <div class="pstep"><span class="pn">17</span> Zamknięcie / dokumentacja</div>
-    </div>
-
-    <div class="group-label">Opowieść — jak dziś działa</div>
-    <div class="narr"><b>Klient indywidualny — zazwyczaj nowy — dzwoni</b> (kontakt się często urywa, nikt nie oddzwania). Jest od razu spisywany do Subiekta — na spółkę komandytową. Jeśli ma projekt, trafia na wycenę; jeśli nie — prosimy o projekt. Ofertę dostaje jako <b>ZK</b>, negocjacje i akceptacja, potem umowa (dokumentacja do stawki 8%!). <b>Towar zamawia wyłącznie Łukasz/Artur</b> na podstawie ZK z systemu; terminy i transporty żyją w kalendarzach Google per pojazd, nie w bazie. Wydanie przez WZ (2 egz., podpis klienta). <b>Klient dostaje JEDEN dokument: FV z SPJ na KI — „Prace budowlane na budynku mieszkalnym", pozycja 1 + wartość</b> (usługa, niższy VAT; zaliczki min 20%). Realizację śledzi PH po swoim kodzie — <b>kategorii dokumentu</b>. Na końcu: finalizacja ZK vs WZ, FV końcowa, dokumentacja powykonawcza.</div>
-
-    <div class="group-label">Dwie spółki — dwa obiegi</div>
-    <div class="cards">
-      <div class="card w"><h3>Spółka komandytowa</h3>Sprzedaż materiałów budowlanych + prace dla firm/wspólnot. Tu żyje kartoteka klientów indywidualnych. <div class="proof"><b>Dowód:</b> procedura sprzedaży 2017 · odpowiedź Tomka 10.08</div></div>
-      <div class="card w"><h3>Spółka jawna (SPJ)</h3>Usługi: prace na budynku mieszkalnym (8% VAT), demontaż azbestu. FV do klienta wystawia JAWNA — „Prace budowlane na budynku mieszkalnym", pozycja 1 + wartość. <div class="proof"><b>Dowód:</b> notatki Jura 10.08 · procedura zaliczkowa 2021</div></div>
-      <div class="card w"><h3>Obieg między spółkami</h3>Komandytowa sprzedaje towar jawnej → jawna montuje i faktuuje klienta. De facto przepływy: więcej kasy niż wydanego towaru. <div class="proof"><b>Dowód:</b> notatki Jura 10.08 · pytanie o marżę wewnętrzną OTWARTE</div></div>
+    <section id="tab-opowiesc">
+    <div class="group-label">PROCES — 18 kroków od zapytania do dokumentacji · klik = otwiera węzeł w mapie (AS-IS + automat)</div>
+    <div class="pflow">
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-00">
+        <div class="pnum">00</div>
+        <div class="pbody">
+          <div class="ptitle">Kontakt klienta / zapytanie<span class="proc-auto">A0: rejestr zapytań = baza klientów — każde zapytanie dopisane + follow-up (przypomnienie oddzwonienia) · scenariusz pytań dla PH przy kliencie (lista kontrolna)</span></div>
+          <div class="pasis">Zapytanie wpisujecie do bazy OD RAZU (warsztat 10.08).</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-01">
+        <div class="pnum">01</div>
+        <div class="pbody">
+          <div class="ptitle">Przyjęcie projektu<span class="proc-auto">A1: scan + Vision — wymiary, powierzchnia, krycie prosto z projektu</span></div>
+          <div class="pasis">Projekt przychodzi w różnych formach — rozkład nieznany.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-02">
+        <div class="pnum">02</div>
+        <div class="pbody">
+          <div class="ptitle">Wycena + marża<span class="proc-auto">A3: marża z bazy — tw_Cena + reguły (zakup, sprzedaż, narzut) — koniec wycen na oko</span></div>
+          <div class="pasis">Algorytm z pliku Tomasza: (Netto−Koszt)/Netto per dokument; TOWAR 12,8% (7% na minusie), HURTOWA ≈ koszt+3% — A3 odblokowane.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-03">
+        <div class="pnum">03</div>
+        <div class="pbody">
+          <div class="ptitle">Oferta (ZK)<span class="proc-auto">A2: oferta z pozycji starego ZK klienta + ceny z tw_Cena → PDF + ślad w bazie (bramka: każda oferta w ZK)</span></div>
+          <div class="pasis">19 314 ZK w bazie, 17 wystawców (baza).</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-04">
+        <div class="pnum">04</div>
+        <div class="pbody">
+          <div class="ptitle">Negocjacje<span class="proc-auto">A2: historia wersji wyceny w ZK (negocjacje = wersje oferty)</span></div>
+          <div class="pasis">Negocjacje przebiegają bez śladu w systemie.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-05">
+        <div class="pnum">05</div>
+        <div class="pbody">
+          <div class="ptitle">Akceptacja oferty<span class="proc-auto">A4: event w kalendarzu z umowy przy akceptacji + przypomnienie o umowie/dokumentacji 8%</span></div>
+          <div class="pasis">Status „z rezerwacją” (7) zmienia logistyk (2 os.) z maila PH — nie PH (notatki Jura).</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-06">
+        <div class="pnum">06</div>
+        <div class="pbody">
+          <div class="ptitle">Umowa<span class="proc-auto">A7: ślad zmian umowy (zgłoszenie → wycena → akceptacja → aneks)</span></div>
+          <div class="pasis">Umowa NDI 13937/25/01 — ryczałt 3 875 000 zł netto; zmiany tylko aneksem.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-07">
+        <div class="pnum">07</div>
+        <div class="pbody">
+          <div class="ptitle">Status → start realizacji<span class="proc-auto">A4: pilnuje maila PH→logistyk + przypomnienie o zmianie statusu (kontrola zostaje u logistyka)</span></div>
+          <div class="pasis">Status 7 zmienia logistyk (2 osoby) z maila PH — PH się mylili/ściemniali (notatki Jura).</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-08">
+        <div class="pnum">08</div>
+        <div class="pbody">
+          <div class="ptitle">Kalendarze / terminy<span class="proc-auto">A4: event z umowy przy akceptacji + przypomnienia ekipie · porównywarka kalendarz ↔ baza (ZK bez transportu, konflikty pojazdów)</span></div>
+          <div class="pasis">Kalendarze Google per pojazd: VW CRAFTER, HDS DAF, HDS MAN, PEUGEOT, RENAULT, PAWEŁEK (odczyt A…</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-09">
+        <div class="pnum">09</div>
+        <div class="pbody">
+          <div class="ptitle">Zamówienie materiałów<span class="proc-auto">A4: zamówienie z pozycji ZK (bez przepisywania) + integracja baz = koniec podwójnego wprowadzania</span></div>
+          <div class="pasis">Pain: podwójne wprowadzanie (komandytowa + jawna) — notatki Jura.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-10">
+        <div class="pnum">10</div>
+        <div class="pbody">
+          <div class="ptitle">Wydanie towaru (WZ)<span class="proc-auto">A5: nowe WZ → wiadomość do PH („Dla ZK #1234 wyszło WZ, postęp X%”) — mock gotowy</span></div>
+          <div class="pasis">62% WZ bez ZK (16 834 WZ→FS, 6 648 ZK→WZ) — baza.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-11">
+        <div class="pnum">11</div>
+        <div class="pbody">
+          <div class="ptitle">Informacja do PH<span class="proc-auto">A5: automatyczna wiadomość per WZ (postęp, % realizacji)</span></div>
+          <div class="pasis">Numer ZK w eventach kalendarza (format */MAG/*) — wyciągalny automatycznie.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-12">
+        <div class="pnum">12</div>
+        <div class="pbody">
+          <div class="ptitle">FV zaliczkowe<span class="proc-auto">A6: płatności + alerty zaległości („BRAKUJE X zł”), KSeF</span></div>
+          <div class="pasis">FV do klienta wystawia JAWNA — „Prace budowlane na budynku mieszkalnym”, pozycja 1 + wartość (n…</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-13">
+        <div class="pnum">13</div>
+        <div class="pbody">
+          <div class="ptitle">Summary PH (raport)<span class="proc-auto">A6: dzienny summary per PH — nowe ZK, portfel, WZ, FS, wpłaty (wysyłka działa)</span></div>
+          <div class="pasis">Identyfikacja PH = KATEGORIA dokumentu (dok_KatId → sl_Kategoria: CD, MR, LR, SM, GG, MP, GM, BK, LP) — A6 przestawiony.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-14">
+        <div class="pnum">14</div>
+        <div class="pbody">
+          <div class="ptitle">Zmiany zakresu<span class="proc-auto">A7: ślad zmian (zgłoszenie → wycena → akceptacja → aneks)</span></div>
+          <div class="pasis">Ślad zmian zakresu — brak w systemie (do potwierdzenia).</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-15">
+        <div class="pnum">15</div>
+        <div class="pbody">
+          <div class="ptitle">Finalizacja (ZK vs WZ)<span class="proc-auto">A7: różnice ZK vs WZ per pozycja przed finalizacją (raport rozjazdów)</span></div>
+          <div class="pasis">34% ZK doczekało się WZ (6 648 z 19 314) — baza.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-16">
+        <div class="pnum">16</div>
+        <div class="pbody">
+          <div class="ptitle">FV finalna<span class="proc-auto">A6: raport poranny (prototyp działa 11/11) + KSeF</span></div>
+          <div class="pasis">FV finalna wychodzi z JAWNEJ (usługa = towar + montaż, niższy VAT) — notatki Jura.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-17">
+        <div class="pnum">17</div>
+        <div class="pbody">
+          <div class="ptitle">Zamknięcie / dokumentacja<span class="proc-auto">A7: komplet dokumentów z automatu + różnice ZK vs WZ</span></div>
+          <div class="pasis">Zamknięcie i komplet dokumentów — praktyka do ustalenia.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
     </div>
   </section>
 
@@ -151,97 +277,202 @@ a{color:var(--sg-vio)}
       <label><input type="checkbox" class="f-prio" value="lo" checked> niski</label>
     </div>
     <div class="cards" id="qcards">
-
-      <div class="card q" data-s="done" data-p="hi">
-        <div><span class="tag done">🟢 ROZWIĄZANE</span><span class="tag hi"></span><span class="tag src">n02_mw</span></div>
-        <div class="q-main" style="margin-top:8px">Jak komandytowa rozlicza się z jawną za towar?</div>
-        <div class="q-ctx">Cena wewnętrzna = koszt + marża? Jak marża? Bez tego nie policzymy realnej marży grupy — a od niej zależy, czy model w ogóle zarabia.</div>
-        <div class="q-close"><b>Domknięcie:</b> odpowiedź Tomka / plik Tomasza (Excel marży)</div>
-        <div class="q-dialog">💬 Wątek: sekcja Spółki · notatki Jura: „komandytowa musi sprzedać jawnej"</div><div class="proof"><b>Dowód:</b> sprzedaż 2026-05.xlsx · 301 dok. · 2,66 mln zł netto · 12.08</div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n00_1</span></div>
+        <div class="q-main" style="margin-top:8px">Ile % zapytań realnie przepada przez brak oddzwonienia?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 00</div>
       </div>
-
-      <div class="card q" data-s="done" data-p="hi">
-        <div><span class="tag done">🟢 ROZWIĄZANE</span><span class="tag hi"></span><span class="tag src">n09_3</span></div>
-        <div class="q-main" style="margin-top:8px">Import/eksport między bazami → zastąpić integracją?</div>
-        <div class="q-ctx">Dwie bazy (komandytowa ↔ jawna), dane przepinane ręcznie/importem bez walidacji. Klient zaczyna w komandytowej, FV wychodzi z jawnej — przepływ jest codziennością, nie wyjątkiem.</div>
-        <div class="q-close"><b>Domknięcie:</b> decyzja o architekturze docelowej (integracja vs świadomy ręczny obieg)</div>
-        <div class="q-dialog">💬 Wątek: sekcja Spółki · FAKT „dwie bazy" (Tomek 10.08)</div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n00_2</span></div>
+        <div class="q-main" style="margin-top:8px">Kto przyjmuje zapytania i wpisuje do bazy?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 00</div>
       </div>
-
-      <div class="card q" data-s="done" data-p="hi">
-        <div><span class="tag done">🟢 ROZWIĄZANE</span><span class="tag hi"></span><span class="tag src">n07_1</span></div>
-        <div class="q-main" style="margin-top:8px">Kto i co odpala zmianę statusu ZK 6→7→8?</div>
-        <div class="q-ctx">Statusy natywne znane (6/7/8 + StatusEx, rozkład w bazie). Z notatek: status 7 zmienia logistyk (2 osoby) po mailu PH — ale trigger i pełny obieg do potwierdzenia.</div>
-        <div class="q-close"><b>Domknięcie:</b> potwierdzenie triggera (logistyk? automat?) — decyzja pod A2</div>
-        <div class="q-dialog">💬 Wątek: węzeł 07 · baza 07.08 (statusy) · notatki Jura 10.08</div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n01_1</span></div>
+        <div class="q-main" style="margin-top:8px">Rozkład form projektu (w %):</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 01</div>
       </div>
-
-      <div class="card q" data-s="done" data-p="hi">
-        <div><span class="tag done">🟢 ROZWIĄZANE</span><span class="tag hi"></span><span class="tag src">n02 · algorytm marży</span></div>
-        <div class="q-main" style="margin-top:8px">Algorytm marży z pliku Tomasza</div>
-        <div class="q-ctx">Algorytm wydobyty z pliku Tomasza (sprzedaż 2026-05.xlsx): (Netto−Koszt)/Netto; PNBM/inwestycja=100%, TOWAR 12,8% (mediana 21%, 7% na minusie), HURTOWA ≈ koszt+3% — A3 odblokowane Tomasza. Bez algorytmu A3 (marża z bazy) nie wystartuje.</div>
-        <div class="q-close"><b>Domknięcie:</b> plik Tomasza do zdobycia + reguła marży</div>
-        <div class="q-dialog">💬 Wątek: mapa n02 · algorytm marży · SESSION_BRIDGE „Plik Tomasza do zdobycia"</div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n01_2</span></div>
+        <div class="q-main" style="margin-top:8px">Gdzie ląduje projekt?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 01</div>
       </div>
-
-      <div class="card q" data-s="open" data-p="mid">
-        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">n08_1 · n08_2</span></div>
-        <div class="q-main" style="margin-top:8px">Transporty: kto planuje, czy każdy ZK ma transport, konflikty</div>
-        <div class="q-ctx">Kalendarze Google per pojazd (VW CRAFTER, HDS DAF, HDS MAN, PEUGEOT, RENAULT, PAWEŁEK). Brak reguł: kto wpisuje, co gdy brak pojazdu.</div>
-        <div class="q-close"><b>Domknięcie:</b> odpowiedzi n08_1 · n08_2 (sekcja Transporty)</div>
-        <div class="q-dialog">💬 Wątek: sekcja nowa Transporty · węzeł 08</div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n02_1</span></div>
+        <div class="q-main" style="margin-top:8px">Czy każda wycena przechodzi przez arkusz kalkulacji?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 02</div>
       </div>
-
-      <div class="card q" data-s="open" data-p="mid">
-        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">n17_1</span></div>
-        <div class="q-main" style="margin-top:8px">Dokumentacja powykonawcza i odbiory</div>
-        <div class="q-ctx">4 egz. papier + 2 elektroniczne (umowa); odbiór od razu vs punch lista. Kiedy startuje kompletowanie?</div>
-        <div class="q-close"><b>Domknięcie:</b> odpowiedzi n17_1</div>
-        <div class="q-dialog">💬 Wątek: węzeł 17</div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n02_2</span></div>
+        <div class="q-main" style="margin-top:8px">Skąd ceny w wycenie?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 02</div>
       </div>
-
-      <div class="card q" data-s="open" data-p="mid">
-        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">n00_1 · n00_2</span></div>
-        <div class="q-main" style="margin-top:8px">PH: scenariusz pytań + % przepadających zapytań</div>
-        <div class="q-ctx">Czy PH mają listę pytań przy kliencie? Ile % zapytań ginie przez brak oddzwonienia (szacunek)? To mierzy główny wyciek modelu.</div>
-        <div class="q-close"><b>Domknięcie:</b> odpowiedzi n00_1 · n00_2</div>
-        <div class="q-dialog">💬 Wątek: sekcja PH · wniosek „A0 = rdzeń"</div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n03_1</span></div>
+        <div class="q-main" style="margin-top:8px">Jaki % ofert nie trafia do ZK (żyje w głowie/Excelu)?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 03</div>
       </div>
-
-      <div class="card q" data-s="open" data-p="mid">
-        <div><span class="tag open">🔴 OTWARTE</span><span class="tag mid">ŚREDNI</span><span class="tag src">n09_4 (decyzja)</span></div>
-        <div class="q-main" style="margin-top:8px">Rezerwacje: su_StatusDokZK=6 wyłączone — decyzja</div>
-        <div class="q-ctx">Rezerwacja na ZK wyłączona w Subiekcie (status 6 = „bez rezerwacji"). Status 7 = „z rezerwacją" — zmienia logistyk. Czy włączyć automat?</div>
-        <div class="q-close"><b>Domknięcie:</b> decyzja o rezerwacjach (mapa: „zostaje: rezerwacje")</div>
-        <div class="q-dialog">💬 Wątek: mapa n09_4 (decyzja) · baza 07.08</div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n04_1</span></div>
+        <div class="q-main" style="margin-top:8px">Jak ustalacie ceny w negocjacjach — jest ślad?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 04</div>
       </div>
-
-      <div class="card q done" data-s="done" data-p="hi">
-        <div><span class="tag done">✅ ZAMKNIĘTE</span><span class="tag src">n13_kat · 10.08</span></div>
-        <div class="q-main" style="margin-top:8px">Gdzie żyją „2 inicjały PH"?</div>
-        <div class="q-ctx">Było pytaniem o produkcję — rozstrzygnięte w kopii bazy.</div>
-        <div class="q-close"><b>Dowód:</b> to KATEGORIA dokumentu (dok_KatId → sl_Kategoria, 27 pozycji z nazwiskami). 87% rozjazdu z dok_PersonelId → A6 do poprawy</div>
-        <div class="q-dialog">💬 Wątek: notatki Jura → screenshot Tomka → baza</div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n05_1</span></div>
+        <div class="q-main" style="margin-top:8px">Czy umowa z klientem podpisywana przed startem — zawsze?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 05</div>
       </div>
-
-      <div class="card q done" data-s="done" data-p="hi">
-        <div><span class="tag done">✅ ZAMKNIĘTE</span><span class="tag src">n12_mw · 10.08</span></div>
-        <div class="q-main" style="margin-top:8px">Ile dokumentów dostaje klient?</div>
-        <div class="q-ctx">Pytanie z sekcji Spółki.</div>
-        <div class="q-close"><b>Dowód:</b> JEDEN — FV z SPJ na KI, „Prace budowlane na budynku mieszkalnym", pozycja 1 + wartość (usługa; nazwa nie może łączyć usługi z materiałem)</div>
-        <div class="q-dialog">💬 Wątek: odpowiedź Tomka „4." + procedury 2017/2021</div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n06_1</span></div>
+        <div class="q-main" style="margin-top:8px">Czy umowa z dekarzem podpisywana na każdą budowę?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 06</div>
       </div>
-
-      <div class="card q done" data-s="done" data-p="hi">
-        <div><span class="tag done">✅ ZAMKNIĘTE</span><span class="tag src">q1 · 10.08</span></div>
-        <div class="q-main" style="margin-top:8px">Kim jest klient? Czy wraca?</div>
-        <div class="q-ctx">Pytanie 1 węzła 00.</div>
-        <div class="q-close"><b>Dowód:</b> klient indywidualny = NOWY, od razu do Subiekta (komandytowa); powroty sporadyczne → historia NIE jest ułatwieniem → A0 = rdzeń</div>
-        <div class="q-dialog">💬 Wątek: odpowiedź Tomka 10.08</div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n07_1</span></div>
+        <div class="q-main" style="margin-top:8px">Czy flagowanie (czerwona/żółta/zielona) realnie działa?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 07</div>
       </div>
-
-    </div>
-  </section>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n08_1</span></div>
+        <div class="q-main" style="margin-top:8px">Kto planuje transporty w kalendarzach?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 08</div>
+      </div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n08_2</span></div>
+        <div class="q-main" style="margin-top:8px">Czy każdy ZK dostaje transport?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 08</div>
+      </div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n09_1</span></div>
+        <div class="q-main" style="margin-top:8px">Jak logistyk dostaje zamówienie?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 09</div>
+      </div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n09_2</span></div>
+        <div class="q-main" style="margin-top:8px">Czy zdarza się zamówienie towaru bez ZK w systemie?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 09</div>
+      </div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n10_1</span></div>
+        <div class="q-main" style="margin-top:8px">Dlaczego WZ bywają bez ZK?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 10</div>
+      </div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n11_1</span></div>
+        <div class="q-main" style="margin-top:8px">Jak PH dowiaduje się, że towar wyjechał?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 11</div>
+      </div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n12_1</span></div>
+        <div class="q-main" style="margin-top:8px">Kto pilnuje wpłat zaliczek i przypomina klientom?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 12</div>
+      </div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n13_1</span></div>
+        <div class="q-main" style="margin-top:8px">Kto ma dostawać dzienny raport PH?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 13</div>
+      </div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n14_1</span></div>
+        <div class="q-main" style="margin-top:8px">Jak dziś wygląda zmiana zakresu?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 14</div>
+      </div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n15_1</span></div>
+        <div class="q-main" style="margin-top:8px">Czy rozliczacie ZK vs WZ przed zamknięciem?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 15</div>
+      </div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n16_1</span></div>
+        <div class="q-main" style="margin-top:8px">Czy stawki realnie działają: 23% przy wywozie, 8% po transakcji?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 16</div>
+      </div>
+      <div class="card q" data-s="open" data-p="hi">
+        <div><span class="tag open">🔴 OTWARTE</span><span class="tag src">n17_1</span></div>
+        <div class="q-main" style="margin-top:8px">Czy archiwum dokumentów realnie się składa (teczka → Natalia)?</div>
+        <div class="q-dialog" style="margin-top:6px"><b>Domknięcie:</b> odpowiedź z warsztatu → znika z listy, odblokowuje automat · 💬 wątek: mapa węzeł 17</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n00_z</span></div>
+        <div class="q-main" style="margin-top:8px">Zapytanie wpisywane od razu; nowy klient rejestrowany przed ofertą; kontakt telefoniczny; kontakt się urywa — nikt nie oddzwania</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n01_z</span></div>
+        <div class="q-main" style="margin-top:8px">Projekt w formie papier/PDF/zdjęcie; bramka: projekt z metrykami przed wyceną</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n02_z</span></div>
+        <div class="q-main" style="margin-top:8px">Marża liczona z pliku Tomasza: (Netto−Koszt)/Netto; HURTOWA ≈ koszt+3% (FS 200: 3,01%)</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n03_z</span></div>
+        <div class="q-main" style="margin-top:8px">Oferta = ZK w Subiekcie; 19 313 ZK, 9 657 otwartych (529 mln pipeline); część ofert z głowy</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n04_z</span></div>
+        <div class="q-main" style="margin-top:8px">Negocjacje bez śladu systemowego (mail/telefon); wersje oferty niearchiwizowane</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n05_z</span></div>
+        <div class="q-main" style="margin-top:8px">Umowa przed startem; zaliczka min 20% przy umowie (procedura Jurewicza)</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n06_z</span></div>
+        <div class="q-main" style="margin-top:8px">Umowa z dekarzem na budowę; FV dekarza jako dokument; NDI ryczałt 3 875 000 zł</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n07_z</span></div>
+        <div class="q-main" style="margin-top:8px">Status 7 zmienia LOGISTYK (2 os.) z maila PH; rezerwacja wyłączona (su_StatusDokZK=6)</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n08_z</span></div>
+        <div class="q-main" style="margin-top:8px">Terminy NIE żyją w bazie (dok_TerminRealizacji = data wystawienia); kalendarze = rejestr</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n09_z</span></div>
+        <div class="q-main" style="margin-top:8px">Podwójne wprowadzanie (komandytowa ↔ jawna); import/eksport WZ bez walidacji</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n10_z</span></div>
+        <div class="q-main" style="margin-top:8px">62% WZ bez ZK; transporty w kalendarzach per pojazd (event = pojazd + numer ZK)</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n11_z</span></div>
+        <div class="q-main" style="margin-top:8px">PH dowiaduje się o wydaniach z kalendarza/ludzi — nie systemowo</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n12_z</span></div>
+        <div class="q-main" style="margin-top:8px">FV zaliczkowe z JAWNEJ: &#x27;Prace budowlane na budynku mieszkalnym&#x27;, poz. 1 + wartość</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n13_z</span></div>
+        <div class="q-main" style="margin-top:8px">Identyfikacja PH = KATEGORIA dokumentu (dok_KatId → sl_Kategoria: CD, MR, LR, SM, GG, MP, GM, BK, LP)</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n16_z</span></div>
+        <div class="q-main" style="margin-top:8px">FV finalna z JAWNEJ; stawki 23% (wywóz) / 8% (po transakcji + dokumentacja)</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      <div class="card q" data-s="done" data-p="mid">
+        <div><span class="tag done">🟢 ZNANE</span><span class="tag src">n17_z</span></div>
+        <div class="q-main" style="margin-top:8px">Archiwum: teczka → Natalia; klient nieaktywny po finalizacji</div>
+        <div class="q-dialog" style="margin-top:6px">→ wiedza: odpowiedź z warsztatu/notatek/bazy · wpięte do mapy (✅ wiemy)</div>
+      </div>
+      </div></section>
 
   <!-- ════════════ TAB 3: WZROST WIEDZY ════════════ -->
   <section id="tab-wzrost" class="hidden">
