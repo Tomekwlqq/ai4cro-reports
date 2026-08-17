@@ -109,12 +109,12 @@ a{color:var(--sg-vio)}
 <div class="wrap">
 
   <h1>🧠 Dobry Dach — Status projektu</h1>
-  <div class="sub">Jedno narzędzie: opowieść o procesie · pytania, na które szukamy odpowiedzi · wizualny dowód, że wiedza rośnie. Aktualizacja: 2026-08-17</div>
+  <div class="sub">Jedno narzędzie: opowieść o procesie · pytania, na które szukamy odpowiedzi · wizualny dowód, że wiedza rośnie. Aktualizacja: 2026-08-17 (weryfikacja w bazie)</div>
 
   <div class="meta">
     <div class="stat opow">📖 <b id="cOpow">18</b> KROKÓW PROCESU</div>
     <div class="stat pyt">❓ <b id="cPyt">23</b> PYTANIA-LUKI <span style="font-weight:600;font-size:15px">(+16 znanych)</span></div>
-    <div class="stat wzr">✅ <b id="cWzr">23</b> KART Z DOWODEM</div>
+    <div class="stat wzr">✅ <b id="cWzr">28</b> KART Z DOWODEM</div>
     <div class="stat dia">💬 <b id="cDia">8</b> ROZMÓW</div>
   </div>
   <div class="progress"><div id="pbar" style="width:41%">41% wiedzy</div></div>
@@ -446,6 +446,11 @@ a{color:var(--sg-vio)}
 
     <div class="group-label">Fakty z dowodami</div>
     <div class="cards">
+      <div class="card w"><h3>🆕 Marża liczy się z samej bazy — plik Excel niepotrzebny</h3>Koszt własny siedzi w <code>ob_WartMag</code> na pozycjach FS (typ 2). Policzalne dla <b>68%</b> dokumentów (2 538 z 3 735), średnia marża <b>21,44%</b> — plik Tomasza podawał medianę 21,3%. Marża &lt;5%: 219 dok. (8,6%), na minusie: 20 (0,8%). <div class="proof"><b>Dowód:</b> weryfikacja_faktow.py sekcja 5 · 17.08</div></div>
+      <div class="card w"><h3>🆕 Cennik ma koszt tylko w 19% pozycji</h3><code>tw_Cena</code>: 1 503 z 7 823 pozycji ma cenę zakupu (<code>tc_CenaNetto0</code>), sprzedażną ma 87%. Dlatego A3 liczy z dokumentów, <b>nie z cennika</b> — inaczej pokryłby piątą część asortymentu. <div class="proof"><b>Dowód:</b> weryfikacja_faktow.py sekcja 2 · 17.08</div></div>
+      <div class="card w"><h3>🆕 Kategorie, które nie są człowiekiem</h3>Na ZK jest <b>19 kategorii</b>, nie 9. Obok PH: „Sprzedaż” <b>995 ZK / 90,7 mln zł</b>, WA (563), PZ (217), Detal, Magazyn, PAL, KOSZT. Raport per PH musi je wykazać osobno — inaczej 90 mln nie ma właściciela. <div class="proof"><b>Dowód:</b> GROUP BY dok_KatId, suma 19 314 ✔ · 17.08</div></div>
+      <div class="card w"><h3>🆕 Subiekt ma próg minimalnej marży — wyłączony</h3><code>su_MinMarza = 0</code> — wbudowana blokada sprzedaży poniżej progu nie jest używana. Zanim zbudujemy alert A3, warto zapytać, czemu ją wyłączyli. <div class="proof"><b>Dowód:</b> su_Parametr · 17.08</div></div>
+      <div class="card w"><h3>🆕 Na instancji jest tylko komandytowa</h3>Potwierdzone: <code>Kopia_2024_KOMANDYTOWA</code> i nic więcej. Baza jawna — gdzie wychodzą faktury do klienta — <b>nie została dostarczona</b>. <div class="proof"><b>Dowód:</b> sys.databases · 17.08</div></div>
       <div class="card w"><h3>Kategoria dokumentu = PH</h3>sl_Kategoria: CD=Dariusz Czapiewski, SM=Misza Sundeev, BK=Karolina Blank, LR=Radek Laskowski... <div class="proof"><b>Dowód:</b> sl_Kategoria (27) + dok_KatId na 19 313 ZK · 10.08</div></div>
       <div class="card w"><h3>Portfele PH (kopia 2024)</h3>SM 3 758 ZK / 214 mln zł · LR 3 168 / 55 mln · BK 2 854 / 64 mln · MR 2 715 · GG 1 717 · CD 1 650. <div class="proof"><b>Dowód:</b> GROUP BY dok_KatId · 10.08</div></div>
       <div class="card w"><h3>Statusy ZK: 6/7/8 natywne</h3>6=bez rezerwacji (9 356), 7=z rezerwacją (185), 8=zrealizowane (6 064+); StatusEx 0/1/2/4/8/16. <div class="proof"><b>Dowód:</b> baza 07.08</div></div>
@@ -455,7 +460,7 @@ a{color:var(--sg-vio)}
       <div class="card w"><h3>Zaległości ~6,5 mln zł</h3>Kwota wisi u klientów — oferta „na ślepo" = sprzedaż niepłacącym. <div class="proof"><b>Dowód:</b> baza (mapa węzeł 00)</div></div>
       <div class="card w"><h3>FV: jedna pozycja, usługa, 8%</h3>Nazwa usługi nie może łączyć usługi z materiałem; wymagana dokumentacja do 8% (projekt/akt/pozwolenie). <div class="proof"><b>Dowód:</b> procedury 2017/2021 · odpowiedź Tomka</div></div>
       <div class="card w"><h3>Zaliczka min 20%</h3>Przy umowie na prace budowlane lub nietypowym materiale; 100% przy towarze wymagającym przedpłaty. <div class="proof"><b>Dowód:</b> procedura sprzedaży 2017</div></div>
-      <div class="card w"><h3>Kopia bazy = komandytowa, gt_Atrybut pusty</h3>Kolejne kopie (jawna!) do zdobycia — tam FV. Atrybuty dokumentów nie w kopii. <div class="proof"><b>Dowód:</b> sys.databases + gt_Atrybut 0 wierszy · 07-10.08</div></div>
+      <div class="card w"><h3>Kopia bazy = komandytowa, gt_Atrybut pusty ✔ potwierdzone 17.08 (0 wierszy)</h3>Kolejne kopie (jawna!) do zdobycia — tam FV. Atrybuty dokumentów nie w kopii. <div class="proof"><b>Dowód:</b> sys.databases + gt_Atrybut 0 wierszy · 07-10.08</div></div>
     </div>
 
     <div class="group-label">Oś czasu — jak rosła wiedza</div>
