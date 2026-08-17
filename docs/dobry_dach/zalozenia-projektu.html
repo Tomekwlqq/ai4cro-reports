@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dobry Dach — Założenia projektu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --ink:#0a0a0a; --muted:#5b6472; --faint:#8b93a2; --line:#e6e6e9;
+    --green:#16a34a; --green-d:#15803d; --green-soft:#e7f6ec; --green-line:#b7e3c4;
+    --orange:#f5751a; --orange-d:#dd5e0a; --orange-soft:#fff2e8; --orange-line:#f8c39a;
+    --blue:#0f7ae5; --blue-d:#0a63bd; --blue-soft:#e9f3fd; --blue-line:#a9d2f6;
+    --violet:#7c5cff; --violet-d:#5a3ff0; --violet-soft:#efeaff; --violet-line:#d4c9ff;
+    --amber:#b8862b; --amber-soft:#fdf5e6; --amber-line:#e9d3a3;
+    --red:#e5484d; --red-soft:#fdecec; --red-line:#f5c2c4;
+    --dark:#1a1f2b;
+    --grotesk:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--grotesk);background:var(--bg);color:var(--ink);line-height:1.65;font-size:16.5px;-webkit-font-smoothing:antialiased}
+
+  .top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top-in{max-width:1180px;margin:0 auto;padding:13px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .back{font-family:var(--mono);font-size:12px;color:var(--muted);text-decoration:none;padding:6px 12px;border:1px solid var(--line);border-radius:8px;transition:.15s;white-space:nowrap}
+  .back:hover{border-color:var(--violet);color:var(--violet-d)}
+  .top-t{font-size:14px;font-weight:600}
+  .top-t span{color:var(--faint);font-weight:400}
+  .top-nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+  .top-nav a{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;padding:5px 10px;border-radius:7px;transition:.15s}
+  .top-nav a:hover{background:var(--violet-soft);color:var(--violet-d)}
+  @media(max-width:900px){.top-nav{display:none}}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:44px 28px 90px}
+
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);font-weight:600;margin-bottom:14px}
+  h1{font-size:clamp(30px,4.4vw,44px);font-weight:700;letter-spacing:-.03em;line-height:1.05;margin-bottom:14px}
+  .sub{color:var(--muted);font-size:19px;margin-bottom:30px;max-width:780px}
+  .sub strong{color:var(--ink)}
+
+  .meta-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+  .chip{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:5px 12px;background:#fafbfd}
+  .chip b{color:var(--ink)}
+
+  .legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:18px;font-size:14px;color:var(--muted)}
+  .lg{display:flex;align-items:center;gap:8px}
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .dot-red{background:var(--red)} .dot-amber{background:var(--amber)} .dot-green{background:var(--green)}
+
+  .note{font-size:14.5px;color:var(--muted);background:#fafbfd;border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-top:6px}
+  .note b{color:var(--ink)}
+  .note .st-hint{font-family:var(--mono);font-size:12px}
+
+  /* PROGRESS */
+  .progress{position:sticky;top:61px;z-index:40;background:#fff;padding:10px 0;border-bottom:1px solid var(--line);margin-bottom:38px}
+  .progress .wrap{display:flex;align-items:center;gap:14px;padding-top:0;padding-bottom:0}
+  .bar{flex:1;height:7px;background:#f0f1f4;border-radius:999px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0%;background:var(--green);transition:width .3s}
+  .progress .txt{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+  .btn{font-family:var(--mono);font-size:12.5px;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:9px;padding:8px 13px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .btn:hover{border-color:var(--violet);color:var(--violet-d)}
+  .btn.danger:hover{border-color:var(--red);color:var(--red)}
+  .btnrow{display:flex;gap:9px}
+
+  section{margin-bottom:52px;scroll-margin-top:80px}
+  h2{font-size:26px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px;display:flex;align-items:baseline;gap:12px}
+  h2 .n{font-family:var(--mono);font-size:14px;color:var(--violet);font-weight:600}
+  .sec-sub{color:var(--muted);font-size:15.5px;margin-bottom:20px}
+  h3{font-size:17.5px;font-weight:700;margin:0 0 4px}
+
+  ul{list-style:none;margin:12px 0}
+  li{position:relative;padding-left:21px;margin-bottom:9px;color:var(--muted)}
+  li::before{content:'';position:absolute;left:3px;top:11px;width:5px;height:5px;background:var(--violet);border-radius:50%}
+  ol{list-style:none;counter-reset:o;margin:12px 0}
+  ol li{counter-increment:o;padding-left:30px}
+  ol li::before{content:counter(o);position:absolute;left:0;top:1px;width:20px;height:20px;background:var(--violet-soft);color:var(--violet-d);border-radius:50%;font-family:var(--mono);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+  /* SCHEMAT PROCESU — 2 kolumny, wąż lewy→prawy→niżej (v2.4, zero wewnętrznych scrolli) */
+  .pairs{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;background:#fafbfd;padding:12px}
+  .pair{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch}
+  .h-arrow{display:flex;align-items:center;color:#c9ccd4;font-size:16px;font-weight:600}
+  .vdown{text-align:center;color:#c9ccd4;font-size:13px;line-height:1;padding:5px 0}
+  .vnode{display:flex;align-items:center;gap:12px;text-decoration:none;background:#fff;border:1px solid var(--line);border-left:4px solid #d6d8de;border-radius:10px;padding:8px 14px;transition:.15s}
+  .vnode:hover{border-color:var(--violet);box-shadow:0 2px 10px rgba(124,92,255,.12)}
+  .vnode.r-red{border-left-color:var(--red)}
+  .vnode.r-amber{border-left-color:var(--amber)}
+  .vnode.r-green{border-left-color:var(--green)}
+  .v-nr{font-family:var(--mono);font-size:12px;color:var(--violet);font-weight:600;min-width:26px}
+  .v-name{font-size:14px;font-weight:600;color:var(--ink);flex:1}
+  .vcell{display:flex;align-items:center;gap:8px;min-width:0}
+  .vcell .vnode{flex:1;min-width:0}
+  .vside{display:flex;flex-direction:column;gap:4px;align-items:flex-start;flex-shrink:0}
+  .v-auto{font-family:var(--mono);font-size:9.5px;font-weight:600;border-radius:5px;padding:2px 6px;white-space:nowrap}
+  .v-auto.a1{color:var(--blue-d);background:var(--blue-soft);border:1px solid var(--blue-line)}
+  .v-auto.a2{color:var(--green-d);background:var(--green-soft);border:1px solid var(--green-line)}
+  .v-auto.a3{color:var(--orange-d);background:var(--orange-soft);border:1px solid var(--orange-line)}
+  .v-auto.a4{color:var(--violet-d);background:var(--violet-soft);border:1px solid var(--violet-line)}
+  .v-auto.a5{color:var(--amber);background:var(--amber-soft);border:1px solid var(--amber-line)}
+  .v-auto.a6{color:#e8eaed;background:var(--dark);border:1px solid #3a4152}
+  @media(max-width:760px){.pair{grid-template-columns:1fr}.h-arrow{justify-content:center;transform:rotate(90deg);padding:4px 0}.vcell{flex-direction:column;align-items:stretch}.vside{flex-direction:row;flex-wrap:wrap}}
+
+  /* KARTY AUTOMATYZACJI (v2.6) — duża mapa nad schematem */
+  .sub-h{margin:22px 0 12px;font-size:18px;font-weight:700}
+  .acards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:4px 0 10px}
+  .acard{display:flex;gap:13px;border:1px solid var(--line);border-left:5px solid var(--line2,#d6d8de);border-radius:13px;padding:14px 16px;background:#fff}
+  .acard.a1{border-left-color:var(--blue);background:var(--blue-soft)}
+  .acard.a2{border-left-color:var(--green);background:var(--green-soft)}
+  .acard.a3{border-left-color:var(--orange);background:var(--orange-soft)}
+  .acard.a4{border-left-color:var(--violet);background:var(--violet-soft)}
+  .acard.a5{border-left-color:var(--amber);background:var(--amber-soft)}
+  .acard.a6{border-left-color:var(--dark);background:#f4f5f7}
+  .aicon{font-size:21px;flex-shrink:0;width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:#fff;border:1px solid var(--line);font-weight:700}
+  .abody{min-width:0}
+  .acard h4{font-size:16.5px;font-weight:700;margin:0 0 5px;line-height:1.3}
+  .acard p{font-size:13.5px;color:var(--muted);margin:0 0 9px;line-height:1.5}
+  .awezly{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:7px;padding:3px 10px;display:inline-block}
+  .adysk{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--orange-d);background:var(--orange-soft);border:1px solid var(--orange-line);border-radius:7px;padding:3px 10px;margin-bottom:7px}
+  .anote{font-size:12.5px;color:var(--orange-d);background:#fff;border:1px dashed var(--orange-line);border-radius:8px;padding:6px 10px;margin-bottom:8px;line-height:1.45}
+  @media(max-width:900px){.acards{grid-template-columns:1fr 1fr}}
+  @media(max-width:620px){.acards{grid-template-columns:1fr}}
+
+  /* SCHEMAT */
+  .schema{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:8px}
+  .sch{background:#fafbfd;border:1px solid var(--line);border-radius:11px;padding:10px 14px;font-size:14.5px;color:var(--muted)}
+  .sch b{color:var(--ink)}
+  .sch-nr{font-family:var(--mono);display:inline-block;min-width:26px;font-weight:700;color:var(--violet)}
+
+  /* NODE */
+  .node{background:#fff;border:1px solid var(--line);border-left:4px solid var(--line2,#d6d8de);border-radius:14px;margin-bottom:18px;overflow:hidden}
+  .node[data-status="red"]{border-left-color:var(--red)}
+  .node[data-status="amber"]{border-left-color:var(--amber)}
+  .node[data-status="green"]{border-left-color:var(--green)}
+  .node-h{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line);background:#fafbfd}
+  .node-nr{font-family:var(--mono);font-size:17px;font-weight:700;color:var(--violet);min-width:38px;text-align:center;background:#fff;border:1px solid var(--line);border-radius:9px;padding:5px 3px}
+  .node-t{flex:1;min-width:0}
+  .node-meta{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.04em}
+  .chips{display:flex;gap:4px;flex-wrap:wrap}
+  .auto-chip{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--violet-d);background:var(--violet-soft);border:1px solid var(--violet-line);border-radius:6px;padding:2px 7px;white-space:nowrap}
+  .badge{font-family:var(--mono);font-size:11.5px;font-weight:600;border-radius:999px;padding:4px 11px;white-space:nowrap}
+  .b-red{background:var(--red-soft);color:var(--red);border:1px solid var(--red-line)}
+  .b-amber{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-line)}
+  .b-green{background:var(--green-soft);color:var(--green-d);border:1px solid var(--green-line)}
+
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .field{padding:11px 18px;border-bottom:1px solid #f3f4f6;border-right:1px solid #f3f4f6}
+  .field.wide{grid-column:1 / -1}
+  .flab{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:5px}
+  .fval{font-size:14.5px;color:var(--ink)}
+  .fval.known{line-height:1.55;color:#374151}
+  .src{display:inline-block;font-family:var(--mono);font-size:10.5px;color:var(--muted);background:#f3f4f6;border-radius:5px;padding:1px 7px;margin-left:6px;font-weight:600}
+  .fval-box{display:flex;flex-direction:column;gap:7px}
+  textarea.fval{border:1.5px dashed var(--amber-line);background:var(--amber-soft);border-radius:9px;width:100%;padding:9px 12px;font:inherit;font-size:14px;color:var(--ink);resize:vertical;min-height:42px}
+  textarea.fval:focus{outline:none;border-style:solid;border-color:var(--violet);background:#fff}
+  textarea.fval::placeholder{color:#a17830;opacity:.9}
+  /* v2.12 — kolor TREŚCI pola wg priorytetu (MUST/SHOULD/COULD), nie węzła */
+  .field[data-prio="must"] textarea.fval{border-color:var(--red-line);background:var(--red-soft)}
+  .field[data-prio="must"] textarea.fval::placeholder{color:#b91c1c;opacity:.75}
+  .field[data-prio="must"] .mgroup{border-color:var(--red-line);background:var(--red-soft)}
+  .field[data-prio="should"] textarea.fval{border-color:var(--amber-line);background:var(--amber-soft)}
+  .field[data-prio="should"] textarea.fval::placeholder{color:#a17830;opacity:.8}
+  .field[data-prio="should"] .mgroup{border-color:var(--amber-line);background:var(--amber-soft)}
+  .field[data-prio="could"] textarea.fval{border-color:var(--line2);background:#f9fafb}
+  .field[data-prio="could"] textarea.fval::placeholder{color:#9ca3af}
+  .field[data-prio="could"] .mgroup{border-color:var(--line2);background:#f9fafb}
+  .field[data-prio] textarea.fval:focus{border-color:var(--violet);background:#fff;border-style:solid}
+  .zk-item textarea.fval{border-color:var(--amber-line);background:var(--amber-soft)}
+  .zk-item textarea.fval::placeholder{color:#a17830;opacity:.8}
+  select.fstate{font-family:var(--mono);font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:7px;background:#fff;padding:5px 9px;width:fit-content;cursor:pointer}
+  select.fstate:focus{outline:none;border-color:var(--violet)}
+  select.fstate.saved{border-color:var(--green-line);background:var(--green-soft);color:var(--green-d)}
+  select.fstate.draft{border-color:var(--violet-line);background:var(--violet-soft);color:var(--violet-d)}
+  select.fstate.skip{border-color:var(--line);background:#f3f4f6;color:var(--faint)}
+
+  /* MULTI-WYBÓR (chipy) — v2.2: zamknięte listy dla aktorów / urządzeń / kanałów / softu */
+  .mgroup{border:1.5px dashed var(--violet-line);background:var(--violet-soft);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:8px}
+  .msub{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--violet-d);font-weight:600}
+  .mchips{display:flex;flex-wrap:wrap;gap:6px}
+  .mchip{font-family:var(--mono);font-size:11.5px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 11px;cursor:pointer;transition:.15s;line-height:1.4}
+  .mchip:hover{border-color:var(--violet);color:var(--violet-d)}
+  .mchip.on{background:var(--violet);border-color:var(--violet);color:#fff}
+  .m-inne.on{border-style:dashed}
+  .m-inne-input{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:8px;padding:7px 10px;width:100%;color:var(--ink)}
+  .m-inne-input:focus{outline:none;border-color:var(--violet)}
+
+  /* ZK */
+  .zk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:16px}
+  .zk-item{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}
+  .zk-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .zk-chip{font-weight:700;font-size:14.5px}
+  .zk-nr{font-family:var(--mono);font-size:11px;color:var(--violet);font-weight:700}
+  .zk-item textarea{margin-bottom:7px}
+  .zk-flow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;font-family:var(--mono)}
+  .zk-flow .chip-static{background:var(--dark);color:#fff;font-size:12px;font-weight:600;border-radius:999px;padding:5px 13px}
+  .zk-arrow{color:#c9ccd4;font-size:15px;font-weight:700}
+
+  /* PRIO */
+  .steps{display:grid;gap:11px;margin:16px 0}
+  .step{border:1px solid var(--line);border-radius:13px;padding:15px 18px;background:#fff}
+  .step .st{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--violet);font-weight:700;margin-bottom:4px}
+  .step .sn{font-size:17px;font-weight:700;margin-bottom:4px}
+  .step p{margin:0;font-size:14.5px}
+  .prio-blok{margin-top:10px;font-size:13px;color:var(--red);background:var(--red-soft);border:1px solid var(--red-line);border-radius:8px;padding:6px 11px;font-weight:600}
+
+  table{width:100%;border-collapse:collapse;font-size:15px;margin:14px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  thead{background:#fafbfd}
+  th{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600;text-align:left;padding:11px 14px;border-bottom:1px solid var(--line)}
+  td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  td strong{color:var(--ink)}
+  .tw{width:100%}
+
+  .box{border:1px solid var(--line);border-radius:14px;padding:17px 20px;margin:0 0 12px;background:#fafbfd}
+  .box h3{margin-bottom:6px}
+  .box p{margin:0;font-size:14.5px}
+  .box.green{background:var(--green-soft);border-color:var(--green-line)}
+  .box.green h3{color:var(--green-d)}
+  .box.amber{background:var(--amber-soft);border-color:var(--amber-line)}
+  .box.amber h3{color:var(--amber)}
+  .ask-box{margin:18px 0 4px}
+  .ask-grp{margin-bottom:16px}
+  .ask-grp:last-child{margin-bottom:12px}
+  .ask-h{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:8px}
+  .ask-badge{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.06em;border-radius:6px;padding:3px 10px;white-space:nowrap}
+  .ask-badge.must{color:#fff;background:var(--red)}
+  .ask-badge.should{color:#fff;background:var(--amber)}
+  .ask-badge.could{color:var(--muted);background:#e5e7eb;border:1px solid var(--line)}
+  .ask-list{list-style:none;margin:0;column-count:2;column-gap:26px}
+  .ask-item{break-inside:avoid;padding-left:0;margin-bottom:9px;position:relative;font-size:14.5px;color:var(--muted)}
+  .ask-item::before{content:'';position:static;display:none}
+  .ask-nr{font-family:var(--mono);font-size:11.5px;font-weight:700;border-radius:6px;padding:1px 7px;margin-right:7px;white-space:nowrap}
+  .ask-nr.must{color:var(--red);background:var(--red-soft);border:1px solid var(--red-line)}
+  .ask-nr.should{color:var(--amber);background:var(--amber-soft);border:1px solid var(--amber-line)}
+  .ask-nr.could{color:var(--faint);background:#f3f4f6;border:1px solid var(--line)}
+  .ask-item strong{color:var(--ink)}
+  @media(max-width:760px){.ask-list{column-count:1}}
+
+  .filters{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+  .fbtn{font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer;color:var(--muted);transition:.15s}
+  .fbtn.on{border-color:var(--violet);background:var(--violet);color:#fff}
+
+  .foot{max-width:1000px;margin:0 auto;padding:0 28px 44px;font-family:var(--mono);font-size:11.5px;color:var(--faint);text-align:center;line-height:1.8}
+  .hidden{display:none !important}
+  @media(max-width:760px){.fields{grid-template-columns:1fr}.field{border-right:none}h1{font-size:30px}}
+
+  :root{
+    --bg:#ffffff; --ink:#0a0a0a; --muted:#5b6472; --faint:#8b93a2; --line:#e6e6e9;
+    --green:#16a34a; --green-d:#15803d; --green-soft:#e7f6ec; --green-line:#b7e3c4;
+    --violet:#7c5cff; --violet-d:#5a3ff0; --violet-soft:#efeaff; --violet-line:#d4c9ff;
+    --amber:#b8862b; --amber-soft:#fdf5e6; --amber-line:#e9d3a3;
+    --red:#e5484d; --red-soft:#fdecec; --red-line:#f5c2c4;
+    --grotesk:'Space Grotesk',-apple-system,sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--grotesk);background:var(--bg);color:var(--ink);line-height:1.75;font-size:17px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1020px;margin:0 auto;padding:46px 30px 90px}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);font-weight:600;margin-bottom:14px}
+  h1{font-size:clamp(32px,4.6vw,46px);font-weight:700;letter-spacing:-.03em;line-height:1.05;margin-bottom:14px}
+  .sub{color:var(--muted);font-size:19px;margin-bottom:26px;max-width:880px}
+  .sub strong{color:var(--ink)}
+  .chip{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:5px 12px;background:#fafbfd;margin-right:8px}
+  .chip b{color:var(--ink)}
+  .note{font-size:15px;color:var(--muted);background:#fafbfd;border:1px solid var(--line);border-radius:13px;padding:16px 20px;margin-bottom:34px}
+  .note b{color:var(--ink)}
+
+  .nnode{background:#fff;border:1px solid var(--line);border-left:5px solid var(--violet);border-radius:16px;margin-bottom:30px;overflow:hidden}
+  .nnode-h{display:flex;align-items:center;gap:14px;padding:16px 22px;border-bottom:1px solid var(--line);background:#fafbfd}
+  .nnode-nr{font-family:var(--mono);font-size:19px;font-weight:700;color:var(--violet);min-width:44px;text-align:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 4px}
+  .nnode-t{flex:1}
+  .nnode-t h3{font-size:21px;font-weight:700}
+  .nnode-meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.04em}
+  .nbadge{font-family:var(--mono);font-size:11.5px;font-weight:600;border-radius:999px;padding:4px 12px;background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-line);white-space:nowrap}
+  .nbadge.green{background:var(--green-soft);color:var(--green-d);border-color:var(--green-line)}
+
+  .story{padding:24px 28px}
+  .nstep{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--violet);font-weight:700;margin:26px 0 4px}
+  .nstep:first-child{margin-top:0}
+  .tale{font-size:17.5px;line-height:2.1;margin-bottom:8px}
+
+  .nmchip{font-family:var(--mono);font-size:13.5px;color:var(--muted);background:#fff;border:1.5px solid var(--violet-line);border-radius:999px;padding:4px 13px;cursor:pointer;transition:.15s;line-height:1.5;margin:1px 2px;white-space:nowrap}
+  .nmchip:hover{border-color:var(--violet);color:var(--violet-d)}
+  .nmchip.on{background:var(--violet);border-color:var(--violet);color:#fff}
+
+  /* gałęzie — ZAWSZE WIDOCZNE (nic nie ukryte); aktywacja = odpowiedź */
+  .branch{margin:8px 0 12px;padding:12px 18px 12px 22px;border-left:3px solid var(--green-line);background:var(--green-soft);border-radius:0 12px 12px 0;font-size:16px;line-height:2}
+  .branch .subq{margin:6px 0 0 18px;padding:6px 12px;background:#fff;border:1px dashed var(--green-line);border-radius:8px;font-size:15px;line-height:1.9}
+  .give{margin-top:9px;font-size:13.5px;color:var(--muted);line-height:1.65}
+  .give b{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--faint)}
+  .give .p{color:var(--green-d)}
+  .give .m{color:var(--red)}
+  .auto-note{margin-top:8px;font-size:13px;color:var(--green-d);background:#fff;border:1px dashed var(--green-line);border-radius:8px;padding:7px 12px;line-height:1.55}
+  .auto-note b{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em}
+
+  .pct{font-family:var(--mono);font-size:15px;border:1.5px dashed var(--violet-line);background:var(--violet-soft);border-radius:9px;padding:3px 8px;width:74px;text-align:center;color:var(--ink)}
+  .pct:focus{outline:none;border-style:solid;border-color:var(--violet);background:#fff}
+  .pct-suffix{font-family:var(--mono);font-size:13px;color:var(--muted)}
+  .inline-ta{font-family:var(--mono);font-size:14px;border:1.5px dashed var(--amber-line);background:var(--amber-soft);border-radius:9px;width:100%;padding:9px 13px;color:var(--ink);resize:vertical;min-height:40px;margin:6px 0}
+  .inline-ta:focus{outline:none;border-style:solid;border-color:var(--violet);background:#fff}
+
+  .foot{max-width:1020px;margin:0 auto;padding:0 30px 50px;font-family:var(--mono);font-size:11.5px;color:var(--faint);text-align:center;line-height:1.8}
+
+/* dropdown węzłów */
+  .node-dd{border:1px solid var(--line);border-left:5px solid var(--violet);border-radius:16px;margin-bottom:14px;background:#fff;overflow:hidden}
+  .node-dd[open]{box-shadow:0 8px 28px rgba(10,10,10,.07)}
+  .node-dd summary{list-style:none;cursor:pointer}
+  .node-dd summary::-webkit-details-marker{display:none}
+  .node-dd summary .arrow{font-family:var(--mono);color:var(--violet);font-size:17px;transition:.15s;margin-left:2px}
+  .node-dd[open] summary .arrow{transform:rotate(90deg)}
+  .nnode-h{display:flex;align-items:center;gap:14px;padding:15px 20px;border-bottom:1px solid transparent;background:#fff}
+  .node-dd[open] .nnode-h{border-bottom-color:var(--line);background:#fafbfd}
+  /* przycisk nieistotne */
+  .irr{font-family:var(--mono);font-size:10.5px;color:var(--faint);border:1px dashed var(--line);background:#fff;border-radius:999px;padding:2px 9px;cursor:pointer;margin:0 2px 0 7px;vertical-align:2px;transition:.15s}
+  .irr:hover{border-color:var(--red);color:var(--red)}
+  .irr.on{background:var(--red-soft);border-color:var(--red-line);color:var(--red);border-style:solid}
+  .nmchip.irr{opacity:.38;text-decoration:line-through;pointer-events:none}
+  .branch.irr{opacity:.4;filter:grayscale(1)}
+
+
+  .tab-bar{display:flex;gap:10px;padding:18px 20px 0;max-width:1180px;margin:0 auto}
+  .tab-btn{font-family:var(--mono);font-size:14px;font-weight:600;padding:10px 22px;border-radius:999px;border:1.5px solid var(--line);background:#fafbfd;color:var(--muted);cursor:pointer;transition:.15s}
+  .tab-btn:hover{border-color:var(--violet);color:var(--violet-d)}
+  .tab-btn.on{background:var(--violet);border-color:var(--violet);color:#fff}
+  .top{margin-top:6px}
+
+  .head-sticky{position:sticky;top:0;z-index:60;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 4px 14px rgba(10,10,10,.05)}
+  .head-sticky .tab-bar{padding-top:10px;padding-bottom:4px}
+  .head-sticky .top{margin-top:4px}
+
+.kol3{display:grid;grid-template-columns:1fr 1.9fr 1fr;gap:12px;margin-top:10px}
+.k3{border-radius:10px;padding:10px 12px;font-size:12.5px}
+.k3a{background:#f4f6fb;border:1px solid #d5dbe8}
+.k3b{border:1px solid #e4e7ec;background:#fff}
+.k3c{background:#f6f4ff;border:1px solid #ddd4f7}
+.k3h{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;color:#555}
+.k3a .k3h{color:#4a5a86}.k3c .k3h{color:#6a4fd8}
+.k3 ul{margin:0 0 6px;padding-left:15px}.k3 li{margin-bottom:3px}
+.k3 b{font-weight:700}
+@media(max-width:900px){.kol3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="tab-mapa"><div class="wrap">
+<section id="s1">
+    <h2><span class="n">01</span>Schemat procesu — punkt wyjścia</h2>
+    <p class="sec-sub">Najpierw plan: 6 <b>proponowanych</b> automatyzacji (kolor = ten sam na schemacie poniżej). #1 oznaczona do dyskusji — klient ma coś działającego. Potem proces — widać, gdzie każda wchodzi.</p>
+    <h3 class="sub-h">⚙ Proponowane automatyzacje</h3>
+    <div class="acards"><div class="acard a1"><div class="aicon">⚙ 1</div><div class="abody"><div class="adysk">⚠ do dyskusji!</div><div class="anote">Klient ma to już działające — nie wiadomo, czy warto.</div><h4>A1/A2 · scan + oferta z ZK</h4><p>Vision czyta skan projektu → parametry (powierzchnia, krycie, obróbki, świetliki), mapuje na cennik (Subiekt tw_Cena), liczy marżę (algorytm Tomasza: (Netto−Koszt)/Netto — ✅), generuje ZK.</p><div class="awezly">węzły 01–03</div></div></div><div class="acard a2"><div class="aicon">⚙ 2</div><div class="abody"><h4>A4 · terminy + zamówienia (z umowy)</h4><p>Generowanie umowy z ZK, weryfikacja formalna (braki, daty, klauzule), wpisy do Google Calendar, status ZK → realizacja (zapis przez Sferę), zamówienie materiałów.</p><div class="awezly">węzły 04–09</div></div></div><div class="acard a3"><div class="aicon">⚙ 3</div><div class="abody"><h4>A5 · monitoring WZ + powiadomienia PH</h4><p>Śledzi nowe WZ per ZK (odczyt SQL — działa), powiadamia PH o zmianach (dziś 62% WZ bez ZK), generuje FV zaliczkowe po zamknięciu etapu.</p><div class="awezly">węzły 10–12, 14</div></div></div><div class="acard a4"><div class="aicon">⚙ 4</div><div class="abody"><h4>A6 · dzienne summary PH</h4><p>PROTOTYP DZIAŁA (auto4_summary_ph.py, 11/11). Codziennie rano: ZK per PH — statusy, wartości, wpłaty, alerty. „Weź pigułkę”. Tylko odczyt + mail.</p><div class="awezly">węzeł 13</div></div></div><div class="acard a5"><div class="aicon">⚙ 5</div><div class="abody"><h4>A7 · finalizacja ZK vs WZ</h4><p>Zestawienie umowy z sumą WZ (dane w bazie), rzeczywista marża, różnice do akceptacji, FV finalna (90/10).</p><div class="awezly">węzły 14–16</div></div></div><div class="acard a6"><div class="aicon">⚙ 6</div><div class="abody"><h4>duże kontrakty GW (osobny wątek)</h4><p>Spłaszczanie pozycji do jednostek przeliczeniowych, dzielenie wsteczne, protokoły narastające. Kolejna faza.</p><div class="awezly">węzeł 17</div></div></div></div>
+    <h3 class="sub-h">Proces krok po kroku — czytanie wężem: lewy → prawy → niżej</h3>
+    <div class="pairs"><div class="pair"><div class="vcell"><a class="vnode r-amber" href="#wezel-00"><span class="v-nr">00</span><span class="v-name">Kontakt klienta</span></a><div class="vside"><span class="v-auto a1">A0 rejestr</span></div></div><span class="h-arrow">→</span><div class="vcell"><a class="vnode r-amber" href="#wezel-01"><span class="v-nr">01</span><span class="v-name">Przyjęcie projektu</span></a><div class="vside"><span class="v-auto a1">A1 scan</span></div></div></div><div class="vdown">↓</div><div class="pair"><div class="vcell"><a class="vnode r-amber" href="#wezel-02"><span class="v-nr">02</span><span class="v-name">Wycena + marża</span></a><div class="vside"><span class="v-auto a1">A3 marża</span></div></div><span class="h-arrow">→</span><div class="vcell"><a class="vnode r-green" href="#wezel-03"><span class="v-nr">03</span><span class="v-name">Oferta (ZK)</span></a><div class="vside"><span class="v-auto a1">A2 oferta</span></div></div></div><div class="vdown">↓</div><div class="pair"><div class="vcell"><a class="vnode r-red" href="#wezel-04"><span class="v-nr">04</span><span class="v-name">Negocjacje</span></a><div class="vside"><span class="v-auto a2">—</span></div></div><span class="h-arrow">→</span><div class="vcell"><a class="vnode r-red" href="#wezel-05"><span class="v-nr">05</span><span class="v-name">Akceptacja</span></a><div class="vside"><span class="v-auto a2">—</span></div></div></div><div class="vdown">↓</div><div class="pair"><div class="vcell"><a class="vnode r-amber" href="#wezel-06"><span class="v-nr">06</span><span class="v-name">Umowa</span></a><div class="vside"><span class="v-auto a2">—</span></div></div><span class="h-arrow">→</span><div class="vcell"><a class="vnode r-amber" href="#wezel-07"><span class="v-nr">07</span><span class="v-name">Status → realizacja</span></a><div class="vside"><span class="v-auto a2">—</span></div></div></div><div class="vdown">↓</div><div class="pair"><div class="vcell"><a class="vnode r-amber" href="#wezel-08"><span class="v-nr">08</span><span class="v-name">Kalendarze</span></a><div class="vside"><span class="v-auto a2">A4 terminy</span></div></div><span class="h-arrow">→</span><div class="vcell"><a class="vnode r-green" href="#wezel-09"><span class="v-nr">09</span><span class="v-name">Zamówienie materiałów</span></a><div class="vside"><span class="v-auto a2">A4 zamów.</span></div></div></div><div class="vdown">↓</div><div class="pair"><div class="vcell"><a class="vnode r-green" href="#wezel-10"><span class="v-nr">10</span><span class="v-name">WZ</span></a><div class="vside"><span class="v-auto a3">A5 WZ→PH</span></div></div><span class="h-arrow">→</span><div class="vcell"><a class="vnode r-green" href="#wezel-11"><span class="v-nr">11</span><span class="v-name">Info do PH</span></a><div class="vside"><span class="v-auto a3">A5 WZ→PH</span></div></div></div><div class="vdown">↓</div><div class="pair"><div class="vcell"><a class="vnode r-green" href="#wezel-12"><span class="v-nr">12</span><span class="v-name">FV zaliczkowe</span></a><div class="vside"><span class="v-auto a3">A6 płatn.</span></div></div><span class="h-arrow">→</span><div class="vcell"><a class="vnode r-green" href="#wezel-13"><span class="v-nr">13</span><span class="v-name">Summary PH</span></a><div class="vside"><span class="v-auto a4">A6 raport</span></div></div></div><div class="vdown">↓</div><div class="pair"><div class="vcell"><a class="vnode r-amber" href="#wezel-14"><span class="v-nr">14</span><span class="v-name">Zmiany zakresu</span></a><div class="vside"><span class="v-auto a3">A7 zmiany</span><span class="v-auto a5">⚙ 5 · finalizacja</span></div></div><span class="h-arrow">→</span><div class="vcell"><a class="vnode r-amber" href="#wezel-15"><span class="v-nr">15</span><span class="v-name">Finalizacja</span></a><div class="vside"><span class="v-auto a5">A7 różnice</span></div></div></div><div class="vdown">↓</div><div class="pair"><div class="vcell"><a class="vnode r-green" href="#wezel-16"><span class="v-nr">16</span><span class="v-name">FV finalna</span></a><div class="vside"><span class="v-auto a5">A6 płatn.</span></div></div><span class="h-arrow">→</span><div class="vcell"><a class="vnode r-amber" href="#wezel-17"><span class="v-nr">17</span><span class="v-name">Zamknięcie</span></a><div class="vside"><span class="v-auto a6">—</span></div></div></div></div>
+  </section>
+<section id="s2">
+    <h2><span class="n">02</span>14 zasad budowy mapy</h2>
+    <p class="sec-sub">14 zasad, na których stoi ta mapa — każda węzeł i stan ZK im podlega.</p>
+    <ol><li><strong>Warstwa AS-IS przed każdym TO-BE.</strong> Jeden akapit „jak dziś” z aktorem i czasem — dopiero potem automatyzacja.</li><li><strong>Jeden schemat opisu węzła.</strong> 14 pól — używane dla każdego węzła bez wyjątków.</li><li><strong>Sekwencja zamiast kart.</strong> Małe procesy jako jeden flow zależności: od zapytania klienta do FV finalnej.</li><li><strong>Aktor + urządzenie + soft + kanał obowiązkowe.</strong> Każde z 14 pól ma być wypełnione albo jawnie oznaczone jako nieznane.</li><li><strong>SLA z umowy wpięte w węzły.</strong> Protokół do 10. dnia, FV po zatwierdzeniu przez GW, dokumentacja w 4 egz. — terminy z umowy w odpowiednich węzłach.</li><li><strong>Pain pointy przypisane do węzłów.</strong> Z pptx, kwestionariusza i obserwacji — każdy ból ma adres.</li><li><strong>Efekt mierzony po wdrożeniu.</strong> Liczby efektu produkuje sam system po starcie — nie zbieramy ich przed budową.</li><li><strong>Statusy ZK jako maszyna stanów.</strong> Lista statusów, trigger wejścia, kto zmienia, co się odpala.</li><li><strong>Węzły wyjątków.</strong> Zmiana zakresu (14), zaległa płatność, reklamacja — kto, kiedy, eskalacja.</li><li><strong>Mapa dokumentów umowy.</strong> Który załącznik zasila który węzeł (WSW → oferta/finalizacja, Harmonogram → kalendarz, OWU → odbiory).</li><li><strong>Kanały komunikacji jako osobna warstwa.</strong> Mail/telefon/WhatsApp/SMS — kto → do kogo, per węzeł.</li><li><strong>Rozdział ról automatu.</strong> Co robi AI, co Python, co człowiek — w architekturze było, w krokach się mieszało.</li><li><strong>Status węzła.</strong> 🟥 nieznany / 🟨 założony / ✅ potwierdzony z klientem — mapa uczciwa co do wiedzy.</li><li><strong>Kolejność budowania od zależności.</strong> Nie od subiektywnego „największy efekt”, tylko od tego, które węzły odblokowują resztę.</li></ol>
+  </section>
+<section id="s3">
+    <h2><span class="n">03</span>Schemat opisu węzła</h2>
+    <p class="sec-sub">Każdy węzeł (00–17) opisany tym samym szkieletem — 10 pól, bez wyjątków. (Cięte: urządzenie, metryki, warianty, SLA i painy per węzeł — zbędne do zadania.)</p>
+    <div class="schema"><div class='sch'><span class='sch-nr'>01</span><b>Cel</b> — Co ten węzeł ma osiągnąć — 1 zdanie.</div><div class='sch'><span class='sch-nr'>02</span><b>Aktorzy</b> — Kto to robi — do potwierdzenia listą ról.</div><div class='sch'><span class='sch-nr'>03</span><b>Soft / narzędzie</b> — Excel · WhatsApp · mail · system X · nic (papier).</div><div class='sch'><span class='sch-nr'>04</span><b>Wejście</b> — Dane + format (PDF/skan/CSV/zdjęcie) + skąd.</div><div class='sch'><span class='sch-nr'>05</span><b>Wyjście</b> — Dane + format + dokąd trafia.</div><div class='sch'><span class='sch-nr'>06</span><b>Komunikacja</b> — Tylko węzły wysyłkowe — kanał, którym automatyzacja wysyła.</div><div class='sch'><span class='sch-nr'>07</span><b>Problem</b> — Czy jest problem na tym węźle? Jaki konkretnie, jak często, co boli?</div><div class='sch'><span class='sch-nr'>08</span><b>Automatyzacja</b> — Potencjał 0–3 · co konkretnie · AI / Python / trigger.</div><div class='sch'><span class='sch-nr'>09</span><b>Zależności</b> — Zależy od węzła … · zasila węzeł ….</div><div class='sch'><span class='sch-nr'>10</span><b>Status węzła</b> — 🟥 nieznany · 🟨 założony · ✅ potwierdzony.</div></div>
+  </section>
+<section id="s5">
+    <h2><span class="n">05</span>Warstwa poprzeczna — trzy klocki</h2>
+    <p class="sec-sub">System magazynowy, mail i kalendarz wchodzą w każdy węzeł. Bez nich mapa wisi w powietrzu.</p>
+    <div id="layer">
+    <article class="node" data-status="green">
+      <header class="node-h">
+        <span class="node-nr">★</span>
+        <div class="node-t"><h3>System magazynowo-sprzedażowy</h3><div class="node-meta">warstwa poprzeczna — współdzielona</div></div>
+        <div class="badge b-green">✅ Potwierdzony</div>
+      </header>
+      <div class="fields"><div class="field wide"><div class="flab">Rola w systemie</div><div class="fval known">ŹRÓDŁO PRAWDY — POTWIERDZONY BAZĄ: SUBIEKT GT 1.89 (1.8902.2.7152) na MS SQL Server. Odczyt: SQL (darmowy; lokalna kopia bazy w Dockerze). Zapis: przez Sferę (API COM/.NET) lub ręcznie w programie. Rezerwacja na ZK wyłączona (su_StatusDokZK=6). Baza per podmiot. Fundament odblokowany — zostaje: login read-only do produkcyjnej bazy + decyzje (rezerwacje, WZ z ZK).</div></div></div>
+    </article>
+    <article class="node" data-status="red">
+      <header class="node-h">
+        <span class="node-nr">★</span>
+        <div class="node-t"><h3>System mailowy</h3><div class="node-meta">warstwa poprzeczna — współdzielona</div></div>
+        <div class="badge b-red">🟥 Nieznany</div>
+      </header>
+      <div class="fields"><div class="field wide"><div class="flab">Rola w systemie</div><div class="fval known">Jaki: Gmail / Outlook / własny? Czy maile od klientów są kategoryzowane? Czy PH ma firmowy mail, czy prywatny? Fundament dla: wysyłki ofert, powiadomień PH (węzeł 11), dziennego summary (13).</div></div></div>
+    </article>
+    <article class="node" data-status="amber">
+      <header class="node-h">
+        <span class="node-nr">★</span>
+        <div class="node-t"><h3>Google Calendar</h3><div class="node-meta">warstwa poprzeczna — współdzielona</div></div>
+        <div class="badge b-amber">🟨 Założony</div>
+      </header>
+      <div class="fields"><div class="field wide"><div class="flab">Rola w systemie</div><div class="fval known">Istnieje (jawny klocek z pptx). Struktura nieznana: ile kalendarzy, per PH / per ekipa / per projekt, kto wpisuje daty dziś. Fundament dla węzła 08.</div></div></div>
+    </article></div>
+  </section>
+<section id="s6">
+    <h2><span class="n">06</span>Statusy ZK — natywne w Subiekcie (do potwierdzenia)</h2>
+    <p class="sec-sub">Oficjalny słownik InsERT: 6 (niezrealizowane, bez rezerwacji) · 7 (z rezerwacją) · 8 (zrealizowane) + dok_StatusEx realizacji. Klient żyje na 3 — „2 · Unieważnione" do nauczenia (dziś nikt nie anuluje). Przy każdym: co odpala zmianę, kto ją robi.</p>
+    <div class="zk-flow">
+      <span class="chip-static">6 · Niezrealizowane</span><span class="zk-arrow">→</span>
+      <span class="chip-static">8 · Zrealizowane</span>
+      <span class="zk-arrow">│</span>
+      <span class="chip-static">7 · Z rezerwacją</span><span class="zk-arrow">│</span>
+      <span class="chip-static">2 · Unieważnione</span>
+    </div>
+    <div class="zk-grid"><div class="zk-item" data-status="red" id="zk-00">
+      <div class="zk-head"><span class="zk-nr">01</span><span class="zk-chip">6 · Niezrealizowane (bez rezerwacji)</span></div>
+      <div class="fval-box">
+        <textarea class="fval unknown" data-save id="zk_00_trigger" data-st="zk_00_trigger_st" rows="2"
+          placeholder="DO UZUPEŁNIENIA — co odpala wejście w ten stan, kto go zmienia, co się odpala po wejściu"></textarea>
+        <select class="fstate" id="zk_00_trigger_st" data-state aria-label="status pola">
+          <option value="">— status</option><option value="saved">✓ Zapisane</option>
+          <option value="draft">✏️ Do zmiany</option><option value="skip">⏭ Pominięte</option>
+        </select>
+      </div>
+    </div><div class="zk-item" data-status="red" id="zk-01">
+      <div class="zk-head"><span class="zk-nr">02</span><span class="zk-chip">7 · Niezrealizowane (z rezerwacją)</span></div>
+      <div class="fval-box">
+        <textarea class="fval unknown" data-save id="zk_01_trigger" data-st="zk_01_trigger_st" rows="2"
+          placeholder="DO UZUPEŁNIENIA — co odpala wejście w ten stan, kto go zmienia, co się odpala po wejściu"></textarea>
+        <select class="fstate" id="zk_01_trigger_st" data-state aria-label="status pola">
+          <option value="">— status</option><option value="saved">✓ Zapisane</option>
+          <option value="draft">✏️ Do zmiany</option><option value="skip">⏭ Pominięte</option>
+        </select>
+      </div>
+    </div><div class="zk-item" data-status="red" id="zk-02">
+      <div class="zk-head"><span class="zk-nr">03</span><span class="zk-chip">8 · Zrealizowane</span></div>
+      <div class="fval-box">
+        <textarea class="fval unknown" data-save id="zk_02_trigger" data-st="zk_02_trigger_st" rows="2"
+          placeholder="DO UZUPEŁNIENIA — co odpala wejście w ten stan, kto go zmienia, co się odpala po wejściu"></textarea>
+        <select class="fstate" id="zk_02_trigger_st" data-state aria-label="status pola">
+          <option value="">— status</option><option value="saved">✓ Zapisane</option>
+          <option value="draft">✏️ Do zmiany</option><option value="skip">⏭ Pominięte</option>
+        </select>
+      </div>
+    </div><div class="zk-item" data-status="red" id="zk-03">
+      <div class="zk-head"><span class="zk-nr">04</span><span class="zk-chip">2 · Unieważnione (do nauczenia)</span></div>
+      <div class="fval-box">
+        <textarea class="fval unknown" data-save id="zk_03_trigger" data-st="zk_03_trigger_st" rows="2"
+          placeholder="DO UZUPEŁNIENIA — co odpala wejście w ten stan, kto go zmienia, co się odpala po wejściu"></textarea>
+        <select class="fstate" id="zk_03_trigger_st" data-state aria-label="status pola">
+          <option value="">— status</option><option value="saved">✓ Zapisane</option>
+          <option value="draft">✏️ Do zmiany</option><option value="skip">⏭ Pominięte</option>
+        </select>
+      </div>
+    </div></div>
+    <div class="note" style="margin-top:14px"><b>BAZA (2026-08-07):</b> Subiekt natywnie ma 3 statusy ZK — 6 (niezrealizowane, bez rezerwacji) · 7 (niezrealizowane, z rezerwacją) · 8 (zrealizowane) — plus dok_StatusEx: 0 nie / 1 częściowo / 2 różnicowo / 4 całkowicie / 8 FSzal pośrednia / 16 FSzal końcowa (wartości bywają sumami, np. 3 = 1+2). Rozkład: 6|0=9 356 · 8|4=6 064 · 8|3=2 085 · 8|1=810 · 8|24=612 · 7|0=185… Lista 11 statusów powyżej to propozycja procesowa — do ustalenia z klientem, która mapuje się na natywne 6/7/8. Klient używa TYLKO 6/7/8 (0 szt. ZK unieważnionych/odłożonych) — „Anulowany” z listy to status 2 (unieważniony), którego nikt nie używa; stąd martwy portfel. Rezerwacja towarów na ZK: <b>wyłączona</b> (su_StatusDokZK=6). Portfel otwartych ZK: 9 657 szt / 529 mln zł (88% starszych niż 90 dni — klient nie domyka zamówień). UWAGA: to suma OFERT/wycen (ZK 6/7), NIE należności — realne nieopłacone faktury to ~6,5 mln zł (nz_Finanse typ 39).</div>
+  </section>
+<section id="s7">
+    <h2><span class="n">07</span>Architektura rozwiązania</h2>
+    <p class="sec-sub">Sześć klocków, jeden fundament: system magazynowy jako jedyne źródło prawdy. Agent nie duplikuje danych — odczytuje i przetwarza.</p>
+    <div><div class="box green"><h3>Subiekt GT (odczyt SQL)</h3><p>Fundament — źródło ZK, WZ, cennika, płatności. POTWIERDZONE: odczyt przez SQL na lokalnej kopii bazy (Docker). Agent TYLKO odczytuje; zapis (statusy, dokumenty) przez Sferę.</p></div><div class="box amber"><h3>Google Calendar API</h3><p>Jeden kierunek na start: agent wpisuje eventy, nie czyta.</p></div><div class="box green"><h3>Mail (SMTP)</h3><p>Wychodzące powiadomienia i raporty. Brak odbierania (na start). Raport on demand przez prosty formularz web.</p></div><div class="box green"><h3>Claude API</h3><p>Vision (scan projektu), formatowanie raportów, weryfikacja umów. NIE LICZY — to robi Python.</p></div><div class="box amber"><h3>Jedna aplikacja web</h3><p>Użytkownik otwiera i wybiera klocek. Nie 6 osobnych narzędzi.</p></div><div class="box green"><h3>Lokalna kopia bazy (MSSQL w Dockerze)</h3><p>Kopia produkcyjnej bazy Subiekta (pymssql, odczyt RO) + SQLite na historię ZK, klucze marż, log powiadomień. Praca bez ruszania produkcji.</p></div></div>
+  </section>
+<section id="s8">
+    <h2><span class="n">08</span>Setup techniczny + koszty</h2>
+    <p class="sec-sub">Środowisko i biblioteki — wszystko standardowe, nic egzotycznego.</p>
+    <div class="tw"><table>
+      <thead><tr><th style="width:140px">Warstwa</th><th>Narzędzie</th></tr></thead>
+      <tbody><tr><td><strong>Runtime</strong></td><td>Python 3.10+ — laptop w biurze albo mały VPS.</td></tr><tr><td><strong>AI</strong></td><td>anthropic SDK — Sonnet 4.6 do złożonych (Vision, umowy) · Haiku 4.5 do raportów i formatowania.</td></tr><tr><td><strong>Dane</strong></td><td>Kopia bazy Subiekt w Dockerze (pymssql, odczyt RO). Produkcyjnie: login read-only + Sfera do zapisu.</td></tr><tr><td><strong>Dokumenty</strong></td><td>python-docx · openpyxl · pdfplumber.</td></tr><tr><td><strong>Kalendarz</strong></td><td>google-api-python-client + OAuth 2.0.</td></tr><tr><td><strong>Mail</strong></td><td>SMTP — wbudowane w Python, zero zależności zewnętrznych.</td></tr><tr><td><strong>Baza</strong></td><td>SQLite — wbudowane.</td></tr><tr><td><strong>UI</strong></td><td>Streamlit (szybki start) lub FastAPI + HTML (więcej kontroli).</td></tr></tbody>
+    </table></div>
+    <h3>Koszt miesięczny</h3>
+    <div class="tw"><table>
+      <thead><tr><th style="width:140px">Składnik</th><th>Koszt</th></tr></thead>
+      <tbody><tr><td><strong>Claude API</strong></td><td>Haiku ~$0.001/raport dzienny · Sonnet (Vision, umowy) ~$0.02–0.10/operacja. Przy 50 ZK/mc + dzienne summary 4 PHów: ~$5–15/mc.</td></tr><tr><td><strong>Hosting</strong></td><td>Na start $0 (lokalny laptop). VPS gdy zdalny dostęp: ~$5–10/mc (Hetzner CX22).</td></tr><tr><td><strong>Google API</strong></td><td>Darmowe w limicie (10 000 requestów/dzień — wystarczy).</td></tr><tr><td><strong>RAZEM</strong></td><td>~$10–25/mc. Dla porównania: 2–3 godziny ręcznej pracy biurowej.</td></tr></tbody>
+    </table></div>
+    <h3>Plan startu — minimum, żeby ruszyć</h3>
+    <ul><li>✅ DONE — kopia bazy Kopia_2024_KOMANDYTOWA w Dockerze (odczyt SQL: ZK, WZ, FS, cennik, wpłaty)</li><li>✅ DONE — prototyp A6 (auto4_summary_ph.py, zweryfikowany 11/11); zostaje: odbiorcy + kanał + harmonogram</li><li>✅ DONE — plik Tomasza (sprzedaż 2026-05.xlsx): algorytm marży (Netto−Koszt)/Netto; PNBM/inwestycja = 100%, TOWAR 12,8%, HURTOWA ≈ koszt + 3% — A3 odblokowane, flaga &lt;5%</li><li>Klucz API Anthropic — zakładamy konto, ~1 min</li><li>SMTP credentials do wysyłki maili (firmowy mail lub dedykowany)</li><li>Login read-only do produkcyjnej bazy (konto SQL) — jedyna brama do danych na żywo</li><li>Decyzje klienta: rezerwacje na ZK (su_StatusDokZK) + generowanie WZ z ZK</li></ul>
+  </section>
+<section id="s9">
+    <h2><span class="n">09</span>Kolejność budowania</h2>
+    <p class="sec-sub">Zależności między węzłami, nie subiektywny wybór. Blokady przy każdej pozycji.</p>
+    <div class="steps"><div class="step">       <div class="st">Priorytet 1</div>       <div class="sn">A6 — raport poranny + płatności (węzły 13, 12, 16)</div>       <p>Tylko odczyt systemu + mail. Zero zapisu, zero ryzyka. PROTOTYP DZIAŁA: auto4_summary_ph.py na kopii bazy (11/11, 2026-08-07). Rozrachunki w nz_Finanse: „BRAKUJE X zł” + przypomnienia zaległości. Zostaje: odbiorcy, kanał, SMTP, harmonogram.</p>       <div class="badge b-green" style="margin-top:10px">✅ Potwierdzony — prototyp</div>     </div><div class="step">       <div class="st">Priorytet 2</div>       <div class="sn">A1 — odczyt projektu (węzeł 01)</div>       <p>Scan + Vision czyta projekt (PDF/zdjęcie/DWG): wymiary, powierzchnia, krycie — kasuje ręczne przepisywanie. ROI = minuty odczytu × liczba projektów. Warunek: cyfrowa forma projektu (bramka w węźle 01).</p>       <div class="badge b-amber" style="margin-top:10px">🟨 koncepcja</div>     </div><div class="step">       <div class="st">Priorytet 3</div>       <div class="sn">A0 — rejestr zapytań = baza klientów (węzeł 00)</div>       <p>Łapie zapytanie (kanał, forma, typ klienta), przypomina o follow-up, buduje bazę klientów. Warunek: wpis do bazy — bez niego automat nie ma źródła.</p>       <div class="badge b-amber" style="margin-top:10px">🟨 koncepcja</div>     </div><div class="step">       <div class="st">Priorytet 4</div>       <div class="sn">A2 — oferta z danych ZK (węzeł 03)</div>       <p>Pozycje ze starego ZK klienta + aktualne ceny z tw_Cena (marża per pozycja) → oferta PDF mailem, ślad w bazie. Warunek: oferty w ZK (9 657 otwartych, 529 mln zł — bramka).</p>       <div class="badge b-amber" style="margin-top:10px">🟨 koncepcja</div>     </div><div class="step">       <div class="st">Priorytet 5</div>       <div class="sn">A3 — marża z bazy (węzeł 02)</div>       <p>Wycena z tw_Cena: zakup vs sprzedaż + narzut/marża (np. blacha 56,46 → 80,66). Warunki: plik Tomasza (reguły marży), ceny zakupu uzupełnione.</p>       <div class="badge b-amber" style="margin-top:10px">🟨 koncepcja</div>     </div><div class="step">       <div class="st">Priorytet 6</div>       <div class="sn">A4 — terminy + zamówienia (węzły 08, 09)</div>       <p>Akceptacja → event kalendarza + notyfikacja ekipy; zamówienie z pozycji ZK. Warunki: wspólny kalendarz cyfrowy, rezerwacja towarów (dziś WYŁĄCZONA — su_StatusDokZK=6).</p>       <div class="badge b-amber" style="margin-top:10px">🟨 koncepcja</div>     </div><div class="step">       <div class="st">Priorytet 7</div>       <div class="sn">A5 — WZ → informacja do PH (węzły 10, 11)</div>       <p>Nowe WZ → wiadomość: „Dla ZK #1234 wyszło WZ #56, postęp 34%”. MOCK GOTOWY. Warunek: WZ w Subiekcie + powiązanie z ZK (dziś 62% WZ bez ZK); kanał do ustalenia.</p>       <div class="badge b-amber" style="margin-top:10px">🟨 mock gotowy</div>     </div><div class="step">       <div class="st">Priorytet 8</div>       <div class="sn">A7 — ślad zmian + różnice ZK vs WZ (węzły 14, 15)</div>       <p>Rejestr zmian (zgłoszenie → wycena → akceptacja → aneks) + zestawienie ZK vs WZ per pozycja przed finalizacją. Warunek: powiązania ZK↔WZ (6 648 / 19 314).</p>       <div class="badge b-amber" style="margin-top:10px">🟨 koncepcja</div>     </div></div>
+  </section>
+</div>
+<div class="progress">
+  <div class="wrap">
+    <div class="bar"><i id="barFill"></i></div>
+    <span class="txt" id="cntTxt">0% pól wypełnionych</span>
+    <div class="btnrow">
+      <button class="btn" onclick="exportJSON()">⬇ Pobierz wypełnienia (JSON)</button>
+      <button class="btn danger" onclick="clearAll()">Wyczyść</button>
+    </div>
+  </div>
+</div></div>
+
+<div class="foot">
+  Źródła: <b>pptx</b> — DD.pptx (26.07.2026) · <b>umowa</b> — 13937/25/01 NDI S.A. ↔ Dobry Dach (00_umowa.pdf) · <b>roboczy</b> — dobry-dach-roboczy.html v3 · <b>brief</b> — Brief-dla-klienta.md · <b>baza</b> — Subiekt GT 1.89, kopia Kopia_2024_KOMANDYTOWA (analiza 07.08.2026) · <b>założenie</b> — hipoteza do weryfikacji
+  <br>Dobry Dach · mapa procesów MAŁE · v2.0 po_bazie · 2026-08-08 · generator: build_mapa_procesow_po_bazie.py · historia wersji (v2.13 + weryfikator): archiwum/ · live: tomekwlqq.github.io/dobry-dach
+  <br>🧠 <b>Knowledge Board</b> (opowieść · pytania · wzrost wiedzy): <a href="https://tomekwlqq.github.io/eel-reports/dobry_dach/DOBRY_DACH_KNOWLEDGE_BOARD.html" style="color:#0a5fa8">tomekwlqq.github.io/eel-reports/dobry_dach/DOBRY_DACH_KNOWLEDGE_BOARD.html</a>
+</div>
+
+<script>
+(function(){
+  var KEY = "dd_mapa_male_po_bazie";
+  var els = Array.prototype.slice.call(document.querySelectorAll("[data-save]"));
+  var sts = Array.prototype.slice.call(document.querySelectorAll("[data-state]"));
+  var total = els.length;
+
+  function stateOf(el){
+    var sel = document.getElementById(el.getAttribute("data-st"));
+    return sel ? sel.value : "";
+  }
+  function groupVals(el){
+    return Array.prototype.slice.call(el.querySelectorAll(".mchip.on"))
+      .map(function(c){ return c.getAttribute("data-v"); }).filter(Boolean);
+  }
+  function groupInne(el){
+    var ii = el.querySelector("[data-inne-input]");
+    return (ii && ii.value) ? ii.value.trim() : "";
+  }
+  function valOf(el){
+    if(el.matches("[data-multi]")){
+      return (groupVals(el).length || groupInne(el)) ? groupVals(el) : "";
+    }
+    return el.value.trim();
+  }
+
+  function load(){
+    var data = {};
+    try { data = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){}
+    // v2.0 po_bazie: pusty profil nie czyści pre-wypełnień naniesionych z bazy (HTML)
+    if(Object.keys(data).length === 0){
+      sts.forEach(function(sel){ if(sel.value) sel.classList.add(sel.value); });
+      return;
+    }
+    els.forEach(function(el){
+      var d = data[el.id];
+      if(el.matches("[data-multi]")){
+        var vals = (d && Array.isArray(d.v)) ? d.v : [];
+        el.querySelectorAll(".mchip").forEach(function(c){
+          if(c.classList.contains("m-inne")) return;
+          c.classList.toggle("on", vals.indexOf(c.getAttribute("data-v")) !== -1);
+        });
+        var ii = el.querySelector("[data-inne-input]");
+        if(ii && d && d.inne){
+          ii.value = d.inne;
+          ii.hidden = false;
+          el.querySelector(".m-inne").classList.add("on");
+        }
+      } else if(d && d.v){
+        el.value = d.v;
+      }
+    });
+    sts.forEach(function(sel){
+      var s = "";
+      for(var i = 0; i < els.length; i++){
+        if(els[i].getAttribute("data-st") === sel.id && data[els[i].id]){
+          s = data[els[i].id].s || ""; break;
+        }
+      }
+      if(s) sel.value = s;
+      paintState(sel);
+    });
+  }
+  function paintState(sel){
+    sel.classList.remove("saved","draft","skip");
+    if(sel.value) sel.classList.add(sel.value);
+  }
+  function persist(){
+    var data = {};
+    els.forEach(function(el){
+      if(el.matches("[data-multi]")){
+        data[el.id] = {v: groupVals(el), inne: groupInne(el), s: stateOf(el)};
+      } else {
+        data[el.id] = {v: el.value.trim(), s: stateOf(el)};
+      }
+    });
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){}
+  }
+  function updateCounter(){
+    var filled = {};
+    document.querySelectorAll(".nmchip").forEach(function(c){
+      if(c.classList.contains("on")) filled[c.getAttribute("data-k")] = 1;
+    });
+    document.querySelectorAll(".irr").forEach(function(b){
+      if(b.classList.contains("on")) filled[b.getAttribute("data-irk")] = 1;
+    });
+    document.querySelectorAll(".pct").forEach(function(p){
+      if(p.classList.contains("on")) filled[p.getAttribute("data-k")] = 1;
+    });
+    document.querySelectorAll(".inline-ta").forEach(function(t){
+      if(t.value && t.value.trim()) filled[t.getAttribute("data-k")] = 1;
+    });
+    var total = document.querySelectorAll(".irr, .pct, .inline-ta").length;
+    var n = Object.keys(filled).length;
+    var pct = total ? Math.round(n/total*100) : 0;
+    document.getElementById("barFill").style.width = pct + "%";
+    document.getElementById("cntTxt").textContent = pct + "% wypełnione · " + n + "/" + total + " pytań";
+  }
+  var t;
+  function schedule(){
+    clearTimeout(t);
+    t = setTimeout(function(){ persist(); updateCounter(); }, 250);
+  }
+  // v2.12 — flush przy zamknięciu/przełączeniu karty: ostatni wpis nie ginie
+  function flush(){
+    if(t){ clearTimeout(t); t = null; persist(); updateCounter(); }
+  }
+  window.addEventListener("pagehide", flush);
+  document.addEventListener("visibilitychange", function(){
+    if(document.visibilityState === "hidden") flush();
+  });
+  els.forEach(function(el){
+    if(el.matches("[data-multi]")){
+      el.querySelectorAll(".mchip").forEach(function(chip){
+        chip.addEventListener("click", function(){
+          if(chip.classList.contains("m-inne")){
+            var ii = el.querySelector("[data-inne-input]");
+            var show = !chip.classList.contains("on");
+            chip.classList.toggle("on", show);
+            ii.hidden = !show;
+            if(show) ii.focus();
+          } else {
+            chip.classList.toggle("on");
+          }
+          schedule();
+        });
+      });
+      var ii = el.querySelector("[data-inne-input]");
+      if(ii) ii.addEventListener("input", schedule);
+    } else {
+      el.addEventListener("input", schedule);
+    }
+  });
+  sts.forEach(function(sel){
+    sel.addEventListener("change", function(){ paintState(sel); schedule(); });
+  });
+
+  window.exportJSON = function(){
+    var data = {meta:{dokument:"Dobry Dach — mapa procesów MAŁE", wersja:"2.0-po_bazie", data:"2026-08-07", url:"https://tomekwlqq.github.io/dobry-dach/"}, pola:{}};
+    els.forEach(function(el){
+      if(el.matches("[data-multi]")){
+        data.pola[el.id] = {wartosc: groupVals(el), inne: groupInne(el), stan: stateOf(el)};
+      } else {
+        data.pola[el.id] = {wartosc: el.value.trim(), stan: stateOf(el)};
+      }
+    });
+    var blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "dobry-dach-mapa-male-wypelnienia.json";
+    a.click();
+  };
+  window.clearAll = function(){
+    if(!confirm("Wyczyścić wszystkie wypełnienia zapisane w tej przeglądarce?")) return;
+    els.forEach(function(el){
+      if(el.matches("[data-multi]")){
+        el.querySelectorAll(".mchip").forEach(function(c){ c.classList.remove("on"); });
+        var ii = el.querySelector("[data-inne-input]");
+        if(ii){ ii.value = ""; ii.hidden = true; }
+      } else {
+        el.value = "";
+      }
+    });
+    sts.forEach(function(sel){ sel.value = ""; paintState(sel); });
+    try { localStorage.removeItem(KEY); } catch(e){}
+    updateCounter();
+  };
+
+  var btns = Array.prototype.slice.call(document.querySelectorAll(".fbtn"));
+  btns.forEach(function(b){
+    b.addEventListener("click", function(){
+      btns.forEach(function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+      var f = b.getAttribute("data-f");
+      Array.prototype.forEach.call(document.querySelectorAll(".node"), function(n){
+        n.classList.toggle("hidden", f !== "all" && n.getAttribute("data-status") !== f);
+      });
+    });
+  });
+
+  load();
+  updateCounter();
+})();
+</script>
+<script>
+
+(function(){
+  var KEY = "dd_mapa_narracja_v5";
+  var chips = Array.prototype.slice.call(document.querySelectorAll(".nmchip"));
+  var fields = Array.prototype.slice.call(document.querySelectorAll(".pct, .inline-ta"));
+  var SINGLE = {"typ":1,"rej":1,"kto_rej":1,"excel_kto":1,"dlaczego":1,"chk":1,"gdzie_saldo":1,"jak_hist":1,
+                "powr":1,"stara":1,"baza":1,"co_wpis":1,"zk_slad":1,"nigdy_skad":1,"proj":1,"nie_proj":1,
+                "term":1,"cena":1,"slad":1,"skrz":1,"wa_biz":1,"osob_w":1,"skan":1,"koniec":1,"urywa":1,
+                "n01_forma":1,"n01_kto":1,"n01_liczy":1,"n01_odczyt":1,"n01_wynik":1,"n01_baza":1,
+                "n03_kto":1,"n03_gdzie":1,"n03_postac":1,"n03_powiela":1,"n03_wersje":1,
+                "n02_ceny":1,"n02_marza":1,"n02_baza":1,
+                "n04_korekty":1,"n04_zapis":1,"n04_wersje":1,
+                "n05_akc":1,"n05_slad":1,"n05_sys":1,
+                "n06_szablon":1,"n06_obieg":1,"n06_lad":1,"n06_zmiany":1,
+                "n07_kto":1,"n07_odpala":1,"n07_rez":1,
+                "n08_gdzie":1,"n08_widza":1,"n08_ekipa":1,
+                "n09_zamow":1,"n09_kanal":1,"n09_rez":1,
+                "n10_wydaje":1,"n10_z_zk":1,"n10_wz_sys":1,"n10_ph_wie":1,
+                "n11_po_co":1,"n11_kiedy":1,
+                "n12_fv":1,"n12_wysylka":1,"n12_sciga":1,
+                "n13_dzis":1,"n13_godzina":1,"n13_kopie":1,
+                "n14_zmiana":1,"n14_wycena":1,"n14_slad":1,
+                "n15_por":1,"n15_roznica":1,"n15_kto":1,
+                "n16_fv":1,"n16_ksef":1,
+                "n17_dok":1,"n17_start":1,"n17_odbior":1,"n00_kom":1,"n02_ark":1,"n02_tr":1,"n02_op":1,"n03_podst":1,"n05_umowa":1,"n05_dok8":1,"n06_dekarz":1,"n06_fvdek":1,"n07_flagi":1,"n07_pola":1,"n07_wz3":1,"n09_kto":1,"n10_egz":1,"n10_podpis":1,"n12_zal":1,"n12_nazwa":1,"n12_kto":1,"n13_roz":1,"n16_stawka":1,"n16_kor":1,"n00_1":1,"n00_2":1,"n01_1":1,"n01_2":1,"n02_1":1,"n02_2":1,"n03_1":1,"n04_1":1,"n05_1":1,"n06_1":1,"n07_1":1,"n08_1":1,"n08_2":1,"n09_1":1,"n09_2":1,"n10_1":1,"n11_1":1,"n12_1":1,"n13_1":1,"n14_1":1,"n15_1":1,"n16_1":1,"n17_1":1,};
+
+  function load(){
+    var data = {};
+    try { data = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){}
+    if(Object.keys(data).length === 0){ return; }
+    chips.forEach(function(c){ if(data[c.id]) c.classList.add("on"); });
+    fields.forEach(function(f){ if(data[f.id] !== undefined) f.value = data[f.id]; });
+    document.querySelectorAll(".irr").forEach(function(b){ if(data["irr_" + b.getAttribute("data-irk")]) b.classList.add("on"); });
+    applyIrr();
+  }
+  function persist(){
+    var data = {};
+    chips.forEach(function(c){ data[c.id] = c.classList.contains("on") ? 1 : 0; });
+    fields.forEach(function(f){ data[f.id] = f.value; });
+    document.querySelectorAll(".irr").forEach(function(b){ data["irr_" + b.getAttribute("data-irk")] = b.classList.contains("on") ? 1 : 0; });
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){}
+  }
+  var t;
+  function schedule(){ clearTimeout(t); t = setTimeout(function(){ persist(); }, 250); }
+  window.addEventListener("pagehide", function(){ clearTimeout(t); persist(); });
+
+  chips.forEach(function(c, i){
+    if(!c.id) c.id = "c" + i;
+    c.addEventListener("click", function(){
+      var k = c.getAttribute("data-k");
+      if(SINGLE[k]){
+        chips.forEach(function(x){
+          if(x !== c && x.getAttribute("data-k") === k) x.classList.remove("on");
+        });
+      }
+      c.classList.toggle("on");
+      schedule();
+    });
+  });
+  fields.forEach(function(f, i){
+    if(!f.id) f.id = "f" + i;
+    f.addEventListener("input", schedule);
+  });
+
+  // NIEISTOTNE — wyłączenie pytania z logiki
+  function applyIrr(){
+    document.querySelectorAll(".irr").forEach(function(btn){
+      var k = btn.getAttribute("data-irk");
+      var on = btn.classList.contains("on");
+      document.querySelectorAll('.nmchip[data-k="' + k + '"]').forEach(function(c){ c.classList.toggle("irr", on); });
+      document.querySelectorAll(".branch").forEach(function(b){
+        if(b.querySelector('.nmchip[data-k="' + k + '"]')) b.classList.toggle("irr", on);
+      });
+    });
+  }
+  Array.prototype.slice.call(document.querySelectorAll(".irr")).forEach(function(btn){
+    btn.addEventListener("click", function(){ btn.classList.toggle("on"); applyIrr(); schedule(); });
+  });
+  load();
+})();
+
+</script>
+<script>
+function showTab(id){
+  var on = id === "proces" ? "proces" : "mapa";
+  document.getElementById("tab-mapa").style.display = on === "mapa" ? "block" : "none";
+  document.getElementById("tab-proces").style.display = on === "proces" ? "block" : "none";
+  var btns = document.querySelectorAll(".tab-btn");
+  for (var i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i].getAttribute("onclick").indexOf("\'" + on + "\'") !== -1);
+}
+</script>
+</body>
+</html>
