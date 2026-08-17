@@ -1,0 +1,42 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8">
+<title>Dobry Dach — Jeden widok (wszystko)</title>
+<style>
+:root{--vio:#7c5cff;--ink:#1a1f2b;--mut:#667085;--line:#e4e7ec}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%;font-family:'Space Grotesk',-apple-system,'Segoe UI',Arial,sans-serif;background:#f4f5f9;color:var(--ink)}
+.nav{position:sticky;top:0;z-index:50;background:#fff;border-bottom:2px solid var(--line);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(26,31,43,.06)}
+.nav .brand{font-weight:800;font-size:15px;letter-spacing:-.2px;margin-right:10px;white-space:nowrap}
+.nav .brand span{color:var(--vio)}
+.nav a{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:12px;font-weight:600;color:#3a4250;text-decoration:none;border:1.5px solid var(--line);border-radius:999px;padding:6px 13px;transition:.15s;white-space:nowrap;background:#fff}
+.nav a:hover{border-color:var(--vio);color:var(--vio)}
+.nav a.on{background:var(--vio);border-color:var(--vio);color:#fff}
+.frame{position:fixed;top:56px;left:0;right:0;bottom:0;width:100%;border:0;background:#fff}
+@media(max-width:700px){.nav{padding:8px 10px}.nav .brand{width:100%}.frame{top:104px}}
+</style></head><body>
+<div class="nav">
+  <div class="brand">Dobry Dach <span>· jeden widok</span></div>
+  <a href="DOBRY_DACH_KNOWLEDGE_BOARD.html" data-t="KB" class="on">🧠 KB</a>
+  <a href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html" data-t="Mapa live">🗺️ Mapa live</a>
+  <a href="mapa-procesow-male-po_bazie.html" data-t="Mapa po bazie">🛠️ Mapa robocza</a>
+  <a href="pytania_robocze.html" data-t="Pytania">❓ Pytania</a>
+  <a href="lista_zadan_i_blokery.html" data-t="Zadania">🗂️ Zadania</a>
+  <a href="AUTOMATYZACJE_PROJEKT.html" data-t="Automaty">⚙️ Automaty</a>
+  <a href="rzeczywistosc_3kolumny.html" data-t="3 kolumny">🔍 3 kolumny</a>
+  <a href="mapa-procesow-male-narracja.html" data-t="Narracja">📖 Narracja</a>
+  <a href="discovery.html" data-t="Discovery">📝 Discovery</a>
+  <a href="analiza.html" data-t="Analiza">📊 Analiza</a>
+</div>
+<iframe class="frame" id="f" src="DOBRY_DACH_KNOWLEDGE_BOARD.html"></iframe>
+<script>
+var f = document.getElementById('f');
+document.querySelectorAll('.nav a').forEach(function(a){
+  a.addEventListener('click', function(e){
+    e.preventDefault();
+    document.querySelectorAll('.nav a').forEach(function(x){x.classList.remove('on')});
+    a.classList.add('on');
+    f.src = a.getAttribute('href');
+    window.scrollTo(0,0);
+  });
+});
+</script>
+</body></html>
