@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propozycja rozwiązania — strona internetowa Dobry Dach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --v:#7c5cff; --v-d:#5a3ff0; --v-soft:#efeaff; --v-line:#d4c9ff;
+  --dark:#1a1f2b; --dark-sub:#252d3d; --dark-txt:#b8bfcc;
+  --bg:#ffffff; --surface:#fafbfd; --line:#e6e6e9;
+  --ink:#0a0a0a; --muted:#5b6472; --faint:#8b93a2;
+  --green:#16a34a; --green-soft:#e9f7ef;
+  --amber:#b8862b; --amber-soft:#fbf3e2;
+  --red:#dc2626; --red-soft:#fdecec;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--v);font-weight:600}
+h1{font-size:42px;line-height:1.15;font-weight:700;letter-spacing:-.02em;margin:14px 0 16px}
+h2{font-size:26px;font-weight:700;letter-spacing:-.01em;margin-bottom:18px}
+h3{font-size:17px;font-weight:600;margin-bottom:8px}
+p{color:var(--ink)}
+.muted{color:var(--muted)}
+.mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+section{padding:56px 0;border-top:1px solid var(--line)}
+.hero{padding:72px 0 48px;border-top:none}
+.hero p.lead{font-size:18px;color:var(--muted);max-width:720px}
+.hero .meta{display:flex;gap:28px;flex-wrap:wrap;margin-top:26px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--faint)}
+.hero .meta b{color:var(--muted);font-weight:600}
+/* TOC */
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:10px}
+.toc a{display:flex;gap:14px;align-items:flex-start;text-decoration:none;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;transition:border-color .15s}
+.toc a:hover{border-color:var(--v-line)}
+.toc .n{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--v);font-weight:600;padding-top:2px}
+.toc .t{font-weight:600;font-size:15px;color:var(--ink)}
+.toc .d{font-size:13px;color:var(--muted)}
+/* karty */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px}
+.card .num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--v);font-weight:600}
+.card h3{margin-top:6px}
+.card p{font-size:14.5px;color:var(--muted)}
+.tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;margin-top:12px}
+.tag.ok{background:var(--green-soft);color:var(--green)}
+.tag.part{background:var(--amber-soft);color:var(--amber)}
+.tag.gap{background:var(--red-soft);color:var(--red)}
+/* tabele */
+table{width:100%;border-collapse:collapse;margin-top:6px;font-size:14.5px}
+th{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);text-align:left;padding:10px 12px;border-bottom:2px solid var(--line);font-weight:600}
+td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:600}
+tr:last-child td{border-bottom:none}
+/* callout / przykładowy dialog */
+.dialog{background:var(--v-soft);border:1px solid var(--v-line);border-radius:16px;padding:22px 24px;margin:18px 0}
+.dialog .who{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--v-d);font-weight:600}
+.dialog p{margin-top:4px}
+.dialog .resp{margin-top:14px;color:var(--ink)}
+/* lista kroków */
+.steps{list-style:none;counter-reset:st;display:grid;gap:12px;margin-top:6px}
+.steps li{counter-increment:st;display:flex;gap:16px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.steps li::before{content:counter(st,decimal-leading-zero);font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--v);padding-top:2px}
+.steps b{display:block;font-size:15px}
+.steps span{font-size:14px;color:var(--muted)}
+/* CTA dark panel */
+.cta{background:var(--dark);border-radius:20px;padding:44px 40px;margin:8px 0 0;color:#fff}
+.cta .kicker{color:#a98eff}
+.cta h2{color:#fff}
+.cta p{color:var(--dark-txt);max-width:640px;margin-bottom:18px}
+.cta .btn{display:inline-block;background:var(--v);color:#fff;text-decoration:none;font-weight:600;padding:13px 26px;border-radius:12px;font-size:15px}
+.cta .btn:hover{background:var(--v-d)}
+.cta .note{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--faint);margin-top:16px}
+footer{padding:40px 0 64px;color:var(--faint);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+@media(max-width:640px){h1{font-size:31px}.hero{padding:48px 0 32px}section{padding:44px 0}.cta{padding:32px 24px}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero wrap">
+  <div class="kicker">Propozycja rozwiązania</div>
+  <h1>Nowoczesna strona internetowa z zarządzaniem przez asystenta AI</h1>
+  <p class="lead">Propozycja dla firmy Dobry Dach: strona www pozostaje na obecnym serwerze, a sposób jej aktualizacji zmienia się z „pracy w przestarzałym panelu" na rozmowę z asystentem AI w języku polskim. Publikacja zmian — w ciągu minut, z automatycznym backupem i zabezpieczeniem HTTPS.</p>
+  <div class="meta">
+    <span><b>Dla:</b> Dobry Dach</span>
+    <span><b>Zakres:</b> diagnoza + propozycja</span>
+    <span><b>Data:</b> sierpień 2026</span>
+  </div>
+</header>
+
+<!-- TOC -->
+<div class="wrap" style="padding-bottom:24px">
+  <div class="kicker" style="margin-bottom:14px">Spis treści</div>
+  <nav class="toc">
+    <a href="#s1"><span class="n">01</span><span><span class="t">Diagnoza obecnego stanu</span><br><span class="d">Co ustalono o stronie i serwerze</span></span></a>
+    <a href="#s2"><span class="n">02</span><span><span class="t">Proponowane rozwiązanie</span><br><span class="d">Strona statyczna + asystent AI</span></span></a>
+    <a href="#s3"><span class="n">03</span><span><span class="t">Jak to będzie działać</span><br><span class="d">Edycja, publikacja, backup — na przykładzie</span></span></a>
+    <a href="#s4"><span class="n">04</span><span><span class="t">Co zostaje, co znika</span><br><span class="d">Zmiany względem obecnego stanu</span></span></a>
+    <a href="#s5"><span class="n">05</span><span><span class="t">Co jest potrzebne od Państwa</span><br><span class="d">Dostęp, dane, decyzje</span></span></a>
+    <a href="#s6"><span class="n">06</span><span><span class="t">Korzyści</span><br><span class="d">Konkret, liczby</span></span></a>
+    <a href="#s7"><span class="n">07</span><span><span class="t">Plan wdrożenia</span><br><span class="d">Kroki i harmonogram</span></span></a>
+  </nav>
+</div>
+
+<!-- 01 DIAGNOZA -->
+<section id="s1" class="wrap">
+  <div class="kicker">01 · Stan obecny</div>
+  <h2>Diagnoza</h2>
+  <p style="margin-bottom:22px">Przeprowadzono pełny audyt techniczny strony <b>dobry-dach.pl</b> — skopiowano całą zawartość (51 podstron, wszystkie zdjęcia) i zweryfikowano jej kompletność. Ustalenia:</p>
+  <table>
+    <tr><th style="width:34%">Obszar</th><th>Ustalenie</th></tr>
+    <tr><td>System zarządzania (CMS)</td><td>Zamknięty system WebMedia — aktualizacje wyłącznie przez panel, brak możliwości rozbudowy. To główna przyczyna problemów z aktualizacją.</td></tr>
+    <tr><td>Aktualność treści</td><td>Ostatnie realizacje z lat 2019–2020. Wpisów bloga (11) nie ma w mapie strony — wyszukiwarki mogą ich nie widzieć.</td></tr>
+    <tr><td>Bezpieczeństwo (HTTPS)</td><td>Strona działa bez szyfrowania (bez HTTPS). Nowoczesne przeglądarki ostrzegają użytkowników przy takiej stronie.</td></tr>
+    <tr><td>Duplikaty treści</td><td>Część podstron oferty istnieje w dwóch wersjach (stara i nowa). Rozprasza to pozycje w Google — przy okazji modernizacji zostanie uporządkowane.</td></tr>
+    <tr><td>Serwer</td><td>Strona stoi na Cloud Serverze home.pl (pełnoprawny serwer, dostęp FTP działa). <b>Serwer i domena mogą zostać bez zmian.</b></td></tr>
+  </table>
+  <div class="grid" style="margin-top:22px">
+    <div class="card"><span class="num">ZASOBY</span><h3>Pełna kopia strony</h3><p>51 podstron i 148 zdjęć (ok. 20 MB) zabezpieczone lokalnie. Nic nie zostanie utracone, nawet gdyby stary system przestał działać.</p><span class="tag ok">● Gotowe</span></div>
+    <div class="card"><span class="num">SERWER</span><h3>Hosting i domena</h3><p>Cloud Server home.pl, domena opłacona do marca 2027. Serwer pozostaje — nie ma potrzeby przenosin ani przepisywania domeny.</p><span class="tag part">● Częściowo — wymaga dostępu</span></div>
+    <div class="card"><span class="num">DOSTĘP</span><h3>Dane do panelu hostingowego</h3><p>Do dokończenia diagnozy i uruchomienia publikacji potrzebny jest dostęp do panelu home.pl (nie do panelu CMS) oraz dane FTP.</p><span class="tag gap">● Oczekuje na przekazanie</span></div>
+  </div>
+</section>
+
+<!-- 02 ROZWIĄZANIE -->
+<section id="s2" class="wrap">
+  <div class="kicker">02 · Rozwiązanie</div>
+  <h2>Proponowane rozwiązanie</h2>
+  <p style="margin-bottom:22px">Strona przestaje być „aplikacją z panelem" i staje się <b>zbiorem gotowych plików</b> (strony + zdjęcia), którymi zarządza się jak dokumentami: treść trzymana jest w jednym miejscu, zmiany są wersjonowane i automatycznie zabezpieczane. Miejsce CMS-a zajmuje <b>asystent AI</b>, który wykonuje polecenia wydawane po polsku.</p>
+  <div class="grid">
+    <div class="card"><span class="num">ELEMENT 1</span><h3>Strona statyczna</h3><p>Nowoczesna, szybka strona zbudowana z istniejącej treści. Te same podstrony, ten sam układ, te same adresy (URL) — pozycje w Google zostają zachowane. Dodatkowo włączone szyfrowanie HTTPS.</p></div>
+    <div class="card"><span class="num">ELEMENT 2</span><h3>Asystent AI jako CMS</h3><p>Zamiast formularzy w panelu — rozmowa po polsku: „dodaj realizację", „zaktualizuj numer telefonu", „napisz wpis na bloga". Asystent sam przygotowuje treść, zdjęcia i publikuje zmianę na serwerze.</p></div>
+    <div class="card"><span class="num">ELEMENT 3</span><h3>Automatyczny backup</h3><p>Każda zmiana jest zapisywana w historii (repozytorium). Dowolną wersję strony można przywrócić w każdej chwili — coś, czego obecny system w ogóle nie oferuje.</p></div>
+  </div>
+</section>
+
+<!-- 03 JAK TO DZIALA -->
+<section id="s3" class="wrap">
+  <div class="kicker">03 · Działanie</div>
+  <h2>Jak to będzie działać w praktyce</h2>
+  <p style="margin-bottom:8px">Przykład typowego polecenia:</p>
+  <div class="dialog">
+    <span class="who">Polecenie (po polsku)</span>
+    <p>„Dodaj nową realizację: dom jednorodzinny w Brusach, wrzesień 2025, dołączam 4 zdjęcia."</p>
+    <div class="resp"><span class="who">Co robi asystent</span>
+      <p>Dodaje wpis do listy realizacji · wgrywa zdjęcia · generuje podgląd strony · pokazuje efekt do akceptacji.</p>
+    </div>
+    <div class="resp"><span class="who">Po akceptacji</span>
+      <p>Zmiana trafia na serwer i jest widoczna na stronie w ciągu ok. 1 minuty. Kopia zmiany pozostaje w historii.</p>
+    </div>
+  </div>
+  <h3 style="margin-top:28px">Trzy tryby pracy</h3>
+  <table>
+    <tr><th style="width:24%">Tryb</th><th>Jak działa</th><th style="width:30%">Efekt</th></tr>
+    <tr><td>Edycja z asystentem</td><td>Polecenie po polsku → asystent aktualizuje treść, przygotowuje podgląd do akceptacji.</td><td>Zmiany w minutach, bez znajomości HTML i paneli</td></tr>
+    <tr><td>Publikacja (push)</td><td>Zaakceptowana zmiana jest automatycznie wgrywana na serwer przez bezpieczne połączenie FTP.</td><td>Strona aktualna od razu, wgrywane są tylko zmienione pliki</td></tr>
+    <tr><td>Backup</td><td>Każda zmiana zapisuje się w historii; dodatkowo tworzone są okresowe kopie całości.</td><td>Dowolny stan strony do przywrócenia w każdej chwili</td></tr>
+  </table>
+</section>
+
+<!-- 04 CO ZOSTAJE, CO ZNIKA -->
+<section id="s4" class="wrap">
+  <div class="kicker">04 · Zmiany</div>
+  <h2>Co zostaje, co znika</h2>
+  <div class="grid">
+    <div class="card"><span class="num">ZOSTAJE</span><h3>Serwer i domena</h3><p>Cloud Server home.pl — bez zmian, bez przenosin, bez przepisywania domeny. Faktury za hosting pozostają w obecnym kształcie.</p></div>
+    <div class="card"><span class="num">ZOSTAJE</span><h3>Treść i zdjęcia</h3><p>Wszystkie podstrony, realizacje, wpisy bloga i zdjęcia (148 plików) — przepisane 1:1, bez utraty.</p></div>
+    <div class="card"><span class="num">ZOSTAJE</span><h3>Adresy stron (URL)</h3><p>Stare adresy zachowane lub przekierowane na nowe — Google nie traci pozycji, linki zewnętrzne nie „umierają".</p></div>
+    <div class="card"><span class="num">ZNIKA</span><h3>Panel CMS WebMedia</h3><p>Koniec z logowaniem do panelu, formularzami i edycją przez przeglądarkę. Hasła do panelu przestają istnieć.</p></div>
+    <div class="card"><span class="num">ZNIKA</span><h3>Brak HTTPS</h3><p>Strona przechodzi na szyfrowane połączenie (HTTPS) — standard, którego obecnie nie ma.</p></div>
+    <div class="card"><span class="num">ZNIKA</span><h3>Ryzyko utraty danych</h3><p>Obecny system nie ma backupu. Nowe rozwiązanie archiwizuje każdą zmianę automatycznie.</p></div>
+  </div>
+</section>
+
+<!-- 05 CO POTRZEBNE OD KLIENTA -->
+<section id="s5" class="wrap">
+  <div class="kicker">05 · Wymagania</div>
+  <h2>Co jest potrzebne od Państwa</h2>
+  <p style="margin-bottom:22px">Cztery pozycje — wszystko do przekazania w jednej wiadomości. Żadna nie wymaga przygotowań technicznych.</p>
+  <table>
+    <tr><th style="width:26%">Element</th><th style="width:37%">Po co</th><th>Co dzięki temu powstanie</th></tr>
+    <tr><td>1. Dostęp do panelu home.pl (login i hasło do konta hostingowego, nie do panelu CMS)</td><td>Weryfikacja serwera, włączenie szyfrowania HTTPS, konfiguracja publikacji zmian.</td><td>Bezpieczna strona + automatyczne wgrywanie zmian</td></tr>
+    <tr><td>2. Dane FTP do strony (host, login, hasło)</td><td>Podłączenie automatycznej publikacji — asystent wgrywa zmiany na serwer.</td><td>Zmiany widoczne na stronie w ~1 minutę</td></tr>
+    <tr><td>3. Informacja o poczcie</td><td>Potwierdzenie, czy skrzynki typu adres@dobry-dach.pl działają na tym samym koncie — zabezpieczenie przed utratą poczty przy zmianach.</td><td>Poczta bez zmian, zero ryzyka</td></tr>
+    <tr><td>4. Decyzje treściowe (krótka lista)</td><td>Wybór, które wersje podstron oferty zostają (istnieją duplikaty), czy blog i promocje zostają bez zmian.</td><td>Strona zgodna z aktualną ofertą, uporządkowana dla Google</td></tr>
+  </table>
+</section>
+
+<!-- 06 KORZYSCI -->
+<section id="s6" class="wrap">
+  <div class="kicker">06 · Korzyści</div>
+  <h2>Korzyści</h2>
+  <table>
+    <tr><th style="width:38%">Korzyść</th><th>Konkret</th></tr>
+    <tr><td>Aktualizacja w minutach</td><td>Dodanie realizacji, zmiana oferty lub wpis na bloga — od polecenia do publikacji ok. 5–10 minut, zamiast godzin w panelu CMS.</td></tr>
+    <tr><td>Zero nowych kosztów</td><td>Serwer i domena zostają; asystent AI to koszt rzędu kilku złotych miesięcznie (lub w ramach istniejącej współpracy).</td></tr>
+    <tr><td>Bezpieczeństwo</td><td>Szyfrowanie HTTPS (obecnie brak) + automatyczny backup każdej zmiany.</td></tr>
+    <tr><td>SEO zachowane</td><td>Adresy stron bez zmian lub z przekierowaniami — pozycje w Google i linki zewnętrzne nie przepadają.</td></tr>
+    <tr><td>Brak szkoleń</td><td>Obsługa to rozmowa po polsku z asystentem. Nie ma czego się uczyć.</td></tr>
+    <tr><td>Przyszłościowość</td><td>Strona nie zależy od zamkniętego systemu. Każdy kolejny element (nowe sekcje, galerie, integracje) da się dodać bez blokady technicznej.</td></tr>
+  </table>
+</section>
+
+<!-- 07 PLAN -->
+<section id="s7" class="wrap">
+  <div class="kicker">07 · Wdrożenie</div>
+  <h2>Plan wdrożenia</h2>
+  <ol class="steps">
+    <li><span><b>Diagnoza dostępu</b><span>Weryfikacja panelu home.pl: szyfrowanie HTTPS, struktura katalogów, połączenie FTP. (ok. 15 minut po otrzymaniu danych)</span></span></li>
+    <li><span><b>Budowa strony</b><span>Przepisanie treści z zabezpieczonej kopii do nowego systemu: szablony, realizacje z galeriami, blog, oferta. (treść gotowa — kopia kompletna)</span></span></li>
+    <li><span><b>Podgląd</b><span>Strona testowa do obejrzenia i zatwierdzenia — bez żadnych zmian na serwerze produkcyjnym.</span></span></li>
+    <li><span><b>Publikacja</b><span>Wgranie nowej strony na serwer, włączenie HTTPS, przekierowania starych adresów, pierwszy backup.</span></span></li>
+    <li><span><b>Uruchomienie asystenta</b><span>Konfiguracja asystenta AI + 15 minut na pierwsze polecenia: dodanie realizacji, zmiana danych kontaktowych.</span></span></li>
+  </ol>
+</section>
+
+<!-- CTA -->
+<div class="wrap">
+  <div class="cta">
+    <div class="kicker">Następny krok</div>
+    <h2>Do uruchomienia potrzebna jest jedna rzecz: dostęp do panelu home.pl</h2>
+    <p>Po przekazaniu dostępu (login do panelu hostingowego + dane FTP + informacja o poczcie) wykonamy pełną diagnozę i przygotujemy stronę testową do zatwierdzenia. Stary system pozostaje nietknięty do momentu akceptacji — nic nie zostanie usunięte ani zmienione bez Państwa zgody.</p>
+    <a class="btn" href="mailto:biuro.chojnice@dobry-dach.pl?subject=Strona%20www%20%E2%80%94%20dost%C4%99p%20do%20panelu%20home.pl">Przekaż dostęp — napisz e-mail</a>
+    <div class="note">Pytania otwarte: czy strona ma zawierać coś nowego poza obecną treścią (np. cennik, nowe realizacje z 2025)? Czy blog ma być kontynuowany?</div>
+  </div>
+</div>
+
+<footer class="wrap">
+  <div class="row">
+    <span>Propozycja rozwiązania · Dobry Dach</span>
+    <span>Sierpień 2026 · Na podstawie audytu technicznego dobry-dach.pl</span>
+  </div>
+</footer>
+
+</body>
+</html>
