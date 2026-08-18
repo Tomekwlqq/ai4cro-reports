@@ -107,6 +107,7 @@ footer{border-top:1px solid var(--line);margin-top:60px;padding-top:18px;
   <div class="meta-item"><span class="mi-label">Narzędzie</span><span class="mi-val">build_mikro_cs.py</span></div>
   <div class="meta-item"><span class="mi-label">Tory CEP</span><span class="mi-val">5</span></div>
   <div class="meta-item"><span class="mi-label">Air fryer US</span><span class="mi-val">44 CEP</span></div>
+  <div class="meta-item"><span class="mi-label">Źródło danych</span><span class="mi-val">DataForSEO</span></div>
   <div class="meta-item"><span class="mi-label">Koszt DFS</span><span class="mi-val">$0.04</span></div>
   <div class="meta-item"><span class="mi-label">Czas</span><span class="mi-val">~2 min</span></div>
 </div>
@@ -140,16 +141,22 @@ footer{border-top:1px solid var(--line);margin-top:60px;padding-top:18px;
   <div class="card"><span class="tag">Faza 3 · auto</span><p>Skleja całość, deduplikuje, waliduje i renderuje HTML + JSON. Surowe odpowiedzi DFS zostają na dysku — zawsze.</p></div>
 </div>
 
-<h3 style="margin-top:26px">Tiery rynkowe — degradacja jawna, nie cicha</h3>
+<h3 style="margin-top:26px">Tiery rynkowe — co to naprawdę znaczy</h3>
+<p><strong>Wszystkie trzy tiery to DataForSEO.</strong> Tier nie mówi „czy DFS", tylko <strong>która rodzina endpointów DFS jest dostępna dla danego kraju</strong> — bo baza Amazona w DFS pokrywa ograniczoną listę rynków. Gdy Amazona nie ma, ten sam dostawca daje dane z Google. Nic nie przechodzi na inne źródło i nic nie jest dopisywane z głowy.</p>
 <div class="table-wrap">
 <table>
-<thead><tr><th>Tier</th><th>Rynki</th><th>Źródło</th><th>Co się dzieje przy braku</th></tr></thead>
+<thead><tr><th>Tier</th><th>Rynki</th><th>Endpoint DataForSEO</th><th>Różnica w praktyce</th></tr></thead>
 <tbody>
-<tr><td><strong>Tier 1</strong> <code>labs_full</code></td><td>US, SA</td><td>Amazon <code>related_keywords</code> + <code>bulk_search_volume</code></td><td>—</td></tr>
-<tr><td><strong>Tier 2</strong> <code>labs_bulk</code></td><td>UK, DE, IT, CA, AU, MX</td><td>Amazon <code>bulk_search_volume</code></td><td>brak related_keywords → leci dalej z adnotacją w <code>meta</code></td></tr>
-<tr><td><strong>Tier 3</strong> <code>google_fallback</code></td><td>PL, FR, JP, ES i reszta</td><td>Google <code>keyword_suggestions</code> + SERP advanced</td><td>frazy lokalne, hasła CEP zawsze po angielsku</td></tr>
+<tr><td><strong>Tier 1</strong><br><code>labs_full</code></td><td><strong>US · SA · AE</strong></td><td>Amazon Labs: <code>related_keywords</code> + <code>bulk_search_volume</code></td><td>Pełny obraz — DFS sam podpowiada frazy pokrewne, więc harvest widzi to, czego nie było w seedzie</td></tr>
+<tr><td><strong>Tier 2</strong><br><code>labs_bulk</code></td><td>UK · DE · IT · CA · AU · MX · <strong>EG</strong></td><td>Amazon Labs: tylko <code>bulk_search_volume</code></td><td>DFS zmierzy wolumen fraz, które mu podasz, ale sam nowych nie doda. Adnotacja ląduje w <code>meta</code></td></tr>
+<tr><td><strong>Tier 3</strong><br><code>google_fallback</code></td><td>PL · FR · JP · ES · NL · SE · BR · TR · IN</td><td>Google: <code>keyword_suggestions</code> + SERP advanced</td><td>Brak danych Amazona dla tego kraju — jedziemy na popycie z Google. Frazy lokalne, hasła CEP zawsze po angielsku</td></tr>
 </tbody>
 </table>
+</div>
+
+<div class="box green">
+  <h4>Dla warsztatu MENA to jest dobra wiadomość</h4>
+  <p><strong>Zjednoczone Emiraty i Arabia Saudyjska siedzą w Tier 1</strong> — tym samym, co USA. Egipt jest w Tier 2. Czyli dla rynków, o których rozmawiamy, mamy najbogatszy wariant danych, a nie fallback. Jeden warunek techniczny: dla Amazon.ae DataForSEO przyjmuje wyłącznie <code>language_code="ar"</code> — frazy zasilające mogą być po angielsku (expaci to ~88% rynku), ale parametr zapytania musi być arabski.</p>
 </div>
 
 <div class="box amber">
