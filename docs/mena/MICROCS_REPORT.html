@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MicroCS — jak działa · diagnoza Discovery Questions · CDQB</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --surface:#fafbfd; --line:#e6e6e9; --ink:#0a0a0a; --muted:#5b6472; --faint:#8b93a2;
+  --v:#7c5cff; --v-d:#5a3ff0; --v-soft:#efeaff; --v-line:#d4c9ff;
+  --dark:#1a1f2b; --dark-txt:#b8bfcc;
+  --g:#16a34a; --g-d:#15803d; --g-soft:#e7f6ec; --g-line:#b7e3c4;
+  --o:#f5751a; --o-d:#dd5e0a; --o-soft:#fff2e8; --o-line:#f8c39a;
+  --b:#0f7ae5; --b-d:#0a63bd; --b-soft:#e9f3fd; --b-line:#a9d2f6;
+  --a:#b8862b; --a-d:#9a6f1f; --a-soft:#fdf5e6; --a-line:#e9d3a3;
+  --grotesk:'Space Grotesk',-apple-system,sans-serif;
+  --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+  --r-sm:8px; --r:12px; --r-md:14px; --r-lg:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--grotesk);font-size:16.5px;line-height:1.65;color:var(--ink);background:var(--bg)}
+.topbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:12px 28px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(12px)}
+.topbar .mark{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--v-d)}
+.topbar .sub{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.08em}
+.topbar nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.topbar a{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+  text-decoration:none;padding:6px 11px;border-radius:9px}
+.topbar a:hover{background:var(--v-soft);color:var(--v-d)}
+main{max-width:1180px;margin:0 auto;padding:40px 28px 90px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--v);display:block;margin-bottom:12px}
+h1{font-size:clamp(30px,4.4vw,44px);font-weight:700;letter-spacing:-.03em;line-height:1.05;text-wrap:balance}
+h2{font-size:26px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+h3{font-size:17.5px;font-weight:700;margin-bottom:6px}
+p{color:var(--muted);margin-bottom:12px}
+p strong,li strong{color:var(--ink)}
+.lead{font-size:18px;margin-bottom:6px}
+section{padding-top:48px;scroll-margin-top:70px}
+.meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.meta-item{border:1px solid var(--line);border-radius:var(--r-md);padding:10px 14px;min-width:150px}
+.mi-label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.mi-val{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--v-d);font-variant-numeric:tabular-nums}
+.grid{display:grid;gap:14px;margin-top:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g5{grid-template-columns:repeat(auto-fit,minmax(195px,1fr))}
+.card{border:1px solid var(--line);border-radius:var(--r-md);padding:16px 18px;background:var(--bg)}
+.card .tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:#fff;background:var(--v);border-radius:var(--r-sm);padding:3px 9px;margin-bottom:9px}
+.card p{font-size:14px;margin:0}
+.box{border:1px solid var(--line);background:var(--surface);border-radius:var(--r-md);padding:16px 18px;margin-top:16px}
+.box h4{font-size:14.5px;font-weight:700;margin-bottom:6px}
+.box p{font-size:14.5px;margin:0}
+.box.green{background:var(--g-soft);border-color:var(--g-line)} .box.green h4{color:var(--g-d)}
+.box.orange{background:var(--o-soft);border-color:var(--o-line)} .box.orange h4{color:var(--o-d)}
+.box.amber{background:var(--a-soft);border-color:var(--a-line)} .box.amber h4{color:var(--a-d)}
+.box.violet{background:var(--v-soft);border-color:var(--v-line)} .box.violet h4{color:var(--v-d)}
+.box.blue{background:var(--b-soft);border-color:var(--b-line)} .box.blue h4{color:var(--b-d)}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);margin-top:16px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+thead{background:var(--surface)}
+th{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+  text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);font-weight:600}
+td{padding:11px 14px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+td strong{color:var(--ink)}
+code{font-family:var(--mono);font-size:12.5px;background:var(--v-soft);color:var(--v-d);padding:1px 5px;border-radius:5px}
+pre{background:var(--dark);color:var(--dark-txt);font-family:var(--mono);font-size:12.5px;line-height:1.8;
+  padding:16px 18px;border-radius:var(--r);overflow-x:auto;margin-top:16px}
+pre .c{color:#6b7688} pre .k{color:#a892ff} pre .g{color:#5fd39a}
+blockquote{border-left:3px solid var(--v);background:var(--v-soft);border-radius:0 var(--r) var(--r) 0;
+  padding:14px 18px;margin-top:16px}
+blockquote p{color:var(--ink);font-size:15px;margin:0}
+.cta{background:var(--dark);border-radius:var(--r-lg);padding:26px 28px;margin-top:44px}
+.cta .kicker{color:#a892ff}
+.cta h3{color:#fff;font-size:20px;margin-bottom:8px}
+.cta p{color:var(--dark-txt);font-size:15px;margin:0}
+ul{margin:8px 0 0 20px} li{color:var(--muted);font-size:14.5px;margin-bottom:5px}
+.fail{color:var(--o-d);font-weight:600} .ok{color:var(--g-d);font-weight:600}
+footer{border-top:1px solid var(--line);margin-top:60px;padding-top:18px;
+  font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.06em}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="mark">MicroCS</span>
+  <span class="sub">raport · 2026-08-18</span>
+  <nav>
+    <a href="#jak">01 Jak działa</a>
+    <a href="#tory">02 Pięć torów</a>
+    <a href="#dwadziescia">03 Diagnoza „20"</a>
+    <a href="#cdqb">04 CDQB</a>
+    <a href="#co-dalej">05 Co dalej</a>
+  </nav>
+</div>
+
+<main>
+
+<span class="kicker">GEO PDP Optimizer · analiza narzędzia</span>
+<h1>MicroCS — jak działa,<br>i skąd wzięło się 20 pytań</h1>
+<p class="lead">Trzy rzeczy w jednym dokumencie: co MicroCS robi naprawdę, dlaczego w Category Standard siedzi płaska dwudziestka zamiast 2–3 pytań na CEP, i jak z tego wyjąć drugie, mniejsze narzędzie — <strong>CEP Discovery Questions Builder</strong>.</p>
+
+<div class="meta-row">
+  <div class="meta-item"><span class="mi-label">Narzędzie</span><span class="mi-val">build_mikro_cs.py</span></div>
+  <div class="meta-item"><span class="mi-label">Tory CEP</span><span class="mi-val">5</span></div>
+  <div class="meta-item"><span class="mi-label">Air fryer US</span><span class="mi-val">44 CEP</span></div>
+  <div class="meta-item"><span class="mi-label">Koszt DFS</span><span class="mi-val">$0.04</span></div>
+  <div class="meta-item"><span class="mi-label">Czas</span><span class="mi-val">~2 min</span></div>
+</div>
+
+<div class="box violet">
+  <h4>Werdykt w trzech zdaniach</h4>
+  <p>MicroCS działa i robi dokładnie to, co obiecuje: wyciąga sytuacje wejścia do kategorii pięcioma niezależnymi torami i skleja je w jedną listę. <strong>Dwudziestka w CS nie pochodzi z MicroCS</strong> — to twardy próg wpisany w <code>assemble_cs.py</code>, który spłaszcza gotowe, poprawnie przypisane pytania. Silnik pytań <strong>już dziś</strong> generuje po 3 discovery na CEP i je taguje — problem jest wyłącznie w warstwie składania CS.</p>
+</div>
+
+<!-- ─────────────────────────────────────────────── -->
+<section id="jak">
+<span class="kicker">01</span>
+<h2>Jak działa MicroCS</h2>
+<p class="lead">Powstał, bo pełny Category Standard to 16 sekcji i kilka dni pracy, a do zbudowania jednego landing page'a potrzeba czterech rzeczy.</p>
+
+<div class="grid g2">
+  <div class="card"><span class="tag">Wejście</span>
+    <h3>Jedna komenda</h3>
+    <p><code>python3 tools/build_mikro_cs.py {slug} --market {rynek}</code> — bez ręcznego researchu. Rynek ustala tier źródeł, reszta dzieje się sama.</p>
+  </div>
+  <div class="card"><span class="tag">Wyjście</span>
+    <h3>Cztery artefakty + rdzeń</h3>
+    <p>CEP-y (sytuacje wejścia) · KCF (cechy kluczowe) · kolejność decyzji · blokery FUD. Plus §0 — opis kategorii i jej rdzeń, czyli lead LP.</p>
+  </div>
+</div>
+
+<h3 style="margin-top:26px">Trzy fazy przebiegu</h3>
+<div class="grid g3">
+  <div class="card"><span class="tag">Faza 1 · auto</span><p>Pobiera dane z DataForSEO, filtruje marki i specyfikacje techniczne, buduje klastry sytuacyjne → <code>cep_clusters_{slug}.json</code>.</p></div>
+  <div class="card"><span class="tag">Faza 2 · LLM</span><p>Model nadaje hasła CEP-om i opisuje, czego klient w tej sytuacji oczekuje → <code>cep_labels_{slug}.json</code>. Jedyny krok z modelem.</p></div>
+  <div class="card"><span class="tag">Faza 3 · auto</span><p>Skleja całość, deduplikuje, waliduje i renderuje HTML + JSON. Surowe odpowiedzi DFS zostają na dysku — zawsze.</p></div>
+</div>
+
+<h3 style="margin-top:26px">Tiery rynkowe — degradacja jawna, nie cicha</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Tier</th><th>Rynki</th><th>Źródło</th><th>Co się dzieje przy braku</th></tr></thead>
+<tbody>
+<tr><td><strong>Tier 1</strong> <code>labs_full</code></td><td>US, SA</td><td>Amazon <code>related_keywords</code> + <code>bulk_search_volume</code></td><td>—</td></tr>
+<tr><td><strong>Tier 2</strong> <code>labs_bulk</code></td><td>UK, DE, IT, CA, AU, MX</td><td>Amazon <code>bulk_search_volume</code></td><td>brak related_keywords → leci dalej z adnotacją w <code>meta</code></td></tr>
+<tr><td><strong>Tier 3</strong> <code>google_fallback</code></td><td>PL, FR, JP, ES i reszta</td><td>Google <code>keyword_suggestions</code> + SERP advanced</td><td>frazy lokalne, hasła CEP zawsze po angielsku</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box amber">
+  <h4>Czego MicroCS nie daje — i dobrze, że to napisane</h4>
+  <p><strong>Decision tree</strong> — jest kolejność decyzji, nie drzewo rozgałęzień; do konfiguratora za mało. <strong>Priorytetyzacji ważonej</strong> — wolumeny z torów Google Ads i harvestu Amazon są w nieporównywalnych skalach, ranking cross-skalowy jest zakazany. <strong>Warstwy produktowej</strong> — opisuje kategorię, nie Twój produkt.</p>
+</div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section id="tory">
+<span class="kicker">02</span>
+<h2>Pięć torów — to jest ta część, która jest naprawdę dobra</h2>
+<p class="lead">Każdy tor widzi coś innego i żaden nie jest podzbiorem pozostałych. Wynik to ich <strong>suma po deduplikacji</strong>, nie wybór jednego.</p>
+
+<div class="grid g5">
+  <div class="card"><span class="tag">T0</span><h3>Rdzeń</h3><p>Po co ta kategoria w ogóle powstała, plus 3–5 pochodnych tej samej potrzeby. Zawsze pierwszy, poza sortowaniem po wolumenie.</p></div>
+  <div class="card"><span class="tag">T1</span><h3>Dedukcyjny</h3><p>Potrzeby obiektywne: brak narzędzia, zawodzący substytut, ograniczenie miejsca. Zwykle zerowy wolumen — bo nikt tego nie wygooguje.</p></div>
+  <div class="card"><span class="tag">T2</span><h3>Soczewki + EDS</h3><p>Sześć soczewek społeczno-kulturowych i cztery drivery emocjonalne. Tożsamość, wstyd, popis — czego nie złapie żaden harvest.</p></div>
+  <div class="card"><span class="tag">T3</span><h3>Harvest</h3><p>Bottom-up z Amazona i Google. Widzi wolumen, jest ślepy na to, co nie ma jeszcze frazy. Strukturalnie ograniczony seedem.</p></div>
+  <div class="card"><span class="tag">T4</span><h3>Agnostyczny</h3><p>22 wzorce niezależne od kategorii: awaria, prezent, upgrade, sezon, drugi egzemplarz.</p></div>
+</div>
+
+<blockquote><p><strong>Wolumen jest wagą, nie bramką.</strong> CEP z zerem zostaje, z flagą <code>bez_ruchu_z_serp</code>. Dowód z produkcji: 4 z 10 CEP-ów w gotowym CS pumeksów ma wolumen zerowy — filtr wolumenowy wyciąłby 40% poprawnego standardu.</p></blockquote>
+
+<div class="box green">
+  <h4>Deduplikacja jako sygnał, nie strata</h4>
+  <p>Gdy dwa tory znajdują to samo, scalony CEP nosi listę torów, które go znalazły — <code>tory: ["T2","T4"]</code>. To wzmocnienie: sytuacja widoczna z dwóch niezależnych stron jest pewniejsza niż ta z jednego źródła. Air fryer US: 2 z harvestu + 45 z torów → <strong>44 po deduplikacji</strong> (3 scalenia), 3 potwierdzone krzyżowo.</p>
+</div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section id="dwadziescia">
+<span class="kicker">03</span>
+<h2>Diagnoza: skąd się wzięło 20 Discovery Questions</h2>
+<p class="lead">Miało być 2–3 na CEP. W Category Standard jest płaska dwudziestka. Poniżej dokładnie, gdzie to się dzieje — i dlaczego naprawa jest tańsza, niż wygląda.</p>
+
+<h3 style="margin-top:22px">Co pokazują dane</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Warstwa</th><th>Plik</th><th>Stan faktyczny</th><th>Ocena</th></tr></thead>
+<tbody>
+<tr><td><strong>Silnik pytań (CQF)</strong></td><td><code>data/questions/air_fryers.json</code></td><td>459 pytań, każde z <code>cep_id</code>, <code>cep_label</code>, <code>state_id</code>, <code>layer</code>. Pytań otwierających (<code>opens_cep</code>) — <strong>73, po 3 na CEP</strong> w 23 CEP-ach.</td><td class="ok">✅ robi dokładnie to, co miał</td></tr>
+<tr><td><strong>Category Standard</strong></td><td><code>data/cs_v2/air_fryers_v2.json</code></td><td>23 CEP-y, ale <code>discovery_questions</code> = <strong>20 pozycji z polami</strong> <code>rank · question · volume · has_featured</code>. Zero <code>cep_id</code>.</td><td class="fail">❌ przypisanie zgubione</td></tr>
+<tr><td><strong>Render CS (HTML)</strong></td><td><code>cs_air_fryers_EN.html</code> §3</td><td>„20 discovery questions from engine V5 (layer ①…)" — lista jednym ciągiem, bez podziału na sytuacje.</td><td class="fail">❌ czytelnik nie wie, do czego pytanie należy</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box orange">
+  <h4>Miejsce zbrodni — dwie linijki</h4>
+  <p><code>assemble_cs.py</code> (9 czerwca) trzyma twardy próg dwudziestu, niezależny od liczby CEP-ów. Jeśli po filtrze zostanie mniej, każe modelowi <em>dopisać brakujące</em> — z wiedzy o kategorii, bez związku z sytuacjami:</p>
+<pre><span class="c"># assemble_cs.py:115</span>
+L.append(f<span class="g">"**Etap 2 — Discovery ({len(czyste)} czyste z DFS…; floor 20):**"</span>)
+<span class="c"># assemble_cs.py:120</span>
+<span class="k">if</span> len(czyste) &lt; <span class="g">20</span>:
+    L.append(f<span class="g">"&lt;&lt;LLM_DISCOVERY_UZUP: dopisz {20 - len(czyste)} pytań discovery…&gt;&gt;"</span>)</pre>
+  <p style="margin-top:12px">Drugie ogniwo: <code>tools/regen_md_to_json.py</code> — funkcja <code>parse_discovery_questions()</code> ma w docstringu wprost <em>„Parsuje listę 20 pytań z sekcji 3"</em>. Parser oczekuje płaskiej listy, więc nawet gdyby generator dał grupowanie, odczyt by je zgubił.</p>
+</div>
+
+<div class="box blue">
+  <h4>Dlaczego to nie jest wielka przebudowa</h4>
+  <p>Dane z przypisaniem <strong>już istnieją</strong> — 73 pytania z <code>opens_cep</code>, po 3 na CEP, dokładnie w proporcji, której chcesz. Naprawa to nie nowy silnik, tylko trzy zmiany: (1) w <code>assemble_cs.py</code> zamiast progu 20 — pętla po CEP-ach i po 2–3 pytania z każdego; (2) w JSON CS pole <code>discovery_questions_mapped</code> (nazwa już przewidziana w kodzie, dziś pusta); (3) render §3 grupowany po CEP zamiast jednej listy.</p>
+</div>
+
+<h3 style="margin-top:26px">Jak to wygląda po zmianie</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>&nbsp;</th><th>Dziś</th><th>Po zmianie</th></tr></thead>
+<tbody>
+<tr><td><strong>Liczba pytań</strong></td><td>20 (sztywno)</td><td>2–3 × liczba CEP → dla air fryers <strong>46–69</strong></td></tr>
+<tr><td><strong>Kryterium wyboru</strong></td><td>wolumen, top-20</td><td>pokrycie sytuacji — każdy CEP obsłużony</td></tr>
+<tr><td><strong>Sytuacje bez ruchu</strong></td><td>wypadają (mają zerowy wolumen)</td><td>zostają — to one budują treść na PDP</td></tr>
+<tr><td><strong>Czytelność w CS</strong></td><td>lista, do której nic nie pasuje</td><td>sekcja per CEP: sytuacja → jej pytania</td></tr>
+<tr><td><strong>Dla kolejnych narzędzi</strong></td><td>trzeba zgadywać przypisanie</td><td>brief bierze pytania wprost dla wybranej sytuacji</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section id="cdqb">
+<span class="kicker">04</span>
+<h2>CEP Discovery Questions Builder — drugie, mniejsze narzędzie</h2>
+<p class="lead">Z MicroCS wyjęte zostaje to, co najcenniejsze i najszybsze: budowanie CEP-ów i wyciąganie z nich pytań otwierających. Bez KCF, bez blokerów, bez kolejności decyzji.</p>
+
+<div class="grid g2">
+  <div class="card"><span class="tag">Wejście</span><h3>Kategoria i rynek</h3><p>Nic więcej. Ani URL-a, ani pliku klienta — narzędzie opisuje kategorię, nie produkt.</p></div>
+  <div class="card"><span class="tag">Wyjście</span><h3>Sytuacje + pytania</h3><p>Lista CEP-ów z pięciu torów, każdy z 2–3 pytaniami otwierającymi i tagiem toru, który go znalazł.</p></div>
+</div>
+
+<h3 style="margin-top:26px">Przebieg</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Krok</th><th>Co robi</th><th>Skąd bierze</th><th>Czas / koszt</th></tr></thead>
+<tbody>
+<tr><td><strong>1 · Rdzeń</strong></td><td>Nazywa, po co kategoria istnieje, i rozwija 3–5 pochodnych</td><td><code>cep_tory.T0</code> + slot <code>cs0_{slug}.json</code></td><td>sekundy</td></tr>
+<tr><td><strong>2 · Cztery tory</strong></td><td>Dedukcja, soczewki+EDS, harvest, wzorce agnostyczne — równolegle</td><td><code>cep_tory.T1–T4</code> + DataForSEO</td><td>~1 min · ~$0.03</td></tr>
+<tr><td><strong>3 · Dedup + waga</strong></td><td>Scala powtórzenia (zachowując tagi torów), dokłada wolumen jako wagę</td><td>Jaccard na tokenach, rzadkie tokeny jako wyróżnik</td><td>sekundy</td></tr>
+<tr><td><strong>4 · Pytania</strong></td><td>Dla każdego CEP generuje 2–3 pytania otwierające i taguje je <code>cep_id</code></td><td>silnik pytań (layer ①) + LLM na etykiety</td><td>~30 s · ~$0.01</td></tr>
+<tr><td><strong>5 · Wydanie</strong></td><td>JSON dla narzędzi + HTML dla człowieka, obie wersje z podziałem per CEP</td><td>—</td><td>sekundy</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box green">
+  <h4>Po co to jako osobny produkt</h4>
+  <p>Bo to jest <strong>najtańsze wejście do rozmowy z klientem</strong>. Dwie minuty i widać sytuacje zakupowe jego kategorii razem z pytaniami, które ludzie w nich zadają — zanim ktokolwiek podpisze zlecenie na Category Standard. Jest też pierwszym krokiem procesu „czy jesteś widoczny w product discovery": pytania z buildera idą prosto do reverse engine (Google + ChatGPT) i wracają z listą, kto jest dziś cytowany zamiast Ciebie.</p>
+</div>
+
+<div class="box amber">
+  <h4>Granice, które trzeba postawić od razu</h4>
+  <p>CDQB <strong>nie</strong> zastępuje CS ani MicroCS — nie ma KCF, blokerów, tierów cenowych ani kolejności decyzji. Nie priorytetyzuje CEP-ów między torami (skale są nieporównywalne — ta sama zasada co w MicroCS). I nie dotyka produktu klienta: to warstwa kategorialna, nakładanie produktu jest krokiem po.</p>
+</div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section id="co-dalej">
+<span class="kicker">05</span>
+<h2>Co dalej — kolejność, nie lista życzeń</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>#</th><th>Zadanie</th><th>Gdzie</th><th>Efekt, po którym widać, że zadziałało</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Zamienić próg 20 na pętlę po CEP (2–3 pytania każdy)</td><td><code>assemble_cs.py</code></td><td>W CS air fryers: 46–69 pytań w 23 grupach zamiast 20 luzem</td></tr>
+<tr><td>2</td><td>Wypełnić <code>discovery_questions_mapped</code> w JSON CS</td><td><code>regen_md_to_json.py</code></td><td>Każde pytanie ma <code>cep_id</code> — sprawdzalne jednym <code>grep</code></td></tr>
+<tr><td>3</td><td>Render §3 grupowany po sytuacji</td><td>generator CS HTML</td><td>W CS widać nagłówek sytuacji i pod nim jej pytania</td></tr>
+<tr><td>4</td><td>Wyodrębnić CDQB jako osobne wejście</td><td>nowy <code>tools/build_cdqb.py</code></td><td>Jedna komenda → JSON + HTML dla dowolnej kategorii w ~2 min</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="cta">
+  <span class="kicker">Truth Checker</span>
+  <h3>Co wiem, czego nie wiem</h3>
+  <p><strong>Co wiem z danych:</strong> liczby powyżej pochodzą z odczytu plików w <code>GEO_PDP_Optimizer</code> — 459 pytań i 73 z <code>opens_cep</code> policzone bezpośrednio z <code>data/questions/air_fryers.json</code>, 23 CEP-y i 20 discovery z <code>data/cs_v2/air_fryers_v2.json</code>, próg 20 to linie 115 i 120 w <code>assemble_cs.py</code>.<br><br>
+  <strong>Co zakładam:</strong> że reguła „2–3 na CEP" ma dotyczyć pytań otwierających (layer ①), a nie całego pola 459 pytań. Że wersja EN air fryers jest reprezentatywna dla innych kategorii — sprawdziłem jedną drugą (tabletki do ekspresu: 15 pytań, też płasko), ale nie wszystkie 105.<br><br>
+  <strong>Co może być błędne:</strong> koszt CDQB (~$0.04) to koszt MicroCS pomniejszony o KCF i blokery — szacunek, nie pomiar. Czas „~2 min" pochodzi z przebiegu air fryer US na Tier 1; Tier 3 z fallbackiem Google będzie wolniejszy.<br><br>
+  <strong>Co zweryfikować przed zmianą:</strong> czy któryś downstream (build_entry, huby, pilot) nie zakłada dokładnie 20 pozycji — <code>build_entry.py</code> ma <code>[:20]</code>, więc zmiana bez przeglądu tych miejsc może uciąć nowe pytania w innym punkcie.<br><br>
+  <strong>Co poprawiłbym z jednym inputem:</strong> gdybyś powiedział, ile pytań na CEP ma być twardą regułą (2? 3? „2–3 zależnie od wagi CEP?"), zamieniłbym to na konkretny warunek w kodzie zamiast widełek w dokumencie.</p>
+</div>
+
+<footer>TOMASZ WALIGÓRA · GEO PDP OPTIMIZER · RAPORT MICROCS · 2026-08-18</footer>
+</main>
+</body>
+</html>
