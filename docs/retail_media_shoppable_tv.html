@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shoppable TV &amp; Live Commerce — Intelligence Report 2025/26</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a27;
+    --border: #2a2a40;
+    --accent: #7c6fef;
+    --accent2: #e85d8a;
+    --accent3: #4ecdc4;
+    --accent4: #ffd93d;
+    --text: #e8e8f0;
+    --muted: #8888aa;
+    --green: #4ade80;
+    --orange: #fb923c;
+    --red: #f87171;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+  .hero {
+    background: linear-gradient(135deg, #12121a 0%, #1a0a30 50%, #0a1a2a 100%);
+    padding: 80px 40px 60px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden;
+  }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(124,111,239,0.15) 0%, transparent 70%); }
+  .hero-badge { display: inline-block; background: linear-gradient(90deg, var(--accent), var(--accent2)); color: white; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 5px 16px; border-radius: 20px; margin-bottom: 20px; }
+  .hero h1 { font-size: clamp(28px, 5vw, 52px); font-weight: 800; background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--accent2) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px; line-height: 1.2; }
+  .hero-sub { color: var(--muted); font-size: 18px; max-width: 700px; margin: 0 auto 24px; }
+  .hero-meta { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; color: var(--muted); font-size: 13px; }
+  .hero-meta span::before { content: '●'; color: var(--accent3); margin-right: 6px; }
+  .toc { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 40px; display: flex; gap: 4px; flex-wrap: wrap; position: sticky; top: 0; z-index: 100; }
+  .toc a { color: var(--muted); text-decoration: none; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 6px; transition: all 0.2s; white-space: nowrap; }
+  .toc a:hover { background: var(--border); color: var(--text); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 64px 40px; border-bottom: 1px solid var(--border); }
+  .sec-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .sec-header { display: flex; align-items: center; gap: 16px; margin-bottom: 40px; }
+  .sec-num { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: white; flex-shrink: 0; }
+  .sec-header h2 { font-size: 28px; font-weight: 700; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; }
+  .grid { display: grid; gap: 20px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .g4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; position: relative; overflow: hidden; }
+  .stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .stat-n { font-size: 36px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.1; }
+  .stat-u { font-size: 14px; color: var(--muted); margin-top: 6px; }
+  .stat-l { font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 4px; margin: 2px; }
+  .tg { background: rgba(74,222,128,.15); color: var(--green); border: 1px solid rgba(74,222,128,.3); }
+  .tb { background: rgba(124,111,239,.15); color: var(--accent); border: 1px solid rgba(124,111,239,.3); }
+  .tp { background: rgba(232,93,138,.15); color: var(--accent2); border: 1px solid rgba(232,93,138,.3); }
+  .tt { background: rgba(78,205,196,.15); color: var(--accent3); border: 1px solid rgba(78,205,196,.3); }
+  .ty { background: rgba(255,217,61,.15); color: var(--accent4); border: 1px solid rgba(255,217,61,.3); }
+  .to { background: rgba(251,146,60,.15); color: var(--orange); border: 1px solid rgba(251,146,60,.3); }
+  .tr { background: rgba(248,113,113,.15); color: var(--red); border: 1px solid rgba(248,113,113,.3); }
+  .tl { position: relative; }
+  .tl::before { content: ''; position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--accent), var(--accent2)); }
+  .ti { display: flex; gap: 20px; margin-bottom: 28px; padding-left: 52px; position: relative; }
+  .td { position: absolute; left: 12px; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 3px solid var(--bg); z-index: 1; }
+  .ty2 { font-size: 12px; font-weight: 700; color: var(--accent); white-space: nowrap; padding-top: 2px; min-width: 40px; }
+  .tc { flex: 1; }
+  .ttl { font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .tds { font-size: 13px; color: var(--muted); }
+  .pc { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; display: grid; grid-template-columns: 180px 1fr auto; align-items: center; gap: 20px; }
+  .pn { font-weight: 700; font-size: 16px; }
+  .ps { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .pss { display: flex; gap: 20px; }
+  .psv { font-size: 18px; font-weight: 700; color: var(--accent); }
+  .psl { font-size: 11px; color: var(--muted); }
+  .pb { width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+  .pf { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .cc { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .ch { background: linear-gradient(135deg, var(--surface2), var(--surface)); padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .ct { font-size: 17px; font-weight: 700; }
+  .cb { padding: 24px; }
+  .cm { display: inline-flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; margin: 4px; }
+  .cmv { font-size: 18px; font-weight: 700; color: var(--green); }
+  .cml { font-size: 12px; color: var(--muted); }
+  p.bt { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 12px; }
+  p.bt:last-child { margin-bottom: 0; }
+  .gt { width: 100%; border-collapse: collapse; }
+  .gt th { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); padding: 10px 16px; border-bottom: 1px solid var(--border); }
+  .gt td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text); vertical-align: top; }
+  .gt tr:last-child td { border-bottom: none; }
+  .gt tr:hover td { background: var(--surface2); }
+  .sb { display: inline-block; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; font-size: 14px; font-weight: 800; padding: 4px 10px; border-radius: 6px; min-width: 40px; text-align: center; }
+  .vc { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; }
+  .vc:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .vt { background: linear-gradient(135deg, #1a1a30, #2a1a30); height: 120px; display: flex; align-items: center; justify-content: center; font-size: 36px; position: relative; }
+  .vi { padding: 14px; }
+  .vtl { font-size: 13px; font-weight: 600; margin-bottom: 6px; line-height: 1.4; }
+  .vm { font-size: 11px; color: var(--muted); }
+  .vc a { color: inherit; text-decoration: none; }
+  .ib { background: linear-gradient(135deg, rgba(124,111,239,.08), rgba(232,93,138,.08)); border: 1px solid rgba(124,111,239,.3); border-radius: 12px; padding: 20px 24px; margin: 20px 0; }
+  .il { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .it { font-size: 15px; color: var(--text); line-height: 1.6; }
+  .pr { margin: 14px 0; }
+  .ph { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+  .pbar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .pfill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .qb { border-left: 3px solid var(--accent); padding: 16px 24px; background: var(--surface2); border-radius: 0 12px 12px 0; margin: 20px 0; font-style: italic; color: var(--text); }
+  .qs { font-size: 12px; color: var(--muted); margin-top: 8px; font-style: normal; }
+  footer { background: var(--surface); border-top: 1px solid var(--border); padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+  footer a { color: var(--accent); text-decoration: none; }
+  @media (max-width: 768px) {
+    section { padding: 40px 20px; }
+    .hero { padding: 60px 20px 40px; }
+    .toc { padding: 12px 20px; }
+    .pc { grid-template-columns: 1fr; }
+    .pss { flex-wrap: wrap; }
+  }
+  .srclink { color: var(--accent); display: block; padding: 8px 12px; background: var(--surface); border-radius: 6px; text-decoration: none; border: 1px solid var(--border); font-size: 12px; }
+  .srclink:hover { border-color: var(--accent); }
+
+  /* ── Light mode ── */
+  body.light {
+    --bg: #f4f4f8;
+    --surface: #ffffff;
+    --surface2: #ededf6;
+    --border: #d8d8ec;
+    --text: #1a1a2e;
+    --muted: #6666aa;
+    --green: #16a34a;
+    --orange: #ea580c;
+    --red: #dc2626;
+  }
+  body.light .hero {
+    background: linear-gradient(135deg, #eeeef8 0%, #e8e0f8 50%, #e0eaf8 100%);
+  }
+  body.light .vt {
+    background: linear-gradient(135deg, #e8e8f8, #f0e8f8);
+  }
+  body.light .qb {
+    background: var(--surface2);
+  }
+  body.light .ib {
+    background: linear-gradient(135deg, rgba(124,111,239,.06), rgba(232,93,138,.06));
+  }
+  body.light .stat::before {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  body.light section[style*="background:var(--surface)"] {
+    background: var(--surface) !important;
+  }
+
+  /* Toggle button */
+  .theme-toggle {
+    margin-left: auto;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--text); }
+  .theme-toggle .icon-dark { display: inline; }
+  .theme-toggle .icon-light { display: none; }
+  body.light .theme-toggle .icon-dark { display: none; }
+  body.light .theme-toggle .icon-light { display: inline; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Intelligence Report 2025/26</div>
+  <h1>Shoppable TV &amp; Live Commerce</h1>
+  <p class="hero-sub">Telewizja spotyka e-commerce: konwergencja mediów i handlu — rynki globalne, najwięksi gracze, best cases, technologia AI</p>
+  <div class="hero-meta">
+    <span>Research: maj 2026</span>
+    <span>10 kanałów analizy</span>
+    <span>Rynki: USA, EU, CN, APAC</span>
+    <span>Links + YT resources</span>
+  </div>
+</div>
+
+<nav class="toc container">
+  <a href="#rynek">💰 Rynek</a>
+  <a href="#definicje">📺 Definicje</a>
+  <a href="#historia">📅 Historia</a>
+  <a href="#gracze">🏆 Gracze</a>
+  <a href="#cases">🎯 Best Cases</a>
+  <a href="#regiony">🌍 Regiony</a>
+  <a href="#tech">🤖 Tech</a>
+  <a href="#gaps">📊 Gaps</a>
+  <a href="#yt">▶ YouTube</a>
+  <a href="#wnioski">💡 Wnioski</a>
+  <a href="#pl-case" style="background:linear-gradient(90deg,rgba(124,111,239,.2),rgba(232,93,138,.2));color:var(--accent);border:1px solid rgba(124,111,239,.4);border-radius:6px;">🇵🇱 TVN×Hebe</a>
+  <button class="theme-toggle" onclick="toggleTheme()" title="Przełącz tryb">
+    <span class="icon-dark">☀️ Jasny</span>
+    <span class="icon-light">🌙 Ciemny</span>
+  </button>
+</nav>
+
+<!-- 1. RYNEK -->
+<section id="rynek">
+<div class="container">
+  <div class="sec-label">Perspektywa biznesowa</div>
+  <div class="sec-header"><div class="sec-num">1</div><h2>Wielkość rynku i trajektoria wzrostu</h2></div>
+
+  <div class="ib">
+    <div class="il">Kluczowe zdanie</div>
+    <div class="it">Telewizja przestaje być medium pasywnym — staje się najdroższym real estate w ecommerce. Konwergencja TV + commerce to największa zmiana w sprzedaży detalicznej od czasu Amazona.</div>
+  </div>
+
+  <div class="grid g4" style="margin-bottom:32px;">
+    <div class="stat"><div class="stat-n">$85B</div><div class="stat-u">Shoppable Video Platform 2025</div><div class="stat-l">CAGR 14,9% (2025–2033) — najszybciej rosnący segment</div></div>
+    <div class="stat"><div class="stat-n">$144,9B</div><div class="stat-u">TV-driven retail sales USA</div><div class="stat-l">Wartość zakupów inspirowanych TV rocznie w USA (Shopsense AI)</div></div>
+    <div class="stat"><div class="stat-n">$172,9B</div><div class="stat-u">Live commerce globalnie 2025</div><div class="stat-l">Grand View Research; prognoza $2,55T do 2033 (CAGR 41%)</div></div>
+    <div class="stat"><div class="stat-n">$843,9B</div><div class="stat-u">Live streaming sprzedaż Chiny 2025</div><div class="stat-l">19,2% całego retail e-commerce w Chinach (eMarketer)</div></div>
+  </div>
+
+  <div class="grid g3" style="margin-bottom:32px;">
+    <div class="stat"><div class="stat-n">$33,35B</div><div class="stat-u">US CTV ad spend 2025</div><div class="stat-l">88% gospodarstw domowych w USA ma przynajmniej jedno urządzenie CTV</div></div>
+    <div class="stat"><div class="stat-n">$5B</div><div class="stat-u">CTV Retail Media 2025</div><div class="stat-l">Osiągnięto 2 lata przed prognozą eMarketer z 2023. Boom accelerated.</div></div>
+    <div class="stat"><div class="stat-n">108,7M</div><div class="stat-u">Shoppable media buyers USA 2027</div><div class="stat-l">46,6% wszystkich digital shoppers w USA (VAB / Shopsense AI)</div></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:20px;">Trajektoria rynku wg segmentów</h3>
+    <div class="pr"><div class="ph"><span>🇨🇳 Live Commerce Chiny (GMV)</span><span style="color:var(--green);">~$843,9B (2025)</span></div><div class="pbar"><div class="pfill" style="width:100%"></div></div></div>
+    <div class="pr"><div class="ph"><span>🌍 Live Commerce globalnie</span><span style="color:var(--accent);">$172,9B (2025) → $2,55T (2033)</span></div><div class="pbar"><div class="pfill" style="width:68%"></div></div></div>
+    <div class="pr"><div class="ph"><span>🇺🇸 Social Commerce USA</span><span style="color:var(--accent2);">$85,58B (2025), +20% YoY</span></div><div class="pbar"><div class="pfill" style="width:55%"></div></div></div>
+    <div class="pr"><div class="ph"><span>📺 Shoppable Video Platform</span><span style="color:var(--accent3);">$85B (2025), CAGR 14,9%</span></div><div class="pbar"><div class="pfill" style="width:48%"></div></div></div>
+    <div class="pr"><div class="ph"><span>🇺🇸 US Livestream e-commerce</span><span style="color:var(--accent4);">$14,6B (2025), +50% YoY</span></div><div class="pbar"><div class="pfill" style="width:22%"></div></div></div>
+    <div class="pr"><div class="ph"><span>🇪🇺 Live Shopping Europa</span><span style="color:var(--orange);">€10B+ (2025)</span></div><div class="pbar"><div class="pfill" style="width:18%"></div></div></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:12px;">Paski proporcjonalne względem największego segmentu. Źródła: Grand View Research, eMarketer, Shopsense AI, Streaming Media Global.</div>
+  </div>
+</div>
+</section>
+
+<!-- 2. DEFINICJE -->
+<section id="definicje" style="background:var(--surface);">
+<div class="container">
+  <div class="sec-label">Mapa kategorii</div>
+  <div class="sec-header"><div class="sec-num">2</div><h2>Ekosystem: definicje i typy</h2></div>
+
+  <div class="grid g2">
+    <div class="card"><div style="font-size:28px;margin-bottom:12px;">📺</div><h3 style="margin-bottom:8px;">Shoppable TV</h3><p class="bt">Telewizja linearna lub streaming, w której widz może kupić produkt bezpośrednio z ekranu — przez pilot, QR kod, drugi ekran (smartfon) lub głos. TV staje się oknem sklepowym.</p><div><span class="tag tb">CTV shoppable ads</span><span class="tag tb">Interactive overlays</span><span class="tag tb">QR codes on screen</span><span class="tag tb">AI product matching</span></div></div>
+    <div class="card"><div style="font-size:28px;margin-bottom:12px;">🔴</div><h3 style="margin-bottom:8px;">Live Commerce</h3><p class="bt">Sprzedaż produktów przez livestream z interaktywnym chatem, ofertami flash, demonstracją. Host prowadzi show w czasie rzeczywistym — widz pyta, kupuje, komentuje. Model stworzony w Chinach 2016.</p><div><span class="tag tp">Amazon Live</span><span class="tag tp">TikTok Shop Live</span><span class="tag tp">Taobao Live</span><span class="tag tp">Instagram Live</span></div></div>
+    <div class="card"><div style="font-size:28px;margin-bottom:12px;">🛍️</div><h3 style="margin-bottom:8px;">Shoppable Video (VOD)</h3><p class="bt">Nagrane filmy z osadzonymi linkami do produktów. Widz klika na produkt widoczny w filmie i od razu ląduje na karcie produktu. Zawsze dostępne — nie wymagają live hosta.</p><div><span class="tag tt">YouTube Shopping</span><span class="tag tt">Firework</span><span class="tag tt">Bambuser</span><span class="tag tt">Terrific</span></div></div>
+    <div class="card"><div style="font-size:28px;margin-bottom:12px;">🤖</div><h3 style="margin-bottom:8px;">AI-Powered Content Commerce</h3><p class="bt">AI rozpoznaje produkty widoczne w dowolnym contencie (serial, mecz, talk show) i automatycznie generuje shoppable overlay — bez potrzeby manualnego tagowania. Gen 3 technologii.</p><div><span class="tag ty">KERV Interactive</span><span class="tag ty">TheTake</span><span class="tag ty">Shopsense AI</span><span class="tag ty">Amazon Dynamic TV</span></div></div>
+  </div>
+
+  <div class="ib">
+    <div class="il">Kluczowe rozróżnienie</div>
+    <div class="it"><strong>Live Commerce</strong> wymaga zmiany zachowania konsumenta (oglądanie na żywo). <strong>Shoppable TV</strong> pozwala kupować w contencie, który i tak oglądają. Dlatego Shoppable TV rośnie szybciej na rynkach zachodnich — nie walczy z przyzwyczajeniami, tylko je augmentuje. McKinsey: live commerce events = 30% conversion rate vs 3% standardowy e-com.</div>
+  </div>
+</div>
+</section>
+
+<!-- 3. HISTORIA -->
+<section id="historia">
+<div class="container">
+  <div class="sec-label">Ewolucja rynku</div>
+  <div class="sec-header"><div class="sec-num">3</div><h2>Historia i kamienie milowe</h2></div>
+
+  <div class="tl">
+    <div class="ti"><div class="td"></div><div class="ty2">1986</div><div class="tc"><div class="ttl">QVC i HSN — narodziny TV commerce</div><div class="tds">QVC startuje jako pierwszy telewizyjny kanał sprzedażowy. Telewidzowie dzwonią i zamawiają przez telefon. Model teleshopping osiąga $37B globalnie do 2024. Działa 40 lat.</div></div></div>
+    <div class="ti"><div class="td" style="background:var(--accent2)"></div><div class="ty2">2016</div><div class="tc"><div class="ttl">Taobao Live — narodziny nowoczesnego live commerce</div><div class="tds">Alibaba uruchamia Taobao Live. Zhang Dayi — 410K widzów, ¥20M w pierwszym streamie. Viya osiąga ¥100M w debiucie. Rok później podczas Double 11: ¥70B w 5 godzin. Chiny tworzą nowy model sprzedaży.</div></div></div>
+    <div class="ti"><div class="td" style="background:var(--accent3)"></div><div class="ty2">2019–20</div><div class="tc"><div class="ttl">COVID-19 katalizuje livestream sprzedaż globalnie</div><div class="tds">Lockdowny przenoszą sprzedaż do online. Douyin (TikTok CN) eksploduje jako platforma sprzedażowa. Amazon Live i TalkShopLive startują w USA. Europa obserwuje.</div></div></div>
+    <div class="ti"><div class="td" style="background:var(--accent4)"></div><div class="ty2">2022</div><div class="tc"><div class="ttl">QVC/HSN na Samsung i LG Smart TV — zakupy pilotem</div><div class="tds">QVC+ i HSN+ debiutują jako apki na Samsung Smart TV — pierwsze zakupy przez pilota telewizyjnego. LG Shop Time na 7M urządzeń. Shoppability wchodzi na "largest screen in the home".</div></div></div>
+    <div class="ti"><div class="td" style="background:var(--orange)"></div><div class="ty2">2023</div><div class="tc"><div class="ttl">Walmart + NBCUniversal: shoppable Bravo na Peacock</div><div class="tds">KERV Interactive + AI product recognition w reality shows. Widzowie mogą kupować outfity aktorów podczas oglądania na Peacock. Walmart: "Skracamy dystans między inspiracją a zakupem."</div></div></div>
+    <div class="ti"><div class="td" style="background:var(--accent)"></div><div class="ty2">2024</div><div class="tc"><div class="ttl">Amazon Prime Video: Interactive Video Ads na 130M+ widzów</div><div class="tds">Amazon uruchamia IVA (shoppable carousel, interactive pause, brand trivia). Wyniki: 6x brand search, 4x add-to-cart, 5x purchase rate. Shopsense AI partneruje z Paramount, Tubi, TelevisaUnivision.</div></div></div>
+    <div class="ti"><div class="td" style="background:var(--accent2)"></div><div class="ty2">2025</div><div class="tc"><div class="ttl">Rok przełomu: Europa, AI, second-screen scale</div><div class="tds">Amazon Live startuje w Europie (UK, DE). TikTok Shop wchodzi do Francji, Niemiec, Włoch (+122% GMV EU, +600% GMV UK). TheTake partneruje z Samsung + LG. CES 2025: shoppable TV jako główny temat retail media. Amazon Dynamic TV Creative zapowiedź.</div></div></div>
+    <div class="ti"><div class="td" style="background:var(--green)"></div><div class="ty2">2026</div><div class="tc"><div class="ttl">Shoppable CTV mainstream — YouTube, Amazon AI, Roku+Amazon</div><div class="tds">YouTube Shoppable CTV Ads live przez DV360 (styczeń 2026). Amazon Dynamic TV Creative z AI personalizacją per widz (maj 2026). Roku + Amazon = 80% US CTV footprint. 41,8% US marketerów używa interactive/shoppable formats.</div></div></div>
+  </div>
+</div>
+</section>
+
+<!-- 4. GRACZE -->
+<section id="gracze" style="background:var(--surface);">
+<div class="container">
+  <div class="sec-label">Krajobraz konkurencyjny</div>
+  <div class="sec-header"><div class="sec-num">4</div><h2>Kluczowi gracze globalnie</h2></div>
+
+  <h3 style="color:var(--muted);font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;">Platformy — Giganty</h3>
+  <div class="grid" style="gap:16px;margin-bottom:32px;">
+
+    <div class="pc">
+      <div><div class="pn">Amazon Prime Video</div><div class="ps">🇺🇸 USA → Global</div><div style="margin-top:8px;"><span class="tag tg">Lider zachód</span></div></div>
+      <div><p style="font-size:13px;color:var(--muted);">130M+ monthly ad-supported US viewers. Interactive Video Ads (IVA): shoppable carousel, AI pause ads, Dynamic TV Creative per widz (maj 2026). Closed-loop attribution: 88% widzów Prime kupuje na Amazon. Największa premium CTV platforma reklamowa na świecie.</p><div style="margin-top:8px;"><span class="tag tb">Shoppable carousel</span><span class="tag tb">AI pause ads</span><span class="tag tb">Dynamic TV Creative</span><span class="tag tb">QR codes</span></div><a href="https://advertising.amazon.com" target="_blank" style="color:var(--accent);font-size:12px;display:block;margin-top:8px;">→ advertising.amazon.com</a></div>
+      <div class="pss"><div><div class="psv">6x</div><div class="psl">brand search</div><div class="pb"><div class="pf" style="width:100%"></div></div></div><div><div class="psv">5x</div><div class="psl">purchase rate</div><div class="pb"><div class="pf" style="width:90%"></div></div></div></div>
+    </div>
+
+    <div class="pc">
+      <div><div class="pn">TikTok Shop</div><div class="ps">🌍 Global (CN → West)</div><div style="margin-top:8px;"><span class="tag tp">Fastest growing</span></div></div>
+      <div><p style="font-size:13px;color:var(--muted);">3 kanały: shoppable feed (40% US GMV), Shop Tab (30%), Live Shopping (10%). UK: 200K+ active sellers, 93% roczny wzrost, 6000+ shoppable lives dziennie. EU expansion 2025: Francja, Niemcy, Włochy. +122% GMV EU, +600% UK.</p><div style="margin-top:8px;"><span class="tag tp">Creator commerce</span><span class="tag tp">Algo-driven discovery</span><span class="tag tp">Gen Z native</span></div></div>
+      <div class="pss"><div><div class="psv">+600%</div><div class="psl">GMV UK 2025</div><div class="pb"><div class="pf" style="width:95%"></div></div></div><div><div class="psv">+122%</div><div class="psl">GMV EU 2025</div><div class="pb"><div class="pf" style="width:80%"></div></div></div></div>
+    </div>
+
+    <div class="pc">
+      <div><div class="pn">Taobao Live</div><div class="ps">🇨🇳 Chiny (Alibaba)</div><div style="margin-top:8px;"><span class="tag tt">Market OG</span></div></div>
+      <div><p style="font-size:13px;color:var(--muted);">Pionier live commerce (2016). $550B GMV, 900M MAU. Viya: ¥70B w 5h podczas Double 11. Li Jiaqi — "Lipstick King" — Guinness World Record. Top influencerzy biorą 40-50% prowizji. Blueprint dla całego sektora.</p><div style="margin-top:8px;"><span class="tag tt">KOL commerce</span><span class="tag tt">Super-livestreams</span><span class="tag tt">Double 11</span></div></div>
+      <div class="pss"><div><div class="psv">$550B</div><div class="psl">GMV annual</div><div class="pb"><div class="pf" style="width:100%"></div></div></div><div><div class="psv">900M</div><div class="psl">MAU</div><div class="pb"><div class="pf" style="width:92%"></div></div></div></div>
+    </div>
+
+    <div class="pc">
+      <div><div class="pn">Douyin</div><div class="ps">🇨🇳 Chiny (ByteDance)</div><div style="margin-top:8px;"><span class="tag ty">Disruptor</span></div></div>
+      <div><p style="font-size:13px;color:var(--muted);">$375B GMV (2023), 750M MAU. 70% livestreamów prowadzą merchantci (nie influencerzy). 47% GMV z merchant-led streams. Model: discovery → live show → natychmiastowy zakup — całe doświadczenie w jednej apce. TikTok = zachodni odpowiednik.</p><div style="margin-top:8px;"><span class="tag ty">Merchant-led</span><span class="tag ty">Short-video commerce</span><span class="tag ty">Integrated payments</span></div></div>
+      <div class="pss"><div><div class="psv">$375B</div><div class="psl">GMV 2023</div><div class="pb"><div class="pf" style="width:90%"></div></div></div><div><div class="psv">47%</div><div class="psl">GMV from live</div><div class="pb"><div class="pf" style="width:75%"></div></div></div></div>
+    </div>
+
+    <div class="pc">
+      <div><div class="pn">Roku</div><div class="ps">🇺🇸 CTV OS #1 USA</div><div style="margin-top:8px;"><span class="tag to">CTV Infrastructure</span></div></div>
+      <div><p style="font-size:13px;color:var(--muted);">34% US Smart TV OS. Retail media partnerzy: Kroger, Instacart, Walmart, Best Buy. Amazon DSP na Roku = 80% US CTV footprint (Amazon + Roku razem). Households exposed to Roku ads = 2,8x więcej zakupów w Kroger.</p><div style="margin-top:8px;"><span class="tag to">Retail media CTV</span><span class="tag to">First-party data</span><span class="tag to">Add to cart from TV</span></div><a href="https://advertising.roku.com" target="_blank" style="color:var(--accent);font-size:12px;display:block;margin-top:8px;">→ advertising.roku.com</a></div>
+      <div class="pss"><div><div class="psv">34%</div><div class="psl">US TV OS share</div><div class="pb"><div class="pf" style="width:85%"></div></div></div><div><div class="psv">2,8x</div><div class="psl">Kroger spend lift</div><div class="pb"><div class="pf" style="width:70%"></div></div></div></div>
+    </div>
+
+    <div class="pc">
+      <div><div class="pn">Walmart Live + Vizio</div><div class="ps">🇺🇸 Value shopper focus</div><div style="margin-top:8px;"><span class="tag tb">Retail Giant</span></div></div>
+      <div><p style="font-size:13px;color:var(--muted);">Przejął Vizio (12% US Smart TV OS) → bezpośrednie wejście do domów. Partnerzy: NBCUniversal (Peacock, QR na linear TV), TalkShopLive, Roku, Instacart. Walmart + Bravo = shop the look z reality shows na Peacock. Shoppable live na własnej platformie.</p><div style="margin-top:8px;"><span class="tag tb">Vizio acquisition</span><span class="tag tb">NBCU partnership</span><span class="tag tb">Creator commerce</span></div></div>
+      <div class="pss"><div><div class="psv">Vizio</div><div class="psl">Smart TV acquired</div><div class="pb"><div class="pf" style="width:75%"></div></div></div><div><div class="psv">12%</div><div class="psl">US Smart TV OS</div><div class="pb"><div class="pf" style="width:50%"></div></div></div></div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--muted);font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;">Technology Enablers (AI-powered shoppable)</h3>
+  <div class="grid g3">
+    <div class="card"><h3 style="margin-bottom:8px;">Shopsense AI</h3><p class="bt">AI rozpoznaje produkty on-screen i generuje shoppable storefronty (second-screen). "Więcej ludzi wie gdzie jest telefon niż pilot." Partnerzy: Paramount, Tubi, TelevisaUnivision, CBS Sports, CW Network, Tastemade.</p><a href="https://www.shopsense.ai" target="_blank" style="color:var(--accent);font-size:12px;">→ shopsense.ai</a></div>
+    <div class="card"><h3 style="margin-bottom:8px;">KERV Interactive</h3><p class="bt">AI product recognition w video — dowolna scena serialu, meczu, talk show staje się shoppable. Partnerzy: NBCUniversal Peacock (Must ShopTV), Walmart, Vevo, Vizio WatchFree+.</p><a href="https://kerv.com" target="_blank" style="color:var(--accent);font-size:12px;">→ kerv.com</a></div>
+    <div class="card"><h3 style="margin-bottom:8px;">TheTake</h3><p class="bt">AI "click to search" na Smart TV — LG Magic Remote klik na dowolną osobę lub produkt → natychmiastowy wynik zakupowy. CES 2025: partnerstwa Samsung + LG. Rozszerzenie na 32M+ urządzeń.</p><a href="https://thetake.com" target="_blank" style="color:var(--accent);font-size:12px;">→ thetake.com</a></div>
+    <div class="card"><h3 style="margin-bottom:8px;">Bambuser</h3><p class="bt">Premium live shopping platform. One-to-one video shopping (consultation model): 40-70% conversion vs 9-30% broadcast. AOV $1K-$100K+. Idealny dla luxury, beauty, B2B high-value.</p><a href="https://bambuser.com" target="_blank" style="color:var(--accent);font-size:12px;">→ bambuser.com</a></div>
+    <div class="card"><h3 style="margin-bottom:8px;">TalkShopLive</h3><p class="bt">Celebrity-led live shopping (Drew Barrymore, Oprah, Kate Hudson). TSL Shoppettes na Meta (Reels). Komentarz "shop" → DM z linkiem zakupowym. Network: Walmart, Amazon, Hearst.</p><a href="https://talkshop.live" target="_blank" style="color:var(--accent);font-size:12px;">→ talkshop.live</a></div>
+    <div class="card"><h3 style="margin-bottom:8px;">Firework / Whatnot</h3><p class="bt"><strong>Firework:</strong> TikTok-like shoppable VOD na własnej stronie ecommerce. <strong>Whatnot:</strong> dedykowana live auction platforma (eBay × Twitch). $6B+ GMV w 2025. Startował od kolekcjonerów (karty, sneakersy).</p><a href="https://firework.com" target="_blank" style="color:var(--accent);font-size:12px;">→ firework.com</a></div>
+  </div>
+</div>
+</section>
+
+<!-- 5. BEST CASES -->
+<section id="cases">
+<div class="container">
+  <div class="sec-label">Dowody działania</div>
+  <div class="sec-header"><div class="sec-num">5</div><h2>Best Cases — liczby, które przekonują</h2></div>
+
+  <div class="grid g2">
+    <div class="cc">
+      <div class="ch"><div><div class="ct">Amazon Prime Video — IVA Study 2025</div><div style="font-size:12px;color:var(--muted);">USA · 14,518 kampanii · 9,960 reklamodawców</div></div><span class="tag tg">Verified</span></div>
+      <div class="cb"><div><span class="cm"><div class="cmv">6x</div><div class="cml">brand search lift</div></span><span class="cm"><div class="cmv">4x</div><div class="cml">detail page views</div></span><span class="cm"><div class="cmv">4x</div><div class="cml">add-to-cart</div></span><span class="cm"><div class="cmv">5x</div><div class="cml">purchase rate</div></span></div><p class="bt" style="margin-top:16px;">Interactive Video Ads na Prime Video vs standardowe preroll. Amazon łączy streaming content + retail data + closed-loop attribution. 88% widzów Prime Video robiło zakupy na Amazon w ostatnim roku — unikalny ekosystem pełnej pętli.</p><a href="https://advertising.amazon.com/library/news/dynamic-tv-creative" target="_blank" style="color:var(--accent);font-size:12px;">→ Amazon Ads, maj 2026</a></div>
+    </div>
+
+    <div class="cc">
+      <div class="ch"><div><div class="ct">Roku + Kroger — Retail Media TV</div><div style="font-size:12px;color:var(--muted);">USA · 100+ joint campaigns · 2022–2025</div></div><span class="tag tt">Retail Media</span></div>
+      <div class="cb"><div><span class="cm"><div class="cmv">2,8x</div><div class="cml">więcej zakupów Kroger</div></span><span class="cm"><div class="cmv">100+</div><div class="cml">wspólnych kampanii</div></span></div><p class="bt" style="margin-top:16px;">Households eksponowane na reklamy Roku wydawały 2,8x więcej na promowane produkty w sklepach Kroger. Proof-of-concept dla TV → offline purchase attribution. Model rozbudowany o Instacart, Walmart, Best Buy w 2024–2025.</p><a href="https://advertising.roku.com/learn/resources/heard-at-retail-media-summit-lessons-on-the-convergence-of-ctv-and-retail-media" target="_blank" style="color:var(--accent);font-size:12px;">→ Roku Retail Media Summit</a></div>
+    </div>
+
+    <div class="cc">
+      <div class="ch"><div><div class="ct">Estée Lauder × Tmall Double 11 (Singles Day)</div><div style="font-size:12px;color:var(--muted);">Chiny · KOL partnerships · Top beauty brand</div></div><span class="tag tp">China Model</span></div>
+      <div class="cb"><div><span class="cm"><div class="cmv">500M</div><div class="cml">wyświetleń</div></span><span class="cm"><div class="cmv">$28M</div><div class="cml">sprzedaży</div></span><span class="cm"><div class="cmv">#1</div><div class="cml">beauty pre-sales</div></span></div><p class="bt" style="margin-top:16px;">Partnerstwo z beauty KOL na Tmall. Interaktywne tutoriale produktowe. 500M wyświetleń, $28M sprzedaży, pozycja #1 w pre-sales beauty. Template dla brandów planujących live commerce — buduj KOL network + planuj wokół live events (Double 11, 6.18).</p></div>
+    </div>
+
+    <div class="cc">
+      <div class="ch"><div><div class="ct">TikTok Shop UK — European Live Commerce Leader</div><div style="font-size:12px;color:var(--muted);">UK · 2024–2025 · Fastest EU market</div></div><span class="tag ty">European Case</span></div>
+      <div class="cb"><div><span class="cm"><div class="cmv">200K+</div><div class="cml">aktywnych sellers UK</div></span><span class="cm"><div class="cmv">93%</div><div class="cml">roczny wzrost sprzedaży</div></span><span class="cm"><div class="cmv">6000+</div><div class="cml">lives dziennie</div></span></div><p class="bt" style="margin-top:16px;">UK = najbardziej dojrzały rynek live commerce w Europie. +600% GMV w 2025. TikTok Shop rozszerzyło się z UK do Francji, Niemiec i Włoch (marzec 2025). 10% penetracja w fashion e-commerce. Wzorzec dla innych rynków.</p><a href="https://www.streamingmediaglobal.com/Articles/Editorial/Featured-Articles/The-State-of-Shoppable-Live-TV-2026-173872.aspx" target="_blank" style="color:var(--accent);font-size:12px;">→ Streaming Media Europe 2026</a></div>
+    </div>
+
+    <div class="cc">
+      <div class="ch"><div><div class="ct">Amazon Black Friday NFL — Shoppable Live Sports</div><div style="font-size:12px;color:var(--muted);">USA · November 2024 · Prime Video</div></div><span class="tag to">Live Sports Commerce</span></div>
+      <div class="cb"><div><span class="cm"><div class="cmv">+55%</div><div class="cml">branded search rate</div></span></div><p class="bt" style="margin-top:16px;">Amazon uruchomił shoppable ads podczas meczu NFL w Black Friday na Prime Video. Widzowie dodawali produkty do koszyka Amazon pilotem bez przerywania meczu. Live sports = najwyższy momentalny engagement → naturalny window na commerce. Model replikowany w 2025.</p></div>
+    </div>
+
+    <div class="cc">
+      <div class="ch"><div><div class="ct">NBCUniversal + Walmart: Bravo na Peacock</div><div style="font-size:12px;color:var(--muted);">USA · 2023–2025 · Reality TV shoppable</div></div><span class="tag tt">Reality TV Commerce</span></div>
+      <div class="cb"><p class="bt">"Must ShopTV" — KERV Interactive AI skanuje każdą scenę serialu Bravo (Below Deck, Housewives) i identyfikuje produkty. Widzowie Peacock kupują outfity, meble i gadżety przez Walmart. Rozszerzono na 6 serii Bravo w 2024. NBCU SVP: "Buying from TV screen will be ubiquitous in 3-5 years."</p><a href="https://corporate.walmart.com/news/2023/11/06/nbcuniversal-and-walmart-unite-to-enable-bravo-fans-to-shop-the-moment-on-peacock-for-the-first-time" target="_blank" style="color:var(--accent);font-size:12px;">→ Oficjalny komunikat Walmart</a></div>
+    </div>
+
+    <div class="cc">
+      <div class="ch"><div><div class="ct">Kate Hudson — Shoppable Concert (TalkShopLive)</div><div style="font-size:12px;color:var(--muted);">USA · 2024 · Entertainment × Commerce</div></div><span class="tag tb">Entertainment Commerce</span></div>
+      <div class="cb"><p class="bt">Kate Hudson promowała album "Glorious" przez shoppable concert na TalkShopLive we współpracy z Rolling Stone. Widzowie kupowali autografowane płyty CD, winylee i merch w trakcie live performancu. Transmisja na Rolling Stone + social media. Template: każdy concert, premiera, event może być shoppable.</p></div>
+    </div>
+
+    <div class="cc">
+      <div class="ch"><div><div class="ct">Whatnot — Live Auction Commerce Community</div><div style="font-size:12px;color:var(--muted);">USA · 2025 · Niche Community Commerce</div></div><span class="tag tr">$6B+ GMV</span></div>
+      <div class="cb"><div><span class="cm"><div class="cmv">$6B+</div><div class="cml">GMV oczekiwane 2025</div></span></div><p class="bt" style="margin-top:16px;">Model eBay × Twitch. Hosty aukcjonują live, widzowie licytują w real-time. Platform przejęła logistykę wysyłki. Zaczął od niszowych kolekcjonerów (karty sportowe, komiksy, sneakersy). Community-driven: kupujący budują relacje ze sprzedawcami. Case: hobby niches = idealny entry point do live commerce.</p><a href="https://stackinfluence.com/blog/top-live-shopping-platforms-2026-tiktok-amazon" target="_blank" style="color:var(--accent);font-size:12px;">→ Stack Influence, marzec 2026</a></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 6. REGIONY -->
+<section id="regiony" style="background:var(--surface);">
+<div class="container">
+  <div class="sec-label">Analiza geograficzna</div>
+  <div class="sec-header"><div class="sec-num">6</div><h2>Mapa regionalna: dojrzałość i dynamika</h2></div>
+
+  <div class="grid g2">
+    <div class="card"><h3 style="margin-bottom:16px;">🇨🇳 Chiny — wzorzec i benchmark globalny</h3>
+      <div class="pr"><div class="ph"><span>Dojrzałość live commerce</span><span style="color:var(--green);">10/10</span></div><div class="pbar"><div class="pfill" style="width:100%"></div></div></div>
+      <p class="bt">765M użytkowników live commerce (71% internautów). $843,9B sprzedaży przez live streaming (19,2% całego e-com). Douyin: $375B GMV, 750M MAU. Taobao Live: $550B GMV, 900M MAU. Chiny = blueprint dla reszty świata z ~5-letnim wyprzedzeniem. 70% livestreamów prowadzą merchantci.</p>
+      <div><span class="tag tg">$843,9B live sales</span><span class="tag tg">71% internet users</span><span class="tag tg">Blueprint</span></div>
+    </div>
+    <div class="card"><h3 style="margin-bottom:16px;">🇺🇸 USA — faza gwałtownego wzrostu</h3>
+      <div class="pr"><div class="ph"><span>Shoppable TV / CTV</span><span style="color:var(--accent);">8/10</span></div><div class="pbar"><div class="pfill" style="width:80%"></div></div></div>
+      <div class="pr"><div class="ph"><span>Live Commerce</span><span style="color:var(--accent2);">5/10</span></div><div class="pbar"><div class="pfill" style="width:50%"></div></div></div>
+      <p class="bt">CTV shoppable: $33,35B ad spend, 88% HH ma CTV device. Livestream: $14,6B (+50% YoY). 88M shoppable media buyers do 2028. Forte: retailerzy (Amazon, Walmart) drive shoppable TV szybciej niż creatorzy. 40% advertisers planuje zwiększyć focus na shoppable w 2025.</p>
+      <div><span class="tag tb">$33,35B CTV ads</span><span class="tag tb">$14,6B live</span><span class="tag tb">Retailer-driven</span></div>
+    </div>
+    <div class="card"><h3 style="margin-bottom:16px;">🇬🇧 UK — lider europejski</h3>
+      <div class="pr"><div class="ph"><span>Live Commerce maturity</span><span style="color:var(--accent3);">6/10</span></div><div class="pbar"><div class="pfill" style="width:60%"></div></div></div>
+      <p class="bt">Najbardziej dojrzały rynek live commerce w Europie. TikTok Shop UK: 200K+ sellers, 93% annual growth, 6000+ shoppable lives dziennie, +600% GMV w 2025. Amazon Live startuje w UK (luty 2025). ~10% penetracja w fashion e-commerce. Model dla EU5.</p>
+      <div><span class="tag tt">200K+ TikTok sellers</span><span class="tag tt">+600% GMV 2025</span><span class="tag tt">EU leader</span></div>
+    </div>
+    <div class="card"><h3 style="margin-bottom:16px;">🇫🇷🇩🇪 Francja, Niemcy — wczesna adopcja</h3>
+      <div class="pr"><div class="ph"><span>Live Commerce</span><span style="color:var(--accent4);">3/10</span></div><div class="pbar"><div class="pfill" style="width:30%"></div></div></div>
+      <p class="bt">TikTok Shop FR: 42% awareness po tygodniu, 36% gotowych kupić. DE: 2,5% konwersji w ciągu 2 miesięcy. Bariery: <strong>zaufanie do sprzedawców i produktów</strong>. Francja: +650% YoY liczba sellers live. DE: 1,6M viewer hours w 2024. Zara, H&amp;M, Sephora, Decathlon inwestują.</p>
+      <div><span class="tag ty">Trust barrier</span><span class="tag ty">FR +650% sellers</span><span class="tag ty">Early 2026 mainstream</span></div>
+    </div>
+    <div class="card"><h3 style="margin-bottom:16px;">🇵🇱 Polska / Europa Wschodnia</h3>
+      <div class="pr"><div class="ph"><span>E-commerce growth</span><span style="color:var(--orange);">7/10</span></div><div class="pbar"><div class="pfill" style="width:70%"></div></div></div>
+      <div class="pr"><div class="ph"><span>Live Commerce adoption</span><span style="color:var(--orange);">2/10</span></div><div class="pbar"><div class="pfill" style="width:20%"></div></div></div>
+      <p class="bt">Polska, Rumunia, Węgry: +35-45% YoY wzrost e-commerce. +15% B2C e-commerce turnover w 2023. Rynek bardzo gotowy na live commerce — brakuje lokalnych platform i doświadczonych creators. <strong>Ogromna szansa first-mover:</strong> kto zbuduje polską live shopping capability lub pomoże markom uruchomić TikTok Shop PL, wygra rynek.</p>
+      <div><span class="tag to">First-mover opportunity</span><span class="tag to">+35-45% e-com YoY</span><span class="tag to">TikTok PL expansion</span></div>
+    </div>
+    <div class="card"><h3 style="margin-bottom:16px;">🌏 APAC — skala i innowacja poza Chinami</h3>
+      <div class="pr"><div class="ph"><span>Live Commerce (KR, JP, SEA)</span><span style="color:var(--accent2);">7/10</span></div><div class="pbar"><div class="pfill" style="width:70%"></div></div></div>
+      <p class="bt">Korea Płd: Kakao Shopping, Naver Live. Japonia: Rakuten Live. SEA (Lazada, Shopee Live): live commerce jako główny format sprzedaży w Indonezji, Tajlandii, Wietnamie. APAC ogólnie — ~50% globalnych przychodów live commerce. Smartphone-first, social-native audience. 5G acceleration.</p>
+      <div><span class="tag tp">Kakao, Naver, Shopee</span><span class="tag tp">50% global live</span><span class="tag tp">Mobile-first</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 7. TECH -->
+<section id="tech">
+<div class="container">
+  <div class="sec-label">Technologia i innowacje</div>
+  <div class="sec-header"><div class="sec-num">7</div><h2>Stack technologiczny i trendy AI</h2></div>
+
+  <div class="grid g2" style="margin-bottom:28px;">
+    <div class="card"><h3 style="margin-bottom:16px;">🤖 AI Computer Vision — "Shop What You See"</h3>
+      <p class="bt">AI skanuje każdą klatkę contentu i identyfikuje produkty (odzież, meble, elektronika, żywność). Brak potrzeby manualnego tagowania. W 2025 działa na żywo dla non-scripted content. TheTake + LG: klik na dowolny obiekt na ekranie → wynik zakupowy. Amazon Dynamic TV Creative: AI personalizuje per widz.</p>
+      <div><span class="tag tb">Computer vision</span><span class="tag tb">Real-time matching</span><span class="tag tb">Zero manual tagging</span></div>
+    </div>
+    <div class="card"><h3 style="margin-bottom:16px;">📱 Second Screen jako zakupowy Bridge</h3>
+      <p class="bt">70% widzów CTV trzyma smartfon podczas oglądania TV. Strategia: QR code na ekranie → zakup na mobile. 70% akcji po TV ad odbywa się na secondary screen. QR usage rósł 3x YoY w 2025. Shopsense AI: "Więcej ludzi wie gdzie jest telefon niż pilot." Zaleta: nie przerywa oglądania.</p>
+      <div><span class="tag tt">QR codes (3x growth YoY)</span><span class="tag tt">SMS link handoff</span><span class="tag tt">Companion app sync</span></div>
+    </div>
+    <div class="card"><h3 style="margin-bottom:16px;">🎮 Remote-Friendly Interfaces — zakupy bez telefonu</h3>
+      <p class="bt">Nowy kierunek: zakupy bezpośrednio przez pilota TV. Amazon: dodawanie do koszyka pilotem. LG: swipeable product overlays. Samsung + TheTake: "click to search" Magic Remote. YouTube Shoppable CTV: karuzela produktów po prawej stronie ekranu nawigowana pilotem. Voice: "Add to cart" przez Alexa.</p>
+      <div><span class="tag ty">Remote control UX</span><span class="tag ty">Voice CTAs</span><span class="tag ty">Product carousels on TV</span></div>
+    </div>
+    <div class="card"><h3 style="margin-bottom:16px;">📊 Closed-Loop Attribution — przełom w pomiarze</h3>
+      <p class="bt">Kluczowy driver inwestycji reklamowych. Pierwszy raz w historii TV reklamy można połączyć z konkretną sprzedażą. Amazon: 88% widzów Prime kupuje na Amazon → pełna pętla. Walmart + Vizio: first-party purchase data × CTV exposure. Retailers z first-party data dominują pole.</p>
+      <div><span class="tag to">First-party retail data</span><span class="tag to">TV → purchase link</span><span class="tag to">CTV attribution</span></div>
+    </div>
+  </div>
+
+  <div class="qb">"Television is rapidly transforming into an interactive marketing platform that can effectively influence consumer behavior from initial awareness to final purchase."<div class="qs">— Glenn Fishback, CEO Shopsense AI</div></div>
+
+  <div class="card" style="margin-top:20px;">
+    <h3 style="margin-bottom:16px;">Formaty reklam: ewolucja generacyjna</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+      <div style="border-right:1px solid var(--border);padding-right:20px;">
+        <div style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Gen 1 (2020–22)</div>
+        <ul style="font-size:13px;color:var(--muted);padding-left:16px;line-height:1.8;">
+          <li>QR kody na pauzowanym ekranie</li>
+          <li>Telefon 1-800 (QVC model)</li>
+          <li>Redirect na stronę produktu</li>
+          <li>Pasywne "shop the look" banery</li>
+        </ul>
+      </div>
+      <div style="border-right:1px solid var(--border);padding-right:20px;padding-left:20px;">
+        <div style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Gen 2 (2023–24)</div>
+        <ul style="font-size:13px;color:var(--muted);padding-left:16px;line-height:1.8;">
+          <li>Interactive pause ads</li>
+          <li>Shoppable carousel podczas reklam</li>
+          <li>Add to cart pilotem</li>
+          <li>AI product recognition (KERV)</li>
+          <li>Second-screen storefronts</li>
+        </ul>
+      </div>
+      <div style="padding-left:20px;">
+        <div style="font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Gen 3 (2025–26) ★ CURRENT</div>
+        <ul style="font-size:13px;color:var(--text);padding-left:16px;line-height:1.8;">
+          <li>AI Dynamic Creative per widz</li>
+          <li>Contextual pause (scene-match AI)</li>
+          <li>Voice shopping ("add to cart")</li>
+          <li>Click any object on screen</li>
+          <li>Real-time pricing/deals overlay</li>
+          <li>Household graph personalization</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 8. GAPS -->
+<section id="gaps" style="background:var(--surface);">
+<div class="container">
+  <div class="sec-label">Analiza szans</div>
+  <div class="sec-header"><div class="sec-num">8</div><h2>Gap Analysis — Opportunity Score Ranking</h2></div>
+  <p class="bt" style="margin-bottom:24px;">Formuła: Demand (1-10) + Trend Velocity (1-10) − Supply (1-10). Range: -8 do +18. Powyżej +10 = silna szansa.</p>
+
+  <div class="card" style="overflow-x:auto;">
+    <table class="gt">
+      <thead><tr><th>#</th><th>Szansa / Kąt</th><th>Demand</th><th>Supply</th><th>Velocity</th><th>Score</th><th>Dlaczego gap</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td><strong>AI product recognition w live events (sport, muzyka, Oscary)</strong></td><td>9</td><td>2</td><td>9</td><td><span class="sb">+16</span></td><td>Tylko pilot events. Każdy event z milionami widzów = ogromna szansa. Brak skalowanego produktu.</td></tr>
+        <tr><td><strong>2</strong></td><td><strong>Live commerce dla średnich marek e-com (EU)</strong></td><td>9</td><td>2</td><td>9</td><td><span class="sb">+16</span></td><td>Wielcy testują, mid-market nie ma know-how ani dostosowanej platformy do EU realiów.</td></tr>
+        <tr><td><strong>3</strong></td><td><strong>Shoppable content dla branży petfood / pet care</strong></td><td>8</td><td>1</td><td>8</td><td><span class="sb">+15</span></td><td>Zero dedykowanego live shopping w pet care. Ogromna baza lojalnych właścicieli, wysokie LTV.</td></tr>
+        <tr><td><strong>4</strong></td><td><strong>Live commerce B2B (industrial, professional tools)</strong></td><td>7</td><td>1</td><td>7</td><td><span class="sb">+13</span></td><td>Live commerce = B2C. B2B demo-style selling = niezbadane. Wysokie AOV, live demo dramatically shortens cycle.</td></tr>
+        <tr><td><strong>5</strong></td><td><strong>Polska/PL first-mover: live shopping platform lub agency</strong></td><td>8</td><td>2</td><td>7</td><td><span class="sb">+13</span></td><td>+35-45% YoY e-com PL. TikTok Shop nie jest w PL. Brak lokalnego gracza. First-mover = 5 lat przewagi.</td></tr>
+        <tr><td><strong>6</strong></td><td><strong>Konsultacyjny live shopping (luxury, biżuteria, high-AOV)</strong></td><td>8</td><td>3</td><td>7</td><td><span class="sb">+12</span></td><td>One-to-one video shopping: 40-70% conversion, AOV $1K-$100K+. Luksus nie chce bazarowego livestreamu.</td></tr>
+        <tr><td><strong>7</strong></td><td><strong>Shoppable FAST channels (nowe kanały tematyczne)</strong></td><td>8</td><td>4</td><td>8</td><td><span class="sb">+12</span></td><td>Test Drive Live (FreeCast/Roku) = nowy model. FAST channels z embedded commerce = QVC 2.0.</td></tr>
+        <tr><td><strong>8</strong></td><td><strong>Creator commerce agency (end-to-end live selling EU)</strong></td><td>9</td><td>4</td><td>7</td><td><span class="sb">+12</span></td><td>Marki chcą live commerce, ale nie wiedzą jak. Agencja: strategy + tech + creator + fulfillment = blue ocean EU.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- 9. YOUTUBE -->
+<section id="yt">
+<div class="container">
+  <div class="sec-label">Video intelligence</div>
+  <div class="sec-header"><div class="sec-num">9</div><h2>YouTube — filmy warte obejrzenia</h2></div>
+  <p class="bt" style="margin-bottom:24px;">Najważniejsze filmy YouTube do tematu Shoppable TV / Live Commerce — perspektywa biznesowa, case studies, debata o przyszłości.</p>
+
+  <div class="grid g3">
+    <div class="vc"><a href="https://www.youtube.com/watch?v=NtrD_X9TRQc" target="_blank"><div class="vt">📺</div><div class="vi"><div class="vtl">Future of Commerce in Streaming: Shoppable Video &amp; Live Shopping</div><div class="vm">Biznes &amp; Strategia · Oct 2025</div></div></a></div>
+    <div class="vc"><a href="https://www.youtube.com/watch?v=fehtJF8iZOA" target="_blank"><div class="vt">🔪</div><div class="vi"><div class="vtl">Shoppable TV: A Decade Overdue Game-Changer — Retail Razor Show</div><div class="vm">Hot takes, debata · Feb 2025</div></div></a></div>
+    <div class="vc"><a href="https://m.youtube.com/watch?v=8emsgzGamPM" target="_blank"><div class="vt">❓</div><div class="vi"><div class="vtl">Is 2025 the Year of Shoppable TV?</div><div class="vm">Market analysis · Feb 2025</div></div></a></div>
+    <div class="vc"><a href="https://www.youtube.com/watch?v=8sU4KXFrEdA" target="_blank"><div class="vt">💍</div><div class="vi"><div class="vtl">LTK Partners With The Bachelor — Shoppable TV &amp; Social Commerce Gets Real</div><div class="vm">Reality TV × Commerce · May 2025</div></div></a></div>
+    <div class="vc"><a href="https://www.youtube.com/watch?v=19JBvr2RKno" target="_blank"><div class="vt">🛒</div><div class="vi"><div class="vtl">Turning Screens Into Stores: Nick Buzzell on the Future of Shoppable TV</div><div class="vm">CEO interview · Oct 2025</div></div></a></div>
+    <div class="vc"><a href="https://www.youtube.com/watch?v=q-5ipHzDT7g" target="_blank"><div class="vt">🎓</div><div class="vi"><div class="vtl">What is Live Commerce? Everything You Should Know About Shoppable Video</div><div class="vm">Explainer klasyk · 2021</div></div></a></div>
+    <div class="vc"><a href="https://www.youtube.com/watch?v=pLu8lf3Jr_8" target="_blank"><div class="vt">🏪</div><div class="vi"><div class="vtl">Shoppable TV and the Future of the Purchasing Experience — Mission Podcast</div><div class="vm">Roundtable discussion</div></div></a></div>
+    <div class="vc"><a href="https://www.youtube.com/watch?v=5HWHkrFxyRw" target="_blank"><div class="vt">⚡</div><div class="vi"><div class="vtl">The Future of Shopping Is Here: Why Live Commerce Is Taking Off</div><div class="vm">TV news report · Jan 2025</div></div></a></div>
+  </div>
+
+  <div class="ib" style="margin-top:24px;">
+    <div class="il">Szukaj też na YouTube</div>
+    <div class="it">"TikTok Shop live commerce tutorial 2025" · "Amazon Live how to start" · "live shopping China Douyin" · "shoppable CTV ads examples" · "NBCUniversal shoppable TV Peacock" · "QVC streaming strategy 2025" · "Bambuser live shopping demo" · "Whatnot live auction commerce" · "retail media CTV convergence"</div>
+  </div>
+</div>
+</section>
+
+<!-- 10. WNIOSKI -->
+<section id="wnioski" style="background:var(--surface);">
+<div class="container">
+  <div class="sec-label">Synteza</div>
+  <div class="sec-header"><div class="sec-num">10</div><h2>Wnioski strategiczne i perspektywa biznesowa</h2></div>
+
+  <div class="grid g3" style="margin-bottom:32px;">
+    <div class="card" style="border-top:3px solid var(--green);">
+      <div style="font-size:24px;margin-bottom:12px;">🟢</div>
+      <h3 style="margin-bottom:8px;">Konwergencja to fakt, nie eksperyment</h3>
+      <p class="bt">TV i e-commerce to ten sam kanał. Dane: $144,9B US retail sales inspirowanych TV. Amazon: 88% Prime Video widzów kupuje na Amazon. Shoppable TV CTV Retail Media: $5B w 2025 (2 lata przed prognozą). To już infrastruktura sprzedażowa, nie pilot.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--accent);">
+      <div style="font-size:24px;margin-bottom:12px;">🔵</div>
+      <h3 style="margin-bottom:8px;">Zachód 3-5 lat za Chinami</h3>
+      <p class="bt">Chiny: $843B → USA: $14,6B live commerce. Trajektoria jest czytelna — USA/EU powtarzają chiński wzorzec. McKinsey: live commerce = 30% conversion vs 3% standardowy e-com. Kto zainwestuje teraz, będzie miał 3-5 lat przewagi rynkowej.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--accent2);">
+      <div style="font-size:24px;margin-bottom:12px;">🔴</div>
+      <h3 style="margin-bottom:8px;">AI odblokuje masową skalę</h3>
+      <p class="bt">Manualne tagowanie produktów = bottleneck. AI computer vision automatyzuje — każdy serial, mecz, talk show staje się automatycznie shoppable. Amazon Dynamic TV Creative personalizuje per widz. To zmienia ekonomię formatu fundamentalnie.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:28px;">
+    <h3 style="margin-bottom:20px;">Top 3 rekomendacje dla e-commerce business</h3>
+    <div style="display:grid;gap:16px;">
+      <div style="display:flex;gap:16px;align-items:flex-start;padding:20px;background:var(--surface2);border-radius:12px;">
+        <div style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-weight:800;padding:6px 14px;border-radius:8px;font-size:20px;flex-shrink:0;">1</div>
+        <div><div style="font-weight:700;margin-bottom:6px;">Start z TikTok Shop Live / Amazon Live EU JUŻ TERAZ</div><p style="font-size:13px;color:var(--muted);">UK: 200K sellers, 93% annual growth. Każdy miesiąc zwłoki = utracona pozycja organiczna w algorytmie. Pilot: 1 marka, 1 platforma (TikTok UK lub Amazon Live EU), 4-6 streamów miesięcznie z dedykowanym hostem.</p></div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start;padding:20px;background:var(--surface2);border-radius:12px;">
+        <div style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-weight:800;padding:6px 14px;border-radius:8px;font-size:20px;flex-shrink:0;">2</div>
+        <div><div style="font-weight:700;margin-bottom:6px;">Wdroz Shoppable Video na własnej stronie (Firework / Bambuser / Terrific)</div><p style="font-size:13px;color:var(--muted);">9-30% conversion vs 2-3% standardowa strona. ROI jest measurable. Niskie ryzyko, zawsze aktywne. Idealny punkt startowy przed live commerce — buduje experience i dane.</p></div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start;padding:20px;background:var(--surface2);border-radius:12px;">
+        <div style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-weight:800;padding:6px 14px;border-radius:8px;font-size:20px;flex-shrink:0;">3</div>
+        <div><div style="font-weight:700;margin-bottom:6px;">Enterprise: Amazon Prime Video IVA + YouTube Shoppable CTV</div><p style="font-size:13px;color:var(--muted);">Jeśli brand jest na Amazon — IVA to obowiązek. Closed-loop attribution + 5x purchase rate + 130M engaged US viewers. YouTube Shoppable CTV przez DV360 (live od Jan 2026) — wejdź zanim CPM wzrośnie.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:16px;">Differentiation Playbook: co robić inaczej</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div><div style="font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Co robi każdy</div>
+        <ul style="font-size:13px;color:var(--muted);padding-left:16px;line-height:1.8;">
+          <li>Bazarowy format live z "kup teraz" krzykiem</li>
+          <li>Kopiowanie TikTok bez dopasowania do marki</li>
+          <li>Jeden live event, brak follow-up i community</li>
+          <li>Ignorowanie danych i iteracji post-stream</li>
+          <li>Live bez distribution strategy</li>
+        </ul>
+      </div>
+      <div><div style="font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Co wyróżnia liderów ★</div>
+        <ul style="font-size:13px;color:var(--text);padding-left:16px;line-height:1.8;">
+          <li>Entertainment-first, commerce-second</li>
+          <li>Stały schedule i format (jak program TV)</li>
+          <li>KOL z autentyczną ekspertyzą produktową</li>
+          <li>Closed-loop measurement i iteracja</li>
+          <li>Multi-platform distribution (TV + social + owned)</li>
+          <li>Shoppable = zawsze aktywny (VOD + live)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- PL CASE -->
+<section id="pl-case" style="background:linear-gradient(135deg,rgba(124,111,239,.05) 0%,rgba(232,93,138,.05) 100%);">
+<div class="container">
+  <div class="sec-label">Polski Case Study — Brainstorm</div>
+  <div class="sec-header"><div class="sec-num" style="background:linear-gradient(135deg,#e85d8a,#7c6fef);">🇵🇱</div><h2>TVN × Hebe — Shoppable TV dla Polski</h2></div>
+
+  <div class="ib">
+    <div class="il">Teza centralna</div>
+    <div class="it">TVN i Hebe to dwa bieguny tego samego budżetu — większość marek beauty/health płaci im obu: TVN za zasięg, Hebe za półkę. Shoppable TV zamknęłoby ten trójkąt w jedną pętlę z mierzalnym ROI. <strong>Marka płaci raz — dostaje TV reach + e-commerce conversion + first-party data.</strong></div>
+  </div>
+
+  <div class="grid g3" style="margin-bottom:32px;">
+    <div class="stat"><div class="stat-n">780+</div><div class="stat-u">Sklepy Hebe w Polsce</div><div class="stat-l">+ hebe.pl e-commerce + Hebe Club (miliony użytkowników z danymi zakupowymi)</div></div>
+    <div class="stat"><div class="stat-n">2M+</div><div class="stat-u">Widzów Dzień Dobry TVN</div><div class="stat-l">Codziennie, głównie kobiety 25–55 = core Hebe customer. Idealne demograficznie.</div></div>
+    <div class="stat"><div class="stat-n">0</div><div class="stat-u">Konkurentów tego formatu</div><div class="stat-l">Nikt w Polsce nie połączył masowej TV komercyjnej z premium multi-brand beauty retailerem.</div></div>
+  </div>
+
+  <h3 style="margin-bottom:20px;font-size:20px;">Marki-mosty — gotowy pool sponsorów od dnia 1</h3>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;">
+    <span class="tag tp">L'Oréal Paris</span><span class="tag tp">Garnier</span><span class="tag tp">Maybelline</span><span class="tag tb">Nivea</span><span class="tag tb">Beiersdorf</span><span class="tag tt">Vichy</span><span class="tag tt">La Roche-Posay</span><span class="tag tg">Colgate</span><span class="tag tg">Oral-B</span><span class="tag ty">Dove</span><span class="tag ty">Schwarzkopf</span><span class="tag to">Reckitt</span><span class="tag tr">Johnson & Johnson</span><span class="tag tb">Pantene</span>
+  </div>
+  <p class="bt" style="margin-bottom:32px;">Wszystkie powyższe marki <em>już teraz</em> reklamują się w TVN I sprzedają przez Hebe. Wspólny pakiet = naturalne połączenie dwóch istniejących relacji w jeden ustrukturyzowany produkt.</p>
+
+  <!-- FORMATY -->
+  <h3 style="margin-bottom:20px;font-size:20px;">10 Formatów — Brainstorm bez cenzury</h3>
+  <div class="grid g2" style="margin-bottom:32px;">
+
+    <div class="cc">
+      <div class="ch">
+        <div>
+          <div class="tag tp" style="margin-bottom:6px;">FORMAT 1 — FLAGSHIP</div>
+          <div class="ct">🚶‍♀️ "Chodzę Po Hebe"</div>
+        </div>
+        <span class="sb">★★★</span>
+      </div>
+      <div class="cb">
+        <p class="bt">Celebryta/host prowadzi 20-minutowy program <em>w środku prawdziwego Hebe</em>. Żywy sklep, klienci w tle, półki, zapach miejsca. Każdy produkt wzięty do ręki → overlay z ceną + QR. Player.pl: wersja interaktywna (klik = koszyk).</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;">
+          <span class="tag tb">TVN Style</span><span class="tag tt">Player.pl interactive</span><span class="tag tp">QR overlay</span><span class="tag tg">Rotacja miast</span>
+        </div>
+        <div class="ib" style="margin-top:16px;padding:12px 16px;">
+          <div class="il">Odcinki tematyczne</div>
+          <div class="it" style="font-size:13px;">Rutyna Poranna · Sylwester · Mama & Dziecko · Budżet vs. Luxe · <strong>Mężczyzna w Hebe</strong> (Marcin Prokop?)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cc">
+      <div class="ch">
+        <div>
+          <div class="tag tb" style="margin-bottom:6px;">FORMAT 2 — DAILY</div>
+          <div class="ct">⚡ "Hebe Moment" w Prime Time</div>
+        </div>
+        <span class="sb">★★☆</span>
+      </div>
+      <div class="cb">
+        <p class="bt">30-sekundowe cięcia reklamowe zamienione w "Hebe Moment" — nie reklama, tylko produkt tygodnia. Host mówi 2 zdania + QR + cena. Slot "Produkt Dnia Hebe" codziennie o 7:45 w DDTVN.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;">
+          <span class="tag tb">DDTVN</span><span class="tag tt">Quick hit</span><span class="tag tg">Low production cost</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cc">
+      <div class="ch">
+        <div>
+          <div class="tag tt" style="margin-bottom:6px;">FORMAT 3 — MORNING SHOW</div>
+          <div class="ct">☀️ "Dzień Dobry Hebe" Segment</div>
+        </div>
+        <span class="sb">★★★</span>
+      </div>
+      <div class="cb">
+        <p class="bt">Stały 4-minutowy segment w DDTVN 3× w tygodniu: beauty tip z ekspertem lub redaktorką + produkt Hebe testowany live + banner klikalny na streamie. 2M widzów, idealna demografia.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;">
+          <span class="tag tp">2M widzów/dzień</span><span class="tag tb">Ekspert + marka</span><span class="tag tt">Deal hunting segment</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cc">
+      <div class="ch">
+        <div>
+          <div class="tag tg" style="margin-bottom:6px;">FORMAT 4 — STREAMING</div>
+          <div class="ct">🔴 "Hebe Live" na Player.pl</div>
+        </div>
+        <span class="sb">★★★</span>
+      </div>
+      <div class="cb">
+        <p class="bt">60-minutowy livestream co tydzień na Player.pl. Chat na żywo, demo produktów, flash deals co 10 minut z licznikiem. "Kup teraz" button bezpośrednio w interfejsie. Hebe Club: 3× punkty za zakupy przez stream.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;">
+          <span class="tag tg">Hebe Club integration</span><span class="tag tp">Flash deals</span><span class="tag tb">Chat interaktywny</span><span class="tag tt">Hebe Skin School</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cc">
+      <div class="ch">
+        <div>
+          <div class="tag ty" style="margin-bottom:6px;">FORMAT 5 — ANNUAL EVENT</div>
+          <div class="ct">🏆 "Hebe Beauty Awards"</div>
+        </div>
+        <span class="sb">★★☆</span>
+      </div>
+      <div class="cb">
+        <p class="bt">Coroczna gala na TVN. Widzowie głosują przez Hebe app. Wyniki live. Zwycięzcy dostają "Hebe Beauty Award" — jedyną liczącą się polską nagrodę beauty (Glamour Beauty Awards to print — tu jest luka!). Shoppable overlay dla każdego nominowanego.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;">
+          <span class="tag ty">Award winner badge na hebe.pl</span><span class="tag tp">L'Oréal Paris Kolor Roku</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cc">
+      <div class="ch">
+        <div>
+          <div class="tag to" style="margin-bottom:6px;">FORMAT 6 — PRODUCT PLACEMENT 2.0</div>
+          <div class="ct">🤖 "Serialowe Piękno" AI Overlay</div>
+        </div>
+        <span class="sb">★★☆</span>
+      </div>
+      <div class="cb">
+        <p class="bt">W serialach TVN — gdy aktorka używa produktu z Hebe, na Player.pl pojawia się shoppable overlay na 10 sekund. Start: ręczne timecoding scen z produktem. Ewolucja: AI product recognition.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;">
+          <span class="tag to">PP 2.0</span><span class="tag tb">Player.pl banner</span><span class="tag tt">QR w linear TV</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cc">
+      <div class="ch">
+        <div>
+          <div class="tag tr" style="margin-bottom:6px;">FORMAT 7 — EVENT</div>
+          <div class="ct">🎉 "Hebe Weekend" 48h</div>
+        </div>
+        <span class="sb">★★☆</span>
+      </div>
+      <div class="cb">
+        <p class="bt">2× w roku (wiosna + jesień) — 48h blok programowy na TVN Style. Piątek: gala nowości. Sobota: maraton + live streams. Niedziela: last-chance deals. Amazon Prime Day ale beauty-focused i TV-driven.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;">
+          <span class="tag tr">Exclusive weekend codes</span><span class="tag tp">Mierzalna atrybucja</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cc">
+      <div class="ch">
+        <div>
+          <div class="tag tb" style="margin-bottom:6px;">FORMAT 8 — SECOND SCREEN</div>
+          <div class="ct">📱 "Hebe App × Player.pl" Sync</div>
+        </div>
+        <span class="sb">★★★</span>
+      </div>
+      <div class="cb">
+        <p class="bt">Hebe app "słucha" audio (Shazam dla beauty) lub syncuje z Player.pl API. Gdy pojawia się produkt na ekranie → push notification: "Właśnie widziałaś [produkt] — kup za [cena] ⬇️". Działa nawet z linearną TV przez audio fingerprinting.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;">
+          <span class="tag tb">First w Polsce</span><span class="tag tg">Naturalny second screen</span><span class="tag tt">Push notification</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cc">
+      <div class="ch">
+        <div>
+          <div class="tag tg" style="margin-bottom:6px;">FORMAT 9 — INFLUENCER</div>
+          <div class="ct">✨ "Influencer Wchodzi Do Hebe"</div>
+        </div>
+        <span class="sb">★★☆</span>
+      </div>
+      <div class="cb">
+        <p class="bt">Top polskie beauty influencerki nagrywają haul z Hebe — ale premiera na Player.pl (przed YT/TT). TVN daje dystrybucję, influencer daje autentyczność. Challenge: "Stwórz haul jak [influencerka]" → najlepszy fan wygrywa nagranie w prawdziwym Hebe.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;">
+          <span class="tag tg">Player.pl exclusive premiere</span><span class="tag tp">Klikalne linki</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cc">
+      <div class="ch">
+        <div>
+          <div class="tag tt" style="margin-bottom:6px;">FORMAT 10 — LOYALTY</div>
+          <div class="ct">💎 "Hebe Club na Antenie"</div>
+        </div>
+        <span class="sb">★★★</span>
+      </div>
+      <div class="cb">
+        <p class="bt">Program lojalnościowy Hebe Club dostaje warstwę TV. Zaloguj do Hebe Club w Player.pl → zakupy przez stream = 3× punkty. "Member-only deals" emitowane na antenie ale realizowane TYLKO przez klub. Personalizacja: "Na podstawie Twoich zakupów…"</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;">
+          <span class="tag tt">Hebe Club 3× points</span><span class="tag tb">Personalizacja</span><span class="tag tg">Data loop</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MONETYZACJA -->
+  <h3 style="margin-bottom:20px;font-size:20px;">Model Monetyzacji — 4 Warianty</h3>
+  <div class="grid g2" style="margin-bottom:32px;">
+    <div class="card">
+      <div style="font-size:22px;margin-bottom:10px;">💼</div>
+      <h4 style="margin-bottom:8px;color:var(--accent);">Wariant A — Pakiet "Hebe Shoppable"</h4>
+      <p class="bt">Marka kupuje jeden pakiet: spot TV + product feature + shoppable overlay + shelf Hebe online + raport performance. <strong>80–150K PLN</strong> vs. wydatki osobne 60K+ ale bez integracji i bez atrybucji.</p>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;">TVN sprzedaje, Hebe partneruje, marka dostaje closed-loop ROI.</div>
+    </div>
+    <div class="card">
+      <div style="font-size:22px;margin-bottom:10px;">📊</div>
+      <h4 style="margin-bottom:8px;color:var(--accent2);">Wariant B — Revenue Share</h4>
+      <p class="bt">Hebe dzieli się z TVN X% od każdej sprzedaży wygenerowanej przez content TVN. Tracking przez dedykowane kody/UTM/QR. Nie potrzeba frontu od marek — monetyzacja post-purchase.</p>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;">Niskie ryzyko wejścia — TVN zarabia na wynikach, nie z góry.</div>
+    </div>
+    <div class="card">
+      <div style="font-size:22px;margin-bottom:10px;">🔬</div>
+      <h4 style="margin-bottom:8px;color:var(--accent3);">Wariant C — Data Monetization</h4>
+      <p class="bt">TVN viewer data + Hebe Club purchase data = targeting niemożliwy do zbudowania osobno. Premium insight dla marek: "Twoja marka dociera do kobiet 30–45 które kupują premium skincare i oglądają lifestyle TV w prime time."</p>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;">Najwyższa marża — unikalny asset na rynku PL.</div>
+    </div>
+    <div class="card">
+      <div style="font-size:22px;margin-bottom:10px;">🔄</div>
+      <h4 style="margin-bottom:8px;color:var(--accent4);">Wariant D — Channel Partner Subscription</h4>
+      <p class="bt">Marka płaci roczny fee za status "Hebe Channel Partner": X odcinków feature rocznie + stały shoppable layer + dostęp do połączonych danych. Przewidywalny przychód dla TVN+Hebe.</p>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;">SaaS-like recurring revenue model dla broadcast.</div>
+    </div>
+  </div>
+
+  <!-- QUICK WIN -->
+  <div class="card" style="margin-bottom:32px;border-color:var(--accent);">
+    <h3 style="margin-bottom:16px;color:var(--accent);">⚡ Quick Win — Jak Zacząć W 3 Miesiące (bez dużych inwestycji)</h3>
+    <div class="tl">
+      <div class="ti"><div class="td"></div><div class="ty2">Mies. 1</div><div class="tc"><div class="ttl">QR kody w istniejących reklamach Hebe na TVN</div><div class="tds">Każda reklama Hebe + kod produktu → landing page hebe.pl. Koszt: zero extra. Mierzalność: od dnia 1.</div></div></div>
+      <div class="ti"><div class="td"></div><div class="ty2">Mies. 2</div><div class="tc"><div class="ttl">"Produkt Tygodnia Hebe" w DDTVN — pilot z L'Oréal Paris</div><div class="tds">Negocjacja 4-minutowego segmentu. Jeden brand, jeden odcinek, pełny pomiar. Pokaż wyniki — sprzedaj kolejne.</div></div></div>
+      <div class="ti"><div class="td"></div><div class="ty2">Mies. 3</div><div class="tc"><div class="ttl">Player.pl shoppable banner + pierwsza Hebe Live</div><div class="tds">Banner "Kup produkt z odcinka w Hebe" podczas emisji TVN Style. + próbna 60-minutowa transmisja live. Mierz wszystko.</div></div></div>
+    </div>
+  </div>
+
+  <!-- COMPETITIVE -->
+  <h3 style="margin-bottom:16px;font-size:18px;">Dlaczego Nikt Tego Jeszcze Nie Robi</h3>
+  <table class="gt" style="margin-bottom:32px;">
+    <thead><tr><th>Istniejący format</th><th>Słabość</th><th>TVN×Hebe edge</th></tr></thead>
+    <tbody>
+      <tr><td>Allegro Live Shopping</td><td>Małe marki, brak TV reach</td><td>TVN daje zasięg masowy 2M+/dzień</td></tr>
+      <tr><td>TikTok Shop PL (2025/26)</td><td>Młodsza demografia, nie premium</td><td>TVN Style = premium 30–55 = Hebe core</td></tr>
+      <tr><td>Instagram Live (influencerki)</td><td>Fragmentaryczne, brak infrastruktury</td><td>Hebe = 780 sklepów + e-com + logistyka</td></tr>
+      <tr><td>Telezakupy / Mango TV</td><td>Postrzegane jako "nie premium"</td><td>TVN+Hebe = aspirational lifestyle brand</td></tr>
+      <tr><td>Glamour Beauty Awards (print)</td><td>Brak interaktywności, bez e-com</td><td>Hebe Beauty Awards = digital-first, shoppable</td></tr>
+    </tbody>
+  </table>
+
+  <div class="ib">
+    <div class="il">Kluczowy wniosek</div>
+    <div class="it">Nikt w Polsce nie połączył jeszcze masowej telewizji komercyjnej z premium multi-brand beauty retailerem w shoppable format. TVN + Hebe = <strong>first-mover advantage w oknie 18–24 miesięcy</strong> zanim TikTok Shop / Meta / Amazon Live wejdą agresywnie na rynek PL.</div>
+  </div>
+</div>
+</section>
+
+<!-- SOURCES -->
+<section style="padding:40px;">
+<div class="container">
+  <h3 style="color:var(--muted);margin-bottom:20px;font-size:14px;letter-spacing:1px;text-transform:uppercase;">Kluczowe źródła i linki</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px;">
+    <a class="srclink" href="https://advertising.amazon.com/library/news/dynamic-tv-creative" target="_blank">Amazon Ads: Dynamic TV Creative (maj 2026)</a>
+    <a class="srclink" href="https://www.streamingmediaglobal.com/Articles/Editorial/Featured-Articles/The-State-of-Shoppable-Live-TV-2026-173872.aspx" target="_blank">Streaming Media: State of Shoppable Live TV 2026</a>
+    <a class="srclink" href="https://www.emarketer.com/content/shoppable-ads-will-top-focus-brands-2025" target="_blank">eMarketer: Shoppable Ads Top Focus 2025</a>
+    <a class="srclink" href="https://omdia.tech.informa.com/blogs/2025/july/the-smart-tv-os-shakeup-amazon-walmart-and-the-coming-age-of-shoppable-media" target="_blank">Omdia: Smart TV OS Shakeup — Amazon + Walmart</a>
+    <a class="srclink" href="https://thevab.com/insight/shoppable-tv" target="_blank">VAB: Shoppable TV — 88M buyers by 2028</a>
+    <a class="srclink" href="https://corporate.walmart.com/news/2023/11/06/nbcuniversal-and-walmart-unite-to-enable-bravo-fans-to-shop-the-moment-on-peacock-for-the-first-time" target="_blank">Walmart: NBCUniversal Partnership — Bravo Peacock</a>
+    <a class="srclink" href="https://getstream.io/blog/livestream-shopping-statistics/" target="_blank">GetStream: Livestream Shopping Statistics 2026</a>
+    <a class="srclink" href="https://advertising.roku.com/learn/resources/heard-at-retail-media-summit-lessons-on-the-convergence-of-ctv-and-retail-media" target="_blank">Roku: CTV × Retail Media Convergence</a>
+    <a class="srclink" href="https://www.businesswire.com/news/home/20250311583390/en/The-Shoppable-TV-Report-2025-and-Beyond-How-Consumers-Are-Driving-the-Next-Wave-of-Shoppable-TV-Innovation" target="_blank">LG Ad Solutions: The Shoppable TV Report 2025</a>
+    <a class="srclink" href="https://awisee.com/blog/live-shopping-in-europe/" target="_blank">Awisee: Live Shopping in Europe 2025</a>
+    <a class="srclink" href="https://stackinfluence.com/blog/top-live-shopping-platforms-2026-tiktok-amazon" target="_blank">Stack Influence: Top Live Shopping Platforms 2026</a>
+    <a class="srclink" href="https://strikesocial.com/blog/youtube-shoppable-ctv-ads/" target="_blank">Strike Social: YouTube Shoppable CTV Ads Jan 2026</a>
+    <a class="srclink" href="https://www.emarketer.com/content/faq-on-ctv-advertising--trends--formats--platforms-watch-2026" target="_blank">eMarketer: FAQ CTV Advertising 2026</a>
+    <a class="srclink" href="https://deadline.com/2025/01/thetake-shoppable-tv-technology-partners-with-samsung-lg-ces-1236249538/" target="_blank">Deadline: TheTake × Samsung + LG CES 2025</a>
+  </div>
+</div>
+</section>
+
+<footer>
+  <strong>Shoppable TV &amp; Live Commerce Intelligence Report</strong><br>
+  Opracowanie: pd-content-market-intelligence skill | Data: Maj 2026 | 10 kanałów research | Źródła: eMarketer, Amazon Ads, Roku, Streaming Media Global, LG Ad Solutions, Omdia<br>
+  <span style="display:block;margin-top:8px;">Dla użytku wewnętrznego — e-commerce consulting &amp; strategy</span>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  }
+  (function() {
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light');
+    }
+  })();
+</script>
+</body>
+</html>
