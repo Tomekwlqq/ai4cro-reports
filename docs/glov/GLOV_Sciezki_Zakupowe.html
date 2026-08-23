@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLOV — Mapa Ścieżek Zakupowych</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f7f8fa; color: #1a1a2e; font-size: 14px; }
+
+.header { background: #1a1a2e; color: #fff; padding: 28px 32px 24px; }
+.header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+.header p { color: #8899aa; font-size: 12px; margin-top: 6px; }
+.sources { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.src-badge { background: rgba(255,255,255,0.08); border-radius: 4px; padding: 4px 10px; font-size: 11px; color: #aac; }
+.src-badge.s1 { color: #4fc3f7; }
+.src-badge.s2 { color: #81c784; }
+.src-badge.s3 { color: #ffb74d; }
+
+.content { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+
+.section { margin-bottom: 32px; }
+.section-title { font-size: 13px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.section-title span { font-size: 10px; font-weight: 400; background: #e8eaf6; color: #5c6bc0; padding: 2px 7px; border-radius: 10px; text-transform: none; letter-spacing: 0; }
+
+.card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+
+/* MATRIX */
+.matrix { overflow-x: auto; }
+table.mtx { width: 100%; border-collapse: collapse; font-size: 12px; }
+table.mtx th { background: #f0f2f5; padding: 9px 12px; text-align: left; font-size: 11px; color: #666; font-weight: 600; }
+table.mtx td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+table.mtx tr:last-child td { border-bottom: none; }
+.entry-label { font-weight: 600; color: #1a1a2e; }
+.entry-sub { font-size: 11px; color: #888; margin-top: 2px; }
+
+.cell { display: flex; flex-direction: column; gap: 2px; }
+.cr { font-weight: 700; font-size: 13px; }
+.cr-sub { font-size: 11px; color: #666; }
+.aov-tag { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 2px; }
+.trans-n { font-size: 10px; color: #999; }
+
+.score-h { background: #e8f5e9; color: #2e7d32; }
+.score-m { background: #fff8e1; color: #e65100; }
+.score-l { background: #fce4ec; color: #c62828; }
+.score-na { background: #f5f5f5; color: #bbb; font-style: italic; text-align: center; }
+
+.winner { background: #f1f8f2; border-left: 3px solid #2e7d32; padding-left: 8px; }
+.loser  { background: #fff3f3; border-left: 3px solid #e53935; padding-left: 8px; }
+.warn   { background: #fffdf0; border-left: 3px solid #f9a825; padding-left: 8px; }
+.neutral { border-left: 3px solid #bdbdbd; padding-left: 8px; }
+
+/* FUNNEL */
+.funnel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.funnel-card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+.funnel-name { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 12px; }
+.funnel-name .type-tag { font-size: 10px; font-weight: 500; color: #888; margin-left: 4px; }
+.funnel-step { display: flex; flex-direction: column; margin-bottom: 6px; }
+.funnel-label { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+.funnel-bar-wrap { height: 8px; background: #f0f0f0; border-radius: 4px; margin: 3px 0; }
+.funnel-bar { height: 8px; border-radius: 4px; }
+.bar-sess { background: #90a4ae; }
+.bar-atc  { background: #42a5f5; }
+.bar-chk  { background: #26a69a; }
+.funnel-num { font-size: 11px; font-weight: 600; color: #333; }
+.funnel-pct { font-size: 10px; color: #999; }
+.funnel-arrow { font-size: 10px; color: #ccc; text-align: center; margin: 2px 0; }
+.score-pill { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-top: 10px; }
+
+/* PATHS */
+.paths-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.path-card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+.path-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.path-name { font-weight: 700; font-size: 13px; }
+.path-rank { font-size: 10px; color: #888; }
+.path-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+.step-box { background: #f0f4ff; color: #3949ab; padding: 5px 10px; border-radius: 5px; font-size: 11px; font-weight: 600; }
+.step-box.highlight { background: #e8f5e9; color: #2e7d32; }
+.step-box.problem { background: #fce4ec; color: #c62828; }
+.step-arrow { font-size: 12px; color: #bbb; }
+.path-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.path-metric { text-align: center; background: #f8f9fa; border-radius: 6px; padding: 8px; }
+.path-metric .val { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+.path-metric .lbl { font-size: 10px; color: #888; }
+.path-note { font-size: 11px; color: #666; margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 8px; }
+
+/* DECISIONS */
+.decision-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.decision-card { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+.channel-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.channel-tag { font-size: 10px; color: #888; margin-bottom: 14px; }
+.rec-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f5f5f5; font-size: 12px; }
+.rec-row:last-child { border-bottom: none; }
+.rec-entry { font-weight: 600; }
+.rec-verdict { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
+.v-yes { background: #e8f5e9; color: #2e7d32; }
+.v-test { background: #fff8e1; color: #e65100; }
+.v-no  { background: #fce4ec; color: #c62828; }
+.rec-reason { font-size: 10px; color: #888; margin-top: 2px; }
+
+/* BLIND SPOTS */
+.blind-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.blind-card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); border-top: 3px solid #ef5350; }
+.blind-title { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+.blind-num { font-size: 28px; font-weight: 800; color: #ef5350; }
+.blind-desc { font-size: 11px; color: #666; margin-top: 6px; line-height: 1.5; }
+.blind-fix { font-size: 11px; font-weight: 600; color: #1565c0; margin-top: 8px; }
+
+.insight-bar { display: flex; align-items: stretch; gap: 14px; margin-bottom: 32px; flex-wrap: wrap; }
+.insight { flex: 1; min-width: 140px; background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+.insight-val { font-size: 26px; font-weight: 800; color: #1a1a2e; }
+.insight-label { font-size: 11px; color: #888; margin-top: 2px; }
+.insight-sub { font-size: 10px; color: #bbb; margin-top: 1px; }
+
+.src-label { font-size: 9px; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+.note { font-size: 11px; color: #888; font-style: italic; margin-top: 8px; }
+
+.section-desc { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 14px; max-width: 780px; }
+.section-desc strong { color: #1a1a2e; }
+.formula-box { background: #f0f4ff; border-left: 3px solid #5c6bc0; border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 16px; font-size: 12px; }
+.formula-box .formula { font-family: monospace; font-size: 13px; color: #3949ab; font-weight: 600; margin-bottom: 6px; }
+.formula-box .formula-note { color: #666; font-size: 11px; line-height: 1.5; }
+
+table.ci { width: 100%; border-collapse: collapse; font-size: 12px; }
+table.ci th { background: #f0f2f5; padding: 8px 12px; text-align: left; font-size: 11px; color: #666; font-weight: 600; }
+table.ci td { padding: 9px 12px; border-bottom: 1px solid #f5f5f5; vertical-align: middle; }
+table.ci tr:last-child td { border-bottom: none; }
+.ci-bar-wrap { width: 80px; height: 6px; background: #eee; border-radius: 3px; display: inline-block; vertical-align: middle; }
+.ci-bar { height: 6px; border-radius: 3px; }
+.ci-val { font-weight: 700; font-size: 14px; }
+.ci-pos { color: #2e7d32; }
+.ci-neu { color: #e65100; }
+.ci-neg { color: #c62828; }
+
+@media (max-width: 600px) {
+  .header { padding: 20px 16px 18px; }
+  .content { padding: 16px 12px 32px; }
+  .funnel-grid, .paths-grid, .decision-grid, .blind-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>GLOV — Mapa Ścieżek Zakupowych</h1>
+  <p>Dane styczeń–sierpień 2026 · Kanał, wejście, lejek i decyzja kampanijna</p>
+  <div class="sources">
+    <span class="src-badge s1">● GA4 — kanały i atrybucja (YTD)</span>
+    <span class="src-badge s2">● Shopify — lejek per entry (lipiec)</span>
+    <span class="src-badge s3">● Clarity — ścieżki purchase sessions</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- KPI SUMMARY -->
+  <div class="insight-bar">
+    <div class="insight">
+      <div class="insight-val">5 517</div>
+      <div class="insight-label">opłaconych zamówień YTD</div>
+      <div class="src-label">Shopify</div>
+    </div>
+    <div class="insight">
+      <div class="insight-val">1 437</div>
+      <div class="insight-label">trans. z NOT_SET (blind spot)</div>
+      <div class="src-label">GA4 — Meta niewidzialna</div>
+    </div>
+    <div class="insight">
+      <div class="insight-val">262 PLN</div>
+      <div class="insight-label">AOV — HP entry (najwyższy)</div>
+      <div class="src-label">Shopify customerJourney</div>
+    </div>
+    <div class="insight">
+      <div class="insight-val">13.0%</div>
+      <div class="insight-label">ATC rate — PDP pumeks (najwyższy)</div>
+      <div class="src-label">Shopify sessions</div>
+    </div>
+    <div class="insight">
+      <div class="insight-val">×2.1</div>
+      <div class="insight-label">Clarity Index — HP overpunch</div>
+      <div class="src-label">Clarity purchase sessions</div>
+    </div>
+  </div>
+
+  <!-- 1. MATRIX KANAŁ × WEJŚCIE -->
+  <div class="section">
+    <div class="section-title">1. Macierz: kanał × typ wejścia <span>GA4 YTD — CR%, trans, AOV</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Każda komórka = gdzie ląduje ruch z danego kanału i jak dobrze konwertuje. CR% = ile sesji kończy się zakupem. AOV = średnia wartość zamówienia.<br><strong>Do czego służy:</strong> Decyzja budżetowa — które kombinacje kanał+wejście warto skalować, a które przepalają pieniądze. <strong>Zielone</strong> = skaluj. <strong>Czerwone</strong> = ogranicz lub przesuń budżet.</p>
+    <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;font-size:11px;">
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#f1f8f2;border-left:3px solid #2e7d32;display:inline-block;border-radius:2px"></span> <strong>Skaluj</strong> — CR wysoki, AOV dobry</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#fffdf0;border-left:3px solid #f9a825;display:inline-block;border-radius:2px"></span> <strong>Testuj</strong> — mieszany wynik, warto sprawdzić</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#fff3f3;border-left:3px solid #e53935;display:inline-block;border-radius:2px"></span> <strong>Ogranicz</strong> — niski CR lub przepalanie</span>
+    </div>
+    <div class="card matrix">
+      <table class="mtx">
+        <thead>
+          <tr>
+            <th style="width:160px">Wejście</th>
+            <th>Meta CPC</th>
+            <th>Google CPC</th>
+            <th>Google Organic</th>
+            <th>Direct / Unknown</th>
+            <th>Affiliate / Inne</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td>
+              <div class="entry-label">HP <code>/</code></div>
+              <div class="entry-sub">Homepage</div>
+            </td>
+            <td class="winner">
+              <div class="cell">
+                <span class="cr">1.7%</span>
+                <span class="cr-sub">68 trans · 4 030 sesji</span>
+                <span class="aov-tag score-h">207 PLN AOV</span>
+                <span class="trans-n">⚠ GA4 niedoszacowuje — Meta→HP → NOT_SET</span>
+              </div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">4.3%</span>
+                <span class="cr-sub">71 trans · 1 645 sesji</span>
+                <span class="aov-tag score-m">143 PLN AOV</span>
+              </div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">2.6%</span>
+                <span class="cr-sub">46 trans · 1 781 sesji</span>
+                <span class="aov-tag score-m">150 PLN AOV</span>
+              </div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">2.7%</span>
+                <span class="cr-sub">104 trans · 3 858 sesji</span>
+                <span class="aov-tag score-m">140 PLN AOV</span>
+              </div>
+            </td>
+            <td class="winner">
+              <div class="cell">
+                <span class="cr">5.1%</span>
+                <span class="cr-sub">103 trans · 2 033 sesji</span>
+                <span class="aov-tag score-h">250 PLN AOV 🏆</span>
+                <span class="trans-n">tradetracker afiliacja</span>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="entry-label">Collection/sklep</div>
+              <div class="entry-sub">/collections/sklep</div>
+            </td>
+            <td class="loser">
+              <div class="cell">
+                <span class="cr">1.2%</span>
+                <span class="cr-sub">199 trans · 17 005 sesji</span>
+                <span class="aov-tag score-m">192 PLN AOV</span>
+                <span class="trans-n">⚠ niski CR, wysoki volumen → przepalanie</span>
+              </div>
+            </td>
+            <td class="winner">
+              <div class="cell">
+                <span class="cr">5.7%</span>
+                <span class="cr-sub">611 trans · 10 790 sesji</span>
+                <span class="aov-tag score-m">132 PLN AOV</span>
+                <span class="trans-n">Google Shopping → największy wolumen</span>
+              </div>
+            </td>
+            <td class="score-na">—</td>
+            <td class="loser">
+              <div class="cell">
+                <span class="cr">0.2%</span>
+                <span class="cr-sub">34 trans · 21 905 sesji</span>
+                <span class="aov-tag score-l">167 PLN AOV</span>
+                <span class="trans-n">⚠ boty / paginated direct</span>
+              </div>
+            </td>
+            <td class="score-na">—</td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="entry-label">PDP (wszystkie)</div>
+              <div class="entry-sub">/products/*</div>
+            </td>
+            <td class="warn">
+              <div class="cell">
+                <span class="cr">1.9%</span>
+                <span class="cr-sub">472 trans · 25 192 sesji</span>
+                <span class="aov-tag score-m">131 PLN AOV</span>
+                <span class="trans-n">Testuj: niski CR, duże wolumeny</span>
+              </div>
+            </td>
+            <td class="winner">
+              <div class="cell">
+                <span class="cr">2.8%</span>
+                <span class="cr-sub">465 trans · 16 599 sesji</span>
+                <span class="aov-tag score-m">154 PLN AOV</span>
+              </div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">2.7%</span>
+                <span class="cr-sub">121 trans · 4 550 sesji</span>
+                <span class="aov-tag score-m">131 PLN AOV</span>
+              </div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">3.5%</span>
+                <span class="cr-sub">52 trans · 1 478 sesji</span>
+                <span class="aov-tag score-m">138 PLN AOV</span>
+              </div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">22.5%</span>
+                <span class="cr-sub">25 trans · 111 sesji</span>
+                <span class="aov-tag score-m">75 PLN AOV</span>
+                <span class="trans-n">mały próbka — nie wyciągaj wniosków</span>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="entry-label">Collection/inne</div>
+              <div class="entry-sub">/collections/hair, nano, etc.</div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">3.4%</span>
+                <span class="cr-sub">270 trans · 7 840 sesji</span>
+                <span class="aov-tag score-l">77 PLN AOV</span>
+              </div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">4.1%</span>
+                <span class="cr-sub">228 trans · 5 516 sesji</span>
+                <span class="aov-tag score-m">129 PLN AOV</span>
+              </div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">3.3%</span>
+                <span class="cr-sub">17 trans · 519 sesji</span>
+                <span class="aov-tag score-m">148 PLN AOV</span>
+              </div>
+            </td>
+            <td class="score-na">—</td>
+            <td class="score-na">—</td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="entry-label">LP / Strona</div>
+              <div class="entry-sub">/pages/* (iconic-mitt, rutyna)</div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">3.1%</span>
+                <span class="cr-sub">39 trans · 1 250 sesji</span>
+                <span class="aov-tag score-l">103 PLN AOV</span>
+                <span class="trans-n">oczyszczanie flow</span>
+              </div>
+            </td>
+            <td class="score-na">— mało danych</td>
+            <td class="score-na">—</td>
+            <td class="score-na">—</td>
+            <td class="score-na">—</td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="entry-label">NOT_SET</div>
+              <div class="entry-sub">brak pagePath — głównie Meta</div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">1.3%</span>
+                <span class="cr-sub">112 trans · 8 908 sesji</span>
+                <span class="aov-tag score-m">177 PLN AOV</span>
+              </div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">—</span>
+                <span class="cr-sub">0 trans · 587 sesji</span>
+                <span class="trans-n">Google w NOT_SET = tracking bug</span>
+              </div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">2.8%</span>
+                <span class="cr-sub">179 trans · 6 320 sesji</span>
+                <span class="aov-tag score-m">132 PLN AOV</span>
+              </div>
+            </td>
+            <td>
+              <div class="cell">
+                <span class="cr">5.5%</span>
+                <span class="cr-sub">1 437 trans · 25 997 sesji</span>
+                <span class="aov-tag score-m">63 PLN AOV</span>
+                <span class="trans-n">⚠ największy bucket — niewidzialny</span>
+              </div>
+            </td>
+            <td class="score-na">—</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2. LEJEK SHOPIFY PER ENTRY -->
+  <div class="section">
+    <div class="section-title">2. Lejek per wejście — top 15 <span id="month-label-title">Shopify sessions — 3 miesiące</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Dla każdej strony wejścia: ile sesji → ile dodało do koszyka (ATC%) → ile dotarło do checkout (checkout%). Dane z Shopify server-side — nie ma adblock bias ani GA4 NOT_SET.<br><strong>Do czego służy:</strong> Wykrywanie gdzie wycieka lejek. Jeśli ATC% niskie = strona wejścia nie przekonuje do dodania produktu. Jeśli checkout% niskie przy wysokim ATC = coś blokuje w koszyku. <strong>Idealny lejek:</strong> ATC &gt;10%, checkout &gt;7%.</p>
+
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <button class="month-tab" data-month="06" onclick="switchMonth('06')">Czerwiec</button>
+      <button class="month-tab" data-month="07" onclick="switchMonth('07')">Lipiec</button>
+      <button class="month-tab active" data-month="08" onclick="switchMonth('08')">Sierpień</button>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden">
+      <table id="funnel-table" style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:#f0f2f5">
+            <th style="padding:10px 12px;text-align:left;font-size:11px;color:#666;font-weight:600;width:28px">#</th>
+            <th style="padding:10px 12px;text-align:left;font-size:11px;color:#666;font-weight:600">Strona wejścia</th>
+            <th style="padding:10px 12px;text-align:right;font-size:11px;color:#666;font-weight:600;width:70px">Sesje</th>
+            <th style="padding:10px 12px;text-align:left;font-size:11px;color:#666;font-weight:600;width:160px">ATC%</th>
+            <th style="padding:10px 12px;text-align:left;font-size:11px;color:#666;font-weight:600;width:160px">Checkout%</th>
+            <th style="padding:10px 12px;text-align:center;font-size:11px;color:#666;font-weight:600;width:70px">Conv. Index</th>
+          </tr>
+        </thead>
+        <tbody id="funnel-body"></tbody>
+      </table>
+    </div>
+
+    <div class="funnel-grid" style="display:none">
+
+      <!-- HP -->
+      <div class="funnel-card">
+        <div class="funnel-name">Homepage <span class="type-tag">HP</span></div>
+        <div class="funnel-step">
+          <span class="funnel-label">Sesje</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-sess" style="width:100%"></div></div>
+          <span class="funnel-num">4 294</span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Add to Cart</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-atc" style="width:9.1%"></div></div>
+          <span class="funnel-num">392 <span class="funnel-pct">9.1%</span></span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Reached Checkout</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-chk" style="width:5.9%"></div></div>
+          <span class="funnel-num">255 <span class="funnel-pct">5.9%</span></span>
+        </div>
+        <span class="score-pill score-h">262 PLN AOV · ×2.1 Clarity</span>
+      </div>
+
+      <!-- Pumeks PDP -->
+      <div class="funnel-card">
+        <div class="funnel-name">PDP pumeks <span class="type-tag">PDP</span></div>
+        <div class="funnel-step">
+          <span class="funnel-label">Sesje</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-sess" style="width:100%"></div></div>
+          <span class="funnel-num">1 795</span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Add to Cart</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-atc" style="width:13%"></div></div>
+          <span class="funnel-num">233 <span class="funnel-pct">13.0% 🏆</span></span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Reached Checkout</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-chk" style="width:8.9%"></div></div>
+          <span class="funnel-num">159 <span class="funnel-pct">8.9%</span></span>
+        </div>
+        <span class="score-pill score-m">73 PLN AOV · Google CPC/Organic</span>
+      </div>
+
+      <!-- Zero-gravity kolekcja URL -->
+      <div class="funnel-card">
+        <div class="funnel-name">Zero-gravity (kol.) <span class="type-tag">PDP</span></div>
+        <div class="funnel-step">
+          <span class="funnel-label">Sesje</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-sess" style="width:100%"></div></div>
+          <span class="funnel-num">1 847</span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Add to Cart</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-atc" style="width:10.2%"></div></div>
+          <span class="funnel-num">188 <span class="funnel-pct">10.2%</span></span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Reached Checkout</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-chk" style="width:7.3%"></div></div>
+          <span class="funnel-num">135 <span class="funnel-pct">7.3%</span></span>
+        </div>
+        <span class="score-pill score-h">Efektywny PDP</span>
+      </div>
+
+      <!-- Iconic-mitt LP -->
+      <div class="funnel-card">
+        <div class="funnel-name">Iconic-mitt LP <span class="type-tag">Custom</span></div>
+        <div class="funnel-step">
+          <span class="funnel-label">Sesje</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-sess" style="width:100%"></div></div>
+          <span class="funnel-num">991</span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Add to Cart</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-atc" style="width:11.8%"></div></div>
+          <span class="funnel-num">117 <span class="funnel-pct">11.8%</span></span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Reached Checkout</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-chk" style="width:6.5%"></div></div>
+          <span class="funnel-num">64 <span class="funnel-pct">6.5%</span></span>
+        </div>
+        <span class="score-pill score-h">Niedoinwestowany LP</span>
+      </div>
+
+      <!-- Luna-eye PDP -->
+      <div class="funnel-card">
+        <div class="funnel-name">Luna-eye PDP <span class="type-tag">PDP</span></div>
+        <div class="funnel-step">
+          <span class="funnel-label">Sesje</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-sess" style="width:100%"></div></div>
+          <span class="funnel-num">1 240</span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Add to Cart</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-atc" style="width:6.2%"></div></div>
+          <span class="funnel-num">77 <span class="funnel-pct">6.2%</span></span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Reached Checkout</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-chk" style="width:4%"></div></div>
+          <span class="funnel-num">50 <span class="funnel-pct">4.0%</span></span>
+        </div>
+        <span class="score-pill score-m">274 PLN AOV · Google CPC</span>
+      </div>
+
+      <!-- Collection sklep -->
+      <div class="funnel-card">
+        <div class="funnel-name">Collection /sklep <span class="type-tag">Collection</span></div>
+        <div class="funnel-step">
+          <span class="funnel-label">Sesje</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-sess" style="width:100%"></div></div>
+          <span class="funnel-num">6 968 (największy)</span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Add to Cart</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-atc" style="width:3.3%"></div></div>
+          <span class="funnel-num">233 <span class="funnel-pct">3.3% ⚠</span></span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Reached Checkout</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-chk" style="width:2.3%"></div></div>
+          <span class="funnel-num">157 <span class="funnel-pct">2.3%</span></span>
+        </div>
+        <span class="score-pill score-l">Najsłabszy ATC rate · 4× więcej ruchu niż HP</span>
+      </div>
+
+      <!-- Sleeping-beauty -->
+      <div class="funnel-card">
+        <div class="funnel-name">Sleeping-beauty PDP <span class="type-tag">PDP</span></div>
+        <div class="funnel-step">
+          <span class="funnel-label">Sesje</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-sess" style="width:100%"></div></div>
+          <span class="funnel-num">1 953 (duży volumen)</span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Add to Cart</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-atc" style="width:3.4%"></div></div>
+          <span class="funnel-num">67 <span class="funnel-pct">3.4% ⚠</span></span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Reached Checkout</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-chk" style="width:2.2%"></div></div>
+          <span class="funnel-num">43 <span class="funnel-pct">2.2%</span></span>
+        </div>
+        <span class="score-pill score-l">Duży ruch, słaba konwersja</span>
+      </div>
+
+      <!-- Skin-smoothing -->
+      <div class="funnel-card">
+        <div class="funnel-name">Skin-smoothing PDP <span class="type-tag">PDP</span></div>
+        <div class="funnel-step">
+          <span class="funnel-label">Sesje</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-sess" style="width:100%"></div></div>
+          <span class="funnel-num">838</span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Add to Cart</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-atc" style="width:8.8%"></div></div>
+          <span class="funnel-num">74 <span class="funnel-pct">8.8%</span></span>
+        </div>
+        <div class="funnel-arrow">↓</div>
+        <div class="funnel-step">
+          <span class="funnel-label">Reached Checkout</span>
+          <div class="funnel-bar-wrap"><div class="funnel-bar bar-chk" style="width:5.4%"></div></div>
+          <span class="funnel-num">45 <span class="funnel-pct">5.4%</span></span>
+        </div>
+        <span class="score-pill score-m">Solidny PDP, mały ruch</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 2.5 CONVERSION INDEX -->
+  <div class="section">
+    <div class="section-title">2b. Conversion Index — ranking wejść <span>Shopify lipiec · formuła poniżej</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Jeden wskaźnik który mówi czy dana strona wejścia ZARABIA powyżej czy poniżej swojego udziału w ruchu.<br><strong>Dla kogo:</strong> Planowanie mediów — gdzie wysyłać kampanijny ruch żeby nie przepalać.</p>
+
+    <div class="formula-box">
+      <div class="formula">Conversion Index = (% checkoutów ze strony X) ÷ (% sesji ze strony X)</div>
+      <div class="formula-note">
+        <strong>&gt;1.0</strong> = strona konwertuje lepiej niż jej udział w ruchu sugeruje → warto tu kierować więcej ruchu<br>
+        <strong>= 1.0</strong> = strona konwertuje proporcjonalnie do ruchu → neutralna<br>
+        <strong>&lt;1.0</strong> = strona "pożera" ruch bez proporcjonalnego zwrotu → ograniczaj kampanie tu kierujące<br>
+        <em>Źródło: Shopify sessions (server-side, bez adblock bias). Liczono jako checkouts/sessions per entry.</em>
+      </div>
+    </div>
+
+    <div class="card">
+      <table class="ci">
+        <thead>
+          <tr>
+            <th style="width:200px">Strona wejścia</th>
+            <th>% sesji</th>
+            <th>% checkoutów</th>
+            <th>Conversion Index</th>
+            <th style="width:100px">Skala</th>
+            <th>Wniosek</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>PDP pumeks</strong><br><small style="color:#888">/products/pumeks-glov-*</small></td>
+            <td>9.0%</td>
+            <td>17.5%</td>
+            <td><span class="ci-val ci-pos">×1.94</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:97%;background:#2e7d32"></div></div></td>
+            <td style="font-size:11px;color:#333">Największy overpunch. 9% ruchu generuje 17.5% checkoutów. <strong>Skaluj ruch tu.</strong></td>
+          </tr>
+          <tr>
+            <td><strong>PDP zero-gravity</strong><br><small style="color:#888">/collections/*/products/klips-*</small></td>
+            <td>9.3%</td>
+            <td>14.9%</td>
+            <td><span class="ci-val ci-pos">×1.60</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:80%;background:#43a047"></div></div></td>
+            <td style="font-size:11px;color:#333">Silny PDP. Kolekcja URL pomaga — produkt wpisany w kontekst kategorii.</td>
+          </tr>
+          <tr>
+            <td><strong>LP iconic-mitt</strong><br><small style="color:#888">/pages/iconic-mitt</small></td>
+            <td>5.0%</td>
+            <td>7.1%</td>
+            <td><span class="ci-val ci-pos">×1.42</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:71%;background:#66bb6a"></div></div></td>
+            <td style="font-size:11px;color:#333">Niedoinwestowany landing. Dobry index, mały ruch. Warte testu z kampanią Meta.</td>
+          </tr>
+          <tr>
+            <td><strong>Homepage /</strong><br><small style="color:#888">główna strona</small></td>
+            <td>21.5%</td>
+            <td>28.1%</td>
+            <td><span class="ci-val ci-pos">×1.31</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:66%;background:#8bc34a"></div></div></td>
+            <td style="font-size:11px;color:#333">Solidna. 262 PLN AOV, ×1.31 index. Meta flight_promo tu ląduje — słusznie.</td>
+          </tr>
+          <tr>
+            <td><strong>PDP skin-smoothing</strong><br><small style="color:#888">/products/rekawica-*</small></td>
+            <td>4.2%</td>
+            <td>5.0%</td>
+            <td><span class="ci-val ci-neu">×1.19</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:60%;background:#ffa726"></div></div></td>
+            <td style="font-size:11px;color:#333">Marginalnie pozytywny. Mały ruch, dobry lejek. Kandydat do skalowania.</td>
+          </tr>
+          <tr>
+            <td><strong>PDP luna-eye</strong><br><small style="color:#888">/products/platki-led-*</small></td>
+            <td>6.2%</td>
+            <td>5.5%</td>
+            <td><span class="ci-val ci-neu">×0.89</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:45%;background:#ff7043"></div></div></td>
+            <td style="font-size:11px;color:#333">Poniżej 1.0 ale blisko. 274 PLN AOV kompensuje słaby CR. Monitoruj.</td>
+          </tr>
+          <tr style="background:#fff8f8">
+            <td><strong>Collection/sklep</strong><br><small style="color:#888">/collections/sklep</small></td>
+            <td>35.0%</td>
+            <td>17.3%</td>
+            <td><span class="ci-val ci-neg">×0.49</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:25%;background:#e53935"></div></div></td>
+            <td style="font-size:11px;color:#333"><strong>Największy problem.</strong> 35% sesji, tylko 17% checkoutów. Każda kampania kierująca tu przepala budżet. Ogranicz Meta→sklep.</td>
+          </tr>
+          <tr style="background:#fff8f8">
+            <td><strong>PDP sleeping-beauty</strong><br><small style="color:#888">/products/upiekszajaca-poduszka-*</small></td>
+            <td>9.8%</td>
+            <td>4.7%</td>
+            <td><span class="ci-val ci-neg">×0.48</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:24%;background:#e53935"></div></div></td>
+            <td style="font-size:11px;color:#333">Duży ruch, słaby zwrot. PDP wymaga audytu — co blokuje ATC? Produkt seasonal czy PDP problem?</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2c. NEW vs RETURNING -->
+  <div class="section">
+    <div class="section-title">2c. Nowi vs powracający per wejście <span>Clarity YTD 2026</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Jaki % sesji na danej stronie wejścia to powracający użytkownicy (byli tu wcześniej). <strong>Do czego służy:</strong> Wysoki % returning = produkt wymaga przemyślenia (remarketing skuteczny). Niski % = czysta akwizycja (nowi klienci, zimny ruch). Różne strategie mediowe!</p>
+    <div class="card">
+      <table class="ci">
+        <thead>
+          <tr>
+            <th style="width:200px">Strona wejścia</th>
+            <th>Sesje nowych</th>
+            <th>Sesje returning</th>
+            <th>% Returning</th>
+            <th>Interpretacja</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>PDP skin-smoothing</strong></td>
+            <td>3 799</td>
+            <td>712</td>
+            <td><span style="font-weight:700;color:#1565c0;font-size:13px">15.8%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:100%;background:#1565c0"></div></div></td>
+            <td style="font-size:11px"><strong>Remarketing gold.</strong> Co 6. osoba wróciła. Uruchom retargeting Meta/Google na tę grupę — już znają produkt.</td>
+          </tr>
+          <tr>
+            <td><strong>PDP luna-eye</strong></td>
+            <td>4 309</td>
+            <td>718</td>
+            <td><span style="font-weight:700;color:#1565c0;font-size:13px">14.3%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:91%;background:#1565c0"></div></div></td>
+            <td style="font-size:11px">Wysoka cena = dłuższy cykl decyzji. Powracają po przemyśleniu. <strong>Remarketing z social proof działa tu najlepiej.</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Homepage /</strong></td>
+            <td>8 787</td>
+            <td>1 146</td>
+            <td><span style="font-weight:700;color:#388e3c;font-size:13px">11.5%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:73%;background:#388e3c"></div></div></td>
+            <td style="font-size:11px">Solidny miks. Returning wraca przez brand awareness (Meta flight_promo). <strong>HP to też punkt ponownego wejścia.</strong></td>
+          </tr>
+          <tr>
+            <td><strong>PDP zero-gravity</strong></td>
+            <td>5 455</td>
+            <td>712</td>
+            <td><span style="font-weight:700;color:#388e3c;font-size:13px">11.5%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:73%;background:#388e3c"></div></div></td>
+            <td style="font-size:11px">Proporcje zbliżone do HP. Produkt rozważany, nie impulsowy.</td>
+          </tr>
+          <tr>
+            <td><strong>PDP sleeping-beauty</strong></td>
+            <td>7 844</td>
+            <td>847</td>
+            <td><span style="font-weight:700;color:#f57c00;font-size:13px">9.7%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:61%;background:#f57c00"></div></div></td>
+            <td style="font-size:11px">Dużo nowego ruchu + słaby CI (×0.48). <strong>Problem: ruch acquisition na produkt który nie konwertuje.</strong></td>
+          </tr>
+          <tr>
+            <td><strong>PDP depilator</strong></td>
+            <td>2 913</td>
+            <td>277</td>
+            <td><span style="font-weight:700;color:#f57c00;font-size:13px">8.7%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:55%;background:#f57c00"></div></div></td>
+            <td style="font-size:11px">Neutralny. Zdrowy miks nowych i powracających.</td>
+          </tr>
+          <tr>
+            <td><strong>Collection/sklep</strong></td>
+            <td>19 128</td>
+            <td>1 672</td>
+            <td><span style="font-weight:700;color:#e53935;font-size:13px">8.0%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:51%;background:#e53935"></div></div></td>
+            <td style="font-size:11px">Prawie wyłącznie nowy zimny ruch (Meta acquisition). CI×0.49. <strong>Kombinacja: nowi + słaba konwersja = najgorszy scenariusz.</strong></td>
+          </tr>
+          <tr>
+            <td><strong>PDP pumeks</strong></td>
+            <td>8 337</td>
+            <td>683</td>
+            <td><span style="font-weight:700;color:#e53935;font-size:13px">7.6%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:48%;background:#c62828"></div></div></td>
+            <td style="font-size:11px">Ale uwaga: mimo najniższego returning%, pumeks ma CI×1.94. <strong>Konwertuje świetnie nawet na zimnym ruchu.</strong> Siła PDP, nie baza powracających.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 3. RANKING ŚCIEŻEK CLARITY -->
+  <div class="section">
+    <div class="section-title">3. Ranking ścieżek zakupowych <span>Clarity — purchase sessions</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Clarity nagrało sesje które zakończyły się zakupem i pokazało jakie kroki użytkownik przeszedł. To rzeczywiste zachowanie — nie model statystyczny.<br><strong>Do czego służy:</strong> Widzisz dosłownie: "osoba przyszła na kolekcję → kliknęła PDP → dodała do koszyka → kupiła". Możesz optymalizować każdy krok oddzielnie.<br><strong style="color:#1a1a2e">Wniosek #1 — IDEALNA ścieżka:</strong> Ścieżka B (PDP bezpośrednio → koszyk → zakup). Najkrótsza, CR 2.26%. Osiągasz ją przez: Google CPC/Organic → konkretny produkt PDP. Nie przez kolekcję.<br><strong style="color:#1a1a2e">Wniosek #2 — NAJCENNIEJSZA ścieżka:</strong> Ścieżka E (HP → zakup). CR 3.47%, AOV 262 PLN. Meta flight_promo → HP to właśnie ta ścieżka — trzymaj ją.<br><strong style="color:#1a1a2e">Wniosek #3 — DOMINUJĄCA ale nieefektywna:</strong> Ścieżka A (kolekcja → PDP → koszyk) = 39.5% zakupów przy CR zaledwie 1.44%. Masa przepływu, słaba konwersja.<br><strong style="color:#e53935">Red flag — Ścieżka D:</strong> "Back and forth" (kolekcja ↔ PDP wielokrotnie) = kupujący nie może się zdecydować. Symptom że PDP nie daje wystarczającej pewności zakupu.</p>
+
+    <div class="paths-grid">
+
+      <div class="path-card">
+        <div class="path-header">
+          <span class="path-name">Ścieżka A — Standard</span>
+          <span class="path-rank" style="background:#fff3cd;color:#856404;padding:2px 8px;border-radius:10px;font-size:10px">39.5% zakupów</span>
+        </div>
+        <div class="path-flow">
+          <div class="step-box problem">KOLEKCJA</div>
+          <span class="step-arrow">→</span>
+          <div class="step-box">PDP</div>
+          <span class="step-arrow">→</span>
+          <div class="step-box highlight">Koszyk</div>
+          <span class="step-arrow">→</span>
+          <div class="step-box highlight">Zakup</div>
+        </div>
+        <div class="path-metrics">
+          <div class="path-metric"><div class="val">1.44%</div><div class="lbl">CR sesji</div></div>
+          <div class="path-metric"><div class="val">39.5%</div><div class="lbl">udział w zakupach</div></div>
+          <div class="path-metric" style="background:#fff3f3"><div class="val" style="color:#c62828">×0.49</div><div class="lbl">Conv. Index</div></div>
+          <div class="path-metric"><div class="val">8%</div><div class="lbl">Returning</div></div>
+        </div>
+        <div class="path-note">Dominująca ścieżka, najsłabszy CI. Prawie wyłącznie zimny nowy ruch (92% new) → kolekcja nie filtuje dobrze intencji zakupowej. Duży udział w zakupach = tylko przez skalę, nie efektywność.</div>
+      </div>
+
+      <div class="path-card" style="border: 2px solid #2e7d32;">
+        <div class="path-header">
+          <span class="path-name">Ścieżka B — PDP Direct ⭐</span>
+          <span class="path-rank" style="background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:10px;font-size:10px">IDEALNA</span>
+        </div>
+        <div class="path-flow">
+          <div class="step-box highlight">PDP</div>
+          <span class="step-arrow">→</span>
+          <div class="step-box highlight">Koszyk</div>
+          <span class="step-arrow">→</span>
+          <div class="step-box highlight">Zakup</div>
+        </div>
+        <div class="path-metrics">
+          <div class="path-metric"><div class="val">2.26%</div><div class="lbl">CR sesji</div></div>
+          <div class="path-metric"><div class="val">3</div><div class="lbl">kroki (najmniej)</div></div>
+          <div class="path-metric" style="background:#f1f8f2"><div class="val" style="color:#2e7d32">×1.94</div><div class="lbl">Conv. Index (pumeks)</div></div>
+          <div class="path-metric"><div class="val">7.6%</div><div class="lbl">Returning</div></div>
+        </div>
+        <div class="path-note"><strong>Najkrótsza ścieżka, najwyższy CR, najlepszy CI.</strong> Konwertuje świetnie nawet na zimnym ruchu (92% new). Google CPC/Organic → PDP pumeks = optymalna kombinacja. Replikuj ten pattern na inne PDP.</div>
+      </div>
+
+      <div class="path-card" style="border: 2px solid #1565c0;">
+        <div class="path-header">
+          <span class="path-name">Ścieżka E — HP Entry 💎</span>
+          <span class="path-rank" style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:10px;font-size:10px">NAJCENNIEJSZA</span>
+        </div>
+        <div class="path-flow">
+          <div class="step-box" style="background:#e3f2fd;color:#1565c0">HP</div>
+          <span class="step-arrow">→</span>
+          <div class="step-box">???</div>
+          <span class="step-arrow">→</span>
+          <div class="step-box highlight">Koszyk</div>
+          <span class="step-arrow">→</span>
+          <div class="step-box highlight">Zakup</div>
+        </div>
+        <div class="path-metrics">
+          <div class="path-metric"><div class="val">3.47%</div><div class="lbl">CR sesji</div></div>
+          <div class="path-metric"><div class="val" style="color:#1565c0">262 PLN</div><div class="lbl">AOV (najwyższy)</div></div>
+          <div class="path-metric" style="background:#f1f8f2"><div class="val" style="color:#2e7d32">×1.31</div><div class="lbl">Conv. Index</div></div>
+          <div class="path-metric" style="background:#e3f2fd"><div class="val" style="color:#1565c0">11.5%</div><div class="lbl">Returning ↑</div></div>
+        </div>
+        <div class="path-note"><strong>Najwyższy CR + najwyższy AOV.</strong> Wyższy % returning (11.5%) — HP przyciąga bardziej brand-aware ruch. Meta flight_promo → HP = ta ścieżka. Środkowe kroki nieznane (Clarity nie mapuje kroków HP→koszyk). <em>Gap do zbadania w Clarity filtrując sesje startujące na /</em></div>
+      </div>
+
+      <div class="path-card">
+        <div class="path-header">
+          <span class="path-name">Ścieżka C — Quick-Add</span>
+          <span class="path-rank" style="background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:10px;font-size:10px">Efektywny skrót</span>
+        </div>
+        <div class="path-flow">
+          <div class="step-box problem">KOLEKCJA</div>
+          <span class="step-arrow">→</span>
+          <div class="step-box highlight">Quick-Add</div>
+          <span class="step-arrow">→</span>
+          <div class="step-box highlight">Koszyk</div>
+          <span class="step-arrow">→</span>
+          <div class="step-box highlight">Zakup</div>
+        </div>
+        <div class="path-metrics">
+          <div class="path-metric"><div class="val">1 478</div><div class="lbl">ATC zdarzeń</div></div>
+          <div class="path-metric"><div class="val">10.8%</div><div class="lbl">ATC → zakup</div></div>
+          <div class="path-metric" style="background:#fff3f3"><div class="val" style="color:#c62828">×0.49</div><div class="lbl">Conv. Index (entry)</div></div>
+          <div class="path-metric"><div class="val">8%</div><div class="lbl">Returning</div></div>
+        </div>
+        <div class="path-note">Kupujący pomijają PDP — decydują z kafelka kolekcji. CI entry słaby (kolekcja), ale raz ATC = dobra konwersja do zakupu. Wskazuje że galeria kolekcji powinna mieć więcej info (cena, warianty, USP) żeby wspierać quick-add bez PDP.</div>
+      </div>
+
+      <div class="path-card" style="border: 2px solid #e53935;">
+        <div class="path-header">
+          <span class="path-name">Ścieżka D — Back & Forth</span>
+          <span class="path-rank" style="background:#fce4ec;color:#c62828;padding:2px 8px;border-radius:10px;font-size:10px">RED FLAG</span>
+        </div>
+        <div class="path-flow">
+          <div class="step-box problem">KOLEKCJA</div>
+          <span class="step-arrow">⇄</span>
+          <div class="step-box problem">PDP</div>
+          <span class="step-arrow">⇄</span>
+          <div class="step-box">Koszyk</div>
+          <span class="step-arrow">→</span>
+          <div class="step-box highlight">Zakup</div>
+        </div>
+        <div class="path-metrics">
+          <div class="path-metric"><div class="val">97</div><div class="lbl">sesji</div></div>
+          <div class="path-metric"><div class="val">13%</div><div class="lbl">udział w zakupach</div></div>
+          <div class="path-metric" style="background:#fff3f3"><div class="val" style="color:#c62828">×0.49</div><div class="lbl">Conv. Index (entry)</div></div>
+          <div class="path-metric"><div class="val">8%</div><div class="lbl">Returning</div></div>
+        </div>
+        <div class="path-note"><strong>Symptom UX:</strong> użytkownik krąży między kolekcją a PDP kilkukrotnie zanim kupi. Diagnoza: PDP nie daje wystarczającej pewności (brak recenzji / porównania / gwarancji / live demo). Sprawdź Clarity recordings tych sesji — zobaczysz co blokuje.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. DECYZJA KAMPANIJNA -->
+  <div class="section">
+    <div class="section-title">4. Gdzie wysyłać ruch kampanijny <span>rekomendacja per kanał</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Synteza danych z sekcji 1–3 w formę decyzji. Per kanał: które wejście warto targetować a które hamuje wyniki.<br><strong>Do czego służy:</strong> Instrukcja dla media buyera. Zamiast testować wszystko — zacznij od "SKALUJ", a koszty z "OGRANICZ" przesuń na górę listy.</p>
+    <div class="decision-grid">
+
+      <div class="decision-card">
+        <div class="channel-name">Meta CPC</div>
+        <div class="channel-tag">flight_promo · hair_flow · katalog_flow · lunaeye_flow</div>
+
+        <div class="rec-row">
+          <div>
+            <div class="rec-entry">HP /</div>
+            <div class="rec-reason">207–262 PLN AOV · ×2.1 Clarity Index</div>
+          </div>
+          <span class="rec-verdict v-yes">✅ ZOSTAW</span>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-entry">Collection/sklep</div>
+            <div class="rec-reason">1.2% CR, 192 PLN AOV — dużo ruchu, mało efektu</div>
+          </div>
+          <span class="rec-verdict v-no">🔴 OGRANICZ</span>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-entry">PDP (produkty)</div>
+            <div class="rec-reason">1.9% CR, 131 PLN AOV — mediocre</div>
+          </div>
+          <span class="rec-verdict v-test">🟡 TESTUJ</span>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-entry">LP dedicated</div>
+            <div class="rec-reason">iconic-mitt: 11.8% ATC — zbadaj skalę</div>
+          </div>
+          <span class="rec-verdict v-test">🟡 TESTUJ</span>
+        </div>
+      </div>
+
+      <div class="decision-card">
+        <div class="channel-name">Google CPC</div>
+        <div class="channel-tag">Shopping + Search · pumeks · sleeping-beauty · luna-eye</div>
+
+        <div class="rec-row">
+          <div>
+            <div class="rec-entry">Collection/sklep</div>
+            <div class="rec-reason">5.7% CR, 132 PLN AOV — volume machine</div>
+          </div>
+          <span class="rec-verdict v-yes">✅ SKALUJ</span>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-entry">PDP pumeks</div>
+            <div class="rec-reason">13% ATC Shopify, 7% CR GA4 — top ATC</div>
+          </div>
+          <span class="rec-verdict v-yes">✅ SKALUJ</span>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-entry">PDP luna-eye</div>
+            <div class="rec-reason">274 PLN AOV ale 6.2% ATC — wysoka wartość</div>
+          </div>
+          <span class="rec-verdict v-test">🟡 WZMOCNIJ</span>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-entry">PDP sleeping-beauty</div>
+            <div class="rec-reason">3.4% ATC — duży ruch, słaba konwersja</div>
+          </div>
+          <span class="rec-verdict v-no">🔴 AUDYTUJ PDP</span>
+        </div>
+      </div>
+
+      <div class="decision-card">
+        <div class="channel-name">Google Organic</div>
+        <div class="channel-tag">SEO · pumeks · depilator · coolnails</div>
+
+        <div class="rec-row">
+          <div>
+            <div class="rec-entry">PDP pumeks</div>
+            <div class="rec-reason">2.7% CR, solidny — wzmocnij contentem</div>
+          </div>
+          <span class="rec-verdict v-yes">✅ INWESTUJ</span>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-entry">CoolNails kolekcja</div>
+            <div class="rec-reason">300 sesji, 2 trans — 0.67% CR</div>
+          </div>
+          <span class="rec-verdict v-no">🔴 PROBLEM</span>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-entry">manage-subscriptions</div>
+            <div class="rec-reason">843 sesji, 0 trans — ruch na obsługę, nie zakup</div>
+          </div>
+          <span class="rec-verdict v-no">🔴 FILTRUJ Z ANALIZY</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 5. ŚLEPE PLAMY -->
+  <div class="section">
+    <div class="section-title">5. Ślepe plamy i anomalie</div>
+    <div class="blind-grid">
+
+      <div class="blind-card">
+        <div class="blind-title">NOT_SET — Meta niewidoczna</div>
+        <div class="blind-num">1 437</div>
+        <div class="blind-desc">transakcji przypisanych do NOT_SET w GA4. Głównie Meta Ads — brak pagePath. 25 997 sesji "direct" bez URL.</div>
+        <div class="blind-fix">→ Fix: GTM custom parameter landingPage dla Meta traffic</div>
+      </div>
+
+      <div class="blind-card">
+        <div class="blind-title">Collection/sklep ?page= boty</div>
+        <div class="blind-num">8 700</div>
+        <div class="blind-desc">sesji per paginated URL (?page=2 do ?page=9) — łącznie ~54k sesji, 0% CR. Direct/none. Prawdopodobnie crawler.</div>
+        <div class="blind-fix">→ Fix: filtr bot traffic w GA4 + Cloudflare rate limiting</div>
+      </div>
+
+      <div class="blind-card">
+        <div class="blind-title">CoolNails — katastrofa</div>
+        <div class="blind-num">0.29%</div>
+        <div class="blind-desc">CR kolekcji CoolNails. 6 106 sesji z GA4, 18 transakcji. Google Organic dominant. Strona nie konwertuje.</div>
+        <div class="blind-fix">→ Fix: audyt PDP CoolNails + ścieżka zakupowa</div>
+      </div>
+
+      <div class="blind-card">
+        <div class="blind-title">HP środkowe kroki — nieznane</div>
+        <div class="blind-num">?</div>
+        <div class="blind-desc">Clarity Index ×2.1 potwierdza że HP świetnie konwertuje, ale kroki między HP a koszykiem nie są zmapowane.</div>
+        <div class="blind-fix">→ Fix: Clarity filter sessions starting at / → zmapuj następne strony</div>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="note">Raport: GA4 property 342844459 · Shopify glov-dev · Clarity wu1nvuvh9y · Dane YTD 2026 / Shopify 06–08.2026</p>
+
+</div>
+
+<style>
+.month-tab { padding: 8px 18px; border-radius: 6px; border: 1px solid #ddd; background: #fff; color: #666; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.month-tab:hover { background: #f0f4ff; color: #3949ab; border-color: #b0bec5; }
+.month-tab.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+</style>
+
+<script>
+const CI_MAP = {
+  'sklep': { ci: 0.49, label: '×0.49', cls: 'ci-neg' },
+  'pumeks': { ci: 1.94, label: '×1.94', cls: 'ci-pos' },
+  'homepage': { ci: 1.31, label: '×1.31', cls: 'ci-pos' },
+  'sleeping-beauty': { ci: 0.48, label: '×0.48', cls: 'ci-neg' },
+  'skin-smoothing': { ci: 1.19, label: '×1.19', cls: 'ci-neu' },
+  'zero-gravity': { ci: 1.60, label: '×1.60', cls: 'ci-pos' },
+  'luna-eye': { ci: 0.89, label: '×0.89', cls: 'ci-neu' },
+  'iconic-mitt': { ci: 1.42, label: '×1.42', cls: 'ci-pos' },
+  'depilator': { ci: 1.00, label: '~×1.0', cls: 'ci-neu' },
+  'rekawice': { ci: null, label: '—', cls: '' },
+  'en-eu': { ci: null, label: '—', cls: '' },
+  'coolnails': { ci: 0.29, label: '×0.29', cls: 'ci-neg' },
+  'other': { ci: null, label: '—', cls: '' },
+};
+
+function getCIKey(path) {
+  if (path === '/' || path === '') return 'homepage';
+  if (path.includes('sklep') && !path.includes('products')) return 'sklep';
+  if (path.includes('pumeks')) return 'pumeks';
+  if (path.includes('sleeping-beauty')) return 'sleeping-beauty';
+  if (path.includes('skin-smoothing')) return 'skin-smoothing';
+  if (path.includes('zero-gravity') || path.includes('klips')) return 'zero-gravity';
+  if (path.includes('luna-eye')) return 'luna-eye';
+  if (path.includes('iconic-mitt')) return 'iconic-mitt';
+  if (path.includes('depilator')) return 'depilator';
+  if (path.includes('rekawice')) return 'rekawice';
+  if (path.includes('en-eu') || path.includes('en-gb') || path.includes('en-global')) return 'en-eu';
+  if (path.includes('coolnails')) return 'coolnails';
+  return 'other';
+}
+
+function isNonCommercial(path) {
+  return path === '' || path.includes('manage-subscriptions') || path.includes('subscription-policy') || path.includes('contact');
+}
+
+const MONTHS = {
+  '06': {
+    label: 'Czerwiec 2026',
+    rows: [
+      ['/collections/sklep', 15538, 428, 263],
+      ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 2346, 284, 195],
+      ['/', 2216, 193, 152],
+      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 2023, 71, 34],
+      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 1294, 134, 70],
+      ['/products/depilator-z-nano-szkla-glov', 1169, 74, 48],
+      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1164, 171, 100],
+      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 1130, 52, 44],
+      ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 483, 22, 9],
+      ['/en-eu', 463, 74, 71],
+      ['/collections/produkty-do-pielegnacji-ciala/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 425, 43, 28],
+      ['/collections/rekawice-do-demakijazu', 406, 36, 25],
+      ['/collections/produkty-do-pielegnacji-ciala/products/depilator-z-nano-szkla-glov', 376, 25, 9],
+      ['/en-eu/collections/coolnails', 309, 5, 1],
+      ['/en-eu/collections/store', 302, 1, 0],
+    ]
+  },
+  '07': {
+    label: 'Lipiec 2026',
+    rows: [
+      ['/collections/sklep', 12766, 450, 262],
+      ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 2836, 403, 265],
+      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 2461, 88, 55],
+      ['/', 2309, 154, 120],
+      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 2128, 210, 142],
+      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 1213, 113, 65],
+      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 879, 47, 30],
+      ['/products/depilator-z-nano-szkla-glov', 846, 66, 42],
+      ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 694, 43, 26],
+      ['/collections/coolnails', 568, 18, 11],
+      ['/en-eu', 402, 35, 59],
+      ['/collections/rekawice-do-demakijazu', 394, 34, 23],
+      ['/products/platki-led-luna-eye-z-etui-ladujacym-dla-rozswietlonej-i-odswiezonej-okolicy-oczu', 310, 14, 11],
+      ['/collections/produkty-do-pielegnacji-ciala/products/pumeks-i-depilator-z-nano-szkla-2w1', 268, 40, 24],
+      ['/products/3w1-silikonowa-myjka-i-masazer-do-ciala-skory-glowy-i-plecow-bubble-burst', 257, 12, 5],
+    ]
+  },
+  '08': {
+    label: 'Sierpień 2026 (1–23)',
+    rows: [
+      ['/collections/sklep', 6984, 234, 158],
+      ['/', 4332, 397, 258],
+      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 1962, 67, 43],
+      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1848, 188, 135],
+      ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 1799, 233, 159],
+      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 1251, 78, 51],
+      ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1042, 50, 25],
+      ['/pages/iconic-mitt-glov-wielopaki', 997, 117, 64],
+      ['/products/2w1-dysk-z-raczka-do-mycia-i-masazu-ciala', 841, 7, 1],
+      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 840, 74, 45],
+      ['/products/biodegradowalna-szczotka-do-wlosow-glov-biobased-brush', 506, 55, 29],
+      ['/products/depilator-z-nano-szkla-glov', 494, 29, 16],
+      ['/products/platki-led-luna-eye-z-etui-ladujacym-dla-rozswietlonej-i-odswiezonej-okolicy-oczu', 377, 32, 22],
+      ['/collections/produkty-do-pielegnacji-ciala/products/depilator-z-nano-szkla-glov', 377, 52, 27],
+      ['/collections/rekawice-do-demakijazu', 286, 20, 14],
+    ]
+  }
+};
+
+function shortName(path) {
+  if (path === '/' || path === '') return 'Homepage /';
+  if (path.includes('sklep') && !path.includes('products')) return 'Collection /sklep';
+  if (path.includes('pumeks-i-depilator') || path.includes('pumeks-i-depilator')) return 'PDP pumeks + depilator 2w1';
+  if (path.includes('pumeks')) return 'PDP pumeks';
+  if (path.includes('sleeping-beauty')) return 'PDP sleeping-beauty';
+  if (path.includes('skin-smoothing')) return 'PDP skin-smoothing';
+  if (path.includes('luna-eye-z-etui')) return 'PDP luna-eye z etui';
+  if (path.includes('luna-eye')) return 'PDP luna-eye';
+  if (path.includes('zero-gravity') || (path.includes('klips') && path.includes('collections'))) return 'PDP zero-gravity (kol.)';
+  if (path.includes('klips')) return 'PDP zero-gravity (prod.)';
+  if (path.includes('iconic-mitt')) return 'LP iconic-mitt wielopaki';
+  if (path.includes('2w1-dysk')) return 'PDP 2w1-dysk masaż';
+  if (path.includes('biobased-brush')) return 'PDP biobased-brush 🆕';
+  if (path.includes('depilator') && path.includes('collections')) return 'PDP depilator (kol.)';
+  if (path.includes('depilator')) return 'PDP depilator';
+  if (path.includes('bubble-burst')) return 'PDP bubble-burst';
+  if (path.includes('rekawice')) return 'Collection rekawice';
+  if (path.includes('coolnails') && path.includes('en-eu')) return 'Collection CoolNails EN';
+  if (path.includes('coolnails')) return 'Collection CoolNails';
+  if (path.includes('en-eu') && path.length < 8) return 'International /en-eu';
+  if (path.includes('en-eu/collections/store')) return 'Collection /store EN';
+  return path.length > 40 ? path.substring(0, 38) + '…' : path;
+}
+
+function bar(pct, color, maxPct) {
+  const w = Math.min(100, (pct / maxPct) * 100);
+  return `<div style="display:flex;align-items:center;gap:6px">
+    <div style="width:80px;height:7px;background:#eee;border-radius:3px;flex-shrink:0">
+      <div style="width:${w}%;height:7px;background:${color};border-radius:3px"></div>
+    </div>
+    <span style="font-weight:700;color:#333">${pct.toFixed(1)}%</span>
+  </div>`;
+}
+
+function switchMonth(m) {
+  document.querySelectorAll('.month-tab').forEach(t => t.classList.toggle('active', t.dataset.month === m));
+  const d = MONTHS[m];
+  document.getElementById('month-label-title').textContent = 'Shopify sessions — ' + d.label;
+  const tbody = document.getElementById('funnel-body');
+  tbody.innerHTML = '';
+  let rank = 1;
+  d.rows.forEach(([path, sess, atc, chk]) => {
+    if (isNonCommercial(path)) return;
+    const atcPct = atc / sess * 100;
+    const chkPct = chk / sess * 100;
+    const ciKey = getCIKey(path);
+    const ci = CI_MAP[ciKey] || CI_MAP['other'];
+    const bgRow = rank % 2 === 0 ? '#fafafa' : '#fff';
+    const atcColor = atcPct >= 10 ? '#2e7d32' : atcPct >= 6 ? '#f57c00' : '#e53935';
+    const chkColor = chkPct >= 7 ? '#2e7d32' : chkPct >= 4 ? '#f57c00' : '#e53935';
+    const ciCell = ci.label === '—'
+      ? `<span style="color:#ccc">—</span>`
+      : `<span class="ci-val ${ci.cls}" style="font-size:13px">${ci.label}</span>`;
+    tbody.innerHTML += `<tr style="background:${bgRow};border-bottom:1px solid #f0f0f0">
+      <td style="padding:9px 12px;color:#999;font-size:11px">${rank}</td>
+      <td style="padding:9px 12px;font-weight:600;font-size:12px;color:#1a1a2e">${shortName(path)}<br><span style="font-size:10px;color:#aaa;font-weight:400">${path.length > 48 ? path.substring(0, 46)+'…' : path}</span></td>
+      <td style="padding:9px 12px;text-align:right;font-size:12px;color:#555">${sess.toLocaleString('pl-PL')}</td>
+      <td style="padding:9px 12px">${bar(atcPct, atcColor, 20)}</td>
+      <td style="padding:9px 12px">${bar(chkPct, chkColor, 15)}</td>
+      <td style="padding:9px 12px;text-align:center">${ciCell}</td>
+    </tr>`;
+    rank++;
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => switchMonth('08'));
+</script>
+</body>
+</html>
