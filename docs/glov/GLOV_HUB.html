@@ -155,6 +155,7 @@ h1{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1.05}
 .meta-roas-pill.nil{background:var(--bg2);color:var(--muted)}
 .meta-loading{color:var(--muted);font-size:13px;text-align:center;padding:20px 0}
 .meta-updated{font-size:10.5px;font-weight:400;color:var(--muted);margin-left:4px}
+.bl-stale{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:4px;background:#fdecec;color:#b3261e;font-size:11px;font-weight:600;border:1px solid #f3c2be}
 
 /* macierz sprzedaży */
 .bl-matrix{width:100%;border-collapse:collapse;font-size:13px}
@@ -721,8 +722,12 @@ function renderBLSales(){
     ${blSumCell(d.today_d,src)}
   </tr>`;
 
+  const _updDay=(d.updated||'').split(' ')[0];
+  const _ageD=_updDay?Math.floor((Date.now()-new Date(_updDay+'T00:00:00').getTime())/864e5):999;
+  const _why=window.BL_SALES_FETCH_FAIL||(_ageD>=2?'automat nie wypchnął danych':'');
+  const _warn=_why?`<span class="bl-stale">⚠ DANE NIEAKTUALNE (${_ageD} dni) — ${_why}</span>`:'';
   const foot=`<div class="bl-foot">
-    <span class="bl-foot-txt">Baselinker · zakres <strong>${d.range}</strong> · aktualizacja: <strong>${d.updated}</strong></span>
+    <span class="bl-foot-txt">Baselinker · zakres <strong>${d.range}</strong> · aktualizacja: <strong>${d.updated}</strong>${_warn}</span>
     <button class="btn-refresh" onclick="loadSalesData(true)">🔄 Pobierz świeże</button>
   </div>`;
 
@@ -732,7 +737,7 @@ function renderBLSales(){
   </table>${foot}`;
 }
 
-const SALES_URL='https://tomekwlqq.github.io/eel-reports/glov_hub_sales.json';
+const SALES_URL='https://tomekwlqq.github.io/ai4cro-reports/glov_hub_sales.json';
 
 async function loadSalesData(force=false){
   const el=document.getElementById('sales-content');
@@ -741,8 +746,10 @@ async function loadSalesData(force=false){
     const r=await fetch(SALES_URL+'?t='+Date.now(),{signal:AbortSignal.timeout(15000)});
     if(!r.ok) throw new Error(r.status);
     window.BL_SALES=await r.json();
+    window.BL_SALES_FETCH_FAIL=null;
     renderBLSales();
   }catch(e){
+    window.BL_SALES_FETCH_FAIL='pobranie padło ('+(e.message||e)+')';
     if(window.BL_SALES) renderBLSales();
     else el.innerHTML='<div class="sales-loading">Brak danych — odśwież za chwilę lub uruchom <code>python3 update_hub_sales.py</code></div>';
   }
@@ -751,7 +758,7 @@ function loadBLSales(force=false){return loadSalesData(force);}
 loadSalesData();
 
 // ── META ADS DZIŚ / WCZORAJ ──────────────────────────────────────────────────
-const META_URL='https://tomekwlqq.github.io/eel-reports/glov/glov_hub_meta_daily.json';
+const META_URL='https://tomekwlqq.github.io/ai4cro-reports/glov/glov_hub_meta_daily.json';
 let metaMode='today';
 
 function zl2(v){return(+v||0).toLocaleString('pl-PL',{minimumFractionDigits:2,maximumFractionDigits:2})+' zł';}
