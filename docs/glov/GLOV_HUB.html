@@ -783,7 +783,13 @@ function renderMeta(mode){
   const t=pd.total;
   const dateLabel=mode==='today'?d.today_date:mode==='yesterday'?d.yesterday_date:mode==='last_7d'?d.week_range:d.month_range;
   const el=document.getElementById('meta-content');
-  document.getElementById('meta-updated').textContent=`· ${dateLabel} · odśw. ${d.updated}`;
+  const _mUpd=(d.updated||'').split(' ')[0];
+  const _mAge=_mUpd?Math.floor((Date.now()-new Date(_mUpd+'T00:00:00').getTime())/864e5):999;
+  const _mWhy=window.META_FETCH_FAIL||(_mAge>=3?'dane wprowadzane ręcznie — odśwież':'');
+  const _mu=document.getElementById('meta-updated');
+  _mu.textContent=`· ${dateLabel} · odśw. ${d.updated}`;
+  const _mOld=_mu.parentNode.querySelector('.bl-stale'); if(_mOld) _mOld.remove();
+  if(_mWhy) _mu.insertAdjacentHTML('afterend',`<span class="bl-stale">⚠ DANE NIEAKTUALNE (${_mAge} dni) — ${_mWhy}</span>`);
 
   // KPI cards
   const roasClass=t.roas>=1.5?'roas-ok':'roas-bad';
@@ -834,8 +840,10 @@ async function loadMetaData(force=false){
     const r=await fetch(META_URL+'?t='+Date.now(),{signal:AbortSignal.timeout(15000)});
     if(!r.ok) throw new Error(r.status);
     window.META_DAILY=await r.json();
+    window.META_FETCH_FAIL=null;
     renderMeta(metaMode);
   }catch(e){
+    window.META_FETCH_FAIL='pobranie padło ('+(e.message||e)+')';
     if(window.META_DAILY) renderMeta(metaMode);
     else el.innerHTML='<div class="meta-loading">Brak danych — odpal <code>meta-refresh</code> w Claude.</div>';
   }
