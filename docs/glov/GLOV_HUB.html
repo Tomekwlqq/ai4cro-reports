@@ -848,5 +848,7 @@ async function loadMetaData(force=false){
     else el.innerHTML='<div class="meta-loading">Brak danych — odpal <code>meta-refresh</code> w Claude.</div>';
   }
 }
-loadMetaData();
+// Sekcja Meta została z huba usunięta (brak #meta-content), skrypt został.
+// Bez tego guardu renderMeta rzucał co odsłonę cichy TypeError łapany przez catch.
+if(document.getElementById('meta-content')) loadMetaData();
 </script></body></html>
