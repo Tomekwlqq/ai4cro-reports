@@ -1,0 +1,194 @@
+<!doctype html><html lang="pl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wizyta w siedzibie — runbook</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+:root{--vio:#7c5cff;--ink:#1a1f2b;--mut:#667085;--line:#e4e7ec}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Space Grotesk',-apple-system,'Segoe UI',Arial,sans-serif;color:var(--ink);
+     line-height:1.55;background:#f4f5f9;padding-bottom:70px}
+.wrap{max-width:820px;margin:0 auto;padding:22px 14px 40px}
+h1{font-size:23px;font-weight:800;letter-spacing:-.3px}
+.sub{color:var(--mut);font-size:13.5px;margin:4px 0 16px}
+.zasada{background:#efeaff;border:2px solid #c9bcff;border-radius:12px;padding:14px 16px;margin-bottom:22px;font-size:14.5px}
+.zasada b{color:#5b3fd6}
+h2{font-size:16px;font-weight:800;margin:30px 0 6px;padding-bottom:7px;border-bottom:2px solid var(--line);
+   letter-spacing:-.2px;position:sticky;top:0;background:#f4f5f9;z-index:5}
+.cel{color:var(--mut);font-size:13.5px;margin-bottom:14px}
+h3{font-size:16px;font-weight:700;margin-bottom:2px}
+.rola{font-size:12.5px;color:var(--mut);margin-bottom:12px}
+.ch{display:flex;gap:11px;align-items:flex-start;cursor:pointer;padding:3px 0;-webkit-tap-highlight-color:transparent}
+.ch input{position:absolute;opacity:0;width:0;height:0}
+.bx{flex:0 0 auto;width:26px;height:26px;border:2.5px solid var(--line);border-radius:7px;background:#fff;
+    margin-top:1px;transition:.12s;position:relative}
+.ch input:checked+.bx{background:var(--vio);border-color:var(--vio)}
+.ch input:checked+.bx:after{content:"";position:absolute;left:8px;top:3px;width:6px;height:12px;
+    border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg)}
+.ch input:checked~.tx b{text-decoration:line-through;color:var(--mut)}
+.tx{font-size:15px}.tx b{font-weight:600;display:block}
+.d{font-size:13.5px;color:var(--mut);margin-top:3px}
+.krok,.osoba,.pyt{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px;margin-bottom:11px}
+.krok.obs{border-left:5px solid #3aa06b}
+.osoba{border-left:5px solid var(--vio);padding:16px 14px}
+.pyt{border:1px solid var(--line);margin:10px 0 0;padding:12px}
+.meta,.kod{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--mut)}
+.meta{margin:6px 0 0 37px}
+.jak{font-size:14px;margin:8px 0 0 37px;color:#3a4250}
+.kryt{font-size:13.5px;margin:9px 0 0 37px;padding:9px 11px;background:#eefaf2;border-radius:8px;color:#1c5c3a}
+.podpis{margin:6px 0 0 37px;display:flex;gap:8px;align-items:center}
+.w{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:999px;border:1.5px solid}
+.w-kluczowe{color:#a12b2b;border-color:#f0b2b2;background:#fdeeee}
+.w-decyzja{color:#8a5a00;border-color:#f0cf8b;background:#fff8e8}
+.ta{width:calc(100% - 37px);margin:8px 0 0 37px;min-height:38px;border:1.5px solid var(--line);border-radius:8px;
+    padding:8px 10px;font-family:inherit;font-size:14px;resize:vertical;background:#fcfcfe}
+.ta:focus{outline:none;border-color:var(--vio);background:#fff}
+.nie{background:#fdeeee;border:1.5px solid #f0b2b2;border-radius:10px;padding:12px 14px;margin-bottom:9px;
+     font-size:14px;color:#7a2020}
+.godz{display:flex;gap:12px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:8px}
+.godz b{flex:0 0 108px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--vio);text-transform:uppercase}
+.godz span{font-size:14px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:2px solid var(--line);
+     padding:10px 14px;display:flex;gap:10px;align-items:center;z-index:20;box-shadow:0 -3px 14px rgba(26,31,43,.07)}
+.prog{flex:1;height:9px;background:var(--line);border-radius:999px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--vio);transition:.25s}
+.cnt{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;white-space:nowrap}
+.btn{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;border:1.5px solid var(--vio);
+     color:var(--vio);background:#fff;border-radius:999px;padding:7px 13px;cursor:pointer}
+.btn:active{background:var(--vio);color:#fff}
+code,pre{word-break:break-word;overflow-wrap:anywhere}
+.ta{max-width:100%}
+.bar{flex-wrap:wrap}
+@media(max-width:430px){
+  .godz{flex-direction:column;gap:3px}.godz b{flex:none}
+  .jak,.kryt,.meta,.podpis,.ta{margin-left:0}
+  .ta{width:100%}
+  .tx{font-size:14.5px}
+}
+@media(min-width:760px){.wrap{padding:34px 26px 60px}h1{font-size:29px}}
+</style></head><body>
+<div class="wrap">
+<h1>🧰 Wizyta w siedzibie — runbook</h1>
+<div class="sub">Tydzień 34/2026 · cel: wyjechać z działającym A6 na produkcji i z domkniętymi lukami</div>
+<div class="zasada"><b>Zasada wizyty.</b> Na miejscu robisz wyłącznie to, czego nie da się zrobić zdalnie: dotknąć maszyny, zobaczyć ludzi przy pracy, złapać decyzję twarzą w twarz. Wszystko inne — dzień wcześniej, z domu. Jeśli pojedziesz bez postawionego VPS-a, spalisz dzień na robotę, którą robi się w kapciach.</div>
+<section id="przed"><h2>1 · Dzień wcześniej, z domu</h2><p class="cel">Żeby na miejscu zostało 60 minut technicznej roboty, a nie cały dzień.</p>
+<label class="ch"><input type="checkbox" data-k="przed0"><span class="bx"></span><span class="tx"><b>VPS postawiony i sprawdzony</b><div class="d">Hetzner CX22 albo równoważny. Python 3.11, venv, pymssql, google-api-python-client. Repo z automatami wgrane. Kryterium: <code>python3 -c ”import pymssql”</code> nie krzyczy.</div></span></label>
+<label class="ch"><input type="checkbox" data-k="przed1"><span class="bx"></span><span class="tx"><b>Tailscale gotowy z kluczem</b><div class="d">Konto założone, VPS dołączony, wygenerowany <b>auth key wielokrotnego użytku</b> (Settings → Keys). Bez tego na miejscu będziesz się logował do panelu z cudzego kompa.</div></span></label>
+<label class="ch"><input type="checkbox" data-k="przed2"><span class="bx"></span><span class="tx"><b>Skrypty przetestowane na kopii</b><div class="d">auto4_final.py i weryfikacja_faktow.py chodzą na lokalnej kopii bazy. Kryterium: raport A6 generuje się i wychodzi mailem.</div></span></label>
+<label class="ch"><input type="checkbox" data-k="przed3"><span class="bx"></span><span class="tx"><b>SQL do konta gotowy do wklejenia</b><div class="d">Zapisany w notatniku na telefonie — nie będziesz go przepisywał z pamięci przy cudzym ekranie.</div></span></label>
+<label class="ch"><input type="checkbox" data-k="przed4"><span class="bx"></span><span class="tx"><b>Lista pytań na telefonie</b><div class="d">Ten dokument. Otwarty, nie do wydrukowania — będziesz odhaczał.</div></span></label>
+<label class="ch"><input type="checkbox" data-k="przed5"><span class="bx"></span><span class="tx"><b>Pusty pendrive albo katalog na dane</b><div class="d">Na kopię bazy jawnej, jeśli uda się ją dostać na miejscu. To najszybszy sposób — szybciej niż mailowanie 2 GB.</div></span></label>
+</section>
+<section id="inst"><h2>2 · Ścieżka techniczna — Z0</h2><p class="cel">Wyjechać z automatem czytającym produkcyjną bazę. Realny czas: 60–90 minut, jeśli punkt „przed” odrobiony.</p>
+<div class="krok"><label class="ch"><input type="checkbox" data-k="inst1"><span class="bx"></span><span class="tx"><b>1. Ustal, gdzie fizycznie stoi baza</b></span></label><div class="meta">⏱ 10 min</div><div class="jak">Na dowolnym stanowisku z Subiektem: menu <b>Pomoc → O programie</b> albo plik konfiguracyjny połączenia. Szukasz nazwy serwera i instancji (np. <code>SERWER\INSERTGT</code>). Zapytaj też, czy ten komputer jest włączony w nocy — od tego zależy, czy raport o 7:00 ma z czego czytać.</div><div class="kryt"><b>Skąd wiesz, że zrobione:</b> Znasz nazwę serwera, instancji i wiesz, czy maszyna nie zasypia.</div><textarea class="ta" data-k="inst1n" placeholder="notatka / co wyszło…"></textarea></div>
+<div class="krok"><label class="ch"><input type="checkbox" data-k="inst2"><span class="bx"></span><span class="tx"><b>2. Konto SQL tylko do odczytu</b></span></label><div class="meta">⏱ 15 min</div><div class="jak">Potrzebny ktoś z prawami administratora SQL (informatyk albo osoba, która instalowała Subiekta). Wklejasz przygotowany SQL. <b>Nie zakładaj konta z prawami zapisu</b>, nawet jeśli ktoś zaproponuje „na razie daj sobie admina”.</div><div class="kryt"><b>Skąd wiesz, że zrobione:</b> Logujesz się nowym kontem i widzisz liczbę zamówień. Zapis się nie udaje — i o to chodzi.</div><textarea class="ta" data-k="inst2n" placeholder="notatka / co wyszło…"></textarea></div>
+<div class="krok"><label class="ch"><input type="checkbox" data-k="inst3"><span class="bx"></span><span class="tx"><b>3. Tailscale na maszynie z bazą</b></span></label><div class="meta">⏱ 10 min</div><div class="jak">Instalacja jako usługa + auth key. Nie ruszasz routera, nie otwierasz portów. Jeśli mają zewnętrznego informatyka — uprzedź go wcześniej, bo to jego teren i lepiej mieć go po swojej stronie.</div><div class="kryt"><b>Skąd wiesz, że zrobione:</b> Z VPS-a pingujesz maszynę po nazwie z Tailscale.</div><textarea class="ta" data-k="inst3n" placeholder="notatka / co wyszło…"></textarea></div>
+<div class="krok"><label class="ch"><input type="checkbox" data-k="inst4"><span class="bx"></span><span class="tx"><b>4. Pierwsze połączenie z produkcją</b></span></label><div class="meta">⏱ 10 min</div><div class="jak">Z VPS-a: <code>weryfikacja_faktow.py</code> przestawiony na produkcyjną bazę.</div><div class="kryt"><b>Skąd wiesz, że zrobione:</b> <b>Liczba zamówień z bazy zgadza się z tym, co widać w Subiekcie na ekranie.</b> To jest moment prawdy — jeśli liczby się różnią, czytasz nie tę bazę.</div><textarea class="ta" data-k="inst4n" placeholder="notatka / co wyszło…"></textarea></div>
+<div class="krok"><label class="ch"><input type="checkbox" data-k="inst5"><span class="bx"></span><span class="tx"><b>5. Skrzynka nadawcza</b></span></label><div class="meta">⏱ 10 min</div><div class="jak">Login i hasło do skrzynki, z której mają wychodzić raporty. Poproś o dedykowaną (np. automat@) zamiast prywatnej — inaczej za pół roku ktoś zmieni hasło i raport umrze po cichu.</div><div class="kryt"><b>Skąd wiesz, że zrobione:</b> Testowy mail dochodzi na dwie skrzynki.</div><textarea class="ta" data-k="inst5n" placeholder="notatka / co wyszło…"></textarea></div>
+<div class="krok"><label class="ch"><input type="checkbox" data-k="inst6"><span class="bx"></span><span class="tx"><b>6. A6 na produkcji + cron</b></span></label><div class="meta">⏱ 20 min</div><div class="jak">Raport poranny na prawdziwych danych, cron 7:00, watchdog 7:05.</div><div class="kryt"><b>Skąd wiesz, że zrobione:</b> <b>Raport wygenerowany ręcznie zgadza się z Subiektem na trzech losowo sprawdzonych pozycjach.</b> Nie „wyszedł mail” — sprawdzone liczby.</div><textarea class="ta" data-k="inst6n" placeholder="notatka / co wyszło…"></textarea></div>
+<div class="krok"><label class="ch"><input type="checkbox" data-k="inst7"><span class="bx"></span><span class="tx"><b>7. Kopia bazy jawnej</b></span></label><div class="meta">⏱ 15 min</div><div class="jak">Jeśli jest okazja — backup bazy jawnej na pendrive. Bez niej raport pokazuje jedną z dwóch spółek.</div><div class="kryt"><b>Skąd wiesz, że zrobione:</b> Plik na dysku, otwiera się lokalnie.</div><textarea class="ta" data-k="inst7n" placeholder="notatka / co wyszło…"></textarea></div>
+</section>
+<section id="obs"><h2>3 · Zobacz, nie pytaj</h2><p class="cel">Sześć rzeczy, przy których pytanie da odpowiedź „jak powinno być”, a oczy pokażą, jak jest. Tego nie zrobisz zdalnie — to jedyny powód, dla którego wizyta ma sens większy niż telefon.</p>
+<div class="krok obs"><label class="ch"><input type="checkbox" data-k="obs07"><span class="bx"></span><span class="tx"><b>Czy flagowanie realnie działa</b></span></label><div class="kod">pytanie 07</div><div class="jak">Poproś logistyka, żeby pokazał listę zamówień na swoim ekranie. Policz na oko, ile pozycji ma kolor. Nie pytaj „czy używacie flag” — każdy odpowie, że tak.</div><textarea class="ta" data-k="obs07n" placeholder="co zobaczyłem…"></textarea></div>
+<div class="krok obs"><label class="ch"><input type="checkbox" data-k="obs09"><span class="bx"></span><span class="tx"><b>Jak zamówienie trafia do logistyka</b></span></label><div class="kod">pytanie 09</div><div class="jak">Usiądź obok na 30 minut i policz: ile przyszło mailem, ile telefonem, ile ktoś powiedział przez biurko. Procedura mówi „mailem”. Zobaczysz prawdę.</div><textarea class="ta" data-k="obs09n" placeholder="co zobaczyłem…"></textarea></div>
+<div class="krok obs"><label class="ch"><input type="checkbox" data-k="obs01"><span class="bx"></span><span class="tx"><b>W jakiej formie przychodzą projekty</b></span></label><div class="kod">pytanie 01</div><div class="jak">Poproś o dziesięć ostatnich projektów. Policz: PDF / zdjęcie / DWG / papier. To jest jednocześnie <b>materiał do testu automatu czytającego projekty</b> — weź je ze sobą.</div><textarea class="ta" data-k="obs01n" placeholder="co zobaczyłem…"></textarea></div>
+<div class="krok obs"><label class="ch"><input type="checkbox" data-k="obs02"><span class="bx"></span><span class="tx"><b>Czy wycena idzie przez arkusz</b></span></label><div class="kod">pytanie 02</div><div class="jak">Poproś handlowca o pokazanie ostatniej wyceny — nie opisanie jej. Zobaczysz, czy to arkusz, czy liczby z głowy.</div><textarea class="ta" data-k="obs02n" placeholder="co zobaczyłem…"></textarea></div>
+<div class="krok obs"><label class="ch"><input type="checkbox" data-k="obs11"><span class="bx"></span><span class="tx"><b>Jak handlowiec dowiaduje się o wydaniu</b></span></label><div class="kod">pytanie 11</div><div class="jak">Zapytaj przy jego biurku i patrz, co robi ręką. Jeśli otwiera Subiekta i szuka — to znaczy, że się nie dowiaduje, tylko sprawdza.</div><textarea class="ta" data-k="obs11n" placeholder="co zobaczyłem…"></textarea></div>
+<div class="krok obs"><label class="ch"><input type="checkbox" data-k="obs17"><span class="bx"></span><span class="tx"><b>Czy archiwum realnie się składa</b></span></label><div class="kod">pytanie 17</div><div class="jak">Poproś Natalię o teczkę ostatnich pięciu zamkniętych transakcji. Sprawdź, czy komplet dokumentów jest w każdej. To pytanie o prowizje — ludzie odpowiadają na nie ostrożnie, teczka nie.</div><textarea class="ta" data-k="obs17n" placeholder="co zobaczyłem…"></textarea></div>
+</section>
+<section id="osoby"><h2>4 · Pytania — osoba po osobie</h2><p class="cel">Nie chodzisz z listą pytań w kolejności procesu. Chodzisz od człowieka do człowieka i pytasz go wyłącznie o to, co sam robi.</p>
+<div class="osoba"><h3>Logistyk (Łukasz / Artur)</h3><div class="rola">Centrum procesu — przez niego przechodzi każde zamówienie · <b>45 min, najlepiej rano</b></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q0_0"><span class="bx"></span><span class="tx"><b>62% wydań nie ma powiązanego zamówienia. To skrót przy szybkiej wysyłce, czy pomyłka?</b></span></label><div class="podpis"><span class="kod">10</span><span class="w w-kluczowe">kluczowe</span></div><textarea class="ta" data-k="q0_0n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q0_1"><span class="bx"></span><span class="tx"><b>Kto realnie prowadzi kalendarze pojazdów? Procedura mówi: Artur.</b></span></label><div class="podpis"><span class="kod">08</span></div><textarea class="ta" data-k="q0_1n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q0_2"><span class="bx"></span><span class="tx"><b>Czy każde zamówienie dostaje transport, czy część jedzie poza kalendarzem?</b></span></label><div class="podpis"><span class="kod">08</span></div><textarea class="ta" data-k="q0_2n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q0_3"><span class="bx"></span><span class="tx"><b>Zdarza się zamawiać towar bez zamówienia w systemie?</b></span></label><div class="podpis"><span class="kod">09</span></div><textarea class="ta" data-k="q0_3n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q0_4"><span class="bx"></span><span class="tx"><b>Flagi — trzymacie je, czy to teoria z procedury?</b></span></label><div class="podpis"><span class="kod">07</span></div><textarea class="ta" data-k="q0_4n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q0_5"><span class="bx"></span><span class="tx"><b>Pole „dokument powiązany” na WZ — bywa FS, bywa ZK. Kiedy wpisujecie FS, a kiedy ZK?</b></span></label><div class="podpis"><span class="kod">NOWE</span><span class="w w-kluczowe">kluczowe</span></div><textarea class="ta" data-k="q0_5n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q0_6"><span class="bx"></span><span class="tx"><b>ZK → WZ → ZK nr 4: rozliczacie zamówienie częścią wydań, czy zawsze pełną dostawą?</b></span></label><div class="podpis"><span class="kod">NOWE</span></div><textarea class="ta" data-k="q0_6n" placeholder="odpowiedź…"></textarea></div>
+</div>
+<div class="osoba"><h3>Monika (rozliczenia)</h3><div class="rola">Faktury końcowe, zaliczki, korekty · <b>20 min</b></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q1_0"><span class="bx"></span><span class="tx"><b>Kto pilnuje wpłat zaliczek i przypomina klientom?</b></span></label><div class="podpis"><span class="kod">12</span></div><textarea class="ta" data-k="q1_0n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q1_1"><span class="bx"></span><span class="tx"><b>Czy stawki działają jak w procedurze: 23% przy wywozie, 8% po zakończeniu?</b></span></label><div class="podpis"><span class="kod">16</span></div><textarea class="ta" data-k="q1_1n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q1_2"><span class="bx"></span><span class="tx"><b>Subiekt ma próg minimalnej marży — u Was ustawiony na zero. Był kiedyś włączony?</b></span></label><div class="podpis"><span class="kod">NOWE</span></div><textarea class="ta" data-k="q1_2n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q1_3"><span class="bx"></span><span class="tx"><b>FV 8% wystawiacie też z komandytowej (spółdzielnie, instytucje) — kiedy 8% z komandytowej, a kiedy z jawnej?</b></span></label><div class="podpis"><span class="kod">NOWE</span><span class="w w-kluczowe">kluczowe</span></div><textarea class="ta" data-k="q1_3n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q1_4"><span class="bx"></span><span class="tx"><b>Zaliczka na zakup towaru (zestawienie towaru, komandytowa) — czym różni się od zaliczki na realizację zamówienia?</b></span></label><div class="podpis"><span class="kod">NOWE</span></div><textarea class="ta" data-k="q1_4n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q1_5"><span class="bx"></span><span class="tx"><b>Raport obiegu pieniądza per klient: na ile FV / ile wpłacone / ile wydane — kto ma to widzieć?</b></span></label><div class="podpis"><span class="kod">NOWE</span><span class="w w-kluczowe">kluczowe</span></div><textarea class="ta" data-k="q1_5n" placeholder="odpowiedź…"></textarea></div>
+</div>
+<div class="osoba"><h3>Natalia (archiwum, prowizje)</h3><div class="rola">Komplet dokumentów po transakcji · <b>15 min</b></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q2_0"><span class="bx"></span><span class="tx"><b>Czy teczka „zrealizowane zamówienia” realnie się składa — i czego najczęściej brakuje?</b></span></label><div class="podpis"><span class="kod">17</span></div><textarea class="ta" data-k="q2_0n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q2_1"><span class="bx"></span><span class="tx"><b>Czy zdarza się, że prowizja czeka, bo brakuje jednego dokumentu?</b></span></label><div class="podpis"><span class="kod">NOWE</span></div><textarea class="ta" data-k="q2_1n" placeholder="odpowiedź…"></textarea></div>
+</div>
+<div class="osoba"><h3>Handlowiec (najlepiej dwóch)</h3><div class="rola">Początek procesu — zapytanie, oferta, negocjacje · <b>30 min</b></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q3_0"><span class="bx"></span><span class="tx"><b>Ile zapytań przepada, bo nikt nie oddzwonił? Wystarczy szacunek.</b></span></label><div class="podpis"><span class="kod">00</span></div><textarea class="ta" data-k="q3_0n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q3_1"><span class="bx"></span><span class="tx"><b>Kto wpisuje zapytanie do bazy — Wy czy biuro?</b></span></label><div class="podpis"><span class="kod">00</span></div><textarea class="ta" data-k="q3_1n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q3_2"><span class="bx"></span><span class="tx"><b>Jaki procent ofert nigdy nie trafia do systemu?</b></span></label><div class="podpis"><span class="kod">03</span><span class="w w-kluczowe">kluczowe</span></div><textarea class="ta" data-k="q3_2n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q3_3"><span class="bx"></span><span class="tx"><b>Gdy negocjujecie cenę, zostaje po tym ślad?</b></span></label><div class="podpis"><span class="kod">04</span></div><textarea class="ta" data-k="q3_3n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q3_4"><span class="bx"></span><span class="tx"><b>Skąd wiecie, że towar do Waszego klienta wyjechał?</b></span></label><div class="podpis"><span class="kod">11</span></div><textarea class="ta" data-k="q3_4n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q3_5"><span class="bx"></span><span class="tx"><b>ZK to oferty — jaki % kończy się realną transakcją (WZ)?</b></span></label><div class="podpis"><span class="kod">NOWE</span><span class="w w-kluczowe">kluczowe</span></div><textarea class="ta" data-k="q3_5n" placeholder="odpowiedź…"></textarea></div>
+</div>
+<div class="osoba"><h3>Tomek J / właściciel</h3><div class="rola">Decyzje, akceptacje — zostaw na koniec dnia · <b>45 min</b></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q4_0"><span class="bx"></span><span class="tx"><b>Kto ma dostawać raport poranny i o której?</b></span></label><div class="podpis"><span class="kod">13</span><span class="w w-decyzja">decyzja</span></div><textarea class="ta" data-k="q4_0n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q4_1"><span class="bx"></span><span class="tx"><b>Baza spółki jawnej — kiedy możemy ją dostać? Bez niej raport pokazuje połowę firmy.</b></span></label><div class="podpis"><span class="kod">NOWE</span><span class="w w-decyzja">decyzja</span></div><textarea class="ta" data-k="q4_1n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q4_2"><span class="bx"></span><span class="tx"><b>Tabela: kod handlowca → osoba → mail. Potrzebna, żeby powiadomienia miały dokąd iść.</b></span></label><div class="podpis"><span class="kod">NOWE</span><span class="w w-decyzja">decyzja</span></div><textarea class="ta" data-k="q4_2n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q4_3"><span class="bx"></span><span class="tx"><b>Kto płaci za serwer (40–80 zł/mc) i na kogo faktura?</b></span></label><div class="podpis"><span class="kod">NOWE</span><span class="w w-decyzja">decyzja</span></div><textarea class="ta" data-k="q4_3n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q4_4"><span class="bx"></span><span class="tx"><b>Umowa z klientem przed startem — zawsze?</b></span></label><div class="podpis"><span class="kod">05</span></div><textarea class="ta" data-k="q4_4n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q4_5"><span class="bx"></span><span class="tx"><b>Umowa z dekarzem na każdą budowę?</b></span></label><div class="podpis"><span class="kod">06</span></div><textarea class="ta" data-k="q4_5n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q4_6"><span class="bx"></span><span class="tx"><b>Jak dziś wygląda zmiana zakresu — aneks czy telefon?</b></span></label><div class="podpis"><span class="kod">14</span></div><textarea class="ta" data-k="q4_6n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q4_7"><span class="bx"></span><span class="tx"><b>Czy przed zamknięciem ktoś porównuje zamówienie z tym, co faktycznie wyjechało?</b></span></label><div class="podpis"><span class="kod">15</span></div><textarea class="ta" data-k="q4_7n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q4_8"><span class="bx"></span><span class="tx"><b>Specyfikacja raportu PH (WZ-tki): stan na dzień, per klient, pierwotna wartość ZK, % realizacji z kosztu WZ, wartość wydanych, FV zaliczki, wpłaty — zatwierdzacie?</b></span></label><div class="podpis"><span class="kod">NOWE</span><span class="w w-decyzja">decyzja</span></div><textarea class="ta" data-k="q4_8n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q4_9"><span class="bx"></span><span class="tx"><b>Kejs telmax: kartoteki „telmax + inwestycja” bez faktur — raport ma je grupować per inwestycję czy per podmiot główny?</b></span></label><div class="podpis"><span class="kod">NOWE</span></div><textarea class="ta" data-k="q4_9n" placeholder="odpowiedź…"></textarea></div>
+<div class="pyt"><label class="ch"><input type="checkbox" data-k="q4_10"><span class="bx"></span><span class="tx"><b>Reguła: FV sprawdzone i zaadresowane w stanie zero nie podlegają działaniom — to z pliku Tomasza, potwierdzacie jako regułę automatu?</b></span></label><div class="podpis"><span class="kod">NOWE</span></div><textarea class="ta" data-k="q4_10n" placeholder="odpowiedź…"></textarea></div>
+</div>
+</section>
+<section id="nie"><h2>5 · Czego nie robić</h2>
+<div class="nie">Nie instaluj niczego na maszynie z Subiektem poza Tailscale. Ta maszyna obsługuje produkcję — jeśli po Twojej wizycie cokolwiek zwolni, będzie to Twoja wina, słusznie czy nie.</div>
+<div class="nie">Nie bierz konta z prawami zapisu, nawet gdy ktoś zaproponuje „na razie”. Read-only to Twoja tarcza: cokolwiek się stanie w bazie, nie mogłeś tego zrobić.</div>
+<div class="nie">Nie obiecuj terminów automatów, których blokery są po ich stronie. Powiedz: „ruszy tydzień po tym, jak dostaniemy X”.</div>
+<div class="nie">Nie zadawaj wszystkich 23 pytań właścicielowi. Połowa dotyczy roboty, której on nie wykonuje — dostaniesz opis procedury zamiast praktyki.</div>
+<div class="nie">Nie zbieraj odpowiedzi w głowie. Odhaczaj na bieżąco — po ośmiu godzinach w firmie nie odtworzysz, kto co powiedział.</div>
+</section>
+<section id="plan"><h2>6 · Rytm dnia</h2>
+<div class="godz"><b>rano</b><span>Technika póki wszyscy przy biurkach: gdzie baza, konto SQL, Tailscale, pierwsze połączenie (kroki 1–4)</span></div>
+<div class="godz"><b>przed południem</b><span>Logistyk — 45 min rozmowy + obserwacja, jak do niego trafiają zamówienia</span></div>
+<div class="godz"><b>południe</b><span>Handlowcy i obserwacja: projekty, wyceny, sposób dowiadywania się o wydaniach</span></div>
+<div class="godz"><b>popołudnie</b><span>Monika, Natalia — krótkie, konkretne. Potem A6 na produkcji + cron (kroki 5–6)</span></div>
+<div class="godz"><b>koniec dnia</b><span>Właściciel — decyzje. Wchodzisz z działającym raportem na ekranie, nie z obietnicą.</span></div>
+</section>
+</div>
+<div class="bar">
+  <div class="cnt" id="c">0 / 0</div>
+  <div class="prog"><i id="p"></i></div>
+  <button class="btn" onclick="eksport()">zapisz notatki</button>
+</div>
+<script>
+var K='dd_runbook_v1';
+var S=JSON.parse(localStorage.getItem(K)||'{}');
+function licz(){
+  var all=document.querySelectorAll('input[type=checkbox]');
+  var n=document.querySelectorAll('input[type=checkbox]:checked').length;
+  document.getElementById('c').textContent=n+' / '+all.length;
+  document.getElementById('p').style.width=(all.length?100*n/all.length:0)+'%';
+}
+document.querySelectorAll('input[type=checkbox]').forEach(function(el){
+  var k=el.getAttribute('data-k');
+  if(S[k]) el.checked=true;
+  el.addEventListener('change',function(){S[k]=el.checked;localStorage.setItem(K,JSON.stringify(S));licz();});
+});
+document.querySelectorAll('textarea').forEach(function(el){
+  var k=el.getAttribute('data-k');
+  if(S[k]) el.value=S[k];
+  el.addEventListener('input',function(){S[k]=el.value;localStorage.setItem(K,JSON.stringify(S));});
+});
+function eksport(){
+  var out=[];
+  document.querySelectorAll('textarea').forEach(function(t){
+    if(!t.value.trim()) return;
+    var box=t.closest('.krok,.pyt');
+    var tyt=box?box.querySelector('.tx b'):null;
+    out.push('## '+(tyt?tyt.textContent:t.getAttribute('data-k'))+'\n'+t.value);
+  });
+  var tresc=out.length?out.join('\n\n'):'(brak notatek)';
+  var b=new Blob(['# Wizyta w siedzibie — notatki\n\n'+tresc],{type:'text/markdown'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wizyta-notatki.md';a.click();
+}
+licz();
+</script></body></html>
