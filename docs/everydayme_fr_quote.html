@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EverydayMe FR — Ambassador Page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --bg:       #ffffff;
+  --surface:  #fafbfd;
+  --line:     #e6e6e9;
+  --ink:      #0a0a0a;
+  --muted:    #5b6472;
+  --faint:    #8b93a2;
+  --v:        #7c5cff;
+  --v-d:      #5a3ff0;
+  --v-soft:   #efeaff;
+  --v-line:   #d4c9ff;
+  --dark:     #1a1f2b;
+  --dark-sub: #252d3d;
+  --dark-txt: #b8bfcc;
+  --g:        #16a34a;
+  --g-soft:   #e7f6ec;
+  --o:        #f5751a;
+  --o-soft:   #fff2e8;
+  --grotesk:  'Space Grotesk', -apple-system, sans-serif;
+  --mono:     'IBM Plex Mono', 'SF Mono', monospace;
+  --r:        12px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--grotesk);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ─── HEADER ─── */
+.doc-header {
+  padding: 52px 0 40px;
+  border-bottom: 1px solid var(--line);
+}
+.doc-header .meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.doc-header h1 {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 14px;
+  text-wrap: balance;
+}
+.doc-header .subtitle {
+  color: var(--muted);
+  font-size: 15px;
+  max-width: 560px;
+  font-weight: 400;
+}
+.refs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.ref-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-decoration: none;
+  background: var(--surface);
+  transition: border-color 0.15s, color 0.15s;
+}
+.ref-link:hover { border-color: var(--v); color: var(--v); }
+.ref-link::before { content: "→ "; color: var(--v); }
+.doc-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border: 1px solid var(--v-line);
+  border-radius: 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--v);
+  text-decoration: none;
+  background: var(--v-soft);
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-link:hover { filter: brightness(.92); }
+.nav-link .nav-num { opacity: 0.65; margin-right: 2px; }
+/* per-section colors */
+.doc-nav a:nth-child(1) { color: #6d28d9; background: #ede9fe; border-color: #c4b5fd; }
+.doc-nav a:nth-child(2) { color: #0e7490; background: #ecfeff; border-color: #a5f3fc; }
+.doc-nav a:nth-child(3) { color: #b45309; background: #fffbeb; border-color: #fde68a; }
+.doc-nav a:nth-child(4) { color: #15803d; background: #f0fdf4; border-color: #bbf7d0; }
+.doc-nav a:nth-child(5) { color: #be185d; background: #fdf2f8; border-color: #fbcfe8; }
+.doc-nav a:nth-child(6) { color: #c2410c; background: #fff7ed; border-color: #fed7aa; }
+.doc-nav a:nth-child(7) { color: #1d4ed8; background: #eff6ff; border-color: #bfdbfe; }
+.refs-footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.refs-footer-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--faint);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-right: 4px;
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--o-soft);
+  color: var(--o);
+  border: 1px solid #f8c39a;
+}
+.status-pill::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--o);
+  flex-shrink: 0;
+}
+
+/* ─── SECTIONS ─── */
+.sections {
+  padding: 56px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 0 28px;
+  padding: 36px 0;
+  border-bottom: 1px solid var(--line);
+}
+.section:last-child { border-bottom: none; }
+
+.sec-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--v);
+  padding-top: 5px;
+  font-weight: 500;
+}
+.sec-body {}
+.sec-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 6px;
+}
+.sec-title {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  text-wrap: balance;
+}
+.sec-body p {
+  color: var(--muted);
+  margin-bottom: 10px;
+  max-width: 600px;
+}
+.sec-body p:last-child { margin-bottom: 0; }
+
+/* ─── BULLET LIST ─── */
+.blist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 2px;
+}
+.blist li {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.blist li::before {
+  content: "—";
+  color: var(--v);
+  font-family: var(--mono);
+  flex-shrink: 0;
+}
+
+/* ─── REQUIREMENTS TABLE ─── */
+.rtable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-top: 4px;
+}
+.rtable th {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding: 0 16px 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-weight: 500;
+}
+.rtable th:last-child { padding-right: 0; text-align: right; }
+.rtable td {
+  padding: 11px 16px 11px 0;
+  border-bottom: 1px solid var(--surface);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.rtable td:last-child { padding-right: 0; text-align: right; }
+.rtable tr:last-child td { border-bottom: none; }
+.rtable .rname { font-weight: 600; color: var(--ink); width: 200px; }
+.rtable .rdesc { color: var(--muted); }
+.badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.b-must { background: var(--v-soft); color: var(--v); }
+.b-nice { background: var(--surface); color: var(--faint); border: 1px solid var(--line); }
+
+/* ─── FLOW STEPS ─── */
+.flow {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-top: 4px;
+}
+.flow-step {
+  display: flex;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  align-items: flex-start;
+}
+.flow-step:last-child { border-bottom: none; }
+.step-n {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--v);
+  width: 20px;
+  flex-shrink: 0;
+  padding-top: 2px;
+  font-weight: 600;
+}
+.step-body { font-size: 14px; }
+.step-body strong { font-weight: 600; display: block; margin-bottom: 1px; color: var(--ink); }
+.step-body span { color: var(--muted); }
+
+/* ─── ELEMENTS GRID ─── */
+.el-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 4px;
+}
+.el-card {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  background: var(--surface);
+}
+.el-card.platform {
+  background: var(--bg);
+  border-color: var(--line);
+}
+.el-card .el-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--v);
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+.el-card .el-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.el-card.platform .el-name { color: var(--faint); }
+.el-card .el-desc { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.el-badge {
+  display: inline-block;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--faint);
+  letter-spacing: 0.04em;
+}
+.cms-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--g);
+  background: var(--g-soft);
+  padding: 2px 7px;
+  border-radius: 20px;
+  margin-left: 6px;
+  vertical-align: middle;
+  font-weight: 500;
+}
+
+/* ─── PRICING TABLE ─── */
+.ptable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  margin-top: 4px;
+}
+.ptable th {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--line);
+  font-weight: 500;
+}
+.ptable th:last-child { text-align: right; }
+.ptable td {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--surface);
+  vertical-align: top;
+}
+.ptable tr:last-child td { border-bottom: none; }
+.ptable .pname { font-weight: 600; color: var(--ink); }
+.ptable .psub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.ptable .pdur { color: var(--faint); font-family: var(--mono); font-size: 12px; }
+.ptable .pprice { text-align: right; font-family: var(--mono); font-size: 13px; color: var(--muted); font-style: italic; }
+
+.price-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 16px 0 0;
+  border-top: 2px solid var(--line);
+  margin-top: 6px;
+}
+.price-total .tlabel {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.price-total .tamount {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--v);
+}
+
+/* ─── TIMELINE ─── */
+.timeline {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.tl-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 14px;
+}
+.tl-track {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 3px;
+}
+.tl-ph {
+  border-radius: 4px;
+  overflow: hidden;
+}
+.tl-bar {
+  height: 6px;
+  border-radius: 4px;
+  background: var(--v);
+  opacity: 0.2;
+  margin-bottom: 8px;
+}
+.tl-ph.on .tl-bar { opacity: 1; }
+.tl-ph.half .tl-bar { opacity: 0.45; }
+.tl-wk {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--faint);
+  display: block;
+  margin-bottom: 2px;
+}
+.tl-name { font-size: 11px; font-weight: 500; color: var(--muted); line-height: 1.3; }
+
+/* ─── NOTE BOX ─── */
+.note {
+  margin-top: 20px;
+  padding: 14px 16px;
+  background: var(--v-soft);
+  border-left: 3px solid var(--v);
+  border-radius: 0 var(--r) var(--r) 0;
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.note strong { color: var(--ink); font-weight: 600; }
+
+/* ─── WIREFRAME ─── */
+.wf-wrap {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  margin-top: 4px;
+}
+.wf-phone {
+  flex-shrink: 0;
+  width: 200px;
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.wf-section {
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+.wf-section:last-child { border-bottom: none; }
+
+/* hero */
+.wf-hero {
+  background: #c8c4d0;
+  height: 96px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 10px;
+  gap: 4px;
+}
+.wf-hero .wf-h { height: 8px; width: 75%; background: rgba(255,255,255,.65); border-radius: 2px; }
+.wf-hero .wf-s { height: 5px; width: 50%; background: rgba(255,255,255,.4); border-radius: 2px; }
+.wf-hero .wf-btn { height: 18px; width: 68px; background: var(--v); border-radius: 4px; margin-top: 4px; }
+
+/* benefits */
+.wf-benefits { padding: 10px; background: var(--bg); }
+.wf-icons { display: flex; gap: 6px; margin-top: 7px; }
+.wf-icon { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.wf-icon .ic { width: 24px; height: 24px; background: var(--v-soft); border-radius: 50%; }
+.wf-icon .lb { height: 4px; width: 80%; background: var(--line); border-radius: 2px; }
+
+/* prizes */
+.wf-prizes { padding: 10px; background: var(--v-soft); }
+.wf-prize-row { display: flex; gap: 6px; margin-top: 7px; }
+.wf-prize-card { flex: 1; background: var(--bg); border-radius: 6px; padding: 6px; }
+.wf-prize-img { height: 28px; background: var(--line); border-radius: 4px; margin-bottom: 4px; }
+.wf-prize-ln { height: 4px; background: #c8c4d0; border-radius: 2px; margin-bottom: 3px; }
+.wf-prize-ln.short { width: 60%; }
+
+/* eligibility */
+.wf-eligibility { padding: 10px; background: var(--bg); }
+.wf-checklist { display: flex; flex-direction: column; gap: 5px; margin-top: 7px; }
+.wf-check { display: flex; align-items: center; gap: 5px; }
+.wf-check::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--v); flex-shrink: 0; }
+.wf-check .ln { height: 4px; background: var(--line); border-radius: 2px; flex: 1; }
+
+/* procedure */
+.wf-procedure { padding: 10px; background: var(--surface); }
+.wf-steps { display: flex; flex-direction: column; gap: 6px; margin-top: 7px; }
+.wf-step { display: flex; gap: 6px; align-items: flex-start; }
+.wf-step .sn { width: 14px; height: 14px; border-radius: 50%; background: var(--v); flex-shrink: 0; margin-top: 1px; }
+.wf-step .sl { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.wf-step .sl span { height: 4px; background: var(--line); border-radius: 2px; }
+.wf-step .sl span.s { width: 65%; }
+
+/* form */
+.wf-form { padding: 10px; background: var(--bg); }
+.wf-fields { display: flex; flex-direction: column; gap: 5px; margin-top: 7px; }
+.wf-field { height: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+.wf-row { display: flex; gap: 4px; margin-top: 6px; align-items: center; }
+.wf-cb { width: 10px; height: 10px; border: 1px solid var(--line); border-radius: 2px; flex-shrink: 0; }
+.wf-row .ln { height: 4px; background: var(--line); border-radius: 2px; flex: 1; }
+.wf-submit { height: 24px; background: var(--v); border-radius: 4px; margin-top: 8px; }
+
+/* next */
+.wf-next { padding: 10px; background: var(--surface); }
+.wf-tl { display: flex; flex-direction: column; gap: 5px; margin-top: 7px; }
+.wf-tl-item { display: flex; gap: 6px; }
+.wf-tl-item .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); flex-shrink: 0; margin-top: 2px; }
+.wf-tl-item .ll { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.wf-tl-item .ll span { height: 4px; background: var(--line); border-radius: 2px; }
+.wf-tl-item .ll span.s { width: 70%; }
+
+/* inspiration */
+.wf-inspiration { padding: 10px; background: var(--bg); }
+.wf-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 7px; }
+.wf-gallery-item { aspect-ratio: 1; background: #c8c4d0; border-radius: 4px; }
+
+/* terms */
+.wf-terms { padding: 10px; background: var(--surface); }
+.wf-tlines { display: flex; flex-direction: column; gap: 4px; margin-top: 7px; }
+.wf-tlines span { height: 4px; background: var(--line); border-radius: 2px; }
+.wf-tlines span:nth-child(3) { width: 78%; }
+.wf-tlines span:nth-child(5) { width: 55%; }
+.wf-pg-footer { background: #003087; padding: 14px 10px 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.wf-pg-logo { display: flex; justify-content: center; }
+.wf-pg-circle { width: 34px; height: 34px; border-radius: 50%; background: #fff; color: #003087; font-size: 9px; font-weight: 700; font-family: var(--mono); display: flex; align-items: center; justify-content: center; }
+.wf-pg-links { display: flex; align-items: center; gap: 4px; }
+.wf-pg-link { height: 3px; width: 36px; background: rgba(255,255,255,.35); border-radius: 2px; }
+.wf-pg-dot { color: rgba(255,255,255,.4); font-size: 7px; }
+.wf-pg-copy { height: 3px; width: 80px; background: rgba(255,255,255,.2); border-radius: 2px; }
+.wf-pg-brands { display: flex; gap: 5px; justify-content: center; }
+.wf-pg-br { height: 10px; width: 20px; background: rgba(255,255,255,.15); border-radius: 2px; }
+
+/* section label row inside phone */
+.wf-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px 0;
+}
+.wf-sec-name {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--faint);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.wf-anchor {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--v);
+}
+
+/* annotations list next to phone */
+.wf-annotations {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.wf-anno {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--surface);
+}
+.wf-anno:last-child { border-bottom: none; }
+.wf-anno .an-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--v);
+  width: 20px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.wf-anno .an-body { font-size: 13px; }
+.wf-anno .an-name { font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.wf-anno .an-desc { color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+.wf-anno .an-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 20px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* ─── FOOTER ─── */
+.doc-footer {
+  border-top: 1px solid var(--line);
+  padding: 24px 0 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.doc-footer .stamp {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+
+@media (max-width: 600px) {
+  .wrap { padding: 0 20px; }
+  .section { grid-template-columns: 40px 1fr; gap: 0 16px; }
+  .el-grid { grid-template-columns: 1fr; }
+  .tl-track { grid-template-columns: repeat(3, 1fr); }
+  .doc-header h1 { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<header class="doc-header">
+  <div class="meta">
+    <span>Project Proposal</span>
+    <span>Envie de Plus · FR Market</span>
+    <span>August 2026</span>
+  </div>
+  <h1>Ambassador Program Page<br>— Envie de Plus (FR)</h1>
+  <p class="subtitle">
+    Scope, requirements, and pricing for building the Ambassador Program recruitment LP
+    for the Envie de Plus platform (P&G France), to be operated by the agency.
+  </p>
+  <div class="refs">
+    <span class="status-pill">Ready · 2 200 PLN · 2 weeks</span>
+  </div>
+  <nav class="doc-nav">
+    <a class="nav-link" href="#s01"><span class="nav-num">01</span> Goal</a>
+    <a class="nav-link" href="#s02"><span class="nav-num">02</span> Assumptions</a>
+    <a class="nav-link" href="#s03"><span class="nav-num">03</span> Requirements</a>
+    <a class="nav-link" href="#s04"><span class="nav-num">04</span> Flow</a>
+    <a class="nav-link" href="#s05"><span class="nav-num">05</span> Webpage Vision</a>
+    <a class="nav-link" href="#s06"><span class="nav-num">06</span> Wireframe</a>
+    <a class="nav-link" href="#s07"><span class="nav-num">07</span> Pricing &amp; Timing</a>
+  </nav>
+</header>
+
+<!-- SECTIONS -->
+<div class="sections">
+
+  <!-- 01 GOAL -->
+  <div id="s01" class="section">
+    <div class="sec-num">01</div>
+    <div class="sec-body">
+      <div class="sec-eyebrow">Goal</div>
+      <h2 class="sec-title">What we're building and why</h2>
+      <p>
+        Build a French-language Ambassador Program recruitment LP for the Envie de Plus
+        platform (P&G France). The program is a content-for-product exchange:
+        selected ambassadors receive P&G products for free and are eligible for prizes,
+        in return for creating authentic social media content (Instagram / TikTok)
+        featuring those products.
+      </p>
+      <p>
+        Pre-selected Envie de Plus members receive a personalised email invitation with
+        a link to this LP. The page captures applications and social profile links so
+        the agency can review content quality and select final ambassadors. Post-launch,
+        all campaign management is handled by the agency independently.
+      </p>
+    </div>
+  </div>
+
+  <!-- 02 ASSUMPTIONS -->
+  <div id="s02" class="section">
+    <div class="sec-num">02</div>
+    <div class="sec-body">
+      <div class="sec-eyebrow">Assumptions</div>
+      <h2 class="sec-title">What we're taking as given</h2>
+      <ul class="blist">
+        <li>All French copy, headlines, and body text provided by the agency before development begins</li>
+        <li><span style="color:var(--v);font-weight:600;">The page is built within the existing Envie de Plus platform infrastructure</span> <span style="color:var(--faint);font-style:italic;">— to be confirmed</span><br><span style="font-size:12px;color:var(--muted);">If otherwise, the page still needs to be an almost official P&amp;G digital asset — design and production quality matching P&amp;G brand standards.</span></li>
+        <li>Envie de Plus brand guidelines and design assets (logo, color system) shared at kickoff</li>
+        <li>Campaign imagery (KV, product photos, content inspiration examples) supplied by the agency per campaign</li>
+        <li>Form destination (backend / email / webhook) confirmed by agency before build</li>
+        <li>Prizes section content (images, descriptions, quantities) provided and updated by agency — no dev required</li>
+        <li>French legal text (Règlement) provided by agency's legal team — not in our scope to write</li>
+        <li>The agency performs UAT and content sign-off before go-live</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 03 REQUIREMENTS -->
+  <div id="s03" class="section">
+    <div class="sec-num">03</div>
+    <div class="sec-body">
+      <div class="sec-eyebrow">Requirements</div>
+      <h2 class="sec-title">What the build must deliver</h2>
+      <table class="rtable">
+        <thead>
+          <tr>
+            <th>Area</th>
+            <th>Requirement</th>
+            <th>Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rname">French-language LP</td>
+            <td class="rdesc">Single long-form recruitment page in French. All copy, labels, form strings, and error states in FR. Anchor navigation at top.</td>
+            <td><span class="badge b-must">Must</span></td>
+          </tr>
+          <tr>
+            <td class="rname">KV / Hero</td>
+            <td class="rdesc">Full-width key visual with campaign imagery and program name. Asset provided by agency per campaign.</td>
+            <td><span class="badge b-must">Must</span></td>
+          </tr>
+          <tr>
+            <td class="rname">Benefits section</td>
+            <td class="rdesc">Visual icon block: free product, prizes, early access, voice that matters. Content from agency.</td>
+            <td><span class="badge b-must">Must</span></td>
+          </tr>
+          <tr>
+            <td class="rname">Prizes block <span class="cms-badge">CMS</span></td>
+            <td class="rdesc">Campaign prizes shown as cards (image, name, quantity). Agency updates per campaign without dev involvement.</td>
+            <td><span class="badge b-must">Must</span></td>
+          </tr>
+          <tr>
+            <td class="rname">Eligibility conditions</td>
+            <td class="rdesc">Clear checklist: age, country (FR), active SM profile (IG/TikTok), follower threshold, posting commitment.</td>
+            <td><span class="badge b-must">Must</span></td>
+          </tr>
+          <tr>
+            <td class="rname">Procedure section</td>
+            <td class="rdesc">4-step process: apply → agency reviews SM → selected → receive product → create content. Sets expectations before the form.</td>
+            <td><span class="badge b-must">Must</span></td>
+          </tr>
+          <tr>
+            <td class="rname">Application form</td>
+            <td class="rdesc">Registration form with client-side validation: name, email, city, Instagram URL, TikTok URL, RGPD consent checkbox. Field-level error messages in French.</td>
+            <td><span class="badge b-must">Must</span></td>
+          </tr>
+          <tr>
+            <td class="rname">What happens next</td>
+            <td class="rdesc">Post-form section: review timeline, selection criteria, notification method. Reduces post-submission anxiety.</td>
+            <td><span class="badge b-must">Must</span></td>
+          </tr>
+          <tr>
+            <td class="rname">Content inspiration <span class="cms-badge">CMS</span></td>
+            <td class="rdesc">2×2 grid of ambassador content examples (unboxing, before/after, review, routine). Assets from agency per campaign.</td>
+            <td><span class="badge b-must">Must</span></td>
+          </tr>
+          <tr>
+            <td class="rname">Règlement (T&amp;C)</td>
+            <td class="rdesc">Dedicated page built and integrated. Legal text in French from agency/legal. Linked from form consent + footer. RGPD-compliant flow.</td>
+            <td><span class="badge b-must">Must</span></td>
+          </tr>
+          <tr>
+            <td class="rname">Responsive</td>
+            <td class="rdesc">Mobile-first. Tested at 375px, 768px, 1280px. Touch-friendly form inputs throughout.</td>
+            <td><span class="badge b-must">Must</span></td>
+          </tr>
+          <tr>
+            <td class="rname">Analytics</td>
+            <td class="rdesc">Page view + form submission tracking. Event spec agreed with agency before build.</td>
+            <td><span class="badge b-nice">Nice</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 04 FLOW -->
+  <div id="s04" class="section">
+    <div class="sec-num">04</div>
+    <div class="sec-body">
+      <div class="sec-eyebrow">Flow</div>
+      <h2 class="sec-title">End-to-end recruitment flow</h2>
+      <div class="flow">
+        <div class="flow-step">
+          <span class="step-n">1</span>
+          <div class="step-body">
+            <strong>Selection — agency side</strong>
+            <span>Agency selects target customers from Envie de Plus database based on campaign criteria.</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="step-n">2</span>
+          <div class="step-body">
+            <strong>Email invitation</strong>
+            <span>Each selected customer receives a personalised email with a unique link to the recruitment LP.</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="step-n">3</span>
+          <div class="step-body">
+            <strong>Landing on the LP</strong>
+            <span>Interested customer clicks the link and arrives on the Ambassador Recruitment page — the deliverable of this project.</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="step-n">4</span>
+          <div class="step-body">
+            <strong>Page consumption</strong>
+            <span>Customer scrolls top-to-bottom: KV → benefits → prizes → eligibility → procedure → form.</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="step-n">5</span>
+          <div class="step-body">
+            <strong>Application submission</strong>
+            <span>Customer completes the form with personal details and Instagram/TikTok profile links, accepts RGPD consent, submits.</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="step-n">6</span>
+          <div class="step-body">
+            <strong>Agency review &amp; selection</strong>
+            <span>Agency reviews submitted profiles and content quality, selects ambassadors, proceeds with product dispatch.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 WEBPAGE VISION -->
+  <div id="s05" class="section">
+    <div class="sec-num">05</div>
+    <div class="sec-body">
+      <div class="sec-eyebrow">Webpage Vision — Elements</div>
+      <h2 class="sec-title">LP anatomy — 9 sections, top to bottom</h2>
+      <div class="el-grid">
+        <div class="el-card">
+          <div class="el-num">#start</div>
+          <div class="el-name">1 — Key Visual / Hero</div>
+          <div class="el-desc">Campaign image, program name, headline ("Vous avez été sélectionné(e)"), subline, primary CTA anchoring to form.</div>
+        </div>
+        <div class="el-card">
+          <div class="el-num">#benefits</div>
+          <div class="el-name">2 — Pourquoi participer</div>
+          <div class="el-desc">4 icon tiles: free product · prizes for best content · early access · your opinion matters.</div>
+        </div>
+        <div class="el-card">
+          <div class="el-num">#prizes</div>
+          <div class="el-name">3 — Récompenses <span class="cms-badge">CMS</span></div>
+          <div class="el-desc">Current prize cards: image, name, value/quantity. Updated by agency per campaign — no dev required.</div>
+        </div>
+        <div class="el-card">
+          <div class="el-num">#eligibility</div>
+          <div class="el-name">4 — Qui peut participer</div>
+          <div class="el-desc">Scannable checklist: age 18+, resident in France, active public IG or TikTok, posting commitment, Envie de Plus account.</div>
+        </div>
+        <div class="el-card">
+          <div class="el-num">#process</div>
+          <div class="el-name">5 — Comment ça marche</div>
+          <div class="el-desc">4-step flow: apply → SM review by agency → selected → receive product → create &amp; publish content.</div>
+        </div>
+        <div class="el-card">
+          <div class="el-num">#apply</div>
+          <div class="el-name">6 — Formulaire de candidature</div>
+          <div class="el-desc">Registration form with validation: prénom, nom, email, city, Instagram URL, TikTok URL, RGPD consent. Error messages in FR.</div>
+        </div>
+        <div class="el-card">
+          <div class="el-num">#next</div>
+          <div class="el-name">7 — Et ensuite?</div>
+          <div class="el-desc">Post-form: review timeline, what we look for in profiles, notification method. Manages expectations after submit.</div>
+        </div>
+        <div class="el-card">
+          <div class="el-num">#inspiration</div>
+          <div class="el-name">8 — Exemples de contenus <span class="cms-badge">CMS</span></div>
+          <div class="el-desc">2×2 grid of ambassador post examples: unboxing, before/after, routine, honest review. Assets per campaign from agency.</div>
+        </div>
+        <div class="el-card platform">
+          <div class="el-num">#terms</div>
+          <div class="el-name">9 — Règlement</div>
+          <div class="el-desc">Dedicated T&amp;C page. Legal text from agency. Linked from consent checkbox + footer.</div>
+          <span class="el-badge">legal text from agency</span>
+        </div>
+        <div class="el-card platform">
+          <div class="el-num">—</div>
+          <div class="el-name">Global Header / Footer</div>
+          <div class="el-desc">Inherited from Envie de Plus platform.</div>
+          <span class="el-badge">platform / TBC</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 WIREFRAME -->
+  <div id="s06" class="section">
+    <div class="sec-num">06</div>
+    <div class="sec-body">
+      <div class="sec-eyebrow">LP Wireframe</div>
+      <h2 class="sec-title">Section map — mobile view</h2>
+      <div class="wf-wrap">
+
+        <!-- PHONE -->
+        <div class="wf-phone">
+
+          <!-- Hero -->
+          <div class="wf-section">
+            <div class="wf-hero">
+              <div class="wf-h"></div>
+              <div class="wf-s"></div>
+              <div class="wf-btn"></div>
+            </div>
+          </div>
+
+          <!-- Benefits -->
+          <div class="wf-section">
+            <div class="wf-label-row"><span class="wf-sec-name">Pourquoi participer</span><span class="wf-anchor">#benefits</span></div>
+            <div class="wf-benefits">
+              <div class="wf-icons">
+                <div class="wf-icon"><div class="ic"></div><div class="lb"></div></div>
+                <div class="wf-icon"><div class="ic"></div><div class="lb"></div></div>
+                <div class="wf-icon"><div class="ic"></div><div class="lb"></div></div>
+                <div class="wf-icon"><div class="ic"></div><div class="lb"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Prizes -->
+          <div class="wf-section">
+            <div class="wf-label-row"><span class="wf-sec-name">Récompenses</span><span class="wf-anchor">#prizes</span></div>
+            <div class="wf-prizes">
+              <div class="wf-prize-row">
+                <div class="wf-prize-card"><div class="wf-prize-img"></div><div class="wf-prize-ln"></div><div class="wf-prize-ln short"></div></div>
+                <div class="wf-prize-card"><div class="wf-prize-img"></div><div class="wf-prize-ln"></div><div class="wf-prize-ln short"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Eligibility -->
+          <div class="wf-section">
+            <div class="wf-label-row"><span class="wf-sec-name">Qui peut participer</span><span class="wf-anchor">#eligibility</span></div>
+            <div class="wf-eligibility">
+              <div class="wf-checklist">
+                <div class="wf-check"><div class="ln"></div></div>
+                <div class="wf-check"><div class="ln" style="width:75%"></div></div>
+                <div class="wf-check"><div class="ln" style="width:85%"></div></div>
+                <div class="wf-check"><div class="ln" style="width:65%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Procedure -->
+          <div class="wf-section">
+            <div class="wf-label-row"><span class="wf-sec-name">Comment ça marche</span><span class="wf-anchor">#process</span></div>
+            <div class="wf-procedure">
+              <div class="wf-steps">
+                <div class="wf-step"><div class="sn"></div><div class="sl"><span></span><span class="s"></span></div></div>
+                <div class="wf-step"><div class="sn"></div><div class="sl"><span></span><span class="s"></span></div></div>
+                <div class="wf-step"><div class="sn"></div><div class="sl"><span></span><span class="s"></span></div></div>
+                <div class="wf-step"><div class="sn"></div><div class="sl"><span></span><span class="s"></span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div class="wf-section">
+            <div class="wf-label-row"><span class="wf-sec-name">Formulaire</span><span class="wf-anchor">#apply</span></div>
+            <div class="wf-form">
+              <div class="wf-fields">
+                <div class="wf-field"></div>
+                <div class="wf-field"></div>
+                <div class="wf-field"></div>
+                <div class="wf-field"></div>
+                <div class="wf-field"></div>
+              </div>
+              <div class="wf-row"><div class="wf-cb"></div><div class="ln"></div></div>
+              <div class="wf-submit"></div>
+            </div>
+          </div>
+
+          <!-- What next -->
+          <div class="wf-section">
+            <div class="wf-label-row"><span class="wf-sec-name">Et ensuite?</span><span class="wf-anchor">#next</span></div>
+            <div class="wf-next">
+              <div class="wf-tl">
+                <div class="wf-tl-item"><div class="dot"></div><div class="ll"><span></span><span class="s"></span></div></div>
+                <div class="wf-tl-item"><div class="dot"></div><div class="ll"><span></span><span class="s"></span></div></div>
+                <div class="wf-tl-item"><div class="dot"></div><div class="ll"><span></span><span class="s"></span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inspiration -->
+          <div class="wf-section">
+            <div class="wf-label-row"><span class="wf-sec-name">Exemples contenus</span><span class="wf-anchor">#inspiration</span></div>
+            <div class="wf-inspiration">
+              <div class="wf-gallery">
+                <div class="wf-gallery-item"></div>
+                <div class="wf-gallery-item"></div>
+                <div class="wf-gallery-item"></div>
+                <div class="wf-gallery-item"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Terms -->
+          <div class="wf-section">
+            <div class="wf-label-row"><span class="wf-sec-name">Règlement</span><span class="wf-anchor">#terms</span></div>
+            <div class="wf-terms">
+              <div class="wf-tlines">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- P&G Footer -->
+          <div class="wf-pg-footer">
+            <div class="wf-pg-logo">
+              <div class="wf-pg-circle">P&amp;G</div>
+            </div>
+            <div class="wf-pg-links">
+              <span class="wf-pg-link"></span>
+              <span class="wf-pg-dot">·</span>
+              <span class="wf-pg-link"></span>
+              <span class="wf-pg-dot">·</span>
+              <span class="wf-pg-link"></span>
+            </div>
+            <div class="wf-pg-copy"></div>
+            <div class="wf-pg-brands">
+              <div class="wf-pg-br"></div>
+              <div class="wf-pg-br"></div>
+              <div class="wf-pg-br"></div>
+              <div class="wf-pg-br"></div>
+            </div>
+          </div>
+
+        </div><!-- /wf-phone -->
+
+        <!-- ANNOTATIONS -->
+        <div class="wf-annotations">
+          <div class="wf-anno">
+            <div class="an-num">01</div>
+            <div class="an-body">
+              <div class="an-name">Key Visual / Hero</div>
+              <div class="an-desc">Campaign image (full-width). Headline: "Vous avez été sélectionné(e)". CTA → #apply.</div>
+            </div>
+          </div>
+          <div class="wf-anno">
+            <div class="an-num">02</div>
+            <div class="an-body">
+              <div class="an-name">Pourquoi participer</div>
+              <div class="an-desc">4 icon tiles: free product · prizes · early access · your opinion matters.</div>
+            </div>
+          </div>
+          <div class="wf-anno">
+            <div class="an-num">03</div>
+            <div class="an-body">
+              <div class="an-name">Récompenses <span class="an-badge cms-badge">CMS</span></div>
+              <div class="an-desc">Prize cards: image, name, quantity. Agency updates per campaign, no dev.</div>
+            </div>
+          </div>
+          <div class="wf-anno">
+            <div class="an-num">04</div>
+            <div class="an-body">
+              <div class="an-name">Qui peut participer</div>
+              <div class="an-desc">Checklist: age 18+, FR resident, active public IG or TikTok, posting commitment.</div>
+            </div>
+          </div>
+          <div class="wf-anno">
+            <div class="an-num">05</div>
+            <div class="an-body">
+              <div class="an-name">Comment ça marche</div>
+              <div class="an-desc">4 steps: apply → SM review → selected → receive product → create content.</div>
+            </div>
+          </div>
+          <div class="wf-anno">
+            <div class="an-num">06</div>
+            <div class="an-body">
+              <div class="an-name">Formulaire de candidature</div>
+              <div class="an-desc">Prénom · Nom · Email · Instagram URL · TikTok URL · RGPD consent. Validation + FR error messages.</div>
+            </div>
+          </div>
+          <div class="wf-anno">
+            <div class="an-num">07</div>
+            <div class="an-body">
+              <div class="an-name">Et ensuite?</div>
+              <div class="an-desc">Post-form timeline: review → selection → notification. Manages post-submit expectations.</div>
+            </div>
+          </div>
+          <div class="wf-anno">
+            <div class="an-num">08</div>
+            <div class="an-body">
+              <div class="an-name">Exemples de contenus <span class="an-badge cms-badge">CMS</span></div>
+              <div class="an-desc">2×2 grid: unboxing · before/after · routine · honest review. Agency provides per campaign.</div>
+            </div>
+          </div>
+          <div class="wf-anno">
+            <div class="an-num">09</div>
+            <div class="an-body">
+              <div class="an-name">Règlement</div>
+              <div class="an-desc">Dedicated T&amp;C page. Legal text from agency. Linked from consent checkbox.</div>
+            </div>
+          </div>
+          <div class="wf-anno">
+            <div class="an-num">—</div>
+            <div class="an-body">
+              <div class="an-name">Footer P&amp;G <span class="an-badge" style="background:#003087;color:#fff;border-color:#003087">platform</span></div>
+              <div class="an-desc">Standard P&G footer: logo, Confidentialité · Mentions légales · Cookies · Accessibilité, copyright, brand logos (Oral-B, Pantene, Gillette…). Inherited from Envie de Plus platform or delivered as static HTML by agency legal team.</div>
+            </div>
+          </div>
+        </div><!-- /wf-annotations -->
+
+      </div><!-- /wf-wrap -->
+    </div>
+  </div>
+
+  <!-- 07 PRICING & TIMING -->
+  <div id="s07" class="section">
+    <div class="sec-num">06</div>
+    <div class="sec-body">
+      <div class="sec-eyebrow">Pricing &amp; Timing</div>
+      <h2 class="sec-title">Investment and schedule</h2>
+      <p style="color:var(--muted); max-width:600px; margin-bottom: 20px;">
+        Full project scope: discovery, design, development, QA, and handoff.
+        Includes 9 LP sections, registration form with validation, CMS-editable prizes and content blocks, RGPD-compliant consent flow, Règlement page, responsive build, and agency UAT support.
+      </p>
+
+      <div class="price-total" style="border-top: 2px solid var(--v-line); padding-top: 20px;">
+        <span class="tlabel">Total — fixed price</span>
+        <span class="tamount">2 200 PLN</span>
+      </div>
+
+      <div class="timeline">
+        <div class="tl-label">Timeline — 2 weeks from acceptance &amp; asset delivery</div>
+        <div class="tl-track">
+          <div class="tl-ph on">
+            <div class="tl-bar"></div>
+            <span class="tl-wk">Day 1–3</span>
+            <span class="tl-name">Setup &amp; design</span>
+          </div>
+          <div class="tl-ph on">
+            <div class="tl-bar"></div>
+            <span class="tl-wk">Day 4–8</span>
+            <span class="tl-name">Development</span>
+          </div>
+          <div class="tl-ph on">
+            <div class="tl-bar"></div>
+            <span class="tl-wk">Day 9–11</span>
+            <span class="tl-name">QA &amp; content</span>
+          </div>
+          <div class="tl-ph half">
+            <div class="tl-bar"></div>
+            <span class="tl-wk">Day 12–14</span>
+            <span class="tl-name">UAT + launch</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="note" style="margin-top:14px; background: var(--surface); border-left-color: var(--faint);">
+        <strong>Price does not include:</strong> graphic design, visual assets (KV, product imagery, content inspiration photos), or copywriting in any language. All written content and visuals are the responsibility of the agency.
+      </div>
+
+      <div class="note">
+        <strong>Timeline starts</strong> on the day of project acceptance AND receipt of all assets:
+        French copy, campaign imagery (KV, product photos, content examples), prize details, and Règlement text.
+        Delivery of incomplete assets delays the timeline proportionally.
+      </div>
+    </div>
+  </div>
+
+</div><!-- /sections -->
+
+<div class="wrap" style="padding-top:0">
+  <div class="refs-footer">
+    <span class="refs-footer-label">References</span>
+    <a class="ref-link" href="https://www.everydayme.pl/program-ambasadorski">PL reference: everydayme.pl</a>
+    <a class="ref-link" href="https://www.enviedeplus.com/testez-gratuitement">FR platform: enviedeplus.com</a>
+  </div>
+</div>
+
+<footer class="doc-footer">
+  <span class="stamp">Envie de Plus FR · Ambassador Program LP · v1.1 · Aug 2026</span>
+  <span class="status-pill">Ready · 2 200 PLN · 2 weeks</span>
+</footer>
+
+</div><!-- /wrap -->
+</body>
+</html>
