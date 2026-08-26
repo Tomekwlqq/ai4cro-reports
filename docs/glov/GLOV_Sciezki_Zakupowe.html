@@ -4,145 +4,189 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GLOV — Mapa Ścieżek Zakupowych</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+:root {
+  --bg:#ffffff; --surface:#fafbfd; --line:#e6e6e9;
+  --ink:#0a0a0a; --muted:#5b6472; --faint:#8b93a2;
+  --v:#7c5cff; --v-d:#5a3ff0; --v-soft:#efeaff; --v-line:#d4c9ff;
+  --g:#16a34a; --g-d:#15803d; --g-soft:#e7f6ec; --g-line:#b7e3c4;
+  --o:#f5751a; --o-d:#dd5e0a; --o-soft:#fff2e8; --o-line:#f8c39a;
+  --b:#0f7ae5; --b-d:#0a63bd; --b-soft:#e9f3fd; --b-line:#a9d2f6;
+  --a:#b8862b; --a-d:#9a6f1f; --a-soft:#fdf5e6; --a-line:#e9d3a3;
+  --r:#c0392b; --r-soft:#fdeaea; --r-line:#f6b6b6;
+  --dark:#1a1f2b;
+  --grotesk:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+}
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f7f8fa; color: #1a1a2e; font-size: 14px; }
+body { font-family: var(--grotesk); background: var(--surface); color: var(--ink); font-size: 14px; }
 
-.header { background: #1a1a2e; color: #fff; padding: 28px 32px 24px; }
+.header { background: var(--dark); color: var(--bg); padding: 28px 32px 24px; }
+.header .kicker { font-family: var(--mono); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--v-line); margin-bottom: 8px; display: block; }
 .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
-.header p { color: #8899aa; font-size: 12px; margin-top: 6px; }
+.header p { color: var(--faint); font-size: 12px; margin-top: 6px; }
 .sources { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-.src-badge { background: rgba(255,255,255,0.08); border-radius: 4px; padding: 4px 10px; font-size: 11px; color: #aac; }
-.src-badge.s1 { color: #4fc3f7; }
-.src-badge.s2 { color: #81c784; }
-.src-badge.s3 { color: #ffb74d; }
+.src-badge { background: rgba(255,255,255,0.08); border-radius: 4px; padding: 4px 10px; font-size: 11px; color: var(--faint); }
+.src-badge.s1 { color: var(--b); }
+.src-badge.s2 { color: var(--g); }
+.src-badge.s3 { color: var(--o); }
 
-.content { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+.content { max-width: 1040px; margin: 0 auto; padding: 24px 1.25rem 48px; }
 
-.section { margin-bottom: 32px; }
-.section-title { font-size: 13px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-.section-title span { font-size: 10px; font-weight: 400; background: #e8eaf6; color: #5c6bc0; padding: 2px 7px; border-radius: 10px; text-transform: none; letter-spacing: 0; }
+.section { margin-bottom: 32px; padding-left: 14px; border-left: 3px solid var(--acc, var(--v-line)); }
+.section[data-acc="v"] { --acc: var(--v); --acc-d: var(--v-d); --acc-soft: var(--v-soft); --acc-line: var(--v-line); }
+.section[data-acc="g"] { --acc: var(--g); --acc-d: var(--g-d); --acc-soft: var(--g-soft); --acc-line: var(--g-line); }
+.section[data-acc="b"] { --acc: var(--b); --acc-d: var(--b-d); --acc-soft: var(--b-soft); --acc-line: var(--b-line); }
+.section[data-acc="o"] { --acc: var(--o); --acc-d: var(--o-d); --acc-soft: var(--o-soft); --acc-line: var(--o-line); }
+.section[data-acc="a"] { --acc: var(--a); --acc-d: var(--a-d); --acc-soft: var(--a-soft); --acc-line: var(--a-line); }
+.section[data-acc="r"] { --acc: var(--r); --acc-d: var(--r); --acc-soft: var(--r-soft); --acc-line: var(--r-line); }
+.section-kicker { font-family: var(--mono); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--acc, var(--v)); margin-bottom: 6px; display: block; }
+.section-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.section-title span { font-size: 10px; font-weight: 400; background: var(--acc-soft, var(--v-soft)); color: var(--acc-d, var(--v-d)); padding: 2px 7px; border-radius: 10px; text-transform: none; letter-spacing: 0; }
 
-.card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+.card { background: var(--bg); border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); border: 1px solid var(--acc-line, var(--line)); }
+
+.table-wrap { overflow-x: auto; }
+table, .ci-val, .cr, .cr-sub, .aov-tag, .trans-n, .funnel-num, .funnel-pct, .path-metric .val, .blind-num, .insight-val, .insight-sub { font-variant-numeric: tabular-nums; }
 
 /* MATRIX */
 .matrix { overflow-x: auto; }
 table.mtx { width: 100%; border-collapse: collapse; font-size: 12px; }
-table.mtx th { background: #f0f2f5; padding: 9px 12px; text-align: left; font-size: 11px; color: #666; font-weight: 600; }
-table.mtx td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+table.mtx th { background: var(--acc-soft, var(--surface)); padding: 9px 12px; text-align: left; font-size: 11px; color: var(--muted); font-weight: 600; }
+table.mtx td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
 table.mtx tr:last-child td { border-bottom: none; }
-.entry-label { font-weight: 600; color: #1a1a2e; }
-.entry-sub { font-size: 11px; color: #888; margin-top: 2px; }
+.entry-label { font-weight: 600; color: var(--ink); }
+.entry-sub { font-size: 11px; color: var(--faint); margin-top: 2px; }
 
 .cell { display: flex; flex-direction: column; gap: 2px; }
 .cr { font-weight: 700; font-size: 13px; }
-.cr-sub { font-size: 11px; color: #666; }
+.cr-sub { font-size: 11px; color: var(--muted); }
 .aov-tag { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 2px; }
-.trans-n { font-size: 10px; color: #999; }
+.trans-n { font-size: 10px; color: var(--faint); }
 
-.score-h { background: #e8f5e9; color: #2e7d32; }
-.score-m { background: #fff8e1; color: #e65100; }
-.score-l { background: #fce4ec; color: #c62828; }
-.score-na { background: #f5f5f5; color: #bbb; font-style: italic; text-align: center; }
+.score-h { background: var(--g-soft); color: var(--g-d); }
+.score-m { background: var(--o-soft); color: var(--o-d); }
+.score-l { background: var(--r-soft); color: var(--r); }
+.score-na { background: var(--line); color: var(--faint); font-style: italic; text-align: center; }
 
-.winner { background: #f1f8f2; border-left: 3px solid #2e7d32; padding-left: 8px; }
-.loser  { background: #fff3f3; border-left: 3px solid #e53935; padding-left: 8px; }
-.warn   { background: #fffdf0; border-left: 3px solid #f9a825; padding-left: 8px; }
-.neutral { border-left: 3px solid #bdbdbd; padding-left: 8px; }
+.winner { background: var(--g-soft); border-left: 3px solid var(--g-d); padding-left: 8px; }
+.loser  { background: var(--r-soft); border-left: 3px solid var(--r); padding-left: 8px; }
+.warn   { background: var(--o-soft); border-left: 3px solid var(--o); padding-left: 8px; }
+.neutral { border-left: 3px solid var(--faint); padding-left: 8px; }
 
 /* FUNNEL */
 .funnel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
-.funnel-card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
-.funnel-name { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 12px; }
-.funnel-name .type-tag { font-size: 10px; font-weight: 500; color: #888; margin-left: 4px; }
+.funnel-card { background: var(--bg); border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+.funnel-name { font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 12px; }
+.funnel-name .type-tag { font-size: 10px; font-weight: 500; color: var(--faint); margin-left: 4px; }
 .funnel-step { display: flex; flex-direction: column; margin-bottom: 6px; }
-.funnel-label { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
-.funnel-bar-wrap { height: 8px; background: #f0f0f0; border-radius: 4px; margin: 3px 0; }
+.funnel-label { font-size: 10px; color: var(--faint); text-transform: uppercase; letter-spacing: 0.5px; }
+.funnel-bar-wrap { height: 8px; background: var(--line); border-radius: 4px; margin: 3px 0; }
 .funnel-bar { height: 8px; border-radius: 4px; }
-.bar-sess { background: #90a4ae; }
-.bar-atc  { background: #42a5f5; }
-.bar-chk  { background: #26a69a; }
-.funnel-num { font-size: 11px; font-weight: 600; color: #333; }
-.funnel-pct { font-size: 10px; color: #999; }
-.funnel-arrow { font-size: 10px; color: #ccc; text-align: center; margin: 2px 0; }
+.bar-sess { background: var(--faint); }
+.bar-atc  { background: var(--b); }
+.bar-chk  { background: var(--b-d); }
+.funnel-num { font-size: 11px; font-weight: 600; color: var(--ink); }
+.funnel-pct { font-size: 10px; color: var(--faint); }
+.funnel-arrow { font-size: 10px; color: var(--faint); text-align: center; margin: 2px 0; }
 .score-pill { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-top: 10px; }
 
 /* PATHS */
 .paths-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
-.path-card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+.path-card { background: var(--bg); border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
 .path-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .path-name { font-weight: 700; font-size: 13px; }
-.path-rank { font-size: 10px; color: #888; }
+.path-rank { font-size: 10px; color: var(--faint); }
 .path-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
-.step-box { background: #f0f4ff; color: #3949ab; padding: 5px 10px; border-radius: 5px; font-size: 11px; font-weight: 600; }
-.step-box.highlight { background: #e8f5e9; color: #2e7d32; }
-.step-box.problem { background: #fce4ec; color: #c62828; }
-.step-arrow { font-size: 12px; color: #bbb; }
+.step-box { background: var(--v-soft); color: var(--v-d); padding: 5px 10px; border-radius: 5px; font-size: 11px; font-weight: 600; }
+.step-box.highlight { background: var(--g-soft); color: var(--g-d); }
+.step-box.problem { background: var(--r-soft); color: var(--r); }
+.step-arrow { font-size: 12px; color: var(--faint); }
 .path-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.path-metric { text-align: center; background: #f8f9fa; border-radius: 6px; padding: 8px; }
-.path-metric .val { font-size: 16px; font-weight: 700; color: #1a1a2e; }
-.path-metric .lbl { font-size: 10px; color: #888; }
-.path-note { font-size: 11px; color: #666; margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 8px; }
+.path-metric { text-align: center; background: var(--surface); border-radius: 6px; padding: 8px; }
+.path-metric .val { font-size: 16px; font-weight: 700; color: var(--ink); }
+.path-metric .lbl { font-size: 10px; color: var(--faint); }
+.path-note { font-size: 11px; color: var(--muted); margin-top: 10px; border-top: 1px solid var(--line); padding-top: 8px; }
 
 /* DECISIONS */
 .decision-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-.decision-card { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+.decision-card { background: var(--bg); border-radius: 10px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
 .channel-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.channel-tag { font-size: 10px; color: #888; margin-bottom: 14px; }
-.rec-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f5f5f5; font-size: 12px; }
+.channel-tag { font-size: 10px; color: var(--faint); margin-bottom: 14px; }
+.rec-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
 .rec-row:last-child { border-bottom: none; }
 .rec-entry { font-weight: 600; }
 .rec-verdict { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
-.v-yes { background: #e8f5e9; color: #2e7d32; }
-.v-test { background: #fff8e1; color: #e65100; }
-.v-no  { background: #fce4ec; color: #c62828; }
-.rec-reason { font-size: 10px; color: #888; margin-top: 2px; }
+.v-yes { background: var(--g-soft); color: var(--g-d); }
+.v-test { background: var(--o-soft); color: var(--o-d); }
+.v-no  { background: var(--r-soft); color: var(--r); }
+.rec-reason { font-size: 10px; color: var(--faint); margin-top: 2px; }
 
 /* BLIND SPOTS */
 .blind-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-.blind-card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); border-top: 3px solid #ef5350; }
+.blind-card { background: var(--bg); border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); border-top: 3px solid var(--r); }
 .blind-title { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
-.blind-num { font-size: 28px; font-weight: 800; color: #ef5350; }
-.blind-desc { font-size: 11px; color: #666; margin-top: 6px; line-height: 1.5; }
-.blind-fix { font-size: 11px; font-weight: 600; color: #1565c0; margin-top: 8px; }
+.blind-num { font-size: 28px; font-weight: 800; color: var(--r); }
+.blind-desc { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+.blind-fix { font-size: 11px; font-weight: 600; color: var(--b-d); margin-top: 8px; }
 
 .insight-bar { display: flex; align-items: stretch; gap: 14px; margin-bottom: 32px; flex-wrap: wrap; }
-.insight { flex: 1; min-width: 140px; background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
-.insight-val { font-size: 26px; font-weight: 800; color: #1a1a2e; }
-.insight-label { font-size: 11px; color: #888; margin-top: 2px; }
-.insight-sub { font-size: 10px; color: #bbb; margin-top: 1px; }
+.insight { flex: 1; min-width: 140px; background: var(--bg); border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+.insight-val { font-size: 26px; font-weight: 800; color: var(--ink); }
+.insight-label { font-size: 11px; color: var(--faint); margin-top: 2px; }
+.insight-sub { font-size: 10px; color: var(--faint); margin-top: 1px; }
 
-.src-label { font-size: 9px; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+.src-label { font-size: 9px; color: var(--faint); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
 
-.note { font-size: 11px; color: #888; font-style: italic; margin-top: 8px; }
+.note { font-size: 11px; color: var(--faint); font-style: italic; margin-top: 8px; }
 
-.section-desc { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 14px; max-width: 780px; }
-.section-desc strong { color: #1a1a2e; }
-.formula-box { background: #f0f4ff; border-left: 3px solid #5c6bc0; border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 16px; font-size: 12px; }
-.formula-box .formula { font-family: monospace; font-size: 13px; color: #3949ab; font-weight: 600; margin-bottom: 6px; }
-.formula-box .formula-note { color: #666; font-size: 11px; line-height: 1.5; }
+.section-desc { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; max-width: 780px; }
+.section-desc strong { color: var(--ink); }
+.formula-box { background: var(--v-soft); border-left: 3px solid var(--v); border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 16px; font-size: 12px; }
+.formula-box .formula { font-family: monospace; font-size: 13px; color: var(--v-d); font-weight: 600; margin-bottom: 6px; }
+.formula-box .formula-note { color: var(--muted); font-size: 11px; line-height: 1.5; }
 
 table.ci { width: 100%; border-collapse: collapse; font-size: 12px; }
-table.ci th { background: #f0f2f5; padding: 8px 12px; text-align: left; font-size: 11px; color: #666; font-weight: 600; }
-table.ci td { padding: 9px 12px; border-bottom: 1px solid #f5f5f5; vertical-align: middle; }
+table.ci th { background: var(--acc-soft, var(--surface)); padding: 8px 12px; text-align: left; font-size: 11px; color: var(--muted); font-weight: 600; }
+table.ci td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
 table.ci tr:last-child td { border-bottom: none; }
-.ci-bar-wrap { width: 80px; height: 6px; background: #eee; border-radius: 3px; display: inline-block; vertical-align: middle; }
+.ci-bar-wrap { width: 80px; height: 6px; background: var(--line); border-radius: 3px; display: inline-block; vertical-align: middle; }
 .ci-bar { height: 6px; border-radius: 3px; }
 .ci-val { font-weight: 700; font-size: 14px; }
-.ci-pos { color: #2e7d32; }
-.ci-neu { color: #e65100; }
-.ci-neg { color: #c62828; }
+.ci-pos { color: var(--g-d); }
+.ci-neu { color: var(--o-d); }
+.ci-neg { color: var(--r); }
 
-@media (max-width: 600px) {
+/* CTA panel — jeden na dokument, na końcu, dark navy (R4) */
+.cta-panel { background: var(--dark); color: var(--bg); border-radius: 12px; padding: 28px 32px; margin-top: 40px; }
+.cta-panel .kicker { font-family: var(--mono); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--v-line); margin-bottom: 10px; display: block; }
+.cta-panel h2 { font-size: 19px; font-weight: 700; margin-bottom: 16px; }
+.cta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+.cta-item { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 14px 16px; }
+.cta-item .num { font-family: var(--mono); font-size: 11px; color: var(--v-line); letter-spacing: .1em; margin-bottom: 6px; }
+.cta-item .txt { font-size: 12.5px; line-height: 1.55; color: rgba(255,255,255,0.9); }
+.cta-item .txt b { color: var(--bg); }
+.cta-next { border-top: 1px solid rgba(255,255,255,0.15); padding-top: 16px; font-size: 12.5px; line-height: 1.7; color: rgba(255,255,255,0.85); }
+.cta-next b { color: var(--bg); }
+
+@media (max-width: 680px) {
   .header { padding: 20px 16px 18px; }
-  .content { padding: 16px 12px 32px; }
-  .funnel-grid, .paths-grid, .decision-grid, .blind-grid { grid-template-columns: 1fr; }
+  .content { padding: 16px 1rem 32px; }
+  .funnel-grid, .paths-grid, .decision-grid, .blind-grid, .cta-grid { grid-template-columns: 1fr; }
+  .insight-bar { flex-direction: column; }
+  .insight { min-width: 0; }
+  .section { padding-left: 10px; }
+  .cta-panel { padding: 20px; }
 }
 </style>
 </head>
 <body>
 
 <div class="header">
+  <span class="kicker">GLOV · Raport analityczny</span>
   <h1>GLOV — Mapa Ścieżek Zakupowych</h1>
   <p>Dane styczeń–sierpień 2026 · Kanał, wejście, lejek i decyzja kampanijna</p>
   <div class="sources">
@@ -167,8 +211,7 @@ table.ci tr:last-child td { border-bottom: none; }
       <div class="src-label">GA4 — Meta niewidzialna</div>
     </div>
     <div class="insight">
-      <div class="insight-val">262 PLN</div>
-      <div class="insight-label">AOV — HP entry (najwyższy)</div>
+      <div class="insight-val">74,20 zł</div><div class="hero-lbl">AOV sklepu R30 — realny, Shopify</div>
       <div class="src-label">Shopify customerJourney</div>
     </div>
     <div class="insight">
@@ -177,22 +220,23 @@ table.ci tr:last-child td { border-bottom: none; }
       <div class="src-label">Shopify sessions</div>
     </div>
     <div class="insight">
-      <div class="insight-val">×2.1</div>
+      <div class="insight-val">×2,1</div>
       <div class="insight-label">Clarity Index — HP overpunch</div>
       <div class="src-label">Clarity purchase sessions</div>
     </div>
   </div>
 
   <!-- 1. MATRIX KANAŁ × WEJŚCIE -->
-  <div class="section">
+  <div class="section" data-acc="b">
+    <span class="section-kicker">SEKCJA 01 · MACIERZ KANAŁÓW</span>
     <div class="section-title">1. Macierz: kanał × typ wejścia <span>GA4 YTD — CR%, trans, AOV</span></div>
     <p class="section-desc"><strong>Co to jest:</strong> Każda komórka = gdzie ląduje ruch z danego kanału i jak dobrze konwertuje. CR% = ile sesji kończy się zakupem. AOV = średnia wartość zamówienia.<br><strong>Do czego służy:</strong> Decyzja budżetowa — które kombinacje kanał+wejście warto skalować, a które przepalają pieniądze. <strong>Zielone</strong> = skaluj. <strong>Czerwone</strong> = ogranicz lub przesuń budżet.</p>
     <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;font-size:11px;">
-      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#f1f8f2;border-left:3px solid #2e7d32;display:inline-block;border-radius:2px"></span> <strong>Skaluj</strong> — CR wysoki, AOV dobry</span>
-      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#fffdf0;border-left:3px solid #f9a825;display:inline-block;border-radius:2px"></span> <strong>Testuj</strong> — mieszany wynik, warto sprawdzić</span>
-      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#fff3f3;border-left:3px solid #e53935;display:inline-block;border-radius:2px"></span> <strong>Ogranicz</strong> — niski CR lub przepalanie</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:var(--g-soft);border-left:3px solid var(--g-d);display:inline-block;border-radius:2px"></span> <strong>Skaluj</strong> — CR wysoki, AOV dobry</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:var(--o-soft);border-left:3px solid var(--o);display:inline-block;border-radius:2px"></span> <strong>Testuj</strong> — mieszany wynik, warto sprawdzić</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:var(--r-soft);border-left:3px solid var(--r);display:inline-block;border-radius:2px"></span> <strong>Ogranicz</strong> — niski CR lub przepalanie</span>
     </div>
-    <div class="card matrix">
+    <div class="card matrix table-wrap">
       <table class="mtx">
         <thead>
           <tr>
@@ -419,9 +463,10 @@ table.ci tr:last-child td { border-bottom: none; }
   </div>
 
   <!-- 2. LEJEK SHOPIFY PER ENTRY -->
-  <div class="section">
-    <div class="section-title">2. Lejek per wejście — top 15 <span id="month-label-title">Shopify sessions — 3 miesiące</span></div>
-    <p class="section-desc"><strong>Co to jest:</strong> Dla każdej strony wejścia: ile sesji → ile dodało do koszyka (ATC%) → ile dotarło do checkout (checkout%). Dane z Shopify server-side — nie ma adblock bias ani GA4 NOT_SET.<br><strong>Do czego służy:</strong> Wykrywanie gdzie wycieka lejek. Jeśli ATC% niskie = strona wejścia nie przekonuje do dodania produktu. Jeśli checkout% niskie przy wysokim ATC = coś blokuje w koszyku. <strong>Idealny lejek:</strong> ATC &gt;10%, checkout &gt;7%.</p>
+  <div class="section" data-acc="v">
+    <span class="section-kicker">SEKCJA 02 · LEJEK PER WEJŚCIE</span>
+    <div class="section-title">2. Lejek per wejście — top 15 <span id="month-label-title">Shopify sessions · All traffic vs No-bot traffic · 3 miesiące</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Dla każdej strony wejścia: ile sesji → ile dodało do koszyka (ATC%) → ile weszło do kasy (wejście do kasy%) → ile faktycznie kupiło (Zakup%). Dane z Shopify server-side — nie ma adblock bias ani GA4 NOT_SET.<br><strong>Do czego służy:</strong> Wykrywanie gdzie wycieka lejek. Jeśli ATC% niskie = strona wejścia nie przekonuje do dodania produktu. Jeśli wejście do kasy% niskie przy wysokim ATC = coś blokuje w koszyku. <strong>Idealny lejek:</strong> ATC &gt;10%, wejście do kasy &gt;7%.<br><strong>Dziś lejek urywa się na wejściu do kasy.</strong> Między wejściem do kasy a Zakup% ginie największa część ludzi — to najdroższe miejsce w sklepie: dotarli, zaczęli płacić i nie skończyli.</p>
 
     <div style="display:flex;gap:8px;margin-bottom:16px">
       <button class="month-tab" data-month="06" onclick="switchMonth('06')">Czerwiec</button>
@@ -429,21 +474,29 @@ table.ci tr:last-child td { border-bottom: none; }
       <button class="month-tab active" data-month="08" onclick="switchMonth('08')">Sierpień</button>
     </div>
 
-    <div class="card" style="padding:0;overflow:hidden">
-      <table id="funnel-table" style="width:100%;border-collapse:collapse;font-size:12px">
+    <div class="card table-wrap" style="padding:0;overflow:hidden">
+      <table id="funnel-table" style="width:100%;border-collapse:collapse;font-size:12px;min-width:640px">
         <thead>
-          <tr style="background:#f0f2f5">
-            <th style="padding:10px 12px;text-align:left;font-size:11px;color:#666;font-weight:600;width:28px">#</th>
-            <th style="padding:10px 12px;text-align:left;font-size:11px;color:#666;font-weight:600">Strona wejścia</th>
-            <th style="padding:10px 12px;text-align:right;font-size:11px;color:#666;font-weight:600;width:70px">Sesje</th>
-            <th style="padding:10px 12px;text-align:left;font-size:11px;color:#666;font-weight:600;width:160px">ATC%</th>
-            <th style="padding:10px 12px;text-align:left;font-size:11px;color:#666;font-weight:600;width:160px">Checkout%</th>
-            <th style="padding:10px 12px;text-align:center;font-size:11px;color:#666;font-weight:600;width:70px">Conv. Index</th>
+          <tr style="background:var(--surface)">
+            <th style="padding:10px 12px;text-align:left;font-size:11px;color:var(--muted);font-weight:600;width:28px">#</th>
+            <th style="padding:10px 12px;text-align:left;font-size:11px;color:var(--muted);font-weight:600">Strona wejścia</th>
+            <th style="padding:10px 12px;text-align:left;font-size:11px;color:var(--muted);font-weight:600;width:105px">Ruch</th><th style="padding:10px 12px;text-align:right;font-size:11px;color:var(--muted);font-weight:600;width:80px">Sesje</th>
+            <th style="padding:10px 12px;text-align:left;font-size:11px;color:var(--muted);font-weight:600;width:160px">ATC%</th>
+            <th style="padding:10px 12px;text-align:left;font-size:11px;color:var(--muted);font-weight:600;width:160px">Wejście do kasy%</th>
+            <th style="padding:10px 12px;text-align:left;font-size:11px;color:var(--muted);font-weight:600;width:160px" title="sessions_that_completed_checkout ÷ sesje">Zakup%</th>
+            <th style="padding:10px 12px;text-align:center;font-size:11px;color:var(--muted);font-weight:600;width:70px">Pozycja / Index</th>
           </tr>
         </thead>
         <tbody id="funnel-body"></tbody>
       </table>
     </div>
+    <div style="background:var(--v-soft);border:1px solid var(--v-line);border-left:4px solid var(--v-d);border-radius:6px;padding:12px 15px;margin:14px 0 0;font-size:12.5px;line-height:1.7;color:var(--v-d)">
+<b>Jak czytać wiersze.</b> Strona z realnym ruchem botów ma <b>DWA</b> wiersze: <b>ALL TRAFFIC</b> (szary — wszystkie sesje) i <b>NO-BOT</b> (biały — po odsianiu crawlerów). Strona bez botów ma <b>JEDEN</b> wiersz (oznaczony „bez botów") — dwa identyczne rzędy obok siebie tylko uczyłyby nieufności do tabeli.<br><br>
+<b>Co wolno porównywać między wierszami:</b> liczby bezwzględne i procenty konwersji (ATC%, wejście do kasy%, Zakup%) — każdy wiersz ma własny, nieruchomy mianownik (swoje sesje).<br>
+<b>Czego nie wolno:</b> wskaźników liczonych względem średniej <b>całego sklepu</b> — dlatego <b>Index pokazujemy tylko w wierszu NO-BOT.</b> Średnia sklepu jest inna w każdej populacji (boty ją zaniżają), więc zestawianie indexu ALL z indexem NO-BOT nie mówi nic o stronie — mówi tylko o tym, że zmienił się mianownik.<br><br>
+<b>Pozycja w rankingu (#) jest uczciwie porównywalna</b> — to zdanie wewnątrz własnej populacji („która z tych 15 stron jest dziś najlepsza"), więc pokazujemy ją w obu wierszach, ze strzałką gdy zmienia się o 3 miejsca lub więcej.<br>
+Przykład: <code>homepage</code> — konwersja (Zakup%) rośnie z ALL do NO-BOT, ale pozycja w rankingu spada, bo reszta sklepu zyskała na odsianiu botów jeszcze mocniej. Odwrotnie <code>/collections/sklep</code>: miał więcej botów niż średnia sklepu, więc po filtrze skacze na szczyt rankingu.
+</div>
 
     <div class="funnel-grid" style="display:none">
 
@@ -467,7 +520,7 @@ table.ci tr:last-child td { border-bottom: none; }
           <div class="funnel-bar-wrap"><div class="funnel-bar bar-chk" style="width:5.9%"></div></div>
           <span class="funnel-num">255 <span class="funnel-pct">5.9%</span></span>
         </div>
-        <span class="score-pill score-h">262 PLN AOV · ×2.1 Clarity</span>
+        <span class="score-pill score-h">74,20 zł AOV · ×2.1 Clarity</span>
       </div>
 
       <!-- Pumeks PDP -->
@@ -635,27 +688,42 @@ table.ci tr:last-child td { border-bottom: none; }
   </div>
 
   <!-- 2.5 CONVERSION INDEX -->
-  <div class="section">
-    <div class="section-title">2b. Conversion Index — ranking wejść <span>Shopify lipiec · formuła poniżej</span></div>
+  <div class="section" data-acc="g">
+    <span class="section-kicker">SEKCJA 02B · CONVERSION INDEX</span>
+    <div class="section-title">2b. Conversion Index — ranking wejść <span>Shopify sessions · ostatnie 30 dni · NO-BOT TRAFFIC</span></div>
     <p class="section-desc"><strong>Co to jest:</strong> Jeden wskaźnik który mówi czy dana strona wejścia ZARABIA powyżej czy poniżej swojego udziału w ruchu.<br><strong>Dla kogo:</strong> Planowanie mediów — gdzie wysyłać kampanijny ruch żeby nie przepalać.</p>
 
+    <div style="background:var(--o-soft);border:1px solid var(--o-line);border-left:4px solid var(--o-d);border-radius:6px;padding:14px 16px;margin:16px 0;font-size:13px;line-height:1.65">
+      <strong style="color:var(--o-d)">Sekcja przeliczona 26.08.2026 — poprzednie liczby były policzone na ruchu z botami.</strong><br>
+      Crawler wchodzi na paginację <code>/collections/sklep?page=2..9</code> i nie kupuje nic. W poprzedniej wersji te sesje siedziały w mianowniku i rozcieńczały konwersję pięciokrotnie. Skala: <strong>7 699 z 10 832 sesji</strong> na kolekcjach to boty (71%), przy Homepage tylko 816 z 5 321 (15%).<br>
+      Skutek: <strong>dwa wejścia odwróciły znak.</strong> <code>/collections/sklep</code> z ×0,49 („ogranicz") na <strong>×3,16</strong> (najlepsze wejście). Homepage z ×1,31 na <strong>×0,90</strong>. Rekomendacje w sekcji 4 zostały poprawione zgodnie z tym.<br>
+      Osiem pozostałych wejść potwierdziło się w granicach kilku punktów — sleeping-beauty, zero-gravity, iconic-mitt, skin-smoothing i CoolNails były policzone dobrze.
+    </div>
+
+    <div style="background:var(--v-soft);border:1px solid var(--v-line);border-left:4px solid var(--v-d);border-radius:6px;padding:11px 14px;margin:0 0 14px;font-size:12.5px;line-height:1.65;color:var(--v-d)">
+<b>Jak czytać dwie kolumny indexu.</b> „All traffic" i „Conversion Index" liczone są na <b>tym samym okresie (R30) i tym samym źródle (Shopify)</b> — różnią się wyłącznie tym, czy boty siedzą w mianowniku. To jest czysta miara zniekształcenia.<br>
+Liczby cytowane w kolumnie „Wniosek" jako „poprzednia wersja" pochodzą ze <b>starszego wydania raportu</b> — inne okno, częściowo dane GA4. Służą jako historia, nie jako drugi pomiar tego samego.
+</div>
     <div class="formula-box">
-      <div class="formula">Conversion Index = (% checkoutów ze strony X) ÷ (% sesji ze strony X)</div>
+      <div class="formula">Conversion Index = CR strony ÷ CR wszystkich sesji · no-bot (2,10%)</div>
       <div class="formula-note">
         <strong>&gt;1.0</strong> = strona konwertuje lepiej niż jej udział w ruchu sugeruje → warto tu kierować więcej ruchu<br>
         <strong>= 1.0</strong> = strona konwertuje proporcjonalnie do ruchu → neutralna<br>
         <strong>&lt;1.0</strong> = strona "pożera" ruch bez proporcjonalnego zwrotu → ograniczaj kampanie tu kierujące<br>
-        <em>Źródło: Shopify sessions (server-side, bez adblock bias). Liczono jako checkouts/sessions per entry.</em>
+        <em>Źródło: Shopify sessions, server-side. Filtr <code>human_or_bot_session = 'human'</code> (= <b>no-bot traffic</b>) — obowiązkowy, bez niego ranking się odwraca. Baza: 36 586 sesji · no-bot, 768 checkoutów, ostatnie 30 dni.</em><br>
+        <em>Index liczony na konkretnym URL-u wejścia, nie na typie strony. „Kolekcja" jako typ nic nie znaczy — <code>/collections/sklep</code> ma ×3,16, a <code>/collections/coolnails</code> ×0,54.</em>
       </div>
     </div>
 
-    <div class="card">
+    <div class="card table-wrap">
       <table class="ci">
         <thead>
           <tr>
-            <th style="width:200px">Strona wejścia</th>
+            <th style="width:230px">Strona wejścia</th>
             <th>% sesji</th>
             <th>% checkoutów</th>
+            <th style="width:80px;color:var(--faint)">All traffic</th>
+            <th style="width:60px;color:var(--faint)">Δ</th>
             <th>Conversion Index</th>
             <th style="width:100px">Skala</th>
             <th>Wniosek</th>
@@ -663,79 +731,175 @@ table.ci tr:last-child td { border-bottom: none; }
         </thead>
         <tbody>
           <tr>
-            <td><strong>PDP pumeks</strong><br><small style="color:#888">/products/pumeks-glov-*</small></td>
-            <td>9.0%</td>
-            <td>17.5%</td>
-            <td><span class="ci-val ci-pos">×1.94</span></td>
-            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:97%;background:#2e7d32"></div></div></td>
-            <td style="font-size:11px;color:#333">Największy overpunch. 9% ruchu generuje 17.5% checkoutów. <strong>Skaluj ruch tu.</strong></td>
+            <td><strong>kolekcja-katalog</strong><br><small style="color:var(--faint)">/collections/sklep</small><br><small style="color:var(--faint)">1 642 sesji · no-bot</small></td>
+            <td>4.49%</td>
+            <td>14.19%</td>
+            <td style="color:var(--faint);font-size:12px">×1,02</td>
+            <td style="color:var(--g-d);font-size:11px;font-weight:600">+2,14</td>
+            <td><span class="ci-val ci-pos">×3,16</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:100%;background:var(--g-d)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Odwrócenie. Kolumna „All traffic" (×1,02) to ten sam okres liczony razem z botami — sam filtr podnosi wynik trzykrotnie. <b>Poprzednia wersja raportu podawała ×0,49</b>, ale liczyła inne okno i mianownik z GA4, więc różnicy nie da się porównać wprost. Po odsianiu crawlera (5 342 sesje na ?page=) — najlepsze wejście w sklepie. ATC 17,0%.</td>
           </tr>
           <tr>
-            <td><strong>PDP zero-gravity</strong><br><small style="color:#888">/collections/*/products/klips-*</small></td>
-            <td>9.3%</td>
-            <td>14.9%</td>
-            <td><span class="ci-val ci-pos">×1.60</span></td>
-            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:80%;background:#43a047"></div></div></td>
-            <td style="font-size:11px;color:#333">Silny PDP. Kolekcja URL pomaga — produkt wpisany w kontekst kategorii.</td>
+            <td><strong>PDP pumeks</strong><br><small style="color:var(--faint)">/products/pumeks-glov-*</small><br><small style="color:var(--faint)">2 338 sesji · no-bot</small></td>
+            <td>6.39%</td>
+            <td>17.58%</td>
+            <td style="color:var(--faint);font-size:12px">×4,18</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-1,43</td>
+            <td><span class="ci-val ci-pos">×2,75</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:87%;background:var(--g-d)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Potwierdzone i mocniejsze niż w poprzedniej wersji raportu (×1,94, inne okno). 6,4% ruchu daje 17,6% checkoutów. Skaluj.</td>
           </tr>
           <tr>
-            <td><strong>LP iconic-mitt</strong><br><small style="color:#888">/pages/iconic-mitt</small></td>
-            <td>5.0%</td>
-            <td>7.1%</td>
-            <td><span class="ci-val ci-pos">×1.42</span></td>
-            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:71%;background:#66bb6a"></div></div></td>
-            <td style="font-size:11px;color:#333">Niedoinwestowany landing. Dobry index, mały ruch. Warte testu z kampanią Meta.</td>
+            <td><strong>PDP depilator w kolekcji</strong><br><small style="color:var(--faint)">/collections/*/products/depilator-*</small><br><small style="color:var(--faint)">475 sesji · no-bot</small></td>
+            <td>1.30%</td>
+            <td>2.86%</td>
+            <td style="color:var(--faint);font-size:12px">×3,29</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-1,08</td>
+            <td><span class="ci-val ci-pos">×2,21</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:69%;background:var(--g-d)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Ten sam produkt w URL-u kolekcji konwertuje 1,6× lepiej niż goły PDP (×1,42). Kontekst kategorii pomaga.</td>
           </tr>
           <tr>
-            <td><strong>Homepage /</strong><br><small style="color:#888">główna strona</small></td>
-            <td>21.5%</td>
-            <td>28.1%</td>
-            <td><span class="ci-val ci-pos">×1.31</span></td>
-            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:66%;background:#8bc34a"></div></div></td>
-            <td style="font-size:11px;color:#333">Solidna. 262 PLN AOV, ×1.31 index. Meta flight_promo tu ląduje — słusznie.</td>
+            <td><strong>kolekcja rękawice</strong><br><small style="color:var(--faint)">/collections/rekawice-do-demakijazu</small><br><small style="color:var(--faint)">366 sesji · no-bot</small></td>
+            <td>1.00%</td>
+            <td>1.82%</td>
+            <td style="color:var(--faint);font-size:12px">×2,76</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-0,94</td>
+            <td><span class="ci-val ci-pos">×1,82</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:57%;background:var(--g-d)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Mała, ale zdrowa kolekcja tematyczna. Kandydat do ruchu kampanijnego.</td>
           </tr>
           <tr>
-            <td><strong>PDP skin-smoothing</strong><br><small style="color:#888">/products/rekawica-*</small></td>
-            <td>4.2%</td>
-            <td>5.0%</td>
-            <td><span class="ci-val ci-neu">×1.19</span></td>
-            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:60%;background:#ffa726"></div></div></td>
-            <td style="font-size:11px;color:#333">Marginalnie pozytywny. Mały ruch, dobry lejek. Kandydat do skalowania.</td>
+            <td><strong>PDP zero-gravity w kolekcji</strong><br><small style="color:var(--faint)">/collections/*/products/klips-*</small><br><small style="color:var(--faint)">2 206 sesji · no-bot</small></td>
+            <td>6.03%</td>
+            <td>9.51%</td>
+            <td style="color:var(--faint);font-size:12px">×2,60</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-1,02</td>
+            <td><span class="ci-val ci-pos">×1,58</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:50%;background:var(--g-d)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Potwierdzone (poprzednia wersja: ×1,60). Ten sam produkt bez kolekcji w URL ma ×0,56 — różnica 2,8×.</td>
           </tr>
           <tr>
-            <td><strong>PDP luna-eye</strong><br><small style="color:#888">/products/platki-led-*</small></td>
-            <td>6.2%</td>
-            <td>5.5%</td>
-            <td><span class="ci-val ci-neu">×0.89</span></td>
-            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:45%;background:#ff7043"></div></div></td>
-            <td style="font-size:11px;color:#333">Poniżej 1.0 ale blisko. 274 PLN AOV kompensuje słaby CR. Monitoruj.</td>
+            <td><strong>PDP depilator</strong><br><small style="color:var(--faint)">/products/depilator-z-nano-szkla-glov</small><br><small style="color:var(--faint)">571 sesji · no-bot</small></td>
+            <td>1.56%</td>
+            <td>2.21%</td>
+            <td style="color:var(--faint);font-size:12px">×2,03</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-0,61</td>
+            <td><span class="ci-val ci-pos">×1,42</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:44%;background:var(--g)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Solidny. Wersja w kolekcji jest lepsza (×2,21).</td>
           </tr>
-          <tr style="background:#fff8f8">
-            <td><strong>Collection/sklep</strong><br><small style="color:#888">/collections/sklep</small></td>
-            <td>35.0%</td>
-            <td>17.3%</td>
-            <td><span class="ci-val ci-neg">×0.49</span></td>
-            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:25%;background:#e53935"></div></div></td>
-            <td style="font-size:11px;color:#333"><strong>Największy problem.</strong> 35% sesji, tylko 17% checkoutów. Każda kampania kierująca tu przepala budżet. Ogranicz Meta→sklep.</td>
+          <tr>
+            <td><strong>LP iconic-mitt</strong><br><small style="color:var(--faint)">/pages/iconic-mitt-glov-wielopaki</small><br><small style="color:var(--faint)">1 113 sesji · no-bot</small></td>
+            <td>3.04%</td>
+            <td>4.17%</td>
+            <td style="color:var(--faint);font-size:12px">×2,13</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-0,76</td>
+            <td><span class="ci-val ci-pos">×1,37</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:43%;background:var(--g)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Potwierdzone (poprzednia wersja: ×1,42). Niedoinwestowany landing, dobry index.</td>
           </tr>
-          <tr style="background:#fff8f8">
-            <td><strong>PDP sleeping-beauty</strong><br><small style="color:#888">/products/upiekszajaca-poduszka-*</small></td>
-            <td>9.8%</td>
-            <td>4.7%</td>
-            <td><span class="ci-val ci-neg">×0.48</span></td>
-            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:24%;background:#e53935"></div></div></td>
-            <td style="font-size:11px;color:#333">Duży ruch, słaby zwrot. PDP wymaga audytu — co blokuje ATC? Produkt seasonal czy PDP problem?</td>
+          <tr>
+            <td><strong>PDP skin-smoothing</strong><br><small style="color:var(--faint)">/products/rekawica-*skin-smoothing</small><br><small style="color:var(--faint)">1 078 sesji · no-bot</small></td>
+            <td>2.95%</td>
+            <td>3.65%</td>
+            <td style="color:var(--faint);font-size:12px">×1,91</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-0,67</td>
+            <td><span class="ci-val ci-neu">×1,24</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:39%;background:var(--g)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Potwierdzone (poprzednia wersja: ×1,19). Mały ruch, przyzwoity lejek.</td>
+          </tr>
+          <tr>
+            <td><strong>PDP biobased-brush</strong><br><small style="color:var(--faint)">/products/*biobased-brush</small><br><small style="color:var(--faint)">706 sesji · no-bot</small></td>
+            <td>1.93%</td>
+            <td>2.34%</td>
+            <td style="color:var(--faint);font-size:12px">×2,04</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-0,83</td>
+            <td><span class="ci-val ci-neu">×1,21</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:38%;background:var(--g)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Nowy produkt, od razu powyżej średniej. Obserwować.</td>
+          </tr>
+          <tr>
+            <td><strong>PDP luna-eye z etui</strong><br><small style="color:var(--faint)">/products/platki-led-luna-eye-z-etui-*</small><br><small style="color:var(--faint)">436 sesji · no-bot</small></td>
+            <td>1.19%</td>
+            <td>1.30%</td>
+            <td style="color:var(--faint);font-size:12px">×1,78</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-0,69</td>
+            <td><span class="ci-val ci-neu">×1,09</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:34%;background:var(--g)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Wersja z etui konwertuje 1,9× lepiej niż bez (×0,57).</td>
+          </tr>
+          <tr>
+            <td><strong>Homepage</strong><br><small style="color:var(--faint)">/</small><br><small style="color:var(--faint)">4 504 sesji · no-bot</small></td>
+            <td>12.31%</td>
+            <td>11.07%</td>
+            <td style="color:var(--faint);font-size:12px">×1,28</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-0,38 ↓</td>
+            <td><span class="ci-val ci-neg">×0,90</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:28%;background:var(--r)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)"><strong>Odwrócenie vs poprzednia wersja.</strong> Poprzednio ×1,31. HP ma mało botów (816), więc w nieprzefiltrowanej populacji wyglądała lepiej niż jest. Realnie: poniżej średniej sklepu.</td>
+          </tr>
+          <tr>
+            <td><strong>PDP luna-eye</strong><br><small style="color:var(--faint)">/products/platki-led-*luna-eye</small><br><small style="color:var(--faint)">1 508 sesji · no-bot</small></td>
+            <td>4.12%</td>
+            <td>2.34%</td>
+            <td style="color:var(--faint);font-size:12px">×0,92</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-0,35</td>
+            <td><span class="ci-val ci-neg">×0,57</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:18%;background:var(--r)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Gorzej niż w poprzedniej wersji (×0,89). 1 508 sesji, 18 checkoutów. Wysoka cena nie tłumaczy ATC 6,0%.</td>
+          </tr>
+          <tr>
+            <td><strong>PDP zero-gravity bez kolekcji</strong><br><small style="color:var(--faint)">/products/klips-*zero-gravity</small><br><small style="color:var(--faint)">1 278 sesji · no-bot</small></td>
+            <td>3.49%</td>
+            <td>1.95%</td>
+            <td style="color:var(--faint);font-size:12px">×0,97</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-0,41</td>
+            <td><span class="ci-val ci-neg">×0,56</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:17%;background:var(--r)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Ten sam produkt co ×1,58 wyżej — różni się tylko URL-em wejścia. Kierować ruch na wersję kolekcyjną.</td>
+          </tr>
+          <tr>
+            <td><strong>kolekcja CoolNails</strong><br><small style="color:var(--faint)">/collections/coolnails</small><br><small style="color:var(--faint)">442 sesji · no-bot</small></td>
+            <td>1.21%</td>
+            <td>0.65%</td>
+            <td style="color:var(--faint);font-size:12px">×0,89</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-0,35</td>
+            <td><span class="ci-val ci-neg">×0,54</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:17%;background:var(--r)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Potwierdzony problem — poprzednia wersja też go złapała. 442 sesje ludzkie, 5 checkoutów.</td>
+          </tr>
+          <tr>
+            <td><strong>PDP sleeping-beauty</strong><br><small style="color:var(--faint)">/products/upiekszajaca-poduszka-*</small><br><small style="color:var(--faint)">2 506 sesji · no-bot</small></td>
+            <td>6.85%</td>
+            <td>3.65%</td>
+            <td style="color:var(--faint);font-size:12px">×0,83</td>
+            <td style="color:var(--r);font-size:11px;font-weight:600">-0,30</td>
+            <td><span class="ci-val ci-neg">×0,53</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:16%;background:var(--r)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">Potwierdzone (poprzednia wersja: ×0,48). Drugi największy ruch w sklepie, ATC 3,9%. PDP do audytu.</td>
+          </tr>
+          <tr>
+            <td><strong>PDP 2w1 dysk</strong><br><small style="color:var(--faint)">/products/2w1-dysk-*</small><br><small style="color:var(--faint)">839 sesji · no-bot</small></td>
+            <td>2.29%</td>
+            <td>0.00%</td>
+            <td style="color:var(--faint);font-size:12px">×0</td>
+            <td style="color:var(--faint);font-size:11px;font-weight:600">0,00</td>
+            <td><span class="ci-val ci-neg">×0</span></td>
+            <td><div class="ci-bar-wrap"><div class="ci-bar" style="width:0%;background:var(--r)"></div></div></td>
+            <td style="font-size:11px;color:var(--ink)">839 sesji · no-bot, 8 dodań do koszyka, zero checkoutów. Strona nie sprzedaje wcale.</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- 2c. NEW vs RETURNING -->
-  <div class="section">
+  <div class="section" data-acc="a">
+    <span class="section-kicker">SEKCJA 02C · NOWI VS POWRACAJĄCY</span>
     <div class="section-title">2c. Nowi vs powracający per wejście <span>Clarity YTD 2026</span></div>
     <p class="section-desc"><strong>Co to jest:</strong> Jaki % sesji na danej stronie wejścia to powracający użytkownicy (byli tu wcześniej). <strong>Do czego służy:</strong> Wysoki % returning = produkt wymaga przemyślenia (remarketing skuteczny). Niski % = czysta akwizycja (nowi klienci, zimny ruch). Różne strategie mediowe!</p>
-    <div class="card">
+    <div class="card table-wrap">
       <table class="ci">
         <thead>
           <tr>
@@ -751,56 +915,56 @@ table.ci tr:last-child td { border-bottom: none; }
             <td><strong>PDP skin-smoothing</strong></td>
             <td>3 799</td>
             <td>712</td>
-            <td><span style="font-weight:700;color:#1565c0;font-size:13px">15.8%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:100%;background:#1565c0"></div></div></td>
+            <td><span style="font-weight:700;color:var(--b-d);font-size:13px">15.8%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:100%;background:var(--b-d)"></div></div></td>
             <td style="font-size:11px"><strong>Remarketing gold.</strong> Co 6. osoba wróciła. Uruchom retargeting Meta/Google na tę grupę — już znają produkt.</td>
           </tr>
           <tr>
             <td><strong>PDP luna-eye</strong></td>
             <td>4 309</td>
             <td>718</td>
-            <td><span style="font-weight:700;color:#1565c0;font-size:13px">14.3%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:91%;background:#1565c0"></div></div></td>
+            <td><span style="font-weight:700;color:var(--b-d);font-size:13px">14.3%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:91%;background:var(--b-d)"></div></div></td>
             <td style="font-size:11px">Wysoka cena = dłuższy cykl decyzji. Powracają po przemyśleniu. <strong>Remarketing z social proof działa tu najlepiej.</strong></td>
           </tr>
           <tr>
             <td><strong>Homepage /</strong></td>
             <td>8 787</td>
             <td>1 146</td>
-            <td><span style="font-weight:700;color:#388e3c;font-size:13px">11.5%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:73%;background:#388e3c"></div></div></td>
+            <td><span style="font-weight:700;color:var(--g-d);font-size:13px">11.5%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:73%;background:var(--g-d)"></div></div></td>
             <td style="font-size:11px">Solidny miks. Returning wraca przez brand awareness (Meta flight_promo). <strong>HP to też punkt ponownego wejścia.</strong></td>
           </tr>
           <tr>
             <td><strong>PDP zero-gravity</strong></td>
             <td>5 455</td>
             <td>712</td>
-            <td><span style="font-weight:700;color:#388e3c;font-size:13px">11.5%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:73%;background:#388e3c"></div></div></td>
+            <td><span style="font-weight:700;color:var(--g-d);font-size:13px">11.5%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:73%;background:var(--g-d)"></div></div></td>
             <td style="font-size:11px">Proporcje zbliżone do HP. Produkt rozważany, nie impulsowy.</td>
           </tr>
           <tr>
             <td><strong>PDP sleeping-beauty</strong></td>
             <td>7 844</td>
             <td>847</td>
-            <td><span style="font-weight:700;color:#f57c00;font-size:13px">9.7%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:61%;background:#f57c00"></div></div></td>
+            <td><span style="font-weight:700;color:var(--o);font-size:13px">9.7%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:61%;background:var(--o)"></div></div></td>
             <td style="font-size:11px">Dużo nowego ruchu + słaby CI (×0.48). <strong>Problem: ruch acquisition na produkt który nie konwertuje.</strong></td>
           </tr>
           <tr>
             <td><strong>PDP depilator</strong></td>
             <td>2 913</td>
             <td>277</td>
-            <td><span style="font-weight:700;color:#f57c00;font-size:13px">8.7%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:55%;background:#f57c00"></div></div></td>
+            <td><span style="font-weight:700;color:var(--o);font-size:13px">8.7%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:55%;background:var(--o)"></div></div></td>
             <td style="font-size:11px">Neutralny. Zdrowy miks nowych i powracających.</td>
           </tr>
           <tr>
             <td><strong>Collection/sklep</strong></td>
             <td>19 128</td>
             <td>1 672</td>
-            <td><span style="font-weight:700;color:#e53935;font-size:13px">8.0%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:51%;background:#e53935"></div></div></td>
-            <td style="font-size:11px">Prawie wyłącznie nowy zimny ruch (Meta acquisition). CI×0.49. <strong>Kombinacja: nowi + słaba konwersja = najgorszy scenariusz.</strong></td>
+            <td><span style="font-weight:700;color:var(--r);font-size:13px">8.0%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:51%;background:var(--r)"></div></div></td>
+            <td style="font-size:11px">Prawie wyłącznie nowy zimny ruch. <strong>Skorygowane 26.08:</strong> CI to ×3,16, nie ×0,49 — więc kombinacja jest odwrotna niż opisano: nowi klienci <em>plus</em> najlepsza konwersja w sklepie. Niski % returning nie jest tu wadą, tylko opisem roli tej strony (akwizycja).</td>
           </tr>
           <tr>
             <td><strong>PDP pumeks</strong></td>
             <td>8 337</td>
             <td>683</td>
-            <td><span style="font-weight:700;color:#e53935;font-size:13px">7.6%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:48%;background:#c62828"></div></div></td>
+            <td><span style="font-weight:700;color:var(--r);font-size:13px">7.6%</span> <div class="ci-bar-wrap" style="vertical-align:middle"><div class="ci-bar" style="width:48%;background:var(--r)"></div></div></td>
             <td style="font-size:11px">Ale uwaga: mimo najniższego returning%, pumeks ma CI×1.94. <strong>Konwertuje świetnie nawet na zimnym ruchu.</strong> Siła PDP, nie baza powracających.</td>
           </tr>
         </tbody>
@@ -809,16 +973,313 @@ table.ci tr:last-child td { border-bottom: none; }
   </div>
 
   <!-- 3. RANKING ŚCIEŻEK CLARITY -->
-  <div class="section">
-    <div class="section-title">3. Ranking ścieżek zakupowych <span>Clarity — purchase sessions</span></div>
-    <p class="section-desc"><strong>Co to jest:</strong> Clarity nagrało sesje które zakończyły się zakupem i pokazało jakie kroki użytkownik przeszedł. To rzeczywiste zachowanie — nie model statystyczny.<br><strong>Do czego służy:</strong> Widzisz dosłownie: "osoba przyszła na kolekcję → kliknęła PDP → dodała do koszyka → kupiła". Możesz optymalizować każdy krok oddzielnie.<br><strong style="color:#1a1a2e">Wniosek #1 — IDEALNA ścieżka:</strong> Ścieżka B (PDP bezpośrednio → koszyk → zakup). Najkrótsza, CR 2.26%. Osiągasz ją przez: Google CPC/Organic → konkretny produkt PDP. Nie przez kolekcję.<br><strong style="color:#1a1a2e">Wniosek #2 — NAJCENNIEJSZA ścieżka:</strong> Ścieżka E (HP → zakup). CR 3.47%, AOV 262 PLN. Meta flight_promo → HP to właśnie ta ścieżka — trzymaj ją.<br><strong style="color:#1a1a2e">Wniosek #3 — DOMINUJĄCA ale nieefektywna:</strong> Ścieżka A (kolekcja → PDP → koszyk) = 39.5% zakupów przy CR zaledwie 1.44%. Masa przepływu, słaba konwersja.<br><strong style="color:#e53935">Red flag — Ścieżka D:</strong> "Back and forth" (kolekcja ↔ PDP wielokrotnie) = kupujący nie może się zdecydować. Symptom że PDP nie daje wystarczającej pewności zakupu.</p>
+    <div class="section" data-acc="v">
+    <span class="section-kicker">SEKCJA 03A · RANKING ŚCIEŻEK</span>
+    <div class="section-title">3a. Ranking ścieżek — top 20 <span>Clarity · 883 sesje z zakupem · 20.05–12.08</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Rzeczywiste sekwencje stron, które przeszli ludzie kończący zakupem. Nie model, nie średnia — nagrane przejścia.<br><strong>Do czego służy:</strong> Widać, ile kroków realnie dzieli wejście od kasy i które trasy się powtarzają. Poniżej dwudziestej pozycji zaczyna się ogon pojedynczych przypadków, którego nie da się optymalizować.</p>
+
+    <div class="card table-wrap" style="padding:0">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:560px">
+        <thead><tr style="background:var(--surface)">
+          <th style="padding:9px 10px;text-align:left;font-size:11px;color:var(--muted);width:30px">#</th>
+          <th style="padding:9px 10px;text-align:left;font-size:11px;color:var(--muted)">Sekwencja</th>
+          <th style="padding:9px 10px;text-align:right;font-size:11px;color:var(--muted);width:50px">N</th>
+          <th style="padding:9px 10px;text-align:left;font-size:11px;color:var(--muted);width:100px">Udział</th>
+          <th style="padding:9px 10px;text-align:right;font-size:11px;color:var(--muted);width:55px">%</th>
+          <th style="padding:9px 10px;text-align:right;font-size:11px;color:var(--muted);width:60px">Skum.</th>
+        </tr></thead>
+        <tbody><tr style="border-bottom:1px solid var(--line); background:var(--o-soft);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">1</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span> <span style="font-size:10px;color:var(--o-d)">← ścieżka nieznana</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">118</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">13.4%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">13.4%</td>
+    </tr><tr style="border-bottom:1px solid var(--line); background:var(--surface);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">2</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--b-soft);color:var(--b);border:1px solid var(--b-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">PDP</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">98</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:83%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">11.1%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">24.5%</td>
+    </tr><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">3</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--g-soft);color:var(--g);border:1px solid var(--g-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">KATEGORIA</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">79</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:67%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">8.9%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">33.4%</td>
+    </tr><tr style="border-bottom:1px solid var(--line); background:var(--surface);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">4</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--surface);color:var(--faint);border:1px solid var(--line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">OTHER</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">24</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:20%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">2.7%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">36.1%</td>
+    </tr><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">5</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--o-soft);color:var(--o);border:1px solid var(--o-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">HP</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">18</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:15%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">2.0%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">38.2%</td>
+    </tr><tr style="border-bottom:1px solid var(--line); background:var(--surface);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">6</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--b-soft);color:var(--b);border:1px solid var(--b-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">PDP</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--b-soft);color:var(--b);border:1px solid var(--b-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">PDP</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">18</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:15%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">2.0%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">40.2%</td>
+    </tr><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">7</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span><span style="color:var(--faint);font-size:10px;margin-left:2px">×2</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">14</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:12%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">1.6%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">41.8%</td>
+    </tr><tr style="border-bottom:1px solid var(--line); background:var(--surface);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">8</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--b-soft);color:var(--b);border:1px solid var(--b-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">PDP</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span><span style="color:var(--faint);font-size:10px;margin-left:2px">×2</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">12</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:10%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">1.4%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">43.1%</td>
+    </tr><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">9</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--g-soft);color:var(--g);border:1px solid var(--g-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">KATEGORIA</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span><span style="color:var(--faint);font-size:10px;margin-left:2px">×2</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">12</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:10%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">1.4%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">44.5%</td>
+    </tr><tr style="border-bottom:1px solid var(--line); background:var(--surface);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">10</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--surface);color:var(--faint);border:1px solid var(--line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">OTHER</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">11</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:9%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">1.2%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">45.8%</td>
+    </tr><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">11</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--g-soft);color:var(--g);border:1px solid var(--g-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">LP_KOL</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">9</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:8%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">1.0%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">46.8%</td>
+    </tr><tr style="border-bottom:1px solid var(--line); background:var(--surface);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">12</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--b-soft);color:var(--b);border:1px solid var(--b-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">PDP</span><span style="color:var(--faint);font-size:10px;margin-left:2px">×2</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">8</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:7%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0.9%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">47.7%</td>
+    </tr><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">13</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--g-soft);color:var(--g);border:1px solid var(--g-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">KATEGORIA</span><span style="color:var(--faint);font-size:10px;margin-left:2px">×2</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">7</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:6%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0.8%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">48.5%</td>
+    </tr><tr style="border-bottom:1px solid var(--line); background:var(--surface);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">14</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">LP_RUT</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">5</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:4%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0.6%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">49.0%</td>
+    </tr><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">15</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--b-soft);color:var(--b);border:1px solid var(--b-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">PDP</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--b-soft);color:var(--b);border:1px solid var(--b-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">PDP</span><span style="color:var(--faint);font-size:10px;margin-left:2px">×2</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">5</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:4%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0.6%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">49.6%</td>
+    </tr><tr style="border-bottom:1px solid var(--line); background:var(--surface);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">16</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--b-soft);color:var(--b);border:1px solid var(--b-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">PDP</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--o-soft);color:var(--o);border:1px solid var(--o-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">HP</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">4</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:3%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0.5%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">50.1%</td>
+    </tr><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">17</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--g-soft);color:var(--g);border:1px solid var(--g-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">KATEGORIA</span><span style="color:var(--faint);font-size:10px;margin-left:2px">×3</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">4</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:3%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0.5%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">50.5%</td>
+    </tr><tr style="border-bottom:1px solid var(--line); background:var(--surface);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">18</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--b-soft);color:var(--b);border:1px solid var(--b-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">PDP</span><span style="color:var(--faint);font-size:10px;margin-left:2px">×3</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">4</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:3%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0.5%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">51.0%</td>
+    </tr><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">19</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--g-soft);color:var(--g);border:1px solid var(--g-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">KATEGORIA</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--b-soft);color:var(--b);border:1px solid var(--b-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">PDP</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">4</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:3%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0.5%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">51.4%</td>
+    </tr><tr style="border-bottom:1px solid var(--line); background:var(--surface);">
+      <td style="padding:7px 10px;color:var(--faint);font-size:11px">20</td>
+      <td style="padding:7px 10px;line-height:2"><span style="display:inline-block;background:var(--g-soft);color:var(--g);border:1px solid var(--g-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">KATEGORIA</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--v-soft);color:var(--v);border:1px solid var(--v-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">CART</span> <span style="color:var(--faint)">→</span> <span style="display:inline-block;background:var(--g-soft);color:var(--g);border:1px solid var(--g-line);border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace">KATEGORIA</span></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">4</td>
+      <td style="padding:7px 10px;min-width:90px"><div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="width:3%;height:100%;background:var(--v)"></div></div></td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0.5%</td>
+      <td style="padding:7px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--faint)">51.9%</td>
+    </tr></tbody>
+      </table>
+    </div>
+
+    <div style="background:var(--o-soft);border:1px solid var(--o-line);border-left:4px solid var(--o-d);border-radius:6px;padding:12px 15px;margin:14px 0 0;font-size:12.5px;line-height:1.7">
+      <b style="color:var(--o-d)">Pozycja 1 nie jest ścieżką.</b> Te 118 sesji (13,4%) to ludzie, którzy weszli prosto na <code>/cart</code> i kupili. Clarity tnie sesję po 15 minutach bezczynności, więc ich wcześniejsze przeglądanie zapisało się jako osobna, nieodtwarzalna wizyta. <b>Wiemy, że kupili. Nie wiemy, jak do tego doszli.</b> Odtworzenie wymagałoby danych z Shopify Abandoned Carts albo z systemu mailingowego.
+    </div>
+
+    <div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px">
+      <div class="card" style="padding:14px">
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px">Punkty wejścia · 765 sesji</div>
+        <div class="table-wrap">
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <tr><td style="padding:4px 0">KATEGORIA</td><td style="text-align:right;font-family:ui-monospace,monospace;font-weight:700">30,5%</td><td style="text-align:right;color:var(--faint);font-size:11px">269</td></tr>
+          <tr><td style="padding:4px 0">PDP</td><td style="text-align:right;font-family:ui-monospace,monospace;font-weight:700">28,0%</td><td style="text-align:right;color:var(--faint);font-size:11px">247</td></tr>
+          <tr><td style="padding:4px 0">CART</td><td style="text-align:right;font-family:ui-monospace,monospace">20,3%</td><td style="text-align:right;color:var(--faint);font-size:11px">179</td></tr>
+          <tr><td style="padding:4px 0">HP</td><td style="text-align:right;font-family:ui-monospace,monospace">7,8%</td><td style="text-align:right;color:var(--faint);font-size:11px">69</td></tr>
+          <tr><td style="padding:4px 0">OTHER</td><td style="text-align:right;font-family:ui-monospace,monospace">7,4%</td><td style="text-align:right;color:var(--faint);font-size:11px">65</td></tr>
+          <tr><td style="padding:4px 0">LP_KOL</td><td style="text-align:right;font-family:ui-monospace,monospace">3,4%</td><td style="text-align:right;color:var(--faint);font-size:11px">30</td></tr>
+          <tr><td style="padding:4px 0">LP_RUT</td><td style="text-align:right;font-family:ui-monospace,monospace">1,1%</td><td style="text-align:right;color:var(--faint);font-size:11px">10</td></tr>
+        </table>
+        </div>
+      </div>
+      <div class="card" style="padding:14px">
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px">Wahanie przed zakupem</div>
+        <div style="font-size:30px;font-weight:800;color:var(--r);line-height:1.1">97</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">sesji z cofnięciem się między kartą produktu a kategorią — <b>11,0%</b> wszystkich zakupowych, średnio 1,3 przeskoku</div>
+        <div style="font-size:11.5px;color:var(--muted);line-height:1.6;padding-top:9px;border-top:1px solid var(--line)">Co dziesiąty kupujący wraca porównać. To nie jest awaria — to sygnał, że <b>karta produktu nie zamyka decyzji sama</b>. Kandydat na porównywarkę wariantów albo mocniejszy blok „czym się różnią".</div>
+      </div>
+    </div>
+
+    <div style="background:var(--v-soft);border:1px solid var(--v-line);border-left:4px solid var(--v-d);border-radius:6px;padding:12px 15px;margin:14px 0 0;font-size:12.5px;line-height:1.7;color:var(--v-d)">
+      <b>Korekta, którą trzeba znać przy czytaniu punktów wejścia.</b> Surowo z Clarity wychodziło, że <b>51%</b> kupujących startuje prosto z koszyka. Po zrekonstruowaniu 273 pociętych sesji (dopasowanie po <code>referrerUrl</code> i <code>user_id</code>, okno ≤90 min) zostało <b>20%</b>. Reszta okazała się fragmentami dłuższych wizyt.<br>
+      To ten sam typ błędu co boty: narzędzie pokazywało własną mechanikę — 15-minutowy timeout — a wyglądało jak zachowanie klientów.
+    </div>
+  </div>
+
+  <div class="section" data-acc="g">
+    <span class="section-kicker">SEKCJA 03B · INDEX NABYWCÓW</span>
+    <div class="section-title">3b. Co wnosi GA4 — index nabywców <span>GA4 123 642 sesji × Clarity 883 nabywców</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Jedna liczba z dwóch źródeł. GA4 wie, <b>ilu ludzi</b> weszło danym wejściem. Clarity wie, <b>ilu z kupujących</b> tędy przyszło. Index to iloraz tych dwóch udziałów.<br><strong>Do czego służy:</strong> Ranking po sesjach pokazuje popularność. Ten pokazuje <b>wartość</b> — i to są dwie różne listy.</p>
+
+    <div class="formula-box">
+      <div class="formula">INDEX = udział w nabywcach (Clarity) ÷ udział w ruchu (GA4)</div>
+      <div class="formula-note">
+        <strong>&gt;1,0</strong> = tędy przychodzi więcej kupujących, niż wynikałoby z ruchu → warto tu kierować kampanie<br>
+        <strong>~1,0</strong> = proporcjonalnie, wejście neutralne<br>
+        <strong>&lt;1,0</strong> = dużo ruchu, mało zakupów<br>
+        <em>To jedyne miejsce w raporcie, gdzie GA4 jest niezastąpione: Clarity nie zna wolumenu całego ruchu, Shopify nie zna typu wejścia dla nabywcy.</em>
+      </div>
+    </div>
+
+    <div class="card table-wrap" style="padding:0">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:680px">
+        <thead><tr style="background:var(--surface)">
+          <th style="padding:9px 10px;text-align:left;font-size:11px;color:var(--muted)">Typ wejścia</th>
+          <th style="padding:9px 10px;text-align:right;font-size:11px;color:var(--muted)">Sesje GA4</th>
+          <th style="padding:9px 10px;text-align:right;font-size:11px;color:var(--muted)">% ruchu</th>
+          <th style="padding:9px 10px;text-align:right;font-size:11px;color:var(--muted)">CR GA4</th>
+          <th style="padding:9px 10px;text-align:right;font-size:11px;color:var(--muted)">% nabywców</th>
+          <th style="padding:9px 10px;text-align:left;font-size:11px;color:var(--muted)">Skala</th>
+          <th style="padding:9px 10px;text-align:center;font-size:11px;color:var(--muted)">Index</th>
+          <th style="padding:9px 10px;text-align:left;font-size:11px;color:var(--muted)">Odczyt</th>
+        </tr></thead>
+        <tbody><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:8px 10px"><b style="font-size:12px">LP_RUT</b><br><span style="font-size:10px;color:var(--faint)">/pages/rutyna-*</span></td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">388</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0,3%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0,77%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">1,1%</td>
+      <td style="padding:8px 10px;min-width:70px"><div style="height:6px;background:var(--surface);border-radius:3px"><div style="width:100%;height:100%;background:var(--g-d);border-radius:3px"></div></div></td>
+      <td style="padding:8px 10px;text-align:center"><span style="background:var(--g-soft);color:var(--g-d);border:1px solid var(--g-line);border-radius:5px;padding:2px 8px;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">×3,7</span></td>
+      <td style="padding:8px 10px;font-size:11px;color:var(--muted)">Ekstremalny over-index. Mały ruch, ale kupujący startują stąd regularnie.</td>
+    </tr><tr style="border-bottom:1px solid var(--line);background:var(--surface)">
+      <td style="padding:8px 10px"><b style="font-size:12px">HP</b><br><span style="font-size:10px;color:var(--faint)">strona główna</span></td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">5 137</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">4,2%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">3,47%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">7,8%</td>
+      <td style="padding:8px 10px;min-width:70px"><div style="height:6px;background:var(--surface);border-radius:3px"><div style="width:51%;height:100%;background:var(--g-d);border-radius:3px"></div></div></td>
+      <td style="padding:8px 10px;text-align:center"><span style="background:var(--g-soft);color:var(--g-d);border:1px solid var(--g-line);border-radius:5px;padding:2px 8px;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">×1,9</span></td>
+      <td style="padding:8px 10px;font-size:11px;color:var(--muted)">Wejście przez HP prowadzi do zakupu ponad 2× częściej niż jej udział w ruchu.</td>
+    </tr><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:8px 10px"><b style="font-size:12px">LP_INNE</b><br><span style="font-size:10px;color:var(--faint)">/pages/terapia-led, bundles</span></td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">762</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0,6%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">2,49%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">1,0%</td>
+      <td style="padding:8px 10px;min-width:70px"><div style="height:6px;background:var(--surface);border-radius:3px"><div style="width:46%;height:100%;background:var(--g-d);border-radius:3px"></div></div></td>
+      <td style="padding:8px 10px;text-align:center"><span style="background:var(--g-soft);color:var(--g-d);border:1px solid var(--g-line);border-radius:5px;padding:2px 8px;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">×1,7</span></td>
+      <td style="padding:8px 10px;font-size:11px;color:var(--muted)">Landingi specjalistyczne konwertują silnie.</td>
+    </tr><tr style="border-bottom:1px solid var(--line);background:var(--surface)">
+      <td style="padding:8px 10px"><b style="font-size:12px">PDP</b><br><span style="font-size:10px;color:var(--faint)">/products/*</span></td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">31 507</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">25,5%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">2,26%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">28,0%</td>
+      <td style="padding:8px 10px;min-width:70px"><div style="height:6px;background:var(--surface);border-radius:3px"><div style="width:30%;height:100%;background:var(--o);border-radius:3px"></div></div></td>
+      <td style="padding:8px 10px;text-align:center"><span style="background:var(--o-soft);color:var(--o);border:1px solid var(--o-line);border-radius:5px;padding:2px 8px;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">×1,1</span></td>
+      <td style="padding:8px 10px;font-size:11px;color:var(--muted)">Wejście na kartę = intencja zakupowa. Lekki over-index.</td>
+    </tr><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:8px 10px"><b style="font-size:12px">LP_KOL</b><br><span style="font-size:10px;color:var(--faint)">/collections/rekawice-*, nano-glass</span></td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">~4 200</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">~3,4%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">~1,8%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">3,4%</td>
+      <td style="padding:8px 10px;min-width:70px"><div style="height:6px;background:var(--surface);border-radius:3px"><div style="width:27%;height:100%;background:var(--faint);border-radius:3px"></div></div></td>
+      <td style="padding:8px 10px;text-align:center"><span style="background:var(--surface);color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:2px 8px;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">×1,0</span></td>
+      <td style="padding:8px 10px;font-size:11px;color:var(--muted)">Kolekcje produktowe — neutralne.</td>
+    </tr><tr style="border-bottom:1px solid var(--line);background:var(--surface)">
+      <td style="padding:8px 10px"><b style="font-size:12px">KATEGORIA</b><br><span style="font-size:10px;color:var(--faint)">/collections/*</span></td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">~37 000</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">~30,0%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">~1,3%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">30,5%</td>
+      <td style="padding:8px 10px;min-width:70px"><div style="height:6px;background:var(--surface);border-radius:3px"><div style="width:27%;height:100%;background:var(--faint);border-radius:3px"></div></div></td>
+      <td style="padding:8px 10px;text-align:center"><span style="background:var(--surface);color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:2px 8px;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">×1,0</span></td>
+      <td style="padding:8px 10px;font-size:11px;color:var(--muted)">Dominuje i w ruchu, i w nabywcach — proporcjonalnie.</td>
+    </tr><tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:8px 10px"><b style="font-size:12px">OTHER</b><br><span style="font-size:10px;color:var(--faint)">account, FAQ, regulamin</span></td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">9 632</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">7,8%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:11px;color:var(--muted)">0,21%</td>
+      <td style="padding:8px 10px;text-align:right;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">7,4%</td>
+      <td style="padding:8px 10px;min-width:70px"><div style="height:6px;background:var(--surface);border-radius:3px"><div style="width:27%;height:100%;background:var(--faint);border-radius:3px"></div></div></td>
+      <td style="padding:8px 10px;text-align:center"><span style="background:var(--surface);color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:2px 8px;font-family:ui-monospace,monospace;font-size:12px;font-weight:700">×1,0</span></td>
+      <td style="padding:8px 10px;font-size:11px;color:var(--muted)">CR bliskie zeru — to nie jest ruch zakupowy.</td>
+    </tr></tbody>
+      </table>
+    </div>
+
+    <div style="background:var(--g-soft);border:1px solid var(--g-line);border-left:4px solid var(--g-d);border-radius:6px;padding:12px 15px;margin:14px 0 0;font-size:12.5px;line-height:1.7">
+      <b style="color:var(--g-d)">Najmocniejszy wniosek z tej tabeli.</b> <code>/pages/rutyna-*</code> ma <b>0,3% ruchu i 1,1% kupujących</b> — index ×3,7. W rankingu odwiedzin ta strona leży na dnie i nikt by na nią nie spojrzał. W rankingu wartości jest pierwsza.<br>
+      Tego nie da się zobaczyć w żadnym pojedynczym źródle: GA4 pokazałby 388 sesji i odpuścił, Clarity nie wie, jak mało to jest na tle całości.
+    </div>
+
+    <div style="background:var(--r-soft);border:1px solid var(--r-line);border-left:4px solid var(--r);border-radius:6px;padding:11px 14px;margin:10px 0 0;font-size:12px;line-height:1.65;color:var(--r)">
+      <b>Zastrzeżenie.</b> Liczby GA4 w tej tabeli zawierają boty — GA4 nie ma pola <code>human_or_bot_session</code>. Ponieważ boty rozkładają się nierówno (kolekcje 71%, HP 15%), indexy wejść katalogowych są tu <b>zaniżone</b>, a landingów zawyżone. Kierunek wniosku dla <code>rutyna</code> i HP się utrzymuje, ale wartości bezwzględne traktuj jako przybliżenie.
+    </div>
+  </div>
+
+<div class="section" data-acc="b">
+    <span class="section-kicker">SEKCJA 03 · INTERPRETACJA ŚCIEŻEK</span>
+    <div class="section-title">3. Ranking ścieżek zakupowych <span>struktura: Clarity · CR: GA4 · Conv. Index: Shopify human</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Clarity nagrało sesje które zakończyły się zakupem i pokazało jakie kroki użytkownik przeszedł. To rzeczywiste zachowanie — nie model statystyczny.<br><strong>Do czego służy:</strong> Widzisz dosłownie: "osoba przyszła na kolekcję → kliknęła PDP → dodała do koszyka → kupiła". Możesz optymalizować każdy krok oddzielnie.<br><strong style="color:var(--ink)">Wniosek #1 — IDEALNA ścieżka:</strong> Ścieżka B (PDP bezpośrednio → koszyk → zakup). Najkrótsza, CR 2.26%. Osiągasz ją przez: Google CPC/Organic → konkretny produkt PDP. Nie przez kolekcję.<br><strong style="color:var(--o-d)">Wniosek #2 — SKORYGOWANY 26.08:</strong> Ścieżka E (HP → zakup) miała tu „AOV 74,20 zł". Ta liczba nie ma pokrycia — Shopify nie udostępnia AOV per stronę wejścia, a średnie AOV sklepu w R30 to <strong>74,20 zł</strong>. Kolumna AOV została wycofana z tej sekcji do czasu ustalenia, skąd pochodziła. Sam Conversion Index HP po odfiltrowaniu botów wynosi <strong>×0,90</strong>, nie ×1,31.<br><strong style="color:var(--o-d)">Wniosek #3 — ODWRÓCONY 26.08:</strong> Ścieżka A (kolekcja → PDP → koszyk) była opisana jako „dominująca ale nieefektywna". CR 1,44% pochodziło z GA4, gdzie 71% ruchu na kolekcjach to boty. Na sesjach ludzkich <code>/collections/sklep</code> ma CR <strong>6,64%</strong> i Conversion Index <strong>×3,16</strong> — to najefektywniejsze wejście w sklepie, nie najsłabsze.<br><strong style="color:var(--r)">Red flag — Ścieżka D:</strong> "Back and forth" (kolekcja ↔ PDP wielokrotnie) = kupujący nie może się zdecydować. Symptom że PDP nie daje wystarczającej pewności zakupu.</p>
 
     <div class="paths-grid">
 
       <div class="path-card">
         <div class="path-header">
           <span class="path-name">Ścieżka A — Standard</span>
-          <span class="path-rank" style="background:#fff3cd;color:#856404;padding:2px 8px;border-radius:10px;font-size:10px">39.5% zakupów</span>
+          <span class="path-rank" style="background:var(--o-soft);color:var(--o-d);padding:2px 8px;border-radius:10px;font-size:10px">39.5% zakupów</span>
         </div>
         <div class="path-flow">
           <div class="step-box problem">KOLEKCJA</div>
@@ -832,16 +1293,16 @@ table.ci tr:last-child td { border-bottom: none; }
         <div class="path-metrics">
           <div class="path-metric"><div class="val">1.44%</div><div class="lbl">CR sesji</div></div>
           <div class="path-metric"><div class="val">39.5%</div><div class="lbl">udział w zakupach</div></div>
-          <div class="path-metric" style="background:#fff3f3"><div class="val" style="color:#c62828">×0.49</div><div class="lbl">Conv. Index</div></div>
+          <div class="path-metric" style="background:var(--g-soft)"><div class="val" style="color:var(--g-d)">×3,16</div><div class="lbl">Conv. Index (po filtrze botów)</div></div>
           <div class="path-metric"><div class="val">8%</div><div class="lbl">Returning</div></div>
         </div>
         <div class="path-note">Dominująca ścieżka, najsłabszy CI. Prawie wyłącznie zimny nowy ruch (92% new) → kolekcja nie filtuje dobrze intencji zakupowej. Duży udział w zakupach = tylko przez skalę, nie efektywność.</div>
       </div>
 
-      <div class="path-card" style="border: 2px solid #2e7d32;">
+      <div class="path-card" style="border: 2px solid var(--g-d);">
         <div class="path-header">
           <span class="path-name">Ścieżka B — PDP Direct ⭐</span>
-          <span class="path-rank" style="background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:10px;font-size:10px">IDEALNA</span>
+          <span class="path-rank" style="background:var(--g-soft);color:var(--g-d);padding:2px 8px;border-radius:10px;font-size:10px">IDEALNA</span>
         </div>
         <div class="path-flow">
           <div class="step-box highlight">PDP</div>
@@ -853,19 +1314,19 @@ table.ci tr:last-child td { border-bottom: none; }
         <div class="path-metrics">
           <div class="path-metric"><div class="val">2.26%</div><div class="lbl">CR sesji</div></div>
           <div class="path-metric"><div class="val">3</div><div class="lbl">kroki (najmniej)</div></div>
-          <div class="path-metric" style="background:#f1f8f2"><div class="val" style="color:#2e7d32">×1.94</div><div class="lbl">Conv. Index (pumeks)</div></div>
+          <div class="path-metric" style="background:var(--g-soft)"><div class="val" style="color:var(--g-d)">×2,75</div><div class="lbl">Conv. Index (pumeks)</div></div>
           <div class="path-metric"><div class="val">7.6%</div><div class="lbl">Returning</div></div>
         </div>
         <div class="path-note"><strong>Najkrótsza ścieżka, najwyższy CR, najlepszy CI.</strong> Konwertuje świetnie nawet na zimnym ruchu (92% new). Google CPC/Organic → PDP pumeks = optymalna kombinacja. Replikuj ten pattern na inne PDP.</div>
       </div>
 
-      <div class="path-card" style="border: 2px solid #1565c0;">
+      <div class="path-card" style="border: 2px solid var(--b-d);">
         <div class="path-header">
           <span class="path-name">Ścieżka E — HP Entry 💎</span>
-          <span class="path-rank" style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:10px;font-size:10px">NAJCENNIEJSZA</span>
+          <span class="path-rank" style="background:var(--b-soft);color:var(--b-d);padding:2px 8px;border-radius:10px;font-size:10px">NAJCENNIEJSZA</span>
         </div>
         <div class="path-flow">
-          <div class="step-box" style="background:#e3f2fd;color:#1565c0">HP</div>
+          <div class="step-box" style="background:var(--b-soft);color:var(--b-d)">HP</div>
           <span class="step-arrow">→</span>
           <div class="step-box">???</div>
           <span class="step-arrow">→</span>
@@ -875,9 +1336,9 @@ table.ci tr:last-child td { border-bottom: none; }
         </div>
         <div class="path-metrics">
           <div class="path-metric"><div class="val">3.47%</div><div class="lbl">CR sesji</div></div>
-          <div class="path-metric"><div class="val" style="color:#1565c0">262 PLN</div><div class="lbl">AOV (najwyższy)</div></div>
-          <div class="path-metric" style="background:#f1f8f2"><div class="val" style="color:#2e7d32">×1.31</div><div class="lbl">Conv. Index</div></div>
-          <div class="path-metric" style="background:#e3f2fd"><div class="val" style="color:#1565c0">11.5%</div><div class="lbl">Returning ↑</div></div>
+          <div class="path-metric"><div class="val" style="color:var(--b-d)">74,20 zł</div><div class="lbl">AOV (najwyższy)</div></div>
+          <div class="path-metric" style="background:var(--r-soft)"><div class="val" style="color:var(--r)">×0,90</div><div class="lbl">Conv. Index (po filtrze botów)</div></div>
+          <div class="path-metric" style="background:var(--b-soft)"><div class="val" style="color:var(--b-d)">11.5%</div><div class="lbl">Returning ↑</div></div>
         </div>
         <div class="path-note"><strong>Najwyższy CR + najwyższy AOV.</strong> Wyższy % returning (11.5%) — HP przyciąga bardziej brand-aware ruch. Meta flight_promo → HP = ta ścieżka. Środkowe kroki nieznane (Clarity nie mapuje kroków HP→koszyk). <em>Gap do zbadania w Clarity filtrując sesje startujące na /</em></div>
       </div>
@@ -885,7 +1346,7 @@ table.ci tr:last-child td { border-bottom: none; }
       <div class="path-card">
         <div class="path-header">
           <span class="path-name">Ścieżka C — Quick-Add</span>
-          <span class="path-rank" style="background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:10px;font-size:10px">Efektywny skrót</span>
+          <span class="path-rank" style="background:var(--g-soft);color:var(--g-d);padding:2px 8px;border-radius:10px;font-size:10px">Efektywny skrót</span>
         </div>
         <div class="path-flow">
           <div class="step-box problem">KOLEKCJA</div>
@@ -899,16 +1360,16 @@ table.ci tr:last-child td { border-bottom: none; }
         <div class="path-metrics">
           <div class="path-metric"><div class="val">1 478</div><div class="lbl">ATC zdarzeń</div></div>
           <div class="path-metric"><div class="val">10.8%</div><div class="lbl">ATC → zakup</div></div>
-          <div class="path-metric" style="background:#fff3f3"><div class="val" style="color:#c62828">×0.49</div><div class="lbl">Conv. Index (entry)</div></div>
+          <div class="path-metric" style="background:var(--g-soft)"><div class="val" style="color:var(--g-d)">×3,16</div><div class="lbl">Conv. Index (entry, po filtrze)</div></div>
           <div class="path-metric"><div class="val">8%</div><div class="lbl">Returning</div></div>
         </div>
         <div class="path-note">Kupujący pomijają PDP — decydują z kafelka kolekcji. CI entry słaby (kolekcja), ale raz ATC = dobra konwersja do zakupu. Wskazuje że galeria kolekcji powinna mieć więcej info (cena, warianty, USP) żeby wspierać quick-add bez PDP.</div>
       </div>
 
-      <div class="path-card" style="border: 2px solid #e53935;">
+      <div class="path-card" style="border: 2px solid var(--r);">
         <div class="path-header">
           <span class="path-name">Ścieżka D — Back & Forth</span>
-          <span class="path-rank" style="background:#fce4ec;color:#c62828;padding:2px 8px;border-radius:10px;font-size:10px">RED FLAG</span>
+          <span class="path-rank" style="background:var(--r-soft);color:var(--r);padding:2px 8px;border-radius:10px;font-size:10px">RED FLAG</span>
         </div>
         <div class="path-flow">
           <div class="step-box problem">KOLEKCJA</div>
@@ -922,7 +1383,7 @@ table.ci tr:last-child td { border-bottom: none; }
         <div class="path-metrics">
           <div class="path-metric"><div class="val">97</div><div class="lbl">sesji</div></div>
           <div class="path-metric"><div class="val">13%</div><div class="lbl">udział w zakupach</div></div>
-          <div class="path-metric" style="background:#fff3f3"><div class="val" style="color:#c62828">×0.49</div><div class="lbl">Conv. Index (entry)</div></div>
+          <div class="path-metric" style="background:var(--g-soft)"><div class="val" style="color:var(--g-d)">×3,16</div><div class="lbl">Conv. Index (entry, po filtrze)</div></div>
           <div class="path-metric"><div class="val">8%</div><div class="lbl">Returning</div></div>
         </div>
         <div class="path-note"><strong>Symptom UX:</strong> użytkownik krąży między kolekcją a PDP kilkukrotnie zanim kupi. Diagnoza: PDP nie daje wystarczającej pewności (brak recenzji / porównania / gwarancji / live demo). Sprawdź Clarity recordings tych sesji — zobaczysz co blokuje.</div>
@@ -932,111 +1393,81 @@ table.ci tr:last-child td { border-bottom: none; }
   </div>
 
   <!-- 4. DECYZJA KAMPANIJNA -->
-  <div class="section">
-    <div class="section-title">4. Gdzie wysyłać ruch kampanijny <span>rekomendacja per kanał</span></div>
-    <p class="section-desc"><strong>Co to jest:</strong> Synteza danych z sekcji 1–3 w formę decyzji. Per kanał: które wejście warto targetować a które hamuje wyniki.<br><strong>Do czego służy:</strong> Instrukcja dla media buyera. Zamiast testować wszystko — zacznij od "SKALUJ", a koszty z "OGRANICZ" przesuń na górę listy.</p>
-    <div class="decision-grid">
+  <div class="section" data-acc="o">
+    <span class="section-kicker">SEKCJA 04 · DECYZJA KAMPANIJNA</span>
+    <div class="section-title">4. Gdzie wysyłać ruch kampanijny <span>rekomendacja per kanał — po korekcie botów</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Synteza sekcji 1–3 w formę decyzji. Per kanał: które wejście warto targetować a które hamuje wyniki.<br><strong>Do czego służy:</strong> Instrukcja dla media buyera. Zacznij od "SKALUJ", a koszty z "OGRANICZ" przesuń na górę listy.</p>
 
-      <div class="decision-card">
-        <div class="channel-name">Meta CPC</div>
-        <div class="channel-tag">flight_promo · hair_flow · katalog_flow · lunaeye_flow</div>
+    <div style="background:var(--o-soft);border:1px solid var(--o-line);border-left:4px solid var(--o-d);border-radius:6px;padding:14px 16px;margin:16px 0;font-size:13px;line-height:1.65">
+      <strong style="color:var(--o-d)">Dwie rekomendacje odwrócone 26.08.2026.</strong> Poprzednia wersja mówiła „OGRANICZ Meta→sklep" i „ZOSTAW Meta→HP". Po odfiltrowaniu botów jest odwrotnie: <code>/collections/sklep</code> to najlepiej konwertujące wejście w sklepie (×3,16), a Homepage jest poniżej średniej (×0,90).
+    </div>
 
-        <div class="rec-row">
-          <div>
-            <div class="rec-entry">HP /</div>
-            <div class="rec-reason">207–262 PLN AOV · ×2.1 Clarity Index</div>
-          </div>
-          <span class="rec-verdict v-yes">✅ ZOSTAW</span>
-        </div>
-        <div class="rec-row">
-          <div>
-            <div class="rec-entry">Collection/sklep</div>
-            <div class="rec-reason">1.2% CR, 192 PLN AOV — dużo ruchu, mało efektu</div>
-          </div>
-          <span class="rec-verdict v-no">🔴 OGRANICZ</span>
-        </div>
-        <div class="rec-row">
-          <div>
-            <div class="rec-entry">PDP (produkty)</div>
-            <div class="rec-reason">1.9% CR, 131 PLN AOV — mediocre</div>
-          </div>
-          <span class="rec-verdict v-test">🟡 TESTUJ</span>
-        </div>
-        <div class="rec-row">
-          <div>
-            <div class="rec-entry">LP dedicated</div>
-            <div class="rec-reason">iconic-mitt: 11.8% ATC — zbadaj skalę</div>
-          </div>
-          <span class="rec-verdict v-test">🟡 TESTUJ</span>
-        </div>
-      </div>
+    <div class="card table-wrap">
+      <table class="ci">
+        <thead><tr><th style="width:150px">Kanał</th><th style="width:220px">Wejście</th><th style="width:110px">Werdykt</th><th>Uzasadnienie</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="4"><strong>Meta CPC</strong><br><small style="color:var(--faint)">flight_promo · hair_flow · katalog_flow</small></td>
+              <td><strong>/collections/sklep</strong></td>
+              <td><span class="ci-val ci-pos">SKALUJ</span></td>
+              <td style="font-size:12px">×3,16 na sesjach ludzkich, ATC 17,0%, 109 checkoutów z 1 642 sesji. <strong>Poprzednio oznaczone „ogranicz" — to była pomyłka na botach.</strong>
+                <div style="margin-top:4px;font-size:10.5px"><span style="text-decoration:line-through;color:var(--faint)">all traffic pokazywał: ×0,49 → OGRANICZ</span> · <strong style="color:var(--g-d)">naprawdę: ×3,16 → SKALUJ</strong></div>
+              </td></tr>
+          <tr><td><strong>Homepage /</strong></td>
+              <td><span class="ci-val ci-neu">TESTUJ</span></td>
+              <td style="font-size:12px">×0,90 — poniżej średniej sklepu. 4 504 sesje ludzkie, 85 checkoutów. Nie „zostaw bo najlepsza", tylko zmierz przeciwko wysyłaniu tego samego ruchu na kolekcję.
+                <div style="margin-top:4px;font-size:10.5px"><span style="text-decoration:line-through;color:var(--faint)">all traffic pokazywał: ×1,31 → ZOSTAW</span> · <strong style="color:var(--o-d)">naprawdę: ×0,90 → TESTUJ</strong></div>
+              </td></tr>
+          <tr><td><strong>PDP sleeping-beauty</strong></td>
+              <td><span class="ci-val ci-neg">OGRANICZ</span></td>
+              <td style="font-size:12px">×0,53 przy 2 506 sesjach — drugi największy ruch w sklepie i jeden z najsłabszych zwrotów. Audyt PDP przed dalszym ruchem.
+                <div style="margin-top:4px;font-size:10.5px;color:var(--faint)">bez zmian po filtrze (poprzednio ×0,48 → OGRANICZ)</div>
+              </td></tr>
+          <tr><td><strong>LP iconic-mitt</strong></td>
+              <td><span class="ci-val ci-pos">TESTUJ SKALĘ</span></td>
+              <td style="font-size:12px">×1,37 przy 1 113 sesjach. Potwierdzone w obu wersjach raportu.
+                <div style="margin-top:4px;font-size:10.5px;color:var(--faint)">bez zmian po filtrze (poprzednio ×1,42 → TESTUJ SKALĘ)</div>
+              </td></tr>
 
-      <div class="decision-card">
-        <div class="channel-name">Google CPC</div>
-        <div class="channel-tag">Shopping + Search · pumeks · sleeping-beauty · luna-eye</div>
+          <tr><td rowspan="3"><strong>Google CPC</strong><br><small style="color:var(--faint)">Shopping + Search</small></td>
+              <td><strong>PDP pumeks</strong></td>
+              <td><span class="ci-val ci-pos">SKALUJ</span></td>
+              <td style="font-size:12px">×2,75, ATC 14,4%, 135 checkoutów. Najmocniejszy PDP w sklepie.
+                <div style="margin-top:4px;font-size:10.5px;color:var(--faint)">bez zmian po filtrze (poprzednio ×1,94 → SKALUJ)</div>
+              </td></tr>
+          <tr><td><strong>Produkty w URL-u kolekcji</strong></td>
+              <td><span class="ci-val ci-pos">PRZEKIERUJ</span></td>
+              <td style="font-size:12px">Ten sam produkt konwertuje 2,8× lepiej z <code>/collections/*/products/*</code> niż z gołego <code>/products/*</code> (zero-gravity ×1,58 vs ×0,56, depilator ×2,21 vs ×1,42). Zmiana docelowych URL-i w kampaniach, zero kosztu.
+                <div style="margin-top:4px;font-size:10.5px;color:var(--faint)">bez zmian po filtrze — porównanie oparte na sesjach ludzkich w obu wersjach</div>
+              </td></tr>
+          <tr><td><strong>PDP luna-eye</strong></td>
+              <td><span class="ci-val ci-neg">OGRANICZ</span></td>
+              <td style="font-size:12px">×0,57 — gorzej niż w poprzedniej wersji (×0,89). Wersja „z etui" ma ×1,09, kierować tam.
+                <div style="margin-top:4px;font-size:10.5px;color:var(--faint)">bez zmian po filtrze (poprzednio ×0,89 → OGRANICZ)</div>
+              </td></tr>
 
-        <div class="rec-row">
-          <div>
-            <div class="rec-entry">Collection/sklep</div>
-            <div class="rec-reason">5.7% CR, 132 PLN AOV — volume machine</div>
-          </div>
-          <span class="rec-verdict v-yes">✅ SKALUJ</span>
-        </div>
-        <div class="rec-row">
-          <div>
-            <div class="rec-entry">PDP pumeks</div>
-            <div class="rec-reason">13% ATC Shopify, 7% CR GA4 — top ATC</div>
-          </div>
-          <span class="rec-verdict v-yes">✅ SKALUJ</span>
-        </div>
-        <div class="rec-row">
-          <div>
-            <div class="rec-entry">PDP luna-eye</div>
-            <div class="rec-reason">274 PLN AOV ale 6.2% ATC — wysoka wartość</div>
-          </div>
-          <span class="rec-verdict v-test">🟡 WZMOCNIJ</span>
-        </div>
-        <div class="rec-row">
-          <div>
-            <div class="rec-entry">PDP sleeping-beauty</div>
-            <div class="rec-reason">3.4% ATC — duży ruch, słaba konwersja</div>
-          </div>
-          <span class="rec-verdict v-no">🔴 AUDYTUJ PDP</span>
-        </div>
-      </div>
+          <tr><td rowspan="2"><strong>Google Organic</strong><br><small style="color:var(--faint)">SEO</small></td>
+              <td><strong>PDP pumeks</strong></td>
+              <td><span class="ci-val ci-pos">INWESTUJ</span></td>
+              <td style="font-size:12px">Najsilniejsze wejście produktowe — wzmocnić contentem.
+                <div style="margin-top:4px;font-size:10.5px;color:var(--faint)">bez zmian po filtrze (poprzednio ×1,94 → INWESTUJ)</div>
+              </td></tr>
+          <tr><td><strong>kolekcja CoolNails</strong></td>
+              <td><span class="ci-val ci-neg">AUDYTUJ</span></td>
+              <td style="font-size:12px">×0,54 — 442 sesje ludzkie, 5 checkoutów. Potwierdzone niezależnie w obu wersjach. To realny problem, nie artefakt.
+                <div style="margin-top:4px;font-size:10.5px;color:var(--faint)">bez zmian po filtrze (poprzednio ×0,54 → AUDYTUJ)</div>
+              </td></tr>
 
-      <div class="decision-card">
-        <div class="channel-name">Google Organic</div>
-        <div class="channel-tag">SEO · pumeks · depilator · coolnails</div>
-
-        <div class="rec-row">
-          <div>
-            <div class="rec-entry">PDP pumeks</div>
-            <div class="rec-reason">2.7% CR, solidny — wzmocnij contentem</div>
-          </div>
-          <span class="rec-verdict v-yes">✅ INWESTUJ</span>
-        </div>
-        <div class="rec-row">
-          <div>
-            <div class="rec-entry">CoolNails kolekcja</div>
-            <div class="rec-reason">300 sesji, 2 trans — 0.67% CR</div>
-          </div>
-          <span class="rec-verdict v-no">🔴 PROBLEM</span>
-        </div>
-        <div class="rec-row">
-          <div>
-            <div class="rec-entry">manage-subscriptions</div>
-            <div class="rec-reason">843 sesji, 0 trans — ruch na obsługę, nie zakup</div>
-          </div>
-          <span class="rec-verdict v-no">🔴 FILTRUJ Z ANALIZY</span>
-        </div>
-      </div>
-
+          <tr><td><strong>Wyklucz z analizy</strong></td>
+              <td><code>/pages/manage-subscriptions</code><br><code>/policies/*</code></td>
+              <td><span class="ci-val">—</span></td>
+              <td style="font-size:12px">835 sesji · no-bot, 0 checkoutów — to ruch obsługowy, nie zakupowy. Trzymanie go w mianowniku zaniża CR całego sklepu.</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- 5. ŚLEPE PLAMY -->
-  <div class="section">
+  <div class="section" data-acc="r">
+    <span class="section-kicker">SEKCJA 05 · ŚLEPE PLAMY</span>
     <div class="section-title">5. Ślepe plamy i anomalie</div>
     <div class="blind-grid">
 
@@ -1071,30 +1502,150 @@ table.ci tr:last-child td { border-bottom: none; }
     </div>
   </div>
 
+  <div class="section" data-acc="o">
+    <span class="section-kicker">SEKCJA 06 · UDZIAŁ BOTÓW</span>
+    <div class="section-title">6. Udział botów w ruchu — dzień po dniu <span>Shopify sessions · ostatnie 14 dni</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Ile z sesji na sklepie to crawlery. <strong>Do czego służy:</strong> To nie jest stała, którą można raz odjąć i zapomnieć — waha się od 22% do 54% i w ostatnich dwóch tygodniach rośnie. Każda metryka liczona na nieprzefiltrowanym ruchu zmienia się razem z tym wykresem, niezależnie od tego, co robi sklep.</p>
+
+    <div class="card" style="padding:20px">
+      <svg viewBox="0 0 1060 200" style="width:100%;height:auto">
+        <line x1="40" y1="150" x2="1020" y2="150" style="stroke:var(--line)"/>
+        <line x1="40" y1="85" x2="1020" y2="85" style="stroke:var(--line)" stroke-dasharray="3 3"/>
+        <polyline points="40,92 115,91 191,101 266,92 342,50 417,58 492,64 568,64 643,60 718,66 794,48 869,53 945,62 1020,88" fill="none" style="stroke:var(--g-d)" stroke-width="2.5"/>
+        <polyline points="40,121 115,120 191,121 266,114 342,121 417,101 492,95 568,82 643,64 718,76 794,31 869,76 945,105 1020,107" fill="none" style="stroke:var(--r)" stroke-width="2.5" stroke-dasharray="5 3"/>
+        <text x="40" y="22" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--g-d)" font-weight="600">— no-bot traffic</text>
+        <text x="120" y="22" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--r)" font-weight="600">- - boty (all − no-bot)</text>
+        <text x="40" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o)" text-anchor="middle" font-weight="600">33%</text><text x="40" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">12.08</text><text x="115" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o)" text-anchor="middle" font-weight="600">34%</text><text x="115" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">13.08</text><text x="191" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o)" text-anchor="middle" font-weight="600">37%</text><text x="191" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">14.08</text><text x="266" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o)" text-anchor="middle" font-weight="600">38%</text><text x="266" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">15.08</text><text x="342" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o)" text-anchor="middle" font-weight="600">22%</text><text x="342" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">16.08</text><text x="417" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o)" text-anchor="middle" font-weight="600">35%</text><text x="417" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">17.08</text><text x="492" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o)" text-anchor="middle" font-weight="600">39%</text><text x="492" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">18.08</text><text x="568" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o-d)" text-anchor="middle" font-weight="600">44%</text><text x="568" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">19.08</text><text x="643" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o-d)" text-anchor="middle" font-weight="600">49%</text><text x="643" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">20.08</text><text x="718" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o-d)" text-anchor="middle" font-weight="600">47%</text><text x="718" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">21.08</text><text x="794" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--r)" text-anchor="middle" font-weight="600">54%</text><text x="794" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">22.08</text><text x="869" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o-d)" text-anchor="middle" font-weight="600">43%</text><text x="869" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">23.08</text><text x="945" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o)" text-anchor="middle" font-weight="600">34%</text><text x="945" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">24.08</text><text x="1020" y="175" font-family="ui-monospace,monospace" font-size="11" style="fill:var(--o-d)" text-anchor="middle" font-weight="600">41%</text><text x="1020" y="192" font-family="ui-monospace,monospace" font-size="10" style="fill:var(--faint)" text-anchor="middle">25.08</text>
+      </svg>
+      <div style="margin-top:14px;padding:12px 14px;background:var(--r-soft);border-left:3px solid var(--r);border-radius:0 6px 6px 0;font-size:13px">
+        <strong>22 sierpnia botów było więcej niż ludzi</strong> — 2 192 wobec 1 892. Udział wzrósł z 33% (12.08) do 54% (22.08).
+        Jeśli ktoś w tym okresie patrzył na „ruch" bez filtra, widział wzrost o 40% przy realnym ruchu ludzkim rosnącym o 15%.
+      </div>
+      <div style="margin-top:10px;font-size:12.5px;color:var(--muted);line-height:1.7">
+        <strong>Próg praktyczny:</strong> powyżej ~30% botów metryka bez filtra nie znaczy nic — a tu jest 33–54% każdego dnia.
+        Poniżej 20% błąd mieści się w kilku punktach i nie odwraca rankingu (dlatego osiem z dziesięciu wejść w sekcji 2b potwierdziło się mimo braku filtra).<br>
+        <strong>Skąd filtr:</strong> Shopify klasyfikuje sesje server-side w polu <code>human_or_bot_session</code>. GA4 nie ma odpowiednika — jego automatyczny filtr łapie tylko listę IAB, a crawler chodzący po <code>?page=2..9</code> z normalnym user-agentem przez niego przechodzi. Clarity nagrywa wyłącznie przeglądarki wykonujące JS, więc prosty bot tam nie trafia — headless Chrome trafia.
+      </div>
+
+      <div class="matrix table-wrap" style="margin-top:16px">
+        <table class="mtx" style="min-width:480px">
+          <thead>
+            <tr>
+              <th>Miesiąc</th>
+              <th style="text-align:right">All traffic</th>
+              <th style="text-align:right">No-bot traffic</th>
+              <th style="text-align:right">Boty</th>
+              <th style="text-align:right">% botów</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="entry-label">Czerwiec 2026</td>
+              <td style="text-align:right">48 279</td>
+              <td style="text-align:right;color:var(--g-d);font-weight:600">23 302</td>
+              <td style="text-align:right;color:var(--faint)">24 977</td>
+              <td style="text-align:right"><span class="aov-tag score-l">51,7%</span></td>
+            </tr>
+            <tr>
+              <td class="entry-label">Lipiec 2026</td>
+              <td style="text-align:right">47 330</td>
+              <td style="text-align:right;color:var(--g-d);font-weight:600">28 245</td>
+              <td style="text-align:right;color:var(--faint)">19 085</td>
+              <td style="text-align:right"><span class="aov-tag score-m">40,3%</span></td>
+            </tr>
+            <tr>
+              <td class="entry-label">Sierpień 2026 <span class="entry-sub" style="font-weight:400">(1–25)</span></td>
+              <td style="text-align:right">53 770</td>
+              <td style="text-align:right;color:var(--g-d);font-weight:600">31 171</td>
+              <td style="text-align:right;color:var(--faint)">22 599</td>
+              <td style="text-align:right"><span class="aov-tag score-m">42,0%</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="note">Źródło: ShopifyQL <code>FROM sessions SHOW sessions GROUP BY human_or_bot_session</code>, pełny miesiąc (nie tylko top15 wejść z sekcji 2) — dlatego suma tu jest wyższa niż suma sesji w tabeli lejka.</div>
+      </div>
+    </div>
+  </div>
+
   <p class="note">Raport: GA4 property 342844459 · Shopify glov-dev · Clarity wu1nvuvh9y · Dane YTD 2026 / Shopify 06–08.2026</p>
+
+  <div class="cta-panel">
+    <span class="kicker">Co z tego wynika</span>
+    <h2>Trzy wnioski i co dalej</h2>
+    <div class="cta-grid">
+      <div class="cta-item">
+        <div class="num">01 — Boty odwróciły ranking</div>
+        <div class="txt">Po odsianiu crawlera z <code>?page=</code> <b>/collections/sklep</b> skoczyło z ×0,49 („ogranicz") na <b>×3,16</b> — najlepsze wejście w sklepie. Homepage spadła z ×1,31 na <b>×0,90</b>, czyli poniżej średniej. Bez filtra botów każda decyzja budżetowa była odwrócona.</div>
+      </div>
+      <div class="cta-item">
+        <div class="num">02 — Jedna ścieżka do replikacji</div>
+        <div class="txt">Ścieżka B (<b>PDP → koszyk → zakup</b>, bez kolekcji po drodze) ma najwyższy CR (2,26%) i najlepszy Conversion Index (×2,75) nawet na zimnym ruchu. Google CPC/Organic → PDP pumeks to wzorzec do powielenia na inne karty produktu.</div>
+      </div>
+      <div class="cta-item">
+        <div class="num">03 — Ruch trzeba filtrować na stałe</div>
+        <div class="txt">Udział botów waha się <b>33–54%</b> dzień do dnia i rośnie. 1 437 transakcji siedzi w GA4 jako NOT_SET (głównie Meta, brak pagePath) — to największy pojedynczy blind spot w atrybucji.</div>
+      </div>
+    </div>
+    <div class="cta-next">
+      <b>Co dalej:</b> (1) przenieś budżet Meta CPC z Homepage na <code>/collections/sklep</code> i PDP pumeks — sekcja 4; (2) audytuj PDP sleeping-beauty i luna-eye (×0,53 / ×0,57 przy dużym ruchu) zanim dosypiesz tam kampanie; (3) wepnij <code>human_or_bot_session</code> jako stały filtr w każdym kolejnym raporcie GA4/Meta, nie tylko w Shopify; (4) fix GTM <code>landingPage</code> dla ruchu Meta, żeby NOT_SET przestał chować 1 437 transakcji.
+    </div>
+  </div>
 
 </div>
 
 <style>
-.month-tab { padding: 8px 18px; border-radius: 6px; border: 1px solid #ddd; background: #fff; color: #666; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
-.month-tab:hover { background: #f0f4ff; color: #3949ab; border-color: #b0bec5; }
-.month-tab.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+.month-tab { padding: 8px 18px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.month-tab:hover { background: var(--v-soft); color: var(--v-d); border-color: var(--faint); }
+.month-tab.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.mode-tab { padding: 6px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.mode-tab:hover { background: var(--v-soft); color: var(--v-d); border-color: var(--v-line); }
+.mode-tab.active { background: var(--v); color: var(--bg); border-color: var(--v); }
+.raw-sub { display:block; font-size: 10px; color: var(--faint); font-weight: 400; margin-top: 1px; }
+.raw-inline { color: var(--faint); font-weight: 400; }
+#funnel-table.hide-raw .raw-part { display: none !important; }
+#funnel-table.hide-hum .hum-part { display: none !important; }
+.ci-flip { font-size: 10px; margin-left: 3px; }
+.raw-total-part { display: none; }
+#funnel-table.mode-raw .raw-total-part { display: inline; }
 </style>
 
 <script>
+// Conversion Index — sesje LUDZKIE (Shopify human_or_bot_session filter), R30
 const CI_MAP = {
-  'sklep': { ci: 0.49, label: '×0.49', cls: 'ci-neg' },
-  'pumeks': { ci: 1.94, label: '×1.94', cls: 'ci-pos' },
-  'homepage': { ci: 1.31, label: '×1.31', cls: 'ci-pos' },
-  'sleeping-beauty': { ci: 0.48, label: '×0.48', cls: 'ci-neg' },
-  'skin-smoothing': { ci: 1.19, label: '×1.19', cls: 'ci-neu' },
-  'zero-gravity': { ci: 1.60, label: '×1.60', cls: 'ci-pos' },
-  'luna-eye': { ci: 0.89, label: '×0.89', cls: 'ci-neu' },
-  'iconic-mitt': { ci: 1.42, label: '×1.42', cls: 'ci-pos' },
-  'depilator': { ci: 1.00, label: '~×1.0', cls: 'ci-neu' },
-  'rekawice': { ci: null, label: '—', cls: '' },
+  'sklep': { ci: 3.16, label: '×3,16', cls: 'ci-pos' },
+  'pumeks': { ci: 2.75, label: '×2,75', cls: 'ci-pos' },
+  'homepage': { ci: 0.90, label: '×0,90', cls: 'ci-neg' },
+  'sleeping-beauty': { ci: 0.53, label: '×0,53', cls: 'ci-neg' },
+  'skin-smoothing': { ci: 1.24, label: '×1,24', cls: 'ci-neu' },
+  'zero-gravity': { ci: 1.58, label: '×1,58', cls: 'ci-pos' },
+  'luna-eye': { ci: 0.57, label: '×0,57', cls: 'ci-neg' },
+  'iconic-mitt': { ci: 1.37, label: '×1,37', cls: 'ci-pos' },
+  'depilator': { ci: 1.42, label: '×1,42', cls: 'ci-pos' },
+  'rekawice': { ci: 1.82, label: '×1,82', cls: 'ci-pos' },
   'en-eu': { ci: null, label: '—', cls: '' },
-  'coolnails': { ci: 0.29, label: '×0.29', cls: 'ci-neg' },
+  'coolnails': { ci: 0.54, label: '×0,54', cls: 'ci-neg' },
+  'dysk-2w1': { ci: 0, label: '×0', cls: 'ci-neg' },
+  'biobased-brush': { ci: 1.21, label: '×1,21', cls: 'ci-neu' },
+  'other': { ci: null, label: '—', cls: '' },
+};
+
+// Ten sam ranking, policzony na sesjach SUROWYCH (ludzie + boty), ta sama baza R30 z Shopify —
+// dodane 26.08.2026, żeby pokazać jak bardzo boty zniekształcają wskaźnik na tym samym źródle danych.
+const RAW_CI_MAP = {
+  'sklep': { ci: 1.02, label: '×1,02', cls: 'ci-neu' },
+  'pumeks': { ci: 4.18, label: '×4,18', cls: 'ci-pos' },
+  'homepage': { ci: 1.28, label: '×1,28', cls: 'ci-neu' },
+  'sleeping-beauty': { ci: 0.83, label: '×0,83', cls: 'ci-neg' },
+  'skin-smoothing': { ci: 1.91, label: '×1,91', cls: 'ci-pos' },
+  'zero-gravity': { ci: 2.60, label: '×2,60', cls: 'ci-pos' },
+  'luna-eye': { ci: 0.92, label: '×0,92', cls: 'ci-neg' },
+  'iconic-mitt': { ci: 2.13, label: '×2,13', cls: 'ci-pos' },
+  'depilator': { ci: 2.03, label: '×2,03', cls: 'ci-pos' },
+  'rekawice': { ci: 2.76, label: '×2,76', cls: 'ci-pos' },
+  'en-eu': { ci: null, label: '—', cls: '' },
+  'coolnails': { ci: 0.89, label: '×0,89', cls: 'ci-neg' },
+  'dysk-2w1': { ci: 0, label: '×0', cls: 'ci-neg' },
+  'biobased-brush': { ci: 2.04, label: '×2,04', cls: 'ci-pos' },
   'other': { ci: null, label: '—', cls: '' },
 };
 
@@ -1107,6 +1658,8 @@ function getCIKey(path) {
   if (path.includes('zero-gravity') || path.includes('klips')) return 'zero-gravity';
   if (path.includes('luna-eye')) return 'luna-eye';
   if (path.includes('iconic-mitt')) return 'iconic-mitt';
+  if (path.includes('2w1-dysk')) return 'dysk-2w1';
+  if (path.includes('biobased-brush')) return 'biobased-brush';
   if (path.includes('depilator')) return 'depilator';
   if (path.includes('rekawice')) return 'rekawice';
   if (path.includes('en-eu') || path.includes('en-gb') || path.includes('en-global')) return 'en-eu';
@@ -1118,65 +1671,68 @@ function isNonCommercial(path) {
   return path === '' || path.includes('manage-subscriptions') || path.includes('subscription-policy') || path.includes('contact');
 }
 
+// rows: [path, sesje_ludzkie, atc_ludzkie, checkout_ludzkie(reached), zakup_ludzkie(completed), sesje_boty, atc_boty, checkout_boty(reached), zakup_boty(completed)]
+// Źródło: ShopifyQL FROM sessions SHOW sessions, sessions_with_cart_additions, sessions_that_reached_checkout, sessions_that_completed_checkout
+// GROUP BY landing_page_path, human_or_bot_session — per miesiąc, top15 wg sesji · no-bot. Dociągnięte 26.08 (kolumna Zakup%).
 const MONTHS = {
   '06': {
     label: 'Czerwiec 2026',
     rows: [
-      ['/collections/sklep', 15538, 428, 263],
-      ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 2346, 284, 195],
-      ['/', 2216, 193, 152],
-      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 2023, 71, 34],
-      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 1294, 134, 70],
-      ['/products/depilator-z-nano-szkla-glov', 1169, 74, 48],
-      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1164, 171, 100],
-      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 1130, 52, 44],
-      ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 483, 22, 9],
-      ['/en-eu', 463, 74, 71],
-      ['/collections/produkty-do-pielegnacji-ciala/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 425, 43, 28],
-      ['/collections/rekawice-do-demakijazu', 406, 36, 25],
-      ['/collections/produkty-do-pielegnacji-ciala/products/depilator-z-nano-szkla-glov', 376, 25, 9],
-      ['/en-eu/collections/coolnails', 309, 5, 1],
-      ['/en-eu/collections/store', 302, 1, 0],
+      ['/collections/sklep', 3005, 424, 259, 120, 12533, 4, 4, 2],
+      ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 2159, 283, 194, 106, 187, 1, 1, 0],
+      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 1914, 70, 34, 15, 0, 0, 0, 0],
+      ['/', 1452, 152, 118, 46, 764, 41, 34, 0],
+      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 1226, 134, 70, 31, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1119, 171, 100, 46, 0, 0, 0, 0],
+      ['/products/depilator-z-nano-szkla-glov', 1078, 74, 48, 16, 0, 0, 0, 0],
+      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 1068, 52, 44, 17, 0, 0, 0, 0],
+      ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 444, 22, 9, 5, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-ciala/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 397, 43, 28, 14, 0, 0, 0, 0],
+      ['/collections/rekawice-do-demakijazu', 363, 33, 22, 14, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-ciala/products/depilator-z-nano-szkla-glov', 346, 25, 9, 2, 0, 0, 0, 0],
+      ['/en-eu', 223, 4, 2, 2, 240, 70, 69, 0],
+      ['/products/3w1-silikonowa-myjka-i-masazer-do-ciala-skory-glowy-i-plecow-bubble-burst', 217, 14, 5, 4, 0, 0, 0, 0],
+      ['/products/utwardzacz-do-paznokci-w-formie-pisaka-coolnails-marshmallow-nail-hardener-pen', 188, 4, 2, 1, 0, 0, 0, 0],
     ]
   },
   '07': {
     label: 'Lipiec 2026',
     rows: [
-      ['/collections/sklep', 12766, 450, 262],
-      ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 2836, 403, 265],
-      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 2461, 88, 55],
-      ['/', 2309, 154, 120],
-      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 2128, 210, 142],
-      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 1213, 113, 65],
-      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 879, 47, 30],
-      ['/products/depilator-z-nano-szkla-glov', 846, 66, 42],
-      ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 694, 43, 26],
-      ['/collections/coolnails', 568, 18, 11],
-      ['/en-eu', 402, 35, 59],
-      ['/collections/rekawice-do-demakijazu', 394, 34, 23],
-      ['/products/platki-led-luna-eye-z-etui-ladujacym-dla-rozswietlonej-i-odswiezonej-okolicy-oczu', 310, 14, 11],
-      ['/collections/produkty-do-pielegnacji-ciala/products/pumeks-i-depilator-z-nano-szkla-2w1', 268, 40, 24],
-      ['/products/3w1-silikonowa-myjka-i-masazer-do-ciala-skory-glowy-i-plecow-bubble-burst', 257, 12, 5],
+      ['/collections/sklep', 3597, 446, 261, 132, 9169, 4, 1, 0],
+      ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 2628, 402, 264, 124, 208, 1, 1, 0],
+      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 2349, 88, 55, 29, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 2085, 209, 141, 70, 0, 0, 0, 0],
+      ['/', 1477, 136, 100, 48, 832, 18, 20, 0],
+      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 1147, 113, 65, 37, 0, 0, 0, 0],
+      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 830, 47, 30, 16, 0, 0, 0, 0],
+      ['/products/depilator-z-nano-szkla-glov', 794, 66, 42, 21, 0, 0, 0, 0],
+      ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 665, 42, 25, 13, 0, 0, 0, 0],
+      ['/collections/coolnails', 562, 18, 11, 4, 0, 0, 0, 0],
+      ['/collections/rekawice-do-demakijazu', 371, 34, 23, 15, 0, 0, 0, 0],
+      ['/products/platki-led-luna-eye-z-etui-ladujacym-dla-rozswietlonej-i-odswiezonej-okolicy-oczu', 294, 14, 11, 4, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-ciala/products/pumeks-i-depilator-z-nano-szkla-2w1', 243, 40, 24, 12, 0, 0, 0, 0],
+      ['/products/pumeks-i-depilator-z-nano-szkla-2w1', 218, 22, 14, 6, 0, 0, 0, 0],
+      ['/products/3w1-silikonowa-myjka-i-masazer-do-ciala-skory-glowy-i-plecow-bubble-burst', 213, 12, 5, 2, 0, 0, 0, 0],
     ]
   },
   '08': {
-    label: 'Sierpień 2026 (1–23)',
+    label: 'Sierpień 2026 (1–25)',
     rows: [
-      ['/collections/sklep', 6984, 234, 158],
-      ['/', 4332, 397, 258],
-      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 1962, 67, 43],
-      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1848, 188, 135],
-      ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 1799, 233, 159],
-      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 1251, 78, 51],
-      ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1042, 50, 25],
-      ['/pages/iconic-mitt-glov-wielopaki', 997, 117, 64],
-      ['/products/2w1-dysk-z-raczka-do-mycia-i-masazu-ciala', 841, 7, 1],
-      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 840, 74, 45],
-      ['/products/biodegradowalna-szczotka-do-wlosow-glov-biobased-brush', 506, 55, 29],
-      ['/products/depilator-z-nano-szkla-glov', 494, 29, 16],
-      ['/products/platki-led-luna-eye-z-etui-ladujacym-dla-rozswietlonej-i-odswiezonej-okolicy-oczu', 377, 32, 22],
-      ['/collections/produkty-do-pielegnacji-ciala/products/depilator-z-nano-szkla-glov', 377, 52, 27],
-      ['/collections/rekawice-do-demakijazu', 286, 20, 14],
+      ['/', 4224, 390, 237, 78, 655, 40, 38, 2],
+      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 2044, 75, 48, 17, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1879, 197, 141, 66, 0, 0, 0, 0],
+      ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 1831, 255, 178, 99, 0, 0, 0, 0],
+      ['/collections/sklep', 1437, 251, 173, 100, 6122, 1, 1, 1],
+      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 1370, 87, 57, 16, 0, 0, 0, 0],
+      ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1101, 57, 31, 13, 0, 0, 0, 0],
+      ['/pages/iconic-mitt-glov-wielopaki', 1030, 123, 65, 29, 0, 0, 0, 0],
+      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 867, 78, 47, 22, 0, 0, 0, 0],
+      ['/products/2w1-dysk-z-raczka-do-mycia-i-masazu-ciala', 814, 7, 1, 0, 0, 0, 0, 0],
+      ['/products/biodegradowalna-szczotka-do-wlosow-glov-biobased-brush', 647, 77, 37, 18, 0, 0, 0, 0],
+      ['/products/depilator-z-nano-szkla-glov', 457, 30, 17, 13, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-ciala/products/depilator-z-nano-szkla-glov', 419, 63, 31, 18, 0, 0, 0, 0],
+      ['/products/platki-led-luna-eye-z-etui-ladujacym-dla-rozswietlonej-i-odswiezonej-okolicy-oczu', 394, 36, 25, 10, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-ciala/products/pumeks-i-depilator-z-nano-szkla-2w1', 305, 33, 15, 6, 0, 0, 0, 0],
     ]
   }
 };
@@ -1206,43 +1762,125 @@ function shortName(path) {
   return path.length > 40 ? path.substring(0, 38) + '…' : path;
 }
 
-function bar(pct, color, maxPct) {
-  const w = Math.min(100, (pct / maxPct) * 100);
-  return `<div style="display:flex;align-items:center;gap:6px">
-    <div style="width:80px;height:7px;background:#eee;border-radius:3px;flex-shrink:0">
-      <div style="width:${w}%;height:7px;background:${color};border-radius:3px"></div>
-    </div>
-    <span style="font-weight:700;color:#333">${pct.toFixed(1)}%</span>
-  </div>`;
+function bar(pct, color, scale, faded) {
+  const w = Math.min(100, pct / scale * 100);
+  const op = faded ? 0.45 : 1;
+  return `<div style="display:flex;align-items:center;gap:7px;opacity:${op}">
+    <div style="flex:1;height:${faded?5:7}px;background:var(--surface);border-radius:4px;overflow:hidden;max-width:78px">
+      <div style="width:${w}%;height:100%;background:${color}"></div></div>
+    <span style="font-size:${faded?'11px':'12px'};color:${color};font-weight:${faded?500:700};min-width:40px">${pl1(pct)}%</span></div>`;
+}
+
+function pl1(x) { return x.toFixed(1).replace('.', ','); }
+
+let CURRENT_MONTH = '08';
+let FUNNEL_MODE = 'both'; // 'human' | 'both' | 'raw'
+
+function setFunnelMode(mode) {
+  FUNNEL_MODE = mode;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+  const table = document.getElementById('funnel-table');
+  table.classList.toggle('hide-raw', mode === 'human');
+  table.classList.toggle('hide-hum', mode === 'raw');
+  table.classList.toggle('mode-raw', mode === 'raw');
+  renderFunnel();
 }
 
 function switchMonth(m) {
+  CURRENT_MONTH = m;
   document.querySelectorAll('.month-tab').forEach(t => t.classList.toggle('active', t.dataset.month === m));
-  const d = MONTHS[m];
-  document.getElementById('month-label-title').textContent = 'Shopify sessions — ' + d.label;
+  renderFunnel();
+}
+
+function renderFunnel() {
+  const d = MONTHS[CURRENT_MONTH];
+  document.getElementById('month-label-title').textContent = 'Shopify sessions · All traffic vs No-bot traffic — ' + d.label;
   const tbody = document.getElementById('funnel-body');
   tbody.innerHTML = '';
+
+  const commercialRows = d.rows.filter(r => !isNonCommercial(r[0]));
+
+  // Ranking wg Zakup% (completed ÷ sesje) — osobno dla all-traffic i no-bot.
+  // To jest zdanie WEWNĄTRZ własnej populacji (pozycja wśród tych samych 15 wejść), dlatego jest porównywalne
+  // między wierszami — w przeciwieństwie do Conversion Index, który dzieli przez ruchomą średnią całego sklepu.
+  const crOf = ([path, hSess, hAtc, hChk, hBuy, bSess, bAtc, bChk, bBuy]) => {
+    const rawSess = hSess + bSess, rawBuy = hBuy + bBuy;
+    return { path, rawCR: rawSess > 0 ? rawBuy / rawSess : -1, humCR: hSess > 0 ? hBuy / hSess : -1 };
+  };
+  const rankAllMap = {}, rankHumMap = {};
+  commercialRows.map(crOf).sort((a, b) => b.rawCR - a.rawCR).forEach((r, i) => rankAllMap[r.path] = i + 1);
+  commercialRows.map(crOf).sort((a, b) => b.humCR - a.humCR).forEach((r, i) => rankHumMap[r.path] = i + 1);
+
+  const col = (v, hi, mid) => v >= hi ? 'var(--g-d)' : v >= mid ? 'var(--o)' : 'var(--r)';
+  const colBuy = (v) => v >= 3 ? 'var(--g-d)' : v >= 1.5 ? 'var(--o)' : 'var(--r)';
+  const ciBadge = (c, big) => c.label === '—'
+    ? '<span style="color:var(--faint)">—</span>'
+    : `<span class="ci-val ${c.cls}" style="font-size:${big?'13px':'11.5px'};${big?'':'opacity:.62'}">${c.label}</span>`;
+
   let rank = 1;
-  d.rows.forEach(([path, sess, atc, chk]) => {
-    if (isNonCommercial(path)) return;
-    const atcPct = atc / sess * 100;
-    const chkPct = chk / sess * 100;
+  commercialRows.forEach(([path, hSess, hAtc, hChk, hBuy, bSess, bAtc, bChk, bBuy]) => {
+    const rawSess = hSess + bSess, rawAtc = hAtc + bAtc, rawChk = hChk + bChk, rawBuy = hBuy + bBuy;
+    const botPct = rawSess > 0 ? (bSess / rawSess * 100) : 0;
+    const hAtcPct = hSess > 0 ? hAtc / hSess * 100 : 0;
+    const hChkPct = hSess > 0 ? hChk / hSess * 100 : 0;
+    const hBuyPct = hSess > 0 ? hBuy / hSess * 100 : 0;
+    const rAtcPct = rawSess > 0 ? rawAtc / rawSess * 100 : 0;
+    const rChkPct = rawSess > 0 ? rawChk / rawSess * 100 : 0;
+    const rBuyPct = rawSess > 0 ? rawBuy / rawSess * 100 : 0;
+
     const ciKey = getCIKey(path);
-    const ci = CI_MAP[ciKey] || CI_MAP['other'];
-    const bgRow = rank % 2 === 0 ? '#fafafa' : '#fff';
-    const atcColor = atcPct >= 10 ? '#2e7d32' : atcPct >= 6 ? '#f57c00' : '#e53935';
-    const chkColor = chkPct >= 7 ? '#2e7d32' : chkPct >= 4 ? '#f57c00' : '#e53935';
-    const ciCell = ci.label === '—'
-      ? `<span style="color:#ccc">—</span>`
-      : `<span class="ci-val ${ci.cls}" style="font-size:13px">${ci.label}</span>`;
-    tbody.innerHTML += `<tr style="background:${bgRow};border-bottom:1px solid #f0f0f0">
-      <td style="padding:9px 12px;color:#999;font-size:11px">${rank}</td>
-      <td style="padding:9px 12px;font-weight:600;font-size:12px;color:#1a1a2e">${shortName(path)}<br><span style="font-size:10px;color:#aaa;font-weight:400">${path.length > 48 ? path.substring(0, 46)+'…' : path}</span></td>
-      <td style="padding:9px 12px;text-align:right;font-size:12px;color:#555">${sess.toLocaleString('pl-PL')}</td>
-      <td style="padding:9px 12px">${bar(atcPct, atcColor, 20)}</td>
-      <td style="padding:9px 12px">${bar(chkPct, chkColor, 15)}</td>
-      <td style="padding:9px 12px;text-align:center">${ciCell}</td>
-    </tr>`;
+    const ciH = CI_MAP[ciKey] || CI_MAP['other'];
+
+    const rankAll = rankAllMap[path];
+    const rankHum = rankHumMap[path];
+    const delta = rankAll - rankHum; // >0 = pozycja poprawia się po odsianiu botów, <0 = pogarsza się
+    const deltaBadge = delta >= 3
+      ? `<span style="font-size:10px;color:var(--g-d);font-weight:700;margin-left:5px">↑${delta}</span>`
+      : delta <= -3
+        ? `<span style="font-size:10px;color:var(--r);font-weight:700;margin-left:5px">↓${Math.abs(delta)}</span>`
+        : '';
+
+    if (bSess === 0) {
+      // Brak botów na tym wejściu — ALL i NO-BOT byłyby identyczne, więc jeden wiersz zamiast dwóch bliźniaczych.
+      tbody.innerHTML += `<tr style="background:var(--bg);border-top:2px solid var(--line);border-bottom:1px solid var(--line)">
+        <td style="padding:10px 12px;color:var(--faint);font-size:11px;vertical-align:middle;border-right:1px solid var(--surface)">${rank}</td>
+        <td style="padding:10px 12px;vertical-align:middle;border-right:1px solid var(--surface)">
+          <div style="font-weight:600;font-size:12px;color:var(--ink)">${shortName(path)}</div>
+          <div style="font-size:10px;color:var(--faint)">${path.length > 46 ? path.substring(0,44)+'…' : path}</div>
+          <div style="font-size:10px;color:var(--faint);margin-top:4px">bez botów</div>
+        </td>
+        <td style="padding:7px 12px"></td>
+        <td style="padding:7px 12px;text-align:right;font-size:13px;color:var(--ink);font-weight:700">${hSess.toLocaleString('pl-PL')}</td>
+        <td style="padding:7px 12px">${bar(hAtcPct, col(hAtcPct,10,6), 20, false)}</td>
+        <td style="padding:7px 12px">${bar(hChkPct, col(hChkPct,7,4), 15, false)}</td>
+        <td style="padding:7px 12px">${bar(hBuyPct, colBuy(hBuyPct), 8, false)}</td>
+        <td style="padding:7px 12px;text-align:center"><span style="font-size:13px;font-weight:700;color:var(--ink)">#${rankHum}</span><div style="margin-top:2px">${ciBadge(ciH,true)}</div></td>
+      </tr>`;
+    } else {
+      // WIERSZ 1 — All traffic (szary, referencyjny)
+      tbody.innerHTML += `<tr class="r-all" style="background:var(--surface);border-top:2px solid var(--line)">
+        <td rowspan="2" style="padding:10px 12px;color:var(--faint);font-size:11px;vertical-align:middle;border-right:1px solid var(--surface)">${rank}</td>
+        <td rowspan="2" style="padding:10px 12px;vertical-align:middle;border-right:1px solid var(--surface)">
+          <div style="font-weight:600;font-size:12px;color:var(--ink)">${shortName(path)}</div>
+          <div style="font-size:10px;color:var(--faint)">${path.length > 46 ? path.substring(0,44)+'…' : path}</div>
+          <div style="font-size:10px;color:var(--r);margin-top:4px">${pl1(botPct)}% botów</div>
+        </td>
+        <td style="padding:7px 12px"><span style="font-family:ui-monospace,monospace;font-size:10px;color:var(--faint);background:var(--surface);padding:2px 7px;border-radius:4px">ALL TRAFFIC</span></td>
+        <td style="padding:7px 12px;text-align:right;font-size:12px;color:var(--faint)">${rawSess.toLocaleString('pl-PL')}</td>
+        <td style="padding:7px 12px">${bar(rAtcPct, col(rAtcPct,10,6), 20, true)}</td>
+        <td style="padding:7px 12px">${bar(rChkPct, col(rChkPct,7,4), 15, true)}</td>
+        <td style="padding:7px 12px">${bar(rBuyPct, colBuy(rBuyPct), 8, true)}</td>
+        <td style="padding:7px 12px;text-align:center"><span style="font-size:12px;color:var(--faint);font-weight:600">#${rankAll}</span></td>
+      </tr>
+      <tr class="r-hum" style="background:var(--bg);border-bottom:1px solid var(--line)">
+        <td style="padding:7px 12px"><span style="font-family:ui-monospace,monospace;font-size:10px;color:var(--g-d);background:var(--g-soft);padding:2px 7px;border-radius:4px;font-weight:600">NO-BOT</span></td>
+        <td style="padding:7px 12px;text-align:right;font-size:13px;color:var(--ink);font-weight:700">${hSess.toLocaleString('pl-PL')}</td>
+        <td style="padding:7px 12px">${bar(hAtcPct, col(hAtcPct,10,6), 20, false)}</td>
+        <td style="padding:7px 12px">${bar(hChkPct, col(hChkPct,7,4), 15, false)}</td>
+        <td style="padding:7px 12px">${bar(hBuyPct, colBuy(hBuyPct), 8, false)}</td>
+        <td style="padding:7px 12px;text-align:center"><span style="font-size:13px;font-weight:700;color:var(--ink)">#${rankHum}</span>${deltaBadge}<div style="margin-top:2px">${ciBadge(ciH,true)}</div></td>
+      </tr>`;
+    }
     rank++;
   });
 }
