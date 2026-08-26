@@ -20,12 +20,28 @@ body{display:flex;flex-direction:column;height:100vh;overflow:hidden}
 .nav a{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:12px;font-weight:600;color:#3a4250;text-decoration:none;border:1.5px solid var(--line);border-radius:999px;padding:6px 13px;transition:.15s;white-space:nowrap;background:#fff}
 .nav a:hover{border-color:var(--vio);color:var(--vio)}
 .nav a.on{background:var(--vio);border-color:var(--vio);color:#fff}
+.dd{position:relative;display:inline-block}
+.dd-btn{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:12px;font-weight:600;color:#3a4250;text-decoration:none;border:1.5px solid var(--line);border-radius:999px;padding:6px 13px;transition:.15s;white-space:nowrap;background:#fff;cursor:pointer}
+.dd-btn:hover{border-color:var(--vio);color:var(--vio)}
+.dd-btn.on{background:var(--vio);border-color:var(--vio);color:#fff}
+.dd-menu{display:none;position:absolute;top:calc(100% + 6px);left:0;background:#fff;border:1.5px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(26,31,43,.12);padding:6px;min-width:230px;z-index:100}
+.dd.open .dd-menu{display:block}
+.dd-menu a{display:block;font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:12px;font-weight:600;color:#3a4250;text-decoration:none;border:0;border-radius:8px;padding:8px 12px;white-space:nowrap}
+.dd-menu a:hover{background:#f3f0ff;color:var(--vio)}
 .frame{flex:1 1 auto;min-height:0;width:100%;border:0;background:#fff}
 @media(max-width:700px){.nav{padding:8px 10px}.nav .brand{width:100%}}
 </style></head><body>
 <div class="nav">
   <div class="brand">Dobry Dach <span>· jeden widok</span></div>
   <a href="AUTOMATYZACJE_PROJEKT.html" data-t="Automaty" class="on">⚙️ Automaty</a>
+  <div class="dd" id="ddPortfel">
+    <a href="PORTFEL_RAPORTOW.html" data-t="Portfel" class="dd-btn">📊 Portfel raportów ▾</a>
+    <div class="dd-menu">
+      <a href="PORTFEL_RAPORTOW.html#n4" data-t="N4">🧭 N4 — dziennik WZ</a>
+      <a href="PORTFEL_RAPORTOW.html#a6" data-t="A6">📈 A6 — stan PH</a>
+      <a href="PORTFEL_RAPORTOW.html#struktura" data-t="Struktura">🔗 struktura danych</a>
+    </div>
+  </div>
   <a href="DOBRY_DACH_KNOWLEDGE_BOARD.html" data-t="Status">🧠 Status projektu</a>
   <a href="zalozenia-projektu.html" data-t="Zalozenia">📋 Założenia projektu</a>
   <a href="proces-roboczy.html" data-t="Proces">⚙️ Proces roboczy</a>
@@ -42,10 +58,24 @@ document.querySelectorAll('.nav a').forEach(function(a){
   a.addEventListener('click', function(e){
     e.preventDefault();
     document.querySelectorAll('.nav a').forEach(function(x){x.classList.remove('on')});
+    document.querySelectorAll('.dd-btn').forEach(function(x){x.classList.remove('on')});
     a.classList.add('on');
     f.src = a.getAttribute('href');
+    document.querySelectorAll('.dd').forEach(function(d){d.classList.remove('open')});
     window.scrollTo(0,0);
   });
+});
+document.querySelectorAll('.dd-btn').forEach(function(btn){
+  btn.addEventListener('click', function(e){
+    e.preventDefault();
+    var dd = btn.parentElement;
+    var wasOpen = dd.classList.contains('open');
+    document.querySelectorAll('.dd').forEach(function(d){d.classList.remove('open')});
+    if(!wasOpen){ dd.classList.add('open'); }
+  });
+});
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.dd')){ document.querySelectorAll('.dd').forEach(function(d){d.classList.remove('open')}); }
 });
 </script>
 </body></html>

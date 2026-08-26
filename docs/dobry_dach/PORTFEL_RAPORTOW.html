@@ -1,0 +1,114 @@
+<!doctype html><html lang="pl"><head>
+<style id="sg">
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+:root{--sg-vio:#7c5cff;--sg-ink:#1a1f2b;--sg-mut:#667085;--sg-line:#e4e7ec}
+body{font-family:'Space Grotesk',-apple-system,'Segoe UI',Roboto,Arial,sans-serif !important;color:var(--sg-ink);background:#fff}
+h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;letter-spacing:-.2px}
+code,pre,.mono,label,.tab,.badge,.go,.meta,.cnt,th{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+a{color:var(--sg-vio)}
+</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dobry Dach — Portfel raportów</title>
+<style>
+:root{--ink:#16181d;--mut:#667085;--line:#e4e7ec;--vio:#7c5cff;--green:#2e7d4f;--red:#b42318;--amber:#9a6b00}
+*{box-sizing:border-box}
+body{font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:#fff;color:var(--ink);margin:0;padding:30px 22px 70px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.3px}
+.sub{color:var(--mut);font-size:14px;margin:0 0 20px}
+.legend{display:flex;gap:14px;font-size:12.5px;font-weight:600;margin-bottom:18px;flex-wrap:wrap}
+.badge{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 11px;white-space:nowrap}
+.ok{background:#e7f6ec;color:#1d7a3f;border:1px solid #bce6cc}
+.wip{background:#fff8c5;color:#7a5b00;border:1px solid #f2ddb0}
+.blk{background:#ffe9e7;color:#b42318;border:1px solid #f5c6c0}
+h2{font-size:19px;margin:34px 0 12px;border-bottom:2px solid #eee;padding-bottom:8px}
+h3{font-size:16px;margin:20px 0 8px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+th{text-align:left;background:#f6f8fa;padding:8px 12px;border-bottom:2px solid var(--line);font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:#57606a}
+td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
+code{background:#f3f4f7;border:1px solid #e4e7ec;border-radius:5px;padding:1px 6px;font-size:12px;font-family:'IBM Plex Mono',monospace}
+.card{border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:#fff;margin-bottom:16px}
+.card .h{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.card .h .id{background:#111;color:#fff;border-radius:9px;padding:4px 12px;font-weight:800;font-size:14px}
+.card .h h3{margin:0;font-size:17px}
+.card .h .badge{margin-left:auto}
+.flow{background:#f6f8fa;border:1px dashed #ccd3dc;border-radius:10px;padding:10px 14px;font-size:12.8px;font-family:ui-monospace,Menlo,monospace;color:#333;margin:8px 0}
+.foot{color:#98a2b3;font-size:11.5px;margin-top:30px;text-align:center;border-top:1px solid #eee;padding-top:12px}
+.luka{background:#fff8f6;border:1px solid #f5c6c0;border-radius:10px;padding:10px 14px;font-size:13px;margin:10px 0}
+.ok-cell{color:var(--green);font-weight:700}
+.warn-cell{color:var(--amber);font-weight:700}
+@media(max-width:700px){table{font-size:12px}td,th{padding:6px 8px}}
+</style></head><body><div class="wrap">
+<h1>📊 Portfel raportów — Dobry Dach</h1>
+<p class="sub">Każda pozycja raportu zmapowana na konkretne pole w bazie Subiekt (Kopia_2024_KOMANDYTOWA). Wszystko zweryfikowane na danych 26.08, nie z pamięci. Legenda: ✅ potwierdzone · ⚠️ do domknięcia · 🔴 brak danych.</p>
+<div class="legend">
+<span class="badge ok">✅ potwierdzone na bazie</span>
+<span class="badge wip">⚠️ do domknięcia</span>
+<span class="badge blk">🔴 brak / blokada</span>
+</div>
+
+<h2 id="n4">🧭 Raport N4 — dziennik wychodzących WZ (pierwsze zadanie)</h2>
+<div class="card">
+<div class="h"><span class="id">N4</span><h3>Raport dzienny WZ-tek z magazynu → do wszystkich PH</h3><span class="badge ok">✅ specyfikacja gotowa</span></div>
+<p class="sub" style="margin-bottom:10px"><b>Cel:</b> każdego dnia lista WZ, które wyszły z magazynu — per WZ: klient, kategoria (czyli PH), czy ma powiązane ZK. PH widzi swoją robotę, firma widzi luki w procedurze.</p>
+<table>
+<tr><th>Pozycja raportu</th><th>Źródło w bazie (tabela.kolumna)</th><th>Warunek</th><th>Status</th></tr>
+<tr><td><b>WZ</b> (numer dokumentu)</td><td><code>dok__Dokument.dok_NrPelny</code></td><td><code>dok_Typ = 11</code> (WZ)</td><td class="ok-cell">✅ 19 477 WZ</td></tr>
+<tr><td><b>Data wystawienia</b></td><td><code>dok__Dokument.dok_DataWyst</code></td><td>= dzień raportu</td><td class="ok-cell">✅</td></tr>
+<tr><td><b>Klient</b></td><td><code>dok__Dokument.dok_OdbiorcaId</code> → <code>kh__Kontrahent.kh_Id</code> (nazwa: <code>kh_Nazwisko</code>)</td><td>JOIN po <code>dok_OdbiorcaId</code></td><td class="ok-cell">✅ 18 392/19 477 ma klienta</td></tr>
+<tr><td><b>Kategoria → PH</b></td><td><code>dok__Dokument.dok_KatId</code> → <code>sl_Kategoria.kat_Nazwa</code> + <code>kat_Podtytul</code></td><td>JOIN po <code>dok_KatId</code>; kat_Nazwa = kod (CD, MR…), kat_Podtytul = imię nazwisko</td><td class="ok-cell">✅ mapa: CD=Dariusz Czapiewski, MR=Rafał Miszewski, LR=Radek Laskowski…</td></tr>
+<tr><td><b>Czy ma ZK</b></td><td>EXISTS <code>dok__Dokument</code> zk WHERE <code>zk.dok_DoDokId = WZ.dok_Id</code> AND <code>zk.dok_Typ = 16</code></td><td>powiązanie siedzi na ZK (nie na WZ!)</td><td class="ok-cell">✅ 6 648 powiązań ZK→WZ</td></tr>
+</table>
+<div class="flow">SELECT w.dok_NrPelny, k.kh_Nazwisko, s.kat_Nazwa, CASE WHEN EXISTS(SELECT 1 FROM dok__Dokument zk WHERE zk.dok_Typ=16 AND zk.dok_DoDokId=w.dok_Id) THEN 'ma ZK' ELSE 'bez ZK' END
+FROM dok__Dokument w
+JOIN kh__Kontrahent k ON k.kh_Id = w.dok_OdbiorcaId
+JOIN sl_Kategoria s ON s.kat_Id = w.dok_KatId
+WHERE w.dok_Typ = 11 AND w.dok_DataWyst = @dzis</div>
+</div>
+
+<h2 id="a6">📈 Raport A6 — stan PH per klient (specyfikacja z wizyty 25.08)</h2>
+<div class="card">
+<div class="h"><span class="id">A6</span><h3>Stan na dzień, sumarycznie do dnia — aktywne transakcje per PH</h3><span class="badge wip">⚠️ 2 pozycje do domknięcia</span></div>
+<p class="sub" style="margin-bottom:10px"><b>Cel:</b> każdy PH widzi swoje aktywne transakcje (łącznie z zakończoną budową bez zapłaty): pierwotna wartość ZK, % realizacji, wydane towary, FV zaliczki, wpłaty. Podział per klient.</p>
+<table>
+<tr><th>Pozycja raportu</th><th>Źródło w bazie (tabela.kolumna)</th><th>Warunek</th><th>Status</th></tr>
+<tr><td><b>PH (handlowiec)</b></td><td><code>sl_Kategoria.kat_Nazwa</code> / <code>kat_Podtytul</code></td><td>kategoria dokumentu = kod PH</td><td class="ok-cell">✅</td></tr>
+<tr><td><b>Klient</b></td><td><code>dok_OdbiorcaId</code> → <code>kh__Kontrahent</code></td><td>JOIN</td><td class="ok-cell">✅</td></tr>
+<tr><td><b>Pierwotna wartość ZK</b></td><td>SUM(<code>dok_Pozycja.ob_WartNetto</code>)</td><td><code>ob_DokHanId = ZK.dok_Id</code> (pozycje handlowe)</td><td class="ok-cell">✅ np. ZK 133/MAG: 308 429 zł / 17 poz.</td></tr>
+<tr><td><b>% realizacji</b></td><td>SUM(koszt WZ) ÷ wartość ZK × 100</td><td>koszt WZ = SUM(<code>ob_WartMag</code>) na pozycjach WZ</td><td class="ok-cell">✅ koszt = ob_WartMag (WZ: 1 368 netto / 1 054 koszt)</td></tr>
+<tr><td><b>Wartość wydanych towarów</b></td><td>SUM(<code>dok_Pozycja.ob_WartNetto</code>)</td><td><code>ob_DokMagId = WZ.dok_Id</code> (pozycje magazynowe)</td><td class="ok-cell">✅ 19 474 WZ przez ob_DokMagId</td></tr>
+<tr><td><b>Suma FV zaliczek</b></td><td><code>dok_Typ = 1</code> (FZ)</td><td><b>powiązanie FZ→ZK nie znalezione</b> — FZ nie ma dok_DoDokId; transakcja = 0; FZ→PZ przez pozycję (osobny łańcuch)</td><td class="warn-cell">⚠️ do domknięcia — pytanie do klienta: jak FZ wpiąć w ZK?</td></tr>
+<tr><td><b>Suma wpłat</b></td><td><code>nz_FinanseSplata.nzs_WartoscSplatyPLN</code></td><td>wpłaty na długi; <code>nzs_IdDlugu</code> → rozrachunek → dokument (tabela długów nie znaleziona wprost)</td><td class="warn-cell">⚠️ do domknięcia — ścieżka wpłata→dokument</td></tr>
+</table>
+<div class="luka"><b>🔍 2 luki do domknięcia (nie zgaduję):</b><br>
+1) <b>FV zaliczkowa → ZK:</b> FZ (typ 1) nie ma wskaźnika do ZK w <code>dok_DoDokId</code>, transakcja = 0, a pozycje FZ wskazują PZ (typ 10, przyjęcie — zaliczka na zakup towaru). Czyli FZ na realizację zamówienia wisi w powietrzu — trzeba zapytać klienta, jak to wpinają, albo szukać dalej (pole na FZ?).<br>
+2) <b>Wpłata → dokument:</b> <code>nz_FinanseSplata.nzs_IdDlugu</code> → dług, ale tabeli długów nie ma wprost (tylko <code>zd_Rozrachunek</code>/<code>zw_Rozrachunek</code> z zdr_IdRozrachunku/zdr_IdZadania). Ścieżka do dopięcia.</div>
+</div>
+
+<h2 id="struktura">🔗 Struktura danych (odkryta 26.08, potwierdzona)</h2>
+<div class="card">
+<table>
+<tr><th>Dokument</th><th>Typ</th><th>Pozycje przez</th><th>Wartość</th><th>Koszt</th></tr>
+<tr><td>ZK (zamówienie klienta = oferta)</td><td><code>dok_Typ = 16</code></td><td><code>ob_DokHanId</code> (handlowe)</td><td><code>ob_WartNetto</code></td><td>—</td></tr>
+<tr><td>WZ (wydanie)</td><td><code>dok_Typ = 11</code></td><td><code>ob_DokMagId</code> (magazynowe)</td><td><code>ob_WartNetto</code></td><td><b><code>ob_WartMag</code></b> ← paliwo A3 i % realizacji</td></tr>
+<tr><td>FZ (faktura zaliczkowa)</td><td><code>dok_Typ = 1</code></td><td><code>ob_DokHanId</code>, wskazuje PZ przez <code>ob_DokMagId</code></td><td><code>ob_WartNetto</code></td><td>—</td></tr>
+<tr><td>FV (faktura sprzedaży)</td><td><code>dok_Typ = 2</code></td><td><code>ob_DokHanId</code></td><td><code>ob_WartNetto</code></td><td><code>ob_WartMag</code></td></tr>
+<tr><td>PZ (przyjęcie)</td><td><code>dok_Typ = 10</code></td><td><code>ob_DokMagId</code></td><td><code>ob_WartNetto</code></td><td>—</td></tr>
+</table>
+<div class="flow">Powiązania: ZK → WZ przez <code>dok_DoDokId</code> na ZK (6 648) · WZ → FV przez <code>dok_DoDokId</code> na WZ (16 834) · FZ → PZ przez pozycję <code>ob_DokMagId</code> (7 011) · FZ → ZK: NIEZNANE ⚠️</div>
+</div>
+
+<h2>✅ Co to odblokowuje</h2>
+<div class="card">
+<table>
+<tr><th>Automat</th><th>Mapa daje</th></tr>
+<tr><td><b>N4</b> (dziennik WZ)</td><td>komplet pól — gotowy do napisania skryptu</td></tr>
+<tr><td><b>A6</b> (stan PH)</td><td>4 z 6 pozycji zmapowane; brakuje FZ→ZK i wpłata→dokument</td></tr>
+<tr><td><b>A3</b> (marża)</td><td><code>ob_WartMag</code> = koszt — marża = (ob_WartNetto − ob_WartMag) / ob_WartNetto</td></tr>
+<tr><td><b>A5</b> (WZ→info do PH)</td><td>to samo powiązanie ZK→WZ</td></tr>
+<tr><td><b>A7</b> (rozjazdy)</td><td>porównanie ob_WartNetto ZK vs WZ per powiązanie</td></tr>
+</table>
+</div>
+
+<div class="foot">Dobry Dach · Portfel raportów · 2026-08-26 · źródła: baza Kopia_2024_KOMANDYTOWA (weryfikacja live), notatki Jura 25.08, AUTOMATYZACJE_PROJEKT.html</div>
+</div></body></html>
