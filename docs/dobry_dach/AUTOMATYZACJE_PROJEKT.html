@@ -91,6 +91,22 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 </table>
 <div class="flow">Ścieżka najkrótsza do pierwszego działającego automatu: Z0 (host + konto read-only) → A6 na produkcji → A3 → A4 w trybie raportu</div>
 
+<h2>🛠️ Rekomendacja techniczna — co jest potrzebne (do rozmowy dziś)</h2>
+<p class="sub">Kolejność = po tym, co blokuje start. Wszystko poniżej to konkretne pozycje do odhaczenia — nie ma tu rzeczy „miłych do posiadania”.</p>
+<table>
+<tr><th>#</th><th>Co jest potrzebne</th><th>Typ</th><th>Status</th></tr>
+<tr><td>1</td><td><b>VPS Linux</b> + Python + pymssql + .env (TECH_SETUP_WDROZENIOWY.md)</td><td>infra</td><td>📋 projekt gotowy — <b>czeka decyzja: gdzie stawiamy</b></td></tr>
+<tr><td>2</td><td><b>Konto SQL read-only <code>dd_auto</code></b> (SELECT) — u klienta, na obu bazach</td><td>infra</td><td>⏳ czeka klient — <b>blokuje A0, A2, A3, A5, A6, A7</b></td></tr>
+<tr><td>3</td><td><b>Baza JAWNA</b> — dostęp SELECT (nie tylko kopia): stamtąd wychodzą faktury do klienta</td><td>dane</td><td>⏳ czeka klient — <b>bez niej A6 pokaże pół obrazu</b></td></tr>
+<tr><td>4</td><td><b>Tabela: kategoria PH (CD, MR, LR…) → osoba → mail/telefon</b></td><td>dane</td><td>⏳ czeka klient — <b>blokuje A5</b></td></tr>
+<tr><td>5</td><td>Godzina + odbiorcy raportu A6 (propozycja: <b>7:00</b>, tomekw@ + tomekj@)</td><td>decyzja</td><td>⏳ czeka Tomek</td></tr>
+<tr><td>6</td><td>Publikacja aplikacji OAuth (stały token — 1 klik w Cloud Console)</td><td>decyzja</td><td>⏳ czeka Tomek</td></tr>
+<tr><td>7</td><td>Kanał wiadomości A5 (mail / WhatsApp)</td><td>decyzja</td><td>⏳ z tabelą adresów</td></tr>
+<tr><td>8</td><td>Licencja Sfera (zapis do Subiekta) — dotyczy wyłącznie A2</td><td>decyzja</td><td>⏳ do rozstrzygnięcia — <b>A2 jedyny automat piszący</b></td></tr>
+<tr><td>9</td><td>Odpowiedzi na 23 pytania-blokery (pytania_robocze.html)</td><td>wiedza</td><td>✅ <b>17/23 odpowiedziane (25.08)</b> — 6 zostało w runbooku</td></tr>
+</table>
+<div class="flow">Minimalny zestaw do startu A6: #1 (VPS) + #2 (dd_auto) + #3 (baza jawna) + #5 (godzina/odbiorcy). Reszta dobudowywana bez przestojów.</div>
+
 <h2>A0 — Rejestr zapytań + follow-up</h2>
 <div class="aut"><div class="card">
 <div class="h"><span class="id">A0</span><h3>Rejestr zapytań = baza klientów</h3><span class="badge blk">🔴 blokowane</span></div>
@@ -266,19 +282,5 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 <tr><td>A7</td><td>A6 (finalizacje)</td><td>A2, A5</td></tr>
 </table>
 
-<h2>Co jest potrzebne, żeby WSZYSTKIE działały (wymagania)</h2>
-<table>
-<tr><th>#</th><th>Wymaganie</th><th>Typ</th><th>Status</th></tr>
-<tr><td>1</td><td>VPS Linux + Python + pymssql + .env (TECH_SETUP)</td><td>infra</td><td>📋 projekt gotowy</td></tr>
-<tr><td>2</td><td>Konto SQL read-only <code>dd_auto</code> (SELECT) — u klienta</td><td>infra</td><td>⏳ czeka klient</td></tr>
-<tr><td>3</td><td>Godzina + odbiorcy raportu A6 (propozycja: 7:00, tomekw@ + tomekj@)</td><td>decyzja</td><td>⏳ czeka Tomek</td></tr>
-<tr><td>4</td><td>Publikacja aplikacji OAuth (stały token — 1 klik w Cloud Console)</td><td>decyzja</td><td>⏳ czeka Tomek</td></tr>
-<tr><td>5</td><td>Baza <b>JAWNA</b> — dostęp SELECT (nie tylko kopia): faktury do klienta wychodzą stamtąd</td><td>dane</td><td>⏳ czeka klient</td></tr>
-<tr><td>6</td><td>Tabela: kategoria PH (CD, MR, LR…) → osoba → mail/telefon</td><td>dane</td><td>⏳ czeka klient — blokuje A5</td></tr>
-<tr><td>7</td><td>Licencja Sfera (zapis do Subiekta) — dotyczy wyłącznie A2</td><td>decyzja</td><td>⏳ do rozstrzygnięcia</td></tr>
-<tr><td>8</td><td>Odpowiedzi na 23 pytania-blokery (pytania_robocze.html)</td><td>wiedza</td><td>⏳ jutro z Tomkiem</td></tr>
-<tr><td>9</td><td>Kanał wiadomości A5 (mail / WhatsApp)</td><td>decyzja</td><td>⏳ z odpowiedziami</td></tr>
-</table>
-
-<div class="foot">Dobry Dach · projekt automatyzacji A0–A7 · 2026-08-17 · źródła: mapa 3 kolumny, STRUKTURA_WEZLOW.json, PROCEDURY_FIRMOWE.md, TECH_SETUP_WDROZENIOWY.md, plik marż 2026-05</div>
+<div class="foot">Dobry Dach · projekt automatyzacji A0–A7 · 2026-08-25 · źródła: mapa 3 kolumny, STRUKTURA_WEZLOW.json, PROCEDURY_FIRMOWE.md, TECH_SETUP_WDROZENIOWY.md, plik marż 2026-05, wizyta 25.08</div>
 </div></body></html>
