@@ -1,0 +1,351 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DESKTOP · Nano-Piękne Nogi — makieta LP kolekcji</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+/* Kolory tla per kategoria kreacji — brand book adcookie 2025:
+   packshot = blekitno-szary · promocja = rozowy · korzysci = bezowy */
+:root{--bordo:#591315;--graf:#2f2f2f;--bez:#e7d7c6;--roz:#ecd8d9;--blekit:#dde5ef;
+ --off:#f7f6f4;--txt:#3a3a3a;--sz:#8b8b8b;--zlt:#e8b21a}
+body{font-family:'Moderat','Jost',-apple-system,'Segoe UI',sans-serif;background:#e9e9ea;color:var(--txt);
+ -webkit-font-smoothing:antialiased;line-height:1.55}
+.scena{max-width:430px;margin:0 auto;background:#fff;position:relative;
+ box-shadow:0 0 60px rgba(0,0,0,.13)}
+.pasek{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #eee;
+ display:flex;align-items:center;justify-content:center;height:52px;gap:8px}
+.pasek b{font-size:17px;letter-spacing:.28em;font-weight:500;color:#111}
+.modul{position:absolute;top:10px;left:100%;margin-left:16px;width:212px;font-size:10px;
+ line-height:1.45;color:#6c6c72;border-left:2px solid #c9c9cf;padding:2px 0 2px 9px;z-index:9}
+.modul b{display:block;font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#3d3d44;
+ letter-spacing:.02em;font-weight:600;margin-bottom:2px}
+.modul i{font-style:normal;text-transform:uppercase;letter-spacing:.12em;font-size:8px;color:#a4a4ad}
+body.bez .modul{display:none}
+section{position:relative}
+.kicker{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:.22em;
+ text-transform:uppercase;color:var(--sz);margin-bottom:12px}
+.kicker i{width:34px;height:1px;background:#b9b9b9;display:block;flex:none}
+h1{font-size:52px;font-weight:300;line-height:1.02;letter-spacing:-.03em;color:#fff}
+.tyt-c{font-size:22px;font-weight:300;text-align:center;color:#1c1c1c;letter-spacing:-.01em}
+.tyt-l{font-size:20px;font-weight:400;color:#1c1c1c;display:flex;align-items:center;gap:12px}
+.tyt-l:before{content:'';width:38px;height:1px;background:#111;flex:none}
+.pod{text-align:center;font-size:13px;color:var(--sz);margin-top:8px;padding:0 22px}
+.btn{display:block;text-align:center;padding:15px 18px;font-size:11.5px;font-weight:500;
+ letter-spacing:.19em;cursor:pointer;border-radius:0}
+.btn.jasny{background:#fff;color:#1c1c1c}
+.btn.ciemny{background:var(--graf);color:#fff}
+.btn.szer{width:100%}
+/* HERO */
+.s-hero{height:530px;display:flex;align-items:flex-start;overflow:hidden}
+.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* tekst bialy u gory — przyciemnienie od gory, kadr czysty na dole */
+.hero-ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,22,18,.62) 0%,rgba(28,22,18,.34) 42%,rgba(28,22,18,.06) 70%,rgba(28,22,18,0) 100%)}
+.s-hero h1{text-shadow:0 1px 24px rgba(30,22,16,.34)}
+.s-hero .hero-tresc p{text-shadow:0 1px 16px rgba(30,22,16,.34)}
+.hero-tresc{position:relative;padding:44px 26px 0;width:100%}
+.hero-tresc .kicker{color:rgba(255,255,255,.86);margin-bottom:16px}
+.hero-tresc .kicker i{background:rgba(255,255,255,.6)}
+.hero-tresc p{color:rgba(255,255,255,.94);font-size:21px;margin:16px 0 0;font-weight:300;line-height:1.35}
+.hero-p2{font-size:16.5px !important;margin-top:10px !important;opacity:.92}
+.hero-tresc .btn{margin-top:26px}
+/* hero na jasnym tle — tekst ciemny */
+.s-hero.ciemny-tekst .hero-ov{background:linear-gradient(180deg,rgba(252,249,246,.93) 0%,rgba(252,249,246,.72) 30%,rgba(252,249,246,.18) 58%,rgba(252,249,246,0) 72%)}
+.s-hero.ciemny-tekst h1{color:#1c1c1c;text-shadow:none}
+.s-hero.ciemny-tekst .hero-tresc p{color:#4a4441}
+.s-hero.ciemny-tekst .kicker{color:#8a7f79}
+.s-hero.ciemny-tekst .kicker i{background:#b6aaa2}
+/* GALERIA */
+.s-gal{padding:46px 16px 44px}
+.gal{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:26px}
+.gk{position:relative;overflow:hidden}
+.gk:first-child{grid-column:1/-1}
+.gk img{width:100%;height:190px;object-fit:cover;display:block}
+.gk:first-child img{height:400px;object-position:center 42%}
+.gk figcaption{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,rgba(0,0,0,.55),rgba(0,0,0,0));
+ color:#fff;font-size:10.5px;letter-spacing:.05em;padding:20px 10px 9px;font-weight:400}
+/* KOLUMNY */
+.s-kol{padding:46px 22px 44px;background:var(--off)}
+.kolumny{display:flex;flex-direction:column;gap:2px;margin-top:26px}
+.kol{background:#fff;padding:22px 20px;display:grid;grid-template-columns:26px 1fr;gap:0 14px}
+.kol-i{grid-row:1/3;color:#c08a8a;font-size:15px;line-height:1.2}
+.kol h4{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:#2b2b2b;font-weight:500;margin-bottom:7px}
+.kol p{font-size:12.5px;color:#6a6a6a;font-weight:300;line-height:1.6}
+.s-ann{background:#1a1e2a;color:#fff;text-align:center;padding:11px 16px;font-size:10.5px;
+ letter-spacing:.11em;font-weight:400}
+.pigulki{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+.pigulki span{border:1px solid #ddd7d1;color:#6a6a6a;font-size:10.5px;letter-spacing:.08em;
+ padding:6px 11px;text-transform:uppercase}
+/* IKONY */
+.s-icons{background:var(--bez);padding:44px 22px 40px}
+.s-icons .tyt-c:empty{display:none}
+.ikony{display:grid;grid-template-columns:1fr 1fr;gap:30px 16px;margin-top:32px}
+.ikona{text-align:center}
+.ik-kolo{width:66px;height:66px;border:1px solid rgba(0,0,0,.16);border-radius:50%;
+ margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#7a5f60}
+.ikona h4{font-size:11px;letter-spacing:.14em;font-weight:500;color:#2b2b2b;margin-bottom:6px}
+.ikona p{font-size:11.5px;color:#6f6265;line-height:1.5;font-weight:300}
+/* LISTING */
+.s-listing{padding:46px 16px 44px}
+.siatka{display:grid;gap:22px 12px;margin-top:26px}
+.siatka.k3{grid-template-columns:1fr 1fr}
+.siatka.k3 .karta:nth-child(3){grid-column:1/-1;display:grid;grid-template-columns:140px 1fr;
+ grid-template-rows:auto auto auto auto;gap:0 16px;background:var(--off);padding:14px;align-content:center}
+.siatka.k3 .karta:nth-child(3) .karta-img{grid-row:1/5;margin-bottom:0;align-self:center;background:#fff}
+.siatka.k3 .karta:nth-child(3) .karta-nazwa{min-height:0;align-self:end}
+.siatka.k3 .karta:nth-child(3) .karta-ocena{margin:8px 0 4px}
+.siatka.k3 .karta:nth-child(3) .karta-cta{margin-top:4px;align-self:start}
+.siatka.k2{grid-template-columns:1fr 1fr}
+.karta{text-decoration:none;color:inherit;display:block}
+.karta-img{position:relative;background:var(--off);aspect-ratio:1;margin-bottom:11px;overflow:hidden}
+.karta-img img{width:100%;height:100%;object-fit:cover;display:block}
+.badge{position:absolute;top:8px;left:8px;background:var(--bordo);color:#fff;font-size:8px;
+ letter-spacing:.14em;padding:4px 8px;z-index:2;font-weight:500}
+.karta-nazwa{font-size:12.5px;line-height:1.4;color:#232323;min-height:35px;font-weight:400}
+.karta-ocena{display:flex;align-items:center;gap:5px;font-size:11px;color:#555;margin:7px 0 5px}
+.karta-ocena span{color:var(--sz)}
+.gw{color:var(--zlt);letter-spacing:.5px;font-size:11px}
+.karta-cena{font-size:15px;color:var(--bordo);margin-bottom:11px;font-weight:500}
+.karta-cena .stara{color:#a9a9a9;text-decoration:line-through;font-size:12px;font-weight:400}
+.karta-cta{background:var(--bordo);color:#fff;text-align:center;padding:12px 6px;font-size:9.5px;
+ letter-spacing:.15em;font-weight:500}
+/* PRZED PO */
+.s-ba{padding:44px 0 46px}
+.ba-full{width:100%;display:block;margin-top:18px}
+.ba{position:relative;margin-top:22px;overflow:hidden;height:380px;user-select:none;cursor:ew-resize}
+.ba img{width:100%;height:380px;object-fit:cover;display:block}
+.ba-b{position:absolute;inset:0;width:50%;overflow:hidden}
+.ba-b img{width:430px;max-width:none}
+.ba-r{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;transform:translateX(-1px)}
+.ba-r span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;
+ background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;
+ font-size:14px;color:#333;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.ba-lp,.ba-pp{position:absolute;bottom:14px;background:rgba(255,255,255,.92);font-size:9px;
+ letter-spacing:.14em;padding:5px 10px;font-weight:500;color:#333}
+.ba-lp{left:14px}.ba-pp{right:14px}
+/* DOUBLE */
+.s-double{display:flex;flex-direction:column}
+.s-double.odwr{flex-direction:column-reverse}
+.dbl-img img{width:100%;height:330px;object-fit:cover;display:block}
+.dbl-img img.pelny{height:auto;object-fit:contain}
+/* dbl-pelny */
+.dbl-txt{padding:38px 26px 42px;background:#fff}
+.dbl-txt h3{font-size:22px;font-weight:300;line-height:1.25;color:#1c1c1c;letter-spacing:-.01em}
+.dbl-txt p{font-size:13.5px;color:#5c5c5c;margin-top:14px;font-weight:300;line-height:1.68}
+.dbl-txt .btn{margin-top:22px}
+.dbl-brak{height:300px;background:repeating-linear-gradient(45deg,#f3f0ec,#f3f0ec 12px,#eeeae5 12px,#eeeae5 24px);
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:26px;
+ text-align:center;font-size:11.5px;color:#8a8078;line-height:1.5}
+.dbl-brak b{font-size:9.5px;letter-spacing:.18em;color:#b3a89f}
+.cechy{margin-top:20px;display:flex;flex-direction:column;gap:15px}
+.cecha{padding-left:15px;border-left:2px solid var(--bez)}
+.cecha h5{font-size:11px;letter-spacing:.13em;font-weight:500;color:#1c1c1c;text-transform:uppercase;margin-bottom:4px}
+.cecha p{font-size:12px;color:#6d6d6d;font-weight:300;line-height:1.5;margin:0}
+.s-ig{background:var(--bez);padding:34px 0 30px}
+.ig-head{padding:0 24px 4px}
+.ig-head h3{font-size:23px;font-weight:300;line-height:1.22;color:#1c1c1c;letter-spacing:-.01em}
+.ig-head p{font-size:12.5px;color:#6f6259;margin-top:10px;font-weight:300;line-height:1.6}
+.ig{position:relative;height:470px;margin-top:10px}
+.ig-prod{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+ height:248px;width:auto;display:block;top:47%}
+.ig-c{position:absolute;width:35%;font-size:9px;line-height:1.4;color:#6f6259}
+.ig-c h5{font-size:10px;letter-spacing:.07em;font-weight:500;color:#2a231e;text-transform:uppercase;
+ margin-bottom:3px;line-height:1.25}
+.ig-c p{font-weight:300;margin:0}
+.ig-c:after{content:'';position:absolute;height:1px;background:#b9a894;top:11px}
+.ig-p1{left:14px;top:16px;text-align:right}
+.ig-p1:after{right:-28px;width:24px}
+.ig-p2{right:14px;top:16px}
+.ig-p2:after{left:-28px;width:24px}
+.ig-p3{left:14px;top:250px;text-align:right}
+.ig-p3:after{right:-24px;width:20px}
+.ig-p4{right:14px;top:250px}
+.ig-p4:after{left:-24px;width:20px}
+.ig-p5{left:50%;transform:translateX(-50%);bottom:0;width:74%;text-align:center}
+.ig-p5:after{display:none}
+.s-por{padding:44px 0 40px}
+.por-scroll{overflow-x:auto;margin-top:22px;padding:0 16px}
+table.por{width:100%;border-collapse:collapse;font-size:11.5px;min-width:360px}
+table.por th{text-align:left;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--sz);
+ font-weight:500;padding:0 8px 9px;border-bottom:1px solid #e6e2de}
+table.por td{padding:13px 8px;border-bottom:1px solid #f0edea;vertical-align:top;color:#5f5f5f;font-weight:300;line-height:1.45}
+.pt-n b{display:block;color:#1c1c1c;font-weight:500;font-size:12px;line-height:1.3}
+.pt-n span{display:block;color:var(--bordo);font-size:12px;font-weight:500;margin-top:3px}
+/* OPINIE + SOCIAL PROOF */
+.s-rev{padding:30px 20px 34px;background:var(--off)}
+.lb{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:26px}
+.lb-i{text-align:center;background:#fff;padding:14px 6px}
+.lb-i b{display:block;font-size:21px;font-weight:500;color:var(--bordo);letter-spacing:-.02em;line-height:1.1}
+.lb-i span{display:block;font-size:9.5px;color:#77706a;letter-spacing:.06em;margin-top:5px;line-height:1.35}
+.s-rev .tyt-l{font-size:17px;margin-bottom:4px}
+.opy{display:flex;gap:10px;overflow-x:auto;padding:16px 0 6px;scroll-snap-type:x mandatory}
+.op{flex:0 0 78%;scroll-snap-align:start;background:#fff;padding:18px 16px 16px;text-align:left}
+.op p{font-size:13px;color:#3f3f3f;font-weight:300;line-height:1.55;margin:8px 0 12px}
+.op-a{font-size:10.5px;color:#8a8a8a;letter-spacing:.04em}
+/* FAQ */
+.s-faq{padding:40px 26px 44px}
+.faq-i{border-bottom:1px solid #ececec}
+.faq-i summary{list-style:none;cursor:pointer;padding:19px 0;font-size:14px;color:#2a2a2a;
+ display:flex;justify-content:space-between;align-items:center;gap:14px;font-weight:400}
+.faq-i summary::-webkit-details-marker{display:none}
+.faq-i summary i{font-style:normal;color:#b3b3b3;font-size:18px;transition:.2s;flex:none}
+.faq-i[open] summary i{transform:rotate(90deg)}
+.faq-i p{font-size:13px;color:#6a6a6a;padding:0 0 19px;font-weight:300;line-height:1.65}
+/* ZAMKNIECIE */
+.s-zam{padding:48px 26px 54px;text-align:center;background:var(--bez)}
+.s-zam h3{font-size:23px;font-weight:300;color:#1c1c1c;line-height:1.25}
+.s-zam p{font-size:13.5px;color:#6f6265;margin:12px 0 24px;font-weight:300}
+.s-zam small{display:block;margin-top:14px;font-size:10.5px;color:#8a7c7e;letter-spacing:.04em}
+.stopka{background:#1c1c1c;color:#8d8d8d;text-align:center;padding:30px 20px;font-size:10px;letter-spacing:.15em}
+.sticky{position:sticky;bottom:0;z-index:40;background:#fff;border-top:1px solid #e8e5e1;
+ display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px}
+.sticky span{font-size:11px;color:#6a6a6a;line-height:1.3}
+.sticky b{color:#1c1c1c;font-size:13px;font-weight:500}
+.sticky a{background:var(--bordo);color:#fff;text-decoration:none;font-size:10.5px;letter-spacing:.14em;
+ padding:13px 18px;font-weight:500;white-space:nowrap}
+/* przelacznik */
+.przel2{top:56px}
+.przel{position:fixed;top:14px;right:14px;z-index:99;background:#fff;border:1px solid #d8d8dc;
+ padding:9px 14px;font-size:11px;cursor:pointer;letter-spacing:.06em;color:#3d3d44;border-radius:2px;
+ box-shadow:0 2px 10px rgba(0,0,0,.09)}
+@media(max-width:900px){.modul{display:none}.przel{display:none}}
+
+/* ——— DESKTOP: ten sam rejestr, szerszy uklad ——— */
+@media(min-width:1000px){
+ body.desktop .scena{max-width:1180px}
+ body.desktop .modul{display:none}
+ /* hero: tekst w lewej kolumnie, kadr pelnoekranowy */
+ body.desktop .s-hero{height:660px}
+ body.desktop .hero-tresc{max-width:560px;padding:0 0 64px 64px}
+ body.desktop h1{font-size:74px}
+ body.desktop .hero-tresc p{font-size:19px}
+ body.desktop .hero-p2{font-size:16px}
+ /* listing: 3 kolumny, Velvet przestaje byc kafelkiem szerokim */
+ body.desktop .s-listing{padding:70px 56px 64px}
+ body.desktop .siatka.k3{grid-template-columns:repeat(3,1fr);gap:34px 26px}
+ body.desktop .siatka.k3 .karta:nth-child(3){grid-column:auto;display:block;background:none;padding:0}
+ body.desktop .siatka.k3 .karta:nth-child(3) .karta-img{margin-bottom:11px}
+ body.desktop .siatka.k2{grid-template-columns:repeat(2,1fr);gap:34px 26px;max-width:760px;margin:26px auto 0}
+ body.desktop .karta-nazwa{font-size:14px;min-height:42px}
+ body.desktop .karta-cena{font-size:17px}
+ body.desktop .karta-cta{font-size:10.5px;padding:14px 6px}
+ /* double: obraz i tekst obok siebie */
+ body.desktop .s-double{flex-direction:row;align-items:stretch}
+ body.desktop .s-double.odwr{flex-direction:row-reverse}
+ body.desktop .s-double>div{flex:1 1 50%}
+ body.desktop .dbl-img img,body.desktop .dbl-brak{height:100%;min-height:440px}
+ body.desktop .dbl-txt{display:flex;flex-direction:column;justify-content:center;padding:56px 64px}
+ body.desktop .dbl-txt h3{font-size:34px}
+ body.desktop .dbl-txt p{font-size:15px}
+ /* reszta sekcji */
+ body.desktop .s-rev{padding:56px 56px 52px}
+ body.desktop .opy{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible}
+ body.desktop .op{flex:auto;padding:26px 24px}
+ body.desktop .lb{max-width:820px;margin:0 auto 34px}
+ body.desktop .lb-i b{font-size:30px}
+ body.desktop .gal{grid-template-columns:repeat(2,1fr);padding:0 56px;gap:16px}
+ body.desktop .gk:first-child{grid-column:span 2}
+ body.desktop .gk:first-child img{height:460px;object-position:center 38%}
+ body.desktop .gk img{height:300px}
+ body.desktop .kolumny{grid-template-columns:repeat(3,1fr);padding:0 56px}
+ body.desktop .s-faq,body.desktop .s-por{padding-left:56px;padding-right:56px}
+ body.desktop table.por{font-size:13.5px}
+ body.desktop .tyt-c{font-size:30px}
+ body.desktop .s-zam{padding:70px 56px 76px}
+ body.desktop .s-zam h3{font-size:32px}
+ body.desktop .s-zam .btn{max-width:340px;margin:0 auto}
+ body.desktop .ba-full{max-width:900px;margin:18px auto 0}
+}
+</style></head><body class="desktop bez">
+<div class="przel">Ukryj / pokaż moduły</div>
+<div class="przel przel2">Mobile / Desktop</div>
+<div class="scena">
+  <div class="pasek"><b>GLOV</b></div>
+  <section data-m="small-banner" class="s-ann"><div class="modul"><b>small-banner</b><i>Otwarcie · Wąski baner</i><br>S1 · Announcement bar. Jedyna sekcja motywu przypisana wprost do stron.</div>Darmowa dostawa od 150 zł · Nano-Piękne Nogi — kolekcja GLOV</section>
+<section data-m="section-hero" class="s-hero"><div class="modul"><b>section-hero</b><i>Otwarcie · Baner otwierający</i><br>S2 · Hero. Kadr GLOV + depilator dołożony przez Antigravity (wariant ai_edit — prawdziwy packshot, perspektywa, cień kierunkowy). Biały tekst, bez CTA.</div>
+  <img class="hero-bg" src="_img/nano/hero_duo.jpg" alt="">
+  <div class="hero-ov" style="opacity:1.0"></div>
+  <div class="hero-tresc">
+    <div class="kicker"><i></i>KOLEKCJA NANO SZKŁA</div>
+    <h1>Nano-Piękne Nogi.</h1>
+    <p>10 minut — gładkie nogi i miękkie stopy.</p><p class="hero-p2">Nano szkło. Delikatnie ściera i peelinguje. Bez cięcia i wyrywania.</p>
+    
+  </div>
+</section>
+<section data-m="section-double" class="s-double odwr"><div class="modul"><b>section-double</b><i>Argument · Dwa bloki obok siebie</i><br>S3 · Ból. Samo pytanie „Czego już nie musisz robić?&quot; + kadr kontrastu. Odpowiedź daje sekcja niżej — trzy argumenty.</div>
+  <div class="dbl-img"><img src="_img/nano/bol_kontrast.jpg" alt="" loading="lazy"></div>
+  <div class="dbl-txt"><div class="kicker"><i></i>ZANIM KUPISZ</div><h3>Czego już nie musisz robić?</h3></div>
+</section>
+<section data-m="section-columns" class="s-kol"><div class="modul"><b>section-columns</b><i>Argument · Kolumny tekst i obraz</i><br>S3b · Trzy argumenty — rozwinięcie nagłówka z sekcji wyżej. Kolumny z motywu; na mobile jedna pod drugą.</div><div class="kolumny"><div class="kol"><div class="kol-i">✕</div><h4>Zamiast maszynki</h4><p>Bez cięcia i odrastania po dwóch dniach. Bez wrastających włosów, żelu i wkładów co miesiąc.</p></div><div class="kol"><div class="kol-i">✕</div><h4>Zamiast wosku i salonu</h4><p>Bez wyrywania i bez umawiania się. 50–120 zł za wizytę zostaje w kieszeni.</p></div><div class="kol"><div class="kol-i">✕</div><h4>Zamiast pumeksu kamiennego</h4><p>Nie czernieje, nie kruszy się i nie zbiera bakterii. Spłukujesz i odkładasz.</p></div></div></section>
+<section data-m="section-product-listing" class="s-listing" id="oferta"><div class="modul"><b>section-product-listing</b><i>Oferta · Listing produktów / karuzela</i><br>RZĄD 1 — ustalenie z klientem: 2 pojedyncze + Velvet 69,90. Produkty wysoko, bo ruch idzie z reklamy i chce zobaczyć towar.</div>
+  <h3 class="tyt-c">Wybierz swój nano rytuał</h3><p class="pod">Trzy sposoby na ten sam efekt. Różnią się tym, co masz zrobić dziś wieczorem.</p>
+  <div class="siatka k3"><a class="karta" href="https://glov.co/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka">
+  <div class="karta-img"><span class="badge">BESTSELLER</span><img src="_img/nano/tarka.png" alt="Tarka-pumeks do stóp z nano szkła GLOV®" loading="lazy"></div>
+  <div class="karta-nazwa">Tarka-pumeks do stóp z nano szkła GLOV®</div>
+  <div class="karta-ocena"><span class="gw">★★★★★</span> <b>5.0</b> <span>(528)</span></div>
+  <div class="karta-cena"><span class="stara">49,90 zł</span> <b>39,90 zł</b></div>
+  <div class="karta-cta">DODAJ DO KOSZYKA</div>
+</a><a class="karta" href="https://glov.co/products/depilator-z-nano-szkla-glov">
+  <div class="karta-img"><span class="badge">BESTSELLER</span><img src="_img/nano/depilator.png" alt="Depilator z nano szkła GLOV®" loading="lazy"></div>
+  <div class="karta-nazwa">Depilator z nano szkła GLOV®</div>
+  <div class="karta-ocena"><span class="gw">★★★★★</span> <b>4.7</b> <span>(63)</span></div>
+  <div class="karta-cena"><span class="stara">49,90 zł</span> <b>39,90 zł</b></div>
+  <div class="karta-cta">DODAJ DO KOSZYKA</div>
+</a><a class="karta" href="https://glov.co/products/pumeks-i-depilator-z-nano-szkla-2w1-kopia">
+  <div class="karta-img"><span class="badge">NOWOŚĆ</span><img src="_img/nano/velvet.png" alt="Velvet Nano Touch — pumeks i depilator 2w1" loading="lazy"></div>
+  <div class="karta-nazwa">Velvet Nano Touch — pumeks i depilator 2w1</div>
+  <div class="karta-ocena"><span class="gw">★★★★★</span> <b>4.9</b> <span>(16)</span></div>
+  <div class="karta-cena"><span class="stara">79,90 zł</span> <b>69,90 zł</b></div>
+  <div class="karta-cta">DODAJ DO KOSZYKA</div>
+</a></div>
+</section>
+<section data-m="section-featured-reviews" class="s-rev"><div class="modul"><b>section-featured-reviews</b><i>Dowód · Wybrane opinie</i><br>Social proof zaraz po obietnicy — brand book: „opowiadamy słowami klientek, a nie producenta&quot;. Twarde liczby + 3 cytaty (limit modułu). Zastąpiło pasek ikon.</div><div class="lb"><div class="lb-i"><b>528</b><span>RECENZJI TARKI</span></div><div class="lb-i"><b>5,0</b><span>ŚREDNIA OCENA</span></div><div class="lb-i"><b>689</b><span>OPINII W KOLEKCJI</span></div></div><h3 class="tyt-l">Mówią klientki, nie my</h3><div class="opy"><div class="op"><span class="gw">★★★★★</span><p>„Kawałek szkła? Serio? I to był mój błąd — efekty przeszły oczekiwania."</p><div class="op-a">Barbara · depilator GLOV</div></div><div class="op"><span class="gw">★★★★★</span><p>„Gładkie jak po wizycie u podologa — w kilka minut, samemu."</p><div class="op-a">Weronika · pumeks GLOV</div></div><div class="op"><span class="gw">★★★★★</span><p>„Skóra aksamitna w dotyku. Nie wyobrażam sobie bez tego."</p><div class="op-a">Agata Matysiak · depilator GLOV</div></div></div></section>
+<section data-m="section-double" class="s-double odwr"><div class="modul"><b>section-double</b><i>Argument · Dwa bloki obok siebie</i><br>S5 · Mechanizm. Infografika wygenerowana wg BRIEF_INFOGRAFIKA_NANO.md: sama siateczka nano (bez sylwetki produktu) + 6 cech z liniami. Tło różowe — do sprawdzenia z klientem, brand book przypisuje róż promocjom, a beż korzyściom.</div>
+  <div class="dbl-img"><img class="pelny" src="_img/nano/nano_infografika.jpg" alt="" loading="lazy"></div>
+  <div class="dbl-txt"><div class="kicker"><i></i>JAK DZIAŁA NANO-SZKŁO</div><h3>Nano gładkość — bez maszynki, żelu i jednorazówek.</h3><p>Szkło 3D cięte laserowo. Przeciągasz, spłukujesz — i już.</p></div>
+</section>
+<section data-m="section-before-after-custom" class="s-ba"><div class="modul"><b>section-before-after-custom</b><i>Dowód · Suwak przed / po</i><br>S4b · Dowód. Kompozyt Antigravity: jedno zdjęcie z podziałem PRZED/PO. Moduł motywu ma suwak — tutaj kadr jest gotowy, więc renderowany jako pełny obraz.</div>
+  <h3 class="tyt-c">Ta sama stopa, ten sam wieczór</h3><p class="pod">Po lewej przed, po prawej po jednym użyciu.</p>
+  <img class="ba-full" src="_img/nano/ba_kompozyt.png" alt="przed i po" loading="lazy">
+</section>
+<section data-m="section-gallery" class="s-gal"><div class="modul"><b>section-gallery</b><i>Dowód · Galeria zdjęć</i><br>Zastąpiło suwak przed/po — nie ma pary kadrów tej samej pięty przed i po, a akcja zamiast efektu przeczy idei modułu. Galeria dowodzi cech z brand booka: na mokro i sucho, łatwe czyszczenie, łydki i pięty.</div><h3 class="tyt-c">Nasze produkty w akcji</h3><p class="pod">Na mokro i na sucho. Na łydki i na pięty. Spłukujesz i odkładasz.</p><div class="gal"><figure class="gk"><img src="_img/nano/hero_base.jpg" alt="Tarka-pumeks — stopy" loading="lazy"><figcaption>Tarka-pumeks — stopy</figcaption></figure><figure class="gk"><img src="_img/nano/akcja_depil.jpg" alt="Depilator — łydki" loading="lazy"><figcaption>Depilator — łydki</figcaption></figure><figure class="gk"><img src="_img/nano/dep2.jpg" alt="Depilator — ramiona" loading="lazy"><figcaption>Depilator — ramiona</figcaption></figure><figure class="gk"><img src="_img/nano/g_woda_duo.jpg" alt="Velvet — pięta" loading="lazy"><figcaption>Velvet — pięta</figcaption></figure><figure class="gk"><img src="_img/nano/velvet_stopa.jpg" alt="Velvet — stopa" loading="lazy"><figcaption>Velvet — stopa</figcaption></figure></div></section>
+<section data-m="section-product-listing" class="s-listing"><div class="modul"><b>section-product-listing</b><i>Oferta · Listing produktów / karuzela</i><br>RZĄD 2 — Cheetah i Duo poniżej. Duo za 39,90 na górze kanibalizowałoby pojedyncze w tej samej cenie.</div>
+  <h3 class="tyt-c">A jeśli chcesz mieć to zawsze przy sobie</h3><p class="pod">Dwie wersje kompaktowe — do kosmetyczki i do torebki.</p>
+  <div class="siatka k2"><a class="karta w" href="https://glov.co/products/pumeks-i-depilator-z-nano-szkla-2w1-velvet-nano-touch-kopia">
+  <div class="karta-img"><span class="badge">NOWOŚĆ</span><img src="_img/nano/cheetah.png" alt="Pumeks z nano szkła Cheetah Edition" loading="lazy"></div>
+  <div class="karta-nazwa">Pumeks z nano szkła Cheetah Edition</div>
+  <div class="karta-ocena"><span class="gw">★★★★★</span> <b>4.9</b> <span>(53)</span></div>
+  <div class="karta-cena"><span class="stara">49,90 zł</span> <b>39,90 zł</b></div>
+  <div class="karta-cta">DODAJ DO KOSZYKA</div>
+</a><a class="karta w" href="https://glov.co/products/pumeks-i-depilator-z-nano-szkla-2w1">
+  <div class="karta-img"><span class="badge">NOWOŚĆ</span><img src="_img/nano/duo.png" alt="Nano Twist Duo — pumeks i depilator 2w1" loading="lazy"></div>
+  <div class="karta-nazwa">Nano Twist Duo — pumeks i depilator 2w1</div>
+  <div class="karta-ocena"><span class="gw">★★★★★</span> <b>4.8</b> <span>(29)</span></div>
+  <div class="karta-cena"><span class="stara">49,90 zł</span> <b>39,90 zł</b></div>
+  <div class="karta-cta">DODAJ DO KOSZYKA</div>
+</a></div>
+</section>
+<section data-m="section-faq" class="s-faq"><div class="modul"><b>section-faq</b><i>Obiekcja · FAQ — pytania rozwijane</i><br>S10 · Nie „zbijamy obiekcje” — ustawiamy oczekiwania. Cztery pytania pumeksowe (527 recenzji), trzy depilatorowe.</div><div class="kicker"><i></i>NAJCZĘSTSZE PYTANIA</div><details class="faq-i"><summary>Szkło na piętach? Nie skaleczy?<i>›</i></summary><p>Nie. To nie tafla ani ostrze — to powierzchnia pokryta nano-kryształami, drobna jak papier ścierny o bardzo wysokiej gradacji. Nie tnie i nie zdziera za dużo: ściera warstwa po warstwie, więc sama kontrolujesz efekt.</p></details><details class="faq-i"><summary>Czym to lepsze od zwykłego pumeksu?<i>›</i></summary><p>Zwykły pumeks kruszy się, czernieje i gromadzi bakterie w porach. Nano szkło spłukujesz pod wodą i jest czyste — nie wchłania niczego, nie śmierdzi i nie zużywa się jak kamień.</p></details><details class="faq-i"><summary>Jak długo utrzymuje się gładkość stóp?<i>›</i></summary><p>Tygodniami — pod warunkiem, że nie zdzierasz naskórka do żywego. Efekt jest widoczny po pierwszym użyciu, potem wystarczy krótkie poprawianie.</p></details><details class="faq-i"><summary>Czy da się użyć na pękające pięty?<i>›</i></summary><p>Tak, ale delikatnie i na sucho lub lekko wilgotno. Nano szkło wygładza zrogowaciały naskórek — przy głębokich pęknięciach najpierw natłuść stopy i pracuj krótkimi seriami.</p></details><details class="faq-i"><summary>Czy depilator usuwa wszystkie włosy?<i>›</i></summary><p>Nie — to nie epilator i nie maszynka. Nie ścina ani nie wyrywa: delikatnie ściera meszek i peelinguje naskórek. Gęstych, ciemnych włosów nie usunie całkowicie. Dla wrażliwej skóry przetestuj najpierw na małym obszarze.</p></details><details class="faq-i"><summary>Czy działa od pierwszego użycia?<i>›</i></summary><p>Tak — efekt widoczny po pierwszej sesji. Recenzje to potwierdzają.</p></details><details class="faq-i"><summary>Mokro czy sucho? I jak czyścić?<i>›</i></summary><p>Oba produkty działają na sucho i mokro; najłatwiej na mokrej skórze. Czyszczenie: spłukać pod bieżącą wodą, wysuszyć. Tyle.</p></details></section>
+<section data-m="section-html" class="s-zam"><div class="modul"><b>section-html</b><i>Furtka · Dowolny HTML</i><br>S11 · Footer CTA. Furtka — tego motyw nie ma gotowego.</div>
+  <h3>Nano-Piękne Nogi. Dziś wieczór.</h3><p>10 minut. Efekt od pierwszego użycia.</p>
+  <div class="btn ciemny szer">PRZEJDŹ DO KOLEKCJI</div>
+  <small>Darmowa dostawa od 150 zł · Zwrot 30 dni</small>
+</section>
+  <div class="sticky"><span><b>od 39,90 zł</b> · darmowa dostawa od 150 zł</span><a href="#oferta">WYBIERZ SWOJE</a></div>
+  <div class="stopka">GLOV® · MAKIETA LP — NIE JEST TO STRONA PRODUKCYJNA</div>
+</div>
+<script>
+const ba=document.getElementById('ba');
+if(ba){const b=document.getElementById('baB'),r=document.getElementById('baR');
+ const mv=x=>{const c=ba.getBoundingClientRect();let p=(x-c.left)/c.width*100;
+  p=Math.max(4,Math.min(96,p));b.style.width=p+'%';r.style.left=p+'%';};
+ let on=false;
+ ba.addEventListener('mousedown',e=>{on=true;mv(e.clientX)});
+ window.addEventListener('mousemove',e=>on&&mv(e.clientX));
+ window.addEventListener('mouseup',()=>on=false);
+ ba.addEventListener('touchmove',e=>mv(e.touches[0].clientX),{passive:true});}
+document.querySelector('.przel').onclick=()=>document.body.classList.toggle('bez');
+document.querySelector('.przel2').onclick=()=>document.body.classList.toggle('desktop');
+document.body.classList.add('desktop');
+</script></body></html>
