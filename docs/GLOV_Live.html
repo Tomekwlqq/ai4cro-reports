@@ -1139,7 +1139,7 @@ document.getElementById('chatInput').addEventListener('keydown',e=>{
 });
 
 // Data loading
-const BASE_URL='https://tomekwlqq.github.io/eel-reports/';
+const BASE_URL='https://tomekwlqq.github.io/ai4cro-reports/';
 function loadData(showSpinner){
   if(showSpinner){
     const ov=document.getElementById('loadingOverlay');
@@ -1155,6 +1155,7 @@ function loadData(showSpinner){
     LIVE=live;
     const dk=Object.keys(DAILY).sort();
     FIRST=dk[0]||'';LAST=dk[dk.length-1]||'';
+    ['dateS','dateE','cmpS','cmpE'].forEach(id=>{const el=document.getElementById(id);if(el){el.min=FIRST;el.max=LAST;}});
     const d30=new Date(LAST+'T00:00:00');d30.setDate(d30.getDate()-29);
     LAST30=d30.toISOString().slice(0,10);
     document.getElementById('dateS').value=LAST30;
