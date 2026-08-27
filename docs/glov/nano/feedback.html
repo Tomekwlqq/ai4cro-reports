@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LP Nano · Przegląd</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f5f1;--surface:#fff;--s2:#f3eeea;--border:#e8e2dc;
+  --text:#1a1816;--muted:#7a6f67;--accent:#591315;
+  --ok:#1b5e20;--ok-bg:#f0fdf4;--ok-bd:#b8debb;
+  --chg:#b45309;--chg-bg:#fdf8ef;--chg-bd:#f0d8a8;
+  --font:'Jost',system-ui,sans-serif;
+}
+body{font-family:var(--font);font-size:14px;line-height:1.6;background:var(--bg);color:var(--text);}
+
+.layout{display:flex;height:100vh;overflow:hidden;}
+.left{flex:0 0 60%;border-right:1px solid var(--border);display:none;}
+.left iframe{width:100%;height:100%;border:none;display:block;}
+.right{flex:1;overflow-y:auto;padding:24px 20px 48px;}
+@media(min-width:860px){.left{display:block;}}
+
+.hd{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.eye{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px;}
+.hd h1{font-size:18px;font-weight:500;}
+.hd p{font-size:12px;color:var(--muted);font-weight:300;margin-top:4px;}
+
+.mob-link{display:flex;align-items:center;justify-content:space-between;
+  background:var(--surface);border:1px solid var(--border);padding:12px 14px;
+  margin-bottom:16px;text-decoration:none;color:var(--text);}
+.mob-link:hover{border-color:var(--accent);}
+.mob-link b{font-weight:500;font-size:13px;}
+.mob-link small{color:var(--muted);font-size:11px;font-weight:300;}
+.mob-link span{font-size:18px;color:var(--muted);}
+@media(min-width:860px){.mob-link{display:none;}}
+
+.card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--border);margin-bottom:10px;transition:border-left-color .15s,background .15s;}
+.card.ok{border-left-color:var(--ok);background:var(--ok-bg);border-color:var(--ok-bd);}
+.card.chg{border-left-color:var(--chg);background:var(--chg-bg);border-color:var(--chg-bd);}
+.card-hd{padding:12px 14px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.sec-lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--muted);}
+.sec-st{font-size:11px;font-weight:600;}
+.ok .sec-st{color:var(--ok);}
+.chg .sec-st{color:var(--chg);}
+.card-body{padding:8px 14px 14px;}
+.lines{list-style:none;margin-bottom:12px;}
+.lines li{font-size:12.5px;color:var(--muted);font-weight:300;padding:2px 0;border-bottom:1px dotted var(--border);}
+.lines li:last-child{border:none;}
+.btn-row{display:flex;gap:8px;}
+.btn{flex:1;padding:9px 6px;border:1px solid var(--border);background:var(--s2);font-family:var(--font);font-size:11.5px;font-weight:500;cursor:pointer;color:var(--text);transition:all .15s;}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.b-ok{border-color:var(--ok-bd);color:var(--ok);background:var(--ok-bg);}
+.b-chg{border-color:var(--chg-bd);color:var(--chg);background:var(--chg-bg);}
+.cmt{margin-top:10px;display:none;}
+.cmt textarea{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:13px;padding:9px 11px;outline:none;resize:vertical;min-height:72px;}
+.cmt textarea:focus{border-color:var(--accent);}
+.btn-save{margin-top:6px;width:100%;background:var(--chg);color:#fff;border:none;font-family:var(--font);font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:10px;cursor:pointer;}
+
+.footer{margin-top:24px;padding-top:18px;border-top:1px solid var(--border);}
+#prog{font-size:12px;color:var(--muted);margin-bottom:10px;}
+.btn-send{width:100%;background:var(--accent);color:#fff;border:none;font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:14px;cursor:pointer;}
+.btn-send:disabled{opacity:.35;cursor:not-allowed;}
+.btn-send:not(:disabled):hover{opacity:.88;}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;padding:20px;}
+.modal.show{display:flex;}
+.modal-box{background:var(--surface);max-width:540px;width:100%;max-height:90vh;overflow-y:auto;padding:28px 24px;}
+.modal-box h2{font-size:18px;font-weight:500;margin-bottom:6px;}
+.modal-box p{font-size:12px;color:var(--muted);font-weight:300;margin-bottom:16px;}
+#result-text{width:100%;min-height:180px;background:var(--s2);border:1px solid var(--border);color:var(--text);font-family:ui-monospace,monospace;font-size:12px;padding:12px;resize:vertical;outline:none;}
+.modal-btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.mbtn{flex:1;padding:12px 8px;border:1px solid var(--border);background:var(--s2);font-family:var(--font);font-size:12px;font-weight:500;cursor:pointer;color:var(--text);min-width:120px;}
+.mbtn:hover{border-color:var(--accent);color:var(--accent);}
+.mbtn.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.mbtn.primary:hover{opacity:.88;}
+#copy-st{font-size:11.5px;color:var(--ok);margin-top:8px;min-height:16px;}
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <div class="left">
+    <iframe src="https://tomekwlqq.github.io/ai4cro-reports/glov/nano/" title="Makieta LP Nano" loading="lazy"></iframe>
+  </div>
+  <div class="right">
+    <div class="hd">
+      <div class="eye">GLOV · Nano Glass Collection</div>
+      <h1>Przegląd LP</h1>
+      <p>Zatwierdzam = OK. Zmieniam = opisz co poprawić. Na końcu skopiuj tekst i wyślij.</p>
+    </div>
+
+    <a href="https://tomekwlqq.github.io/ai4cro-reports/glov/nano/" target="_blank" rel="noopener" class="mob-link">
+      <div><b>Otwórz makietę LP</b><br><small>w nowej karcie</small></div>
+      <span>→</span>
+    </a>
+
+    <div id="secs"></div>
+
+    <div class="footer">
+      <div id="prog">Oceń wszystkie sekcje żeby wysłać.</div>
+      <button class="btn-send" id="bsend" disabled>Generuj feedback</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h2>Gotowy feedback</h2>
+    <p>Skopiuj tekst i wyślij Tomkowi — WhatsApp, Discord, email, cokolwiek.</p>
+    <textarea id="result-text" readonly></textarea>
+    <div id="copy-st"></div>
+    <div class="modal-btns">
+      <button class="mbtn primary" onclick="copyResult()">Kopiuj do schowka</button>
+      <button class="mbtn" onclick="mailResult()">Otwórz email</button>
+      <button class="mbtn" onclick="document.getElementById('modal').classList.remove('show')">Zamknij</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SECS=[
+  {id:'s1',lbl:'S1 · Announcement bar',
+   lines:['Darmowa dostawa od 150 zł · Nano-Piękne Nogi — kolekcja GLOV']},
+  {id:'s2',lbl:'S2 · Hero',
+   lines:['Nano-Piękne Nogi.','10 minut — gładkie nogi i miękkie stopy.','Nano szkło. Delikatnie ściera i peelinguje. Bez cięcia i wyrywania.']},
+  {id:'s3',lbl:'S3 · Ból / Kontrast',
+   lines:['Nagłówek: Czego już nie musisz robić?','(zdjęcie: stary pumeks + jednorazówka, bez GLOV)']},
+  {id:'s3b',lbl:'S3b · 3 argumenty',
+   lines:['Zamiast maszynki — Bez cięcia i odrastania po dwóch dniach...','Zamiast wosku i salonu — Bez wyrywania i bez umawiania się. 50–120 zł za wizytę...','Zamiast pumeksu kamiennego — Nie czernieje, nie kruszy się i nie zbiera bakterii...']},
+  {id:'s4',lbl:'S4 · Produkty rząd 1',
+   lines:['Wybierz swój nano rytuał','Trzy sposoby na ten sam efekt. Różnią się tym, co masz zrobić dziś wieczorem.','Tarka 5.0★ 528 rec · Depilator 4.7★ 63 rec · Velvet 2w1 4.9★ 16 rec NOWOŚĆ']},
+  {id:'s5',lbl:'S5 · Recenzje',
+   lines:['"Kawałek szkła? Serio? I to był mój błąd…" — Barbara','"Gładkie jak po wizycie u podologa…" — Weronika','"Skóra aksamitna w dotyku…" — Agata','528 recenzji · średnia 5,0 · 689 opinii w kolekcji']},
+  {id:'s6',lbl:'S6 · Jak działa nano',
+   lines:['Nano gładkość — bez maszynki, żelu i jednorazówek.','Szkło 3D cięte laserowo. Przeciągasz, spłukujesz — i już.','(infografika: siateczka nano + cechy, tło różowe)']},
+  {id:'s7',lbl:'S7 · Przed / Po',
+   lines:['Ta sama stopa, ten sam wieczór','Po lewej przed, po prawej po jednym użyciu.','(zdjęcie kompozytowe)']},
+  {id:'s8',lbl:'S8 · Galeria',
+   lines:['Nasze produkty w akcji','Na mokro i na sucho. Na łydki i na pięty. Spłukujesz i odkładasz.','(5 zdjęć lifestyle ze sklepu)']},
+  {id:'s9',lbl:'S9 · Produkty rząd 2',
+   lines:['A jeśli chcesz mieć to zawsze przy sobie','Dwie wersje kompaktowe — do kosmetyczki i do torebki.','Cheetah 4.9★ 53 rec NOWOŚĆ · Duo 4.8★ 29 rec NOWOŚĆ']},
+  {id:'s10',lbl:'S10 · FAQ',
+   lines:['7 pytań: Szkło na piętach? / Czym lepsze od pumeksu? / Jak długo gładkość? / Pękające pięty? / Depilator usuwa włosy? / Działa od razu? / Mokro czy sucho?']}
+];
+
+const decisions={};
+const wrap=document.getElementById('secs');
+const bsend=document.getElementById('bsend');
+const prog=document.getElementById('prog');
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function updateProgress(){
+  const done=Object.keys(decisions).length;
+  prog.textContent=done===SECS.length?'Wszystkie sekcje ocenione — gotowe.':'Ocenione: '+done+' / '+SECS.length;
+  bsend.disabled=done<SECS.length;
+}
+
+function applyState(id){
+  const card=document.getElementById('c-'+id);
+  const d=decisions[id];
+  card.className='card '+(d?d.v:'');
+  card.querySelector('.sec-st').textContent=d?(d.v==='ok'?'✓ OK':'✏ Zmiana'):'';
+  const brow=card.querySelectorAll('[data-a]');
+  brow[0].className='btn'+(d&&d.v==='ok'?' b-ok':'');
+  brow[1].className='btn'+(d&&d.v==='chg'?' b-chg':'');
+}
+
+SECS.forEach(s=>{
+  const el=document.createElement('div');
+  el.className='card';el.id='c-'+s.id;
+  el.innerHTML=`
+    <div class="card-hd"><span class="sec-lbl">${esc(s.lbl)}</span><span class="sec-st"></span></div>
+    <div class="card-body">
+      <ul class="lines">${s.lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ul>
+      <div class="btn-row">
+        <button class="btn" data-a="ok" data-id="${s.id}">✓ Zatwierdzam</button>
+        <button class="btn" data-a="chg" data-id="${s.id}">✏ Zmieniam</button>
+      </div>
+      <div class="cmt">
+        <textarea placeholder="Opisz co zmienić…"></textarea>
+        <button class="btn-save" data-id="${s.id}">Zatwierdź korektę</button>
+      </div>
+    </div>`;
+  wrap.appendChild(el);
+});
+
+wrap.addEventListener('click',function(e){
+  const btn=e.target.closest('[data-a]');
+  const save=e.target.closest('.btn-save');
+  if(btn){
+    const id=btn.dataset.id,a=btn.dataset.a;
+    const card=document.getElementById('c-'+id);
+    const cmt=card.querySelector('.cmt');
+    if(a==='ok'){
+      decisions[id]={v:'ok',c:''};
+      cmt.style.display='none';
+    } else {
+      cmt.style.display='block';
+      cmt.querySelector('textarea').focus();
+      if(!decisions[id]||decisions[id].v!=='chg') delete decisions[id];
+    }
+    applyState(id);
+    updateProgress();
+  }
+  if(save){
+    const id=save.dataset.id;
+    const txt=save.closest('.cmt').querySelector('textarea').value.trim();
+    if(!txt){save.closest('.cmt').querySelector('textarea').style.borderColor='#c62828';return;}
+    decisions[id]={v:'chg',c:txt};
+    applyState(id);
+    updateProgress();
+  }
+});
+
+function buildResult(){
+  const lines=['LP Nano Glass Collection — Feedback\n','Data: '+new Date().toLocaleDateString('pl-PL'),'','--- SEKCJE ---',''];
+  SECS.forEach(s=>{
+    const d=decisions[s.id];
+    lines.push(s.lbl+': '+(d.v==='ok'?'✓ OK':'✏ ZMIANA'));
+    if(d.v==='chg') lines.push('  → '+d.c);
+  });
+  lines.push('','Makieta: https://tomekwlqq.github.io/ai4cro-reports/glov/nano/');
+  return lines.join('\n');
+}
+
+bsend.addEventListener('click',function(){
+  const txt=buildResult();
+  document.getElementById('result-text').value=txt;
+  document.getElementById('modal').classList.add('show');
+  document.getElementById('copy-st').textContent='';
+});
+
+function copyResult(){
+  const txt=document.getElementById('result-text').value;
+  navigator.clipboard.writeText(txt).then(()=>{
+    document.getElementById('copy-st').textContent='Skopiowano!';
+  }).catch(()=>{
+    document.getElementById('result-text').select();
+    document.getElementById('copy-st').textContent='Zaznaczono — Ctrl+C żeby skopiować.';
+  });
+}
+
+function mailResult(){
+  const txt=encodeURIComponent(buildResult());
+  window.open('mailto:waleqq@gmail.com?subject=LP+Nano+%E2%80%94+Feedback&body='+txt);
+}
+</script>
+</body>
+</html>
