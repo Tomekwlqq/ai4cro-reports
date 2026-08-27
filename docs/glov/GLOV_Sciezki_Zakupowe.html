@@ -190,13 +190,20 @@ table.ci tr:last-child td { border-bottom: none; }
   <h1>GLOV — Mapa Ścieżek Zakupowych</h1>
   <p>Dane styczeń–sierpień 2026 · Kanał, wejście, lejek i decyzja kampanijna</p>
   <div class="sources">
-    <span class="src-badge s1">● GA4 — kanały i atrybucja (YTD)</span>
+    <span class="src-badge s1">● GA4 — kanały i atrybucja · ostatnie 30 dni</span>
     <span class="src-badge s2">● Shopify — lejek per entry (lipiec)</span>
     <span class="src-badge s3">● Clarity — ścieżki purchase sessions</span>
   </div>
 </div>
 
 <div class="content">
+
+  <!-- KOREKTY RAPORTU -->
+  <div class="card" style="background:var(--o-soft);border:1px solid var(--o-line);margin-bottom:20px;padding:14px 18px;font-size:12.5px;line-height:1.7">
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--o-d);margin-bottom:6px">Korekty raportu</div>
+    <div><strong style="color:var(--o-d)">26.08.2026</strong> — sekcje 2, 2b, 3a i 4 przeliczone bez ruchu botów (crawler chodzący po paginacji <code>?page=</code> rozcieńczał konwersję pięciokrotnie). Szczegóły w sekcji 6.</div>
+    <div style="margin-top:4px"><strong style="color:var(--o-d)">27.08.2026</strong> — NOT_SET (sekcja 1 i 5) to w ~85% <b>TikTok Shop</b>, nie „Meta in-app browser" jak opisywała poprzednia wersja. Korelacja dzienna transakcji GA4 NOT_SET × Shopify <code>sales_channel=TikTok</code>: r = 0,988. Szczegóły w sekcji 5.</div>
+  </div>
 
   <!-- KPI SUMMARY -->
   <div class="insight-bar">
@@ -208,7 +215,7 @@ table.ci tr:last-child td { border-bottom: none; }
     <div class="insight">
       <div class="insight-val">1 437</div>
       <div class="insight-label">trans. z NOT_SET (blind spot)</div>
-      <div class="src-label">GA4 — Meta niewidzialna</div>
+      <div class="src-label">GA4 — ~85% TikTok Shop, nie Meta</div>
     </div>
     <div class="insight">
       <div class="insight-val">74,20 zł</div><div class="hero-lbl">AOV sklepu R30 — realny, Shopify</div>
@@ -229,23 +236,25 @@ table.ci tr:last-child td { border-bottom: none; }
   <!-- 1. MATRIX KANAŁ × WEJŚCIE -->
   <div class="section" data-acc="b">
     <span class="section-kicker">SEKCJA 01 · MACIERZ KANAŁÓW</span>
-    <div class="section-title">1. Macierz: kanał × typ wejścia <span>GA4 YTD — CR%, trans, AOV</span></div>
-    <p class="section-desc"><strong>Co to jest:</strong> Każda komórka = gdzie ląduje ruch z danego kanału i jak dobrze konwertuje. CR% = ile sesji kończy się zakupem. AOV = średnia wartość zamówienia.<br><strong>Do czego służy:</strong> Decyzja budżetowa — które kombinacje kanał+wejście warto skalować, a które przepalają pieniądze. <strong>Zielone</strong> = skaluj. <strong>Czerwone</strong> = ogranicz lub przesuń budżet.</p>
+    <div class="section-title">1. Macierz: kanał × typ wejścia <span>GA4 · ostatnie 30 dni · z wykluczeniami heurystycznymi</span></div>
+    <p class="section-desc"><strong>Co to jest:</strong> Każda komórka = gdzie ląduje ruch z danego kanału i jak dobrze konwertuje. CR% = ile sesji kończy się zakupem. AOV = średnia wartość zamówienia. Dane: R30 (ostatnie 30 dni), po wykluczeniu <code>(not set)</code> i ruchu paginacji <code>?page=</code> — patrz blok pod tabelą.<br><strong>Do czego służy:</strong> Decyzja budżetowa — które kombinacje kanał+wejście warto skalować, a które przepalają pieniądze. <strong>Zielone</strong> = skaluj. <strong>Czerwone</strong> = ogranicz lub przesuń budżet. Kolory liczone względem mediany CR całej macierzy (1,8%).</p>
     <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;font-size:11px;">
-      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:var(--g-soft);border-left:3px solid var(--g-d);display:inline-block;border-radius:2px"></span> <strong>Skaluj</strong> — CR wysoki, AOV dobry</span>
-      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:var(--o-soft);border-left:3px solid var(--o);display:inline-block;border-radius:2px"></span> <strong>Testuj</strong> — mieszany wynik, warto sprawdzić</span>
-      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:var(--r-soft);border-left:3px solid var(--r);display:inline-block;border-radius:2px"></span> <strong>Ogranicz</strong> — niski CR lub przepalanie</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:var(--g-soft);border-left:3px solid var(--g-d);display:inline-block;border-radius:2px"></span> <strong>Skaluj</strong> — CR ≥ 2,7% (≈1,5× mediana)</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:var(--o-soft);border-left:3px solid var(--o);display:inline-block;border-radius:2px"></span> <strong>Testuj</strong> — CR 0,9–2,7%</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:var(--r-soft);border-left:3px solid var(--r);display:inline-block;border-radius:2px"></span> <strong>Ogranicz</strong> — CR &lt; 0,9% (≈0,5× mediana)</span>
     </div>
+    <div class="note" style="margin-bottom:10px">Kolumny łączone: <b>Google CPC</b> = Paid Search + Paid Shopping + Cross-network. <b>Affiliate/Inne</b> = Referral + Organic Social + Organic Shopping + AI Assistant + Paid Other + Organic Video + Email + SMS + Unassigned (GA4 default channel grouping tego property nie ma osobnej kategorii „Affiliates" — to zbiorczy koszyk „reszta").</div>
     <div class="card matrix table-wrap">
       <table class="mtx">
         <thead>
           <tr>
-            <th style="width:160px">Wejście</th>
+            <th style="width:150px">Wejście</th>
             <th>Meta CPC</th>
             <th>Google CPC</th>
             <th>Google Organic</th>
-            <th>Direct / Unknown</th>
+            <th>Direct</th>
             <th>Affiliate / Inne</th>
+            <th style="background:var(--surface)">RAZEM</th>
           </tr>
         </thead>
         <tbody>
@@ -255,41 +264,47 @@ table.ci tr:last-child td { border-bottom: none; }
               <div class="entry-label">HP <code>/</code></div>
               <div class="entry-sub">Homepage</div>
             </td>
-            <td class="winner">
+            <td class="warn">
               <div class="cell">
-                <span class="cr">1.7%</span>
-                <span class="cr-sub">68 trans · 4 030 sesji</span>
-                <span class="aov-tag score-h">207 PLN AOV</span>
-                <span class="trans-n">⚠ GA4 niedoszacowuje — Meta→HP → NOT_SET</span>
-              </div>
-            </td>
-            <td>
-              <div class="cell">
-                <span class="cr">4.3%</span>
-                <span class="cr-sub">71 trans · 1 645 sesji</span>
-                <span class="aov-tag score-m">143 PLN AOV</span>
-              </div>
-            </td>
-            <td>
-              <div class="cell">
-                <span class="cr">2.6%</span>
-                <span class="cr-sub">46 trans · 1 781 sesji</span>
-                <span class="aov-tag score-m">150 PLN AOV</span>
-              </div>
-            </td>
-            <td>
-              <div class="cell">
-                <span class="cr">2.7%</span>
-                <span class="cr-sub">104 trans · 3 858 sesji</span>
-                <span class="aov-tag score-m">140 PLN AOV</span>
+                <span class="cr">1,4%</span>
+                <span class="cr-sub">39 trans · 2 843 sesji</span>
+                <span class="aov-tag score-m">231 PLN AOV</span>
               </div>
             </td>
             <td class="winner">
               <div class="cell">
-                <span class="cr">5.1%</span>
-                <span class="cr-sub">103 trans · 2 033 sesji</span>
-                <span class="aov-tag score-h">250 PLN AOV 🏆</span>
-                <span class="trans-n">tradetracker afiliacja</span>
+                <span class="cr">5,2%</span>
+                <span class="cr-sub">10 trans · 192 sesji</span>
+                <span class="aov-tag score-h">132 PLN AOV</span>
+                <span class="trans-n">mała próba (n=192)</span>
+              </div>
+            </td>
+            <td class="winner">
+              <div class="cell">
+                <span class="cr">4,3%</span>
+                <span class="cr-sub">14 trans · 324 sesji</span>
+                <span class="aov-tag score-h">101 PLN AOV</span>
+              </div>
+            </td>
+            <td class="warn">
+              <div class="cell">
+                <span class="cr">1,7%</span>
+                <span class="cr-sub">11 trans · 636 sesji</span>
+                <span class="aov-tag score-m">130 PLN AOV</span>
+              </div>
+            </td>
+            <td class="warn">
+              <div class="cell">
+                <span class="cr">1,3%</span>
+                <span class="cr-sub">5 trans · 400 sesji</span>
+                <span class="aov-tag score-m">345 PLN AOV</span>
+              </div>
+            </td>
+            <td class="warn" style="background:var(--surface);font-weight:600">
+              <div class="cell">
+                <span class="cr">1,8%</span>
+                <span class="cr-sub">79 trans · 4 395 sesji</span>
+                <span class="aov-tag score-m">189 PLN AOV</span>
               </div>
             </td>
           </tr>
@@ -297,76 +312,51 @@ table.ci tr:last-child td { border-bottom: none; }
           <tr>
             <td>
               <div class="entry-label">Collection/sklep</div>
-              <div class="entry-sub">/collections/sklep</div>
+              <div class="entry-sub">/collections/sklep (bez ?page=)</div>
             </td>
-            <td class="loser">
+            <td class="winner">
               <div class="cell">
-                <span class="cr">1.2%</span>
-                <span class="cr-sub">199 trans · 17 005 sesji</span>
-                <span class="aov-tag score-m">192 PLN AOV</span>
-                <span class="trans-n">⚠ niski CR, wysoki volumen → przepalanie</span>
+                <span class="cr">3,9%</span>
+                <span class="cr-sub">3 trans · 76 sesji</span>
+                <span class="aov-tag score-h">189 PLN AOV</span>
+                <span class="trans-n">mała próba (n=76)</span>
               </div>
             </td>
             <td class="winner">
               <div class="cell">
-                <span class="cr">5.7%</span>
-                <span class="cr-sub">611 trans · 10 790 sesji</span>
-                <span class="aov-tag score-m">132 PLN AOV</span>
-                <span class="trans-n">Google Shopping → największy wolumen</span>
-              </div>
-            </td>
-            <td class="score-na">—</td>
-            <td class="loser">
-              <div class="cell">
-                <span class="cr">0.2%</span>
-                <span class="cr-sub">34 trans · 21 905 sesji</span>
-                <span class="aov-tag score-l">167 PLN AOV</span>
-                <span class="trans-n">⚠ boty / paginated direct</span>
-              </div>
-            </td>
-            <td class="score-na">—</td>
-          </tr>
-
-          <tr>
-            <td>
-              <div class="entry-label">PDP (wszystkie)</div>
-              <div class="entry-sub">/products/*</div>
-            </td>
-            <td class="warn">
-              <div class="cell">
-                <span class="cr">1.9%</span>
-                <span class="cr-sub">472 trans · 25 192 sesji</span>
-                <span class="aov-tag score-m">131 PLN AOV</span>
-                <span class="trans-n">Testuj: niski CR, duże wolumeny</span>
+                <span class="cr">8,4%</span>
+                <span class="cr-sub">99 trans · 1 184 sesji</span>
+                <span class="aov-tag score-h">129 PLN AOV 🏆</span>
+                <span class="trans-n">najlepsza komórka macierzy — Google Shopping/CPC</span>
               </div>
             </td>
             <td class="winner">
               <div class="cell">
-                <span class="cr">2.8%</span>
-                <span class="cr-sub">465 trans · 16 599 sesji</span>
-                <span class="aov-tag score-m">154 PLN AOV</span>
+                <span class="cr">3,4%</span>
+                <span class="cr-sub">2 trans · 59 sesji</span>
+                <span class="aov-tag score-h">106 PLN AOV</span>
+                <span class="trans-n">mała próba (n=59)</span>
               </div>
             </td>
-            <td>
+            <td class="loser">
               <div class="cell">
-                <span class="cr">2.7%</span>
-                <span class="cr-sub">121 trans · 4 550 sesji</span>
-                <span class="aov-tag score-m">131 PLN AOV</span>
+                <span class="cr">0,5%</span>
+                <span class="cr-sub">1 trans · 190 sesji</span>
+                <span class="aov-tag score-l">116 PLN AOV</span>
               </div>
             </td>
-            <td>
+            <td class="loser">
               <div class="cell">
-                <span class="cr">3.5%</span>
-                <span class="cr-sub">52 trans · 1 478 sesji</span>
-                <span class="aov-tag score-m">138 PLN AOV</span>
+                <span class="cr">0,0%</span>
+                <span class="cr-sub">0 trans · 64 sesji</span>
+                <span class="trans-n">mała próba (n=64)</span>
               </div>
             </td>
-            <td>
+            <td class="winner" style="background:var(--surface);font-weight:600">
               <div class="cell">
-                <span class="cr">22.5%</span>
-                <span class="cr-sub">25 trans · 111 sesji</span>
-                <span class="aov-tag score-m">75 PLN AOV</span>
-                <span class="trans-n">mały próbka — nie wyciągaj wniosków</span>
+                <span class="cr">6,7%</span>
+                <span class="cr-sub">105 trans · 1 573 sesji</span>
+                <span class="aov-tag score-h">130 PLN AOV</span>
               </div>
             </td>
           </tr>
@@ -374,104 +364,229 @@ table.ci tr:last-child td { border-bottom: none; }
           <tr>
             <td>
               <div class="entry-label">Collection/inne</div>
-              <div class="entry-sub">/collections/hair, nano, etc.</div>
+              <div class="entry-sub">pozostałe /collections/*</div>
             </td>
-            <td>
+            <td class="warn">
               <div class="cell">
-                <span class="cr">3.4%</span>
-                <span class="cr-sub">270 trans · 7 840 sesji</span>
-                <span class="aov-tag score-l">77 PLN AOV</span>
+                <span class="cr">1,0%</span>
+                <span class="cr-sub">4 trans · 410 sesji</span>
+                <span class="aov-tag score-m">123 PLN AOV</span>
               </div>
             </td>
-            <td>
+            <td class="winner">
               <div class="cell">
-                <span class="cr">4.1%</span>
-                <span class="cr-sub">228 trans · 5 516 sesji</span>
+                <span class="cr">5,4%</span>
+                <span class="cr-sub">27 trans · 496 sesji</span>
+                <span class="aov-tag score-h">134 PLN AOV</span>
+              </div>
+            </td>
+            <td class="winner">
+              <div class="cell">
+                <span class="cr">2,8%</span>
+                <span class="cr-sub">13 trans · 467 sesji</span>
+                <span class="aov-tag score-h">112 PLN AOV</span>
+              </div>
+            </td>
+            <td class="warn">
+              <div class="cell">
+                <span class="cr">1,0%</span>
+                <span class="cr-sub">2 trans · 200 sesji</span>
+                <span class="aov-tag score-m">116 PLN AOV</span>
+              </div>
+            </td>
+            <td class="warn">
+              <div class="cell">
+                <span class="cr">1,9%</span>
+                <span class="cr-sub">5 trans · 259 sesji</span>
+                <span class="aov-tag score-m">168 PLN AOV</span>
+              </div>
+            </td>
+            <td class="winner" style="background:var(--surface);font-weight:600">
+              <div class="cell">
+                <span class="cr">2,8%</span>
+                <span class="cr-sub">51 trans · 1 832 sesji</span>
+                <span class="aov-tag score-h">130 PLN AOV</span>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="entry-label">PDP (wszystkie)</div>
+              <div class="entry-sub">/products/* + /collections/*/products/*</div>
+            </td>
+            <td class="warn">
+              <div class="cell">
+                <span class="cr">2,4%</span>
+                <span class="cr-sub">199 trans · 8 287 sesji</span>
+                <span class="aov-tag score-m">106 PLN AOV</span>
+              </div>
+            </td>
+            <td class="winner">
+              <div class="cell">
+                <span class="cr">3,8%</span>
+                <span class="cr-sub">121 trans · 3 147 sesji</span>
+                <span class="aov-tag score-h">119 PLN AOV</span>
+              </div>
+            </td>
+            <td class="warn">
+              <div class="cell">
+                <span class="cr">2,1%</span>
+                <span class="cr-sub">80 trans · 3 769 sesji</span>
+                <span class="aov-tag score-m">110 PLN AOV</span>
+              </div>
+            </td>
+            <td class="loser">
+              <div class="cell">
+                <span class="cr">0,4%</span>
+                <span class="cr-sub">13 trans · 3 076 sesji</span>
+                <span class="aov-tag score-l">102 PLN AOV</span>
+                <span class="trans-n">⚠ największy wolumen, najsłabszy CR w wierszu</span>
+              </div>
+            </td>
+            <td class="warn">
+              <div class="cell">
+                <span class="cr">1,8%</span>
+                <span class="cr-sub">22 trans · 1 221 sesji</span>
                 <span class="aov-tag score-m">129 PLN AOV</span>
               </div>
             </td>
-            <td>
+            <td class="warn" style="background:var(--surface);font-weight:600">
               <div class="cell">
-                <span class="cr">3.3%</span>
-                <span class="cr-sub">17 trans · 519 sesji</span>
-                <span class="aov-tag score-m">148 PLN AOV</span>
+                <span class="cr">2,2%</span>
+                <span class="cr-sub">435 trans · 19 500 sesji</span>
+                <span class="aov-tag score-m">111 PLN AOV</span>
               </div>
             </td>
-            <td class="score-na">—</td>
-            <td class="score-na">—</td>
           </tr>
 
           <tr>
             <td>
               <div class="entry-label">LP / Strona</div>
-              <div class="entry-sub">/pages/* (iconic-mitt, rutyna)</div>
+              <div class="entry-sub">/pages/*</div>
             </td>
-            <td>
+            <td class="winner">
               <div class="cell">
-                <span class="cr">3.1%</span>
-                <span class="cr-sub">39 trans · 1 250 sesji</span>
-                <span class="aov-tag score-l">103 PLN AOV</span>
-                <span class="trans-n">oczyszczanie flow</span>
+                <span class="cr">2,9%</span>
+                <span class="cr-sub">30 trans · 1 036 sesji</span>
+                <span class="aov-tag score-h">98 PLN AOV</span>
               </div>
             </td>
-            <td class="score-na">— mało danych</td>
-            <td class="score-na">—</td>
-            <td class="score-na">—</td>
-            <td class="score-na">—</td>
+            <td class="warn">
+              <div class="cell">
+                <span class="cr">1,0%</span>
+                <span class="cr-sub">1 trans · 103 sesji</span>
+                <span class="aov-tag score-m">127 PLN AOV</span>
+                <span class="trans-n">mała próba (n=103)</span>
+              </div>
+            </td>
+            <td class="loser">
+              <div class="cell">
+                <span class="cr">0,0%</span>
+                <span class="cr-sub">0 trans · 177 sesji</span>
+              </div>
+            </td>
+            <td class="loser">
+              <div class="cell">
+                <span class="cr">0,0%</span>
+                <span class="cr-sub">0 trans · 190 sesji</span>
+              </div>
+            </td>
+            <td class="loser">
+              <div class="cell">
+                <span class="cr">0,0%</span>
+                <span class="cr-sub">0 trans · 80 sesji</span>
+                <span class="trans-n">mała próba (n=80)</span>
+              </div>
+            </td>
+            <td class="warn" style="background:var(--surface);font-weight:600">
+              <div class="cell">
+                <span class="cr">2,0%</span>
+                <span class="cr-sub">31 trans · 1 586 sesji</span>
+                <span class="aov-tag score-m">99 PLN AOV</span>
+              </div>
+            </td>
           </tr>
 
-          <tr>
-            <td>
-              <div class="entry-label">NOT_SET</div>
-              <div class="entry-sub">brak pagePath — głównie Meta</div>
+          <tr style="border-top:2px solid var(--line)">
+            <td style="background:var(--surface);font-weight:700">
+              <div class="entry-label">RAZEM</div>
+              <div class="entry-sub">5 typów wejścia, R30 czyste</div>
             </td>
-            <td>
+            <td class="warn" style="background:var(--surface);font-weight:600">
               <div class="cell">
-                <span class="cr">1.3%</span>
-                <span class="cr-sub">112 trans · 8 908 sesji</span>
-                <span class="aov-tag score-m">177 PLN AOV</span>
+                <span class="cr">2,2%</span>
+                <span class="cr-sub">275 trans · 12 652 sesji</span>
+                <span class="aov-tag score-m">124 PLN AOV</span>
               </div>
             </td>
-            <td>
+            <td class="winner" style="background:var(--surface);font-weight:600">
               <div class="cell">
-                <span class="cr">—</span>
-                <span class="cr-sub">0 trans · 587 sesji</span>
-                <span class="trans-n">Google w NOT_SET = tracking bug</span>
+                <span class="cr">5,0%</span>
+                <span class="cr-sub">258 trans · 5 122 sesji</span>
+                <span class="aov-tag score-h">125 PLN AOV</span>
               </div>
             </td>
-            <td>
+            <td class="warn" style="background:var(--surface);font-weight:600">
               <div class="cell">
-                <span class="cr">2.8%</span>
-                <span class="cr-sub">179 trans · 6 320 sesji</span>
-                <span class="aov-tag score-m">132 PLN AOV</span>
+                <span class="cr">2,3%</span>
+                <span class="cr-sub">109 trans · 4 796 sesji</span>
+                <span class="aov-tag score-m">109 PLN AOV</span>
               </div>
             </td>
-            <td>
+            <td class="loser" style="background:var(--surface);font-weight:600">
               <div class="cell">
-                <span class="cr">5.5%</span>
-                <span class="cr-sub">1 437 trans · 25 997 sesji</span>
-                <span class="aov-tag score-m">63 PLN AOV</span>
-                <span class="trans-n">⚠ największy bucket — niewidzialny</span>
+                <span class="cr">0,6%</span>
+                <span class="cr-sub">27 trans · 4 292 sesji</span>
+                <span class="aov-tag score-l">115 PLN AOV</span>
               </div>
             </td>
-            <td class="score-na">—</td>
+            <td class="warn" style="background:var(--surface);font-weight:600">
+              <div class="cell">
+                <span class="cr">1,6%</span>
+                <span class="cr-sub">32 trans · 2 024 sesji</span>
+                <span class="aov-tag score-m">169 PLN AOV</span>
+              </div>
+            </td>
+            <td style="background:var(--ink);color:var(--bg);font-weight:700">
+              <div class="cell">
+                <span class="cr" style="color:var(--bg)">2,4%</span>
+                <span class="cr-sub" style="color:rgba(255,255,255,0.75)">701 trans · 28 886 sesji</span>
+                <span class="aov-tag" style="background:rgba(255,255,255,0.15);color:var(--bg)">124 PLN AOV</span>
+              </div>
+            </td>
           </tr>
 
         </tbody>
       </table>
+    </div>
+
+    <div class="card" style="background:var(--o-soft);border:1px solid var(--o-line);margin-top:14px;padding:14px 18px;font-size:12.5px;line-height:1.7">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--o-d);margin-bottom:6px">Co zostało wykluczone z tej macierzy</div>
+      <div><strong style="color:var(--o-d)">To obejście, nie filtr GA4.</strong> GA4 nie ma pola odróżniającego boty od ludzi — jego automatyczne odsiewanie (lista IAB) działa w tle i ten crawler przez nie przeszedł. Wykluczenia poniżej to <b>wnioskowanie z wzorca danych</b>, nie klasyfikacja narzędzia:</div>
+      <div style="margin-top:8px"><b>Paginacja listingu</b> (<code>?page=1</code> … <code>?page=9</code>) — ponad 6 000 sesji z kanału Direct i zero zakupów. Żaden człowiek nie wchodzi bezpośrednio na ósmą stronę listingu 705 razy w miesiąc. Uznajemy to za crawler.</div>
+      <div style="margin-top:6px"><b>Brak strony wejścia</b> (<code>(not set)</code>) — 8 462 sesje i 604 transakcje. Że to w ~85% TikTok Shop, wiemy z korelacji 0,988 z <code>sales_channel</code> po stronie Shopify, a nie z samego GA4.</div>
+      <div style="margin-top:8px">Jedyna twarda klasyfikacja bot/człowiek w tym raporcie pochodzi z Shopify (<code>human_or_bot_session</code>) i dotyczy sekcji 2, 2b i 6. Macierz powyżej korzysta z przybliżenia.</div>
     </div>
   </div>
 
   <!-- 2. LEJEK SHOPIFY PER ENTRY -->
   <div class="section" data-acc="v">
     <span class="section-kicker">SEKCJA 02 · LEJEK PER WEJŚCIE</span>
-    <div class="section-title">2. Lejek per wejście — top 15 <span id="month-label-title">Shopify sessions · All traffic vs No-bot traffic · 3 miesiące</span></div>
+    <div class="section-title">2. Lejek per wejście — top 30 <span id="month-label-title">Shopify sessions · All traffic vs No-bot traffic · 3 miesiące</span></div>
     <p class="section-desc"><strong>Co to jest:</strong> Dla każdej strony wejścia: ile sesji → ile dodało do koszyka (ATC%) → ile weszło do kasy (wejście do kasy%) → ile faktycznie kupiło (Zakup%). Dane z Shopify server-side — nie ma adblock bias ani GA4 NOT_SET.<br><strong>Do czego służy:</strong> Wykrywanie gdzie wycieka lejek. Jeśli ATC% niskie = strona wejścia nie przekonuje do dodania produktu. Jeśli wejście do kasy% niskie przy wysokim ATC = coś blokuje w koszyku. <strong>Idealny lejek:</strong> ATC &gt;10%, wejście do kasy &gt;7%.<br><strong>Dziś lejek urywa się na wejściu do kasy.</strong> Między wejściem do kasy a Zakup% ginie największa część ludzi — to najdroższe miejsce w sklepie: dotarli, zaczęli płacić i nie skończyli.</p>
 
-    <div style="display:flex;gap:8px;margin-bottom:16px">
+    <div style="display:flex;gap:8px;margin-bottom:12px">
       <button class="month-tab" data-month="06" onclick="switchMonth('06')">Czerwiec</button>
       <button class="month-tab" data-month="07" onclick="switchMonth('07')">Lipiec</button>
       <button class="month-tab active" data-month="08" onclick="switchMonth('08')">Sierpień</button>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap">
+      <span style="font-size:11px;color:var(--faint);font-weight:600;margin-right:2px">Sortuj:</span>
+      <button class="sort-tab active" data-sort="traffic" onclick="setSortMode('traffic')">Ruch</button>
+      <button class="sort-tab" data-sort="conversion" onclick="setSortMode('conversion')">Konwersja</button>
+      <button class="sort-tab" data-sort="index" onclick="setSortMode('index')">Index</button>
     </div>
 
     <div class="card table-wrap" style="padding:0;overflow:hidden">
@@ -494,8 +609,12 @@ table.ci tr:last-child td { border-bottom: none; }
 <b>Jak czytać wiersze.</b> Strona z realnym ruchem botów ma <b>DWA</b> wiersze: <b>ALL TRAFFIC</b> (szary — wszystkie sesje) i <b>NO-BOT</b> (biały — po odsianiu crawlerów). Strona bez botów ma <b>JEDEN</b> wiersz (oznaczony „bez botów") — dwa identyczne rzędy obok siebie tylko uczyłyby nieufności do tabeli.<br><br>
 <b>Co wolno porównywać między wierszami:</b> liczby bezwzględne i procenty konwersji (ATC%, wejście do kasy%, Zakup%) — każdy wiersz ma własny, nieruchomy mianownik (swoje sesje).<br>
 <b>Czego nie wolno:</b> wskaźników liczonych względem średniej <b>całego sklepu</b> — dlatego <b>Index pokazujemy tylko w wierszu NO-BOT.</b> Średnia sklepu jest inna w każdej populacji (boty ją zaniżają), więc zestawianie indexu ALL z indexem NO-BOT nie mówi nic o stronie — mówi tylko o tym, że zmienił się mianownik.<br><br>
-<b>Pozycja w rankingu (#) jest uczciwie porównywalna</b> — to zdanie wewnątrz własnej populacji („która z tych 15 stron jest dziś najlepsza"), więc pokazujemy ją w obu wierszach, ze strzałką gdy zmienia się o 3 miejsca lub więcej.<br>
+<b>Pozycja w rankingu (#) jest uczciwie porównywalna</b> — to zdanie wewnątrz własnej populacji („która z tych 30 stron jest dziś najlepsza"), więc pokazujemy ją w obu wierszach, ze strzałką gdy zmienia się o 3 miejsca lub więcej.<br>
 Przykład: <code>homepage</code> — konwersja (Zakup%) rośnie z ALL do NO-BOT, ale pozycja w rankingu spada, bo reszta sklepu zyskała na odsianiu botów jeszcze mocniej. Odwrotnie <code>/collections/sklep</code>: miał więcej botów niż średnia sklepu, więc po filtrze skacze na szczyt rankingu.
+</div>
+
+    <div style="background:var(--b-soft);border:1px solid var(--b-line);border-left:4px solid var(--b-d);border-radius:6px;padding:10px 14px;margin:10px 0 0;font-size:12px;line-height:1.6;color:var(--b-d)">
+<b>O danych botowych.</b> Liczby botów w tej tabeli to odczyt z <b>27.08.2026</b> — Shopify przeklasyfikowuje sesje z ludzkich na botowe po fakcie, więc mogą jeszcze urosnąć. Liczby ludzkie są stabilne.
 </div>
 
     <div class="funnel-grid" style="display:none">
@@ -978,6 +1097,10 @@ Liczby cytowane w kolumnie „Wniosek" jako „poprzednia wersja" pochodzą ze <
     <div class="section-title">3a. Ranking ścieżek — top 20 <span>Clarity · 883 sesje z zakupem · 20.05–12.08</span></div>
     <p class="section-desc"><strong>Co to jest:</strong> Rzeczywiste sekwencje stron, które przeszli ludzie kończący zakupem. Nie model, nie średnia — nagrane przejścia.<br><strong>Do czego służy:</strong> Widać, ile kroków realnie dzieli wejście od kasy i które trasy się powtarzają. Poniżej dwudziestej pozycji zaczyna się ogon pojedynczych przypadków, którego nie da się optymalizować.</p>
 
+    <div style="background:var(--o-soft);border:1px solid var(--o-line);border-left:4px solid var(--o-d);border-radius:6px;padding:12px 15px;margin:0 0 14px;font-size:12.5px;line-height:1.7">
+      <b style="color:var(--o-d)">Pozycja 1 nie jest ścieżką.</b> Te 118 sesji (13,4%) to ludzie, którzy weszli prosto na <code>/cart</code> i kupili. Clarity tnie sesję po 15 minutach bezczynności, więc ich wcześniejsze przeglądanie zapisało się jako osobna, nieodtwarzalna wizyta. <b>Wiemy, że kupili. Nie wiemy, jak do tego doszli.</b> Odtworzenie wymagałoby danych z Shopify Abandoned Carts albo z systemu mailingowego.
+    </div>
+
     <div class="card table-wrap" style="padding:0">
       <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:560px">
         <thead><tr style="background:var(--surface)">
@@ -1132,10 +1255,6 @@ Liczby cytowane w kolumnie „Wniosek" jako „poprzednia wersja" pochodzą ze <
       </table>
     </div>
 
-    <div style="background:var(--o-soft);border:1px solid var(--o-line);border-left:4px solid var(--o-d);border-radius:6px;padding:12px 15px;margin:14px 0 0;font-size:12.5px;line-height:1.7">
-      <b style="color:var(--o-d)">Pozycja 1 nie jest ścieżką.</b> Te 118 sesji (13,4%) to ludzie, którzy weszli prosto na <code>/cart</code> i kupili. Clarity tnie sesję po 15 minutach bezczynności, więc ich wcześniejsze przeglądanie zapisało się jako osobna, nieodtwarzalna wizyta. <b>Wiemy, że kupili. Nie wiemy, jak do tego doszli.</b> Odtworzenie wymagałoby danych z Shopify Abandoned Carts albo z systemu mailingowego.
-    </div>
-
     <div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px">
       <div class="card" style="padding:14px">
         <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px">Punkty wejścia · 765 sesji</div>
@@ -1266,6 +1385,10 @@ Liczby cytowane w kolumnie „Wniosek" jako „poprzednia wersja" pochodzą ze <
 
     <div style="background:var(--r-soft);border:1px solid var(--r-line);border-left:4px solid var(--r);border-radius:6px;padding:11px 14px;margin:10px 0 0;font-size:12px;line-height:1.65;color:var(--r)">
       <b>Zastrzeżenie.</b> Liczby GA4 w tej tabeli zawierają boty — GA4 nie ma pola <code>human_or_bot_session</code>. Ponieważ boty rozkładają się nierówno (kolekcje 71%, HP 15%), indexy wejść katalogowych są tu <b>zaniżone</b>, a landingów zawyżone. Kierunek wniosku dla <code>rutyna</code> i HP się utrzymuje, ale wartości bezwzględne traktuj jako przybliżenie.
+    </div>
+
+    <div style="background:var(--o-soft);border:1px solid var(--o-line);border-left:4px solid var(--o);border-radius:6px;padding:11px 14px;margin:10px 0 0;font-size:12px;line-height:1.65">
+      <b style="color:var(--o-d)">Adnotacja 27.08.</b> Wiersze w tabeli sumują się do ok. 71,8% z 123 642 sesji GA4 — brakujący mianownik (~28%) to sesje bez <code>landingPage</code> (NOT_SET), pominięte tu jako osobny wiersz. Skorygowaliśmy w sekcji 5: te sesje to w ~85% TikTok Shop, nie realny ruch na żadne z powyższych wejść. Oznacza to, że „% ruchu" w tej tabeli jest liczone względem zawyżonego mianownika — realny udział każdego wejścia w ruchu <i>faktycznie trafiającym na stronę</i> jest wyższy niż pokazane. Przeliczenie wymaga nowego zapytania GA4 z wykluczonym NOT_SET — nie zrobiono go tutaj, żeby nie zgadywać liczb.
     </div>
   </div>
 
@@ -1472,10 +1595,10 @@ Liczby cytowane w kolumnie „Wniosek" jako „poprzednia wersja" pochodzą ze <
     <div class="blind-grid">
 
       <div class="blind-card">
-        <div class="blind-title">NOT_SET — Meta niewidoczna</div>
-        <div class="blind-num">1 437</div>
-        <div class="blind-desc">transakcji przypisanych do NOT_SET w GA4. Głównie Meta Ads — brak pagePath. 25 997 sesji "direct" bez URL.</div>
-        <div class="blind-fix">→ Fix: GTM custom parameter landingPage dla Meta traffic</div>
+        <div class="blind-title">NOT_SET — w ~85% TikTok Shop, nie Meta</div>
+        <div class="blind-num">21 591</div>
+        <div class="blind-desc"><strong style="color:var(--o-d)">Skorygowane 27.08:</strong> poprzednia wersja opisywała NOT_SET (21 591 sesji · 17,5% ruchu · 36,5% transakcji · CR 4,58%) jako ruch z przeglądarki wbudowanej w apkę Meta, która nie wysyła <code>page_view</code>. To błędne. Korelacja dzienna transakcji GA4 NOT_SET × Shopify <code>sales_channel=TikTok</code> (sierpień 1–25): <b>r = 0,988</b> — GA4 pokazuje o 1–7 transakcji więcej niż Shopify TikTok każdego dnia bez wyjątku (609 vs 516 trans, 32 697 zł vs 23 761 zł, AOV 53,69 zł vs 46,05 zł). Zamówienia z TikTok Shopu nie mają sesji ani strony wejścia — klient nigdy nie ląduje na glov.co, a Shopify i tak wysyła <code>purchase</code> do GA4. Pozostałe ~15% (ok. 93 trans, AOV ~96 zł) to najprawdopodobniej Meta in-app — mniejszościowa, nie główna przyczyna.</div>
+        <div class="blind-fix">→ To nie jest luka pomiarowa do naprawienia tagowaniem (GTM/landingPage). Tych zamówień nie ma prawa być w analizie ścieżek na tej stronie — żadna ścieżka na stronie do nich nie prowadzi. Wyklucz z mianownika CR/lejka zamiast próbować „doszacować".</div>
       </div>
 
       <div class="blind-card">
@@ -1499,6 +1622,10 @@ Liczby cytowane w kolumnie „Wniosek" jako „poprzednia wersja" pochodzą ze <
         <div class="blind-fix">→ Fix: Clarity filter sessions starting at / → zmapuj następne strony</div>
       </div>
 
+    </div>
+
+    <div style="margin-top:16px;background:var(--o-soft);border:1px solid var(--o-line);border-left:4px solid var(--o);border-radius:6px;padding:14px 16px;font-size:13px;line-height:1.7">
+      <b style="color:var(--o-d)">41% zamówień nie przechodzi przez sklep.</b> TikTok Shop ruszył w lipcu 2026 i w sierpniu odpowiadał za <b>516 z 1 247</b> zamówień oraz <b>23 761 z 112 148 zł</b> przychodu. Ten kanał nie ma ścieżki zakupowej na stronie — klient kupuje wewnątrz TikToka. Cała analiza ścieżek w tym raporcie (sekcje 2, 2b, 3, 3a, 3b) dotyczy kanału Online Store, czyli <b>59% zamówień i 79% przychodu</b>. AOV TikTok Shop: 46 zł, wobec 134 zł na Online Store.
     </div>
   </div>
 
@@ -1562,7 +1689,7 @@ Liczby cytowane w kolumnie „Wniosek" jako „poprzednia wersja" pochodzą ze <
             </tr>
           </tbody>
         </table>
-        <div class="note">Źródło: ShopifyQL <code>FROM sessions SHOW sessions GROUP BY human_or_bot_session</code>, pełny miesiąc (nie tylko top15 wejść z sekcji 2) — dlatego suma tu jest wyższa niż suma sesji w tabeli lejka.</div>
+        <div class="note">Źródło: ShopifyQL <code>FROM sessions SHOW sessions GROUP BY human_or_bot_session</code>, pełny miesiąc (nie tylko top30 wejść z sekcji 2) — dlatego suma tu jest wyższa niż suma sesji w tabeli lejka.</div>
       </div>
     </div>
   </div>
@@ -1583,11 +1710,11 @@ Liczby cytowane w kolumnie „Wniosek" jako „poprzednia wersja" pochodzą ze <
       </div>
       <div class="cta-item">
         <div class="num">03 — Ruch trzeba filtrować na stałe</div>
-        <div class="txt">Udział botów waha się <b>33–54%</b> dzień do dnia i rośnie. 1 437 transakcji siedzi w GA4 jako NOT_SET (głównie Meta, brak pagePath) — to największy pojedynczy blind spot w atrybucji.</div>
+        <div class="txt">Udział botów waha się <b>33–54%</b> dzień do dnia i rośnie. 1 437 transakcji siedzi w GA4 jako NOT_SET — w ~85% to TikTok Shop (korekta 27.08, sekcja 5), nie Meta — największy pojedynczy blind spot w atrybucji, ale nie do naprawienia tagowaniem.</div>
       </div>
     </div>
     <div class="cta-next">
-      <b>Co dalej:</b> (1) przenieś budżet Meta CPC z Homepage na <code>/collections/sklep</code> i PDP pumeks — sekcja 4; (2) audytuj PDP sleeping-beauty i luna-eye (×0,53 / ×0,57 przy dużym ruchu) zanim dosypiesz tam kampanie; (3) wepnij <code>human_or_bot_session</code> jako stały filtr w każdym kolejnym raporcie GA4/Meta, nie tylko w Shopify; (4) fix GTM <code>landingPage</code> dla ruchu Meta, żeby NOT_SET przestał chować 1 437 transakcji.
+      <b>Co dalej:</b> (1) przenieś budżet Meta CPC z Homepage na <code>/collections/sklep</code> i PDP pumeks — sekcja 4; (2) audytuj PDP sleeping-beauty i luna-eye (×0,53 / ×0,57 przy dużym ruchu) zanim dosypiesz tam kampanie; (3) wepnij <code>human_or_bot_session</code> jako stały filtr w każdym kolejnym raporcie GA4/Meta, nie tylko w Shopify; (4) wyklucz NOT_SET z mianownika analizy ścieżek zamiast próbować go „dotagować" — to w ~85% TikTok Shop, kanał bez ścieżki na stronie (korekta 27.08, sekcja 5).
     </div>
   </div>
 
@@ -1597,16 +1724,12 @@ Liczby cytowane w kolumnie „Wniosek" jako „poprzednia wersja" pochodzą ze <
 .month-tab { padding: 8px 18px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
 .month-tab:hover { background: var(--v-soft); color: var(--v-d); border-color: var(--faint); }
 .month-tab.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-.mode-tab { padding: 6px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
-.mode-tab:hover { background: var(--v-soft); color: var(--v-d); border-color: var(--v-line); }
-.mode-tab.active { background: var(--v); color: var(--bg); border-color: var(--v); }
+.sort-tab { padding: 6px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.sort-tab:hover { background: var(--v-soft); color: var(--v-d); border-color: var(--v-line); }
+.sort-tab.active { background: var(--v); color: var(--bg); border-color: var(--v); }
 .raw-sub { display:block; font-size: 10px; color: var(--faint); font-weight: 400; margin-top: 1px; }
 .raw-inline { color: var(--faint); font-weight: 400; }
-#funnel-table.hide-raw .raw-part { display: none !important; }
-#funnel-table.hide-hum .hum-part { display: none !important; }
 .ci-flip { font-size: 10px; margin-left: 3px; }
-.raw-total-part { display: none; }
-#funnel-table.mode-raw .raw-total-part { display: inline; }
 </style>
 
 <script>
@@ -1614,18 +1737,51 @@ Liczby cytowane w kolumnie „Wniosek" jako „poprzednia wersja" pochodzą ze <
 const CI_MAP = {
   'sklep': { ci: 3.16, label: '×3,16', cls: 'ci-pos' },
   'pumeks': { ci: 2.75, label: '×2,75', cls: 'ci-pos' },
+  // 'pumeks-kol' — ścieżka /collections/*/products/pumeks-... rozdzielona 27.08 od 'pumeks' (był ten sam
+  // klucz dla dwóch różnych wejść). Brak osobnego pomiaru dla wariantu kolekcyjnego → fallback z CI_MAP['other'].
+  'pumeks-kol': { ci: null, label: '—', cls: '' },
   'homepage': { ci: 0.90, label: '×0,90', cls: 'ci-neg' },
   'sleeping-beauty': { ci: 0.53, label: '×0,53', cls: 'ci-neg' },
   'skin-smoothing': { ci: 1.24, label: '×1,24', cls: 'ci-neu' },
   'zero-gravity': { ci: 1.58, label: '×1,58', cls: 'ci-pos' },
+  // 'zero-gravity-kol' — rozdzielone 27.08 od 'zero-gravity' (bug: klucz był wspólny dla /products/... i
+  // /collections/.../products/...). Fallback z CI_MAP['other'], bo nigdy nie było osobnego pomiaru.
+  'zero-gravity-kol': { ci: null, label: '—', cls: '' },
   'luna-eye': { ci: 0.57, label: '×0,57', cls: 'ci-neg' },
   'iconic-mitt': { ci: 1.37, label: '×1,37', cls: 'ci-pos' },
   'depilator': { ci: 1.42, label: '×1,42', cls: 'ci-pos' },
+  // 'depilator-kol' — rozdzielone 27.08 od 'depilator' (etykieta w shortName() już rozróżniała "(kol.)",
+  // ale getCIKey() wciąż zwracał wspólny klucz). Fallback z CI_MAP['other'], bo brak osobnego pomiaru.
+  'depilator-kol': { ci: null, label: '—', cls: '' },
+  // 'pumeks-depilator' / 'pumeks-depilator-kol' — zestaw 2w1 (pumeks+depilator) dostał w shortName() własną
+  // etykietę od dawna, ale getCIKey() wpadał w ogólny klucz 'pumeks' (bo ścieżka zawiera substring "pumeks").
+  // To osobny produkt (zestaw), nie wariant pumeksu — wydzielone 27.08, oba warianty na fallback 'other',
+  // bo nigdy nie było dla zestawu dedykowanego pomiaru CI.
+  'pumeks-depilator': { ci: null, label: '—', cls: '' },
+  'pumeks-depilator-kol': { ci: null, label: '—', cls: '' },
+  // 'pumeks-depilator-zestaw' / 'pumeks-depilator-velvet' — rozdzielone 27.08 od 'pumeks-depilator' przy
+  // rozszerzeniu do top30: „zestaw-pumeks-i-depilator...-bestsellers" i „...-velvet-nano-touch-kopia" to
+  // OSOBNE warianty produktu (inny URL, inna nazwa wariantu), nie ten sam zestaw 2w1 — wcześniej wpadały
+  // we wspólny klucz 'pumeks-depilator' i kolidowałyby etykietą, gdy oba weszły do tej samej trzydziestki (sierpień).
+  // Fallback 'other', bo nigdy nie było dla nich osobnego pomiaru CI.
+  'pumeks-depilator-zestaw': { ci: null, label: '—', cls: '' },
+  'pumeks-depilator-velvet': { ci: null, label: '—', cls: '' },
   'rekawice': { ci: 1.82, label: '×1,82', cls: 'ci-pos' },
   'en-eu': { ci: null, label: '—', cls: '' },
   'coolnails': { ci: 0.54, label: '×0,54', cls: 'ci-neg' },
+  // 'coolnails-page' / 'coolnails-pdp' — rozdzielone 27.08 od 'coolnails' przy rozszerzeniu do top30.
+  // Klucz 'coolnails' (CI ×0,54) był zmierzony konkretnie na /collections/coolnails (442 sesje, patrz sekcja 2b).
+  // Przy top30 do tabeli weszły też /pages/rutyna-coolnails (podstrona treściowa, nie kolekcja) i PDP
+  // pojedynczych lakierów CoolNails (marshmallow pen, classic pen) — dawały tę samą etykietę „Collection
+  // CoolNails" i ten sam zmierzony CI ×0,54, mimo że to zupełnie inne strony. Fallback 'other', bo dla
+  // podstrony i PDP nigdy nie było osobnego pomiaru.
+  'coolnails-page': { ci: null, label: '—', cls: '' },
+  'coolnails-pdp': { ci: null, label: '—', cls: '' },
   'dysk-2w1': { ci: 0, label: '×0', cls: 'ci-neg' },
   'biobased-brush': { ci: 1.21, label: '×1,21', cls: 'ci-neu' },
+  // 'biobased-brush-kol' — rozdzielone 27.08 od 'biobased-brush', tak jak zero-gravity/depilator/pumeks:
+  // wariant /collections/*/products/biodegradowalna-szczotka-... nie miał nigdy osobnego pomiaru. Fallback 'other'.
+  'biobased-brush-kol': { ci: null, label: '—', cls: '' },
   'other': { ci: null, label: '—', cls: '' },
 };
 
@@ -1650,19 +1806,33 @@ const RAW_CI_MAP = {
 };
 
 function getCIKey(path) {
+  const isKol = path.includes('/collections/');
   if (path === '/' || path === '') return 'homepage';
   if (path.includes('sklep') && !path.includes('products')) return 'sklep';
-  if (path.includes('pumeks')) return 'pumeks';
+  // Zestaw pumeks+depilator 2w1 to OSOBNY produkt — musi być sprawdzony przed ogólnym 'pumeks'
+  // (ścieżka zawiera substring "pumeks", więc wpadłaby w cudzy klucz).
+  // Warianty „zestaw...-bestsellers" i „...-velvet-nano-touch-kopia" — dodane 27.08 przy top30 — są
+  // sprawdzane PRZED ogólnym pumeks-i-depilator, bo to inne konkretne produkty, nie ten sam zestaw 2w1.
+  if (path.includes('pumeks-i-depilator') && path.includes('bestsellers')) return 'pumeks-depilator-zestaw';
+  if (path.includes('pumeks-i-depilator') && path.includes('velvet-nano-touch')) return 'pumeks-depilator-velvet';
+  if (path.includes('pumeks-i-depilator')) return isKol ? 'pumeks-depilator-kol' : 'pumeks-depilator';
+  if (path.includes('pumeks')) return isKol ? 'pumeks-kol' : 'pumeks';
   if (path.includes('sleeping-beauty')) return 'sleeping-beauty';
   if (path.includes('skin-smoothing')) return 'skin-smoothing';
-  if (path.includes('zero-gravity') || path.includes('klips')) return 'zero-gravity';
+  // /collections/.../products/... dostaje osobny klucz od /products/... — inaczej dwie różne strony
+  // (kolekcyjna i produktowa) pokazują ten sam Conversion Index, jakby to była jedna strona.
+  if (path.includes('zero-gravity') || path.includes('klips')) return isKol ? 'zero-gravity-kol' : 'zero-gravity';
   if (path.includes('luna-eye')) return 'luna-eye';
   if (path.includes('iconic-mitt')) return 'iconic-mitt';
   if (path.includes('2w1-dysk')) return 'dysk-2w1';
-  if (path.includes('biobased-brush')) return 'biobased-brush';
-  if (path.includes('depilator')) return 'depilator';
+  if (path.includes('biobased-brush')) return isKol ? 'biobased-brush-kol' : 'biobased-brush';
+  if (path.includes('depilator')) return isKol ? 'depilator-kol' : 'depilator';
   if (path.includes('rekawice')) return 'rekawice';
   if (path.includes('en-eu') || path.includes('en-gb') || path.includes('en-global')) return 'en-eu';
+  // CoolNails: podstrona treściowa i pojedyncze PDP lakierów — sprawdzane PRZED ogólnym 'coolnails'
+  // (który jest zmierzony konkretnie na /collections/coolnails, patrz komentarz w CI_MAP wyżej).
+  if (path.includes('/pages/') && path.includes('coolnails')) return 'coolnails-page';
+  if (path.includes('/products/') && path.includes('coolnails')) return 'coolnails-pdp';
   if (path.includes('coolnails')) return 'coolnails';
   return 'other';
 }
@@ -1673,26 +1843,42 @@ function isNonCommercial(path) {
 
 // rows: [path, sesje_ludzkie, atc_ludzkie, checkout_ludzkie(reached), zakup_ludzkie(completed), sesje_boty, atc_boty, checkout_boty(reached), zakup_boty(completed)]
 // Źródło: ShopifyQL FROM sessions SHOW sessions, sessions_with_cart_additions, sessions_that_reached_checkout, sessions_that_completed_checkout
-// GROUP BY landing_page_path, human_or_bot_session — per miesiąc, top15 wg sesji · no-bot. Dociągnięte 26.08 (kolumna Zakup%).
+// GROUP BY landing_page_path, human_or_bot_session — per miesiąc, top30 wg sesji · no-bot. Odświeżone 27.08.2026 (poprzednio top15,
+// odczyt sprzed kilku tygodni). isNonCommercial() nadal odsiewa manage-subscriptions/subscription-policy/contact — nie liczą się do trzydziestki.
 const MONTHS = {
   '06': {
     label: 'Czerwiec 2026',
     rows: [
       ['/collections/sklep', 3005, 424, 259, 120, 12533, 4, 4, 2],
       ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 2159, 283, 194, 106, 187, 1, 1, 0],
-      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 1914, 70, 34, 15, 0, 0, 0, 0],
+      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 1914, 70, 34, 15, 109, 1, 0, 0],
       ['/', 1452, 152, 118, 46, 764, 41, 34, 0],
-      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 1226, 134, 70, 31, 0, 0, 0, 0],
-      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1119, 171, 100, 46, 0, 0, 0, 0],
-      ['/products/depilator-z-nano-szkla-glov', 1078, 74, 48, 16, 0, 0, 0, 0],
-      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 1068, 52, 44, 17, 0, 0, 0, 0],
-      ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 444, 22, 9, 5, 0, 0, 0, 0],
+      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 1226, 134, 70, 31, 68, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1119, 171, 100, 46, 45, 0, 0, 0],
+      ['/products/depilator-z-nano-szkla-glov', 1078, 74, 48, 16, 91, 0, 0, 0],
+      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 1068, 52, 44, 17, 62, 0, 0, 0],
+      ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 444, 22, 9, 5, 39, 0, 0, 0],
       ['/collections/produkty-do-pielegnacji-ciala/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 397, 43, 28, 14, 0, 0, 0, 0],
-      ['/collections/rekawice-do-demakijazu', 363, 33, 22, 14, 0, 0, 0, 0],
-      ['/collections/produkty-do-pielegnacji-ciala/products/depilator-z-nano-szkla-glov', 346, 25, 9, 2, 0, 0, 0, 0],
+      ['/collections/rekawice-do-demakijazu', 363, 33, 22, 14, 43, 3, 3, 1],
+      ['/collections/produkty-do-pielegnacji-ciala/products/depilator-z-nano-szkla-glov', 346, 25, 9, 2, 30, 0, 0, 0],
       ['/en-eu', 223, 4, 2, 2, 240, 70, 69, 0],
-      ['/products/3w1-silikonowa-myjka-i-masazer-do-ciala-skory-glowy-i-plecow-bubble-burst', 217, 14, 5, 4, 0, 0, 0, 0],
-      ['/products/utwardzacz-do-paznokci-w-formie-pisaka-coolnails-marshmallow-nail-hardener-pen', 188, 4, 2, 1, 0, 0, 0, 0],
+      ['/products/3w1-silikonowa-myjka-i-masazer-do-ciala-skory-glowy-i-plecow-bubble-burst', 217, 14, 5, 4, 37, 0, 0, 0],
+      ['/products/utwardzacz-do-paznokci-w-formie-pisaka-coolnails-marshmallow-nail-hardener-pen', 188, 4, 2, 1, 35, 0, 0, 0],
+      ['/products/pumeks-i-depilator-z-nano-szkla-2w1', 186, 9, 4, 4, 0, 0, 0, 0],
+      ['/products/overnight-blowout-set-zestaw-do-stylizacji-wlosow-na-zimno', 119, 3, 0, 0, 0, 0, 0, 0],
+      ['/products/zestaw-pumeks-i-depilator-z-nano-szkla-glov-bestsellers', 109, 3, 3, 1, 0, 0, 0, 0],
+      ['/products/2w1-dysk-z-raczka-do-mycia-i-masazu-ciala', 104, 8, 3, 0, 0, 0, 0, 0],
+      ['/products/glov-coolcurltm-innowacyjna-lokowka-do-krecenia-wlosow-bez-uzycia-ciepla/', 95, 0, 0, 0, 124, 0, 0, 0],
+      ['/products/platki-led-luna-eye-z-etui-ladujacym-dla-rozswietlonej-i-odswiezonej-okolicy-oczu', 95, 4, 2, 1, 0, 0, 0, 0],
+      ['/products/jonizujaca-szczotka-do-ciala-glov-ionic-dry-body-brush', 94, 2, 1, 0, 0, 0, 0, 0],
+      ['/products/ultrachlonny-turban-do-wlosow-glov%C2%AE-hydroweave%E2%84%A2-twister', 94, 8, 6, 5, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-wlosow', 92, 9, 7, 5, 0, 0, 0, 0],
+      ['/products/grzebien-3d-do-lokow-i-fal-coolcurl%E2%84%A2', 92, 3, 1, 1, 0, 0, 0, 0],
+      ['/collections/coolnails', 91, 3, 3, 1, 0, 0, 0, 0],
+      ['/en-gb', 86, 2, 1, 1, 0, 0, 0, 0],
+      ['/products/zestaw-do-pielegnacji-stop-net-jet-feet-set-glov', 86, 7, 3, 0, 0, 0, 0, 0],
+      ['/collections/wyprzedaz', 81, 16, 8, 7, 0, 0, 0, 0],
+      ['/products/rekawica-do-mycia-twarzy-i-demakijazu-cery-mieszanej-glov-on-the-go', 80, 7, 4, 2, 0, 0, 0, 0],
     ]
   },
   '07': {
@@ -1700,61 +1886,110 @@ const MONTHS = {
     rows: [
       ['/collections/sklep', 3597, 446, 261, 132, 9169, 4, 1, 0],
       ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 2628, 402, 264, 124, 208, 1, 1, 0],
-      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 2349, 88, 55, 29, 0, 0, 0, 0],
-      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 2085, 209, 141, 70, 0, 0, 0, 0],
+      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 2349, 88, 55, 29, 112, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 2085, 209, 141, 70, 43, 1, 1, 0],
       ['/', 1477, 136, 100, 48, 832, 18, 20, 0],
-      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 1147, 113, 65, 37, 0, 0, 0, 0],
-      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 830, 47, 30, 16, 0, 0, 0, 0],
-      ['/products/depilator-z-nano-szkla-glov', 794, 66, 42, 21, 0, 0, 0, 0],
+      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 1147, 113, 65, 37, 66, 0, 0, 0],
+      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 830, 47, 30, 16, 49, 0, 0, 0],
+      ['/products/depilator-z-nano-szkla-glov', 794, 66, 42, 21, 52, 0, 0, 0],
       ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 665, 42, 25, 13, 0, 0, 0, 0],
       ['/collections/coolnails', 562, 18, 11, 4, 0, 0, 0, 0],
       ['/collections/rekawice-do-demakijazu', 371, 34, 23, 15, 0, 0, 0, 0],
       ['/products/platki-led-luna-eye-z-etui-ladujacym-dla-rozswietlonej-i-odswiezonej-okolicy-oczu', 294, 14, 11, 4, 0, 0, 0, 0],
       ['/collections/produkty-do-pielegnacji-ciala/products/pumeks-i-depilator-z-nano-szkla-2w1', 243, 40, 24, 12, 0, 0, 0, 0],
       ['/products/pumeks-i-depilator-z-nano-szkla-2w1', 218, 22, 14, 6, 0, 0, 0, 0],
-      ['/products/3w1-silikonowa-myjka-i-masazer-do-ciala-skory-glowy-i-plecow-bubble-burst', 213, 12, 5, 2, 0, 0, 0, 0],
+      ['/products/3w1-silikonowa-myjka-i-masazer-do-ciala-skory-glowy-i-plecow-bubble-burst', 213, 12, 5, 2, 44, 0, 0, 0],
+      ['/en-eu', 210, 10, 6, 0, 192, 25, 53, 0],
+      ['/products/overnight-blowout-set-zestaw-do-stylizacji-wlosow-na-zimno', 192, 3, 2, 1, 0, 0, 0, 0],
+      ['/pages/iconic-mitt-glov-wielopaki', 188, 16, 8, 4, 41, 0, 0, 0],
+      ['/products/zestaw-do-stylizacji-paznokci-glov-everyday-icons', 169, 5, 3, 0, 49, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-ciala/products/depilator-z-nano-szkla-glov', 168, 15, 11, 6, 0, 0, 0, 0],
+      ['/en-eu/collections/coolnails', 157, 11, 4, 2, 165, 0, 0, 0],
+      ['/products/2w1-dysk-z-raczka-do-mycia-i-masazu-ciala', 150, 9, 2, 2, 0, 0, 0, 0],
+      ['/products/grzebien-3d-do-lokow-i-fal-coolcurl%E2%84%A2', 142, 11, 4, 1, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-ciala/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 135, 15, 10, 0, 0, 0, 0, 0],
+      ['/products/glov-satynowy-czepek-do-wlosow', 123, 3, 2, 0, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-wlosow/products/biodegradowalna-szczotka-do-wlosow-glov-biobased-brush', 117, 3, 0, 0, 0, 0, 0, 0],
+      ['/en-gb', 114, 1, 0, 0, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-wlosow', 110, 17, 11, 7, 0, 0, 0, 0],
+      ['/pages/rutyna-coolnails', 108, 1, 1, 0, 0, 0, 0, 0],
+      ['/products/multitasking-extra-wide-headband', 99, 0, 1, 1, 0, 0, 0, 0],
     ]
   },
   '08': {
     label: 'Sierpień 2026 (1–25)',
     rows: [
       ['/', 4224, 390, 237, 78, 655, 40, 38, 2],
-      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 2044, 75, 48, 17, 0, 0, 0, 0],
+      ['/products/upiekszajaca-poduszka-nocna-glov-sleeping-beauty', 2044, 75, 48, 17, 77, 0, 0, 0],
       ['/collections/produkty-do-pielegnacji-wlosow/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1879, 197, 141, 66, 0, 0, 0, 0],
-      ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 1831, 255, 178, 99, 0, 0, 0, 0],
+      ['/products/pumeks-glov-z-nano-szkla-do-zrogowacialego-naskorka', 1831, 255, 178, 99, 124, 1, 0, 0],
       ['/collections/sklep', 1437, 251, 173, 100, 6122, 1, 1, 1],
-      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 1370, 87, 57, 16, 0, 0, 0, 0],
+      ['/products/platki-led-do-terapii-rozswietlajacej-i-odmladzajacej-okolice-oczu-luna-eye', 1370, 87, 57, 16, 71, 0, 0, 0],
       ['/products/klips-unoszacy-wlosy-u-nasady-zero-gravity', 1101, 57, 31, 13, 0, 0, 0, 0],
       ['/pages/iconic-mitt-glov-wielopaki', 1030, 123, 65, 29, 0, 0, 0, 0],
-      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 867, 78, 47, 22, 0, 0, 0, 0],
-      ['/products/2w1-dysk-z-raczka-do-mycia-i-masazu-ciala', 814, 7, 1, 0, 0, 0, 0, 0],
-      ['/products/biodegradowalna-szczotka-do-wlosow-glov-biobased-brush', 647, 77, 37, 18, 0, 0, 0, 0],
-      ['/products/depilator-z-nano-szkla-glov', 457, 30, 17, 13, 0, 0, 0, 0],
+      ['/products/rekawica-do-peelingu-i-mycia-ciala-glov-skin-smoothing', 867, 78, 47, 22, 70, 0, 0, 0],
+      ['/products/2w1-dysk-z-raczka-do-mycia-i-masazu-ciala', 814, 7, 1, 0, 53, 0, 0, 0],
+      ['/products/biodegradowalna-szczotka-do-wlosow-glov-biobased-brush', 647, 77, 37, 18, 64, 1, 0, 0],
+      ['/products/depilator-z-nano-szkla-glov', 457, 30, 17, 13, 62, 0, 0, 0],
       ['/collections/produkty-do-pielegnacji-ciala/products/depilator-z-nano-szkla-glov', 419, 63, 31, 18, 0, 0, 0, 0],
       ['/products/platki-led-luna-eye-z-etui-ladujacym-dla-rozswietlonej-i-odswiezonej-okolicy-oczu', 394, 36, 25, 10, 0, 0, 0, 0],
       ['/collections/produkty-do-pielegnacji-ciala/products/pumeks-i-depilator-z-nano-szkla-2w1', 305, 33, 15, 6, 0, 0, 0, 0],
+      ['/collections/rekawice-do-demakijazu', 292, 27, 19, 11, 0, 0, 0, 0],
+      ['/products/pumeks-i-depilator-z-nano-szkla-2w1', 243, 24, 15, 7, 0, 0, 0, 0],
+      ['/en-eu', 197, 7, 5, 0, 185, 50, 51, 0],
+      ['/products/zestaw-do-stylizacji-paznokci-glov-everyday-icons', 193, 5, 3, 0, 0, 0, 0, 0],
+      ['/products/silikonowe-nawilzajace-platki-pod-oczy-glov-infinity-eye-patches', 150, 3, 1, 0, 0, 0, 0, 0],
+      ['/products/zestaw-do-stylizacji-wlosow-glov-volume-whisperers', 149, 8, 6, 3, 0, 0, 0, 0],
+      ['/products/overnight-blowout-set-zestaw-do-stylizacji-wlosow-na-zimno', 128, 2, 2, 2, 0, 0, 0, 0],
+      ['/collections/coolnails', 122, 8, 4, 2, 0, 0, 0, 0],
+      ['/products/3w1-silikonowa-myjka-i-masazer-do-ciala-skory-glowy-i-plecow-bubble-burst', 119, 6, 2, 1, 0, 0, 0, 0],
+      ['/products/pumeks-i-depilator-z-nano-szkla-2w1-velvet-nano-touch-kopia', 117, 5, 5, 2, 0, 0, 0, 0],
+      ['/en-gb', 115, 2, 0, 0, 0, 0, 0, 0],
+      ['/cart', 112, 19, 14, 8, 0, 0, 0, 0],
+      ['/products/rekawica-do-mycia-twarzy-i-demakijazu-cery-mieszanej-glov-on-the-go', 95, 13, 6, 2, 70, 0, 0, 0],
+      ['/products/klasyczny-lakier-do-paznokci-w-nowoczesnej-formie-click-pen-coolnails-classic-nail-polish-pen', 92, 0, 0, 0, 0, 0, 0, 0],
+      ['/collections/produkty-do-pielegnacji-twarzy', 88, 4, 4, 3, 0, 0, 0, 0],
     ]
   }
 };
 
 function shortName(path) {
+  const isKol = path.includes('/collections/');
   if (path === '/' || path === '') return 'Homepage /';
   if (path.includes('sklep') && !path.includes('products')) return 'Collection /sklep';
-  if (path.includes('pumeks-i-depilator') || path.includes('pumeks-i-depilator')) return 'PDP pumeks + depilator 2w1';
-  if (path.includes('pumeks')) return 'PDP pumeks';
+  // Zestaw pumeks+depilator 2w1 — sprawdzany PRZED ogólnym 'pumeks' (substring match), własna etykieta
+  // + rozróżnienie kolekcyjna/produktowa ścieżka (były dawniej nierozróżnialne — ta sama etykieta dla obu).
+  // Warianty zestawu 2w1 — sprawdzane PRZED ogólnym „pumeks + depilator 2w1", bo to inne konkretne
+  // produkty (inny URL/wariant), nie ten sam zestaw. Dodane 27.08 przy rozszerzeniu do top30 — bez tego
+  // „zestaw...-bestsellers" i baza „pumeks-i-depilator-2w1" dostawały identyczną etykietę i kolidowały
+  // w tym samym miesiącu (sierpień).
+  if (path.includes('pumeks-i-depilator') && path.includes('bestsellers')) return 'PDP zestaw pumeks+depilator (bestsellers)';
+  if (path.includes('pumeks-i-depilator') && path.includes('velvet-nano-touch')) return 'PDP pumeks+depilator (velvet nano touch)';
+  if (path.includes('pumeks-i-depilator')) return isKol ? 'PDP pumeks + depilator 2w1 (kol.)' : 'PDP pumeks + depilator 2w1';
+  if (path.includes('pumeks')) return isKol ? 'PDP pumeks (kol.)' : 'PDP pumeks';
   if (path.includes('sleeping-beauty')) return 'PDP sleeping-beauty';
   if (path.includes('skin-smoothing')) return 'PDP skin-smoothing';
   if (path.includes('luna-eye-z-etui')) return 'PDP luna-eye z etui';
   if (path.includes('luna-eye')) return 'PDP luna-eye';
-  if (path.includes('zero-gravity') || (path.includes('klips') && path.includes('collections'))) return 'PDP zero-gravity (kol.)';
-  if (path.includes('klips')) return 'PDP zero-gravity (prod.)';
+  // BUG (do 27.08): `path.includes('zero-gravity')` samo w sobie było prawdziwe dla ŚCIEŻKI PRODUKTOWEJ
+  // (zawiera "zero-gravity" w nazwie), więc gałąź "(kol.)" wygrywała niezależnie od /collections/ —
+  // produktowa i kolekcyjna ścieżka dostawały tę samą etykietę "(kol.)". Naprawione: rozstrzyga wyłącznie isKol.
+  if (path.includes('zero-gravity') || path.includes('klips')) return isKol ? 'PDP zero-gravity (kol.)' : 'PDP zero-gravity (prod.)';
   if (path.includes('iconic-mitt')) return 'LP iconic-mitt wielopaki';
   if (path.includes('2w1-dysk')) return 'PDP 2w1-dysk masaż';
-  if (path.includes('biobased-brush')) return 'PDP biobased-brush 🆕';
-  if (path.includes('depilator') && path.includes('collections')) return 'PDP depilator (kol.)';
-  if (path.includes('depilator')) return 'PDP depilator';
+  if (path.includes('biobased-brush')) return isKol ? 'PDP biobased-brush (kol.) 🆕' : 'PDP biobased-brush 🆕';
+  if (path.includes('depilator')) return isKol ? 'PDP depilator (kol.)' : 'PDP depilator';
   if (path.includes('bubble-burst')) return 'PDP bubble-burst';
   if (path.includes('rekawice')) return 'Collection rekawice';
+  // CoolNails: podstrona treściowa i pojedyncze PDP lakierów — sprawdzane PRZED ogólną "Collection
+  // CoolNails". BUG (do 27.08): wszystkie trzy dostawały identyczną etykietę "Collection CoolNails",
+  // choć to inne strony (kolekcja / podstrona / PDP) — kolidowały przy rozszerzeniu do top30.
+  if (path.includes('/pages/') && path.includes('coolnails')) return 'Page CoolNails (rutyna)';
+  if (path.includes('/products/') && path.includes('coolnails')) {
+    if (path.includes('marshmallow')) return 'PDP CoolNails marshmallow pen';
+    if (path.includes('classic-nail-polish')) return 'PDP CoolNails classic pen';
+    return 'PDP CoolNails inny';
+  }
   if (path.includes('coolnails') && path.includes('en-eu')) return 'Collection CoolNails EN';
   if (path.includes('coolnails')) return 'Collection CoolNails';
   if (path.includes('en-eu') && path.length < 8) return 'International /en-eu';
@@ -1774,15 +2009,11 @@ function bar(pct, color, scale, faded) {
 function pl1(x) { return x.toFixed(1).replace('.', ','); }
 
 let CURRENT_MONTH = '08';
-let FUNNEL_MODE = 'both'; // 'human' | 'both' | 'raw'
+let SORT_MODE = 'traffic'; // 'traffic' | 'conversion' | 'index' — niezależne od miesiąca
 
-function setFunnelMode(mode) {
-  FUNNEL_MODE = mode;
-  document.querySelectorAll('.mode-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
-  const table = document.getElementById('funnel-table');
-  table.classList.toggle('hide-raw', mode === 'human');
-  table.classList.toggle('hide-hum', mode === 'raw');
-  table.classList.toggle('mode-raw', mode === 'raw');
+function setSortMode(mode) {
+  SORT_MODE = mode;
+  document.querySelectorAll('.sort-tab').forEach(t => t.classList.toggle('active', t.dataset.sort === mode));
   renderFunnel();
 }
 
@@ -1817,8 +2048,31 @@ function renderFunnel() {
     ? '<span style="color:var(--faint)">—</span>'
     : `<span class="ci-val ${c.cls}" style="font-size:${big?'13px':'11.5px'};${big?'':'opacity:.62'}">${c.label}</span>`;
 
+  // Kolejność FIZYCZNA wierszy w tabeli — niezależna od rankAllMap/rankHumMap powyżej (to zostaje
+  // "pozycją w rankingu wg konwersji", stała niezależnie od sortu). SORT_MODE steruje tylko tym, w jakiej
+  // kolejności wiersze się renderują; działa tak samo dla każdego miesiąca i przenumerowuje # automatycznie
+  // (rank poniżej to zwykły licznik pętli po posortowanej tablicy).
+  const sortedRows = commercialRows.slice().sort((rowA, rowB) => {
+    const [pathA, hSessA, , , hBuyA] = rowA;
+    const [pathB, hSessB, , , hBuyB] = rowB;
+    if (SORT_MODE === 'conversion') {
+      const crA = hSessA > 0 ? hBuyA / hSessA : -1; // brak danych → koniec listy
+      const crB = hSessB > 0 ? hBuyB / hSessB : -1;
+      return crB - crA;
+    }
+    if (SORT_MODE === 'index') {
+      const ciA = CI_MAP[getCIKey(pathA)] || CI_MAP['other'];
+      const ciB = CI_MAP[getCIKey(pathB)] || CI_MAP['other'];
+      const vA = (ciA.ci === null || ciA.ci === undefined) ? -1 : ciA.ci; // '—' → koniec listy
+      const vB = (ciB.ci === null || ciB.ci === undefined) ? -1 : ciB.ci;
+      return vB - vA;
+    }
+    // 'traffic' (domyślne) — po sesjach no-bot malejąco
+    return hSessB - hSessA;
+  });
+
   let rank = 1;
-  commercialRows.forEach(([path, hSess, hAtc, hChk, hBuy, bSess, bAtc, bChk, bBuy]) => {
+  sortedRows.forEach(([path, hSess, hAtc, hChk, hBuy, bSess, bAtc, bChk, bBuy]) => {
     const rawSess = hSess + bSess, rawAtc = hAtc + bAtc, rawChk = hChk + bChk, rawBuy = hBuy + bBuy;
     const botPct = rawSess > 0 ? (bSess / rawSess * 100) : 0;
     const hAtcPct = hSess > 0 ? hAtc / hSess * 100 : 0;
