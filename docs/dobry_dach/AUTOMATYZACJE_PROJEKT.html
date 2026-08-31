@@ -54,7 +54,7 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 @media(max-width:700px){.start .gauge{float:none;display:inline-block;margin-bottom:8px}}
 </style></head><body><div class="wrap">
 <h1>⚙️ Projekt automatyzacji A0–A7 — Dobry Dach</h1>
-<p class="sub">Kompletny projekt wszystkich automatów (wg wiedzy: procedury Jurewicza · baza Subiekt · kalendarze Google · plik marż Tomasza · warsztat) · setup: TECH_SETUP_WDROZENIOWY.md (VPS, konto read-only, cron) · blokery wiedzowe = pytania z pytania_robocze.html</p>
+<p class="sub">Kompletny projekt wszystkich automatów (wg wiedzy: procedury Jurewicza · baza Subiekt · kalendarze Google · plik marż Tomasza · warsztat) · setup: TECH_SETUP_WDROZENIOWY.md (maszyna w biurze, konto read-only, cron) · blokery wiedzowe = pytania z pytania_robocze.html</p>
 <div class="legend">
 <span class="badge ok">✅ odblokowane (gotowe do wdrożenia)</span>
 <span class="badge wip">🟡 prawie (czeka decyzje/potwierdzenia)</span>
@@ -64,7 +64,7 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 <h2>Architektura — skąd dane, gdzie działa</h2>
 <table>
 <tr><th>Źródło</th><th>Dostęp</th><th>Które automaty</th></tr>
-<tr><td>Baza Subiekt — <b>komandytowa</b></td><td>konto read-only <code>dd_auto</code> (SELECT) — pymssql</td><td>A0, A2, A3, A5, A6, A7</td></tr>
+<tr><td>Baza Subiekt — <b>komandytowa</b></td><td>konto read-only <code>dd_auto</code> (SELECT) — pymssql, przez LAN biura</td><td>A0, A2, A3, A5, A6, A7</td></tr>
 <tr><td>Baza Subiekt — <b>jawna</b></td><td>to samo konto, SELECT na drugiej bazie — <b>do zdobycia</b></td><td>A6 (faktury do klienta), A7 (komplet)</td></tr>
 <tr><td>Kalendarze Google (6 pojazdów)</td><td>OAuth (token działa, read/write)</td><td>A4</td></tr>
 <tr><td>SMTP poczta.dobry-dach.pl:587</td><td>loginy + hasła (.env)</td><td>A0, A4, A5, A6</td></tr>
@@ -95,7 +95,7 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 <p class="sub">Kolejność = po tym, co blokuje start. Wszystko poniżej to konkretne pozycje do odhaczenia — nie ma tu rzeczy „miłych do posiadania”.</p>
 <table>
 <tr><th>#</th><th>Co jest potrzebne</th><th>Typ</th><th>Status</th></tr>
-<tr><td>1</td><td><b>VPS Linux</b> + Python + pymssql + .env (TECH_SETUP_WDROZENIOWY.md)</td><td>infra</td><td>📋 projekt gotowy — <b>czeka decyzja: gdzie stawiamy</b></td></tr>
+<tr><td>1</td><td><b>Maszyna w biurze (always-on)</b> + Python + pymssql + .env (TECH_SETUP_WDROZENIOWY.md)</td><td>infra</td><td>📋 projekt gotowy — <b>czeka decyzja: gdzie stawiamy</b></td></tr>
 <tr><td>2</td><td><b>Konto SQL read-only <code>dd_auto</code></b> (SELECT) — u klienta, na obu bazach</td><td>infra</td><td>⏳ czeka klient — <b>blokuje A0, A2, A3, A5, A6, A7</b></td></tr>
 <tr><td>3</td><td><b>Baza JAWNA</b> — dostęp SELECT (nie tylko kopia): stamtąd wychodzą faktury do klienta</td><td>dane</td><td>⏳ czeka klient — <b>bez niej A6 pokaże pół obrazu</b></td></tr>
 <tr><td>4</td><td><b>Tabela: kategoria PH (CD, MR, LR…) → osoba → mail/telefon</b></td><td>dane</td><td>⏳ czeka klient — <b>blokuje A5</b></td></tr>
@@ -105,7 +105,7 @@ td{padding:8px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
 <tr><td>8</td><td>Licencja Sfera (zapis do Subiekta) — dotyczy wyłącznie A2</td><td>decyzja</td><td>⏳ do rozstrzygnięcia — <b>A2 jedyny automat piszący</b></td></tr>
 <tr><td>9</td><td>Odpowiedzi na 23 pytania-blokery (pytania_robocze.html)</td><td>wiedza</td><td>✅ <b>17/23 odpowiedziane (25.08)</b> — 6 zostało w runbooku</td></tr>
 </table>
-<div class="flow">Minimalny zestaw do startu A6: #1 (VPS) + #2 (dd_auto) + #3 (baza jawna) + #5 (godzina/odbiorcy). Reszta dobudowywana bez przestojów.</div>
+<div class="flow">Minimalny zestaw do startu A6: #1 (maszyna w biurze) + #2 (dd_auto) + #3 (baza jawna) + #5 (godzina/odbiorcy). Reszta dobudowywana bez przestojów.</div>
 
 <h2>A0 — Rejestr zapytań + follow-up</h2>
 <div class="aut"><div class="card">
