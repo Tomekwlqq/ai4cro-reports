@@ -393,7 +393,10 @@ function renderLive(key){
   </div>`;
 
   // Lejek konwersji (bazowy) — dzień — POD Shopify (28.08: lejki zastępują sekcję Ruch & Konwersja)
-  h+=renderFunnel(null,FIRST,LAST);
+  // FIX 31.08: lejek podlega tej samej regule co reszta Live — dzień aktywnej zakładki (Dziś/Wczoraj)
+  const _prevR02=R02_DAY; R02_DAY=data.date||null;
+  h+=renderFunnel(null,data.date,data.date);
+  R02_DAY=_prevR02;
 
   // Δ vs mediana dnia tygodnia — 8 tyg wstecz, ten sam dzień tygodnia (28.08.2026)
   const wdnGen=['niedzieli','poniedziałku','wtorku','środy','czwartku','piątku','soboty'];
