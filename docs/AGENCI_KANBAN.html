@@ -1,0 +1,1079 @@
+<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agenci — kanban setupu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--violet:#7c5cff;--violet-d:#5b3fd6;--ink:#14121c;--ink-2:#4a4658;--ink-3:#7d7890;
+--bg:#f6f5f9;--card:#fff;--line:#e6e3ef;--ok:#0f9d6b;--warn:#d97706;--haiku:#0891b2;--dep:#b91c1c;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 'Space Grotesk',system-ui,-apple-system,sans-serif;}
+.wrap{max-width:1600px;margin:0 auto;padding:28px 18px 80px}
+header.top{margin-bottom:26px}
+.kicker{font:500 11px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--violet-d)}
+h1{font-size:30px;line-height:1.15;margin:10px 0 8px;letter-spacing:-.02em}
+.lead{color:var(--ink-2);max-width:70ch;margin:0 0 18px}
+.stats{display:flex;flex-wrap:wrap;gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:120px}
+.stat b{display:block;font-size:24px;line-height:1.1}
+.stat span{font:500 10px/1.3 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;align-items:start;padding-bottom:18px}
+.kol{background:#efedf5;border:1px solid var(--line);border-radius:16px;padding:14px;min-width:0}
+.kol.paczka{background:#f1f1f4;opacity:.94}
+.kol-head{position:relative;padding-bottom:12px;border-bottom:1px dashed var(--line);margin-bottom:12px}
+.kol-head h2{font-size:17px;margin:6px 0 4px;letter-spacing:-.01em}
+.kol-head p{margin:0;font-size:12.5px;color:var(--ink-3);padding-right:38px}
+.licznik{position:absolute;top:0;right:0;background:var(--violet);color:#fff;font:700 12px/28px 'JetBrains Mono',monospace;
+width:28px;height:28px;border-radius:9px;text-align:center}
+.kol.paczka .licznik{background:var(--ink-3)}
+.karty{display:flex;flex-direction:column;gap:10px}
+.karta{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:13px 14px;box-shadow:0 1px 2px rgba(20,18,28,.04)}
+.karta.autorski{border-left:3px solid var(--violet)}
+.k-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.k-head h3{margin:0;font-size:15.5px;letter-spacing:-.01em}
+.kb{font:400 10px 'JetBrains Mono',monospace;color:var(--ink-3)}
+.wywolanie{display:block;font:500 11px/1.5 'JetBrains Mono',monospace;background:#f3f1fb;color:var(--violet-d);
+border-radius:7px;padding:5px 8px;margin:8px 0;white-space:normal;overflow-wrap:anywhere}
+.opis{margin:0 0 10px;font-size:13.2px;color:var(--ink-2)}
+.petla{display:flex;flex-direction:column;gap:3px;border-radius:9px;padding:7px 9px;margin-bottom:10px;background:#f7f6fa}
+.petla .pill{font:500 10.5px 'JetBrains Mono',monospace;letter-spacing:.04em}
+.petla .pt{font-size:11.5px;color:var(--ink-3);line-height:1.4}
+.petla-full{background:#e7f7f0}.petla-full .pill{color:var(--ok)}
+.petla-read{background:#f3f1fb}.petla-read .pill{color:var(--violet-d)}
+.petla-wiki{background:#eaf6fa}.petla-wiki .pill{color:var(--haiku)}
+.petla-none .pill{color:var(--ink-3)}
+.k-foot{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;border-top:1px solid var(--line);padding-top:9px}
+.meta{display:flex;flex-direction:column}
+.lbl{font:500 9.5px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.val{font-size:12.2px;font-weight:500}
+.m-oszcz{color:var(--ok)}.m-haiku{color:var(--haiku)}.m-warn{color:var(--warn)}
+.link{margin-left:auto;font:500 11.5px 'JetBrains Mono',monospace;color:var(--violet-d);text-decoration:none;
+border:1px solid var(--line);border-radius:7px;padding:4px 8px}
+.link:hover{background:#f3f1fb}
+.stopka{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3);max-width:80ch}
+.stopka code{font-family:'JetBrains Mono',monospace;font-size:11.5px}
+@media (max-width:760px){
+ .board{grid-template-columns:1fr}
+ h1{font-size:24px}
+ .wywolanie{font-size:10px}
+ .k-foot{gap:6px 10px}
+}
+</style></head><body><div class="wrap">
+<header class="top">
+ <span class="kicker">inwentarz setupu · 03.09.2026</span>
+ <h1>Agenci — kto siedzi w maszynie</h1>
+ <p class="lead">Wszystko z <code>~/.claude/agents/</code>. Pierwsze cztery kolumny to agenci pisani pod ten setup; dalej paczki zewnętrzne (GSD, SEO, pm-skills), które przyszły gotowe.</p>
+ <div class="stats">
+  <div class="stat"><b>80</b><span>agentów łącznie</span></div>
+  <div class="stat"><b>24</b><span>autorskich</span></div>
+  <div class="stat"><b>10</b><span>z pełną pętlą uczenia</span></div>
+  <div class="stat"><b>5</b><span>tylko czyta wiedzę</span></div>
+ </div>
+</header>
+<div class="board">
+<section class="kol wlasne"><div class="kol-head"><span class="kicker">wlasne</span>
+        <h2>Strategia i decyzje</h2><p>Myślenie: kierunek, weryfikacja, oferta, algorytm produktu.</p><span class="licznik">6</span></div>
+        <div class="karty"><article class="karta autorski">
+ <header class="k-head"><h3>strateg</h3><span class="kb">22 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "strateg")</code>
+ <p class="opis">Bramka jakości MYŚLENIA strategicznego — sprawdza czy CEP to sytuacja a nie atrybut, czy pytanie to głos klienta a nie banał generatora. Czyta ten sam kanon co engine który pisał artefakt, więc weryfikuje wg metodologii, nie wg teorii z głowy. Zwraca werdykt P0–P3 z konkretem, nie naprawia sam.</p>
+ <div class="petla petla-full"><span class="pill">🔁 pętla pełna</span><span class="pt">Pełna pętla — czyta rejestr nauk i dopisuje do niego po korekcie Tomka</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">23.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">03.09.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/strateg.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>audi-strateg</h3><span class="kb">5 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "audi-strateg")</code>
+ <p class="opis">Głowa nad kierunkiem cross-project — odpowiednik Tomka w Claude dla decyzji strategicznych między EEL, GEO, GLOV, Plichtą. Sprawdza czy kierunek gra z filozofią (3D Commerce, SPACE, Total Adaptability) i czy ROI się spina. Hamulec przed obietnicą wobec klienta, nie wykonawca.</p>
+ <div class="petla petla-wiki"><span class="pill">🧠 Wiki</span><span class="pt">Odpytuje Wiki Brain (ctx_search) przed netem — bez rejestru nauk</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">23.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">23.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/audi-strateg.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>produkt-architekt</h3><span class="kb">5 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "produkt-architekt")</code>
+ <p class="opis">Jedyny agent który myśli RAZEM z Tomkiem, a nie za niego ani nad nim. Bierze surowy pomysł i strukturyzuje go w algorytm — kroki, wejścia, wyjścia, bramki decyzyjne + szkielet co budować w jakiej kolejności. Nie implementuje i nie ocenia — współtworzy.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">23.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">23.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/produkt-architekt.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>algorytm-serwisu</h3><span class="kb">16 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "algorytm-serwisu")</code>
+ <p class="opis">Architekt działania serwisów — produkuje dwa artefakty w tej kolejności: PIPELINE (co po czym, co wchodzi/wychodzi, od czego zależy) i METODOLOGIĘ (kryteria, progi, tablice decyzyjne, bramki). Oba na tyle konkretne, że da się z nich kodować bez dopytywania. Wołasz gdy istniejący dokument jest opisem zamiast procedury.</p>
+ <div class="petla petla-read"><span class="pill">📖 czyta nauki</span><span class="pt">Czyta rejestr LEARNINGS na wejściu — zapisu zwrotnego brak</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">23.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">23.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/algorytm-serwisu.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>head-of-sales</h3><span class="kb">10 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "head-of-sales")</code>
+ <p class="opis">Buduje oferty i wyceny albo robi werdykt na gotowej ofercie (audyt cenowy). Drabina cenowa, pakietowanie, obrona ceny, kwalifikacja klienta. Nie dotyka delivery ani strategii produktu.</p>
+ <div class="petla petla-wiki"><span class="pill">🧠 Wiki</span><span class="pt">Odpytuje Wiki Brain (ctx_search) przed netem — bez rejestru nauk</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">23.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">23.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/head-of-sales.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>ads-strateg</h3><span class="kb">7 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "ads-strateg")</code>
+ <p class="opis">Strateg reklam kreatywnych — statyki, UGC, karuzele. Zna system Denney (3 warstwy, 7 formatów, 8 mechanik copy, awareness gap) i Suby (swipe file, hook engine, volume, scent) plus maszynkę brief_maszyna K0–K7. Ścieżka: URL produktu → brief → kreacja → sędzia.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-warn">domyślny (dziedziczy)</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">13.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">18.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/ads-strateg.md">instrukcja ↗</a>
+ </footer>
+</article></div></section>
+<section class="kol wlasne"><div class="kol-head"><span class="kicker">wlasne</span>
+        <h2>AI4CRO / audyt sklepów</h2><p>Rdzeń agencji — porządek, research, UX, jakość, audyt kliencki.</p><span class="licznik">6</span></div>
+        <div class="karty"><article class="karta autorski">
+ <header class="k-head"><h3>ai4cro-po</h3><span class="kb">12 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "ai4cro-po")</code>
+ <p class="opis">Hardkorowy trzymacz porządku AI4CRO — wie gdzie wszystko leży i pilnuje żeby nikt nie budował od zera. Bramka przed każdą robotą EEL: „czy to już jest? gdzie? czego użyć zamiast pisać nowe?”. Nie doradza filozoficznie i nie odpala audytu.</p>
+ <div class="petla petla-full"><span class="pill">🔁 pętla pełna</span><span class="pt">Pełna pętla — czyta rejestr nauk i dopisuje do niego po korekcie Tomka</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">23.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">03.09.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/ai4cro-po.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>ai4cro-researcher</h3><span class="kb">11 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "ai4cro-researcher")</code>
+ <p class="opis">Bada JEDEN proces zakupowy jednego konsumenta w całym ekosystemie — reklama → strona → ścieżka → finalizacja, nie wycinek jednego produktu. Visual mapping, GEO, SEO, CRO, GA4 i taktyki traktuje jako warstwy tego samego procesu (WARSTWY_PLAYBOOK 0–12). Szuka emergencji z łączenia warstw i rozwija zasady autorekomendacji.</p>
+ <div class="petla petla-full"><span class="pill">🔁 pętla pełna</span><span class="pt">Pełna pętla — czyta rejestr nauk i dopisuje do niego po korekcie Tomka</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">23.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">03.09.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/ai4cro-researcher.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>ai4cro-ux</h3><span class="kb">18 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "ai4cro-ux")</code>
+ <p class="opis">Złota zasada: każdy audyt UX, Vision i CRO robi TEN agent, nigdy model z wolnej ręki. Ocenia elementy sklepu jako elementy — klikalność, rozmiar, kontrast, sterowanie, zachowanie na telefonie — na bazie reguł i kart oceny. Nie ocenia treści komunikatów, bo to marketing, nie UX.</p>
+ <div class="petla petla-read"><span class="pill">📖 czyta nauki</span><span class="pt">Czyta rejestr LEARNINGS + odpytuje Wiki (ctx_search) — zapisu brak</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">23.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">03.09.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/ai4cro-ux.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>ai4cro-quality</h3><span class="kb">8 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "ai4cro-quality")</code>
+ <p class="opis">Junior Quality — ostatnia bramka przed Tomkiem, pracuje na gotowym outpucie wykonawcy. Przepuszcza przez twardą checklistę kanonu: hierarchia STRONA→SHOPPER→AKCJE→DANE, reko w formacie Element→Akcja→Event, REALNY dowód (screenshot, nie rc=0). Zwraca P0–P3, nie naprawia sam.</p>
+ <div class="petla petla-full"><span class="pill">🔁 pętla pełna</span><span class="pt">Pełna pętla — czyta rejestr nauk i dopisuje do niego po korekcie Tomka</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">23.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">03.09.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/ai4cro-quality.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>cortex-lab</h3><span class="kb">6 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "cortex-lab")</code>
+ <p class="opis">Zespół agentowy do audytów klientów EEL — lead orkiestruje 4 teammates per warstwa (visual / ga4 / category / geo) plus validator z Truth Checkerem. Wołany przy nowym kliencie EEL, audycie referencyjnym GLOV albo pełnym runie Cortex dla Plichty. Cięższy kaliber niż pojedynczy skill audytowy.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">23.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">23.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/cortex-lab.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>geo-po</h3><span class="kb">12 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "geo-po")</code>
+ <p class="opis">Dwie domeny w jednej głowie: Product Owner GEO PDP Optimizer (CS = moat, oba algorytmy, jedno miejsce = GEO_HUB) i opiekun METODOLOGII AUDYTU 360 SEO/GEO V5.2. Pilnuje 13 modułów i 4 reguł, z których najważniejsza to R2 Repro. Uwaga: „GEO” w audycie = gotowość strony klienta na AI, co to co innego niż projekt GEO PDP.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">19.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">19.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/geo-po.md">instrukcja ↗</a>
+ </footer>
+</article></div></section>
+<section class="kol wlasne"><div class="kol-head"><span class="kicker">wlasne</span>
+        <h2>Landing Page i GLOV</h2><p>Od argumentu do wgranego motywu na Shopify.</p><span class="licznik">5</span></div>
+        <div class="karty"><article class="karta autorski">
+ <header class="k-head"><h3>lp-strateg</h3><span class="kb">16 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "lp-strateg")</code>
+ <p class="opis">ŚWIAT A landing page&#x27;ów — buduje argument sprzedażowy, oś komunikacji i ofertę zanim ktokolwiek napisze linię copy. Ścieżka CS→CEP→luka→argument→bramki P1–P6. Nie dotyka liquida, CSS-a ani Shopify CLI.</p>
+ <div class="petla petla-full"><span class="pill">🔁 pętla pełna</span><span class="pt">Pełna pętla — czyta rejestr nauk i dopisuje do niego po korekcie Tomka</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">01.09.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">02.09.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/lp-strateg.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>lp-builder</h3><span class="kb">8 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "lp-builder")</code>
+ <p class="opis">ŚWIAT B landing page&#x27;ów — fizyczna egzekucja na Shopify: liquid, CSS, assety, focal pointy, bramki E1–E10. Wchodzi dopiero gdy jest gotowy brief strategiczny. Nie wymyśla argumentu ani copy.</p>
+ <div class="petla petla-full"><span class="pill">🔁 pętla pełna</span><span class="pt">Pełna pętla — czyta rejestr nauk i dopisuje do niego po korekcie Tomka</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">02.09.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">03.09.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/lp-builder.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>lp-quality-check</h3><span class="kb">4 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "lp-quality-check")</code>
+ <p class="opis">Wizualna weryfikacja LP GLOV — dostaje URL preview, robi screenshot i interpretuje każdą sekcję wg LP_VISUAL_SPEC.md. Zwraca listę konkretnych poprawek do CSS/liquid, nie ogólniki. Po korekcie Tomka dopisuje wpis do LP_LEARNINGS.</p>
+ <div class="petla petla-full"><span class="pill">🔁 pętla pełna</span><span class="pt">Pełna pętla — czyta rejestr nauk i dopisuje do niego po korekcie Tomka</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">31.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">03.09.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/lp-quality-check.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>glov-lp-deploy</h3><span class="kb">5 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "glov-lp-deploy")</code>
+ <p class="opis">Zarządza theme ID (visual/preview) i pushuje sekcje liquid, CSS oraz obrazki do właściwego motywu Shopify GLOV. Weryfikuje wynik screenshotem, nie exit codem. Wołasz gdy składasz albo aktualizujesz LP na sklepie.</p>
+ <div class="petla petla-full"><span class="pill">🔁 pętla pełna</span><span class="pt">Pełna pętla — czyta rejestr nauk i dopisuje do niego po korekcie Tomka</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">31.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">01.09.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/glov-lp-deploy.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>html-editor</h3><span class="kb">4 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "html-editor")</code>
+ <p class="opis">Wykonawca poprawek-pierdół w gotowych dokumentach HTML — literówki, sformułowania, przestawki, liczby, ton. Robi je skryptem Python i weryfikuje na renderze. Nie projektuje, nie dodaje treści od siebie, nie rusza struktury.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">03.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">19.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/html-editor.md">instrukcja ↗</a>
+ </footer>
+</article></div></section>
+<section class="kol wlasne"><div class="kol-head"><span class="kicker">wlasne</span>
+        <h2>Wykonawcy i infrastruktura</h2><p>Robota masowa, recon, pętle, setup, opiekunowie klientów.</p><span class="licznik">7</span></div>
+        <div class="karty"><article class="karta autorski">
+ <header class="k-head"><h3>loob</h3><span class="kb">8 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "loob")</code>
+ <p class="opis">Orkiestrator pracy w pętli i metodzie graph, niezależnie od tematu zadania. Zarządza batchem, checkpointami JSON (resume po przerwaniu), fan-outem subagentów i raportem HTML na końcu. Wołasz przy dużej liście elementów do przejścia, nie przy zadaniu na 2 linijki.</p>
+ <div class="petla petla-full"><span class="pill">🔁 pętla pełna</span><span class="pt">Pełna pętla — czyta rejestr nauk i dopisuje do niego po korekcie Tomka</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">30.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">02.09.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/loob.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>worker-46</h3><span class="kb">3 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "worker-46")</code>
+ <p class="opis">Generyczny wykonawca na Sonnet 4.6 — modelu OSZCZĘDNYM. Bierze konkretne, dobrze opisane zadanie: edycje plików, transformacje danych, batch z osądem, dopisywanie kodu wg wzorca. Ma zastępować general-purpose wszędzie gdzie robota wymaga czytania ze zrozumieniem, ale nie architektury.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">26.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">26.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/worker-46.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>net-researcher</h3><span class="kb">4 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "net-researcher")</code>
+ <p class="opis">Tani zwiadowca netowy na Haiku — surowy recon zanim wjedzie droższy agent. Sprawdza fakt, czyta docsy, odpowiada czy X ma API/MCP/integrację. Zwraca fakty, nie rekomendacje.</p>
+ <div class="petla petla-wiki"><span class="pill">🧠 Wiki</span><span class="pt">Odpytuje Wiki Brain (ctx_search) przed netem — bez rejestru nauk</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku 4.5</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">27.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">19.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/net-researcher.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>pan-setup</h3><span class="kb">4 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "pan-setup")</code>
+ <p class="opis">Ziom który wie wszystko o setupie: hooki, skille, agenci, projekty, pamięć, automaty launchd/cron, MCP, ścieżki, konwencje. Jego mózg to SETUP_MAP.md, którą sam dopisuje gdy coś się zmieni. Domyślnie doradza — grzebie w plikach dopiero na wyraźne „zrób/napraw”.</p>
+ <div class="petla petla-full"><span class="pill">🔁 pętla pełna</span><span class="pt">Pełna pętla — czyta rejestr nauk i dopisuje do niego po korekcie Tomka</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">19.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/pan-setup.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>cs-worker</h3><span class="kb">3 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "cs-worker")</code>
+ <p class="opis">Worker Opiekuna Klienta dla dowolnego klienta — czyta JSONy i CSV, liczy staty, generuje zestawienia, aktualizuje SESSION_BRIDGE / STATUS / Historię działań. Nie woła innych agentów. Wołany wyłącznie przez skille /cs-* z briefem zawierającym ścieżki z CS_PROFIL.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">17.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">17.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/cs-worker.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>cs-sejf-worker</h3><span class="kb">3 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "cs-sejf-worker")</code>
+ <p class="opis">DEPRECATED od 17.07.2026 — zastąpiony generycznym cs-worker. Robił operacje data+admin dla SejfZone. Zostaje wyłącznie do potwierdzenia migracji; nie wołaj go w nowej robocie.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">17.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">17.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/cs-sejf-worker.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta autorski">
+ <header class="k-head"><h3>ecszef</h3><span class="kb">2 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "ecszef")</code>
+ <p class="opis">Kierownik projektu ECOMMS 5.0 — własnego sklepu e-commerce w energetyce domowej. Pilnuje blueprintu E0–E8, BUILD_PLANu (tory A/B), bramek i decyzji. Konsumuje metodologie GEO; wołaj na start każdej sesji w Own_shop / ecomms5-template.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-warn">domyślny (dziedziczy)</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">23.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">23.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/ecszef.md">instrukcja ↗</a>
+ </footer>
+</article></div></section>
+<section class="kol paczka"><div class="kol-head"><span class="kicker">paczka</span>
+        <h2>GSD — pipeline budowania</h2><p>Paczka Get Shit Done: research → roadmap → plan → egzekucja → weryfikacja.</p><span class="licznik">33</span></div>
+        <div class="karty"><article class="karta">
+ <header class="k-head"><h3>gsd-advisor-researcher</h3><span class="kb">5 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-advisor-researcher")</code>
+ <p class="opis">Researches a single gray area decision and returns a structured comparison table with rationale. Spawned by discuss-phase advisor mode.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-advisor-researcher.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-ai-researcher</h3><span class="kb">6 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-ai-researcher")</code>
+ <p class="opis">Researches a chosen AI framework&#x27;s official docs to produce implementation-ready guidance — best practices, syntax, core patterns, and pitfalls distilled for the specific use case. Writes the Framework Quick Reference and Implementation Guidance sections of AI-SPEC.md. Spawned by /gsd:ai-integration…</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-ai-researcher.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-assumptions-analyzer</h3><span class="kb">4 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-assumptions-analyzer")</code>
+ <p class="opis">Deeply analyzes codebase for a phase and returns structured assumptions with evidence. Spawned by discuss-phase assumptions mode.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-assumptions-analyzer.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-code-fixer</h3><span class="kb">31 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-code-fixer")</code>
+ <p class="opis">Applies fixes to code review findings from REVIEW.md. Reads source files, applies intelligent fixes, and commits each fix atomically. Spawned by /gsd:code-review --fix.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-code-fixer.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-code-reviewer</h3><span class="kb">16 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-code-reviewer")</code>
+ <p class="opis">Reviews source files for bugs, security issues, and code quality problems. Produces structured REVIEW.md with severity-classified findings. Spawned by /gsd:code-review.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-code-reviewer.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-codebase-mapper</h3><span class="kb">20 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-codebase-mapper")</code>
+ <p class="opis">Explores codebase and writes structured analysis documents. Spawned by map-codebase with a focus area (tech, arch, quality, concerns). Writes documents directly to reduce orchestrator context load.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-codebase-mapper.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-debug-session-manager</h3><span class="kb">9 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-debug-session-manager")</code>
+ <p class="opis">Manages multi-cycle /gsd:debug checkpoint and continuation loop in isolated context. Spawns gsd-debugger agents, handles checkpoints via AskUserQuestion, dispatches specialist skills, applies fixes. Returns compact summary to main context. Spawned by /gsd:debug command.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-debug-session-manager.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-debugger</h3><span class="kb">45 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-debugger")</code>
+ <p class="opis">Investigates bugs using scientific method, manages debug sessions, handles checkpoints. Spawned by /gsd:debug orchestrator.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-debugger.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-doc-classifier</h3><span class="kb">7 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-doc-classifier")</code>
+ <p class="opis">Classifies a single planning document as ADR, PRD, SPEC, DOC, or UNKNOWN. Extracts title, scope summary, and cross-references. Spawned in parallel by /gsd:ingest-docs. Writes a JSON classification file and returns a one-line confirmation.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-doc-classifier.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-doc-synthesizer</h3><span class="kb">9 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-doc-synthesizer")</code>
+ <p class="opis">Synthesizes classified planning docs into a single consolidated context. Applies precedence rules, detects cross-ref cycles, enforces LOCKED-vs-LOCKED hard-blocks, and writes INGEST-CONFLICTS.md with three buckets (auto-resolved, competing-variants, unresolved-blockers). Spawned by /gsd:ingest-docs.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-doc-synthesizer.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-doc-verifier</h3><span class="kb">12 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-doc-verifier")</code>
+ <p class="opis">Verifies factual claims in generated docs against the live codebase. Returns structured JSON per doc.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-doc-verifier.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-doc-writer</h3><span class="kb">37 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-doc-writer")</code>
+ <p class="opis">Writes and updates project documentation. Spawned with a doc_assignment block specifying doc type, mode (create/update/supplement), and project context.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-doc-writer.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-domain-researcher</h3><span class="kb">6 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-domain-researcher")</code>
+ <p class="opis">Researches the business domain and real-world application context of the AI system being built. Surfaces domain expert evaluation criteria, industry-specific failure modes, regulatory context, and what &quot;good&quot; looks like for practitioners in this field — before the eval-planner turns it into measurab…</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-domain-researcher.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-eval-auditor</h3><span class="kb">7 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-eval-auditor")</code>
+ <p class="opis">Retroactive audit of an implemented AI phase&#x27;s evaluation coverage. Checks implementation against the AI-SPEC.md evaluation plan. Scores each eval dimension as COVERED/PARTIAL/MISSING. Produces a scored EVAL-REVIEW.md with findings, gaps, and remediation guidance. Spawned by /gsd:eval-review orchest…</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-eval-auditor.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-eval-planner</h3><span class="kb">6 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-eval-planner")</code>
+ <p class="opis">Designs a structured evaluation strategy for an AI phase. Identifies critical failure modes, selects eval dimensions with rubrics, recommends tooling, and specifies the reference dataset. Writes the Evaluation Strategy, Guardrails, and Production Monitoring sections of AI-SPEC.md. Spawned by /gsd:ai…</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-eval-planner.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-executor</h3><span class="kb">34 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-executor")</code>
+ <p class="opis">Executes GSD plans with atomic commits, deviation handling, checkpoint protocols, and state management. Spawned by execute-phase orchestrator or execute-plan command.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-executor.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-framework-selector</h3><span class="kb">6 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-framework-selector")</code>
+ <p class="opis">Presents an interactive decision matrix to surface the right AI/LLM framework for the user&#x27;s specific use case. Produces a scored recommendation with rationale. Spawned by /gsd:ai-integration-phase and /gsd-select-framework orchestrators.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-framework-selector.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-integration-checker</h3><span class="kb">14 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-integration-checker")</code>
+ <p class="opis">Verifies cross-phase integration and E2E flows. Checks that phases connect properly and user workflows complete end-to-end.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-integration-checker.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-intel-updater</h3><span class="kb">12 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-intel-updater")</code>
+ <p class="opis">Analyzes codebase and writes structured intel files to .planning/intel/.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-intel-updater.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-nyquist-auditor</h3><span class="kb">7 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-nyquist-auditor")</code>
+ <p class="opis">Fills Nyquist validation gaps by generating tests and verifying coverage for phase requirements</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-nyquist-auditor.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-pattern-mapper</h3><span class="kb">12 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-pattern-mapper")</code>
+ <p class="opis">Analyzes codebase for existing patterns and produces PATTERNS.md mapping new files to closest analogs. Read-only codebase analysis spawned by /gsd:plan-phase orchestrator before planning.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-pattern-mapper.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-phase-researcher</h3><span class="kb">36 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-phase-researcher")</code>
+ <p class="opis">Researches how to implement a phase before planning. Produces RESEARCH.md consumed by gsd-planner. Spawned by /gsd:plan-phase orchestrator.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-phase-researcher.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-plan-checker</h3><span class="kb">35 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-plan-checker")</code>
+ <p class="opis">Verifies plans will achieve phase goal before execution. Goal-backward analysis of plan quality. Spawned by /gsd:plan-phase orchestrator.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-plan-checker.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-planner</h3><span class="kb">48 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-planner")</code>
+ <p class="opis">Creates executable phase plans with task breakdown, dependency analysis, and goal-backward verification. Spawned by /gsd:plan-phase orchestrator.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-planner.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-project-researcher</h3><span class="kb">18 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-project-researcher")</code>
+ <p class="opis">Researches domain ecosystem before roadmap creation. Produces files in .planning/research/ consumed during roadmap creation. Spawned by /gsd:new-project or /gsd:new-milestone orchestrators.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-project-researcher.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-research-synthesizer</h3><span class="kb">7 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-research-synthesizer")</code>
+ <p class="opis">Synthesizes research outputs from parallel researcher agents into SUMMARY.md. Spawned by /gsd:new-project after 4 researcher agents complete.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-research-synthesizer.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-roadmapper</h3><span class="kb">18 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-roadmapper")</code>
+ <p class="opis">Creates project roadmaps with phase breakdown, requirement mapping, success criteria derivation, and coverage validation. Spawned by /gsd:new-project orchestrator.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-roadmapper.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-security-auditor</h3><span class="kb">6 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-security-auditor")</code>
+ <p class="opis">Verifies threat mitigations from PLAN.md threat model exist in implemented code. Produces SECURITY.md. Spawned by /gsd:secure-phase.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-security-auditor.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-ui-auditor</h3><span class="kb">16 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-ui-auditor")</code>
+ <p class="opis">Retroactive 6-pillar visual audit of implemented frontend code. Produces scored UI-REVIEW.md. Spawned by /gsd:ui-review orchestrator.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-ui-auditor.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-ui-checker</h3><span class="kb">10 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-ui-checker")</code>
+ <p class="opis">Validates UI-SPEC.md design contracts against 6 quality dimensions. Produces BLOCK/FLAG/PASS verdicts. Spawned by /gsd:ui-phase orchestrator.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-ui-checker.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-ui-researcher</h3><span class="kb">13 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-ui-researcher")</code>
+ <p class="opis">Produces UI-SPEC.md design contract for frontend phases. Reads upstream artifacts, detects design system state, asks only unanswered questions. Spawned by /gsd:ui-phase orchestrator.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-ui-researcher.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-user-profiler</h3><span class="kb">8 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-user-profiler")</code>
+ <p class="opis">Analyzes extracted session messages across 8 behavioral dimensions to produce a scored developer profile with confidence levels and evidence. Spawned by profile orchestration workflows.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-user-profiler.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>gsd-verifier</h3><span class="kb">34 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "gsd-verifier")</code>
+ <p class="opis">Verifies phase goal achievement through goal-backward analysis. Checks codebase delivers what phase promised, not just that tasks completed. Creates VERIFICATION.md report.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/gsd-verifier.md">instrukcja ↗</a>
+ </footer>
+</article></div></section>
+<section class="kol paczka"><div class="kol-head"><span class="kicker">paczka</span>
+        <h2>SEO — audyt techniczny</h2><p>Paczka specjalistów SEO wołanych przez /seo-audit.</p><span class="licznik">18</span></div>
+        <div class="karty"><article class="karta">
+ <header class="k-head"><h3>seo-backlinks</h3><span class="kb">5 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-backlinks")</code>
+ <p class="opis">Backlink profile analyst using free and paid sources. Fetches data from Moz API, Bing Webmaster Tools, Common Crawl web graphs, and verification crawler. Merges multi-source data with confidence-weighted scoring.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-backlinks.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-cluster</h3><span class="kb">3 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-cluster")</code>
+ <p class="opis">&gt; Semantic topic clustering analysis using SERP overlap methodology. Expands seed keywords, performs pairwise SERP comparison, classifies intent, designs hub-and-spoke content architecture, and generates internal link matrices.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-cluster.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-content</h3><span class="kb">2 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-content")</code>
+ <p class="opis">Content quality reviewer. Evaluates E-E-A-T signals, readability, content depth, AI citation readiness, and thin content detection.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-content.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-dataforseo</h3><span class="kb">1 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-dataforseo")</code>
+ <p class="opis">DataForSEO data analyst. Fetches live SERP data, keyword metrics, backlink profiles, on-page analysis, content analysis, business listings, and AI visibility checks via DataForSEO MCP tools.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-dataforseo.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-drift</h3><span class="kb">2 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-drift")</code>
+ <p class="opis">&gt; SEO drift analysis agent. Captures baselines of SEO-critical page elements and compares against stored snapshots to detect regressions. Reports changes with severity classification. Only spawned when a drift baseline exists for the URL.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-drift.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-ecommerce</h3><span class="kb">2 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-ecommerce")</code>
+ <p class="opis">&gt; E-commerce SEO analyst. Validates product schema, analyzes Google Shopping and Amazon marketplace visibility, identifies pricing gaps, and recommends product page optimizations. Spawned when e-commerce site detected during audits.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-ecommerce.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-flow</h3><span class="kb">2 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-flow")</code>
+ <p class="opis">FLOW framework prompt analyst. Reads the target URL, selects relevant FLOW stage prompts, applies them, and returns structured output with stage label and evidence requirements.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-flow.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-geo</h3><span class="kb">2 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-geo")</code>
+ <p class="opis">GEO and AI search specialist. Analyzes AI crawler accessibility, llms.txt compliance, passage-level citability, brand mention signals, and platform-specific optimization for Google AI Overviews, ChatGPT, Perplexity, and Bing Copilot.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-geo.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-google</h3><span class="kb">2 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-google")</code>
+ <p class="opis">Google SEO API analyst. Fetches CWV field data via CrUX, indexation status via GSC, and organic traffic via GA4 for enriched audit data.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-google.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-image-gen</h3><span class="kb">2 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-image-gen")</code>
+ <p class="opis">SEO image analyst. Audits existing OG/social preview images, identifies missing or low-quality images, and creates an image generation plan with prompts for key pages. Does NOT auto-generate images.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-image-gen.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-local</h3><span class="kb">3 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-local")</code>
+ <p class="opis">Local SEO specialist. Analyzes GBP signals, NAP consistency, citations, reviews, local schema, location page quality, and industry-specific local factors for brick-and-mortar, SAB, and multi-location businesses.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-local.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-maps</h3><span class="kb">4 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-maps")</code>
+ <p class="opis">Maps intelligence specialist. Geo-grid rank tracking, GBP profile auditing, review intelligence, cross-platform NAP verification, and competitor radius mapping via DataForSEO and free APIs.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-maps.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-performance</h3><span class="kb">3 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-performance")</code>
+ <p class="opis">Performance analyzer. Measures and evaluates Core Web Vitals and page load performance.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-performance.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-schema</h3><span class="kb">2 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-schema")</code>
+ <p class="opis">Schema markup expert. Detects, validates, and generates Schema.org structured data in JSON-LD format.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-schema.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-sitemap</h3><span class="kb">2 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-sitemap")</code>
+ <p class="opis">Sitemap architect. Validates XML sitemaps, generates new ones with industry templates, and enforces quality gates for location pages.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-sitemap.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-sxo</h3><span class="kb">3 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-sxo")</code>
+ <p class="opis">&gt; Search Experience Optimization analyst. Performs SERP backwards analysis to detect page-type mismatches, derives user stories from intent signals, and scores pages from multiple persona perspectives. Identifies why well-optimized content fails to rank.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-sxo.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-technical</h3><span class="kb">2 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-technical")</code>
+ <p class="opis">Technical SEO specialist. Analyzes crawlability, indexability, security, URL structure, mobile optimization, Core Web Vitals, and JavaScript rendering.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-technical.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>seo-visual</h3><span class="kb">2 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "seo-visual")</code>
+ <p class="opis">Visual analyzer. Captures screenshots, tests mobile rendering, and analyzes above-the-fold content using Playwright.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/seo-visual.md">instrukcja ↗</a>
+ </footer>
+</article></div></section>
+<section class="kol paczka"><div class="kol-head"><span class="kicker">paczka</span>
+        <h2>PM — governance skilli</h2><p>Paczka pm-skills: krytyk artefaktów, audytor repo, release.</p><span class="licznik">5</span></div>
+        <div class="karty"><article class="karta">
+ <header class="k-head"><h3>pm-changelog-curator</h3><span class="kb">8 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "pm-changelog-curator")</code>
+ <p class="opis">| Drafts CHANGELOG entries from git log applying pm-skills CHANGELOG hygiene rules from CLAUDE.md: describe what changed (not where), public paths only, never reference gitignored _NOTES/ or _agent-context/SESSION-LOG/ or docs/internal/efforts/. Distinguishes user-facing from internal-only commits. …</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-haiku">Haiku</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/pm-changelog-curator.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>pm-critic</h3><span class="kb">11 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "pm-critic")</code>
+ <p class="opis">| Use proactively after any PM-artifact-producing skill completes (deliver-prd, foundation-meeting-recap, foundation-okr-writer, foundation-persona, foundation-lean-canvas, discover-interview-synthesis, define-problem-statement, define-hypothesis, deliver-edge-cases, deliver-user-stories, deliver-ac…</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">18.08.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">18.08.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/pm-critic.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>pm-release-conductor</h3><span class="kb">9 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "pm-release-conductor")</code>
+ <p class="opis">| Guided release runbook with 6 explicit gates (G0 Pre-tag readiness, G1 Adversarial review, G2 Version bump + CHANGELOG prep, G2.5 Commit release-prep + re-verify, G3 Tag + push, G4 Post-tag hygiene). Chains to pm-skill-auditor at G0 (and again at G2.5 verification) and to pm-changelog-curator at G…</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/pm-release-conductor.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>pm-skill-auditor</h3><span class="kb">10 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "pm-skill-auditor")</code>
+ <p class="opis">| Repo-level cross-cutting governance auditor. Runs the full enforcing validator suite (frontmatter lint, command paths, AGENTS.md sync, family contracts, link validity, count consistency, workflow generator coverage, etc.) via scripts/pre-tag-validate.{sh,ps1}, aggregates results, and surfaces cros…</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-oszcz">Sonnet 4.6</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/pm-skill-auditor.md">instrukcja ↗</a>
+ </footer>
+</article>
+<article class="karta">
+ <header class="k-head"><h3>pm-workflow-orchestrator</h3><span class="kb">23 KB</span></header>
+ <code class="wywolanie">Agent(subagent_type: "pm-workflow-orchestrator")</code>
+ <p class="opis">&gt;- Runs an ordered sequence of pm-skills from a prioritized-action-plan or a user-named chain, pausing for go/no-go and stopping on a failed or empty step. Explicit invocation only; never fires proactively.</p>
+ <div class="petla petla-none"><span class="pill">— brak</span><span class="pt">Brak — statyczna instrukcja, nie uczy się między sesjami</span></div>
+ <footer class="k-foot">
+  <div class="meta"><span class="lbl">model</span><span class="val m-warn">dziedziczy z sesji</span></div>
+  <div class="meta"><span class="lbl">utworzony</span><span class="val">16.07.2026</span></div>
+  <div class="meta"><span class="lbl">zmiana</span><span class="val">16.07.2026</span></div>
+  <a class="link" href="file:///Users/Tomek_Main/.claude/agents/pm-workflow-orchestrator.md">instrukcja ↗</a>
+ </footer>
+</article></div></section>
+</div>
+<div class="stopka">
+<p><b>Pętla uczenia.</b> „Pełna” = agent czyta swój rejestr nauk na wejściu <i>i</i> dopisuje do niego po korekcie Tomka (LP_LEARNINGS, STRATEG_LEARNINGS, SETUP_MAP). „Czyta nauki” = wciąga rejestr, ale nic tam nie odkłada — wiedza rośnie tylko ręcznie. „Wiki” = odpytuje mózg przez <code>ctx_search</code> przed wyjściem do netu.</p>
+<p><b>Data utworzenia</b> to birthtime pliku na dysku. Dla paczek GSD/SEO/PM (16.07.2026) to data instalacji, nie powstania agenta.</p>
+<p><b>Model</b> z frontmattera. Pusty = dziedziczy z sesji — czyli potrafi zassać Opusa. Uwaga na alias <code>haiku</code>/<code>sonnet</code>: goły <code>sonnet</code> rozwiązuje się dziś na Sonnet 5, czyli drogo.</p>
+<p>Źródło: <code>/Users/Tomek_Main/.claude/agents</code> · generator: <code>_shared/scripts/gen_agents_kanban.py</code></p>
+</div>
+</div>
+<style>
+#pub-lightbox-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;cursor:zoom-out}
+#pub-lightbox-overlay.open{display:flex}
+#pub-lightbox-overlay img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+#pub-lightbox-close{position:fixed;top:16px;right:20px;font-size:36px;color:#fff;cursor:pointer;line-height:1;user-select:none;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+</style>
+<div id="pub-lightbox-overlay"><span id="pub-lightbox-close">&times;</span><img id="pub-lightbox-img" src="" alt=""></div>
+<script>
+(function(){
+  var ov=document.getElementById('pub-lightbox-overlay');
+  var im=document.getElementById('pub-lightbox-img');
+  document.querySelectorAll('a.pub-lightbox-trigger').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var img=a.querySelector('img');
+      if(img){im.src=img.src;ov.classList.add('open');}
+    });
+  });
+  document.getElementById('pub-lightbox-close').addEventListener('click',function(){ov.classList.remove('open');im.src='';});
+  ov.addEventListener('click',function(e){if(e.target===ov){ov.classList.remove('open');im.src='';}});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){ov.classList.remove('open');im.src='';}});
+})();
+</script>
+</body></html>
