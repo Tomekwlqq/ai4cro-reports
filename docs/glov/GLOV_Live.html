@@ -258,8 +258,8 @@ tr.hot td{background:var(--good-soft)}tr.danger td{background:var(--bad-soft)}
 <body>
 <div class="topbar">
   <div>
-    <span class="header-kicker">GLOV · Analityka zbiorcza</span>
-    <div class="logo">glov<b>.</b>zbiorcza</div>
+    <span class="header-kicker">GLOV · Mission Control — PL</span>
+    <div class="logo">glov<b>.</b>live <span class="flag">🇵🇱 PL only</span></div>
     <div class="sources">
       <span class="src-badge s1">Shopify</span>
       <span class="src-badge s2">GA4 342844459</span>
@@ -272,41 +272,16 @@ tr.hot td{background:var(--good-soft)}tr.danger td{background:var(--bad-soft)}
   </div>
 </div>
 <div class="wrap">
-  <div class="dpanel">
-    <div class="dpanel-row">
-      <div class="dp-group">
-        <label>Od</label>
-        <input type="date" id="dateS" min="2026-01-01" max="2026-08-11">
-      </div>
-      <div class="dp-group">
-        <label>Do</label>
-        <input type="date" id="dateE" min="2026-01-01" max="2026-08-11">
-      </div>
-      <div class="dp-group">
-        <label>Preset</label>
-        <div class="presets">
-          <button class="preset-btn" data-v="today" onclick="preset('today')">Ostatni dzień</button>
-          <button class="preset-btn" data-v="7d" onclick="preset('7d')">7 dni</button>
-          <button class="preset-btn active" data-v="30d" onclick="preset('30d')">30 dni</button>
-          <button class="preset-btn" data-v="ytd" onclick="preset('ytd')">YTD</button>
-          <button class="preset-btn" data-v="all" onclick="preset('all')">Cały zakres</button>
-        </div>
-      </div>
-      <label class="cmp-toggle">
-        <input type="checkbox" id="cmpOn"> Porównaj z poprzednim
-      </label>
-      <button class="apply-btn" onclick="applyDates()">Generuj →</button>
+  <div class="live-sec">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:14px;font-weight:800"><span class="live-pulse"></span>Live Shopify Raport — Dziś i Wczoraj</div>
+      <button id="refreshBtn" onclick="refreshData()" style="background:#2C3E50;color:#fff;border:none;border-radius:7px;padding:5px 12px;cursor:pointer;font-size:12px;font-weight:600">🔄 Odśwież</button>
     </div>
-    <div class="cmp-row" id="cmpRow">
-      <div class="dp-group">
-        <label>Porównanie Od</label>
-        <input type="date" id="cmpS" min="2026-01-01" max="2026-08-11">
-      </div>
-      <div class="dp-group">
-        <label>Porównanie Do</label>
-        <input type="date" id="cmpE" min="2026-01-01" max="2026-08-11">
-      </div>
+    <div class="live-tabs">
+      <button class="live-tab active" onclick="switchLiveTab('today',this)">🔴 Dziś <span id="lt-today-date" style="font-weight:400;font-size:11px"></span></button>
+      <button class="live-tab" onclick="switchLiveTab('yesterday',this)">Wczoraj <span id="lt-yesterday-date" style="font-weight:400;font-size:11px"></span></button>
     </div>
+    <div id="live-content"></div>
   </div>
   <div id="report"></div>
   <div class="src" id="srcInfo">Ładowanie danych...</div>
@@ -415,26 +390,32 @@ function renderLive(key){
     <div class="lkcard"><div class="ll">Online Store</div><div class="lv" style="color:var(--good-d)">${n(onlineOrd)} · ${money(onlineGross)}</div><div class="aovline">AOV <b>${n(onlineAOV)} zł</b></div></div>
     <div class="lkcard"><div class="ll">TikTok Shop</div><div class="lv" style="color:var(--warn-d)">${n(tiktokOrd)} · ${money(tiktokGross)}</div><div class="aovline">AOV <b>${n(ttAOV)} zł</b></div></div>
     <div class="lkcard"><div class="ll">RAZEM SHOPIFY</div><div class="lv">${n(razemOrd)} · ${money(razemGross)}</div>${hasSplit?splitBar+'<div class="ls">wg kanałów (ShopifyQL)</div>':'<div class="ls">brak podziału kanałów</div>'}</div>
-    <div class="lkcard"><div class="ll">Sesje (Shopify)</div><div class="lv">${n(shSess)}</div><div class="ls">🤖 boty ${n(shBot)} (${botPct}%) · bez botów ${n(shHuman)}</div></div>
-    <div class="lkcard"><div class="ll">CR real (Shopify)</div><div class="lv cr-hero" style="color:${crCol}">${crReal.toFixed(2)}%</div><div class="ls">zakupy online ÷ sesje bez botów</div></div>
-    <div class="lkcard"><div class="ll">Bounce Rate</div><div class="lv">${pct(shk.bounce_rate||0)}</div><div class="ls">${pct(g4k.bounce_rate)} GA4</div></div>
   </div>`;
 
-  // GA4 KPI — PL vs All (konwersje NAD medianą)
-  const g4a=data.ga4.kpi_all||{};
-  const durFmt=s=>s?Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0'):'—';
-  const crPL=g4k.sessions>0?(completedCO/g4k.sessions*100).toFixed(2)+'%':'—';
-  const crAll=g4a.sessions>0?(completedCO/g4a.sessions*100).toFixed(2)+'%':'—';
-  const nr=g4.new_returning||{};
-  const nrNew=nr['new']||0;const nrRet=nr['returning']||0;const nrTot=nrNew+nrRet||1;
-  const nrPctNew=(nrNew/nrTot*100).toFixed(0);const nrPctRet=(nrRet/nrTot*100).toFixed(0);
-  h+=`<div class="lsep"><span class="sbadge sbadge-ga4">GA4</span>Ruch &amp; Konwersja — PL vs wszystkie kraje</div>
-  <div class="lkgrid lkgrid-4">
-    <div class="lkcard"><div class="ll">Sesje PL 🇵🇱</div><div class="lv">${n(g4k.sessions)}</div><div class="ls">Nowi ${nrPctNew}% · Pow. ${nrPctRet}%</div></div>
-    <div class="lkcard"><div class="ll">CR PL</div><div class="lv" style="color:var(--good-d)">${crPL}</div><div class="ls">checkout ÷ sesje PL</div></div>
-    <div class="lkcard"><div class="ll">Sesje All</div><div class="lv">${n(g4a.sessions)}</div><div class="ls">wszystkie kraje · ${durFmt(g4a.avg_session_s)}</div></div>
-    <div class="lkcard"><div class="ll">CR All</div><div class="lv" style="color:var(--good-d)">${crAll}</div><div class="ls">checkout ÷ sesje all</div></div>
-  </div>`;
+  // Lejek konwersji (bazowy) — dzień — POD Shopify (28.08: lejki zastępują sekcję Ruch & Konwersja)
+  // FIX 31.08: lejek podlega tej samej regule co reszta Live — dzień aktywnej zakładki (Dziś/Wczoraj)
+  // FIX 05.09: dla bieżącego dnia LEJEK (daily) nie ma dziś — wstrzykujemy dane z glov_live2.json
+  const _prevR02=R02_DAY; R02_DAY=data.date||null;
+  const _liveInject = data.date && !LEJEK[data.date] && data.ga4 && data.ga4.funnel;
+  if(_liveInject){
+    const f=data.ga4.funnel;
+    const shk=(data.shopify&&data.shopify.kpi)||{};
+    const shCh=shk.channels||{};
+    const shHuman=shk.human_sessions||0;
+    const shBot=(shk.bot_sessions)||(shk.sessions||0)-shHuman;
+    const onlineOrd=(shCh['Online Store']&&shCh['Online Store'].orders)||0;
+    LEJEK[data.date]={
+      ga4:{all:{pl:{session_start:f.session_start||0,view_item:f.view_item||0,add_to_cart:f.add_to_cart||0,begin_checkout:f.begin_checkout||0,purchase:f.purchase||0},unknown:{},xx:{}}},
+      shopify:{
+        human:{pl:{sessions:shHuman,atc:f.add_to_cart||0,checkout:f.begin_checkout||0,completed:onlineOrd},unknown:{},xx:{}},
+        bot:{pl:{sessions:shBot},unknown:{},xx:{}},
+        channels_sales:shCh
+      }
+    };
+  }
+  h+=renderFunnel(null,data.date,data.date);
+  if(_liveInject) delete LEJEK[data.date];
+  R02_DAY=_prevR02;
 
   // Δ vs mediana dnia tygodnia — 8 tyg wstecz, ten sam dzień tygodnia (28.08.2026)
   const wdnGen=['niedzieli','poniedziałku','wtorku','środy','czwartku','piątku','soboty'];
@@ -454,6 +435,7 @@ function renderLive(key){
   const medOrd=wdMed(k=>k.shopify_orders!=null?k.shopify_orders:k.transactions,d0);
   const medRev=wdMed(k=>k.shopify_revenue!=null?k.shopify_revenue:k.totalRevenue,d0);
   const medSess=wdMed(k=>k.sessions,d0);
+  const medBounce=wdMed(k=>k.bounceRate!=null?k.bounceRate*100:null,d0);
   const dp=(cur,med)=>med>0?((cur-med)/med*100):null;
   const dTile=(nm,cur,med,isToday)=>{
     const dd=dp(cur,med);
@@ -462,10 +444,19 @@ function renderLive(key){
     const sign=dd>0?'+':'';
     return `<div class="tile"><div class="tn">${nm}</div><div class="tv" style="color:${col}">${sign}${dd.toFixed(0)}%</div><div class="ts">dziś ${n(cur)} vs norma ${n(Math.round(med))}${isToday?' (dzień w toku)':''}</div></div>`;
   };
+  // Bounce rate: spadek = dobrze → odwrócone kolory
+  const dBounce=(nm,cur,med,isToday)=>{
+    const dd=dp(cur,med);
+    if(dd==null)return `<div class="tile"><div class="tn">${nm}</div><div class="tv" style="color:var(--faint)">—</div><div class="ts">brak normy</div></div>`;
+    const col=dd<=-10?'var(--good-d)':dd>=10?'var(--bad)':'var(--muted)';
+    const sign=dd>0?'+':'';
+    return `<div class="tile"><div class="tn">${nm}</div><div class="tv" style="color:${col}">${sign}${dd.toFixed(0)}%</div><div class="ts">dziś ${(cur||0).toFixed(0)}% vs norma ${Math.round(med||0)}%${isToday?' (dzień w toku)':''}</div></div>`;
+  };
   h+=`<div class="lsep">Δ vs mediana ${wdnGen[new Date(d0+'T12:00:00').getDay()]} (8 tyg wstecz)</div><div class="tiles">`
     +dTile('Zamówienia',razemOrd,medOrd,key==='today')
     +dTile('Przychód',razemGross,medRev,key==='today')
     +dTile('Sesje (GA4 PL)',g4k.sessions,medSess,key==='today')
+    +dBounce('Bounce rate (GA4 PL)',(g4k.bounce_rate||0)*100,medBounce,key==='today')
     +'</div>';
 
   // Sprzedaż dzienna — itemy Shopify (po medianie)
@@ -550,8 +541,6 @@ function aggregateRange(s,e){
          addToCarts:0,checkouts:0,durSum:0,durSess:0,paid_sessions:0,paid_revenue:0,newsletter:0},
     channelsMap:{},channelsDetailMap:{},devicesMap:{},funnel:{},productsMap:{},shpProductsMap:{},
     landingMap:{},landingShopifyMap:{},newretMap:{},searchMap:{},hourMap:{},dowMap:{},
-    baselinker:{allegro:{orders:0,revenue:0},hebe:{orders:0,revenue:0}},
-    shopifyChannels:{'Online Store':{orders:0,gross_sales:0},'TikTok':{orders:0,gross_sales:0}},
     repeat_buyers:META.repeat_buyers||[]
   };
   const dkeys=Object.keys(DAILY).filter(dk=>dk>=s&&dk<=e).sort();
@@ -598,20 +587,6 @@ function aggregateRange(s,e){
     const f=d.funnel||{};
     ['session_start','view_item','add_to_cart','begin_checkout','purchase'].forEach(ev=>{
       out.funnel[ev]=(out.funnel[ev]||0)+(f[ev]||0);
-    });
-    // BaseLinker per dzień (allegro/hebe) — z backfillu --append-bl
-    const bl=d.baselinker||{};
-    ['allegro','hebe'].forEach(src=>{
-      const b=bl[src]||{};
-      out.baselinker[src].orders+=(b.orders||0);
-      out.baselinker[src].revenue+=(b.revenue||0);
-    });
-    // Shopify split Online/TikTok per dzień (Q3) — z backfillu --append-q3
-    const sc=d.shopify_channels||{};
-    ['Online Store','TikTok'].forEach(ch=>{
-      const c=sc[ch]||{};
-      out.shopifyChannels[ch].orders+=(c.orders||0);
-      out.shopifyChannels[ch].gross_sales+=(c.gross_sales||0);
     });
     (d.products||[]).forEach(p=>{
       const m=out.productsMap[p.name]||(out.productsMap[p.name]={name:p.name,viewed:0,atc:0,purchased:0,revenue:0});
@@ -727,7 +702,7 @@ function renderKPI(d,cmp){
 }
 
 function renderFunnel(d,s,e){
-  // Lejek konwersji (bazowy) — 6 zestawów × 5 poziomów × własna konwersja; zbiorcza = tryb zakres, opcja dzień
+  // Lejek konwersji (bazowy) — 6 zestawów × 5 poziomów × własna konwersja; live = widok dzienny (R02_DAY)
   const dksAll=Object.keys(LEJEK).filter(x=>x>=s&&x<=e);
   const dks=R02_DAY?dksAll.filter(x=>x===R02_DAY):dksAll;
   const L=()=>({wej:0,pdp:0,kosz:0,chk:0,zak:0});
@@ -799,12 +774,8 @@ function renderFunnel(d,s,e){
   const crShHum=shHum.wej>0?(shHum.zak/shHum.wej*100):0;
   const crShAllPL=shAllPL.wej>0?(shAllPL.zak/shAllPL.wej*100):0;
   const crShHumPL=shHumPL.wej>0?(shHumPL.zak/shHumPL.wej*100):0;
-  return `<h2><span class="r">R02</span> Lejek konwersji (bazowy)</h2>
-  <div class="what">${R02_DAY?`Dzień: <b>${R02_DAY}</b> (pełne dane dzienne). Każdy zestaw × 5 kroków × własna konwersja. Shopify nie raportuje kroku PDP — stąd „—”. Karty PL: zakupy z Q1 (sesje-match), globalne z Q3 Online Store.`:`Zakres ${s}–${e}. Każdy zestaw × 5 kroków × własna konwersja. Shopify nie raportuje kroku PDP — stąd „—”. Karty PL: zakupy z Q1 (sesje-match), globalne z Q3 Online Store.`}</div>
-  <div style="display:flex;gap:8px;margin:10px 0 12px">
-    <button onclick="r02mode('range',this)" class="psb ${R02_DAY?'':'psa'}" id="r02-rbtn">📅 Zakres ${s}–${e}</button>
-    <button onclick="r02mode('day',this)" class="psb ${R02_DAY?'psa':''}" id="r02-dbtn">📆 Dzień${R02_DAY?' ('+R02_DAY+')':''}</button>
-  </div>
+  return `<h2><span class="r">R02</span> Lejek konwersji (bazowy) — dzień</h2>
+  <div class="what">Dzień: <b>${R02_DAY||'—'}</b> (pełne dane dzienne). Każdy zestaw × 5 kroków × własna konwersja. Shopify nie raportuje kroku PDP — stąd „—”. Karty PL: zakupy z Q1 (sesje-match), globalne z Q3 Online Store.</div>
   <div class="lkgrid lkgrid-3" style="margin-top:10px">
     ${funCard('GA4 All','<span class="sbadge sbadge-ga4">GA4</span>',ga4All,crAll,'zakupy ÷ wejście · wszystkie kraje')}
     ${funCard('GA4 PL','<span class="sbadge sbadge-ga4">GA4</span>',ga4PL,crPL,'zakupy ÷ wejście · country=Poland')}
@@ -813,15 +784,6 @@ function renderFunnel(d,s,e){
     ${funCard('Shopify All PL','<span class="sbadge sbadge-shp">SHP</span> 🇵🇱',shAllPL,crShAllPL,'zamówienia ÷ sesje PL (z botami) · sesje-match · bez TikTok')}
     ${funCard('Shopify tylko ludzie PL','<span class="sbadge sbadge-shp">SHP</span> 🇵🇱',shHumPL,crShHumPL,'zamówienia ÷ sesje PL bez botów · CR real PL · sesje-match · bez TikTok')}
   </div>`;
-}
-
-function r02mode(m,btn){
-  const dks=Object.keys(LEJEK).sort();
-  R02_DAY=(m==='day')?(dks[dks.length-1]||null):null;
-  document.querySelectorAll('#r02-rbtn,#r02-dbtn').forEach(b=>b.classList.remove('psa'));
-  if(btn)btn.classList.add('psa');
-  renderReport(document.getElementById('dateS').value,document.getElementById('dateE').value,
-               document.getElementById('cmpS').value||null,document.getElementById('cmpE').value||null);
 }
 
 function r01cview(v,btn){
@@ -1223,195 +1185,15 @@ function renderPlan(){
 function renderReport(s,e,cmpS,cmpE){
   const d=aggregateRange(s,e);
   const cmp=(cmpS&&cmpE)?aggregateRange(cmpS,cmpE):null;
-  let h='';
-  // ANALTYKA ZBIORCZA (30.08): NA GÓRZE BaseLinker + Shopify jak w live, ale dla zakresu + Dni zakresu (jedyna rzecz z R01)
-  h+=renderRangeTop(d,s,e);
-  h+=renderFunnel(d,s,e);
-  h+=renderChannelFunnel(d,s,e);
-  h+=renderNewRet(d);
-  h+=renderProducts(d);
-  h+=renderChannels(d);
-  h+=renderRepeat(d);
-  h+=renderLanding(d);
-  h+=renderLandingShopify(d);
-  h+=renderDevices(d);
-  h+=renderSearch(d);
-  h+=renderWindow(d);
-  h+=renderDOW(d);
-  h+=renderHour(d);
-  h+=renderPlan();
-  document.getElementById('report').innerHTML=h;
+  // LIVE (28.08): lejek konwersji jest renderowany w renderLive (pod Shopify).
+  // #report zostaje pusty — dane okresowe to domena Analityki zbiorczej (GLOV_Live.html).
+  document.getElementById('report').innerHTML='';
   window._lastData=d;window._lastCmp=cmp;
-  initCollapse();
 }
 
-// Sekcja górna zbiorczej: BaseLinker + Shopify (split Online/TikTok) — identycznie jak live, ale dla zakresu + Dni zakresu (30.08.2026)
-function renderRangeTop(d,s,e){
-  const bl=d.baselinker||{};
-  const blA=bl.allegro||{},blH=bl.hebe||{};
-  const shOrd=d.kpi.transactions||0, shRev=d.kpi.totalRevenue||0;
-  const sc=d.shopifyChannels||{};
-  const chOnline=sc['Online Store']||{}, chTT=sc['TikTok']||{};
-  const onlineOrd=chOnline.orders||0, tiktokOrd=chTT.orders||0;
-  const onlineGross=chOnline.gross_sales||0, tiktokGross=chTT.gross_sales||0;
-  const hasSplit=onlineOrd||tiktokOrd;
-  const razemOrd=hasSplit?(onlineOrd+tiktokOrd):shOrd;
-  const razemGross=hasSplit?(onlineGross+tiktokGross):shRev;
-  const blTotalOrd=razemOrd+blH.orders+blA.orders;
-  const blTotalGross=razemGross+blH.revenue+blA.revenue;
-  const onlineAOV=onlineOrd>0?onlineGross/onlineOrd:0;
-  const ttAOV=tiktokOrd>0?tiktokGross/tiktokOrd:0;
-  const ttShare=razemGross>0?tiktokGross/razemGross:0;
-  const splitBar=hasSplit?`<div style="display:flex;height:8px;border-radius:4px;overflow:hidden;margin-top:7px">
-    <div style="width:${(100-ttShare*100).toFixed(1)}%;background:var(--good)"></div>
-    <div style="width:${(ttShare*100).toFixed(1)}%;background:var(--warn)"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--faint);margin-top:3px">
-      <span>Online ${(100-ttShare*100).toFixed(0)}%</span><span>TikTok ${(ttShare*100).toFixed(0)}%</span></div>`:'';
-  const blShareA=blTotalGross>0?(blA.revenue/blTotalGross*100).toFixed(0):0;
-  const blShareH=blTotalGross>0?(blH.revenue/blTotalGross*100).toFixed(0):0;
-  let h='';
-  // BASELINKER
-  h+=`<div class="lsep"><span class="sbadge sbadge-bl">BASELINKER</span>Marketplace'y — raport HP</div>
-  <div class="lkgrid lkgrid-3">
-    <div class="lkcard"><div class="ll">Allegro</div><div class="lv" style="color:var(--good-d)">${n(blA.orders)} · ${money(blA.revenue)}</div><div class="ls">${blShareA}% sprzedaży BL</div></div>
-    <div class="lkcard"><div class="ll">Hebe</div><div class="lv" style="color:var(--warn-d)">${n(blH.orders)} · ${money(blH.revenue)}</div><div class="ls">${blShareH}% sprzedaży BL</div></div>
-    <div class="lkcard"><div class="ll">RAZEM (wszystkie kanały)</div><div class="lv">${n(blTotalOrd)} · ${money(blTotalGross)}</div><div class="ls">liczone u nas · nie z BaseLinker</div></div>
-  </div>
-  <div class="blformula">RAZEM = Shopify ${n(razemOrd)} · ${money(razemGross)} + Hebe ${n(blH.orders)} · ${money(blH.revenue)} + Allegro ${n(blA.orders)} · ${money(blA.revenue)} → ${n(blTotalOrd)} · ${money(blTotalGross)}<br><b>liczone u nas</b> · nie z BaseLinker</div>`;
-  // SHOPIFY
-  h+=`<div class="lsep" style="margin-top:16px"><span class="sbadge sbadge-shp">SHOPIFY</span>Zamówienia &amp; Przychód — source of truth</div>
-  <div class="lkgrid lkgrid-4">
-    <div class="lkcard"><div class="ll">Online Store</div><div class="lv" style="color:var(--good-d)">${n(onlineOrd)} · ${money(onlineGross)}</div><div class="aovline">AOV <b>${n(onlineAOV)} zł</b></div></div>
-    <div class="lkcard"><div class="ll">TikTok Shop</div><div class="lv" style="color:var(--warn-d)">${n(tiktokOrd)} · ${money(tiktokGross)}</div><div class="aovline">AOV <b>${n(ttAOV)} zł</b></div></div>
-    <div class="lkcard"><div class="ll">RAZEM (wszystkie kanały)</div><div class="lv">${n(blTotalOrd)} · ${money(blTotalGross)}</div><div class="ls">liczone u nas · nie z BaseLinker</div></div>
-    <div class="lkcard"><div class="ll">RAZEM SHOPIFY</div><div class="lv">${n(razemOrd)} · ${money(razemGross)}</div>${hasSplit?splitBar+'<div class="ls">wg kanałów (ShopifyQL)</div>':'<div class="ls">brak podziału kanałów</div>'}</div>
-    <div class="lkcard"><div class="ll">Dni zakresu</div><div class="lv" style="font-size:15px">${d.daysCount}</div><div class="ls">${s} → ${e}</div></div>
-  </div>`;
-  return h;
-}
+// (usunięte: initCollapse/initLiveCollapse — live bez collapse toolbar)
 
-function initCollapse(){
-  const report=document.getElementById('report');
-  if(!report)return;
-  // Usuń poprzednie wrappery (przy re-generowaniu)
-  report.querySelectorAll('.rpt-sec').forEach(sec=>{
-    const parent=sec.parentNode;
-    while(sec.firstChild)parent.insertBefore(sec.firstChild,sec);
-    parent.removeChild(sec);
-  });
-  // Grupuj dzieci po h2
-  const children=Array.from(report.children);
-  const sections=[];let cur=null;
-  children.forEach(el=>{
-    if(el.tagName==='H2'){cur={h2:el,rest:[]};sections.push(cur);}
-    else if(cur)cur.rest.push(el);
-  });
-  sections.forEach(sec=>{
-    const wrap=document.createElement('div');
-    wrap.className='rpt-sec';
-    sec.h2.parentNode.insertBefore(wrap,sec.h2);
-    wrap.appendChild(sec.h2);
-    // Przycisk toggle
-    const btn=document.createElement('button');
-    btn.className='col-btn';btn.textContent='▲ Zwiń';
-    btn.addEventListener('click',e=>{
-      e.stopPropagation();
-      const c=wrap.classList.toggle('col-collapsed');
-      btn.textContent=c?'▼ Rozwiń':'▲ Zwiń';
-    });
-    sec.h2.appendChild(btn);
-    // Wrap treści (bez concl/reco które zostają widoczne)
-    const body=document.createElement('div');body.className='col-body';
-    const tail=[];
-    sec.rest.forEach(el=>{
-      if(el.classList.contains('concl')||el.classList.contains('reco'))tail.push(el);
-      else body.appendChild(el);
-    });
-    wrap.appendChild(body);
-    tail.forEach(el=>wrap.appendChild(el));
-  });
-  // Toolbar Zwiń wszystkie / Rozwiń wszystkie
-  const al=document.getElementById('alertBox');
-  if(al){
-    const old=document.getElementById('col-toolbar');if(old)old.remove();
-    const tb=document.createElement('div');tb.className='col-toolbar';tb.id='col-toolbar';
-    [['Zwiń wszystkie',1],['Rozwiń wszystkie',0]].forEach(([label,collapse])=>{
-      const b=document.createElement('button');b.className='col-all-btn';b.textContent=label;
-      b.addEventListener('click',()=>{
-        document.querySelectorAll('.rpt-sec').forEach(sec=>{
-          const btn=sec.querySelector('.col-btn');
-          if(collapse){sec.classList.add('col-collapsed');if(btn)btn.textContent='▼ Rozwiń';}
-          else{sec.classList.remove('col-collapsed');if(btn)btn.textContent='▲ Zwiń';}
-        });
-      });
-      tb.appendChild(b);
-    });
-    al.insertAdjacentElement('afterend',tb);
-  }
-}
-
-function initLiveCollapse(){
-  const el=document.getElementById('live-content');
-  if(!el)return;
-  const children=Array.from(el.children);
-  const sections=[];let cur=null;
-  children.forEach(child=>{
-    if(child.classList.contains('lsep')){cur={hdr:child,rest:[]};sections.push(cur);}
-    else if(cur)cur.rest.push(child);
-  });
-  let active=false;
-  sections.forEach(sec=>{
-    if(!active&&sec.hdr.textContent.includes('Kanał'))active=true;
-    if(!active)return;
-    const wrap=document.createElement('div');wrap.className='rpt-sec';
-    sec.hdr.parentNode.insertBefore(wrap,sec.hdr);
-    const btn=document.createElement('button');
-    btn.className='col-btn';btn.style.order='999';btn.textContent='▼ Rozwiń';
-    wrap.classList.add('col-collapsed');
-    btn.addEventListener('click',e=>{
-      e.stopPropagation();
-      const c=wrap.classList.toggle('col-collapsed');
-      btn.textContent=c?'▼ Rozwiń':'▲ Zwiń';
-    });
-    sec.hdr.appendChild(btn);
-    wrap.appendChild(sec.hdr);
-    const body=document.createElement('div');body.className='col-body';
-    sec.rest.forEach(r=>body.appendChild(r));
-    wrap.appendChild(body);
-  });
-}
-
-function preset(v){
-  const d=new Date(LAST+'T00:00:00');let s=LAST;
-  if(v==='today'){s=LAST;}
-  else if(v==='7d'){const t=new Date(d);t.setDate(t.getDate()-6);s=t.toISOString().slice(0,10);}
-  else if(v==='30d'){s=LAST30;}
-  else if(v==='ytd'){s=LAST.slice(0,4)+'-01-01';}
-  else if(v==='all'){s=FIRST;}
-  document.getElementById('dateS').value=s;
-  document.getElementById('dateE').value=LAST;
-  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
-  autoCmp();
-  applyDates();
-}
-function autoCmp(){
-  if(!document.getElementById('cmpOn').checked)return;
-  const s=document.getElementById('dateS').value,e=document.getElementById('dateE').value;
-  if(!s||!e)return;
-  const ds=new Date(s+'T00:00:00'),de=new Date(e+'T00:00:00');
-  const diff=Math.round((de-ds)/86400000)+1;
-  const ce=new Date(ds);ce.setDate(ce.getDate()-1);
-  const cs=new Date(ce);cs.setDate(cs.getDate()-(diff-1));
-  document.getElementById('cmpS').value=cs.toISOString().slice(0,10);
-  document.getElementById('cmpE').value=ce.toISOString().slice(0,10);
-}
-function applyDates(){
-  const s=document.getElementById('dateS').value,e=document.getElementById('dateE').value;
-  const on=document.getElementById('cmpOn').checked;
-  const cs=on?document.getElementById('cmpS').value:null;
-  const ce=on?document.getElementById('cmpE').value:null;
-  if(s&&e)renderReport(s,e,cs,ce);
-}
+// (usunięte: preset/autoCmp/applyDates — live bez wyboru zakresu dat)
 
 // Theme
 const root=document.documentElement;
@@ -1420,13 +1202,7 @@ const savedTheme=localStorage.getItem('glov-theme')||'light';
 root.setAttribute('data-theme',savedTheme);tb.textContent=savedTheme==='light'?'🌙':'☀️';
 tb.onclick=()=>{const nx=root.getAttribute('data-theme')==='light'?'dark':'light';root.setAttribute('data-theme',nx);localStorage.setItem('glov-theme',nx);tb.textContent=nx==='light'?'🌙':'☀️';};
 
-// (usunięte: compare toggle — live ma tylko Dziś/Wczoraj + R02 dzień) — ZBIORCZA: compare działa
-
-// Compare toggle
-document.getElementById('cmpOn').addEventListener('change',function(){
-  document.getElementById('cmpRow').style.display=this.checked?'flex':'none';
-  if(this.checked)autoCmp();
-});
+// (usunięte: compare toggle — live ma tylko Dziś/Wczoraj + R02 dzień)
 
 // Ask Assistant widget
 const askPanel=document.getElementById('askPanel');
@@ -1510,24 +1286,23 @@ function loadData(showSpinner){
     DAILY=daily.days||{};
     META=daily._meta||{};
     LEJEK=(lejek&&lejek.days)||{};
-    R02_DAY=null; // ZBIORCZA: R02 domyślnie = tryb ZAKRES (opcja dzień przez toggle)
+    R02_DAY=Object.keys(LEJEK).sort().pop()||null; // R02 domyślnie: widok dzienny (ostatni pełny dzień)
     LIVE=live;
     const dk=Object.keys(DAILY).sort();
     FIRST=dk[0]||'';LAST=dk[dk.length-1]||'';
-    ['dateS','dateE','cmpS','cmpE'].forEach(id=>{const el=document.getElementById(id);if(el){el.min=FIRST;el.max=LAST;}});
-    const d30=new Date(LAST+'T00:00:00');d30.setDate(d30.getDate()-29);
-    LAST30=d30.toISOString().slice(0,10);
-    document.getElementById('dateS').value=LAST30;
-    document.getElementById('dateE').value=LAST;
     const si=document.getElementById('srcInfo');
     if(si)si.innerHTML=`Źródło: GA4 342844459, filtr <b>country=Poland</b>. Dane: ${FIRST} → ${LAST} (${dk.length} dni). Aktualizacja: ${META.updated||'N/A'}. Boty/zagranica wykluczone. INTERNAL.`;
-    preset('30d'); // ZBIORCZA: tylko raport okresowy (sekcja Dziś/Wczoraj usunięta)
+    renderReport(LAST,LAST); // live: raport = tylko R02 lejek bazowy, tryb dzienny (R02_DAY)
+    initLive();
   }).catch(e=>{
     const si=document.getElementById('srcInfo');
     if(si)si.innerHTML='Błąd ładowania danych: '+e.message;
+    initLive();
   }).finally(()=>{
     const ov=document.getElementById('loadingOverlay');
     if(ov)ov.style.display='none';
+    const rb=document.getElementById('refreshBtn');
+    if(rb){rb.disabled=false;rb.textContent='🔄 Odśwież';}
   });
 }
 function refreshData(){
