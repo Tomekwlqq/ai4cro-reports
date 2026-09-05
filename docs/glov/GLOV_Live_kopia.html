@@ -399,11 +399,18 @@ function renderLive(key){
   const _liveInject = data.date && !LEJEK[data.date] && data.ga4 && data.ga4.funnel;
   if(_liveInject){
     const f=data.ga4.funnel;
-    const shCh=(data.shopify&&data.shopify.kpi&&data.shopify.kpi.channels)||{};
-    const shSess=data.shopify&&data.shopify.kpi&&data.shopify.kpi.human_sessions||0;
+    const shk=(data.shopify&&data.shopify.kpi)||{};
+    const shCh=shk.channels||{};
+    const shHuman=shk.human_sessions||0;
+    const shBot=(shk.bot_sessions)||(shk.sessions||0)-shHuman;
+    const onlineOrd=(shCh['Online Store']&&shCh['Online Store'].orders)||0;
     LEJEK[data.date]={
       ga4:{all:{pl:{session_start:f.session_start||0,view_item:f.view_item||0,add_to_cart:f.add_to_cart||0,begin_checkout:f.begin_checkout||0,purchase:f.purchase||0},unknown:{},xx:{}}},
-      shopify:{human:{pl:{sessions:shSess,atc:0,checkout:0,completed:0},unknown:{},xx:{}},bot:{pl:{},unknown:{},xx:{}},channels_sales:shCh}
+      shopify:{
+        human:{pl:{sessions:shHuman,atc:f.add_to_cart||0,checkout:f.begin_checkout||0,completed:onlineOrd},unknown:{},xx:{}},
+        bot:{pl:{sessions:shBot},unknown:{},xx:{}},
+        channels_sales:shCh
+      }
     };
   }
   h+=renderFunnel(null,data.date,data.date);
