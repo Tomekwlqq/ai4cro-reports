@@ -394,8 +394,20 @@ function renderLive(key){
 
   // Lejek konwersji (bazowy) — dzień — POD Shopify (28.08: lejki zastępują sekcję Ruch & Konwersja)
   // FIX 31.08: lejek podlega tej samej regule co reszta Live — dzień aktywnej zakładki (Dziś/Wczoraj)
+  // FIX 05.09: dla bieżącego dnia LEJEK (daily) nie ma dziś — wstrzykujemy dane z glov_live2.json
   const _prevR02=R02_DAY; R02_DAY=data.date||null;
+  const _liveInject = data.date && !LEJEK[data.date] && data.ga4 && data.ga4.funnel;
+  if(_liveInject){
+    const f=data.ga4.funnel;
+    const shCh=(data.shopify&&data.shopify.kpi&&data.shopify.kpi.channels)||{};
+    const shSess=data.shopify&&data.shopify.kpi&&data.shopify.kpi.human_sessions||0;
+    LEJEK[data.date]={
+      ga4:{all:{pl:{session_start:f.session_start||0,view_item:f.view_item||0,add_to_cart:f.add_to_cart||0,begin_checkout:f.begin_checkout||0,purchase:f.purchase||0},unknown:{},xx:{}}},
+      shopify:{human:{pl:{sessions:shSess,atc:0,checkout:0,completed:0},unknown:{},xx:{}},bot:{pl:{},unknown:{},xx:{}},channels_sales:shCh}
+    };
+  }
   h+=renderFunnel(null,data.date,data.date);
+  if(_liveInject) delete LEJEK[data.date];
   R02_DAY=_prevR02;
 
   // Δ vs mediana dnia tygodnia — 8 tyg wstecz, ten sam dzień tygodnia (28.08.2026)
