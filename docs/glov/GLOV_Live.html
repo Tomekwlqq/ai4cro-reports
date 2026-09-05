@@ -752,15 +752,16 @@ function renderFunnel(d,s,e){
       shHum.wej+=hu.sessions||0; shHum.kosz+=hu.atc||0; shHum.chk+=hu.checkout||0;
       if(k==='pl'){ // karty PL: tylko Polska (Q1 ma podział na kraje; Q3 nie)
         shAllPL.wej+=(hu.sessions||0)+(bo.sessions||0);
-        shAllPL.kosz+=hu.atc||0; shAllPL.chk+=hu.checkout||0; shAllPL.zak+=hu.completed||0;
-        shHumPL.wej+=hu.sessions||0; shHumPL.kosz+=hu.atc||0; shHumPL.chk+=hu.checkout||0; shHumPL.zak+=hu.completed||0;
+        shAllPL.kosz+=hu.atc||0; shAllPL.chk+=hu.checkout||0;
+        shHumPL.wej+=hu.sessions||0; shHumPL.kosz+=hu.atc||0; shHumPL.chk+=hu.checkout||0;
       }
     });
     // Zakup (All) = zamówienia ONLINE STORE (Q3) — TikTok NIE płynie przez lejek sklepu
     const cs=sh.channels_sales||{};
     if(cs['Online Store'])shOnline+=(cs['Online Store'].orders||0);
   });
-  shAll.zak=shOnline; shHum.zak=shOnline; // karty globalne: te same zakupy, różnica tylko w Wejściu (z/bez botów)
+  // FIX 05.09: wszystkie 4 karty Shopify mają te same zakupy = Online Store orders — różni się tylko wejście (sesje)
+  shAll.zak=shOnline; shHum.zak=shOnline; shAllPL.zak=shOnline; shHumPL.zak=shOnline;
   const stepsDef=[['wej','Wejście','#5b8def','sesji'],['pdp','PDP','#7c5cff','Wejście'],['kosz','Koszyk','#d97706','PDP'],['chk','Checkout','#ec4899','Koszyk'],['zak','Zakup','#16a34a','Checkout']];
   function funRows(steps){
     const max=Math.max(...stepsDef.map(([k])=>steps[k]||0),1);
