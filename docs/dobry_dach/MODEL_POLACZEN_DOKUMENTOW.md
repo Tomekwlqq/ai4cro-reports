@@ -58,10 +58,13 @@ ZK (16) ──Z→ WZ (11) ──Z→ FS (2)        ZK = zamówienie
 
 ## 5. Klient i inwestycja — do czego przypisujemy
 
-- **Klient WZ** = `dok_OdbiorcaId` → `kh__Kontrahent` (`kh_Nazwisko` / `kh_Symbol`)
+- **NAZWA KLIENTA = `vwKlienci.adr_NazwaPelna` / `adr_Nazwa`** (join po `kh_Id`) — NIGDY `kh_Nazwisko`/`kh_Symbol` z `kh__Kontrahent` (te są puste dla firm! błąd v1-v2 raportu N4, złapany 08.09)
+- **Klient WZ** = `dok_OdbiorcaId` → `vwKlienci`
 - **Klient faktury (prezentacja)** = `dok_PlatnikId` (nabywca) — może różnić się od odbiorcy WZ! (przy FV na JAWNĄ odbiorcą jest spółka jawna, klient końcowy siedzi dalej)
 - **Handlowiec (PH)** = kategoria dokumentu `dok_KatId` → `sl_Kategoria` (CD, MR, LR, SM, GG, MP, GM, BK, LP) — NIE osoba wystawiająca
 - **Inwestycja** = grupa dokumentów po nazwie/OPIS (kejs Telmax: kartoteki „telmax + inwestycja", FV rozróżniana po polu OPIS) — do N2/A7
+
+**Pitfall (flaga jakości):** jeśli raport pokazuje >5% WZ „bez klienta" — to NAJPIERW sprawdź join do vwKlienci, zanim ogłosisz dziurę. Pusty klient masowy = błąd dekodowania, nie rzeczywistość.
 
 ## 6. Czego NIE wolno robić raportowi
 
