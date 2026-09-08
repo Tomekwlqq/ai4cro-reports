@@ -124,6 +124,7 @@ a{color:var(--sg-vio)}
     <div class="tab" data-tab="pytania">❓ PYTANIA <span class="cnt">23+16</span></div>
     <div class="tab" data-tab="wzrost">📈 WZROST WIEDZY <span class="cnt">16</span></div>
     <div class="tab" data-tab="rozmowy">💬 ROZMOWY <span class="cnt">8</span></div>
+    <div class="tab" data-tab="reguly">📐 REGUŁY POŁĄCZEŃ <span class="cnt">1</span></div>
   </div>
 
   <!-- ════════════ TAB 1: OPOWIEŚĆ ════════════ -->
@@ -560,6 +561,59 @@ a{color:var(--sg-vio)}
         <div class="q-close"><b>Ustalenie:</b> węzły = 3 kolumny (procedura / opowieść + 23 luki / automaty); pytania o wiedzę z dokumentów usunięte; procedury = warstwa 1 (ideal, nie praktyka); rozjazd procedura ↔ praktyka = pain = uzasadnienie automatyzacji.</div>
         <div class="q-dialog">→ wiedza: struktura 18 węzłów · mapa gotowa do warsztatu</div>
       </div>
+    </div>
+  </section>
+
+  <section id="tab-reguly" class="hidden">
+    <div class="group-label">📐 Model połączeń dokumentów — JEDEN zbiór reguł (N4/A6)</div>
+    <div class="cards">
+      <div class="card w"><h3>Typy dokumentów (potwierdzone w bazie)</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px">
+        <tr style="background:#f6f8fa"><th style="text-align:left;padding:5px 8px">Typ</th><th style="text-align:left;padding:5px 8px">Dokument</th><th style="text-align:left;padding:5px 8px">Rola</th><th style="text-align:left;padding:5px 8px">Pozycje przez</th></tr>
+        <tr><td style="padding:4px 8px">11</td><td style="padding:4px 8px"><b>WZ</b> — wydanie</td><td style="padding:4px 8px">towar WYSZEDŁ</td><td style="padding:4px 8px"><code>ob_DokMagId</code></td></tr>
+        <tr><td style="padding:4px 8px">16</td><td style="padding:4px 8px"><b>ZK</b> — zamówienie klienta</td><td style="padding:4px 8px">umowa/oferta</td><td style="padding:4px 8px"><code>ob_DokHanId</code></td></tr>
+        <tr><td style="padding:4px 8px">2</td><td style="padding:4px 8px"><b>FS</b> — faktura sprzedaży</td><td style="padding:4px 8px">rozliczenie</td><td style="padding:4px 8px"><code>ob_DokHanId</code></td></tr>
+        <tr><td style="padding:4px 8px">1</td><td style="padding:4px 8px"><b>FZ</b> — faktura zaliczkowa</td><td style="padding:4px 8px">zaliczka</td><td style="padding:4px 8px"><code>ob_DokHanId</code></td></tr>
+        <tr><td style="padding:4px 8px">21</td><td style="padding:4px 8px"><b>PA</b> — paragon</td><td style="padding:4px 8px">sprzedaż detaliczna</td><td style="padding:4px 8px"><code>ob_DokHanId</code></td></tr>
+        <tr><td style="padding:4px 8px">5</td><td style="padding:4px 8px"><b>KFZ</b> — korekta faktury</td><td style="padding:4px 8px">korekta FS/FZ</td><td style="padding:4px 8px"><code>ob_DokHanId</code></td></tr>
+        <tr><td style="padding:4px 8px">10</td><td style="padding:4px 8px"><b>PZ</b> — przyjęcie</td><td style="padding:4px 8px">towar DO magazynu</td><td style="padding:4px 8px"><code>ob_DokMagId</code></td></tr>
+        </table>
+        <div class="proof"><b>Dowód:</b> GROUP BY dok_Typ · Kopia_2024_KOMANDYTOWA · 26.08</div></div>
+
+      <div class="card w"><h3>3 fizyczne mechanizmy powiązań (KLUCZ — raport sprawdza WSZYSTKIE)</h3>
+        <div style="font-size:13px;line-height:1.7;margin-top:4px">
+        <b>A. Pole <code>dok_DoDokId</code></b> („dokument powiązany"): WZ→FS (16 834) lub WZ→ZK (10) · <b>ZK→WZ (6 648)</b> ← główne ZK↔WZ · FS→ZK (3 016).<br>
+        <b>B. Wspólna pozycja magazynowa</b>: ta sama <code>dok_Pozycja</code> ma <code>ob_DokMagId</code> = WZ i <code>ob_DokHanId</code> = FS/PA. 127 WZ lipca ma dokument TYLKO tą drogą — bez tego fałszywa dziura.<br>
+        <b>C. Relacja pozycji <code>ob_DoId</code></b> — pozycja wskazuje inną pozycję (PZ, korekty).</div>
+        <div class="proof"><b>Dowód:</b> analiza powiązań 07.08 · poz. 620037 = WZ 1622 + PA 12 · 26.08</div></div>
+
+      <div class="card w"><h3>Algorytm kwalifikacji WZ (kolejność ważna — każdy WZ w 1 klasie)</h3>
+        <div style="font-size:13px;line-height:1.8;margin-top:4px">
+        1. ZK wskazuje WZ lub pole na WZ = ZK → <b>ZK</b><br>
+        2. Pole na WZ = FS/FZ lub wspólna pozycja ma FS/FZ → <b>FS</b><br>
+        3. Pole na WZ = PA lub wspólna pozycja ma PA → <b>PA</b> (detal = pokrycie!)<br>
+        4. Wspólna pozycja ma KFZ → <b>FS</b> (korekta dziedziczy)<br>
+        5. Nic → <b>GOŁE</b> (dziura — towar wyjechał bez dokumentu)</div>
+        <div class="proof"><b>Dowód:</b> MODEL_POLACZEN_DOKUMENTOW.md · tabela STATUSY_WZ_lipiec2026.html</div></div>
+
+      <div class="card w"><h3>Moment domknięcia: WZ musi dostać dokument w dniu wystawienia</h3>
+        <div style="font-size:13px;margin-top:4px">432 z 450 par WZ→dokument w lipcu = <b>ten sam dzień</b> (96%). GOŁE starsze niż 1 dzień = realna dziura. Porządek robi Tomek Jurewicz — raport tylko pokazuje.</div>
+        <div class="proof"><b>Dowód:</b> DATEDIFF(day, WZ.data, dok.data) GROUP BY · lipiec 2026</div></div>
+
+      <div class="card w"><h3>Klient / PH / inwestycja — do czego przypisujemy</h3>
+        <div style="font-size:13px;line-height:1.7;margin-top:4px">
+        <b>Klient WZ</b> = <code>dok_OdbiorcaId</code> → <code>kh__Kontrahent</code> · <b>Klient faktury (prezentacja)</b> = <code>dok_PlatnikId</code> (nabywca — może różnić się od odbiorcy WZ!)<br>
+        <b>PH</b> = kategoria <code>dok_KatId</code> → <code>sl_Kategoria</code> (CD, MR, LR, SM, GG, MP, GM, BK, LP) — NIE osoba wystawiająca<br>
+        <b>Inwestycja</b> = grupa po nazwie/OPIS (kejs Telmax: kartoteki „telmax + inwestycja")</div>
+        <div class="proof"><b>Dowód:</b> sl_Kategoria · 87% rozjazdu dok_PersonelId vs dok_KatId · 10.08</div></div>
+
+      <div class="card w"><h3>Czego NIE wolno raportowi</h3>
+        <div style="font-size:13px;line-height:1.7;margin-top:4px">
+        ✗ nazwa klienta ≠ powiązanie (nie uznawać za pokryte „bo klient się zgadza")<br>
+        ✗ nie mieszać <code>dok_OdbiorcaId</code> z <code>dok_PlatnikId</code><br>
+        ✗ nie liczyć dwa razy (pole ORAZ pozycja = jedna faktura)<br>
+        ✗ nie chować nierozstrzygniętych — GOŁE zostaje widoczne kontrolnie</div>
+        <div class="proof"><b>Dowód:</b> MODEL_POLACZEN_DOKUMENTOW.md §6</div></div>
     </div>
   </section>
 
