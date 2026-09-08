@@ -1,0 +1,195 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dobry Dach — Handoff środowisko (Hermes + Claude)</title>
+<style>
+:root{--vio:#7c5cff;--ink:#1a1f2b;--mut:#667085;--line:#e4e7ec;--green:#1d7a3f;--red:#b42318}
+*{box-sizing:border-box}
+body{margin:0;background:#f5f6fa;font-family:'Space Grotesk',-apple-system,'Segoe UI',Arial,sans-serif;color:var(--ink);line-height:1.65}
+.wrap{max-width:1000px;margin:0 auto;padding:34px 22px 80px;background:#fff;min-height:100vh}
+h1{font-size:26px;color:var(--vio);border-bottom:3px solid var(--vio);padding-bottom:10px}
+h2{font-size:20px;margin-top:34px;border-bottom:1px solid var(--line);padding-bottom:6px}
+h3{font-size:16px;margin-top:22px;color:#344054}
+h4{font-size:14px;margin-top:16px}
+code{background:#f3f0ff;color:#5b3fd4;padding:1px 6px;border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:13px}
+pre{background:#f8f9fc;border:1px solid var(--line);border-radius:10px;padding:14px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+td,th{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#f3f0ff;font-weight:700}
+ul{margin:8px 0} li{margin:4px 0}
+</style></head><body><div class="wrap">
+<h1>DOBRY DACH — Projekt Raportów Operacyjnych (N4 + A6)</h1>
+<h2>Pakiet wiedzy dla środowiska docelowego — czyta Hermes ORAZ Claude</h2>
+
+<p>*Aktualizacja: 2026-09-08 · Cel tego pliku: dać KAŻDEJ instancji AI (Hermes, Claude Code) pełny, samowystarczalny obraz projektu — bez potrzeby znajomości historii rozmów.*</p>
+
+<p>---</p>
+
+<h2>1. O co chodzi (cel, po ludzku)</h2>
+
+<p>Firma <b>Dobry Dach</b> (wykonawca pokryć dachowych, 2 spółki: komandytowa + jawna) ma problem z porządkiem w obiegu dokumentów i pieniędzy:</p>
+<ul><ul><li>handlowcy (PH) **nie dowiadują się, że towar wyjechał** z magazynu,</li></ul>
+<ul><li>**62% wydań (WZ) nie ma powiązanego zamówienia** (ZK),</li></ul>
+<ul><li>nikt realnie nie pilnuje wpłat (odpowiedź klienta: „nikt"),</li></ul>
+<ul><li>szef widzi problemy za późno.</li></ul></ul>
+
+<p><b>Porządek w firmie robi Tomek Jurewicz.</b> Nasza rola: <b>dawać raporty, które pokazują stan</b> — gdzie są dziury, kto wisi z kasą, co się dzieje. <b>Nie naprawiamy danych</b> — pokazujemy je tak, żeby można było działać.</p>
+
+<p><b>Fundament (ustalenie z klientem 25.08):</b> raporty budujemy na <b>WZ-tkach</b> (realne wydania towaru), NIE na ZK (zamówienia = w praktyce <b>oferty</b> — tylko ~34% kończy się wydaniem; kategoria „Sprzedaż" = 995 ZK / 90,7 mln zł to worek ofert, nie portfel).</p>
+
+<p>---</p>
+
+<h2>2. Środowisko i dane</h2>
+
+<tr><td>Element</td><td>Wartość</td></tr>
+<tr><td>Docelowe źródło</td><td>serwer `192.168.1.199,1273` (Windows, Subiekt GT)</td></tr>
+<tr><td>Bazy</td><td>`_2024_KOMANDYTOWA`, `_2024_JAWNA`, `_2022_VIA`, `_2024_ZOO`</td></tr>
+<tr><td>Konto SQL</td><td>`audytor_readonly`, tylko SELECT (`db_datareader`), `ApplicationIntent=ReadOnly`</td></tr>
+<tr><td>Do tej pory (testy)</td><td>lokalna kopia `Kopia_2024_KOMANDYTOWA` (Docker, mssql 2022) — **tylko komandytowa**</td></tr>
+<tr><td>Koniec danych w kopii</td><td>07.08.2026 (anomalia: FV z datą 2026-12-31 — do wyjaśnienia)</td></tr>
+<tr><td>Raporty/testy</td><td>lipiec 2026 jako miesiąc zamknięty; dzień testowy = 07.08</td></tr>
+
+<p><b>⚠️ KLUCZOWE OGRANICZENIE (odkryte 08.09):</b> prawdziwa <b>kasa klienta końcowego żyje w bazie JAWNEJ</b> — FV do klienta (usługa 8%, „Prace budowlane na budynku mieszkalnym") wystawia spółka jawna, tam też wpływają wpłaty. Baza jawna <b>nie była dostępna w kopii</b> → raporty kasy (wpłaty, należności) liczone tylko z komandytowej <b>kłamią</b>. <b>Raporty finansowe A6 trzeba budować/przeliczać na środowisku z obiema bazami.</b></p>
+
+<p>---</p>
+
+<h2>3. MODEL POŁĄCZEŃ DOKUMENTÓW (kanon — JEDEN zbiór reguł)</h2>
+
+<h3>3.1 Typy dokumentów (potwierdzone w bazie)</h3>
+
+<tr><td>Typ</td><td>Dokument</td><td>Rola</td><td>Pozycje przez</td></tr>
+<tr><td>11</td><td>WZ — wydanie z magazynu</td><td>**towar WYSZEDŁ**</td><td>`ob_DokMagId` (magazynowe)</td></tr>
+<tr><td>16</td><td>ZK — zamówienie klienta</td><td>**oferta** (nie sprzedaż!)</td><td>`ob_DokHanId` (handlowe)</td></tr>
+<tr><td>2</td><td>FS — faktura sprzedaży</td><td>rozliczenie</td><td>`ob_DokHanId`</td></tr>
+<tr><td>1</td><td>FZ — faktura zaliczkowa</td><td>zaliczka</td><td>`ob_DokHanId`</td></tr>
+<tr><td>21</td><td>PA — paragon</td><td>sprzedaż detaliczna (liczy się jako pokrycie!)</td><td>`ob_DokHanId`</td></tr>
+<tr><td>5</td><td>KFZ — korekta faktury</td><td>korekta FS/FZ</td><td>`ob_DokHanId`</td></tr>
+<tr><td>10</td><td>PZ — przyjęcie</td><td>towar DO magazynu</td><td>`ob_DokMagId`</td></tr>
+
+<p>Statusy ZK: <b>6</b> = otwarte/bez rezerwacji, <b>7</b> = z rezerwacją (logistyk po mailu PH), <b>8</b> = zrealizowane.</p>
+<p>Statusy WZ: <b>1</b> = aktywne, <b>0/3</b> = anulowane/wycofane (nie liczyć w raportach).</p>
+
+<h3>3.2 Trzy fizyczne mechanizmy powiązań (raport MUSI sprawdzać wszystkie)</h3>
+
+<p><b>A. Pole <code>dok_DoDokId</code></b> („dokument powiązany"):</p>
+<ul><ul><li>**ZK → WZ**: 6 648 w całej bazie ← **główne powiązanie ZK↔WZ** (ZK wskazuje WZ!)</li></ul>
+<ul><li>WZ → FS: 16 834 (WZ wskazuje fakturę)</li></ul>
+<ul><li>FS → ZK: 3 016 (faktura wraca do zamówienia)</li></ul>
+<ul><li>WZ → ZK na polu: tylko ~10 w całej bazie (ale BYWA — klient miał rację, pole bywa FS/ZK/PA)</li></ul></ul>
+
+<p><b>B. Wspólna pozycja magazynowa</b>: ta sama <code>dok_Pozycja</code> ma <code>ob_DokMagId</code> = WZ <b>i</b> <code>ob_DokHanId</code> = dokument handlowy (FS/PA). Przykład: poz. 620037 = WZ 1622 + PA 12. <b>127 WZ lipca ma dokument TYLKO tą drogą</b> — bez sprawdzenia = fałszywe dziury.</p>
+
+<p><b>C. Relacja pozycji <code>ob_DoId</code></b> — pozycja wskazuje inną pozycję (PZ, korekty).</p>
+
+<h3>3.3 Algorytm kwalifikacji WZ (kolejność ważna, każdy WZ w 1 klasie)</h3>
+
+<ul><ul><li>ZK wskazuje WZ (`zk.dok_DoDokId = wz`) LUB pole na WZ = ZK → **ZK**</li></ul>
+<ul><li>Pole na WZ = FS/FZ LUB wspólna pozycja ma FS/FZ → **FS**</li></ul>
+<ul><li>Pole na WZ = PA LUB wspólna pozycja ma PA → **PA (detal — pokrycie!)**</li></ul>
+<ul><li>Wspólna pozycja ma KFZ (typ 5) → **FS** (korekta dziedziczy)</li></ul>
+<ul><li>Nic → **GOŁE ⚠️ (dziura — towar wyjechał bez dokumentu)**</li></ul></ul>
+
+<h3>3.4 Moment domknięcia</h3>
+
+<p>432 z 450 par WZ→dokument w lipcu = <b>ten sam dzień</b> (96%). WZ musi dostać dokument handlowy w dniu wystawienia. GOŁE starsze niż 1 dzień = realna dziura (do pokazania Jurze, nie do ukrycia).</p>
+
+<h3>3.5 Klient / PH / inwestycja</h3>
+
+<ul><ul><li>**NAZWA KLIENTA = `vwKlienci.adr_NazwaPelna` / `adr_Nazwa`** (join po `kh_Id`) — **NIGDY `kh_Nazwisko`/`kh_Symbol` z `kh__Kontrahent`** (puste dla firm! błąd v1-v2 N4, złapany 08.09 — masowy pusty klient = błąd join, nie rzeczywistość)</li></ul>
+<ul><li>Klient WZ = `dok_OdbiorcaId` → `vwKlienci`; klient faktury (prezentacja) = `dok_PlatnikId` (nabywca)</li></ul>
+<ul><li>**PH = kategoria dokumentu** `dok_KatId` → `sl_Kategoria` (CD, MR, LR, SM, GG, MP, GM, BK, LP) — NIE osoba wystawiająca (`dok_PersonelId`, 87% rozjazdu!)</li></ul>
+<ul><li>**Inwestycja = osobna kartoteka klienta** (wzorzec TELMAX: 12 kartotek „TELMAX + inwestycja" — MIROSŁAWIEC, LODOWISKO, HALA CZŁUCHÓW… każda z własnymi ZK/WZ/FS); OPISY na FV z jawnej — do sprawdzenia na środowisku</li></ul>
+<ul><li>Spółki powiązane w kartotece komandytowej: 74 = komandytowa, **382 = jawna** (HURTOWNIA POKRYĆ DACHOWYCH DOBRY DACH MAREK PESTKA I WSPÓLNICY SP. JAWNA), 642 = sp. z o.o. — przy raportach kasy oddzielać (rozliczenia wewnętrzne ≠ klienci)</li></ul></ul>
+
+<h3>3.6 Czego NIE wolno raportowi</h3>
+
+<ul><ul><li>nazwa klienta ≠ powiązanie (nie uznawać za pokryte „bo klient się zgadza")</li></ul>
+<ul><li>nie mieszać `dok_OdbiorcaId` z `dok_PlatnikId`</li></ul>
+<ul><li>nie liczyć dwa razy (pole ORAZ pozycja = jedna faktura)</li></ul>
+<ul><li>nie chować nierozstrzygniętych — GOŁE zostaje widoczne kontrolnie</li></ul>
+<ul><li>**flaga jakości**: >5% WZ „bez klienta" = sprawdź join do vwKlienci, zanim ogłosisz dziurę</li></ul></ul>
+
+<p>---</p>
+
+<h2>4. RAPORT N4 — dziennik WZ</h2>
+
+<p><b>Cel:</b> codziennie pokazać każde wydanie z magazynu: kto (klient), czy ma pokrycie (ZK/FS/PA), jaką drogą. Likwiduje dziurę „nie wiem czy towar wyjechał i do kogo".</p>
+
+<p><b>Kolumny (5/5 zmapowane):</b> WZ (<code>dok_NrPelny</code>, typ 11) · Data (<code>dok_DataWyst</code>) · Klient (<code>vwKlienci.adr_NazwaPelna</code> przez <code>dok_OdbiorcaId</code>) · Kategoria→PH (<code>dok_KatId</code>→<code>sl_Kategoria</code>) · Czy ma ZK (EXISTS ZK→WZ przez <code>dok_DoDokId</code>, typ 16).</p>
+
+<p><b>Stan:</b> generator <code>build_raport_n4.py</code> (działa na kopii komandytowej). Skala lipca 2026 (802 WZ): 282 ✓ ZK · 291 FS · 30 PA · <b>197 GOŁE</b> · 2 anul. Po poprawkach klienta z <code>vwKlienci</code> — walidacja 07.08: 1/23 bez nazwy (nie 13!).</p>
+
+<p><b>Wersja rozszerzona (v2/v3):</b> klasyfikacja pełną logiką 3 mechanizmów + kolumna „Droga" (JAK doszliśmy do klasy — dowód, nie zgadywanie).</p>
+
+<p><b>Do decyzji:</b> odbiorcy (per PH vs zarząd), godzina wysyłki, czy PA pokazywać jako osobną klasę (klient: „PA raczej tak, to sprzedaż detaliczna — było w notatkach").</p>
+
+<p>---</p>
+
+<h2>5. RAPORT A6 — stan PH / obieg pieniądza</h2>
+
+<p><b>Cel (przebudowany 08.09 od celu):</b> codziennie rano widać <b>KASĘ</b>:</p>
+<ul><ul><li>ile wpłynęło (dziś / narastająco),</li></ul>
+<ul><li>**kto wisi** (należności per KLIENT — jeden wiersz = klient, nie faktura),</li></ul>
+<ul><li>co się dziś ruszyło (nowe oferty, WZ, FV per PH).</li></ul></ul>
+
+<p><b>Specyfikacja od klienta (25.08, węzeł 13):</b> „stan na dzień, sumarycznie do dnia, wszystkich aktywnych (z aktywnym etapem transakcji, łącznie z zakończoną budową i niezapłaceniem), podział per klient: pierwotna wartość ZK (= SUMA pozycji ZK przez <code>ob_DokHanId</code>), % realizacji (= koszt WZ / wartość ZK), wartość wydanych towarów (SUMA <code>ob_WartMag</code> WZ), suma wystawionych FV (zaliczek), suma wpłat."</p>
+
+<p><b>2 wersje:</b> per PH (każdy widzi tylko swoich klientów — filtr po aktywnych ZK kategorii) + zbiorcza dla Tomasza.</p>
+
+<p><b>Wymagania Tomka (08.09):</b> SUMY i KASA na górze; <b>jasne daty przy każdej liczbie</b> (co jest sumą od początku roku/miesiąca, a co z dziś); narastająco od początku roku; per klient nie per faktura; symulacja na 27.07/31.07 (lipiec jako narastający miesiąc testowy).</p>
+
+<p><b>⚠️ BLOKERY A6:</b></p>
+<ul><ul><li>**baza jawna** — bez niej wpłaty/należności klientów końcowych NIEWIDOCZNE (patrz §2) → przejście na środowisko docelowe,</li></ul>
+<ul><li>FZ→ZK — FZ nie ma `dok_DoDokId`, pozycja FZ wskazuje PZ (typ 10), transakcja = 0 — jak wpiąć zaliczkę w ZK (pytanie do klienta),</li></ul>
+<ul><li>tabela adresów PH (kategoria→osoba→mail) — blokuje wysyłkę per PH.</li></ul></ul>
+
+<p><b>Generator:</b> <code>build_raport_a6.py</code> (<code>--dzien YYYY-MM-DD --out plik.html [--ph kat]</code>).</p>
+
+<p>---</p>
+
+<h2>6. Automaty (A0–A7) — status</h2>
+
+<tr><td>Kod</td><td>Nazwa</td><td>Status</td></tr>
+<tr><td>A6</td><td>Raport dzienny PH</td><td>✅ działa (prototyp 11/11); **przebudowa wg celu KASA w toku**</td></tr>
+<tr><td>A3</td><td>Flaga marży &lt;5%</td><td>🟡 algorytm gotowy (koszt = `ob_WartMag`, marża = (Netto−Koszt)/Netto)</td></tr>
+<tr><td>A4</td><td>Terminy/transport (Google Calendar)</td><td>🟡 OAuth działa (6 kalendarzy pojazdów)</td></tr>
+<tr><td>A5</td><td>WZ → powiadomienie PH</td><td>🔴 brak tabeli adresów PH</td></tr>
+<tr><td>A7</td><td>ZK vs WZ rozjazdy</td><td>🔴 budować z A5</td></tr>
+<tr><td>A0</td><td>Rejestr zapytań</td><td>🔴 decyzja gdzie rejestr</td></tr>
+<tr><td>A2</td><td>Oferta z ZK (Sfera)</td><td>🔴 wymaga licencji Sfera</td></tr>
+<tr><td>A1</td><td>Skan projektu PDF</td><td>🔴 czeka na próbki</td></tr>
+
+<p><b>Hosting (decyzja):</b> maszyna w biurze klienta, always-on (Windows, RDP) — NIE VPS. Python runner + Task Scheduler, konto SQL <code>dd_auto</code> (read-only). Dane klienta zostają w sieci biura.</p>
+
+<p>---</p>
+
+<h2>7. Otwarte pytania / do potwierdzenia na środowisku</h2>
+
+<ul><ul><li>Czy na środowisku są WSZYSTKIE 4 bazy (zwłaszcza JAWNA)? — warunek raportów kasy</li></ul>
+<ul><li>Co znaczy status 8 ZK w kontekście „zakończona budowa niezapłacona"? (jak wykryć niedopłatę: salda `nz__Finanse` per klient przez `vwFinanseRozKontrahenci`)</li></ul>
+<ul><li>FZ→ZK: jak zaliczki wpinają się w zamówienie?</li></ul>
+<ul><li>Anomalia: FV z datą 2026-12-31</li></ul>
+<ul><li>OPIS/tytuły na FV z JAWNEJ jako nośnik inwestycji (kejs Telmax — do weryfikacji na jawnej)</li></ul>
+<ul><li>Tabela adresów PH (kategoria → osoba → mail)</li></ul>
+<ul><li>Godzina + odbiorcy raportów (odpowiedź z wizyty: „obaj" — Tomek i kierownik)</li></ul></ul>
+
+<p>---</p>
+
+<h2>8. Pliki i artefakty (gdzie co żyje)</h2>
+
+<tr><td>Plik</td><td>Co zawiera</td></tr>
+<tr><td>`MODEL_POLACZEN_DOKUMENTOW.md`</td><td>kanon powiązań (sekcja 3 tego dokumentu, wersja pełna)</td></tr>
+<tr><td>`PORTFEL_RAPORTOW.html`</td><td>mapa pozycja raportu → tabela.kolumna (N4, A6, struktura)</td></tr>
+<tr><td>`DOBRY_DACH_KNOWLEDGE_BOARD.html`</td><td>hub wiedzy — zakładka 📐 REGUŁY POŁĄCZEŃ</td></tr>
+<tr><td>`build_raport_n4.py`</td><td>generator N4 (dziennik WZ)</td></tr>
+<tr><td>`build_raport_a6.py`</td><td>generator A6 (wersja per PH + zbiorcza)</td></tr>
+<tr><td>`raporty_n4/`</td><td>testy: 07.08 (N4 v3, A6 CD, A6 ZBIORCZY), lipiec 2026, STATUSY_WZ</td></tr>
+<tr><td>`STRUKTURA_WEZLOW.json`</td><td>23 luki procesu + odpowiedzi klienta (węzeł 13 = specyfikacja A6)</td></tr>
+<tr><td>`odkrycia.json`</td><td>14 odkryć z dowodami</td></tr>
+<tr><td>`AUTOMATYZACJE_PROJEKT.html`</td><td>start-o-meter A0–A7, wymagania, N1–N4</td></tr>
+<tr><td>`SESSION_BRIDGE.md` / `STATUS.md`</td><td>stan projektu</td></tr>
+
+<p><b>Publikacja live:</b> https://tomekwlqq.github.io/ai4cro-reports/dobry_dach/ (GH Pages; uwaga: cron GLOV pushuje do tego samego repo — przed każdym pushem <code>git pull</code>, po pushu sprawdzać <code>git status -sb</code>).</p>
+
+<p><b>Zasady pracy:</b> komunikacja i raporty po polsku; każda pozycja raportu = konkretne pole bazy (mapa w PORTFEL_RAPORTOW); luki oznaczać, nie zgadywać; walidacja na zamkniętym miesiącu (lipiec 2026); backupy przed zmianami.</p>
+
+</div></body></html>
