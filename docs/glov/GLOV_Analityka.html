@@ -606,8 +606,8 @@ function aggregateRange(s,e){
       out.baselinker[src].orders+=(b.orders||0);
       out.baselinker[src].revenue+=(b.revenue||0);
     });
-    // Shopify split Online/TikTok per dzień (Q3) — z backfillu --append-q3
-    const sc=d.shopify_channels||{};
+    // Shopify split Online/TikTok per dzień (Q3) — z backfillu --append-q3; fallback: lejek_daily channels_sales
+    const sc=d.shopify_channels||(LEJEK[dk]&&LEJEK[dk].shopify&&LEJEK[dk].shopify.channels_sales)||{};
     ['Online Store','TikTok'].forEach(ch=>{
       const c=sc[ch]||{};
       out.shopifyChannels[ch].orders+=(c.orders||0);
