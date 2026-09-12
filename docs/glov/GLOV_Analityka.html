@@ -736,7 +736,7 @@ function renderFunnel(d,s,e){
   dks.forEach(dk=>{
     const day=LEJEK[dk]; if(!day)return;
     const g=day.ga4||{}; const all=g.all||{};
-    ['pl','xx','unknown'].forEach(k=>{
+    ['pl','xx'].forEach(k=>{  // exclude 'unknown' — TikTok Shop confirmations land here (country=unknown, CR ~22% = artefakt)
       const b=all[k]||{};
       ga4All.wej+=b.session_start||0;ga4All.pdp+=b.view_item||0;ga4All.kosz+=b.add_to_cart||0;
       ga4All.chk+=b.begin_checkout||0;ga4All.zak+=b.purchase||0;
@@ -806,7 +806,7 @@ function renderFunnel(d,s,e){
     <button onclick="r02mode('day',this)" class="psb ${R02_DAY?'psa':''}" id="r02-dbtn">📆 Dzień${R02_DAY?' ('+R02_DAY+')':''}</button>
   </div>
   <div class="lkgrid lkgrid-3" style="margin-top:10px">
-    ${funCard('GA4 All','<span class="sbadge sbadge-ga4">GA4</span>',ga4All,crAll,'zakupy ÷ wejście · wszystkie kraje')}
+    ${funCard('GA4 All','<span class="sbadge sbadge-ga4">GA4</span>',ga4All,crAll,'zakupy ÷ wejście · PL+zagraniczne · bez country=unknown (TikTok Shop artefakt)')}
     ${funCard('GA4 PL','<span class="sbadge sbadge-ga4">GA4</span>',ga4PL,crPL,'zakupy ÷ wejście · country=Poland')}
     ${funCard('Shopify All','<span class="sbadge sbadge-shp">SHP</span>',shAll,crShAll,'zamówienia online ÷ sesje (z botami) · bez TikTok')}
     ${funCard('Shopify tylko ludzie','<span class="sbadge sbadge-shp">SHP</span>',shHum,crShHum,'zamówienia online ÷ sesje bez botów · CR real · bez TikTok')}
