@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Komunikatory drogowe — analiza kart produktowych</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f9fafb;color:#111827;font-size:15px;line-height:1.5}
+.container{max-width:1080px;margin:0 auto;padding:16px}
+h1{font-size:22px;font-weight:800;margin-bottom:4px;color:#111827}
+h2{font-size:18px;font-weight:700;margin:32px 0 12px;color:#1d4ed8;border-bottom:2px solid #dbeafe;padding-bottom:6px}
+h3{font-size:15px;font-weight:700;margin:16px 0 8px;color:#374151}
+p{margin-bottom:10px;color:#374151}
+.meta{font-size:13px;color:#6b7280;margin-bottom:20px}
+.card{background:#fff;border-radius:10px;padding:16px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat-box{background:#fff;border-radius:8px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.stat-val{font-size:24px;font-weight:800;color:#1d4ed8}
+.stat-label{font-size:12px;color:#6b7280;margin-top:2px}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f3f4f6;padding:8px 6px;text-align:left;font-weight:600;white-space:nowrap;position:sticky;top:0}
+td{padding:8px 6px;border-bottom:1px solid #f3f4f6;vertical-align:top}
+tr:hover td{background:#f9fafb}
+.num{text-align:right;white-space:nowrap}
+.small{font-size:12px;color:#6b7280}
+.badge-me{background:#1d4ed8;color:#fff;padding:1px 6px;border-radius:3px;font-size:11px;font-weight:700}
+.badge-ys{background:#059669;color:#fff;padding:1px 6px;border-radius:3px;font-size:11px;font-weight:700}
+.pill-red{background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:4px;font-weight:700;font-size:12px}
+.pill-green{background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:4px;font-weight:700;font-size:12px}
+.pill-yellow{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;font-weight:700;font-size:12px}
+.nav-links{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.nav-links a{background:#eff6ff;color:#1d4ed8;padding:5px 12px;border-radius:6px;font-size:13px;text-decoration:none;border:1px solid #bfdbfe}
+.nav-links a:hover{background:#dbeafe}
+.action-row{display:flex;gap:8px;align-items:baseline;padding:10px;border-radius:6px;margin-bottom:8px;background:#fff;border:1px solid #e5e7eb}
+.action-n{font-size:20px;font-weight:800;color:#1d4ed8;min-width:44px;text-align:center}
+.action-text{font-size:14px;color:#374151}
+.quote-box{background:#f8fafc;border-left:3px solid #60a5fa;padding:10px 14px;border-radius:0 6px 6px 0;margin:8px 0;font-size:13px;color:#374151;font-style:italic}
+.compare-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.compare-label{font-size:12px;color:#6b7280;min-width:80px}
+.compare-val{font-size:13px;font-weight:700}
+.section-num{display:inline-block;background:#1d4ed8;color:#fff;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;font-size:13px;font-weight:700;margin-right:6px}
+@media(max-width:390px){
+  h1{font-size:18px} h2{font-size:16px}
+  .stat-val{font-size:20px}
+  .nav-links a{font-size:12px;padding:4px 8px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="card">
+  <h1>Komunikatory drogowe — analiza kart produktowych</h1>
+  <p class="meta">Sklepy: Media Expert (17 kart) · sklep.yanosik.pl (5 kart) · Data: 16.09.2026 · Oceniane na podstawie zapisanych wersji stron</p>
+
+  <div class="nav-links">
+    <a href="cs_komunikatory_drogowe.html">Sytuacje zakupowe i pytania kupujących</a>
+    <a href="MAPA_PERCEPCJI_komunikatory_drogowe_v5.7.html">Mapa percepcji</a>
+    <a href="POROWNANIE_OOONO_vs_YANOSIK.html">OOONO vs Yanosik — porównanie</a>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-box">
+      <div class="stat-val">77–89</div>
+      <div class="stat-label">Media Expert · wynik surowy (z 166)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">48–55%</div>
+      <div class="stat-label">Media Expert · wynik główny (/161 ocenialnych)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">62–72</div>
+      <div class="stat-label">sklep.yanosik.pl · wynik surowy (z 166)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">38–45%</div>
+      <div class="stat-label">sklep.yanosik.pl · wynik główny (/161)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" style="color:#6b7280;font-size:16px">nie oceniane</div>
+      <div class="stat-label">Słowa kluczowe z luki — brak danych (5 pkt wyłączone z mianownika)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">22</div>
+      <div class="stat-label">Kart przeanalizowanych łącznie</div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:#6b7280">Wynik główny = punkty zdobyte / 161 (z 166 odliczono 5 pkt za słowa kluczowe z luki — te dane nie były dostępne). Niski wynik nie oznacza złego produktu — oznacza, że treść karty nie odpowiada na pytania, które zadają kupujący w wyszukiwarkach i asystentach AI.</p>
+</div>
+
+<!-- SECTION 1: METODOLOGIA -->
+<h2><span class="section-num">1</span> Co i jak sprawdzaliśmy</h2>
+<div class="card">
+  <p>Sprawdziliśmy <strong>22 strony produktowe</strong> z dwóch sklepów: <strong>Media Expert</strong> (17 kart YANBOX i TomTom) oraz <strong>sklep.yanosik.pl</strong> (5 kart YANBOX). Dla każdej karty oceniliśmy 22 elementy w dwóch grupach:</p>
+  <ul style="margin:10px 0 10px 20px;font-size:14px;color:#374151">
+    <li><strong>Struktura i technikalia</strong> (10 elementów): definicja produktu, tabele danych, dane strukturalne, zdjęcia, opinie, materiał wideo, dostępność dla robotów AI</li>
+    <li><strong>Treść i pytania kupujących</strong> (12 elementów): pokrycie sytuacji zakupowych (16 zidentyfikowanych dla tej kategorii), kluczowe cechy decyzyjne, ścieżka decyzyjna kupującego, pytania z wyszukiwarek, cytowalne fakty</li>
+  </ul>
+  <p>Osobno policzyliśmy <strong>komunikację o społeczności</strong> (czy karta mówi o ostrzeżeniach od innych kierowców i ich skali) oraz <strong>bezpośredniość komunikatu</strong> (czy karta wprost mówi o kontrolach prędkości jako sytuacji zakupowej).</p>
+  <p style="font-size:13px;color:#6b7280">Ocena dotyczy treści stron — nie samych produktów. Wyszukiwarki AI (ChatGPT, Google AI Overviews, Perplexity) cytują treść kart — jeśli jej brakuje, karta nie będzie polecana. Dane z cache: 16.09.2026.</p>
+</div>
+
+<!-- SECTION 2: WYNIKI PER KARTA -->
+<h2><span class="section-num">2</span> Wynik per karta</h2>
+<div class="card">
+  <p style="font-size:13px;color:#6b7280;margin-bottom:10px">Kolumny: ME = Media Expert · YS = sklep.yanosik.pl · Spo/Moc = społeczność (0–2) / moc sieci (0–2) · O kont. = bezpośredniość o kontrolach (0–8)</p>
+  <div class="tscroll">
+    <table>
+      <thead><tr>
+        <th>Karta</th><th class="num">Cena</th><th class="num">Wynik</th>
+        <th>Top-3 braki</th><th class="num">Spo/Moc</th><th class="num">O kont.</th>
+      </tr></thead>
+      <tbody><tr style="background:#f0fdf4"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX GO bez abonamentu</td><td class="num">289 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#22c55e;height:6px;border-radius:3px;width:71px"></div><span style="font-size:12px">89/166 &rarr; <strong>55%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Opinie kupujących (0/7)</td><td class="num">2/2</td><td class="num">6/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX RS dożywotnia transmisja danych</td><td class="num">1 999 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:68px"></div><span style="font-size:12px">85/166 &rarr; <strong>53%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Pokrycie ścieżki decyzyjnej (3/10)</td><td class="num">0/0</td><td class="num">2/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy TOMTOM Tom by TomTom</td><td class="num">285 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:66px"></div><span style="font-size:12px">82/166 &rarr; <strong>51%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Opinie kupujących (0/7)</td><td class="num">2/2</td><td class="num">6/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX GTR Abonament 12 miesięcy</td><td class="num">1 090 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:68px"></div><span style="font-size:12px">85/166 &rarr; <strong>53%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Pokrycie ścieżki decyzyjnej (3/10)</td><td class="num">0/0</td><td class="num">2/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX YANOSIK XS Abonament 3 miesiące</td><td class="num">569 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:68px"></div><span style="font-size:12px">86/166 &rarr; <strong>53%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Opinie kupujących (0/7)</td><td class="num">0/0</td><td class="num">1/8</td></tr>
+<tr style="background:#f0fdf4"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX GTR Abonament 24 miesiące</td><td class="num">1 299 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#22c55e;height:6px;border-radius:3px;width:71px"></div><span style="font-size:12px">89/166 &rarr; <strong>55%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Opinie kupujących (0/7)</td><td class="num">0/0</td><td class="num">1/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX GTR Abonament 36 miesięcy</td><td class="num">1 468 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:66px"></div><span style="font-size:12px">82/166 &rarr; <strong>51%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Pokrycie ścieżki decyzyjnej (3/10)</td><td class="num">0/0</td><td class="num">1/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX GTR Abonament 60 miesięcy</td><td class="num">1 737 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:68px"></div><span style="font-size:12px">86/166 &rarr; <strong>53%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Pokrycie pytań kupujących (3/10)</td><td class="num">0/0</td><td class="num">1/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX YANOSIK XS Abonament 36 miesięcy</td><td class="num">569 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:68px"></div><span style="font-size:12px">86/166 &rarr; <strong>53%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Opinie kupujących (0/7)</td><td class="num">0/0</td><td class="num">1/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX YANOSIK XS Abonament 24 miesiące</td><td class="num">838 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:66px"></div><span style="font-size:12px">82/166 &rarr; <strong>51%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Opinie kupujących (0/7)</td><td class="num">0/0</td><td class="num">1/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX YANOSIK XS Abonament 12 miesięcy</td><td class="num">770 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:65px"></div><span style="font-size:12px">81/166 &rarr; <strong>50%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Opinie kupujących (0/7)</td><td class="num">0/0</td><td class="num">1/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX YANOSIK RS Abonament 12 miesięcy</td><td class="num">1 599 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:68px"></div><span style="font-size:12px">85/166 &rarr; <strong>53%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Pokrycie ścieżki decyzyjnej (3/10)</td><td class="num">0/0</td><td class="num">1/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX YANOSIK XS PREMIUM Abonament 9 miesięcy</td><td class="num">700 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:63px"></div><span style="font-size:12px">79/166 &rarr; <strong>49%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Opinie kupujących (0/7)</td><td class="num">0/0</td><td class="num">1/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX YANOSIK GTM Abonament 12 miesięcy</td><td class="num">1 000 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:65px"></div><span style="font-size:12px">80/166 &rarr; <strong>50%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Pokrycie pytań kupujących (3/10)</td><td class="num">0/0</td><td class="num">1/8</td></tr>
+<tr style="background:#fff"><td><span class="badge-me">ME</span> Komunikator drogowy TOMTOM Premium Pack</td><td class="num">510 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:62px"></div><span style="font-size:12px">77/166 &rarr; <strong>48%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Pokrycie ścieżki decyzyjnej (3/10)</td><td class="num">2/2</td><td class="num">4/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANOSIK RS Abonament 24 miesiące</td><td class="num">1 880 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:63px"></div><span style="font-size:12px">79/166 &rarr; <strong>49%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Pokrycie ścieżki decyzyjnej (3/10)</td><td class="num">0/0</td><td class="num">1/8</td></tr>
+<tr style="background:#fefce8"><td><span class="badge-me">ME</span> Komunikator drogowy YANBOX YANOSIK GTM Abonament 36 miesięcy</td><td class="num">1 400 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:63px"></div><span style="font-size:12px">79/166 &rarr; <strong>49%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Blok odpowiedzi na pytania (0/8); Pokrycie ścieżki decyzyjnej (3/10)</td><td class="num">0/0</td><td class="num">1/8</td></tr>
+<tr style="background:#fff"><td><span class="badge-ys">YS</span> YANBOX GO bez abonamentu</td><td class="num">299 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#f59e0b;height:6px;border-radius:3px;width:58px"></div><span style="font-size:12px">72/166 &rarr; <strong>45%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Dane strukturalne (0/10); Blok odpowiedzi na pytania (0/8)</td><td class="num">2/2</td><td class="num">7/8</td></tr>
+<tr style="background:#fff"><td><span class="badge-ys">YS</span> YANBOX Yanosik XS 3 mies.</td><td class="num">599 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#ef4444;height:6px;border-radius:3px;width:53px"></div><span style="font-size:12px">66/166 &rarr; <strong>41%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Dane strukturalne (0/10); Blok odpowiedzi na pytania (0/8)</td><td class="num">2/2</td><td class="num">6/8</td></tr>
+<tr style="background:#fff"><td><span class="badge-ys">YS</span> YANBOX Yanosik GTR roczny</td><td class="num">1 199 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#ef4444;height:6px;border-radius:3px;width:52px"></div><span style="font-size:12px">64/166 &rarr; <strong>40%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Dane strukturalne (0/10); Blok odpowiedzi na pytania (0/8)</td><td class="num">2/2</td><td class="num">7/8</td></tr>
+<tr style="background:#fff"><td><span class="badge-ys">YS</span> YANBOX Yanosik RS roczny</td><td class="num">1 799 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#ef4444;height:6px;border-radius:3px;width:50px"></div><span style="font-size:12px">62/166 &rarr; <strong>39%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Dane strukturalne (0/10); Blok odpowiedzi na pytania (0/8)</td><td class="num">2/2</td><td class="num">6/8</td></tr>
+<tr style="background:#fff"><td><span class="badge-ys">YS</span> YANBOX Yanosik RS dozywotni (15-lecie)</td><td class="num">2 099 zł</td><td class="num" style="min-width:130px"><div style="display:flex;align-items:center;gap:6px"><div style="background:#ef4444;height:6px;border-radius:3px;width:50px"></div><span style="font-size:12px">63/166 &rarr; <strong>39%</strong></span></div></td><td class="small">Pierwsze zdanie kategoryzujące (0/10); Dane strukturalne (0/10); Blok odpowiedzi na pytania (0/8)</td><td class="num">2/2</td><td class="num">6/8</td></tr>
+</tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION 3: TOP 5 BRAKÓW -->
+<h2><span class="section-num">3</span> Czego brakuje najczęściej — Media Expert</h2>
+<div class="card">
+  <p>Poniższe braki dotyczą wszystkich lub większości z 17 kart ME. Każdy z nich obniża szansę, że wyszukiwarka AI zacytuje tę kartę jako odpowiedź na pytanie kupującego.</p>
+  <div class="tscroll">
+    <table>
+      <thead><tr>
+        <th style="width:30px">#</th>
+        <th>Element</th>
+        <th>Skala braku</th>
+        <th class="num">Śr. zdobyte</th>
+        <th>Co to znaczy w praktyce</th>
+      </tr></thead>
+      <tbody><tr><td class="num">1</td><td><strong>Pierwsze zdanie kategoryzujące</strong></td><td class="num"><span class="pill-red">17/17 = 0 pkt</span></td><td class="num">0/10</td><td class="small">Pierwsze zdanie po tytule powinno zawierać nazwę kategorii i mierzalny parametr. Na Media Expert brakuje tego na każdej karcie.</td></tr>
+<tr><td class="num">2</td><td><strong>Blok odpowiedzi na pytania</strong></td><td class="num"><span class="pill-red">17/17 = 0 pkt</span></td><td class="num">0/8</td><td class="small">Sekcja z bezpośrednimi odpowiedziami na pytania ('Jak działa?', 'Ile kosztuje abonament?'). Nie ma jej na żadnej karcie ME.</td></tr>
+<tr><td class="num">3</td><td><strong>Opinie kupujących</strong></td><td class="num"><span class="pill-red">17/17 = 0 pkt</span></td><td class="num">0/7</td><td class="small">Opinie kupujących widoczne w treści strony. Wyszukiwarki AI nie indeksują ich bez obecności w tekście — brakuje na każdej karcie ME.</td></tr>
+<tr><td class="num">4</td><td><strong>Spójność danych</strong></td><td class="num"><span class="pill-red">4/17 = 0 pkt</span></td><td class="num">3/5</td><td class="small"></td></tr>
+<tr><td class="num">5</td><td><strong>Materiał wideo</strong></td><td class="num"><span class="pill-red">3/17 = 0 pkt</span></td><td class="num">0/3</td><td class="small"></td></tr>
+</tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION 4: PARY -->
+<h2><span class="section-num">4</span> Sklep producenta vs Media Expert — to samo urządzenie</h2>
+<div class="card">
+  <p>Trzy urządzenia dostępne w obu sklepach jednocześnie. Wynik GEO jest wyższy na Media Expert — ME ma pełniejsze dane techniczne i strukturę specyfikacji. Ale komunikacja o społeczności i o celu produktu jest <strong>lepsza na sklep.yanosik.pl</strong>.</p>
+  <div style="margin-bottom:24px"><h3 style="margin:0 0 10px;font-size:15px;color:#374151">YANBOX GO — bez abonamentu</h3><div style="display:flex;gap:12px;flex-wrap:wrap"><div style="background:#eff6ff;border-radius:8px;padding:12px;flex:1;min-width:220px"><div style="font-weight:700;color:#1d4ed8;font-size:13px;margin-bottom:4px">Media Expert</div><div style="font-size:12px;color:#374151;margin-bottom:8px">Komunikator drogowy YANBOX GO bez abonamentu</div><table style="font-size:12px;border-collapse:collapse;width:100%"><tr><td style="color:#555;padding:2px 4px">Cena</td><td style="padding:2px 4px"><strong>289 zł</strong></td></tr><tr><td style="color:#555;padding:2px 4px">Wynik</td><td style="padding:2px 4px"><strong>89/166 → 55.3%</strong>/161</td></tr><tr><td style="color:#555;padding:2px 4px">Społeczność / Moc</td><td style="padding:2px 4px">2/2, 2/2</td></tr><tr><td style="color:#555;padding:2px 4px">O kontrolach</td><td style="padding:2px 4px">6/8</td></tr></table></div><div style="background:#f0fdf4;border-radius:8px;padding:12px;flex:1;min-width:220px"><div style="font-weight:700;color:#059669;font-size:13px;margin-bottom:4px">sklep.yanosik.pl</div><div style="font-size:12px;color:#374151;margin-bottom:8px">YANBOX GO bez abonamentu</div><table style="font-size:12px;border-collapse:collapse;width:100%"><tr><td style="color:#555;padding:2px 4px">Cena</td><td style="padding:2px 4px"><strong>299 zł</strong></td></tr><tr><td style="color:#555;padding:2px 4px">Wynik</td><td style="padding:2px 4px"><strong>72/166 → 44.7%</strong>/161</td></tr><tr><td style="color:#555;padding:2px 4px">Społeczność / Moc</td><td style="padding:2px 4px">2/2, 2/2</td></tr><tr><td style="color:#555;padding:2px 4px">O kontrolach</td><td style="padding:2px 4px">7/8</td></tr></table></div></div></div><div style="margin-bottom:24px"><h3 style="margin:0 0 10px;font-size:15px;color:#374151">YANBOX Yanosik RS — dożywotnia transmisja danych</h3><div style="display:flex;gap:12px;flex-wrap:wrap"><div style="background:#eff6ff;border-radius:8px;padding:12px;flex:1;min-width:220px"><div style="font-weight:700;color:#1d4ed8;font-size:13px;margin-bottom:4px">Media Expert</div><div style="font-size:12px;color:#374151;margin-bottom:8px">Komunikator drogowy YANBOX RS dożywotnia transmisja danych</div><table style="font-size:12px;border-collapse:collapse;width:100%"><tr><td style="color:#555;padding:2px 4px">Cena</td><td style="padding:2px 4px"><strong>1 999 zł</strong></td></tr><tr><td style="color:#555;padding:2px 4px">Wynik</td><td style="padding:2px 4px"><strong>85/166 → 52.8%</strong>/161</td></tr><tr><td style="color:#555;padding:2px 4px">Społeczność / Moc</td><td style="padding:2px 4px">0/2, 0/2</td></tr><tr><td style="color:#555;padding:2px 4px">O kontrolach</td><td style="padding:2px 4px">2/8</td></tr></table></div><div style="background:#f0fdf4;border-radius:8px;padding:12px;flex:1;min-width:220px"><div style="font-weight:700;color:#059669;font-size:13px;margin-bottom:4px">sklep.yanosik.pl</div><div style="font-size:12px;color:#374151;margin-bottom:8px">YANBOX Yanosik RS dozywotni (15-lecie)</div><table style="font-size:12px;border-collapse:collapse;width:100%"><tr><td style="color:#555;padding:2px 4px">Cena</td><td style="padding:2px 4px"><strong>2 099 zł</strong></td></tr><tr><td style="color:#555;padding:2px 4px">Wynik</td><td style="padding:2px 4px"><strong>63/166 → 39.1%</strong>/161</td></tr><tr><td style="color:#555;padding:2px 4px">Społeczność / Moc</td><td style="padding:2px 4px">2/2, 2/2</td></tr><tr><td style="color:#555;padding:2px 4px">O kontrolach</td><td style="padding:2px 4px">6/8</td></tr></table></div></div></div><div style="margin-bottom:24px"><h3 style="margin:0 0 10px;font-size:15px;color:#374151">YANBOX Yanosik RS — 12 miesięcy abonamentu</h3><div style="display:flex;gap:12px;flex-wrap:wrap"><div style="background:#eff6ff;border-radius:8px;padding:12px;flex:1;min-width:220px"><div style="font-weight:700;color:#1d4ed8;font-size:13px;margin-bottom:4px">Media Expert</div><div style="font-size:12px;color:#374151;margin-bottom:8px">Komunikator drogowy YANBOX YANOSIK RS Abonament 12 miesięcy</div><table style="font-size:12px;border-collapse:collapse;width:100%"><tr><td style="color:#555;padding:2px 4px">Cena</td><td style="padding:2px 4px"><strong>1 599 zł</strong></td></tr><tr><td style="color:#555;padding:2px 4px">Wynik</td><td style="padding:2px 4px"><strong>85/166 → 52.8%</strong>/161</td></tr><tr><td style="color:#555;padding:2px 4px">Społeczność / Moc</td><td style="padding:2px 4px">0/2, 0/2</td></tr><tr><td style="color:#555;padding:2px 4px">O kontrolach</td><td style="padding:2px 4px">1/8</td></tr></table></div><div style="background:#f0fdf4;border-radius:8px;padding:12px;flex:1;min-width:220px"><div style="font-weight:700;color:#059669;font-size:13px;margin-bottom:4px">sklep.yanosik.pl</div><div style="font-size:12px;color:#374151;margin-bottom:8px">YANBOX Yanosik RS roczny</div><table style="font-size:12px;border-collapse:collapse;width:100%"><tr><td style="color:#555;padding:2px 4px">Cena</td><td style="padding:2px 4px"><strong>1 799 zł</strong></td></tr><tr><td style="color:#555;padding:2px 4px">Wynik</td><td style="padding:2px 4px"><strong>62/166 → 38.5%</strong>/161</td></tr><tr><td style="color:#555;padding:2px 4px">Społeczność / Moc</td><td style="padding:2px 4px">2/2, 2/2</td></tr><tr><td style="color:#555;padding:2px 4px">O kontrolach</td><td style="padding:2px 4px">6/8</td></tr></table></div></div></div>
+  <p style="font-size:13px;color:#6b7280;margin-top:8px">Wynik niższy u producenta nie oznacza gorszej karty — oznacza że ME ma więcej tabel technicznych. Ale kupujący, który pyta „po co mi to urządzenie", dostanie lepszą odpowiedź ze strony producenta.</p>
+</div>
+
+<!-- SECTION 5: SPOŁECZNOŚĆ -->
+<h2><span class="section-num">5</span> Społeczność i jej skala</h2>
+<div class="card">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+    <div>
+      <div style="font-weight:700;color:#1d4ed8;margin-bottom:8px">Media Expert — 17 kart</div>
+      <div class="compare-bar"><span class="compare-label">Wzmianka:</span><span class="compare-val">3/17 kart</span></div>
+      <div class="compare-bar"><span class="compare-label">Liczby:</span><span class="compare-val">3/17 kart</span></div>
+      <div class="compare-bar"><span class="compare-label">Mediana:</span><span class="compare-val">0/4</span></div>
+    </div>
+    <div>
+      <div style="font-weight:700;color:#059669;margin-bottom:8px">sklep.yanosik.pl — 5 kart</div>
+      <div class="compare-bar"><span class="compare-label">Wzmianka:</span><span class="compare-val">5/5 kart</span></div>
+      <div class="compare-bar"><span class="compare-label">Liczby:</span><span class="compare-val">5/5 kart</span></div>
+      <div class="compare-bar"><span class="compare-label">Mediana:</span><span class="compare-val">4/4</span></div>
+    </div>
+  </div>
+
+  <h3>Co znajdziemy na sklep.yanosik.pl (przykład YANBOX GTR):</h3>
+  <div class="quote-box">„Jesteś częścią zaangażowanej społeczności ponad 5 mln polskich kierowców, która tworzy system Yanosik. Nasi użytkownicy co kilkanaście sekund dodają nowe zgłoszenie z trasy. Dziennie to tysiące nowych ostrzeżeń. Razem tworzymy bezpieczne drogi."</div>
+
+  <h3>Co znajdziemy na Media Expert (YANBOX GO, jedyna karta z wzmianką):</h3>
+  <div class="quote-box">„Dane pochodzą od społeczności ponad 5 mln kierowców i zweryfikowanych źródeł, oferując aktualne informacje."</div>
+
+  <h3>Co znajdziemy na Media Expert — 13/17 kart YANBOX z abonamentem:</h3>
+  <div class="quote-box" style="border-color:#fca5a5;color:#dc2626">— brak jakiejkolwiek wzmianki o społeczności</div>
+
+  <p style="font-size:13px;color:#6b7280;margin-top:12px"><strong>Uwaga:</strong> sklep.yanosik.pl pisze „5 mln polskich kierowców" (z kwantyfikatorem geograficznym), ME YANBOX GO pisze „5 mln kierowców" (bez). Te same urządzenia, różne karty, niespójne dane o tej samej sieci.</p>
+</div>
+
+<!-- SECTION 6: KOMUNIKACJA O KONTROLACH -->
+<h2><span class="section-num">6</span> Jak karty mówią o kontrolach i mandatach</h2>
+<div class="card">
+  <p>Zmierzyliśmy jak bezpośrednio karta mówi o tym, po co kupujący szuka komunikatora. Skala 0–8 pkt (4 wymiary × 2 pkt):</p>
+  <ul style="margin:8px 0 12px 20px;font-size:13px;color:#374151">
+    <li><strong>Scenariusz kosztowy</strong> — czy karta wprost mówi o mandatach / punktach karnych?</li>
+    <li><strong>Mechanizm ostrzeżeń</strong> — czy wyjaśnia skąd pochodzą informacje (od kierowców)?</li>
+    <li><strong>Skala sieci</strong> — czy podaje liczby (5 mln użytkowników, co X sekund)?</li>
+    <li><strong>Język bezpośredni</strong> — konkretne czasowniki (ostrzega, informuje) vs. „zaawansowany system"</li>
+  </ul>
+
+  <div style="display:flex;gap:24px;margin:16px 0;flex-wrap:wrap">
+    <div style="text-align:center">
+      <div style="font-size:36px;font-weight:800;color:#dc2626">1/8</div>
+      <div style="font-size:13px;color:#6b7280">mediana ME (13/17 kart)</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:36px;font-weight:800;color:#22c55e">6/8</div>
+      <div style="font-size:13px;color:#6b7280">mediana sklep.yanosik.pl</div>
+    </div>
+  </div>
+
+  <h3>Jak to mówić — 8 przykładowych sformułowań</h3>
+  <p style="font-size:13px;color:#6b7280;margin-bottom:10px">Gotowe frazy do użycia na kartach. Napisane wprost, bez żargonu technicznego.</p>
+  <ol style="margin:0 0 0 20px;font-size:14px;color:#374151;line-height:2">
+    <li>„Ostrzega o kontrolach prędkości, zanim je miniesz — unikasz mandatu."</li>
+    <li>„Ostrzeżenia pochodzą od ponad 5 milionów polskich kierowców — w czasie rzeczywistym, co kilkanaście sekund."</li>
+    <li>„Każdy mandat za przekroczenie prędkości to minimum 50 zł. Jedno ostrzeżenie zwraca cenę urządzenia."</li>
+    <li>„Informuje o fotoradarach, kontrolach policji i zagrożeniach — wszystkie dane od prawdziwych kierowców."</li>
+    <li>„Dziennie użytkownicy dodają tysiące nowych zgłoszeń z tras w całej Polsce."</li>
+    <li>„Nie wymaga patrzenia w ekran — głosowe powiadomienie przed każdą kontrolą."</li>
+    <li>„Działa bez dostępu do internetu — fotoradary stałe wbudowane w mapę urządzenia."</li>
+    <li>„Jedna sieć, ponad 5 milionów kierowców — im więcej użytkowników, tym dokładniejsze ostrzeżenia."</li>
+  </ol>
+
+  <p style="font-size:13px;color:#6b7280;margin-top:12px">Słowa, których brakuje na 13/17 kartach ME: mandat, punkty karne, kontrola prędkości jako problem kosztowy, skala sieci w liczbach.</p>
+</div>
+
+<!-- SECTION 7: OOONO VS YANOSIK -->
+<h2><span class="section-num">7</span> Yanosik vs OOONO — kontekst rynkowy</h2>
+<div class="card">
+  <p>OOONO CO-DRIVER (dostępny na Amazon.pl) vs YANBOX GO (sklep.yanosik.pl) — to <strong>różne klasy produktów</strong>: OOONO to urządzenie Bluetooth, Yanosik to samodzielny komunikator z ekranem. Bezpośrednie porównanie wyników GEO nie ma sensu — inne funkcje, inne pytania kupujących. Poniżej kluczowe różnice w komunikacji treści:</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
+    <div style="background:#fef3c7;border-radius:8px;padding:12px">
+      <div style="font-weight:700;margin-bottom:8px">OOONO — mocne strony treści</div>
+      <ul style="font-size:13px;color:#374151;margin-left:16px;line-height:1.8">
+        <li>Trwałość baterii w kilometrach: „ok. 30 000 km"</li>
+        <li>Konkretny czas instalacji: „5 sekund"</li>
+        <li>Rozmiar i waga jako zalety (kieszeń, niewidoczne)</li>
+        <li>Kompatybilność z aplikacją wymieniona z nazwy</li>
+      </ul>
+    </div>
+    <div style="background:#d1fae5;border-radius:8px;padding:12px">
+      <div style="font-weight:700;margin-bottom:8px">Yanosik — mocne strony treści</div>
+      <ul style="font-size:13px;color:#374151;margin-left:16px;line-height:1.8">
+        <li>Konkretna liczba użytkowników: „ponad 5 milionów"</li>
+        <li>Skala ostrzeżeń: „tysiące dziennie, co kilkanaście sekund"</li>
+        <li>Polski kontekst: „polskich kierowców"</li>
+        <li>Niezależność od telefonu (ekran wbudowany)</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="font-size:13px;color:#6b7280">Pełne porównanie: <a href="POROWNANIE_OOONO_vs_YANOSIK.html" style="color:#1d4ed8">OOONO vs Yanosik — analiza kart</a></p>
+</div>
+
+<!-- SECTION 8: DZIAŁANIA -->
+<h2><span class="section-num">8</span> Co z tym zrobić</h2>
+<div class="card">
+  <p>Lista działań według priorytetu. Liczba kart = ile kart dotyczy każdego punktu.</p>
+
+  <div class="action-row">
+    <div class="action-n">17</div>
+    <div class="action-text">
+      <strong>Dodaj pierwsze zdanie kategoryzujące do każdej karty ME</strong><br>
+      <span style="font-size:13px;color:#555">Pierwsze zdanie po tytule powinno zawierać typ urządzenia + jeden parametr. Przykład: „Komunikator drogowy z ekranem 3,5" i abonamentem 12 miesięcy — ostrzega o fotoradarach i kontrolach w czasie rzeczywistym."</span>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <div class="action-n">17</div>
+    <div class="action-text">
+      <strong>Dodaj blok pytań i odpowiedzi do każdej karty ME</strong><br>
+      <span style="font-size:13px;color:#555">Minimum 4 pytania: „Czy trzeba abonamentu?", „Jak długo działa bateria?", „Czy działa bez telefonu?", „Co wykrywa urządzenie?". Format: pytanie + odpowiedź 1–2 zdania. To główna luka punktowa na wszystkich 17 kartach.</span>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <div class="action-n">17</div>
+    <div class="action-text">
+      <strong>Podepnij opinie kupujących do kart ME</strong><br>
+      <span style="font-size:13px;color:#555">Opinie widoczne w treści strony (nie tylko liczba gwiazdek). Wyszukiwarki AI cytują fragmenty recenzji jako dowód „co mówią użytkownicy". Na żadnej karcie ME brak widocznych recenzji w treści.</span>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <div class="action-n">14</div>
+    <div class="action-text">
+      <strong>Dodaj wzmiankę o społeczności i jej skali do kart YANBOX z abonamentem (ME)</strong><br>
+      <span style="font-size:13px;color:#555">13 kart z abonamentem nie mają żadnej informacji o tym, skąd pochodzą ostrzeżenia i ile osób korzysta z sieci. Minimum: 1 zdanie z liczbą użytkowników i częstotliwością zgłoszeń.</span>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <div class="action-n">5</div>
+    <div class="action-text">
+      <strong>Dodaj dane strukturalne JSON-LD do kart sklep.yanosik.pl</strong><br>
+      <span style="font-size:13px;color:#555">Żadna karta YS nie ma schematu produktu (JSON-LD) z GTIN/EAN. To 10 pkt na 166 i brak indeksowania przez Google Shopping.</span>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <div class="action-n">5</div>
+    <div class="action-text">
+      <strong>Ujednolicić wzmiankę o społeczności między ME a sklepem producenta</strong><br>
+      <span style="font-size:13px;color:#555">ME YANBOX GO: „5 mln kierowców" (bez kwantyfikatora). YS: „5 mln polskich kierowców". Różnica w jednym słowie może wpłynąć na to, co AI zacytuje jako fakt o produkcie.</span>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <div class="action-n">3</div>
+    <div class="action-text">
+      <strong>Dodaj materiał wideo do kart ME i YS bez niego</strong><br>
+      <span style="font-size:13px;color:#555">3 karty ME bez wideo. Film demonstracyjny (instalacja, działanie na trasie) zwiększa czas na stronie i dostarcza treść opisową, którą AI może indeksować z transkryptu lub alt-tekstu.</span>
+    </div>
+  </div>
+
+  <div class="action-row" style="background:#f0fdf4">
+    <div class="action-n" style="color:#059669">5</div>
+    <div class="action-text">
+      <strong>[Sklep YS — zachować i rozwinąć] Komunikacja o społeczności i bezpośredniość języka</strong><br>
+      <span style="font-size:13px;color:#555">sklep.yanosik.pl ma to dobrze zrobione (6–7/8 na 4-wymiarowej skali). Warto przenieść ten wzorzec na karty ME z tą samą marką.</span>
+    </div>
+  </div>
+</div>
+
+<!-- TRUTH CHECKER -->
+<div class="card" style="background:#fffbeb;border:1px solid #fde68a;margin-top:24px">
+  <h2 style="color:#92400e;border-color:#fde68a;margin-top:0">Truth Checker</h2>
+  <ul style="font-size:13px;color:#374151;margin-left:20px;line-height:2">
+    <li><strong>Co wiem:</strong> Wyniki z audytu 22 kart (cache HTML z 16.09.2026). Scores obliczone przez geo_check.py na CS zsynchronizowanym z WPIS (ceps=16, paths=16, kcf=19, discovery=48). GAP Keywords=0 — moduł wyłączony z mianownika (161 pkt zamiast 166).</li>
+    <li><strong>Co zakładam:</strong> Cache HTML odpowiada aktualnej treści stron. Ceny z JSON-LD / aria-label (część pobrana z cache, część z poprzednich danych). Zawoalowanie i community check — reguły napisane przeze mnie, nie z zewnętrznego benchmarku.</li>
+    <li><strong>Co może być błędne:</strong> Ceny na 3 kartach ME niedostępne w cache (TomTom Premium, RS 24m, GTM 36m) — użyte wartości z JSON-LD z poprzedniej sesji. Cache z 16.09.2026 może nie odzwierciedlać zmian po tej dacie. Wzorce regex w check zawoalowanie/społeczność mogą nie wykrywać parafraz.</li>
+    <li><strong>Co zweryfikować:</strong> Pobrać live HTML i porównać ceny. Sprawdzić czy opinie kupujących są niedostępne w HTML czy tylko ukryte za JS (poza cache). Zweryfikować czy YS ma JSON-LD w źródle (geo_check vs. render z JS).</li>
+    <li><strong>Co poprawić z jednym inputem:</strong> Aktualna wersja stron przez live fetch → odświeżone ceny i wyniki video/recenzji.</li>
+  </ul>
+</div>
+
+<div style="height:40px"></div>
+</div>
+
+<style>
+#pub-lightbox-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;cursor:zoom-out}
+#pub-lightbox-overlay.open{display:flex}
+#pub-lightbox-overlay img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+#pub-lightbox-close{position:fixed;top:16px;right:20px;font-size:36px;color:#fff;cursor:pointer;line-height:1;user-select:none;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+</style>
+<div id="pub-lightbox-overlay"><span id="pub-lightbox-close">&times;</span><img id="pub-lightbox-img" src="" alt=""></div>
+<script>
+(function(){
+  var ov=document.getElementById('pub-lightbox-overlay');
+  var im=document.getElementById('pub-lightbox-img');
+  document.querySelectorAll('a.pub-lightbox-trigger').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var img=a.querySelector('img');
+      if(img){im.src=img.src;ov.classList.add('open');}
+    });
+  });
+  document.getElementById('pub-lightbox-close').addEventListener('click',function(){ov.classList.remove('open');im.src='';});
+  ov.addEventListener('click',function(e){if(e.target===ov){ov.classList.remove('open');im.src='';}});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){ov.classList.remove('open');im.src='';}});
+})();
+</script>
+</body>
+</html>
