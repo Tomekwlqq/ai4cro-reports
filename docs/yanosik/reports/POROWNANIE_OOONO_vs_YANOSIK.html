@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OOONO CO-DRIVER vs YANBOX GO — Analiza kontentu</title>
+<style>
+  :root {
+    --bg: #f5f6fa;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --muted: #666;
+    --border: #e0e4ec;
+    --green: #27ae60;
+    --red: #e74c3c;
+    --blue: #2980b9;
+    --orange: #e67e22;
+    --purple: #8e44ad;
+    --yellow: #f39c12;
+    --gray: #7f8c8d;
+    --ooono: #1a73e8;
+    --yanosik: #27ae60;
+    --gap-bg: #fff3cd;
+    --gap-border: #ffc107;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 16px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; border-bottom: 3px solid var(--blue); padding-bottom: 10px; margin: 0 0 8px; }
+  h2 { font-size: 1.25rem; margin: 28px 0 12px; border-left: 4px solid var(--purple); padding-left: 12px; }
+  h3 { font-size: 1rem; margin: 18px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .meta { color: var(--muted); font-size: .85rem; margin-bottom: 20px; }
+  .card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 5px rgba(0,0,0,.08);
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media (max-width: 700px) {
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    body { padding: 12px; }
+    h1 { font-size: 1.3rem; }
+  }
+  .col-ooono { border-top: 4px solid var(--ooono); }
+  .col-yanosik { border-top: 4px solid var(--yanosik); }
+  .brand-ooono { color: var(--ooono); font-weight: 700; }
+  .brand-yanosik { color: var(--yanosik); font-weight: 700; }
+
+  /* Score badges */
+  .score-big { font-size: 2rem; font-weight: 800; }
+  .score-sub { font-size: .8rem; color: var(--muted); }
+  .score-row { display: flex; align-items: baseline; gap: 4px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 8px 0; }
+  th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #f0f3f8; font-weight: 600; }
+  tr:hover { background: #fafbff; }
+  .check { color: var(--green); font-weight: 700; }
+  .cross { color: var(--red); font-weight: 700; }
+  .partial { color: var(--orange); font-weight: 700; }
+  .none { color: var(--gray); font-style: italic; }
+
+  /* Gap highlight */
+  .gap-row { background: #fff8e1; }
+  .gap-row td { border-color: #ffe082; }
+
+  /* Claim pills */
+  .claim-ooono {
+    background: #e3f2fd; color: #1565c0;
+    padding: 2px 8px; border-radius: 4px;
+    font-size: .82rem; display: inline-block; margin: 2px 0;
+    line-height: 1.4;
+  }
+  .claim-yanosik {
+    background: #e8f5e9; color: #1b5e20;
+    padding: 2px 8px; border-radius: 4px;
+    font-size: .82rem; display: inline-block; margin: 2px 0;
+    line-height: 1.4;
+  }
+  .claim-missing {
+    background: #fce4ec; color: #b71c1c;
+    padding: 2px 8px; border-radius: 4px;
+    font-size: .82rem; display: inline-block; margin: 2px 0;
+  }
+
+  /* Bullets list */
+  .bullets { list-style: none; padding: 0; margin: 0; }
+  .bullets li {
+    padding: 6px 0 6px 20px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    font-size: .88rem;
+  }
+  .bullets li:last-child { border-bottom: none; }
+  .bullets li::before { content: "•"; position: absolute; left: 4px; color: var(--muted); }
+
+  /* Alert box */
+  .alert { border-radius: 8px; padding: 14px 16px; margin: 12px 0; }
+  .alert-gap { background: var(--gap-bg); border-left: 4px solid var(--gap-border); }
+  .alert-win { background: #e8f5e9; border-left: 4px solid var(--green); }
+  .alert-info { background: #e3f2fd; border-left: 4px solid var(--blue); }
+
+  /* Number highlights */
+  .num { font-weight: 700; font-size: 1.1em; }
+  .num-ooono { color: var(--ooono); }
+  .num-yanosik { color: var(--yanosik); }
+
+  /* Market badges */
+  .market { display: inline-block; padding: 2px 7px; border-radius: 12px; font-size: .75rem; font-weight: 600; margin-right: 4px; }
+  .market-pl { background: #dc143c22; color: #dc143c; }
+  .market-de { background: #ffd70022; color: #b8860b; }
+  .market-uk { background: #00008b22; color: #00008b; }
+
+  /* Truth checker */
+  .truth { background: #1a1a2e; color: #f0f0f0; border-radius: 10px; padding: 20px; }
+  .truth h2 { color: #ffd700; border-left-color: #ffd700; }
+  .truth h3 { color: #90caf9; text-transform: none; }
+  .truth li { margin-bottom: 6px; color: #e0e0e0; font-size: .88rem; }
+
+  /* Gap number */
+  .gap-num {
+    display: inline-block;
+    background: var(--orange);
+    color: white;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    font-weight: 700;
+    font-size: .85rem;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+  .gap-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 14px; }
+  .gap-item p { margin: 0; font-size: .9rem; }
+  .gap-item .gap-title { font-weight: 700; margin-bottom: 4px; }
+  .geo-bar-wrap { height: 12px; background: #eee; border-radius: 6px; overflow: hidden; margin: 4px 0; }
+  .geo-bar { height: 100%; border-radius: 6px; }
+
+  footer { margin-top: 30px; text-align: center; color: var(--muted); font-size: .8rem; padding: 16px 0; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>OOONO CO-DRIVER vs YANBOX GO</h1>
+<p class="meta">Analiza kontentu Amazon (PL/DE/UK) vs sklep.yanosik.pl · 15.09.2026 · GEO PDP Optimizer</p>
+
+<!-- ========================= OVERVIEW ========================= -->
+<div class="card">
+  <h2 style="margin-top:0">Skrót: produkty w ring</h2>
+  <div class="grid2">
+    <div class="col-ooono" style="padding:12px; border-radius:6px;">
+      <div class="brand-ooono">OOONO CO-DRIVER NO1 (+ NO2)</div>
+      <div style="font-size:.85rem; color:var(--muted); margin:4px 0">Amazon.pl · Amazon.de · Amazon.co.uk</div>
+      <table style="margin-top:10px;">
+        <tr><td>Cena (PL)</td><td><strong>188 PLN</strong></td></tr>
+        <tr><td>Ocena PL/DE</td><td><strong>4,3/5</strong> · <span class="num">74 962</span> rec. (PL)</td></tr>
+        <tr><td>Ocena UK</td><td>3,9/5 · 74 979 rec.</td></tr>
+        <tr><td>Bateria</td><td>CR2450 · ~30 000 km</td></tr>
+        <tr><td>Sygnalizacja</td><td>LED + dźwięk</td></tr>
+        <tr><td>GEO score (parser)</td><td><strong>25/166</strong> ⚠️</td></tr>
+      </table>
+    </div>
+    <div class="col-yanosik" style="padding:12px; border-radius:6px;">
+      <div class="brand-yanosik">YANBOX GO (bez abonamentu)</div>
+      <div style="font-size:.85rem; color:var(--muted); margin:4px 0">sklep.yanosik.pl</div>
+      <table style="margin-top:10px;">
+        <tr><td>Cena</td><td><strong>od ok. 299 PLN</strong></td></tr>
+        <tr><td>Ocena</td><td><strong>4,69/5</strong> · 71 rec. (sklep własny)</td></tr>
+        <tr><td>Bateria</td><td>USB-C · „kilku tygodni" (brak km!)</td></tr>
+        <tr><td>Sygnalizacja</td><td>pasek LED + dźwięk</td></tr>
+        <tr><td>GEO score</td><td><strong>63/166</strong></td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="alert alert-info" style="margin-top:14px; font-size:.85rem;">
+    <strong>⚠️ Uwaga metodologiczna:</strong> Score GEO OOONO (25/166) jest zaniżony — parser geo_check nie wyciąga feature-bullets
+    z Amazona przez Bright Data (brak JS-render, bullets w DOM ale nie w rozpoznanym schema sklepu).
+    Wszystkie 5 bullets i 74 tys. recenzji ISTNIEJE w HTML, ale nie w ścieżce parsera.
+    Porównanie kontentu poniżej oparte jest na bezpośrednim parsowaniu HTML (BeautifulSoup), nie na score.
+  </div>
+</div>
+
+<!-- ========================= BULLETS ========================= -->
+<h2>1. Bullets / claimy produktowe</h2>
+<div class="card">
+  <div class="grid2">
+    <div>
+      <h3 class="brand-ooono">OOONO NO1 — Amazon.pl</h3>
+      <ul class="bullets">
+        <li>Ostrzeżenia przed <strong>tysiącami fotoradarów i zagrożeń drogowych w Europie</strong> dzięki dużej społeczności OOONO – jednej z największych sieci na świecie. <em>Żadnych opłat abonamentowych ani kosztów aplikacji.</em></li>
+        <li><strong>AKTYWUJE SIĘ AUTOMATYCZNIE</strong>, gdy masz przy sobie telefon i Twój pojazd rusza. Nie musisz włączać telefonu ani aplikacji.</li>
+        <li>Sygnały dźwiękowe i wizualne, które nie rozpraszają podczas jazdy. Może być używany przez <strong>kilku członków rodziny</strong> i łatwo łączy się z <strong>wieloma smartfonami</strong>.</li>
+        <li><strong>Oszczędność baterii i danych</strong> w porównaniu z aplikacją. Bateria CR2450, ~<strong>30 000 km</strong>.</li>
+        <li>WSKAZÓWKA: urządzenie ma na celu zwiększenie bezpieczeństwa. Przestrzegaj przepisów ruchu drogowego.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="brand-yanosik">YANBOX GO — sklep.yanosik.pl</h3>
+      <ul class="bullets">
+        <li>Ostrzega w czasie rzeczywistym o zdarzeniach: <strong>wypadki, kontrole prędkości, fotoradary i zagrożenia.</strong> Źródło: społeczność <strong>ponad 5 milionów kierowców</strong>.</li>
+        <li>Włącza się <strong>automatycznie</strong>, gdy wykryje ruch. Działa bez żadnego abonamentu – płacisz raz i korzystasz bez ograniczeń.</li>
+        <li>Pasek <strong>LED</strong> pokazuje odległość do zdarzenia — stopniowo wypełnia się światłem w miarę zbliżania.</li>
+        <li>Długi czas pracy na baterii — <strong>„nawet do kilku tygodni"</strong>. USB-C ładowanie (2h max).</li>
+        <li><strong>Nie emituje reklam</strong> ani żadnych innych treści poza sygnałami dźwiękowymi z trasy.</li>
+        <li>Nowe zgłoszenie pojawia się co <strong>2 sekundy</strong>. Baza: <strong>+38 664 fotoradarów</strong> stacjonarnych w Europie.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= CLAIMS TABLE ========================= -->
+<h2>2. Porównanie claimów — wymiar po wymiarze</h2>
+<div class="card" style="overflow-x:auto;">
+  <table>
+    <thead>
+      <tr>
+        <th>Claim</th>
+        <th><span class="brand-ooono">OOONO NO1 (PL)</span></th>
+        <th><span class="brand-yanosik">YANBOX GO</span></th>
+        <th>Werdykt</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Bez abonamentu</strong></td>
+        <td><span class="check">✓</span> <span class="claim-ooono">„Żadnych opłat abonamentowych ani kosztów aplikacji"</span></td>
+        <td><span class="check">✓</span> <span class="claim-yanosik">„płacisz raz i korzystasz bez ograniczeń"</span></td>
+        <td>Remis — oba jasno</td>
+      </tr>
+      <tr>
+        <td><strong>Bez reklam</strong></td>
+        <td><span class="cross">✗</span> <span class="claim-missing">brak wzmianki</span></td>
+        <td><span class="check">✓</span> <span class="claim-yanosik">„nie emituje reklam ani żadnych innych treści"</span></td>
+        <td><strong>Yanosik wygrywa</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Auto-start</strong></td>
+        <td><span class="check">✓</span> <span class="claim-ooono">„AKTYWUJE SIĘ AUTOMATYCZNIE, gdy masz przy sobie telefon i pojazd rusza"</span></td>
+        <td><span class="check">✓</span> <span class="claim-yanosik">„włącza się automatycznie, gdy wykryje ruch"</span></td>
+        <td>Remis — OOONO bardziej precyzyjne</td>
+      </tr>
+      <tr class="gap-row">
+        <td><strong>Bateria — trwałość z liczbą</strong></td>
+        <td><span class="check">✓</span> <span class="claim-ooono">CR2450 · ~30 000 km</span></td>
+        <td><span class="partial">≈</span> <span class="claim-yanosik">„kilku tygodni"</span> — brak km</td>
+        <td><strong>OOONO wygrywa (liczba km)</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Montaż / pozycja</strong></td>
+        <td><span class="cross">✗</span> <span class="claim-missing">brak w bullets</span></td>
+        <td><span class="partial">≈</span> <span class="claim-yanosik">„kompaktowy i dyskretny"</span></td>
+        <td>Oba słabo</td>
+      </tr>
+      <tr>
+        <td><strong>Sygnalizacja LED — opis</strong></td>
+        <td><span class="partial">≈</span> <span class="claim-ooono">„wskaźnik LED" (tylko w tytule)</span></td>
+        <td><span class="check">✓</span> <span class="claim-yanosik">„pasek LED stopniowo wypełnia się światłem"</span></td>
+        <td><strong>Yanosik wygrywa (mechanizm opisany)</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Działanie za granicą</strong></td>
+        <td><span class="check">✓</span> <span class="claim-ooono">„w Europie" — bez disclaimera</span></td>
+        <td><span class="partial">≈</span> <span class="claim-yanosik">„YANBOX GO wesprze Cię" + disclaimer „może być zabronione"</span></td>
+        <td><strong>OOONO wygrywa (prostszy przekaz)</strong></td>
+      </tr>
+      <tr class="gap-row">
+        <td><strong>Społeczność — liczba</strong></td>
+        <td><span class="partial">≈</span> <span class="claim-ooono">„jednej z największych sieci na świecie" — bez liczby!</span></td>
+        <td><span class="check">✓</span> <span class="claim-yanosik">„ponad 5 milionów kierowców"</span></td>
+        <td><strong>Yanosik wygrywa (konkretna liczba)</strong></td>
+      </tr>
+      <tr class="gap-row">
+        <td><strong>Multi-user / rodzina</strong></td>
+        <td><span class="check">✓</span> <span class="claim-ooono">„kilku członków rodziny, łączy z wieloma smartfonami"</span></td>
+        <td><span class="cross">✗</span> <span class="claim-missing">brak wzmianki</span></td>
+        <td><strong>OOONO wygrywa</strong></td>
+      </tr>
+      <tr class="gap-row">
+        <td><strong>Oszczędność baterii/danych telefonu</strong></td>
+        <td><span class="check">✓</span> <span class="claim-ooono">„Oszczędność baterii i danych w porównaniu z aplikacją"</span></td>
+        <td><span class="cross">✗</span> <span class="claim-missing">brak wzmianki</span></td>
+        <td><strong>OOONO wygrywa</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Prywatność / dane</strong></td>
+        <td><span class="cross">✗</span> <span class="claim-missing">brak wzmianki</span></td>
+        <td><span class="cross">✗</span> <span class="claim-missing">brak wzmianki</span></td>
+        <td>Oba milczą</td>
+      </tr>
+      <tr>
+        <td><strong>Baza fotoradarów — liczba</strong></td>
+        <td><span class="partial">≈</span> <span class="claim-ooono">„tysiącami fotoradarów"</span></td>
+        <td><span class="check">✓</span> <span class="claim-yanosik">+38 664 fotoradary stacjonarne w Europie</span></td>
+        <td><strong>Yanosik wygrywa (konkretna liczba)</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Aktualność danych</strong></td>
+        <td><span class="cross">✗</span> <span class="claim-missing">brak</span></td>
+        <td><span class="check">✓</span> <span class="claim-yanosik">nowe zgłoszenie co 2 sekundy</span></td>
+        <td><strong>Yanosik wygrywa</strong></td>
+      </tr>
+      <tr>
+        <td><strong>CarPlay / Android Auto</strong></td>
+        <td><span class="check">✓</span> <span class="claim-ooono">NO2: CarPlay + Android Auto explicite</span></td>
+        <td><span class="cross">✗</span> <span class="claim-missing">brak</span></td>
+        <td><strong>OOONO (NO2) wygrywa</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ========================= M1-M4 ========================= -->
+<h2>3. Pokrycie 4 motywacji kategorii (M1–M4)</h2>
+<div class="card" style="overflow-x:auto;">
+  <table>
+    <thead>
+      <tr><th>Motywacja</th><th>OOONO PL — cytat / brak</th><th>YANBOX GO — cytat / brak</th><th>M1 zawoalowanie</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>M1</strong><br><small>Kontrole / fotoradary</small></td>
+        <td><span class="check">✓ Dosłownie</span> „ostrzega o <strong>fotoradarach</strong>" — w tytule PDP i bullet<br>UK: <em>„SEE SPEED CAMERAS BEFORE THEY SEE YOU"</em></td>
+        <td><span class="check">✓ Przez bezpieczeństwo</span> heading: „Ostrzega o kontrolach prędkości" + „YANBOX GO pomoże Ci w jego realizacji"</td>
+        <td>OOONO: BEZPOŚREDNIE (fotoradary w tytule)<br>Yanosik: ZAWOALOWANE (bezpieczeństwo, nie unikanie mandatów)</td>
+      </tr>
+      <tr>
+        <td><strong>M2</strong><br><small>Zdarzenia / wypadki</small></td>
+        <td><span class="check">✓</span> „zagrożeń drogowych" (PL) · „accidents, stranded vehicles" (UK)</td>
+        <td><span class="check">✓</span> „wypadki, prace drogowe, zagrożenia" — konkretna lista</td>
+        <td>Remis — oba pokrywają</td>
+      </tr>
+      <tr>
+        <td><strong>M3</strong><br><small>Korki / zamknięte drogi</small></td>
+        <td><span class="partial">≈</span> PL: brak explicit. UK: „traffic jams" ✓</td>
+        <td><span class="check">✓</span> „wypadki, kontrole prędkości, <strong>zagrożenia</strong>" (pośrednio)</td>
+        <td>Yanosik wygrywa w PL — OOONO PL nie mówi o korkach</td>
+      </tr>
+      <tr>
+        <td><strong>M4</strong><br><small>Ograniczenia prędkości</small></td>
+        <td><span class="cross">✗</span> brak wzmianki</td>
+        <td><span class="check">✓</span> „Limity prędkości nie zostały opracowane przypadkiem! Przepisowa jazda to zawsze najlepszy pomysł"</td>
+        <td><strong>Yanosik wygrywa</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ========================= GEO SCORES ========================= -->
+<h2>4. GEO Score — porównanie</h2>
+<div class="card">
+  <div class="grid3">
+    <div class="col-ooono" style="padding:12px; border-radius:6px;">
+      <div class="brand-ooono" style="font-size:.85rem">OOONO NO1</div>
+      <div style="font-size:.8rem; color:var(--muted)">amazon.pl (cache HTML)</div>
+      <div class="score-big" style="color:var(--red)">25</div>
+      <div class="score-sub">z 166 pkt (15%) ⚠️ zaniżony</div>
+      <div class="geo-bar-wrap"><div class="geo-bar" style="width:15%; background:var(--red)"></div></div>
+      <div style="font-size:.78rem; color:var(--muted); margin-top:6px;">Amazon HTML nie renderuje bullets i recenzji — parser nie widzi głównej treści. Rzeczywisty content jest bogatszy.</div>
+    </div>
+    <div class="col-yanosik" style="padding:12px; border-radius:6px;">
+      <div class="brand-yanosik" style="font-size:.85rem">YANBOX GO</div>
+      <div style="font-size:.8rem; color:var(--muted)">sklep.yanosik.pl</div>
+      <div class="score-big" style="color:var(--orange)">63</div>
+      <div class="score-sub">z 166 pkt (38%)</div>
+      <div class="geo-bar-wrap"><div class="geo-bar" style="width:38%; background:var(--orange)"></div></div>
+    </div>
+    <div style="padding:12px; border-radius:6px; background:#f0f3f8;">
+      <div style="font-size:.85rem; font-weight:600">YANBOX GO</div>
+      <div style="font-size:.8rem; color:var(--muted)">mediaexpert.pl</div>
+      <div class="score-big" style="color:var(--orange)">60</div>
+      <div class="score-sub">z 166 pkt (36%)</div>
+      <div class="geo-bar-wrap"><div class="geo-bar" style="width:36%; background:var(--orange)"></div></div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:16px">Kluczowe sekcje GEO — OOONO NO1 PL (parser)</h3>
+  <table style="font-size:.82rem;">
+    <tr><th>Sekcja GEO</th><th>OOONO PL</th><th>YANBOX GO (sklep.yanosik)</th></tr>
+    <tr><td>Category-First Anchor</td><td><span class="cross">0/10</span></td><td><span class="cross">0/10</span></td></tr>
+    <tr><td>H1 / Entity Definition</td><td><span class="partial">4/8</span></td><td><span class="partial">4/8</span></td></tr>
+    <tr><td>Answer Equity Block</td><td><span class="check">8/8</span> ✓</td><td><span class="cross">0/8</span></td></tr>
+    <tr><td>Transformation Bullets</td><td><span class="cross">0/7</span> (parser)</td><td><span class="cross">0/7</span></td></tr>
+    <tr><td>Specs Table</td><td><span class="cross">0/7</span></td><td><span class="cross">0/7</span></td></tr>
+    <tr><td>Intent Headings</td><td><span class="cross">0/7</span></td><td><span class="check">7/7</span> ✓</td></tr>
+    <tr><td>FAQ</td><td><span class="cross">0/8</span></td><td><span class="cross">0/8</span></td></tr>
+    <tr><td>JSON-LD + GTIN</td><td><span class="cross">0/10</span></td><td><span class="cross">0/10</span></td></tr>
+    <tr><td>Reviews (widoczne)</td><td><span class="cross">0/7</span> (parser)</td><td><span class="partial">3/7</span></td></tr>
+    <tr><td>Query Fan-out</td><td><span class="cross">0/10</span></td><td><span class="partial">4/10</span></td></tr>
+    <tr><td>E-E-A-T</td><td><span class="cross">0/10</span></td><td><span class="partial">6/10</span></td></tr>
+    <tr><td>CEP Coverage</td><td><span class="cross">0/7</span></td><td><span class="partial">4/7</span></td></tr>
+    <tr><td>Forbidden Patterns</td><td><span class="check">5/5</span> ✓</td><td><span class="check">5/5</span> ✓</td></tr>
+  </table>
+</div>
+
+<!-- ========================= S2 FACTS ========================= -->
+<h2>5. „Co AI może zacytować" — fakty S2 (direct-answer)</h2>
+<div class="card">
+  <p style="font-size:.85rem; color:var(--muted)">S2 = zdanie które AI może zacytować jako odpowiedź na pytanie. Cytat albo „brak wzmianki".</p>
+  <div class="grid2">
+    <div>
+      <h3 class="brand-ooono">OOONO NO1 — Fakty S2</h3>
+      <table style="font-size:.82rem;">
+        <tr><td>Bateria</td><td><span class="check">✓</span> „CR2450, ~30 000 km"</td></tr>
+        <tr><td>Auto-start</td><td><span class="check">✓</span> „AKTYWUJE SIĘ AUTOMATYCZNIE gdy masz przy sobie telefon"</td></tr>
+        <tr><td>Bez abonamentu</td><td><span class="check">✓</span> „Żadnych opłat abonamentowych ani kosztów aplikacji"</td></tr>
+        <tr><td>Multi-smartfon</td><td><span class="check">✓</span> „kilku członków rodziny, łączy z wieloma smartfonami"</td></tr>
+        <tr><td>Oszczędność tel.</td><td><span class="check">✓</span> „Oszczędność baterii i danych w porównaniu z aplikacją"</td></tr>
+        <tr><td>Masa</td><td><span class="check">✓</span> 20 gramów (spec tabela)</td></tr>
+        <tr><td>Liczba użytk.</td><td><span class="cross">✗</span> „jednej z największych sieci" — brak liczby</td></tr>
+        <tr><td>Baza fotoradarów</td><td><span class="cross">✗</span> „tysiącami" — brak liczby</td></tr>
+        <tr><td>Kraj produkcji</td><td><span class="partial">≈</span> PL lista: Chiny · UK lista: Polska (rozbieżność!)</td></tr>
+        <tr><td>Oceny Amazon PL</td><td><span class="check">✓</span> 4,3/5 · 74 962 recenzji</td></tr>
+        <tr><td>Gwarancja</td><td><span class="check">✓</span> 2 lata gwarancji producenta</td></tr>
+        <tr><td>Subskrypcja (UK FAQ)</td><td><span class="check">✓</span> „No. CO-DRIVER comes with no subscription"</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3 class="brand-yanosik">YANBOX GO — Fakty S2</h3>
+      <table style="font-size:.82rem;">
+        <tr><td>Społeczność</td><td><span class="check">✓</span> „ponad 5 milionów kierowców"</td></tr>
+        <tr><td>Baza fotoradarów</td><td><span class="check">✓</span> +38 664 fotoradary stacjonarne</td></tr>
+        <tr><td>Szybkość zgłoszeń</td><td><span class="check">✓</span> nowe zgłoszenie co 2 sekundy</td></tr>
+        <tr><td>Bez reklam</td><td><span class="check">✓</span> „nie emituje reklam ani żadnych innych treści"</td></tr>
+        <tr><td>Auto-start</td><td><span class="check">✓</span> „włącza się automatycznie gdy wykryje ruch"</td></tr>
+        <tr><td>Bez abonamentu</td><td><span class="check">✓</span> „płacisz raz i korzystasz bez ograniczeń"</td></tr>
+        <tr><td>LED bar</td><td><span class="check">✓</span> „pasek LED stopniowo wypełnia się" — opis mechanizmu</td></tr>
+        <tr><td>Bateria trwałość</td><td><span class="partial">≈</span> „kilku tygodni" — brak konkretnych km/h/liczb</td></tr>
+        <tr><td>Ładowanie</td><td><span class="check">✓</span> USB-C · max 2h ładowania</td></tr>
+        <tr><td>Oceny sklep</td><td><span class="partial">≈</span> 4,69/5 · 71 rec. (mała baza!)</td></tr>
+        <tr><td>Wypadki PL</td><td><span class="check">✓</span> „tysiące wypadków, setki ofiar — 1 z 3 przez rozproszenie"</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= LUKI YANOSIKA ========================= -->
+<h2>6. TOP 5 luk Yanosika (OOONO mówi — Yanosik milczy)</h2>
+<div class="card">
+  <div class="alert alert-gap" style="margin-bottom:16px;">
+    <strong>To jest główny deliverable.</strong> Każda luka = gotowy argument do uzupełnienia PDP Yanosika.
+    Cytat ze źródła — zero wymyślania.
+  </div>
+
+  <div class="gap-item">
+    <span class="gap-num">1</span>
+    <div>
+      <p class="gap-title">Trwałość baterii wyrażona w kilometrach</p>
+      <p>OOONO mówi: <span class="claim-ooono">„Bateria CR2450, która po ok. <strong>30 000 km</strong> bez problemu wymienić"</span></p>
+      <p>Yanosik mówi: <span class="claim-yanosik">„nawet do kilku tygodni"</span> — brak liczby km. To trwałość w czasie, nie w przebiegu — nie odpowiada na pytanie kierowcy „ile to wytrzyma".</p>
+      <p style="font-size:.82rem; color:var(--muted)">→ <em>Dodaj: „~X km na jednej baterii / pełnym naładowaniu"</em></p>
+    </div>
+  </div>
+
+  <div class="gap-item">
+    <span class="gap-num">2</span>
+    <div>
+      <p class="gap-title">Multi-user / rodzina — jedno urządzenie, kilka smartfonów</p>
+      <p>OOONO mówi: <span class="claim-ooono">„Może być używany przez kilku członków rodziny i łatwo łączy się z wieloma smartfonami"</span></p>
+      <p>Yanosik milczy: <span class="claim-missing">brak wzmianki o dzieleniu urządzenia w rodzinie</span></p>
+      <p style="font-size:.82rem; color:var(--muted)">→ <em>Jeśli YANBOX GO obsługuje multi-user — dodaj to. Jeśli nie — masz lukę produktową.</em></p>
+    </div>
+  </div>
+
+  <div class="gap-item">
+    <span class="gap-num">3</span>
+    <div>
+      <p class="gap-title">Oszczędność baterii i transferu danych telefonu</p>
+      <p>OOONO mówi: <span class="claim-ooono">„Oszczędność baterii i danych w porównaniu z aplikacją"</span></p>
+      <p>Yanosik milczy: <span class="claim-missing">brak wzmianki o TCO telefonu — aplikacja vs urządzenie</span></p>
+      <p style="font-size:.82rem; color:var(--muted)">→ <em>Kluczowy argument dla motywacji „aplikacja nie wystarcza" (CEP M cep_aplikacja_nie_wystarcza)</em></p>
+    </div>
+  </div>
+
+  <div class="gap-item">
+    <span class="gap-num">4</span>
+    <div>
+      <p class="gap-title">Działanie za granicą — bez disclaimera o zakazie</p>
+      <p>OOONO mówi: <span class="claim-ooono">„Ostrzeżenia... w <strong>Europie</strong>"</span> — proste, pozytywne</p>
+      <p>Yanosik mówi: <span class="claim-yanosik">„YANBOX GO wesprze Cię w każdej podróży*"</span> + disclaimer <em>„używanie może być zabronione w niektórych krajach UE"</em></p>
+      <p style="font-size:.82rem; color:var(--muted)">→ <em>Disclaimer to dobra praktyka prawna, ale niszczy impuls zakupowy. OOONO ukrył go w stopce — Yanosik wstawił go do main copy. Warto przemyśleć gdzie jest disclaimer.</em></p>
+    </div>
+  </div>
+
+  <div class="gap-item">
+    <span class="gap-num">5</span>
+    <div>
+      <p class="gap-title">Specyfikacja techniczna — typ baterii, Bluetooth, min. wersja systemu</p>
+      <p>OOONO podaje: <span class="claim-ooono">CR2450 · iOS 18.1 lub Android 12 · 20 gramów</span> (w spec tabeli)</p>
+      <p>Yanosik GO milczy: <span class="claim-missing">brak tabeli specyfikacji na PDP — GEO score Specs Table: 0/7</span></p>
+      <p style="font-size:.82rem; color:var(--muted)">→ <em>Brak specs = brak S2 direct answers na pytania techniczne = AI nie cytuje przy „czy działa z iPhone 14"</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= ODWROTNIE ========================= -->
+<h2>7. Co Yanosik mówi — a OOONO milczy (vantage points)</h2>
+<div class="card">
+  <div class="alert alert-win">
+    <strong>Przewagi Yanosika</strong> — miejsce gdzie Yanosik wygrywa narracją. Warto bronić i rozwijać.
+  </div>
+  <table style="font-size:.88rem;">
+    <tr>
+      <th>Claim Yanosika</th>
+      <th>Cytat</th>
+      <th>OOONO odp.</th>
+    </tr>
+    <tr>
+      <td><strong>Konkretna liczba użytkowników</strong></td>
+      <td><span class="claim-yanosik">„ponad 5 milionów kierowców"</span></td>
+      <td><span class="claim-missing">„jednej z największych sieci" — brak liczby</span></td>
+    </tr>
+    <tr>
+      <td><strong>Konkretna baza fotoradarów</strong></td>
+      <td><span class="claim-yanosik">+38 664 fotoradary stacjonarne</span></td>
+      <td><span class="claim-missing">„tysiącami fotoradarów" — bez liczby</span></td>
+    </tr>
+    <tr>
+      <td><strong>Szybkość aktualizacji</strong></td>
+      <td><span class="claim-yanosik">nowe zgłoszenie co 2 sekundy</span></td>
+      <td><span class="claim-missing">brak wzmianki o częstotliwości</span></td>
+    </tr>
+    <tr>
+      <td><strong>Zero reklam</strong></td>
+      <td><span class="claim-yanosik">„nie emituje reklam ani żadnych innych treści"</span></td>
+      <td><span class="claim-missing">brak wzmianki</span></td>
+    </tr>
+    <tr>
+      <td><strong>Pasek LED — mechanizm zbliżania</strong></td>
+      <td><span class="claim-yanosik">„pasek LED stopniowo wypełnia się światłem w miarę zbliżania"</span></td>
+      <td><span class="claim-missing">„wskaźnik LED" — tylko nazwa, brak mechanizmu</span></td>
+    </tr>
+    <tr>
+      <td><strong>M4 — ograniczenia prędkości (kontekst)</strong></td>
+      <td><span class="claim-yanosik">„Limity prędkości nie zostały opracowane przypadkiem"</span></td>
+      <td><span class="claim-missing">brak</span></td>
+    </tr>
+    <tr>
+      <td><strong>Statystyki wypadków Polska</strong></td>
+      <td><span class="claim-yanosik">„1 z 3 wypadków przez rozproszenie uwagi"</span></td>
+      <td><span class="claim-missing">brak</span></td>
+    </tr>
+  </table>
+</div>
+
+<!-- ========================= STRUKTURA ========================= -->
+<h2>8. Struktura strony — porównanie</h2>
+<div class="card" style="overflow-x:auto;">
+  <table style="font-size:.85rem;">
+    <tr>
+      <th>Element</th>
+      <th>OOONO (amazon.pl)</th>
+      <th>YANBOX GO (sklep.yanosik)</th>
+    </tr>
+    <tr><td>Bullets / lista cech</td><td><span class="check">✓</span> 5 bullets (w DOM, nie w parserze)</td><td><span class="cross">✗</span> Brak bullets — 0/7 GEO</td></tr>
+    <tr><td>Specyfikacja tabela</td><td><span class="check">✓</span> 20 wierszy (marka, waga, EAN...)</td><td><span class="cross">✗</span> Brak — 0/7 GEO</td></tr>
+    <tr><td>Intent Headings (scenariuszowe)</td><td><span class="cross">✗</span> Tylko techniczne h2/h3</td><td><span class="check">✓</span> „Nigdy więcej jazdy w ciemno", „Gotowy na Europę" — 7/7</td></tr>
+    <tr><td>FAQ sekcja</td><td><span class="partial">≈</span> UK A+: 2 pytania (kompatybilność, subskrypcja)</td><td><span class="cross">✗</span> Brak — 0/8</td></tr>
+    <tr><td>JSON-LD Product schema</td><td><span class="cross">✗</span> Brak (amazon.pl nie wystawia)</td><td><span class="cross">✗</span> Brak — 0/10</td></tr>
+    <tr><td>Recenzje widoczne dla AI</td><td><span class="partial">≈</span> 74 962 w Amazon UI ale JS (niewidoczne dla bota)</td><td><span class="partial">≈</span> 71 recenzji widocznych</td></tr>
+    <tr><td>Wideo</td><td><span class="cross">✗</span> Brak</td><td><span class="partial">≈</span> 1 wideo bez schema</td></tr>
+    <tr><td>llms.txt / AI bots</td><td><span class="cross">✗</span> GPTbot zablokowany (Amazon)</td><td><span class="cross">✗</span> Brak llms.txt</td></tr>
+    <tr><td>Obrazy produktowe</td><td>16 w DOM · alts słabe</td><td>21/91 z opisowym alt (≥5 słów) ✓</td></tr>
+  </table>
+</div>
+
+<!-- ========================= OOONO MARKET DIFF ========================= -->
+<h2>9. Różnice OOONO między rynkami</h2>
+<div class="card">
+  <div class="grid3">
+    <div>
+      <h3><span class="market market-pl">PL</span> amazon.pl</h3>
+      <ul class="bullets" style="font-size:.82rem;">
+        <li>Rating: <strong>4,3/5</strong> · 74 962 rec.</li>
+        <li>Cena: <strong>188 PLN</strong></li>
+        <li>Kraj produkcji: Chiny (spec tabela)</li>
+        <li>5 bullets (PL) + safety disclaimer</li>
+        <li>Brak FAQ sekcji</li>
+      </ul>
+    </div>
+    <div>
+      <h3><span class="market market-de">DE</span> amazon.de</h3>
+      <ul class="bullets" style="font-size:.82rem;">
+        <li>Rating: <strong>4,3/5</strong> · <strong>80 069 rec.</strong> (największa baza!)</li>
+        <li>Cena: ~60 EUR</li>
+        <li>Bullet 1: KOMPATIBILITÄT (min. Android 12, iOS 18.1)</li>
+        <li>4 bullets (DE) — brak bullet o rodzinie</li>
+        <li>Silna obecność DE — Blitzer.de, miliony użytkowników</li>
+      </ul>
+    </div>
+    <div>
+      <h3><span class="market market-uk">UK</span> amazon.co.uk</h3>
+      <ul class="bullets" style="font-size:.82rem;">
+        <li>Rating: <strong>3,9/5</strong> · 74 979 rec. (niższy niż PL/DE!)</li>
+        <li>5 bullets + FAQ A+ (2 pytania: kompatybilność, subskrypcja)</li>
+        <li>Bullet: <em>„SEE SPEED CAMERAS BEFORE THEY SEE YOU"</em> — bardzo agresywny M1</li>
+        <li>Kraj produkcji: <strong>Polska</strong> (vs Chiny w PL!)</li>
+        <li>„One-time purchase, <strong>lifetime benefit</strong>"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="alert alert-info" style="margin-top:12px; font-size:.83rem;">
+    <strong>Uwaga:</strong> Kraj produkcji: Polska (UK) vs Chiny (PL) — rozbieżność w spec tabeli między rynkami.
+    Możliwy błąd danych lub różne fabryki. Do weryfikacji u producenta.
+  </div>
+</div>
+
+<!-- ========================= TRUTH CHECKER ========================= -->
+<h2>TRUTH CHECKER</h2>
+<div class="truth">
+  <h3>Co wiem (weryfikowalne)</h3>
+  <ul>
+    <li>Scraped 4 strony Amazon (PL NO1, PL NO2, DE NO1, UK NO1) przez Bright Data web_unlocker1 · cache zapisany w scraper/data/pdp/</li>
+    <li>Bullets PL NO1: 5 bullets wyciągnięte przez BeautifulSoup z div#feature-bullets</li>
+    <li>Ratings: PL/DE 4,3/5 · UK 3,9/5 — z span#acrPopover w HTML</li>
+    <li>Recenzje: PL 74 962 · DE 80 069 · UK 74 979 — z span#acrCustomerReviewText</li>
+    <li>Spec tabela PL: 20 wierszy z div#prodDetails — Kraj: Chiny, Masa: 20g, Gwarancja: 2 lata</li>
+    <li>Yanosik GO sections: z data/geo_batch_yanosik.json (istniejący batch, nie nowy scrape)</li>
+    <li>GEO score OOONO: 25/166 z run_geo_batch_cached.py na cache HTML</li>
+    <li>GEO score YANBOX GO: 63/166 z istniejącego geo_batch_yanosik.json</li>
+  </ul>
+
+  <h3>Co zakładam</h3>
+  <ul>
+    <li>OOONO NO1 to najbliższy odpowiednik YANBOX GO (oba: bateria, Bluetooth, bez karty SIM, bez abonamentu)</li>
+    <li>Amazon PL jest głównym rynkiem dla porównania PL — OOONO nie ma innych PL sklepów online</li>
+    <li>Bullet „kilku tygodni" w Yanosik = ta sama bateria lub podobna — brak potwierdzenia czy to USB-C tylko, czy też coin cell</li>
+    <li>Liczba 5 milionów Yanosik = globalna baza Yanosika app, nie tylko YANBOX GO hardware</li>
+  </ul>
+
+  <h3>Co może być błędne</h3>
+  <ul>
+    <li>GEO score OOONO (25/166) jest zaniżony — Amazon HTML cache przez Bright Data nie renderuje JS, bullets są w DOM ale poza ścieżką parsera. Rzeczywisty content jest bogaty.</li>
+    <li>Rozbieżność kraj produkcji PL (Chiny) vs UK (Polska) — jeden z nich może być błędem w Amazon listing</li>
+    <li>Recenzje OOONO są na Amazon (74K) — to nie Polska kupuje. Recenzje polskojęzyczne są ułamkiem. Ranking wiarygodności dla polskiego klienta nieznany.</li>
+    <li>A+ content na PL/DE jest pusty (script/JS) — mogli mieć pełne opisy których parser nie widzi</li>
+    <li>OOONO NO1 może mieć własną polskojęzyczną stronę ooono.com (nie sprawdzono)</li>
+  </ul>
+
+  <h3>Co zweryfikować</h3>
+  <ul>
+    <li>Czy OOONO ma stronę ooono.com/pl z pełnym polskim kontentem (mogła być ważniejsza niż Amazon listing)?</li>
+    <li>Czy YANBOX GO podaje konkretny czas pracy na baterii w godzinach lub km (spec sheet)?</li>
+    <li>Czy OOONO faktycznie obsługuje multi-user (kilka smartfonów) jednocześnie — to byłby unikalny claim do skopiowania</li>
+    <li>Kraj produkcji — jedno źródło prawdy (Polska vs Chiny)</li>
+    <li>Rozmiar społeczności OOONO globalnie — jest znana liczba (ponad 16M w 2024 wg prasy), ale nie pada na PL listing</li>
+  </ul>
+
+  <h3>Co poprawić z jednym inputem</h3>
+  <ul>
+    <li>Jeśli Tomek da URL ooono.com/pl lub inny PL/intl landing page — pełna analiza GEO tego URL da rzetelny score zamiast Amazon parsera</li>
+    <li>Jeśli Tomek poda trwałość baterii YANBOX GO w km — uzupełniamy lukę #1 z danymi lub potwierdzamy że jej nie ma</li>
+  </ul>
+</div>
+
+<footer>GEO PDP Optimizer · POROWNANIE_OOONO_vs_YANOSIK.html · 15.09.2026 · dane z Amazon PL/DE/UK + sklep.yanosik.pl</footer>
+</div>
+
+<style>
+#pub-lightbox-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;cursor:zoom-out}
+#pub-lightbox-overlay.open{display:flex}
+#pub-lightbox-overlay img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+#pub-lightbox-close{position:fixed;top:16px;right:20px;font-size:36px;color:#fff;cursor:pointer;line-height:1;user-select:none;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+</style>
+<div id="pub-lightbox-overlay"><span id="pub-lightbox-close">&times;</span><img id="pub-lightbox-img" src="" alt=""></div>
+<script>
+(function(){
+  var ov=document.getElementById('pub-lightbox-overlay');
+  var im=document.getElementById('pub-lightbox-img');
+  document.querySelectorAll('a.pub-lightbox-trigger').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var img=a.querySelector('img');
+      if(img){im.src=img.src;ov.classList.add('open');}
+    });
+  });
+  document.getElementById('pub-lightbox-close').addEventListener('click',function(){ov.classList.remove('open');im.src='';});
+  ov.addEventListener('click',function(e){if(e.target===ov){ov.classList.remove('open');im.src='';}});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){ov.classList.remove('open');im.src='';}});
+})();
+</script>
+</body>
+</html>
