@@ -1,0 +1,235 @@
+<meta charset="utf-8"><title>Mapa Tematów Kontentu — komunikatory_drogowe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Tokeny z _shared/BRAND_STYLE_GUIDE.html — jedno źródło warstwy wizualnej. */
+:root{
+  --bg:#ffffff; --surface:#fafbfd; --line:#e6e6e9; --ink:#0a0a0a;
+  --muted:#5b6472; --faint:#8b93a2;
+  --v:#7c5cff; --v-d:#5a3ff0; --v-soft:#efeaff; --v-line:#d4c9ff;
+  --dark:#1a1f2b; --dark-sub:#252d3d; --dark-txt:#b8bfcc;
+  --g:#16a34a; --g-soft:#e7f6ec; --g-line:#b7e3c4;
+  --o:#f5751a; --o-soft:#fff2e8; --o-line:#f8c39a;
+  --a:#b8862b; --a-soft:#fdf5e6; --a-line:#e9d3a3;
+  --grotesk:'Space Grotesk',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+  --r-sm:8px; --r:12px; --r-lg:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--grotesk);
+  font-size:15.5px;line-height:1.65;-webkit-font-smoothing:antialiased;
+  padding:clamp(18px,5vw,56px) clamp(14px,4vw,32px)}
+.w{max-width:940px;margin:0 auto}
+
+/* nagłówek dokumentu */
+.top{padding-bottom:26px;border-bottom:1px solid var(--line);margin-bottom:34px}
+.kicker{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--v);font-weight:600;display:block;margin-bottom:12px}
+h1{font-size:clamp(28px,5.2vw,44px);font-weight:700;letter-spacing:-.03em;
+  line-height:1.05;margin:0 0 10px;text-wrap:balance}
+.pod{color:var(--muted);font-size:14px;margin:0}
+
+/* sekcje */
+h2{font-size:clamp(21px,3.4vw,28px);font-weight:700;letter-spacing:-.03em;
+  margin:52px 0 14px;text-wrap:balance;position:relative;padding-top:20px;
+  border-top:1px solid var(--line)}
+h2::before{content:attr(data-nr);font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--v);font-weight:600;display:block;margin-bottom:10px}
+h3{font-size:16px;font-weight:600;letter-spacing:-.01em;margin:30px 0 8px}
+h4{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--faint);font-weight:600;margin:22px 0 6px}
+
+p{margin:0 0 14px;color:var(--ink)}
+strong{font-weight:600}
+a{color:var(--v-d);text-decoration:none;border-bottom:1px solid var(--v-line)}
+a:hover{border-bottom-color:var(--v-d)}
+ul{margin:0 0 16px;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+li{position:relative;padding-left:20px;color:var(--ink)}
+li::before{content:"";position:absolute;left:4px;top:.68em;width:5px;height:5px;
+  border-radius:50%;background:var(--v-line)}
+
+/* tabele — nagłówek mono, wersaliki */
+.tw{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:var(--r);
+  background:var(--bg)}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--faint);font-weight:600;text-align:left;padding:12px 14px;
+  border-bottom:1px solid var(--line);background:var(--surface);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td strong{color:var(--ink)}
+
+/* cytat = wyróżnienie, nie ozdoba */
+blockquote{margin:20px 0;padding:16px 20px;background:var(--v-soft);
+  border-left:3px solid var(--v);border-radius:0 var(--r-sm) var(--r-sm) 0;color:var(--ink)}
+blockquote p:last-child{margin-bottom:0}
+
+/* kod */
+code{font-family:var(--mono);font-size:12.5px;background:var(--v-soft);color:var(--v-d);
+  padding:2px 6px;border-radius:5px}
+pre{background:var(--dark);color:var(--dark-txt);border-radius:var(--r);
+  padding:18px 20px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;
+  line-height:1.6;margin:18px 0}
+pre code{background:none;color:inherit;padding:0}
+
+hr{border:none;border-top:1px solid var(--line);margin:34px 0}
+hr + h2{border-top:none;padding-top:0;margin-top:26px}   /* bez podwójnej kreski */
+.pod:empty{display:none}
+.slot{font-family:var(--mono);font-size:12px;background:var(--surface);color:var(--faint);
+  border:1px dashed var(--line);border-radius:5px;padding:2px 8px}
+.brak{font-family:var(--mono);font-size:11.5px;background:var(--o-soft);color:var(--o);
+  border:1px solid var(--o-line);border-radius:5px;padding:2px 8px;font-weight:600}
+.stopka{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--faint)}
+
+@media (max-width:640px){
+  body{font-size:15px}
+  h2{margin-top:38px}
+  td,th{padding:9px 11px}
+}
+</style>
+<div class="w">
+  <div class="top">
+    <span class="kicker">wygenerowane z danych</span>
+    <h1>Mapa Tematów Kontentu — komunikatory_drogowe</h1>
+    <p class="pod">v1.0 · 2026-09-16 · Wyprowadzone z CS, nie z głowy. Weryfikacja: strateg gate.</p>
+  </div>
+  <p>&quot;&quot;&quot; ETAP: planowanie_kontentu KLASA: strategiczny Źródła: WPIS_CS_komunikatory_drogowe_V2.md · data/questions/komunikatory_drogowe.json (452q) · data/wolumeny_motywacji · CANARD/GITD 2026 · analiza 22 kart ME &quot;&quot;&quot;</p>
+<p><em>Źródła: 16 CEP × 452 pytań CQF × KCF §4 (19 cech) × §0c Dynamika × analiza kart ME</em></p>
+<hr>
+<h2 data-nr="01">Jak liczyć tematy</h2>
+<blockquote><strong>Wyprowadzono 25 tematów</strong> (nie z widzimisię — z danych): - 16 tematów = 1 per CEP (sytuacje zakupowe) - 9 tematów cross-cutting = z KCF, §0c, §12 (funkcje kategorii + granice prawne + substytucja)</blockquote>
+<p>&gt;</p>
+<blockquote>Minimum niezbędne = 25. Możliwy wzrost do ~30 jeśli CEP T0/T1 mają jasny split format (FAQ vs artykuł). Pytań zamykanych per temat: z pola 452 pytań (engine V5). Suma &lt; 452 bo pytania się nakładają (jeden temat zamyka pytania z wielu stanów).</blockquote>
+<hr>
+<h2 data-nr="02">Priorytety</h2>
+<div class="tw"><table><thead><tr><th>Priorytet</th><th>Kryterium</th></tr></thead><tbody>
+<tr><td>P0</td><td>Temat z T0 CEP + luka na kartach ME (mediana pokrycia 1/8 zawoalowania) + mamy dowód</td></tr>
+<tr><td>P1</td><td>T1 CEP lub cross-cutting z twardymi danymi + wysoki wolumen</td></tr>
+<tr><td>P2</td><td>T2/T3 CEP lub cross-cutting bez twardych danych (hipoteza)</td></tr>
+<tr><td>P3</td><td>T4 CEP — subkategorie kandydackie</td></tr>
+</tbody></table></div>
+<hr>
+<h2 data-nr="03">Tabela tematów</h2>
+<div class="tw"><table><thead><tr><th>#</th><th>Temat</th><th>CEP</th><th>Motyw</th><th>Pytań (szac.)</th><th>Format</th><th>Kanał</th><th>Dowód mamy</th><th>Status pokrycia ME</th><th>Granica prawna</th><th>Priorytet</th></tr></thead><tbody>
+<tr><td>1</td><td><strong>Punkty karne — co się dzieje po przekroczeniu limitu</strong></td><td>cep_punkty_karne</td><td>M1</td><td>~28</td><td>FAQ + akapit edu</td><td>karta · FAQ · artykuł</td><td>CEPIK.gov.pl (limit=24)</td><td>❌ brak na kartach</td><td>⚠️ Nie: „unikaj mandatu&quot;. Tak: „czysty rejestr&quot;</td><td><strong>P0</strong></td></tr>
+<tr><td>2</td><td><strong>Nieznana trasa — jak zaplanować bezpieczny wyjazd</strong></td><td>cep_nieznana_trasa</td><td>M1+M4</td><td>~28</td><td>artykuł przewodnikowy + lista kontrolna</td><td>artykuł · karta · FAQ</td><td>Wolumeny: nieznana trasa M1+M4</td><td>❌ brak frazy wejściowej AI</td><td>Brak ograniczeń</td><td><strong>P0</strong></td></tr>
+<tr><td>3</td><td><strong>Wypadek na znajomej drodze — codzienne dojazdy</strong></td><td>cep_codzienny_dojazd</td><td>M3+M2</td><td>~28</td><td>akapit real-time + case study</td><td>karta · artykuł</td><td>Wolumeny: codzienne dojazdy M3+M2</td><td>❌ brak frazy wejściowej AI</td><td>Brak ograniczeń</td><td><strong>P0</strong></td></tr>
+<tr><td>4</td><td><strong>Remont co kilometr — jak jechać przez strefę robót</strong></td><td>cep_remonty</td><td>M4</td><td>~28</td><td>artykuł informacyjny + FAQ</td><td>artykuł · karta</td><td>GITD / GDDKiA remonty</td><td>❌ brak</td><td>Brak ograniczeń</td><td><strong>P1</strong></td></tr>
+<tr><td>5</td><td><strong>Gonię czas — lotnisko, spotkanie, odbiór dziecka</strong></td><td>cep_spiesze_sie</td><td>M3</td><td>~28</td><td>artykuł scenariuszowy</td><td>artykuł · wideo</td><td>Wolumeny M3</td><td>❌ brak</td><td>Brak ograniczeń</td><td><strong>P1</strong></td></tr>
+<tr><td>6</td><td><strong>Długi weekend — korki i kontrole na trasie</strong></td><td>cep_dlugi_weekend</td><td>M1+M3</td><td>~28</td><td>przewodnik sezonowy</td><td>artykuł · FAQ</td><td>GDDKiA dane ruchu; CANARD naruszenia maj/weekend</td><td>❌ brak</td><td>⚠️ M1: zawoalowanie</td><td><strong>P1</strong></td></tr>
+<tr><td>7</td><td><strong>Stary komunikator padł — co wybrać następnego</strong></td><td>cep_stary_sprzet</td><td>M3</td><td>~28</td><td>porównanie modeli + FAQ</td><td>karta · artykuł</td><td>Ceny ME: Yanbox GO 289 zł, OOONO CO Drive 269 zł</td><td>❌ brak frazy</td><td>Brak ograniczeń</td><td><strong>P1</strong></td></tr>
+<tr><td>8</td><td><strong>Pierwszy komunikator — od czego zacząć</strong></td><td>cep_pierwszy_raz_kupujacy</td><td>M1+M4</td><td>~29</td><td>poradnik on-boarding + FAQ</td><td>artykuł · karta · FAQ</td><td>Wolumeny: „komunikator drogowy&quot; ~590/mies.</td><td>❌ brak intro</td><td>⚠️ legalność — odpowiedz wprost: TAK, legalne</td><td><strong>P1</strong></td></tr>
+<tr><td>9</td><td><strong>Trasa z dziećmi 500 km — co zabrać</strong></td><td>cep_trasa_z_dziecmi</td><td>M2+M3</td><td>~28</td><td>lista kontrolna + artykuł</td><td>artykuł</td><td>brak twardego dowodu — hipoteza wolumenowa</td><td>❌ brak</td><td>Brak ograniczeń</td><td><strong>P2</strong></td></tr>
+<tr><td>10</td><td><strong>Widziałem karambol — ostrzeżenia community</strong></td><td>cep_po_zdarzeniu</td><td>M2</td><td>~28</td><td>feature story + FAQ</td><td>artykuł</td><td>zgłoszenia: 5 mln użytkowników, co 2s aktualizacja</td><td>❌ brak</td><td>Brak ograniczeń</td><td><strong>P2</strong></td></tr>
+<tr><td>11</td><td><strong>Telefon zajęty nawigacją — osobne urządzenie vs aplikacja</strong></td><td>cep_telefon_zajety</td><td>M2+M3</td><td>~28</td><td>porównanie tabela</td><td>karta · artykuł</td><td>analiza 22 kart: 13/17 bez mechanizmu</td><td>❌ brak</td><td>Brak ograniczeń</td><td><strong>P2</strong></td></tr>
+<tr><td>12</td><td><strong>Dziecko zdało prawko — bezpieczeństwo kierowcy-nowicjusza</strong></td><td>cep_mlody_kierowca</td><td>M2+M4</td><td>~28</td><td>artykuł poradnikowy</td><td>artykuł</td><td>brak VoC — hipoteza</td><td>❌ brak</td><td>Brak ograniczeń</td><td><strong>P2</strong></td></tr>
+<tr><td>13</td><td><strong>Prezent dla kierowcy — co wybrać</strong></td><td>cep_prezent</td><td>mieszany</td><td>~28</td><td>przewodnik prezentowy</td><td>artykuł · porównanie</td><td>ceny ME: 269–479 zł</td><td>❌ brak</td><td>Brak ograniczeń</td><td><strong>P2</strong></td></tr>
+<tr><td>14</td><td><strong>Komunikator za granicą — Austria, Chorwacja, Niemcy</strong></td><td>cep_za_granice</td><td>M1+M4</td><td>~28</td><td>poradnik krajowy + tabela krajów</td><td>artykuł · FAQ</td><td>Yanosik słaby w DE (brak polskiej bazy)</td><td>❌ brak</td><td>Każdy kraj ma własne prawa</td><td><strong>P3</strong></td></tr>
+<tr><td>15</td><td><strong>Komunikator na motocyklu — ostrzeżenia w kasku</strong></td><td>cep_motocykl</td><td>M2+M1</td><td>~27</td><td>artykuł subkategoria + porównanie</td><td>artykuł · FAQ</td><td>7/21 modeli ME ma tryb; wol. ~210/mies.</td><td>❌ brak</td><td>Brak ograniczeń — legalne</td><td><strong>P3</strong></td></tr>
+<tr><td>16</td><td><strong>Auto służbowe — komunikator do pracy w terenie</strong></td><td>cep_praca_w_trasie</td><td>M3+M1</td><td>~28</td><td>artykuł B2B lekki</td><td>artykuł</td><td>brak VoC — hipoteza wolumenowa</td><td>❌ brak</td><td>Brak ograniczeń</td><td><strong>P3</strong></td></tr>
+</tbody></table></div>
+<hr>
+<h2 data-nr="04">Tematy cross-cutting (z KCF, §0c, §12, §11)</h2>
+<div class="tw"><table><thead><tr><th>#</th><th>Temat</th><th>Źródło CS</th><th>Motyw</th><th>Pytań</th><th>Format</th><th>Kanał</th><th>Dowód</th><th>Status</th><th>Granica</th><th>Priorytet</th></tr></thead><tbody>
+<tr><td>17</td><td><strong>Urządzenie dedykowane vs aplikacja na telefon</strong></td><td>§11 substytuty · cep_telefon_zajety</td><td>M2+M3</td><td>~15 (cross)</td><td>tabela porównawcza</td><td>karta · FAQ · artykuł</td><td>analiza kart ME: sklep yanosika.pl 6/8, ME 1/8 zawoalowania</td><td>❌ luka krytyczna</td><td>Nie atakuj Google Maps z nazwy (ToV 10a)</td><td><strong>P0</strong></td></tr>
+<tr><td>18</td><td><strong>Czy komunikator jest legalny w Polsce? (FAQ prawne)</strong></td><td>§9 · §12 · cep_pierwszy_raz_kupujacy</td><td>M1</td><td>~8</td><td>FAQ jednoakapit (direct answer)</td><td>FAQ · karta</td><td>art. 66 ust. 4 pkt 4 PoRD (antyradar zakaz) · komunikator ≠ antyradar</td><td>❌ brak na kartach ME</td><td>Kluczowy: odróżnij komunikator od antyradaru</td><td><strong>P0</strong></td></tr>
+<tr><td>19</td><td><strong>Rosnąca sieć fotoradarów — dane i fakty (CANARD 2026)</strong></td><td>§0c Dynamika realnie</td><td>M1</td><td>~10</td><td>faktograficzny artykuł + tabela historyczna</td><td>artykuł · infografika</td><td>825 217 naruszeń +31% r/r; 118 urządzeń w 7 mies.; 716 łącznie; farmer.pl · motoryzacja.interia.pl · gitd.gov.pl</td><td>✅ mamy komplet</td><td>Wolno wprost (dane publiczne GITD). Nie: patrole</td><td><strong>P0</strong></td></tr>
+<tr><td>20</td><td><strong>Odcinkowe pomiary prędkości — jak działają, gdzie są</strong></td><td>§0c · §9</td><td>M1+M4</td><td>~8</td><td>artykuł edu + mapa/tabela</td><td>artykuł · FAQ</td><td>116 OPP (1.07.2026); 114 pomiarów → 470 tys. naruszeń (2025)</td><td>✅ mamy dane</td><td>Wolno wprost — dane publiczne GITD</td><td><strong>P1</strong></td></tr>
+<tr><td>21</td><td><strong>Społeczność kierowców — jak działa, ile osób, co zgłasza</strong></td><td>§4 KCF · §12</td><td>M2</td><td>~6</td><td>artykuł brand value</td><td>artykuł · karta</td><td>5 mln użytkowników, co 2s, 38 664 fotoradary [hipoteza — potrzeba źródła]</td><td>⚠️ hipoteza (sprawdź źródło „5 mln&quot;)</td><td>„Informacja od kierowców, nie detekcja sygnału&quot;</td><td><strong>P1</strong></td></tr>
+<tr><td>22</td><td><strong>Abonament vs bez abonamentu — całkowity koszt posiadania</strong></td><td>§4 KCF · §5 typowy</td><td>M3</td><td>~12</td><td>tabela TCO</td><td>karta · FAQ · porównanie</td><td>ceny ME: OOONO CO Drive 269 zł (dożyw.) · Yanosik RS 399 zł + sub</td><td>✅ mamy ceny</td><td>Abonament: zawsze pokaż TCO (ToV #8)</td><td><strong>P1</strong></td></tr>
+<tr><td>23</td><td><strong>Porównanie modeli — Yanbox GO vs OOONO vs Yanosik RS vs GTR</strong></td><td>§4 KCF · §11</td><td>M1+M3</td><td>~20</td><td>tabela parametrów + scoring</td><td>karta · artykuł</td><td>analiza POROWNANIE_OOONO_vs_YANOSIK.html: luki bateria km, multi-user</td><td>✅ mamy analizę</td><td>Nie mów że X jest „najlepszy&quot; bez źródła</td><td><strong>P1</strong></td></tr>
+<tr><td>24</td><td><strong>Jak zainstalować i skonfigurować komunikator</strong></td><td>§5 typowy · §4 KCF</td><td>M3+M1</td><td>~8</td><td>poradnik krok po kroku</td><td>artykuł · wideo</td><td>3 metody montażu (KCF) · pasek/przyssawka/dedykowany uchwyt</td><td>❌ brak na kartach</td><td>Brak ograniczeń</td><td><strong>P2</strong></td></tr>
+<tr><td>25</td><td><strong>Jak aktualizować bazę fotoradarów — manual vs automatyczne</strong></td><td>§4 KCF · §5</td><td>M1</td><td>~6</td><td>FAQ</td><td>FAQ · artykuł</td><td>KCF: Źródło baz — różne modele (GITD vs community vs hybrydowe)</td><td>❌ brak na kartach</td><td>Brak ograniczeń</td><td><strong>P2</strong></td></tr>
+</tbody></table></div>
+<hr>
+<h2 data-nr="05">Skrócona mapa priorytetu</h2>
+<pre>
+P0 (produkcja natychmiast — luka krytyczna + dowód):
+  #1 Punkty karne — FAQ/edu
+  #2 Nieznana trasa — przewodnik
+  #3 Codzienne dojazdy — akapit real-time
+  #17 Urządzenie vs aplikacja — tabela
+  #18 Legalność PL — FAQ direct answer
+  #19 CANARD dane — artykuł faktograficzny
+
+P1 (ważne — wolumen + dowód):
+  #4 Remont strefa robót · #5 Gonię czas · #6 Długi weekend
+  #7 Stary sprzęt · #8 Pierwszy zakup on-boarding
+  #20 Odcinkowe · #21 Społeczność · #22 TCO abonament · #23 Porównanie modeli
+
+P2 (planowane — hipoteza lub niższy wolumen):
+  #9 Trasa z dziećmi · #10 Karambol community · #11 Telefon/urządzenie
+  #12 Młody kierowca · #13 Prezent · #24 Montaż · #25 Aktualizacja baz
+
+P3 (subkategorie):
+  #14 Zagranica · #15 Motocykl · #16 Praca w trasie
+</pre>
+<hr>
+<h2 data-nr="06">Luki dowodowe do wypełnienia (przed produkcją P1+)</h2>
+<div class="tw"><table><thead><tr><th>Temat #</th><th>Brakujący dowód</th><th>Jak zdobyć</th><th>Pilność</th></tr></thead><tbody>
+<tr><td>#21 Społeczność</td><td>Źródło „5 mln użytkowników&quot; — brak URL</td><td>yanosik.pl / PR release</td><td>Wysoka</td></tr>
+<tr><td>#6 Długi weekend</td><td>Dane naruszeń per długi weekend z CANARD</td><td>GITD wniosek o dane / media</td><td>Średnia</td></tr>
+<tr><td>#9 Trasa z dziećmi</td><td>Wolumeny DFS dla M2+M3 fraza</td><td>DFS $0.05/call</td><td>Niska</td></tr>
+<tr><td>#12 Młody kierowca</td><td>VoC z Ceneo/forów</td><td>Bright Data / ręczny recon</td><td>Niska</td></tr>
+</tbody></table></div>
+<hr>
+<h2 data-nr="07">Formaty per priorytet (tabela do briefowania)</h2>
+<div class="tw"><table><thead><tr><th>Format</th><th>Tematy (numery)</th><th>Klasa AI</th><th>Uzasadnienie</th></tr></thead><tbody>
+<tr><td><strong>FAQ direct answer</strong> (1 pytanie = 1 akapit)</td><td>#18, #1, #25</td><td>⭐⭐⭐</td><td>58–71% cytowań w AI Overviews (maxaeo.ai 2026)</td></tr>
+<tr><td><strong>Tabela parametrów</strong></td><td>#17, #22, #23</td><td>⭐⭐⭐</td><td>tabele ~67% cytowalność (snezzi.com 2026)</td></tr>
+<tr><td><strong>Artykuł faktograficzny z tabelą</strong></td><td>#19, #20</td><td>⭐⭐⭐</td><td>liczby S2 + tabela = max cytowanie</td></tr>
+<tr><td><strong>Przewodnik krok po kroku</strong></td><td>#2, #8, #24</td><td>⭐⭐</td><td>listy 2,5× vs proza</td></tr>
+<tr><td><strong>Artykuł scenariuszowy</strong></td><td>#3, #4, #5, #6</td><td>⭐⭐</td><td>odpowiada na situational intent</td></tr>
+<tr><td><strong>Porównanie modeli</strong></td><td>#7, #11, #15</td><td>⭐⭐⭐</td><td>tabela + zestawienie</td></tr>
+</tbody></table></div>
+<hr>
+<h2 data-nr="08">Granica prawna — reminder per temat</h2>
+<blockquote>Reguła globalna: komunikator drogowy ≠ wykrywacz radarów (art. 66 ust. 4 pkt 4 PoRD). Szczegóły: §9 Forbidden + §12 ToV R12.</blockquote>
+<div class="tw"><table><thead><tr><th>Tematy z ryzykiem</th><th>Reguła</th></tr></thead><tbody>
+<tr><td>#1, #6, #8, #19 (M1)</td><td>Zawoalowanie — nie pisz „unikaj mandatu/kontroli&quot;</td></tr>
+<tr><td>#18</td><td>Odróżnij wprost: komunikator (legalny) ≠ antyradar (nielegalny)</td></tr>
+<tr><td>#21 Społeczność</td><td>Podkreśl: „informacja od kierowców, nie detekcja sygnału&quot;</td></tr>
+<tr><td>#14 Zagranica</td><td>Prawo inne w DE/AT/CH — weryfikacja per kraj</td></tr>
+</tbody></table></div>
+<hr>
+<h2 data-nr="09">Status produkcji (na starcie)</h2>
+<blockquote>Ocena z analizy 22 kart ME: mediana zawoalowania 1/8, 13/17 kart bez mechanizmu (jak działa), brak liczb. Pokrycie sytuacji CEP na kartach ME: ~43% (7 z 16 CEPs ma jakikolwiek tekst trafnie adresujący sytuację).</blockquote>
+<div class="tw"><table><thead><tr><th>Temat</th><th>Mamy treść</th><th>Brakuje</th></tr></thead><tbody>
+<tr><td>#1 Punkty karne</td><td>NIE</td><td>FAQ + akapit edu</td></tr>
+<tr><td>#2 Nieznana trasa</td><td>CZĘŚCIOWO (YTR-mapa)</td><td>Przewodnik z danymi fotoradarów</td></tr>
+<tr><td>#17 Urząd vs app</td><td>NIE</td><td>Tabela porównawcza</td></tr>
+<tr><td>#18 Legalność</td><td>NIE</td><td>Jeden akapit FAQ</td></tr>
+<tr><td>#19 CANARD</td><td>NIE</td><td>Artykuł faktograficzny z tabelą historyczną</td></tr>
+<tr><td>#22 TCO</td><td>NIE</td><td>Tabela TCO per model</td></tr>
+<tr><td>#23 Porównanie</td><td>CZĘŚCIOWO (POROWNANIE HTML)</td><td>Uproszczona tabela na karte</td></tr>
+</tbody></table></div>
+  <div class="stopka">wygenerowane z danych</div>
+</div>
+
+<style>
+#pub-lightbox-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;cursor:zoom-out}
+#pub-lightbox-overlay.open{display:flex}
+#pub-lightbox-overlay img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+#pub-lightbox-close{position:fixed;top:16px;right:20px;font-size:36px;color:#fff;cursor:pointer;line-height:1;user-select:none;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+</style>
+<div id="pub-lightbox-overlay"><span id="pub-lightbox-close">&times;</span><img id="pub-lightbox-img" src="" alt=""></div>
+<script>
+(function(){
+  var ov=document.getElementById('pub-lightbox-overlay');
+  var im=document.getElementById('pub-lightbox-img');
+  document.querySelectorAll('a.pub-lightbox-trigger').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var img=a.querySelector('img');
+      if(img){im.src=img.src;ov.classList.add('open');}
+    });
+  });
+  document.getElementById('pub-lightbox-close').addEventListener('click',function(){ov.classList.remove('open');im.src='';});
+  ov.addEventListener('click',function(e){if(e.target===ov){ov.classList.remove('open');im.src='';}});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){ov.classList.remove('open');im.src='';}});
+})();
+</script>
