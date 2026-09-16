@@ -156,12 +156,16 @@ tr.hidden { display: none; }
 </style>
 </head>
 <body>
+<div style="background:#e8f4e8;border-left:4px solid #2d7a2d;padding:8px 12px;margin:8px 0;font-size:13px;">
+  <strong>Pytania otwierające (discovery)</strong> — oznaczone symbolem ⬩ — to pytania,
+  od których zaczyna się ścieżka zakupowa. Filtr poniżej: <em>tylko pytania otwierające</em>.
+</div>
 
 <!-- SIDEBAR -->
 <div id="sidebar">
   <div class="brand">
     Komunikatory drogowe
-    <small>v5.7 · Analiza CEP i Pytań</small>
+    <small>v5.7 · Analiza Sytuacji i Pytań · pytania otwierające (discovery) oznaczone osobno</small>
     <a href="HUB_komunikatory_drogowe.html" style="display:block;margin-top:7px;font-size:11px;color:#3b82f6;text-decoration:none;font-weight:600;opacity:.9">← strona startowa</a>
   </div>
   <div class="total-badge" id="total-badge">452 pytań · 16 ścieżek</div>
@@ -323,14 +327,14 @@ tr.hidden { display: none; }
     <div class="info-section">
       <h3>Kategoria</h3>
       <p style="font-size:14px"><strong>Komunikatory drogowe</strong></p>
-      <p style="font-size:12px;color:#64748b;margin-top:4px">v5.7 · 452 pytań · 16 ścieżek zakupowych (CEP)</p>
+      <p style="font-size:12px;color:#64748b;margin-top:4px">v5.7 · 452 pytań · 16 ścieżek zakupowych (Sytuacja)</p>
     </div>
     <div class="info-section">
       <h3>Struktura pytań wg stanu</h3>
       <div id="info-states" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
     </div>
     <div class="info-section">
-      <h3>Ścieżki zakupowe — pełne profile CEP</h3>
+      <h3>Ścieżki zakupowe — pełne profile Sytuacja</h3>
       <div id="info-paths" style="margin-top:8px"></div>
     </div>
     </div>
@@ -345,7 +349,7 @@ const A = [
 
 const PATHS = [{"letter": "A", "label": "Nieznana trasa: wakacje, góry, nowe auto — pierwszy raz tą drogą", "cep_id": "cep_nieznana_trasa", "typ": "sytuacyjny", "color": "#3b82f6", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "B", "label": "Codzienny dojazd: ta sama droga, niespodziewany wypadek lub korek", "cep_id": "cep_codzienny_dojazd", "typ": "sytuacyjny", "color": "#8b5cf6", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "C", "label": "Gonię czas: lotnisko, spotkanie, odbiór dziecka — nie mogę utknąć", "cep_id": "cep_spiesze_sie", "typ": "sytuacyjny", "color": "#ec4899", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "D", "label": "Trasa przez remonty: limit zmienia się co kilometr, nie nadążam za znakami", "cep_id": "cep_remonty", "typ": "sytuacyjny", "color": "#14b8a6", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "E", "label": "Po wypadku lub karambolu: chcę wiedzieć co przed maską", "cep_id": "cep_po_zdarzeniu", "typ": "sytuacyjny", "color": "#f59e0b", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "F", "label": "Długa trasa z rodziną: chcę wiedzieć o wypadkach zanim na nie wjadę", "cep_id": "cep_trasa_z_dziecmi", "typ": "sytuacyjny", "color": "#10b981", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "G", "label": "Majówka / długi weekend: korki i kontrole na wylotówkach", "cep_id": "cep_dlugi_weekend", "typ": "okazjonalny", "color": "#f43f5e", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "H", "label": "Sprawdziłem saldo punktów karnych — nie mogę złapać kolejnego", "cep_id": "cep_punkty_karne", "typ": "zdrowotny", "color": "#eab308", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "I", "label": "Rodzic kupuje dziecku po prawku: chce żeby wiedziało co się dzieje na drodze", "cep_id": "cep_mlody_kierowca", "typ": "okazjonalny", "color": "#6366f1", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "J", "label": "Praca w terenie: cały dzień po obcych drogach, nowy rejon", "cep_id": "cep_praca_w_trasie", "typ": "ekonomiczny", "color": "#d946ef", "count": 23, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "K", "label": "Prezent dla kogoś kto dużo jeździ", "cep_id": "cep_prezent", "typ": "okazjonalny", "color": "#06b6d4", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "L", "label": "Telefon robi za nawigację — ostrzeżenia w tle nie wystarczają", "cep_id": "cep_telefon_zajety", "typ": "sytuacyjny", "color": "#84cc16", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "M", "label": "Stary ostrzegacz padł albo kończy się abonament", "cep_id": "cep_stary_sprzet", "typ": "ekonomiczny", "color": "#a855f7", "count": 23, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "N", "label": "Wyjazd za granicę: inne limity, winiety, fotoradary", "cep_id": "cep_za_granice", "typ": "sytuacyjny", "color": "#fb7185", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "O", "label": "Start sezonu motocyklowego: chcę słyszeć ostrzeżenia w kasku", "cep_id": "cep_motocykl", "typ": "sytuacyjny", "color": "#34d399", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}, {"letter": "P", "label": "Pierwszy raz kupuję komunikator — nie wiem od czego zacząć", "cep_id": "cep_pierwszy_raz_kupujacy", "typ": "sytuacyjny", "color": "#3b82f6", "count": 29, "verbatim": "", "kontekst": "", "concern": "", "bloker": ""}];
 const STATE_ORDER = [2, 3, 4, 5, 6, 7, 8];
-const STATE_LABELS = {"2": "Potrzeba/impuls", "3": "Rozpoznanie CEP", "4": "Nauka kategorii", "5": "Preselekcja", "6": "Porównywanie", "7": "Wybór sklepu/sposobu zakupu", "8": "Zakup"};
+const STATE_LABELS = {"2": "Potrzeba/impuls", "3": "Rozpoznanie Sytuacja", "4": "Nauka kategorii", "5": "Preselekcja", "6": "Porównywanie", "7": "Wybór sklepu/sposobu zakupu", "8": "Zakup"};
 
 // ── FILTER STATE ──────────────────────────────────────────────────────────────
 let activePath = 'ALL';
@@ -446,7 +450,7 @@ function buildInfoPaths() {
   for (const p of PATHS) {
     const card = document.createElement('div');
     card.style.cssText = 'background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:12px;border-left:4px solid '+p.color;
-    // CEP card HTML components
+    // Sytuacja card HTML components
     const typBadge = p.typ
       ? `<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;background:#f1f5f9;color:#475569;margin-left:6px">${p.typ}</span>`
       : '';
