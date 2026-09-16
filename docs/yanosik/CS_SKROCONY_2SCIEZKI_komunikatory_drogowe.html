@@ -1,201 +1,724 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="utf-8">
-<title>Ścieżki rdzeniowe — komunikatory_drogowe</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --ink:#0a0a0a;--muted:#5b6472;--line:#e6e6e9;--bg:#ffffff;
-  --grotesk:'Space Grotesk',-apple-system,BlinkMacSystemFont,sans-serif;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--grotesk);background:var(--bg);color:var(--ink);
-  font-size:15px;line-height:1.6;padding:clamp(16px,5vw,40px) clamp(14px,4vw,28px)}
-.w{max-width:960px;margin:0 auto}
-.back{display:inline-block;margin-bottom:20px;color:#5a3ff0;font-size:13px;
-  text-decoration:none;font-weight:600;border-bottom:1px solid #d4c9ff;padding-bottom:1px}
-h1{font-size:clamp(22px,4vw,34px);font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
-.sub{color:var(--muted);font-size:14px;margin-bottom:28px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:28px}
-.path{background:#fafbfd;border-radius:12px;padding:22px;overflow:hidden}
-.path-hd{margin-bottom:20px}
-.tor-badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;
-  border-radius:20px;margin-bottom:10px;letter-spacing:.03em}
-h2{font-size:18px;font-weight:700;margin-bottom:8px;line-height:1.3}
-.trigger{font-style:italic;color:var(--muted);font-size:13px;border-left:3px solid var(--line);
-  padding-left:10px;margin:10px 0}
-.bloker{font-size:13px;background:#fff8e6;border-radius:6px;padding:8px 12px;margin-top:8px;
-  color:#7a5a00}
-.state{border-left:3px solid var(--line);margin-bottom:18px;padding-left:14px}
-.state-hd{font-size:14px;font-weight:600;margin-bottom:8px;display:flex;
-  align-items:center;gap:8px;border-left:none}
-.state-num{background:#f0f0f3;border-radius:50%;width:22px;height:22px;display:flex;
-  align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-.qs{padding-left:18px;margin:6px 0;color:#1a1f2b;font-size:13.5px}
-.qs li{margin-bottom:5px;line-height:1.45}
-.truth{font-size:12px;color:#5a3ff0;background:#efeaff;border-radius:6px;
-  padding:5px 10px;margin:6px 0}
-details.exit{margin-top:8px}
-details.exit summary{font-size:12px;color:var(--muted);cursor:pointer;
-  user-select:none;padding:4px 0}
-details.exit p{font-size:12px;color:#c0392b;background:#fde8e8;border-radius:6px;
-  padding:7px 10px;margin-top:6px}
-.note-disc{background:#e7f6ec;border-left:4px solid #16a34a;padding:10px 14px;
-  border-radius:0 8px 8px 0;font-size:13px;margin:20px 0}
-@media(max-width:420px){
-  .grid{grid-template-columns:1fr}
-  body{padding:14px}
-}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Komunikatory drogowe — CS skrócony: dwie ścieżki rdzeniowe</title>
+<style>:root{--bg:#fff;--text:#1f2328;--muted:#656d76;--border:#d0d7de;--accent:#0969da;
+--accent2:#0550ae;--green:#1a7f37;--amber:#9a6700;--red:#cf222e;--purple:#8250df;
+--h1-bg:#f6f8fa;--h2-bg:#f0f3f6;--table-stripe:#f8f9fb;
+--font:system-ui,-apple-system,sans-serif;--mono:'SF Mono',Menlo,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.7}
+.wrap{max-width:820px;margin:0 auto;padding:32px 24px 80px}
+h1{font-size:24px;font-weight:700;margin-bottom:2px;padding:16px 20px;background:var(--h1-bg);border-radius:10px;border:1px solid var(--border)}
+.meta{color:var(--muted);font-size:12px;margin-bottom:24px;padding:0 20px}
+h2{font-size:17px;font-weight:700;margin:28px 0 8px;padding:10px 14px;background:var(--h2-bg);border-radius:8px;border:1px solid var(--border)}
+h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--accent2)}
+h4{font-size:13px;font-weight:600;margin:10px 0 4px;color:var(--text)}
+p{margin:6px 0}
+blockquote{border-left:3px solid var(--accent);padding:6px 14px;margin:8px 0;background:#f6f8fa;font-size:13px;color:var(--text)}
+blockquote>p{margin:2px 0}
+code{background:#f0f3f6;padding:1px 5px;border-radius:4px;font-size:12px;font-family:var(--mono)}
+pre{background:#f6f8fa;padding:12px 16px;border-radius:8px;overflow-x:auto;font-size:12px;border:1px solid var(--border);margin:8px 0;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+th{background:var(--h2-bg);padding:6px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-bottom:1px solid var(--border)}
+td{padding:5px 10px;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:var(--table-stripe)}
+hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+ul,ol{margin:4px 0;padding-left:22px}
+li{margin:2px 0}
+strong{font-weight:700}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.tag{display:inline-block;padding:0 6px;border-radius:4px;font-size:11px;font-weight:600;line-height:1.6}
+.tag-bl{background:#ddf4ff;color:var(--accent2)}
+.tag-gr{background:#dafbe1;color:var(--green)}
+.tag-am{background:#fff8c5;color:var(--amber)}
+.tag-rd{background:#ffebe9;color:var(--red)}
+/* Question field filters (R8) */
+.qf-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:12px 0 16px;
+  padding:10px 12px;background:#f6f8fa;border:1px solid #d0d7de;border-radius:8px}
+.qf-bar select{padding:4px 8px;border:1px solid #d0d7de;border-radius:6px;
+  font-size:12px;background:#fff;color:#1f2328;cursor:pointer;max-width:180px}
+.qf-lbl{font-size:12px;color:#656d76;font-weight:600;white-space:nowrap}
+.qf-disc{font-size:12px;color:#1f2328;display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap}
+.qf-cnt{font-size:11px;color:#656d76;margin-left:auto;white-space:nowrap}
+.qf-note{font-size:11px;color:#888;margin:0 0 10px;font-style:italic}
+li.qf-hidden{display:none!important}
+.qt{background:#ddf4ff;color:#0550ae;padding:0 5px;border-radius:3px;
+  font-size:10px;font-weight:600;margin-right:3px;white-space:nowrap}
+.qf{background:#dafbe1;color:#1a7f37;padding:0 5px;border-radius:3px;
+  font-size:10px;font-weight:600;margin-right:3px;white-space:nowrap}
+.qd{background:#fff8c5;color:#9a6700;padding:0 5px;border-radius:3px;
+  font-size:10px;font-weight:600;white-space:nowrap}
+.qceps{font-size:10px;color:#888;margin-left:4px}
 </style>
 </head>
-<body>
-<div class="w">
-  <a href="HUB_komunikatory_drogowe.html" class="back">← Wróć do strony startowej</a>
-  <h1>Ścieżki rdzeniowe zakupu komunikatora drogowego</h1>
-  <p class="sub">Dwie ścieżki — realna (po zdarzeniu) i prewencyjna (przed zdarzeniem) — wyjaśniają 70% motywacji zakupowych kategorii.</p>
-  <div class="note-disc">
-    <strong>Pytania otwierające (discovery)</strong> — pierwsze pytanie każdej ścieżki to pytanie otwierające, od którego zaczyna się wejście do kategorii. Oznaczone symbolem &#9830; przy stanie 2.
-  </div>
-  <div class="grid">
-    
-  <div class="path" style="border-top:3px solid #7c5cff">
-    <div class="path-hd">
-      <span class="tor-badge" style="background:#efeaff;color:#7c5cff">T0b</span>
-      <h2>Sprawdziłem saldo punktów karnych — nie mogę złapać kolejnego</h2>
-      <p class="trigger">&#8220;Sprawdziłem ile mam punktów karnych — więcej nie mogę złapać&#8221;</p>
-      <div class="bloker"><strong>Bloker:</strong> Czy to legalne? Czy warto płacić skoro mam aplikację za darmo?</div>
-    </div>
-    
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#7c5cff">
-          <span class="state-num">2</span> Potrzeba / Impuls
-        </div>
-        <div class="truth">&#9830; Moment prawdy: Uświadamia sobie ryzyko (mandat, wypadek, nieznana trasa)</div>
-        <ul class="qs"><li>Co musi robić komunikator drogowy, żeby realnie uchronić mnie przed kolejnymi punktami karnymi?</li><li>Czy ostrzeżenia o fotoradarach w aplikacji są na tyle wczesne, że zdążę zwolnić bez hamowania awaryjnego?</li><li>Jak sprawdzić, czy dana aplikacja ostrzega o kontroli prędkości zanim wjadę w odcinek, a nie dopiero przy samym radarze?</li></ul>
-        
-      </div>
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#7c5cff">
-          <span class="state-num">3</span> Rozpoznanie sytuacji
-        </div>
-        
-        <ul class="qs"><li>Czy komunikator drogowy ostrzega o fotoradarach stacjonarnych, odcinkowych i przenośnych w Polsce?</li><li>Czy ostrzeżenia o kontroli prędkości działają też w trybie offline, gdy nie mam zasięgu w trasie?</li><li>Jak wygląda ostrzeżenie przed fotoradarem w praktyce — dźwięk, komunikat głosowy, ikona na mapie?</li></ul>
-        <details class="exit"><summary>Punkt wyjścia z lejka</summary><p>Rezygnuje — decyduje, że bezpłatna aplikacja wystarczy</p></details>
-      </div>
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#7c5cff">
-          <span class="state-num">4</span> Nauka kategorii
-        </div>
-        <div class="truth">&#9830; Moment prawdy: Rozumie czym komunikator różni się od zwykłej nawigacji</div>
-        <ul class="qs"><li>Czym różni się komunikator drogowy od zwykłej nawigacji pod kątem ostrzegania o fotoradarach?</li><li>Jakie technologie stoją za ostrzeganiem o kontroli prędkości — baza danych, społeczność kierowców, sygnał z urządzeń?</li><li>Czy komunikatory drogowe w Polsce legalnie mogą ostrzegać o fotoradarach i nieodznaczonych kontrolach?</li><li>Jakie normy, certyfikaty i atesty powinien mieć komunikator drogowy, żeby mu zaufać w kwestii ostrzeżeń?</li></ul>
-        <details class="exit"><summary>Punkt wyjścia z lejka</summary><p>Rezygnuje — nie widzi różnicy między komunikatorem a telefonem</p></details>
-      </div>
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#7c5cff">
-          <span class="state-num">5</span> Preselekcja
-        </div>
-        
-        <ul class="qs"><li>Które komunikatory drogowe mają najświeższą bazę fotoradarów i zmian organizacji ruchu w Polsce?</li><li>Czy lepiej wybrać komunikator z ostrzeżeniami od społeczności kierowców, czy z bazą aktualizowaną przez producenta?</li><li>Jak porównać skuteczność ostrzegania przed fotoradarami między różnymi komunikatorami drogowymi?</li><li>Czy komunikator drogowy z ostrzeżeniami o fotoradarach wymaga stałego połączenia z internetem i subskrypcji?</li></ul>
-        <details class="exit"><summary>Punkt wyjścia z lejka</summary><p>Rezygnuje — cena za wysoka wobec postrzeganej wartości</p></details>
-      </div>
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#7c5cff">
-          <span class="state-num">6</span> Porównywanie
-        </div>
-        <div class="truth">&#9830; Moment prawdy: Porównuje oferty i wybiera konkretny model</div>
-        <ul class="qs"><li>Czy komunikator drogowy ostrzegający o fotoradarach działa lepiej w mieście czy w trasie?</li><li>Jak wypada ostrzeganie o fotoradarach w komunikatorach z funkcją nawigacji w porównaniu do tych bez nawigacji?</li><li>Czy komunikator drogowy z ostrzeżeniami o kontroli prędkości zużywa dużo baterii i danych w telefonie?</li></ul>
-        <details class="exit"><summary>Punkt wyjścia z lejka</summary><p>Rezygnuje — za dużo opcji, odkłada decyzję</p></details>
-      </div>
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#7c5cff">
-          <span class="state-num">7</span> Wybór miejsca zakupu
-        </div>
-        
-        <ul class="qs"><li>Gdzie kupić komunikator drogowy z ostrzeżeniami o fotoradarach — w sklepie z elektroniką, online czy bezpośrednio u producenta?</li><li>Jak szybko dostanę komunikator drogowy zamówiony online i czy jest dostępny od razu?</li><li>Czy komunikator drogowy kupiony w Polsce ma gwarancję i wsparcie techniczne po polsku?</li><li>Jak sprawdzić przed zakupem, czy komunikator drogowy ma certyfikat i aktualną bazę fotoradarów?</li></ul>
-        <details class="exit"><summary>Punkt wyjścia z lejka</summary><p>Odkłada — za długi czas dostawy lub brak dostępności</p></details>
-      </div>
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#7c5cff">
-          <span class="state-num">8</span> Zakup
-        </div>
-        <div class="truth">&#9830; Moment prawdy: Finalizuje zakup i konfiguruje urządzenie</div>
-        <ul class="qs"><li>Co muszę skonfigurować w komunikatorze drogowym po zakupie, żeby ostrzeżenia o fotoradarach działały od razu?</li><li>Czy po zakupie komunikatora drogowego muszę wykupić subskrypcję, żeby mieć aktualne ostrzeżenia o kontroli prędkości?</li><li>Co zrobić, jeśli komunikator drogowy nie ostrzegł mnie przed fotoradarem — gdzie zgłosić problem i czy dostanę pomoc?</li></ul>
-        
-      </div>
-  </div>
-    
-  <div class="path" style="border-top:3px solid #16a34a">
-    <div class="path-hd">
-      <span class="tor-badge" style="background:#e7f6ec;color:#16a34a">T0</span>
-      <h2>Nieznana trasa: wakacje, góry, nowe auto — pierwszy raz tą drogą</h2>
-      <p class="trigger">&#8220;Jadę pierwszy raz nad morze, nie znam drogi — gdzie fotoradary, odcinkowe, jakie limity&#8221;</p>
-      <div class="bloker"><strong>Bloker:</strong> Czy to działa poza dobrze skomunikowanymi miastami? Czy baza jest aktualna?</div>
-    </div>
-    
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#16a34a">
-          <span class="state-num">2</span> Potrzeba / Impuls
-        </div>
-        <div class="truth">&#9830; Moment prawdy: Uświadamia sobie ryzyko (mandat, wypadek, nieznana trasa)</div>
-        <ul class="qs"><li>Czy da się jechać w nieznane miejsce i nie bać się, że przegapię fotoradar?</li><li>Co muszę mieć w telefonie, żeby wiedzieć o kontroli prędkości zanim na nią wjadę?</li><li>Czy w trasie nad morze zmiany limitów są wcześniej sygnalizowane w nawigacji?</li></ul>
-        
-      </div>
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#16a34a">
-          <span class="state-num">3</span> Rozpoznanie sytuacji
-        </div>
-        
-        <ul class="qs"><li>Jak dostawać ostrzeżenia o wypadkach i korkach zanim wjadę w zator?</li><li>Czy jest coś, co ostrzega o nagłym zatorze na mojej codziennej trasie?</li><li>Jak nie tracić godziny w korku przez wypadek, o którym nikt mnie nie poinformował?</li></ul>
-        <details class="exit"><summary>Punkt wyjścia z lejka</summary><p>Rezygnuje — decyduje, że bezpłatna aplikacja wystarczy</p></details>
-      </div>
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#16a34a">
-          <span class="state-num">4</span> Nauka kategorii
-        </div>
-        <div class="truth">&#9830; Moment prawdy: Rozumie czym komunikator różni się od zwykłej nawigacji</div>
-        <ul class="qs"><li>Co musi mieć komunikator drogowy, żeby ostrzec mnie o zamkniętej drodze zanim w nią wjadę?</li><li>Jak działa ostrzeganie o korkach i wypadkach w czasie rzeczywistym?</li><li>Czy w Polsce da się dostać alert o nagłym zamknięciu drogi na telefon?</li><li>Jak nie przegapić zmieniających się limitów prędkości w długim remoncie na A1?</li></ul>
-        <details class="exit"><summary>Punkt wyjścia z lejka</summary><p>Rezygnuje — nie widzi różnicy między komunikatorem a telefonem</p></details>
-      </div>
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#16a34a">
-          <span class="state-num">5</span> Preselekcja
-        </div>
-        
-        <ul class="qs"><li>Czy komunikator drogowy ostrzega o fotoradarach i odcinkowych pomiarach prędkości w całej Polsce?</li><li>Czy aplikacja nawigacyjna z ostrzeżeniami działa też offline, gdy nie mam zasięgu w górach?</li><li>Jak sprawdzić, czy ostrzeżenia o kontroli prędkości są aktualne i zgodne z przepisami?</li></ul>
-        <details class="exit"><summary>Punkt wyjścia z lejka</summary><p>Rezygnuje — cena za wysoka wobec postrzeganej wartości</p></details>
-      </div>
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#16a34a">
-          <span class="state-num">6</span> Porównywanie
-        </div>
-        <div class="truth">&#9830; Moment prawdy: Porównuje oferty i wybiera konkretny model</div>
-        <ul class="qs"><li>Czym się różnią komunikatory drogowe pod względem częstotliwości aktualizacji ostrzeżeń?</li><li>Które rozwiązanie lepiej ostrzega o nagłych zmianach limitów — nawigacja czy dedykowana aplikacja?</li><li>Jak porównać skuteczność ostrzeżeń o fotoradarach i odcinkowych między różnymi komunikatorami?</li></ul>
-        <details class="exit"><summary>Punkt wyjścia z lejka</summary><p>Rezygnuje — za dużo opcji, odkłada decyzję</p></details>
-      </div>
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#16a34a">
-          <span class="state-num">7</span> Wybór miejsca zakupu
-        </div>
-        
-        <ul class="qs"><li>Czy dostanę certyfikat lub gwarancję, że ostrzeżenia o fotoradarach są zgodne z polskim prawem?</li><li>Jak szybko po zakupie będę mógł korzystać z ostrzeżeń — czy dostawa jest natychmiastowa?</li><li>Czy jest wersja próbna, żeby sprawdzić ostrzeżenia przed wyjazdem nad morze?</li><li>Co jeśli komunikator zawiedzie i przegapię fotoradar — czy jest wsparcie i aktualizacje?</li></ul>
-        <details class="exit"><summary>Punkt wyjścia z lejka</summary><p>Odkłada — za długi czas dostawy lub brak dostępności</p></details>
-      </div>
-      <div class="state">
-        <div class="state-hd" style="border-left-color:#16a34a">
-          <span class="state-num">8</span> Zakup
-        </div>
-        <div class="truth">&#9830; Moment prawdy: Finalizuje zakup i konfiguruje urządzenie</div>
-        <ul class="qs"><li>Czy po zakupie muszę coś konfigurować, żeby ostrzeżenia o fotoradarach działały od razu?</li><li>Jak szybko dostanę dostęp do aplikacji lub urządzenia — czy zdążę przed wyjazdem?</li><li>Co jeśli po zakupie okaże się, że ostrzeżenia nie pokrywają trasy nad morze — mogę zwrócić?</li></ul>
-        
-      </div>
-  </div>
-  </div>
-  <p style="font-size:12px;color:#8b93a2;margin-top:28px">wygenerowane z danych · komunikatory_drogowe · tools/build_cs_skrocony.py · <strong>Pytania otwierające (discovery)</strong> oznaczone przy stanie 2 w każdej ścieżce</p>
-</div>
+<body><div class="wrap">
+<h1>Category Standard — wersja skrócona: dwie ścieżki rdzeniowe</h1>
+<p style="margin:4px 0 12px;font-size:13px;color:#59636e"><strong>cep_punkty_karne</strong> = rdzeń realny (siła #1) &nbsp;·&nbsp; <strong>cep_nieznana_trasa</strong> = rdzeń prewencyjny. Pełna wersja ma 16 ścieżek: <a href="cs_komunikatory_drogowe.html">cs_komunikatory_drogowe.html</a>.</p>
 
+<div style="margin:8px 0 14px"><a href="HUB_komunikatory_drogowe.html" style="color:var(--accent);font-size:13px;text-decoration:none;font-weight:600;border:1px solid var(--border);padding:4px 10px;border-radius:6px;display:inline-block">← Wróć do strony startowej</a></div>
+<div class="meta">GEO Category Standard · CS v5.7 · wygenerowany z WPIS_CS · komunikatory_drogowe</div>
+<p><em>Metodologia: METODOLOGIA_CS.md v6.1 · Budowa: 2026-09-15 · Fundament: FUND_komunikatory_drogowe.md · Format: WPIS_CS_sluchawki_anc_V2.md</em></p>
+<p><em>Komunikacja warstwowa: RDZEŃ wewnętrznie jawny (mandaty/punkty) · output = bezpieczeństwo drogowe / świadomość warunków · §9 ToV + §7 Forbidden pilnują granicy</em></p>
+<p><em>VoC: Ceneo (YANBOX GO + Yanosik GTR opinie) · Wykop.pl · forum wagaciezka.com · pokko.pl/prezenty · magazynauto.pl (test porównawczy)</em></p>
+
+<hr>
+
+<h2>0. Opis kategorii</h2>
+
+<p>Komunikatory drogowe to pokładowe urządzenia informujące kierowcę w czasie rzeczywistym o stacjonarnych fotoradarach, odcinkowych pomiarach prędkości i kontrolach drogowych — na podstawie stałej bazy GPS oraz zgłoszeń społeczności kierowców. W Polsce dominuje platforma Yanosik (największa baza community PL); w Europie Zachodniej silną pozycję ma OOONO oparte na sieci globalnej.</p>
+
+<p>Zakup następuje gdy kierowca chce utrzymać czysty rejestr punktów karnych lub ograniczyć ryzyko konsekwencji finansowych za przekroczenie prędkości. Kategoria łączy urządzenia z SIM (Yanbox RS, GTR, XS, GTM — model abonamentowy lub dożywotni) z urządzeniami bezabonamentowymi (Yanbox GO — bateria + Bluetooth + app) oraz pełnymi nawigatorami z ostrzeżeniami (TomTom).</p>
+
+<hr>
+
+<h2>0b. Problemy, które kategoria załatwia</h2>
+
+<blockquote><p>Dwie warstwy: <strong>Oficjalnie</strong> = jak marka/kategoria sama definiuje problem (język, którym wolno mówić w contencie; §9 ToV). <strong>Realnie</strong> = po co kupujący naprawdę kupuje (wiedza wewnętrzna — §7 Forbidden + §9 ToV pilnują granicy). Techniczne Friction Points (abonament, gniazdko 12V, 300 MB danych) → §0c. VoC: Ceneo (YANBOX GO + Yanosik GTR) · Wykop.pl · wagaciezka.com (zawodowcy) · pokko.pl · magazynauto.pl</p></blockquote>
+
+<h3>Problem główny — oficjalnie (język marki, cytaty z PDP)</h3>
+
+<p>Obie marki definiują problem jako <strong>brak bieżącej wiedzy o sytuacji na drodze</strong> — nie jako unikanie mandatu:</p>
+
+<p><strong>YANBOX (Yanosik):</strong> „YANBOX GO informuje o aktualnej sytuacji drogowej w czasie rzeczywistym, pomagając Ci jechać bezpieczniej i bardziej komfortowo." · „Ty skupiasz się na prowadzeniu samochodu, a YANBOX GO wspiera Cię informacjami o sytuacji na drodze." · „Chwila nieuwagi lub nietypowe zdarzenie na trasie mogą wiele zmienić."</p>
+<p>→ Źródło: yanbox.pl/yanbox-go (pobrane 2026-09-16)</p>
+
+<p><strong>YANBOX — blok bezpieczeństwa (sklep.yanosik.pl):</strong> „Co roku Policja odnotowuje tysiące wypadków drogowych i setki ofiar śmiertelnych. Szacuje się, że nawet 1 z 3 wypadków jest spowodowane przez rozproszenie uwagi kierującego. Możesz tego uniknąć. Bezpieczna podróż zaczyna się od wiedzy."</p>
+<p>→ Źródło: sklep.yanosik.pl/yanbox-go (pobrane 2026-09-16)</p>
+<blockquote><p>⚠️ Fraza „W 2025 roku Policja odnotowała 21 000 wypadków drogowych i 389 610 kolizji..." wskazana przez Tomka — NIE znaleziona na żadnej z przeszukanych stron (yanbox.pl, sklep.yanosik.pl, yanosik.pl). Zacytowany blok powyżej to closest match ze sklep.yanosik.pl/yanbox-go.</p></blockquote>
+
+<p><strong>OOONO:</strong> „Ostrzeżenia przed tysiącami fotoradarów i zagrożeń drogowych w Europie dzięki dużej społeczności OOONO." · „TWÓJ CO-DRIVER DO OSTRZEŻEŃ W CZASIE RZECZYWISTYM – za pomocą sygnałów dźwiękowych i wizualnych, które nie rozpraszają podczas jazdy."</p>
+<p>→ Źródło: Amazon.pl — OOONO CO-DRIVER No. 1 (PL listing, pobrane 2026-09-15)</p>
+
+<blockquote><p><strong>Zawoalowanie M1:</strong> YANBOX na PL unika słów „mandat" i „fotoradar" w nagłówkach — mówi „bezpieczna jazda / kontrole prędkości". OOONO PL mówi „ostrzega o fotoradarach" dosłownie. Warstwa realna poniżej; w contencie obowiązuje warstwa oficjalna.</p></blockquote>
+
+<h3>Problem główny — realnie (wiedza wewnętrzna · §9 ToV)</h3>
+
+<p><strong>Unikanie mandatu i utraty punktów karnych</strong> — dominująca motywacja zakupu w PL:</p>
+
+<table>
+<tr><th>Sygnał</th><th>Vol.</th><th>Źródło</th></tr>
+<tr><td>„punkty karne"</td><td>49 500/mies</td><td>data/wolumeny_motywacji_komunikatory_drogowe_pl.json</td></tr>
+<tr><td>„odcinkowy pomiar prędkości"</td><td>33 100/mies</td><td>jw.</td></tr>
+<tr><td>„mandat za prędkość"</td><td>5 400/mies</td><td>jw.</td></tr>
+<tr><td>„ile mam punktów karnych"</td><td>590/mies</td><td>jw.</td></tr>
+<tr><td>„Yanosik jeszcze nigdy mnie nie zawiódł"</td><td>—</td><td>Ceneo, YANBOX GO</td></tr>
+</table>
+
+<blockquote><p><strong>Granica komunikacyjna:</strong> warstwa realna = wiedza wewnętrzna do briefowania contentu. W treści publicznej obowiązuje język warstwy oficjalnej (§9 ToV). Marka nie może pisać „unikaj mandatu" bez ryzyka prawnego.</p></blockquote>
+
+<h3>Secondary: realne problemy kupującego</h3>
+
+<blockquote><p><strong>Dwa rodzaje problemów:</strong> (A) sytuacje drogowe — gdzie aplikacja też by pomogła, ale urządzenie jest lepsze; (B) problemy z używaniem tej funkcji w SOFCIE — Yanosik ma aplikację, Google Maps, Waze to realne substytuty; urządzenie dedykowane rozwiązuje ich braki.</p></blockquote>
+
+<table>
+<tr><th>Problem</th><th>Dowód / źródło</th><th>§0c</th></tr>
+<tr><td>Nie wiem co dzieje się przede mną — wypadek / korek zaraz przede mną</td><td>wolumeny: „wypadki dzisiaj" 3 600/mies · „wypadek s8" 6 600/mies; VoC: „Info o patrolu przyszło 500m przed nim przy 70 km/h" (Ceneo, YANBOX GO)</td><td>Trigger [L1]</td></tr>
+<tr><td>Nie wiem o aktualnych robotach i zmieniających się limitach prędkości</td><td>; wolumeny: „ograniczenia prędkości" 5 400/mies</td><td>Trigger [L1] → cep_remonty</td></tr>
+<tr><td>Nie wiem czy komunikator jest legalny w PL — obawa przed zakupem</td><td>Yanosik FAQ: „W Polsce za jego posiadanie i używanie nie można zostać ukaranym mandatem" (yanbox.pl/yanbox-go)</td><td>Category Stopper [L1]</td></tr>
+<tr><td>Jadę z dziećmi / nową trasą — chcę wiedzieć o zagrożeniach z wyprzedzeniem</td><td> · cep_nieznana_trasa [L1]; brak bezpośredniego wolumeny dla frazy — potrzebna weryfikacja wolumenu „podróż z dziećmi samochodem"</td><td>Trigger [L2]</td></tr>
+<tr><td><strong>[SOFT]</strong> Ostrzeżenia giną w gąszczu komunikatów i reklam aplikacji — trzeba patrzeć w ekran, żeby cokolwiek zobaczyć</td><td>hipoteza + VoC: „Po ostatniej aktualizacji to jest jakiś dramat" (Wykop, Yanosik app); „yanosik aplikacja" 6 600/mies (wolumeny 2026-09-16) sugeruje poszukiwanie alternatywy</td><td>Trigger [L2] → cep_telefon_zajety</td></tr>
+<tr><td><strong>[SOFT]</strong> Telefon zajęty nawigacją — dwie aplikacje naraz (nawigacja + alerty) nie grają; ostrzeżenia umykają</td><td>hipoteza — brak bezpośredniego VoC; logika UI: Google Maps nie ma wydzielonego kanału audio dla alertów</td><td>Trigger [L2] → cep_telefon_zajety</td></tr>
+<tr><td><strong>[SOFT]</strong> Zgłoszenie zdarzenia (wypadek, kontrola) wymaga dotknięcia ekranu w czasie jazdy; aplikacja usypiana przez system milknie w tle</td><td>hipoteza</td><td>Trigger [L2]</td></tr>
+<tr><td>Motocyklista: telefon w kieszeni kurtki, kask na głowie, rękawice na dłoniach — ostrzeżenia z aplikacji są niewidoczne i niesłyszalne</td><td>cecha kluczowa: 7/21 modeli ma tryb motocyklowy (ME 2026-09-15); bloker: wibracje + deszcz + montaż (baza danych CS/cep_motocykl.bloker_decyzji); brak bezpośredniego VoC — hipoteza</td><td>Trigger [L2] → cep_motocykl</td></tr>
+</table>
+
+<blockquote><p><strong>Przeniesione do §0c:</strong> model płatności (abonament SIM wygasł) → §0c Friction Points; brak gniazdka 12V / preferencja baterii → §0c cecha kluczowa; offline bezużyteczny dla zawodowców (300 MB/mies) → §0c Trigger cep_praca_w_trasie. <strong>Usunięte z Secondary:</strong> aplikacja nie wystarcza (rozwinięta jako item [SOFT] wyżej).</p></blockquote>
+
+<hr>
+
+<h2>0c. Dynamika Kategorii</h2>
+
+<h3>Siły wejścia do kategorii (16 sytuacji zakupowych — M1-M4 · R5 · 2026-09-15)</h3>
+
+<blockquote><p>Rdzeń: 4 motywacje M1–M4 (§0). Mandat = konsekwencja, nie oś. Pełna lista 59: <code>data/cep_max_komunikatory_drogowe.json</code></p></blockquote>
+
+<table>
+<tr><th>Pozycja wejścia</th><th>Motyw</th><th>[L]</th><th>Sytuacja</th></tr>
+<tr><td>Jadę pierwszy raz tą trasą — wakacje, nowe auto</td><td>M1+M4</td><td>[L1]</td><td>cep_nieznana_trasa (T0)</td></tr>
+<tr><td>Codziennie ta sama trasa — wypadek bez ostrzeżenia</td><td>M3+M2</td><td>[L1]</td><td>cep_codzienny_dojazd (T0)</td></tr>
+<tr><td>Gonię czas — lotnisko, odbiór dziecka</td><td>M3</td><td>[L1]</td><td>cep_spiesze_sie (T1)</td></tr>
+<tr><td>Remont za remontem, limit co kilometr inny</td><td>M4</td><td>[L1]</td><td>cep_remonty (T1)</td></tr>
+<tr><td>Widziałem karambol — chcę wiedzieć wcześniej</td><td>M2</td><td>[L1]</td><td>cep_po_zdarzeniu (T2)</td></tr>
+<tr><td>Jedziemy z dziećmi 500 km</td><td>M2+M3</td><td>[L1]</td><td>cep_trasa_z_dziecmi (T2)</td></tr>
+<tr><td>Majówka — korki i kontrole na każdej trasie</td><td>M1+M3</td><td>[L2]</td><td>cep_dlugi_weekend (T1)</td></tr>
+<tr><td>Sprawdziłem punkty — jestem przy limicie</td><td>M1</td><td>[L1]</td><td>cep_punkty_karne (T0b)</td></tr>
+<tr><td>Córka zdała prawko — kupuję jej zabezpieczenie</td><td>M2+M4</td><td>[L2]</td><td>cep_mlody_kierowca (T2)</td></tr>
+<tr><td>Auto służbowe i pół Polski codziennie</td><td>M3+M1</td><td>[L1]</td><td>cep_praca_w_trasie (T4)</td></tr>
+<tr><td>Co kupić tacie, który ciągle siedzi w aucie?</td><td>mieszany</td><td>[L2]</td><td>cep_prezent (T3)</td></tr>
+<tr><td>Telefon zajęty nawigacją — ostrzeżenia umykają</td><td>M2+M3</td><td>[L2]</td><td>cep_telefon_zajety (T2)</td></tr>
+<tr><td>Stary padł albo kończy się abonament</td><td>M3</td><td>[L1]</td><td>cep_stary_sprzet (T1)</td></tr>
+<tr><td>Jedziemy przez Austrię do Chorwacji</td><td>M1+M4</td><td>[L2]</td><td>cep_za_granice (T4)</td></tr>
+<tr><td>Wyciągam motocykl — chcę słyszeć w kasku</td><td>M2+M1</td><td>[L2]</td><td>cep_motocykl (T4)</td></tr>
+<tr><td>Nigdy nie miałem komunikatora — nie wiem od czego zacząć</td><td>M1+M4</td><td>[L2]</td><td>cep_pierwszy_raz_kupujacy (T1)</td></tr>
+</table>
+
+<blockquote><p><strong>Nota:</strong> „OOONO czy Yanosik" NIE jest Sytuacja — to stan mid-journey preselekcji (stan 5–6, Query Mutation Map).</p></blockquote>
+
+<h3>T2 Soczewki — skan 6 lensów (v6.1 obowiązkowy)</h3>
+
+<table>
+<tr><th>Soczewka</th><th>Sytuacja?</th><th>Uzasadnienie</th></tr>
+<tr><td><strong>Ekonomia</strong></td><td>Częściowo → cep_stary_sprzet</td><td>Pytanie o koszt TCO (urządzenie + lata abonamentu) — realny selektor</td></tr>
+<tr><td><strong>Nowoczesność</strong></td><td>TAK → cep_telefon_zajety</td><td>Dedykowane urządzenie vs aplikacja na telefon = upgrade mentalny; wyraźny Sytuacja</td></tr>
+<tr><td><strong>Środowisko</strong></td><td>NIE DOTYCZY</td><td>Brak związku — komunikator drogowy nie ma wymiaru ekologicznego</td></tr>
+<tr><td><strong>Społeczność</strong></td><td>Brak osobnego Sytuacja</td><td>Community Yanosik = cecha kategorii (cecha kluczowa), nie siła wejścia — kupujący nie wchodzi przez to</td></tr>
+<tr><td><strong>Zdrowie</strong></td><td>NIE DOTYCZY</td><td>Zdrowie fizyczne nie jest w grze; lęk prawny (punkty/prawo jazdy) ≠ zdrowie</td></tr>
+<tr><td><strong>FOMO</strong></td><td>Brak osobnego Sytuacja</td><td>„Nowy fotoradar pojawił się na mojej trasie" = wzmocnienie T0 rdzenia, nie odrębny Sytuacja</td></tr>
+</table>
+
+<blockquote><p>Ocena T2: 1 realna soczewka (Nowoczesność → cep_telefon_zajety). 4 soczewki NIE DOTYCZY z uzasadnieniem. Ekonomia = Friction Point, nie pełny Sytuacja.</p></blockquote>
+
+<h3>Friction Points (co spowalnia zakup)</h3>
+
+<table>
+<tr><th>Pozycja</th><th>[L1/L2]</th><th>Generuje →</th></tr>
+<tr><td>Niepewność modelu płatności (ile po roku?)</td><td>[L1]</td><td>DQ: „ile kosztuje Yanosik po abonamencie"</td></tr>
+<tr><td>Niepewność zasięgu zagranicznego</td><td>[L1]</td><td>DQ: „czy ooono działa w niemczech"</td></tr>
+<tr><td>Stopper aplikacyjny (telefon wystarczy?)</td><td>[L2]</td><td>DQ: „co daje yanbox vs aplikacja yanosik"</td></tr>
+<tr><td>Legalność w PL i za granicą ⚠️</td><td>[L1]</td><td>§7 Forbidden + §9 ToV</td></tr>
+</table>
+
+<h3>Wear & Consumption</h3>
+
+<table>
+<tr><th>Pozycja</th><th>[L1/L2]</th><th>Generuje →</th></tr>
+<tr><td>Abonament SIM (3/12/24/36/60 mies.) — cykl odnawialny</td><td>[L1]</td><td>DQ: „kiedy kończy się abonament yanbox"</td></tr>
+<tr><td>Bateria (YANBOX GO)</td><td>[L2]</td><td>cecha kluczowa: żywotność baterii</td></tr>
+<tr><td>Aktualizacje bazy GPS</td><td>[L1]</td><td>DQ: „czy baza fotoradarów się aktualizuje"</td></tr>
+</table>
+
+<h3>Category Stoppers</h3>
+
+<table>
+<tr><th>Pozycja</th><th>[L1/L2]</th><th>Generuje →</th></tr>
+<tr><td>Aplikacja Yanosik free = substytut</td><td>[L2]</td><td>DQ: „yanbox czy aplikacja yanosik na telefonie"</td></tr>
+<tr><td>Legalność (obawa że nielegalne) → §0b secondary</td><td>[L1]</td><td>§7 Forbidden Patterns narracja; źródło: §0b</td></tr>
+<tr><td>Cena > 400 zł — bariera jednorazowa</td><td>[L2]</td><td>§7 Ceny tierów</td></tr>
+</table>
+
+<hr>
+
+<h2>0d. Query Mutation Map</h2>
+
+<blockquote><p>Jak pytania mutują na ścieżce — od triggera do zakupu. Prostopadłe do macierzy touchpoint×pytanie.</p></blockquote>
+
+<table>
+<tr><th>Trigger (wejście)</th><th>Mutacja mid-journey</th><th>Stan preselekcji</th><th>Stan decyzji</th></tr>
+<tr><td>„chcę wiedzieć gdzie stoi kontrola"</td><td>„jak działa komunikator drogowy" → „który komunikator wybrać"</td><td><strong>OOONO czy Yanosik</strong> → „który ma większą bazę w Polsce"</td><td>„komunikator drogowy bez abonamentu cena"</td></tr>
+<tr><td>„sprawdziłem punkty karne"</td><td>„ile punktów zabiera radar odcinkowy" → „ostrzegacz punkty karne"</td><td>„który ma najwcześniejsze ostrzeżenie"</td><td>„komunikator drogowy niezawodny"</td></tr>
+<tr><td>„abonament wygasł"</td><td>„komunikator bez SIM" → „komunikator bateria"</td><td>„yanbox bateria jak długo"</td><td>„komunikator bez opłat miesięcznych kup"</td></tr>
+<tr><td>„mam aplikację, coś lepszego?"</td><td>„komunikator drogowy vs aplikacja telefon" → „dedykowane urządzenie fotoradar"</td><td>„czy warto kupić zamiast aplikacji"</td><td>„komunikator drogowy kup"</td></tr>
+<tr><td>„prezent dla kierowcy"</td><td>„gadżet samochodowy kierowca" → „ostrzegacz drogowy prezent"</td><td>„czy to praktyczny prezent"</td><td>„komunikator gotowy do użycia bez konfiguracji"</td></tr>
+</table>
+
+<blockquote><p><strong>STAN ooono_vs_yanosik (mid-journey, nie Sytuacja):</strong> fraza „OOONO czy Yanosik" pojawia się na etapie PRESELEKCJI (stan 5–6) jako typowa mutacja pytania, gdy klient jest już świadomy kategorii. To marker stanu, nie Sytuacja — kupujący NIE wchodzi do kategorii przez to pytanie. Treść do pokrycia: porównanie baz (PL vs EU), model płatności, prostota użycia.</p></blockquote>
+
+<hr>
+
+<h2>1. CEV — Category Emotional Valuation</h2>
+
+<h3>Profil emocjonalny kategorii</h3>
+
+<table>
+<tr><th>Cecha</th><th>Wartość (0–1)</th><th>Interpretacja</th></tr>
+<tr><td>Ryzyko</td><td>0.85</td><td>Wysokie — mandat, punkty, prawo jazdy w grze</td></tr>
+<tr><td>Lęk</td><td>0.80 · obiekt: <strong>prawny</strong></td><td>Lęk przed mandatem, stratą prawa jazdy, konsekwencjami prawnymi</td></tr>
+<tr><td>Widoczność</td><td>0.10</td><td>Bardzo niska — produkt ukryty w samochodzie, nikt nie wie</td></tr>
+<tr><td>Impuls</td><td>0.35</td><td>Umiarkowany — może być zakup po mandacie (nagły) lub planowany</td></tr>
+<tr><td>Sexy</td><td>0.05</td><td>Pomijalne — czysto funkcjonalny gadżet</td></tr>
+<tr><td>Aspiracja</td><td>0.10</td><td>Brak — nie buduje statusu ani tożsamości</td></tr>
+<tr><td>Tożsamość</td><td>0.15</td><td>Minimalna — wyjątek: „jestem świadomym kierowcą"</td></tr>
+<tr><td>Zmysłowość</td><td>0.05</td><td>Brak komponentu zmysłowego</td></tr>
+<tr><td>Pilność</td><td>0.70</td><td>Wysoka — szczególnie post-mandat lub gdy punkty blisko zera</td></tr>
+<tr><td>Moralność</td><td>0.45</td><td>Ambiwalencja — „pomagam sobie zachować ostrożność" vs „omijam kontrole"</td></tr>
+</table>
+
+<p><strong>Typ lęku: PRAWNY</strong> (ryzyko prawne i finansowe, nie zdrowotne ani społeczne)</p>
+
+<h3>Schwartz 8 wartości</h3>
+
+<table>
+<tr><th>Wartość</th><th>Waga</th><th>Przejaw w kategorii</th></tr>
+<tr><td>Bezpieczeństwo</td><td><strong>H</strong></td><td>Ochrona prawa jazdy, finansów, spokój podczas jazdy</td></tr>
+<tr><td>Przystosowanie</td><td><strong>H</strong></td><td>Przestrzeganie norm (paradoks: przez ostrzeżenie przed karą)</td></tr>
+<tr><td>Hedonizm</td><td>L</td><td>Brak komponentu przyjemności</td></tr>
+<tr><td>Stymulacja</td><td>L</td><td>Brak elementu ekscytacji</td></tr>
+<tr><td>Osiągnięcia</td><td>L</td><td>Brak ambicji osiągowej</td></tr>
+<tr><td>Życzliwość</td><td>L</td><td>Marginalne (community zgłoszenia = wspólnota kierowców)</td></tr>
+<tr><td>Władza</td><td>L</td><td>Brak</td></tr>
+<tr><td>Universalizm</td><td>L</td><td>Brak — produkty są selektywnie dostępne</td></tr>
+</table>
+
+<p><strong>Dominanty: Bezpieczeństwo (H) + Przystosowanie (H).</strong> Discovery Questions otwierają się przez lęk prawny, nie przyjemność ani status.</p>
+
+<h3>EDS — Emotional Driver Scan</h3>
+
+<table>
+<tr><th>Driver</th><th>Aktywny?</th><th>Uzasadnienie</th></tr>
+<tr><td>WSTYD</td><td>NIE</td><td>Niska widoczność produktu — nikt nie widzi</td></tr>
+<tr><td>POPIS</td><td>NIE</td><td>Nie jest to produkt do pokazywania</td></tr>
+<tr><td>PRZYNALEŻNOŚĆ</td><td>TAK</td><td>Sieć Yanosik community (zgłoszenia od kierowców) — „jesteśmy razem"</td></tr>
+<tr><td>POŻĄDANIE</td><td>NIE</td><td>Brak komponentu pożądania</td></tr>
+</table>
+
+<p><em>WINA i PILNOŚĆ wypadają z EDS (Stopper i cecha kategorii) per metodologia.</em></p>
+
+<hr>
+
+<h2>2. Sytuacja — Consumer Entry Points</h2>
+
+<blockquote><p>T0 RDZEŃ: CEP_FINAL_R4 (Tomek + <!-- STRATEG -->, 2026-09-15) · Rdzeń = 4 motywacje M1–M4 (§0) · 15 sytuacji + 1 T1 = 16 customer CEPs · Metoda: 5-tor (T0+T1+T2+T4) + gate --limit 22 + dedup Jaccard Mandat = KONSEKWENCJA (§9), nie oś. M2/M3/M4 wprost. M1 zawoalowane — „ostrzeżenia od kierowców". Pełna lista 59 Sytuacja (przed gate): <code>data/cep_max_komunikatory_drogowe.json</code></p></blockquote>
+
+<table>
+<tr><th>Sytuacja id</th><th>Label</th><th>Trigger (głos klienta)</th><th>Motyw</th><th>Typ</th><th>Tor</th></tr>
+<tr><td><strong>cep_nieznana_trasa</strong> ⭐ T0</td><td>Pierwszy raz tą trasą — wakacje, góry, nowe auto</td><td>„Jadę pierwszy raz nad morze, nie znam drogi — gdzie fotoradary, odcinkowe, jakie limity"</td><td>M1+M4</td><td>sytuacyjny</td><td>T0</td></tr>
+<tr><td><strong>cep_codzienny_dojazd</strong> T0</td><td>Ta sama droga do pracy — wypadki zdarzają się bez ostrzeżenia</td><td>„Codziennie tą samą obwodnicą, a raz w tygodniu stoję godzinę, bo wypadek i nikt nie ostrzegł"</td><td>M3+M2</td><td>sytuacyjny</td><td>T0</td></tr>
+<tr><td><strong>cep_spiesze_sie</strong> T1</td><td>Muszę zdążyć: lotnisko, spotkanie, odbiór dziecka</td><td>„Muszę być na lotnisku na 6 — nie mogę utknąć na zamkniętej drodze"</td><td>M3</td><td>sytuacyjny</td><td>T1</td></tr>
+<tr><td><strong>cep_remonty</strong> T1</td><td>Remont za remontem — limit co kilometr inny</td><td>„Na A1 remont za remontem, co kilometr inny limit, nie nadążam za znakami"</td><td>M4</td><td>sytuacyjny</td><td>T1</td></tr>
+<tr><td><strong>cep_po_zdarzeniu</strong> T2</td><td>Po stłuczce albo po widzianym karambolu</td><td>„Widziałem karambol za zakrętem — chcę wiedzieć wcześniej, co jest przed maską"</td><td>M2</td><td>sytuacyjny</td><td>T2</td></tr>
+<tr><td><strong>cep_trasa_z_dziecmi</strong> T2</td><td>Długa trasa z rodziną</td><td>„Jedziemy z dziećmi 500 km — chcę wiedzieć o wypadkach i przeszkodach, zanim na nie wjadę"</td><td>M2+M3</td><td>sytuacyjny</td><td>T2</td></tr>
+<tr><td><strong>cep_dlugi_weekend</strong> T1</td><td>Majówka, Wszystkich Świętych — korki i kontrole wszędzie</td><td>„Na majówkę korki na wylotówkach i kontrole na każdej trasie"</td><td>M1+M3</td><td>okazjonalny</td><td>T1</td></tr>
+<tr><td><strong>cep_punkty_karne</strong> T0b</td><td>Sprawdziłem punkty — jestem przy limicie</td><td>„Sprawdziłem ile mam punktów karnych — więcej nie mogę złapać"</td><td>M1</td><td>zdrowotny*</td><td>T0b</td></tr>
+<tr><td><strong>cep_mlody_kierowca</strong> T2</td><td>Dziecko zdało prawko — kupuje rodzic</td><td>„Córka zdała prawko i sama jeździ — chcę, żeby wiedziała, co się dzieje na drodze"</td><td>M2+M4</td><td>okazjonalny</td><td>T2</td></tr>
+<tr><td><strong>cep_praca_w_trasie</strong> T4</td><td>Nowa praca w terenie — cały dzień po obcych drogach</td><td>„Dostałem auto służbowe i rejon na pół Polski — codziennie inne drogi"</td><td>M3+M1</td><td>ekonomiczny</td><td>T4</td></tr>
+<tr><td><strong>cep_prezent</strong> T3</td><td>Prezent dla kogoś, kto dużo jeździ</td><td>„Co kupić tacie, który ciągle siedzi w aucie?"</td><td>mieszany</td><td>okazjonalny</td><td>T3</td></tr>
+<tr><td><strong>cep_telefon_zajety</strong> T2</td><td>Telefon robi za nawigację — ostrzeżenia w tle umykają</td><td>„Mam mapę na ekranie, a ostrzeżenia w tle mi nie gadają / telefon się grzeje"</td><td>M2+M3</td><td>sytuacyjny</td><td>T2</td></tr>
+<tr><td><strong>cep_stary_sprzet</strong> T1</td><td>Stary ostrzegacz padł albo kończy się abonament</td><td>„Kończy mi się abonament w starym urządzeniu, co dalej?"</td><td>M3</td><td>ekonomiczny</td><td>T1</td></tr>
+<tr><td><strong>cep_za_granice</strong> T4</td><td>Auto za granicę — inne limity, winiety, fotoradary</td><td>„Jedziemy przez Austrię do Chorwacji — inne limity, winiety, fotoradary"</td><td>M1+M4</td><td>sytuacyjny</td><td>T4</td></tr>
+<tr><td><strong>cep_motocykl</strong> T4</td><td>Start sezonu motocyklowego</td><td>„Wyciągam motocykl z garażu — chcę słyszeć ostrzeżenia w kasku"</td><td>M2+M1</td><td>sytuacyjny</td><td>T4</td></tr>
+<tr><td><strong>cep_pierwszy_raz_kupujacy</strong> T1 <em>(nowy)</em></td><td>Nie mam jeszcze żadnego komunikatora — pierwszy zakup</td><td>„Nigdy nie miałem komunikatora drogowego — nie wiem co wybrać ani czego szukać"</td><td>M1+M4</td><td>sytuacyjny</td><td>T1</td></tr>
+</table>
+
+<p>\* <code>zdrowotny</code> = najbliższy typ engine V5 (brak typu prawnego — dług D10 <code>BUILD_PLAN_ENGINE_V5.md</code>)</p>
+
+<hr>
+
+<h2>3. Discovery Questions — warstwa ① (canonical v6.1)</h2>
+
+<blockquote><p>Format: pytanie · <code>otwiera sytuację</code> · intencja Źródło: Sytuacja × trigger × VoC (głos konsumenta, nie specyfikacja). 2–4 per Sytuacja. KATEGORIALNE — pytania nie wymieniają konkretnych marek ani modeli (warstwa marka/porównanie = §13 warstwa ③) Pełne pole pytań: engine V5 — <code>dump_questions.py komunikatory_drogowe</code> → 452 pytań w <code>data/questions/komunikatory_drogowe.json</code></p></blockquote>
+
+<h3>Z Sytuacja: cep_nieznana_trasa (T0, M1+M4, sytuacyjny)</h3>
+<ol><li>Jak sprawdzić aktualne ograniczenia prędkości na trasie, którą jeszcze nie jechałem? <code>otwiera sytuację: cep_nieznana_trasa</code> · info</li><li>Czy komunikator drogowy ostrzega o fotoradarach na drogach, których nie znasz? <code>otwiera sytuację: cep_nieznana_trasa</code> · info</li><li>Komunikator drogowy na wakacje — co wybrać na nieznane trasy? <code>otwiera sytuację: cep_nieznana_trasa</code> · komercyjna</li></ol>
+
+<h3>Z Sytuacja: cep_codzienny_dojazd (T0, M3+M2, sytuacyjny)</h3>
+<ol><li>Czy komunikator drogowy ostrzega o wypadkach na stałej trasie do pracy? <code>otwiera sytuację: cep_codzienny_dojazd</code> · info</li><li>Jak dowiedzieć się o zamkniętej drodze na codziennej trasie, zanim w nią wjadę? <code>otwiera sytuację: cep_codzienny_dojazd</code> · info</li></ol>
+
+<h3>Z Sytuacja: cep_spiesze_sie (T1, M3, sytuacyjny)</h3>
+<ol><li>Jak uniknąć zamkniętej drogi gdy gonię czas? <code>otwiera sytuację: cep_spiesze_sie</code> · info</li><li>Czy komunikator drogowy podaje alternatywną trasę przy korku? <code>otwiera sytuację: cep_spiesze_sie</code> · info</li></ol>
+
+<h3>Z Sytuacja: cep_remonty (T1, M4, sytuacyjny)</h3>
+<ol><li>Jak nie przekroczyć prędkości przy remontach, gdzie znak zmienia się co kilometr? <code>otwiera sytuację: cep_remonty</code> · info</li><li>Czy komunikator ostrzega o tymczasowych ograniczeniach prędkości przy remontach? <code>otwiera sytuację: cep_remonty</code> · info</li></ol>
+
+<h3>Z Sytuacja: cep_po_zdarzeniu (T2, M2, sytuacyjny)</h3>
+<ol><li>Jak wiedzieć z wyprzedzeniem o wypadku na drodze, zanim się na niego najedzie? <code>otwiera sytuację: cep_po_zdarzeniu</code> · info</li><li>Czy komunikator drogowy informuje o zdarzeniach drogowych od innych kierowców? <code>otwiera sytuację: cep_po_zdarzeniu</code> · info</li></ol>
+
+<h3>Z Sytuacja: cep_trasa_z_dziecmi (T2, M2+M3, sytuacyjny)</h3>
+<ol><li>Jak zaplanować bezpieczną trasę z dziećmi unikając wypadków i korków? <code>otwiera sytuację: cep_trasa_z_dziecmi</code> · info</li><li>Czy komunikator drogowy pomaga przy długiej trasie z rodziną? <code>otwiera sytuację: cep_trasa_z_dziecmi</code> · info</li></ol>
+
+<h3>Z Sytuacja: cep_dlugi_weekend (T1, M1+M3, okazjonalny)</h3>
+<ol><li>Jak uniknąć korków i kontroli na majówkę — komunikator czy aplikacja? <code>otwiera sytuację: cep_dlugi_weekend</code> · komercyjna</li><li>Czy komunikator drogowy pomaga na długi weekend kiedy są największe natężenia ruchu? <code>otwiera sytuację: cep_dlugi_weekend</code> · info</li></ol>
+
+<h3>Z Sytuacja: cep_punkty_karne (T0b, M1, zdrowotny*)</h3>
+<ol><li>Ile punktów karnych pozostało — jak sprawdzić? <code>otwiera sytuację: cep_punkty_karne</code> · info</li><li>Co się dzieje po przekroczeniu limitu punktów karnych? <code>otwiera sytuację: cep_punkty_karne</code> · info</li><li>Czy komunikator drogowy pomaga utrzymać czyste konto punktów karnych? <code>otwiera sytuację: cep_punkty_karne</code> · info</li></ol>
+
+<h3>Z Sytuacja: cep_mlody_kierowca (T2, M2+M4, okazjonalny)</h3>
+<ol><li>Jaki komunikator drogowy wybrać dla kogoś, kto niedawno zdał prawo jazdy? <code>otwiera sytuację: cep_mlody_kierowca</code> · komercyjna</li><li>Czy komunikator drogowy jest dobry dla nowego kierowcy? <code>otwiera sytuację: cep_mlody_kierowca</code> · info</li></ol>
+
+<h3>Z Sytuacja: cep_praca_w_trasie (T4, M3+M1, ekonomiczny)</h3>
+<ol><li>Który komunikator drogowy sprawdza się przy codziennej jeździe zawodowej po nieznanych trasach? <code>otwiera sytuację: cep_praca_w_trasie</code> · komercyjna</li><li>Komunikator drogowy do auta służbowego — co wybrać? <code>otwiera sytuację: cep_praca_w_trasie</code> · komercyjna</li></ol>
+
+<h3>Z Sytuacja: cep_prezent (T3, okazjonalny)</h3>
+<ol><li>Co kupić w prezencie osobie, która dużo jeździ samochodem? <code>otwiera sytuację: cep_prezent</code> · info</li><li>Czy komunikator drogowy to dobry prezent dla kierowcy? <code>otwiera sytuację: cep_prezent</code> · info</li></ol>
+
+<h3>Z Sytuacja: cep_telefon_zajety (T2, forma, sytuacyjny)</h3>
+<ol><li>Czy warto kupić osobne urządzenie do ostrzegania zamiast aplikacji na telefon? <code>otwiera sytuację: cep_telefon_zajety</code> · komercyjna</li><li>Czym różni się komunikator drogowy od aplikacji Yanosik na telefonie? <code>otwiera sytuację: cep_telefon_zajety</code> · info</li></ol>
+
+<h3>Z Sytuacja: cep_stary_sprzet (T1, forma, ekonomiczny)</h3>
+<ol><li>Komunikator drogowy bez abonamentu — jakie są opcje po wygaśnięciu starego? <code>otwiera sytuację: cep_stary_sprzet</code> · info</li><li>Ile kosztuje komunikator drogowy bez miesięcznych opłat? <code>otwiera sytuację: cep_stary_sprzet</code> · komercyjna</li></ol>
+
+<h3>Z Sytuacja: cep_za_granice (T4, M1+M4, sytuacyjny)</h3>
+<ol><li>Czy komunikator drogowy działa za granicą — Niemcy, Austria, Europa? <code>otwiera sytuację: cep_za_granice</code> · info</li><li>Który komunikator ma najlepsze pokrycie ostrzeżeń poza Polską? <code>otwiera sytuację: cep_za_granice</code> · komercyjna</li></ol>
+
+<h3>Z Sytuacja: cep_motocykl (T4, M2+M1, sytuacyjny)</h3>
+<blockquote><p><strong>Nota R11:</strong> wolumeny wolumeny: „yanosik motocykl" 90/mies · „komunikator motocyklowy" 70/mies · „fotoradar motocykl" 50/mies — niskie bezwzględnie, ale segment wyraźnie różny od samochodowego (inne cecha kluczowa: słyszalność w kasku, montaż, odporność). <strong>Kandydat na subkategorię</strong> „komunikatory drogowe dla motocyklistów" — odrębna strona kategorii z własnymi cecha kluczowa. T4 utrzymane; rekomendacja do rozważenia w planowaniu contentu R12+.</p></blockquote>
+<ol><li>Komunikator drogowy dla motocyklisty — co wziąć pod uwagę? <code>otwiera sytuację: cep_motocykl</code> · info</li><li>Czy komunikator drogowy ma tryb dla motocyklisty? <code>otwiera sytuację: cep_motocykl</code> · info</li></ol>
+
+<h3>Z Sytuacja: cep_pierwszy_raz_kupujacy (T1, M1+M4, sytuacyjny)</h3>
+<ol><li>Do czego służy komunikator drogowy — czy to to samo co aplikacja Yanosik? <code>otwiera sytuację: cep_pierwszy_raz_kupujacy</code> · info</li><li>Czy warto kupić komunikator drogowy jeśli nigdy wcześniej nie miałem żadnego? <code>otwiera sytuację: cep_pierwszy_raz_kupujacy</code> · komercyjna</li></ol>
+
+<hr>
+
+<h2>4. cecha kluczowa — Key Category Features</h2>
+
+<blockquote><p>Źródło: ME HTML (filters) + FUND_komunikatory_drogowe.md + domain knowledge Tomka ≥15 wierszy (v6.1) · ⚠️ OOONO speci z domeny Tomka (D2 BUILD_PLAN)</p></blockquote>
+
+<table>
+<tr><th>Cecha</th><th>Zakres rynkowy</th><th>Tier</th><th>Uwaga</th></tr>
+<tr><td><strong>Model płatności</strong></td><td>Bez abonamentu / dożywotni SIM / abonament 3–60 mies.</td><td><strong>T1</strong></td><td>Shelf-axis #1 (Tomek) · cecha kluczowa buyer decision</td></tr>
+<tr><td><strong>Zasilanie</strong></td><td>Bateria wewnętrzna (GO) / gniazdo 12V zapalniczki</td><td><strong>T1</strong></td><td>Dzieli kategorię na dwa typy użycia</td></tr>
+<tr><td><strong>Baza ostrzeżeń</strong></td><td>Polska community (Yanosik, największa PL) / Europa (OOONO, TomTom)</td><td><strong>T1</strong></td><td>Kluczowy dla Sytuacja cep_za_granice</td></tr>
+<tr><td><strong>Łączność z telefonem</strong></td><td>Bluetooth + dedykowana app (GO) / brak-autonomiczne SIM</td><td><strong>T1</strong></td><td>GO = Bluetooth + Yanosik GO app (bez reklam)</td></tr>
+<tr><td><strong>Sygnalizacja ostrzeżenia</strong></td><td>Dźwięk + LED bar / dźwięk + wyświetlacz / dźwięk only</td><td><strong>T1</strong></td><td>LED bar = YANBOX GO</td></tr>
+<tr><td><strong>Urządzenie vs aplikacja</strong></td><td>Dedykowane urządzenie / aplikacja na telefon (Yanosik, Google Maps, Waze)</td><td><strong>T1</strong></td><td>Oś substytucji — §0b Secondary [SOFT]; urządzenie = obsługa bez patrzenia w ekran, praca w tle, jedno zgłoszenie jednym ruchem</td></tr>
+<tr><td><strong>Cena urządzenia</strong></td><td>149–769 zł (dane ME 2026-09-15)</td><td><strong>T1</strong></td><td>GO ≈ 289 zł (ME), premium pack TomTom ≈ 769 zł</td></tr>
+<tr><td><strong>Cena abonamentu</strong></td><td>0 zł (GO/RS lifetime) / abonament 3–60 mies.</td><td><strong>T1</strong></td><td>TCO kluczowy przy długim użytkowaniu</td></tr>
+<tr><td><strong>Marka / platforma</strong></td><td>Yanosik (19 SKU, PL leader) / TomTom (2 SKU) / OOONO (poza ME)</td><td><strong>T1</strong></td></tr>
+<tr><td><strong>Wyświetlacz</strong></td><td>Tak (9 modeli) / Nie (11 modeli)</td><td><strong>T2</strong></td><td>ME filter</td></tr>
+<tr><td><strong>Podświetlane przyciski</strong></td><td>Tak (15 modeli) / Nie (6 modeli)</td><td><strong>T2</strong></td><td>ME filter</td></tr>
+<tr><td><strong>Tryb motocyklowy</strong></td><td>Tak (7 modeli) / Nie (14 modeli) — 2/3 rynku NIE ma tego trybu</td><td><strong>T2</strong></td><td>Oś różnicująca dla cep_motocykl; 7/21 modeli = realny niszowy segment; kandydat na subkategorię (inne cecha kluczowa: słyszalność w kasku, montaż, odporność na wibracje/deszcz)</td></tr>
+<tr><td><strong>Asystent parkingowy</strong></td><td>Tak (7 modeli) / Nie (13 modeli)</td><td><strong>T2</strong></td><td>ME filter</td></tr>
+<tr><td><strong>Automatyczne uruchamianie</strong></td><td>Tak (GO: auto-start przy ruchu) / manualne</td><td><strong>T2</strong></td></tr>
+<tr><td><strong>Aktualizacja bazy GPS</strong></td><td>Automatyczna przez SIM / przez WiFi/Bluetooth</td><td><strong>T2</strong></td></tr>
+<tr><td><strong>Zakres ostrzeżeń</strong></td><td>Fotoradary stałe + odcinkowe + mobile + policja + community</td><td><strong>T3</strong></td></tr>
+<tr><td><strong>Ostrzeżenia real-time</strong></td><td>Tak (Yanosik, OOONO community) / Nie (TomTom offline maps)</td><td><strong>T3</strong></td></tr>
+<tr><td><strong>Integracja nawigacyjna</strong></td><td>Tak (TomTom: pełna nawigacja GPS) / Nie (Yanbox: tylko ostrzeżenia)</td><td><strong>T3</strong></td></tr>
+<tr><td><strong>Zasięg zagraniczny</strong></td><td>Globalny (OOONO) / EU (TomTom) / PL-dominant (Yanosik)</td><td><strong>T2</strong></td><td>⚠️ dane OOONO z domeny Tomka</td></tr>
+</table>
+
+<hr>
+
+<h2>5. Typowy Produkt — Konwencje kategorii</h2>
+
+<h3>Cechy standardowe (oczekiwane przez kupującego)</h3>
+
+<table>
+<tr><th>Cecha</th><th>Norma rynkowa</th><th>Red flag</th></tr>
+<tr><td>Ostrzeżenie przed fotoradarem stałym</td><td>✅ standard we wszystkich</td><td>Brak = wychodzi z kategorii</td></tr>
+<tr><td>Ostrzeżenie przed fotoradarem odcinkowym</td><td>✅ standard</td><td>Tylko stałe = limitujące</td></tr>
+<tr><td>Aktualizacje bazy przez SIM lub WiFi</td><td>✅ oczekiwane</td><td>Ręczne aktualizacje przez PC = stara generacja</td></tr>
+<tr><td>Ostrzeżenia społecznościowe (community)</td><td>✅ w Yanosik/OOONO</td><td>Brak = tylko GPS, nie real-time</td></tr>
+<tr><td>Czas ostrzeżenia</td><td>≥ 300–500 m przed punktem</td><td>< 200 m = za późno przy 100 km/h</td></tr>
+<tr><td>Zasilanie</td><td>SIM lub bateria — bez kabla USB do stałej pracy</td><td>USB-only = problem w starszych samochodach</td></tr>
+</table>
+
+<h3>Typowy produkt (model Yanbox GTR 12 mies. jako standard)</h3>
+
+<p>YANBOX GTR to komunikator z SIM i abonamentem rocznym — mid-tier, autonomiczny (bez telefonu), zasilanie z gniazda 12V, ostrzeżenia głosowe + wizualne, tryb motocyklowy w wersji GTR. Baza Yanosik PL + podstawowa mapa fotoradarów stałych Europy.</p>
+
+<hr>
+
+<h2>6. Tier Specs</h2>
+
+<table>
+<tr><th>Tier</th><th>Opis</th><th>Modele (przykłady)</th><th>Kluczowe cechy</th></tr>
+<tr><td><strong>T1: Budżet</strong></td><td>Urządzenie podstawowe / bez abonamentu</td><td>YANBOX GO, OOONO CO-DRIVER</td><td>bateria / Bluetooth / bez sub / przenośne</td></tr>
+<tr><td><strong>T2: Średni</strong></td><td>SIM autonomiczny, krótki abonament</td><td>YANBOX XS 12 mies., GTR 12 mies., GTM</td><td>SIM / 12V / wyświetlacz lub LED / 12 mies. sub</td></tr>
+<tr><td><strong>T3: Premium</strong></td><td>Długi/dożywotni abonament lub pełna nawigacja</td><td>YANBOX RS (dożywotni), GTR 60 mies., TomTom Premium</td><td>SIM dożywotni / full nawigacja / pełny zasięg EU</td></tr>
+</table>
+
+<hr>
+
+<h2>7. Tier Pricing — PLN, Polska 2026-09</h2>
+
+<blockquote><p>Źródło: ME HTML (2026-09-15) · ⚠️ Ceny OOONO z domeny Tomka (D2)</p></blockquote>
+
+<table>
+<tr><th>Tier</th><th>Cena urządzenia</th><th>Abonament</th><th>TCO 1 rok</th><th>Co dostajesz</th></tr>
+<tr><td><strong>T1 Budżet</strong></td><td>~149–289 zł</td><td>0 zł</td><td>~149–289 zł</td><td>YANBOX GO (bateria, Bluetooth, bez sub, LED bar) lub OOONO (~200 zł ⚠️)</td></tr>
+<tr><td><strong>T2 Średni</strong></td><td>~250–350 zł + sub 12 mies.</td><td>~150–200 zł/rok (szac.)</td><td>~400–550 zł</td><td>YANBOX XS/GTR/GTM — SIM autonomiczny, wyświetlacz, 12V</td></tr>
+<tr><td><strong>T3 Premium</strong></td><td>~400–500 zł (RS) lub ~700–770 zł (TomTom Premium)</td><td>0 zł (RS: dożywotni)</td><td>~400–500 zł jednorazowo</td><td>YANBOX RS (dożywotni SIM, niskie TCO długoterm.) lub TomTom (pełna nawigacja EU)</td></tr>
+</table>
+
+<p><strong>Oś zakupowa:</strong> klient decyduje najpierw MODEL PŁATNOŚCI, potem cenę urządzenia. TCO 3 lata często korzystniejszy dla RS niż GTR 36.</p>
+
+<hr>
+
+<h2>8. Consumer Decision Tree</h2>
+
+<blockquote><p>⚠️ Sekcja generowana przez <code>python3 decision_tree_v4.py komunikatory_drogowe --md</code> Poniżej wersja ręczna — zostanie nadpisana przez engine</p></blockquote>
+
+<p><strong>Q1. Czy potrzebujesz urządzenia które działa bez telefonu?</strong></p>
+<p>→ TAK: YANBOX RS / GTR / XS / GTM (SIM autonomiczny)</p>
+<p>→ NIE: YANBOX GO (Bluetooth + app) lub OOONO (Bluetooth)</p>
+
+<p><strong>Q2. Jak długo planujesz używać?</strong></p>
+<p>→ Długoterminowo (3+ lata): YANBOX RS (dożywotni) — najniższe TCO</p>
+<p>→ Roczna umowa: YANBOX GTR 12 mies. / XS 12 mies.</p>
+<p>→ Krótko/próba: YANBOX XS 3 mies. lub YANBOX GO (bez sub)</p>
+
+<p><strong>Q3. Czy jeździsz za granicę często?</strong></p>
+<p>→ TAK (Europa Zachodnia): OOONO CO-DRIVER (globalny zasięg)</p>
+<p>→ NIE / głównie PL: YANBOX (lider bazy PL)</p>
+
+<p><strong>Q4. Czy masz motocykl?</strong></p>
+<p>→ TAK: YANBOX GTR (tryb motocyklowy) lub XS (sprawdź spec)</p>
+<p>→ NIE: dowolny model</p>
+
+<p><strong>Q5. Czy chcesz nawigację GPS oprócz ostrzeżeń?</strong></p>
+<p>→ TAK: TomTom Tom lub TomTom Premium Pack</p>
+<p>→ NIE: YANBOX lub OOONO</p>
+
+<hr>
+
+<h2>9. Forbidden Patterns</h2>
+
+<blockquote><p>ZAWOALOWANA KOMUNIKACJA: RDZEŃ (unikanie mandatów/punktów) = warstwa WEWNĘTRZNA. Output publiczny = bezpieczeństwo drogowe, świadomość warunków, informacje o sytuacji. AI rozumie eufemizmy — §9 pilnuje granicy.</p></blockquote>
+
+<h3>Zakazane → Poprawne</h3>
+
+<table>
+<tr><th>❌ Zakazane (zachęca do łamania prawa / unikania kontroli)</th><th>✅ Poprawne (świadomość / bezpieczeństwo)</th></tr>
+<tr><td>„Unikaj mandatów dzięki Yanosikowi"</td><td>„Miej aktualną informację o warunkach drogowych i dostosuj prędkość w odpowiednim miejscu"</td></tr>
+<tr><td>„Omiń kontrolę prędkości"</td><td>„Otrzymaj ostrzeżenie z wyprzedzeniem i spokojnie dostosuj prędkość"</td></tr>
+<tr><td>„Nie płać mandatów"</td><td>„Jeź świadomie — wiedz gdzie są pomiary, by nie przekroczyć przez nieuwagę"</td></tr>
+<tr><td>„Radar detektor" / „wykrywacz radarów"</td><td>„Komunikator drogowy z bazą punktów pomiarowych"</td></tr>
+<tr><td>„Jak nie dostać mandatu za prędkość"</td><td>„Jak utrzymać prędkość zgodną z ograniczeniami w strefach kontroli"</td></tr>
+<tr><td>„Fotoradar gdzie jest teraz" (bezpośrednie omijanie)</td><td>„Aktualna informacja o stałych i mobilnych punktach pomiaru"</td></tr>
+<tr><td>„Punkty karne jak uniknąć"</td><td>„Jak jeździć świadomie z pełną informacją o infrastrukturze drogowej"</td></tr>
+</table>
+
+<h3>Eufemizmy które AI rozumie — używaj OSTROŻNIE w kontekście edukacyjnym</h3>
+<p>(AI łączy je z intencją użytkownika — nie eliminuj, ale umieszczaj w kontekście bezpieczeństwa)</p>
+<ul><li>fotoradar — OK w edukacyjnym kontekście (co to jest, jak działa)</li><li>kontrola prędkości — OK jako fakt drogowy, nie jako "jak ominąć"</li><li>zgłoszenia kierowców — OK (community feature)</li><li>punkty karne — OK jako fakt prawny</li></ul>
+
+<h3>Reguły językowe per motywacja (M1-M4 · R5)</h3>
+
+<blockquote><p>M1 (kontrole/fotoradary) = komunikacja <strong>zawoalowana</strong> — rdzeń wewnętrznie jawny, output = świadomość/bezpieczeństwo. M2/M3/M4 = komunikacja <strong>wprost</strong> — opisujesz sytuację, nie jej konsekwencje prawne.</p></blockquote>
+
+<table>
+<tr><th>Motyw</th><th>Dozwolone wprost</th><th>Zakazane</th></tr>
+<tr><td><strong>M1 — kontrole</strong></td><td>„ostrzeżenia o fotoradarach i punktach pomiarowych od kierowców" · „aktualna informacja o infrastrukturze drogowej"</td><td>„unikaj mandatu" · „gdzie stoi policja" (imperatyw) · „omiń kontrolę"</td></tr>
+<tr><td><strong>M2 — zdarzenia</strong></td><td>„ostrzeżenie o wypadku przed sobą" · „informacja o karambolu 3 km dalej" · „zdarzenia drogowe w czasie rzeczywistym"</td><td>brak ograniczeń — M2 jest bezpieczne komunikacyjnie</td></tr>
+<tr><td><strong>M3 — czas/korki</strong></td><td>„informacja o korkach i zamkniętych trasach" · „szybszy objazd" · „nie utkniesz przez niewiedzę"</td><td>brak ograniczeń — M3 jest bezpieczne komunikacyjnie</td></tr>
+<tr><td><strong>M4 — prędkość/limity</strong></td><td>„ostrzeżenie o zmiennych limitach w strefach robót" · „tymczasowe ograniczenia prędkości na bieżąco"</td><td>„jak nie wziąć mandatu za prędkość" · połączone z M1 bez bezpiecznego kontekstu</td></tr>
+</table>
+
+<p><strong>Praktyczna zasada:</strong> gdy Sytuacja należy do M1 (lub M1 jest częścią motywy) — używaj M2/M3/M4 jako głównego języka wyjściowego. M1 = kontekst decyzji, nie headline copy.</p>
+
+<hr>
+
+<h2>10. Ścieżki percepcji (v6.1 — format Ścieżka, numeracja 2–10)</h2>
+
+<h3>Ścieżka A — <code>cep_nieznana_trasa</code> · T0 RDZEŃ</h3>
+<p><strong>Persona:</strong> Kierowca. Trigger: Jadę pierwszy raz nad morze, nie znam drogi — gdzie fotoradary, odcinkowe, jakie limity</p>
+
+<p><!-- J10:START:cep_nieznana_trasa --></p>
+<table>
+<tr><th>Stan</th><th>Nazwa</th><th>Pytania w głowie</th><th>Intencja</th><th>Emocja</th><th>Touchpointy</th><th>Format</th><th>MoT</th></tr>
+<tr><td>2</td><td>Potrzeba/impuls</td><td>„Czy da się jechać w nieznane miejsce i nie bać się, że przegapię fotoradar?“ / „Co muszę mieć w telefonie, żeby wiedzieć o kontroli prędkości zanim na nią wjadę?“</td><td>informacyjna</td><td>pilność wejścia (Model M)</td><td>ai_overview, paa, serp_organic</td><td>akapit_cytowalny</td></tr>
+<tr><td>3</td><td>Rozpoznanie Sytuacja</td><td>„Czym różni się ostrzeganie o fotoradarach w aplikacji od zwykłej nawigacji?“ / „Czy komunikat o kontroli prędkości pojawia się przed czy po minięciu znaku?“</td><td>informacyjna</td><td>—</td><td>ai_overview, paa, serp_organic</td><td>akapit_cytowalny</td></tr>
+<tr><td>4</td><td>Nauka kategorii</td><td>„Jakie są rodzaje ostrzeżeń drogowych: fotoradary, odcinkowe, kontrole, wypadki?“ / „Czy aplikacja ostrzegająca o radarach działa w tle i czyta komunikaty na głos?“</td><td>komercyjna</td><td>koszt błędu (Model M)</td><td>ai_overview, paa, serp_organic</td><td>video_long</td><td>⭐</td></tr>
+<tr><td>5</td><td>Preselekcja</td><td>„Czy lepiej wybrać aplikację z abonamentem czy darmową z reklamami?“ / „Które aplikacje ostrzegają o fotoradarach i policji bez opóźnień?“</td><td>komercyjna</td><td>koszt błędu (Model M)</td><td>ai_overview, paa, serp_organic</td><td>video_long</td></tr>
+<tr><td>6</td><td>Porownywanie</td><td>„Jak porównać częstotliwość fałszywych alarmów między aplikacjami?“ / „Czy lepiej mieć aplikację tylko na telefon czy zintegrowaną z Android Auto?“</td><td>komercyjna</td><td>dopasowanie do siebie (Model M)</td><td>ai_overview, paa, serp_organic</td><td>tabela_parametrow</td></tr>
+<tr><td>7</td><td>Wybor sklepu/sposobu zakupu</td><td>„Czy mogę kupić subskrypcję na miesiąc i anulować przed wyjazdem?“ / „Czy jest gwarancja zwrotu, jeśli ostrzeżenia nie działają w mojej trasie?“</td><td>transakcyjna</td><td>koszt błędu (Model M)</td><td>ai_overview, paa, serp_shopping</td><td>faq_item</td><td>⭐</td></tr>
+<tr><td>8</td><td>Zakup</td><td>„Co jeśli aplikacja nie pokaże fotoradaru — czy mogę zgłosić reklamację?“ / „Czy po opłaceniu abonamentu ostrzeżenia włączą się od razu?“</td><td>transakcyjna</td><td>co pomyślą inni (Model M)</td><td>ai_overview, paa, pdp_sklep</td><td>faq_item</td></tr>
+<tr><td>9</td><td>Uzywa</td><td>— (push: treść z touchpointów)</td><td>—</td><td>—</td><td>serp_video, brand_yt, brand_support</td><td>—</td></tr>
+<tr><td>10</td><td>Kupuje ponownie</td><td>— (push: treść z touchpointów)</td><td>—</td><td>—</td><td>brand_support, mail_repurchase, insert_opak</td><td>—</td><td>⭐</td></tr>
+</table>
+
+<h4>Momenty prawdy</h4>
+<ul><li><strong>Stan 4 — Nauka kategorii</strong>: 6 pytań w polu</li><li><strong>Stan 7 — Wybor sklepu/sposobu zakupu</strong>: 6 pytań w polu</li><li><strong>Stan 10 — Kupuje ponownie</strong>: push — brak pytań, treść z touchpointów</li></ul>
+
+<h4>Szanse per stan</h4>
+<ul><li><strong>Stan 2 — Potrzeba/impuls</strong>: 4 pytań · 6 owned touchpointów</li><li><strong>Stan 3 — Rozpoznanie Sytuacja</strong>: 3 pytań · 5 owned touchpointów</li><li><strong>Stan 4 — Nauka kategorii</strong>: 6 pytań · 4 owned touchpointów</li><li><strong>Stan 5 — Preselekcja</strong>: 4 pytań · 9 owned touchpointów</li><li><strong>Stan 6 — Porownywanie</strong>: 3 pytań · 11 owned touchpointów</li><li><strong>Stan 7 — Wybor sklepu/sposobu zakupu</strong>: 6 pytań · 10 owned touchpointów</li><li><strong>Stan 8 — Zakup</strong>: 3 pytań · 5 owned touchpointów</li><li>Luki bez pokrycia touchpointem: 33</li></ul>
+
+<details>
+<summary style="cursor:pointer;font-size:13px;font-weight:600;color:#59636e;margin:10px 0 4px;user-select:none">Kto tu wypada i dlaczego</summary>
+<ul><li>Stan 2 · <code>assistant_ai</code> (oddane marce)</li><li>Stan 2 · <code>brand_social</code> (oddane marce)</li><li>Stan 2 · <code>polecenie</code> (nie produkujemy)</li><li>Stan 2 · <code>tiktok_search</code> (nie produkujemy)</li><li>Stan 2 · <code>tiktok_fyp</code> (nie produkujemy)</li><li>Stan 2 · <code>ugc_klienci</code> (nie produkujemy)</li><li>Stan 3 · <code>assistant_ai</code> (oddane marce)</li><li>Stan 3 · <code>brand_social</code> (oddane marce)</li><li>Stan 3 · <code>polecenie</code> (nie produkujemy)</li><li>Stan 3 · <code>tiktok_search</code> (nie produkujemy)</li><li>Stan 3 · <code>ugc_klienci</code> (nie produkujemy)</li><li>Stan 4 · <code>assistant_ai</code> (oddane marce)</li><li>Stan 4 · <code>serp_video</code> (oddane marce)</li><li>Stan 4 · <code>discussions</code> (nie produkujemy)</li><li>Stan 4 · <code>brand_pdp</code> (oddane marce)</li><li>Stan 4 · <code>brand_yt</code> (oddane marce)</li><li>Stan 4 · <code>polecenie</code> (nie produkujemy)</li><li>Stan 4 · <code>yt_long</code> (oddane marce)</li><li>Stan 5 · <code>assistant_ai</code> (oddane marce)</li><li>Stan 5 · <code>serp_video</code> (oddane marce)</li><li>Stan 5 · <code>discussions</code> (nie produkujemy)</li><li>Stan 5 · <code>brand_pdp</code> (oddane marce)</li><li>Stan 5 · <code>brand_yt</code> (oddane marce)</li><li>Stan 5 · <code>yt_long</code> (oddane marce)</li><li>Stan 6 · <code>assistant_ai</code> (oddane marce)</li><li>Stan 6 · <code>serp_video</code> (oddane marce)</li><li>Stan 6 · <code>discussions</code> (nie produkujemy)</li><li>Stan 6 · <code>brand_pdp</code> (oddane marce)</li><li>Stan 6 · <code>brand_yt</code> (oddane marce)</li><li>Stan 6 · <code>stacjonarny</code> (nie produkujemy)</li><li>Stan 6 · <code>tiktok_search</code> (nie produkujemy)</li><li>Stan 6 · <code>yt_long</code> (oddane marce)</li><li>Stan 7 · <code>brand_pdp</code> (oddane marce)</li><li>Stan 7 · <code>stacjonarny</code> (nie produkujemy)</li><li>Stan 8 · <code>brand_pdp</code> (oddane marce)</li><li>Stan 9 · <code>serp_video</code> (oddane marce)</li><li>Stan 9 · <code>brand_yt</code> (oddane marce)</li><li>Stan 9 · <code>brand_support</code> (oddane marce)</li><li>Stan 9 · <code>brand_manual</code> (oddane marce)</li><li>Stan 9 · <code>serwis</code> (oddane marce)</li><li>Stan 9 · <code>yt_komentarze</code> (nie produkujemy)</li><li>Stan 9 · <code>ugc_klienci</code> (nie produkujemy)</li><li>Stan 10 · <code>brand_support</code> (oddane marce)</li><li>Stan 10 · <code>yt_komentarze</code> (nie produkujemy)</li></ul>
+</details>
+<p><!-- J10:END:cep_nieznana_trasa --></p>
+<p><strong>Długość procesu:</strong> 1–14 dni (sytuacyjny)</p>
+
+<hr>
+
+<h3>Ścieżka H — <code>cep_punkty_karne</code> · T0b</h3>
+<p><strong>Persona:</strong> Kierowca. Trigger: Sprawdziłem ile mam punktów karnych — więcej nie mogę złapać</p>
+
+<p><!-- J10:START:cep_punkty_karne --></p>
+<table>
+<tr><th>Stan</th><th>Nazwa</th><th>Pytania w głowie</th><th>Intencja</th><th>Emocja</th><th>Touchpointy</th><th>Format</th><th>MoT</th></tr>
+<tr><td>2</td><td>Potrzeba/impuls</td><td>„Ile punktów karnych mogę jeszcze zebrać, zanim stracę prawo jazdy?“ / „Czy da się uniknąć mandatu z fotoradaru, jeśli mam już dużo punktów?“</td><td>informacyjna</td><td>pilność wejścia (Model M)</td><td>ai_overview, paa, serp_organic</td><td>akapit_cytowalny</td></tr>
+<tr><td>3</td><td>Rozpoznanie Sytuacja</td><td>„Czy w Polsce legalne jest urządzenie ostrzegające o fotoradarach?“ / „Jak działa antyradar a jak aplikacja ostrzegająca o kontrolach drogowych?“</td><td>informacyjna</td><td>—</td><td>ai_overview, paa, serp_organic</td><td>akapit_cytowalny</td></tr>
+<tr><td>4</td><td>Nauka kategorii</td><td>„Jak często aktualizowana jest baza fotoradarów w takich urządzeniach?“ / „Jak działa aplikacja ostrzegająca o fotoradarach i policji?“</td><td>komercyjna</td><td>koszt błędu (Model M)</td><td>ai_overview, paa, serp_organic</td><td>video_long</td><td>⭐</td></tr>
+<tr><td>5</td><td>Preselekcja</td><td>„Czy lepiej wybrać aplikację czy fizyczne urządzenie ostrzegające?“ / „Na co zwrócić uwagę przy wyborze urządzenia ostrzegającego o kontrolach drogowych?“</td><td>komercyjna</td><td>koszt błędu (Model M)</td><td>ai_overview, paa, serp_organic</td><td>tabela_parametrow</td></tr>
+<tr><td>6</td><td>Porownywanie</td><td>„Co się stanie, jeśli urządzenie nie ostrzeże mnie na czas przed fotoradarem?“ / „Czy urządzenie ostrzegawcze jest legalne i nie grozi za nie mandat?“</td><td>komercyjna</td><td>dopasowanie do siebie (Model M)</td><td>ai_overview, paa, serp_organic</td><td>tabela_parametrow</td></tr>
+<tr><td>7</td><td>Wybor sklepu/sposobu zakupu</td><td>„Jaka jest różnica między zakupem online a w sklepie stacjonarnym?“ / „Ile kosztuje roczny abonament w aplikacjach ostrzegających o kontrolach?“</td><td>transakcyjna</td><td>koszt błędu (Model M)</td><td>ai_overview, paa, serp_shopping</td><td>lista_bullet</td><td>⭐</td></tr>
+<tr><td>8</td><td>Zakup</td><td>„Co zrobić, jeśli urządzenie ostrzegawcze nie działa po zakupie?“ / „Czy po zakupie urządzenie działa od razu, czy trzeba je konfigurować?“</td><td>transakcyjna</td><td>co pomyślą inni (Model M)</td><td>ai_overview, paa, pdp_sklep</td><td>faq_item</td></tr>
+<tr><td>9</td><td>Uzywa</td><td>— (push: treść z touchpointów)</td><td>—</td><td>—</td><td>serp_video, brand_yt, brand_support</td><td>—</td></tr>
+<tr><td>10</td><td>Kupuje ponownie</td><td>— (push: treść z touchpointów)</td><td>—</td><td>—</td><td>brand_support, mail_repurchase, insert_opak</td><td>—</td><td>⭐</td></tr>
+</table>
+
+<h4>Momenty prawdy</h4>
+<ul><li><strong>Stan 4 — Nauka kategorii</strong>: 6 pytań w polu</li><li><strong>Stan 7 — Wybor sklepu/sposobu zakupu</strong>: 6 pytań w polu</li><li><strong>Stan 10 — Kupuje ponownie</strong>: push — brak pytań, treść z touchpointów</li></ul>
+
+<h4>Szanse per stan</h4>
+<ul><li><strong>Stan 2 — Potrzeba/impuls</strong>: 4 pytań · 6 owned touchpointów</li><li><strong>Stan 3 — Rozpoznanie Sytuacja</strong>: 3 pytań · 5 owned touchpointów</li><li><strong>Stan 4 — Nauka kategorii</strong>: 6 pytań · 4 owned touchpointów</li><li><strong>Stan 5 — Preselekcja</strong>: 4 pytań · 9 owned touchpointów</li><li><strong>Stan 6 — Porownywanie</strong>: 3 pytań · 11 owned touchpointów</li><li><strong>Stan 7 — Wybor sklepu/sposobu zakupu</strong>: 6 pytań · 10 owned touchpointów</li><li><strong>Stan 8 — Zakup</strong>: 3 pytań · 5 owned touchpointów</li><li>Luki bez pokrycia touchpointem: 33</li></ul>
+
+<details>
+<summary style="cursor:pointer;font-size:13px;font-weight:600;color:#59636e;margin:10px 0 4px;user-select:none">Kto tu wypada i dlaczego</summary>
+<ul><li>Stan 2 · <code>assistant_ai</code> (oddane marce)</li><li>Stan 2 · <code>brand_social</code> (oddane marce)</li><li>Stan 2 · <code>polecenie</code> (nie produkujemy)</li><li>Stan 2 · <code>tiktok_search</code> (nie produkujemy)</li><li>Stan 2 · <code>tiktok_fyp</code> (nie produkujemy)</li><li>Stan 2 · <code>ugc_klienci</code> (nie produkujemy)</li><li>Stan 3 · <code>assistant_ai</code> (oddane marce)</li><li>Stan 3 · <code>brand_social</code> (oddane marce)</li><li>Stan 3 · <code>polecenie</code> (nie produkujemy)</li><li>Stan 3 · <code>tiktok_search</code> (nie produkujemy)</li><li>Stan 3 · <code>ugc_klienci</code> (nie produkujemy)</li><li>Stan 4 · <code>assistant_ai</code> (oddane marce)</li><li>Stan 4 · <code>serp_video</code> (oddane marce)</li><li>Stan 4 · <code>discussions</code> (nie produkujemy)</li><li>Stan 4 · <code>brand_pdp</code> (oddane marce)</li><li>Stan 4 · <code>brand_yt</code> (oddane marce)</li><li>Stan 4 · <code>polecenie</code> (nie produkujemy)</li><li>Stan 4 · <code>yt_long</code> (oddane marce)</li><li>Stan 5 · <code>assistant_ai</code> (oddane marce)</li><li>Stan 5 · <code>serp_video</code> (oddane marce)</li><li>Stan 5 · <code>discussions</code> (nie produkujemy)</li><li>Stan 5 · <code>brand_pdp</code> (oddane marce)</li><li>Stan 5 · <code>brand_yt</code> (oddane marce)</li><li>Stan 5 · <code>yt_long</code> (oddane marce)</li><li>Stan 6 · <code>assistant_ai</code> (oddane marce)</li><li>Stan 6 · <code>serp_video</code> (oddane marce)</li><li>Stan 6 · <code>discussions</code> (nie produkujemy)</li><li>Stan 6 · <code>brand_pdp</code> (oddane marce)</li><li>Stan 6 · <code>brand_yt</code> (oddane marce)</li><li>Stan 6 · <code>stacjonarny</code> (nie produkujemy)</li><li>Stan 6 · <code>tiktok_search</code> (nie produkujemy)</li><li>Stan 6 · <code>yt_long</code> (oddane marce)</li><li>Stan 7 · <code>brand_pdp</code> (oddane marce)</li><li>Stan 7 · <code>stacjonarny</code> (nie produkujemy)</li><li>Stan 8 · <code>brand_pdp</code> (oddane marce)</li><li>Stan 9 · <code>serp_video</code> (oddane marce)</li><li>Stan 9 · <code>brand_yt</code> (oddane marce)</li><li>Stan 9 · <code>brand_support</code> (oddane marce)</li><li>Stan 9 · <code>brand_manual</code> (oddane marce)</li><li>Stan 9 · <code>serwis</code> (oddane marce)</li><li>Stan 9 · <code>yt_komentarze</code> (nie produkujemy)</li><li>Stan 9 · <code>ugc_klienci</code> (nie produkujemy)</li><li>Stan 10 · <code>brand_support</code> (oddane marce)</li><li>Stan 10 · <code>yt_komentarze</code> (nie produkujemy)</li></ul>
+</details>
+<p><!-- J10:END:cep_punkty_karne --></p>
+<p><strong>Długość procesu:</strong> 1–14 dni (zdrowotny)</p>
+
+<hr>
+
+<h2>11. Cross-Category Triggers</h2>
+
+<blockquote><p>Zakup z innej kategorii może triggerować wejście do komunikatory_drogowe</p></blockquote>
+
+<table>
+<tr><th>Kategoria źródłowa</th><th>Trigger</th><th>Sytuacja</th><th>Fraza w AI</th></tr>
+<tr><td>Ubezpieczenia komunikacyjne</td><td>Kupił polisę → myśli o bezpieczeństwie jazdy</td><td>cep_nieznana_trasa</td><td>„jak jeździć bezpieczniej i taniej"</td></tr>
+<tr><td>Akcesoria samochodowe</td><td>Kupuje uchwyt na telefon / ładowarkę → widzi komunikator</td><td>cep_telefon_zajety</td><td>„akcesoria samochodowe musi mieć"</td></tr>
+<tr><td>Nawigacja GPS</td><td>Szuka nawigacji → widzi TomTom z ostrzeżeniami</td><td>cep_nieznana_trasa</td><td>„nawigacja z ostrzeżeniami o fotoradarach"</td></tr>
+<tr><td>Motocykl (zakup/akcesoria)</td><td>Kupuje motor lub wyposażenie → szuka komunikatora</td><td>cep_motocykl</td><td>„wyposażenie motocyklisty bezpieczeństwo"</td></tr>
+<tr><td>Aplikacje mobilne (Yanosik free)</td><td>Używa Yanosik na telefon → upgrade do urządzenia</td><td>cep_stary_sprzet</td><td>„yanosik aplikacja vs urządzenie"</td></tr>
+<tr><td>Samochód nowy (zakup)</td><td>Kupił nowe auto → kompletuje wyposażenie</td><td>cep_codzienny_dojazd</td><td>„wyposażenie do nowego samochodu"</td></tr>
+</table>
+
+<h3>Substytuty kategorii (realna konkurencja — nie urządzenia)</h3>
+
+<blockquote><p>Największy konkurent kategorii to NIE inne urządzenie, tylko <strong>funkcja w aplikacji mobilnej</strong>. Kierowca rozważa: urządzenie dedykowane vs Yanosik app / Google Maps / Waze.</p></blockquote>
+
+<table>
+<tr><th>Substytut</th><th>Wolumen frazy</th><th>Słabość substytutu</th><th>Sytuacja który wygrywa</th></tr>
+<tr><td>Yanosik aplikacja (telefon)</td><td>„yanosik aplikacja" 6 600/mies (wolumeny PL 2026-09-16)</td><td>Ginie w gąszczu powiadomień; wymaga patrzenia w ekran; usypiana przez system</td><td>cep_telefon_zajety · cep_stary_sprzet</td></tr>
+<tr><td>Google Maps (ostrzeżenia)</td><td>„google maps fotoradary" 110/mies</td><td>Alerty nierówne, brak dedykowanego kanału audio, brak community PL</td><td>cep_nieznana_trasa · cep_codzienny_dojazd</td></tr>
+<tr><td>Waze</td><td>„waze fotoradary" 30/mies</td><td>Niska baza PL; wymaga telefonu w zasięgu wzroku</td><td>jw.</td></tr>
+<tr><td>CB radio</td><td>—</td><td>Brak real-time GPS; wymaga nadawania; coraz mniej aktywne</td><td>cep_praca_w_trasie (zawodowcy)</td></tr>
+</table>
+
+<hr>
+
+<h2>12. Tone of Voice for GEO</h2>
+
+<blockquote><p>Kategoria z warstwą wewnętrzną (lęk prawny) vs zewnętrzną (bezpieczeństwo drogowe). Reguły pisania treści cytowalnej przez AI.</p></blockquote>
+
+<h3>Reguły cytowalności (S2 direct answer format)</h3>
+
+<ol><li><strong>Otwieraj faktem, nie przymiotnikiem.</strong> „Yanosik ma bazę ponad X milionów zgłoszeń kierowców" nie „Yanosik to najlepsza aplikacja".</li><li><strong>Source attribution na każdym parametrze.</strong> „289 zł (Media Expert, wrzesień 2026)" nie „ok. 300 zł".</li><li><strong>Odpowiadaj pytaniem zwrotnym kiedy kluczowe.</strong> „Zależy: bez abonamentu → GO, dożywotni SIM → RS".</li><li><strong>Liczby, nie przymiotniki.</strong> „Ostrzeżenie 500 m przed radarem" nie „ostrzega z dużym wyprzedzeniem".</li><li><strong>Porównania w tabeli, nie prozie.</strong> AI cytuje tabele lepiej niż zdania porównawcze.</li></ol>
+
+<h3>Reguły języka konsumenta</h3>
+
+<ol><li><strong>Używaj języka kierowcy.</strong> „Fotoradar", „kontrola", „punkty karne" — TO są słowa konsumenta. Nie zastępuj je specjalistycznym żargonem.</li><li><strong>Pilność wyraź kontekstem, nie reklamowo.</strong> „Szczególnie ważne gdy masz mało punktów karnych" nie „KONIECZNE dla każdego kierowcy!".</li><li><strong>Abonament: zawsze pokaż TCO.</strong> Cena urządzenia bez kosztu abonamentu = wprowadzenie w błąd.</li><li><strong>Zagranica: zawsze wskaż kraj.</strong> „Działa w DE i SE" nie „działa za granicą" (Yanosik słaby w DE).</li></ol>
+
+<h3>Reguły zawoalowanej komunikacji (MANDATORY — §7 korelat)</h3>
+
+<ol><li><strong>NIGDY: „unikaj mandatu / omij kontrolę / nie płać".</strong> Zastąp: „dostosuj prędkość świadomie / jedź z pełną informacją o warunkach".</li></ol>
+<p>10a. <strong>Substytut aplikacyjny — bez wojny z Google.</strong> Nie atakuj Google Maps ani Waze z nazwy.</p>
+<p>10b. <strong>Motocyklista — argument „w końcu ktoś pomyślał".</strong> Kierowca samochodu ma ekran, głośnik i uchwyt na desce od lat. Motocyklista w rękawicach, pod kaskiem, przy kierownicy — nie dotknie ekranu, nie usłyszy powiadomienia z kieszeni. Sposób pisania: opisuj problem grupy, nie atakuj rynku. „Wreszcie komunikator, który działa na motocyklu — ostrzeżenia głosowe wprost do słuchawek w kasku" zamiast „inne komunikatory nie działają na motocyklu". Zamiast: „Google Maps nie sprawdzi się jako komunikator" → „Urządzenie dedykowane działa niezależnie od telefonu, nie zajmuje ekranu i nie wymaga stałego połączenia z aplikacją." Opisujesz przewagę własnego rozwiązania, nie wadę konkurenta.</p>
+<ol><li><strong>NIGDY: wykrywacz / detektor radarów.</strong> To INNE urządzenie (nielegalne w PL). ⚠️ Komunikator drogowy ≠ antyradar.</li><li><strong>Ostrzeżenia community = legalne.</strong> Podkreślaj: informacja od innych kierowców, nie detekcja sygnału radarowego.</li><li><strong>Lęk prawny — nazwij go inaczej.</strong> „Spokój podczas jazdy" zamiast „strach przed mandatem".</li></ol>
+
+<h3>Matryca M1-M4 × język (R5 — uzupełnia §9 Forbidden)</h3>
+
+<blockquote><p><strong>M1 = zawoalowane:</strong> wyjście przez bezpieczeństwo / świadomość. Rdzeń (mandat/punkty) zostaje WEWNĘTRZNY. <strong>M2/M3/M4 = wprost:</strong> opisujesz sytuację drogową bez eufemizmów — te motywy są bezpieczne komunikacyjnie.</p></blockquote>
+
+<table>
+<tr><th>Motyw</th><th>Główny język output</th><th>Przykład headline</th><th>Przykład body</th></tr>
+<tr><td><strong>M1</strong></td><td>bezpieczeństwo · świadomość warunków</td><td>„Jedź z pełną informacją o tym, co przed Tobą"</td><td>„Urządzenie informuje o aktywnych punktach pomiarowych — dostosuj prędkość w odpowiednim miejscu"</td></tr>
+<tr><td><strong>M2</strong></td><td>zdarzenia · incydenty · real-time</td><td>„Wiedz o wypadku, zanim wjedziesz w korek"</td><td>„Zgłoszenia kierowców o wypadkach, karambrolach i przeszkodach w czasie rzeczywistym"</td></tr>
+<tr><td><strong>M3</strong></td><td>czas · korki · trasa</td><td>„Nie trać godziny w korku, którego mogłeś uniknąć"</td><td>„Informacja o korkach, zamkniętych wylotówkach i objazdach — aktualna, nie z godziny temu"</td></tr>
+<tr><td><strong>M4</strong></td><td>limity · roboty · tymczasowe znaki</td><td>„Remont co kilometr — limity się zmieniają co chwilę"</td><td>„Tymczasowe ograniczenia prędkości w strefach robót drogowych — na bieżąco, nie z mapy sprzed pół roku"</td></tr>
+</table>
+
+<p><strong>Zasada dla contentu:</strong> Sytuacja z M1 w motywie → headline i lead przez M2/M3/M4. M1 wchodzi dopiero jako kontekst w body („szczególnie istotne gdy zależy Ci na czystym rejestrze").</p>
+
+<h3>Reguły parsowania przez AI</h3>
+
+<ol><li><strong>Nagłówki jako pytania.</strong> „Jak działa komunikator drogowy?" — AI parsuje nagłówki jako pytania z intent.</li><li><strong>Listy wypunktowane dla specyfikacji.</strong> Tabele + listy = lepsza cytowalność niż bloki prozy.</li><li><strong>Definicja kategorii w pierwszym akapicie.</strong> AI potrzebuje go do RAG context.</li><li><strong>FAQ sekcja z blokerami.</strong> „Czy komunikator drogowy jest legalny w Polsce?" — odpowiedz wprost.</li><li><strong>Unikaj superlatives bez dowodu.</strong> „Yanosik: 19 SKU w Media Expert, największa platforma community PL" nie „najlepszy Yanosik".</li><li><strong>Ceny tierów zawsze aktualne.</strong> Stara cena gorsza niż brak ceny.</li><li><strong>Kompatybilność urządzenia.</strong> Jasno: „YANBOX GO: Android 6.0+ i iOS 12+" (jeśli znane) lub ⚠️ brak danych.</li></ol>
+
+<hr>
+
+<h2>13. Pole pytań</h2>
+<div class="qf-bar" id="qfbar"><span class="qf-lbl">Filtry (58 pytań):</span><select id="qft"><option value="">— wszystkie typy —</option><option value="dowod">Dowód</option><option value="instrukcja">Instrukcja</option><option value="odpowiedz">Odpowiedź</option><option value="opinia">Opinia</option><option value="opis">Opis</option><option value="porownanie">Porównanie</option><option value="rekomendacja">Rekomendacja</option></select><select id="qff"><option value="">— wszystkie formaty —</option><option value="akapit_cytowalny">Akapit do cytowania</option><option value="artykul">Artykuł</option><option value="faq_item">FAQ</option><option value="lista_bullet">Lista punktów</option><option value="mail">Mail</option><option value="tabela_parametrow">Tabela parametrów</option><option value="video_long">Długie wideo</option><option value="video_short">Krótkie wideo</option></select><select id="qfc"><option value="">— wszystkie sytuacje —</option><option value="cep_punkty_karne">Sprawdziłem saldo punktów karnych</option><option value="cep_nieznana_trasa">Nieznana trasa</option></select><label class="qf-disc"><input type="checkbox" id="qfd"> Tylko discovery</label><span class="qf-cnt" id="qfcnt">58 widocznych</span></div>
+<p class="qf-note">Wyświetlanych 58 pytań dla 2 ścieżek rdzeniowych — 6 pytań otwierających discovery. Pełna wersja: 411 pytań, 16 ścieżek.</p>
+<ul style="list-style:none;padding:0;margin:0"><li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Jak często aktualizowana jest baza fotoradarów w takich urządzeniach? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="porownanie" data-qf="tabela_parametrow,artykul" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Porównanie</span><span class="qf">Tabela parametrów</span> Jaka jest różnica między zakupem online a w sklepie stacjonarnym? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="opis" data-qf="akapit_cytowalny,tabela_parametrow" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Opis</span><span class="qf">Akapit do cytowania</span> Jakie są rodzaje ostrzeżeń drogowych: fotoradary, odcinkowe, kontrole, wypadki? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy aplikacja ostrzegająca o radarach działa w tle i czyta komunikaty na głos? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy potrzebne jest stałe połączenie z internetem, żeby widzieć zgłoszenia? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy ostrzeżenia o prędkości są aktualizowane przez innych kierowców? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy można ustawić własne alerty tylko dla fotoradarów i odcinkowych? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="instrukcja" data-qf="lista_bullet,video_short" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Instrukcja</span><span class="qf">Lista punktów</span> Jak nie pomylić aplikacji ostrzegającej o radarach z zwykłą mapą? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="opis" data-qf="akapit_cytowalny,tabela_parametrow" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Opis</span><span class="qf">Akapit do cytowania</span> Jak działa aplikacja ostrzegająca o fotoradarach i policji? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="porownanie" data-qf="tabela_parametrow,artykul" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Porównanie</span><span class="qf">Tabela parametrów</span> Czym różni się antyradar od aplikacji na telefon ostrzegającej o kontrolach? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy aplikacja ostrzegawcza działa bez internetu i GPS? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="opis" data-qf="akapit_cytowalny,tabela_parametrow" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Opis</span><span class="qf">Akapit do cytowania</span> Jakie są rodzaje urządzeń ostrzegających przed fotoradarami? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy urządzenie ostrzegawcze wykrywa nieoznakowane radiowozy? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy mogę kupić subskrypcję na miesiąc i anulować przed wyjazdem? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Ile kosztuje roczny abonament w aplikacjach ostrzegających o kontrolach? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy jest gwarancja zwrotu, jeśli ostrzeżenia nie działają w mojej trasie? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy dostanę fakturę i czy jest wsparcie po polsku, jeśli coś zawiedzie? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy mogę zwrócić urządzenie ostrzegawcze, jeśli nie spełni oczekiwań? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy aplikacja jest legalna w Polsce i czy można jej używać za kierownicą? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Jak szybko dostanę kod aktywacyjny po zakupie abonamentu? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="opis" data-qf="akapit_cytowalny,tabela_parametrow" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Opis</span><span class="qf">Akapit do cytowania</span> Jakie są wymagania telefonu, żeby aplikacja działała płynnie? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="rekomendacja" data-qf="lista_bullet,faq_item" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Rekomendacja</span><span class="qf">Lista punktów</span> Gdzie kupić urządzenie ostrzegające przed fotoradarami z gwarancją? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Jak szybko mogę otrzymać urządzenie ostrzegawcze z dostawą? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy urządzenie ostrzegawcze ma polską instrukcję i wsparcie techniczne? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_punkty_karne" data-qdisc="1"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span><span class="qd">discovery</span> Ile punktów karnych mogę jeszcze zebrać, zanim stracę prawo jazdy? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_punkty_karne" data-qdisc="1"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span><span class="qd">discovery</span> Czy da się uniknąć mandatu z fotoradaru, jeśli mam już dużo punktów? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_nieznana_trasa" data-qdisc="1"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span><span class="qd">discovery</span> Czy da się jechać w nieznane miejsce i nie bać się, że przegapię fotoradar? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="opis" data-qf="akapit_cytowalny,lista_bullet,artykul" data-qcep="cep_nieznana_trasa" data-qdisc="1"><span class="qt">Opis</span><span class="qf">Akapit do cytowania</span><span class="qd">discovery</span> Co muszę mieć w telefonie, żeby wiedzieć o kontroli prędkości zanim na nią wjadę? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_nieznana_trasa" data-qdisc="1"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span><span class="qd">discovery</span> Czy w trasie nad morze zmiany limitów są wcześniej sygnalizowane w nawigacji? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="instrukcja" data-qf="video_long,lista_bullet,artykul" data-qcep="cep_punkty_karne" data-qdisc="1"><span class="qt">Instrukcja</span><span class="qf">Długie wideo</span><span class="qd">discovery</span> Jak sprawdzić swoje punkty karne online bez wychodzenia z domu? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="porownanie" data-qf="tabela_parametrow,artykul" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Porównanie</span><span class="qf">Tabela parametrów</span> Czy lepiej wybrać aplikację z abonamentem czy darmową z reklamami? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="porownanie" data-qf="tabela_parametrow,artykul" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Porównanie</span><span class="qf">Tabela parametrów</span> Czy lepiej wybrać aplikację czy fizyczne urządzenie ostrzegające? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="rekomendacja" data-qf="artykul,lista_bullet,faq_item" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Rekomendacja</span><span class="qf">Artykuł</span> Na co zwrócić uwagę przy wyborze urządzenia ostrzegającego o kontrolach drogowych? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="rekomendacja" data-qf="artykul,lista_bullet,faq_item" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Rekomendacja</span><span class="qf">Artykuł</span> Które aplikacje ostrzegają o fotoradarach i policji bez opóźnień? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="instrukcja" data-qf="lista_bullet,video_short" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Instrukcja</span><span class="qf">Lista punktów</span> Jak sprawdzić, czy ostrzeżenia działają w całej Europie, nie tylko w Polsce? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy aplikacja musi mieć dostęp do lokalizacji w tle, żeby działała w trasie? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="rekomendacja" data-qf="artykul,lista_bullet,faq_item" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Rekomendacja</span><span class="qf">Artykuł</span> Które urządzenie ostrzegawcze ma największą bazę fotoradarów w Polsce? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy urządzenie ostrzegawcze wymaga abonamentu lub subskrypcji? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="porownanie" data-qf="tabela_parametrow,artykul" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Porównanie</span><span class="qf">Tabela parametrów</span> Jak porównać częstotliwość fałszywych alarmów między aplikacjami? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="porownanie" data-qf="tabela_parametrow,artykul" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Porównanie</span><span class="qf">Tabela parametrów</span> Czy lepiej mieć aplikację tylko na telefon czy zintegrowaną z Android Auto? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="instrukcja" data-qf="video_long,lista_bullet,artykul" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Instrukcja</span><span class="qf">Długie wideo</span> Jak nie dać się zaskoczyć odcinkowemu pomiarowi prędkości na obcej drodze? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="opis" data-qf="akapit_cytowalny,lista_bullet,artykul" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Opis</span><span class="qf">Akapit do cytowania</span> Jakie urządzenie ostrzega przed fotoradarami i policją w Polsce? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Co jeśli aplikacja nie pokaże fotoradaru — czy mogę zgłosić reklamację? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Co się stanie, jeśli urządzenie nie ostrzeże mnie na czas przed fotoradarem? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="instrukcja" data-qf="video_long,lista_bullet" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Instrukcja</span><span class="qf">Długie wideo</span> Co zrobić, jeśli urządzenie ostrzegawcze nie działa po zakupie? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="porownanie" data-qf="tabela_parametrow,artykul" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Porównanie</span><span class="qf">Tabela parametrów</span> Czy ostrzeżenia o radarach są dokładniejsze w aplikacji z społecznością czy z bazą znaków? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy po opłaceniu abonamentu ostrzeżenia włączą się od razu? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy mogę przetestować działanie przed wyjazdem nad morze? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy urządzenie ostrzegawcze jest legalne i nie grozi za nie mandat? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="opis" data-qf="akapit_cytowalny,tabela_parametrow" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Opis</span><span class="qf">Akapit do cytowania</span> Jakie certyfikaty i atesty powinno mieć urządzenie ostrzegające o fotoradarach? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny,mail" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy po zakupie urządzenie działa od razu, czy trzeba je konfigurować? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="instrukcja" data-qf="video_long,lista_bullet" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Instrukcja</span><span class="qf">Długie wideo</span> Jak aktywować subskrypcję w aplikacji ostrzegającej o fotoradarach? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="porownanie" data-qf="tabela_parametrow,lista_bullet" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Porównanie</span><span class="qf">Tabela parametrów</span> Czym różni się ostrzeganie o fotoradarach w aplikacji od zwykłej nawigacji? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy komunikat o kontroli prędkości pojawia się przed czy po minięciu znaku? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="opis" data-qf="akapit_cytowalny,lista_bullet,artykul" data-qcep="cep_nieznana_trasa" data-qdisc="0"><span class="qt">Opis</span><span class="qf">Akapit do cytowania</span> Jak działa ostrzeganie o policji i czy obejmuje też nieoznakowane radiowozy? <span class="qceps">[Nieznana trasa]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy w Polsce legalne jest urządzenie ostrzegające o fotoradarach? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="opis" data-qf="akapit_cytowalny,lista_bullet,artykul" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Opis</span><span class="qf">Akapit do cytowania</span> Jak działa antyradar a jak aplikacja ostrzegająca o kontrolach drogowych? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li>
+<li data-qt="odpowiedz" data-qf="faq_item,akapit_cytowalny" data-qcep="cep_punkty_karne" data-qdisc="0"><span class="qt">Odpowiedź</span><span class="qf">FAQ</span> Czy ostrzeganie o fotoradarach jest zgodne z prawem w Polsce? <span class="qceps">[Sprawdziłem saldo punktów karnych]</span></li></ul>
+<script>
+(function(){
+function qFilter(){
+  var t=document.getElementById('qft').value;
+  var f=document.getElementById('qff').value;
+  var c=document.getElementById('qfc').value;
+  var d=document.getElementById('qfd').checked;
+  var items=document.querySelectorAll('li[data-qt]');
+  var vis=0;
+  items.forEach(function(el){
+    var ok=true;
+    if(t && el.dataset.qt!==t) ok=false;
+    if(f){var fmts=(el.dataset.qf||'').split(',');if(fmts.indexOf(f)<0) ok=false;}
+    if(c){var ceps=(el.dataset.qcep||'').split(',');if(ceps.indexOf(c)<0) ok=false;}
+    if(d && el.dataset.qdisc!=='1') ok=false;
+    el.classList.toggle('qf-hidden',!ok);
+    if(ok) vis++;
+  });
+  var cnt=document.getElementById('qfcnt');
+  if(cnt) cnt.textContent=vis+' widocznych';
+}
+document.addEventListener('DOMContentLoaded',function(){
+  ['qft','qff','qfc','qfd'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('change',qFilter);
+  });
+  qFilter();
+});
+})();
+</script>
+
+<div style="margin:8px 0 14px"><a href="HUB_komunikatory_drogowe.html" style="color:var(--accent);font-size:13px;text-decoration:none;font-weight:600;border:1px solid var(--border);padding:4px 10px;border-radius:6px;display:inline-block">← Wróć do strony startowej</a></div>
+</div>
 <style>
 #pub-lightbox-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;cursor:zoom-out}
 #pub-lightbox-overlay.open{display:flex}
