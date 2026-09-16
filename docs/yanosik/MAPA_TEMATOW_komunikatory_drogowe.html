@@ -1,96 +1,57 @@
-<meta charset="utf-8"><title>Mapa Tematów Kontentu — komunikatory_drogowe</title>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Mapa Tematów Kontentu — komunikatory drogowe</title>
 <style>
-/* Tokeny z _shared/BRAND_STYLE_GUIDE.html — jedno źródło warstwy wizualnej. */
-:root{
-  --bg:#ffffff; --surface:#fafbfd; --line:#e6e6e9; --ink:#0a0a0a;
-  --muted:#5b6472; --faint:#8b93a2;
-  --v:#7c5cff; --v-d:#5a3ff0; --v-soft:#efeaff; --v-line:#d4c9ff;
-  --dark:#1a1f2b; --dark-sub:#252d3d; --dark-txt:#b8bfcc;
-  --g:#16a34a; --g-soft:#e7f6ec; --g-line:#b7e3c4;
-  --o:#f5751a; --o-soft:#fff2e8; --o-line:#f8c39a;
-  --a:#b8862b; --a-soft:#fdf5e6; --a-line:#e9d3a3;
-  --grotesk:'Space Grotesk',-apple-system,BlinkMacSystemFont,sans-serif;
-  --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
-  --r-sm:8px; --r:12px; --r-lg:16px;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--grotesk);
-  font-size:15.5px;line-height:1.65;-webkit-font-smoothing:antialiased;
-  padding:clamp(18px,5vw,56px) clamp(14px,4vw,32px)}
-.w{max-width:940px;margin:0 auto}
-
-/* nagłówek dokumentu */
-.top{padding-bottom:26px;border-bottom:1px solid var(--line);margin-bottom:34px}
-.kicker{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--v);font-weight:600;display:block;margin-bottom:12px}
-h1{font-size:clamp(28px,5.2vw,44px);font-weight:700;letter-spacing:-.03em;
-  line-height:1.05;margin:0 0 10px;text-wrap:balance}
-.pod{color:var(--muted);font-size:14px;margin:0}
-
-/* sekcje */
-h2{font-size:clamp(21px,3.4vw,28px);font-weight:700;letter-spacing:-.03em;
-  margin:52px 0 14px;text-wrap:balance;position:relative;padding-top:20px;
-  border-top:1px solid var(--line)}
-h2::before{content:attr(data-nr);font-family:var(--mono);font-size:10px;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--v);font-weight:600;display:block;margin-bottom:10px}
-h3{font-size:16px;font-weight:600;letter-spacing:-.01em;margin:30px 0 8px}
-h4{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--faint);font-weight:600;margin:22px 0 6px}
-
-p{margin:0 0 14px;color:var(--ink)}
-strong{font-weight:600}
-a{color:var(--v-d);text-decoration:none;border-bottom:1px solid var(--v-line)}
-a:hover{border-bottom-color:var(--v-d)}
-ul{margin:0 0 16px;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:7px}
-li{position:relative;padding-left:20px;color:var(--ink)}
-li::before{content:"";position:absolute;left:4px;top:.68em;width:5px;height:5px;
-  border-radius:50%;background:var(--v-line)}
-
-/* tabele — nagłówek mono, wersaliki */
-.tw{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:var(--r);
-  background:var(--bg)}
-table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
-th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--faint);font-weight:600;text-align:left;padding:12px 14px;
-  border-bottom:1px solid var(--line);background:var(--surface);white-space:nowrap}
-td{padding:11px 14px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top}
+:root{--bg:#fff;--text:#1f2328;--muted:#656d76;--border:#d0d7de;--accent:#0969da;
+--accent2:#0550ae;--h1-bg:#f6f8fa;--h2-bg:#f0f3f6;--table-stripe:#f8f9fb;
+--font:system-ui,-apple-system,sans-serif;--mono:'SF Mono',Menlo,Consolas,monospace;
+/* aliasy zgodności z inline style w treści */
+--line:#d0d7de;--v-d:#0969da;--v-line:#d0d7de;--ink:#1f2328;--surface:#f6f8fa;--faint:#656d76}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.7}
+.w{max-width:820px;margin:0 auto;padding:32px 24px 80px}
+.top{margin-bottom:16px}
+.kicker{display:none}
+h1{font-size:24px;font-weight:700;margin-bottom:8px;padding:16px 20px;background:var(--h1-bg);border-radius:10px;border:1px solid var(--border)}
+.pod{color:var(--muted);font-size:12px;margin-bottom:16px;padding:4px 20px}
+h2{font-size:17px;font-weight:700;margin:28px 0 8px;padding:10px 14px;background:var(--h2-bg);border-radius:8px;border:1px solid var(--border)}
+h2::before{display:none}
+h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--accent2)}
+h4{font-size:13px;font-weight:600;margin:10px 0 4px;color:var(--text)}
+p{margin:6px 0}
+strong{font-weight:700}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+ul,ol{margin:4px 0;padding-left:22px}
+li{margin:2px 0;list-style:disc;position:static;padding-left:0}
+li::before{display:none!important}
+blockquote{border-left:3px solid var(--accent);padding:6px 14px;margin:8px 0;background:#f6f8fa;font-size:13px;color:var(--text)}
+blockquote p{margin:2px 0}
+code{background:#f0f3f6;padding:1px 5px;border-radius:4px;font-size:12px;font-family:var(--mono)}
+pre{background:#f6f8fa;padding:12px 16px;border-radius:8px;overflow-x:auto;font-size:12px;border:1px solid var(--border);margin:8px 0;line-height:1.5}
+pre code{background:none;padding:0}
+.tw{overflow-x:auto;margin:8px 0;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+th{background:var(--h2-bg);padding:6px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:5px 10px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--text)}
 tr:last-child td{border-bottom:none}
-td strong{color:var(--ink)}
-
-/* cytat = wyróżnienie, nie ozdoba */
-blockquote{margin:20px 0;padding:16px 20px;background:var(--v-soft);
-  border-left:3px solid var(--v);border-radius:0 var(--r-sm) var(--r-sm) 0;color:var(--ink)}
-blockquote p:last-child{margin-bottom:0}
-
-/* kod */
-code{font-family:var(--mono);font-size:12.5px;background:var(--v-soft);color:var(--v-d);
-  padding:2px 6px;border-radius:5px}
-pre{background:var(--dark);color:var(--dark-txt);border-radius:var(--r);
-  padding:18px 20px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;
-  line-height:1.6;margin:18px 0}
-pre code{background:none;color:inherit;padding:0}
-
-hr{border:none;border-top:1px solid var(--line);margin:34px 0}
-hr + h2{border-top:none;padding-top:0;margin-top:26px}   /* bez podwójnej kreski */
-.pod:empty{display:none}
-.slot{font-family:var(--mono);font-size:12px;background:var(--surface);color:var(--faint);
-  border:1px dashed var(--line);border-radius:5px;padding:2px 8px}
-.brak{font-family:var(--mono);font-size:11.5px;background:var(--o-soft);color:var(--o);
-  border:1px solid var(--o-line);border-radius:5px;padding:2px 8px;font-weight:600}
-.stopka{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
-  font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--faint)}
-
-@media (max-width:640px){
-  body{font-size:15px}
-  h2{margin-top:38px}
-  td,th{padding:9px 11px}
+tr:nth-child(even) td{background:var(--table-stripe)}
+hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+.slot{background:#f0f3f6;color:var(--muted);border:1px dashed var(--border);border-radius:4px;padding:1px 8px;font-family:var(--mono);font-size:12px}
+.brak{background:#fff8c5;color:#9a6700;border:1px solid #f0d066;border-radius:4px;padding:1px 8px;font-family:var(--mono);font-size:12px;font-weight:600}
+.stopka{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:640px){
+  body{font-size:13px}
+  h1{font-size:20px;padding:12px 14px}
+  h2{font-size:15px;padding:8px 12px;margin-top:20px}
+  td,th{padding:4px 8px}
 }
 </style>
+</head>
+<body>
 <div class="w">
   <div class="top">
     <span class="kicker">wygenerowane z danych</span>
@@ -238,3 +199,5 @@ wspierający (subkategorie):
   document.addEventListener('keydown',function(e){if(e.key==='Escape'){ov.classList.remove('open');im.src='';}});
 })();
 </script>
+</body>
+</html>
