@@ -192,7 +192,7 @@ const F = D.formaty, R = D.roadmapa, ETAPY = D.etapy.etapy;
 const OB = D.obszary[0];                       // mapa: dziś tylko strona główna
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const IMGMAP = JSON.parse(document.getElementById('img').textContent);
-const R = s => IMGMAP[s] || s;
+const IMG = s => IMGMAP[s] || s;
 const TBC = '<span class="tbc">TBC</span>';
 const NIEWIEM = /\s*[—–-]?\s*\(?(brak danych|do ustalenia|do potwierdzenia|do dołożenia|nie wiadomo|niedookreślona)(,? czy [^.;)]*)?\)?/gi;
 const T = v => { if (v === null || v === undefined || String(v).trim() === '' || String(v).trim() === '—') return TBC; return esc(v).replace(NIEWIEM, ' ' + TBC); };
@@ -232,7 +232,7 @@ const BI = b => R.batche.indexOf(b);
 function thumb(f){
   const i = f.imgs[0] || f.rynekImg[0];
   const pin = f.slots.length ? `<span class="pin">📍 strona główna</span>` : '';
-  if (i) return `<div class="im ${state.dev}"><img loading="lazy" src="${esc(R(i.src))}" alt="">${pin}</div>`;
+  if (i) return `<div class="im ${state.dev}"><img loading="lazy" src="${esc(IMG(i.src))}" alt="">${pin}</div>`;
   return `<div class="im"><div class="ph">${TBC}</div>${pin}</div>`;
 }
 function badges(f){
@@ -307,7 +307,7 @@ function renderMap(){
     <div class="map-h"><span>hebe.pl · ${esc(OB.nazwa)} · ${esc(z.data)}</span>
       <span>${w === 'mobile' ? '📱 mobile' : '🖥 desktop'}</span></div>
     <div class="hint" id="hint"></div>
-    <div class="scroll" id="scroll"><div class="page">${z.web.parts.map(p => `<img src="${esc(R(p.src))}" alt="">`).join('')}
+    <div class="scroll" id="scroll"><div class="page">${z.web.parts.map(p => `<img src="${esc(IMG(p.src))}" alt="">`).join('')}
       ${OB.sloty.map(s => `<div class="hot" data-s="${s.id}" data-f="${s.formaty.join(' ')}" style="top:${s[w][0]/z.dom_h*100}%;height:${s[w][1]/z.dom_h*100}%"><span class="lab">${esc(s.etykieta)}</span></div>`).join('')}
     </div></div>
     <div class="note">Mapa: wyszukiwarka, kategoria, karta produktu, koszyk, aplikacja — ${TBC}</div>`;
@@ -337,8 +337,8 @@ function open(id){
     <button class="x" id="x" aria-label="Zamknij">×</button>
     <div class="m-top">
       <div class="m-img">
-        ${imgs.length ? `<div class="big" id="big"><img src="${esc(R(imgs[0].src))}" alt=""></div><div class="cap" id="cap">${esc(imgs[0].cap)}</div>
-          ${imgs.length > 1 ? `<div class="thumbs">${imgs.map((i,n) => `<button data-n="${n}" class="${n?'':'on'}"><img src="${esc(R(i.src))}" alt=""></button>`).join('')}</div>` : ''}`
+        ${imgs.length ? `<div class="big" id="big"><img src="${esc(IMG(imgs[0].src))}" alt=""></div><div class="cap" id="cap">${esc(imgs[0].cap)}</div>
+          ${imgs.length > 1 ? `<div class="thumbs">${imgs.map((i,n) => `<button data-n="${n}" class="${n?'':'on'}"><img src="${esc(IMG(i.src))}" alt=""></button>`).join('')}</div>` : ''}`
           : `<div class="brak tbcbox">${TBC}</div>`}
       </div>
       <div class="m-info">
@@ -363,7 +363,7 @@ function open(id){
       <div class="box"><b class="l">W Adshero</b>${T(k.targetowanie_adshero || f.adshero)}</div></div></div>
     <div class="sec"><h4>Porady</h4>${(k.porady||[]).length ? `<ul class="porady">${k.porady.map(p => `<li>${T(p.t)}<i>źródło: ${esc(p.z)}</i></li>`).join('')}</ul>` : TBC}</div>
     <div class="sec"><h4>Jak to robi rynek</h4>
-      ${f.rynekImg.length ? `<div class="gal">${f.rynekImg.map(i => `<figure class="fig"><img loading="lazy" src="${esc(R(i.src))}" alt=""><figcaption>${esc(i.cap)}</figcaption></figure>`).join('')}</div>` : ''}
+      ${f.rynekImg.length ? `<div class="gal">${f.rynekImg.map(i => `<figure class="fig"><img loading="lazy" src="${esc(IMG(i.src))}" alt=""><figcaption>${esc(i.cap)}</figcaption></figure>`).join('')}</div>` : ''}
       ${f.rynek.length ? `<div class="rl">${f.rynek.map(r => `<span>${esc(r.siec)} · ${T(r.nazwa)}</span>`).join('')}</div>` : TBC}</div>
     <div class="sec"><h4>Szczegóły zakupu</h4>
       <div class="box"><b class="l">Pozycja w arkuszu Hebe</b>${f.hebe_arkusz.map(x => `<div><b>#${x.nr}</b> ${esc(x.nazwa)} · ${T(x.kanal)} · ${T(x.status)} · sprzedaż: ${T(x.sales_type)} · zasób/rok: ${T(x.zasob)} · dla RM: ${T(x.alokacja_rm)}</div>`).join('') || TBC}</div>
@@ -373,7 +373,7 @@ function open(id){
   document.getElementById('ov').classList.add('open'); document.body.classList.add('lock');
   document.getElementById('x').onclick = close;
   document.querySelectorAll('.thumbs button').forEach(b => b.onclick = () => {
-    const i = imgs[+b.dataset.n]; document.querySelector('#big img').src = R(i.src); document.getElementById('cap').textContent = i.cap;
+    const i = imgs[+b.dataset.n]; document.querySelector('#big img').src = IMG(i.src); document.getElementById('cap').textContent = i.cap;
     document.querySelectorAll('.thumbs button').forEach(x => x.classList.toggle('on', x === b)); });
   document.querySelectorAll('#big, .fig').forEach(el => el.onclick = () => { const z = document.getElementById('zoom'); z.querySelector('img').src = el.querySelector('img').src; z.style.display = 'flex'; });
   const ns = document.getElementById('naStronie');
