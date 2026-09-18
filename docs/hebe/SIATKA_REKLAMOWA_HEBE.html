@@ -152,6 +152,10 @@ ul.porady li i{display:block;font-style:normal;font-family:var(--mono);font-size
 .ref-h{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
 .ref-h h3{font-size:24px}
 .ref-h .rn{font:600 14px var(--mono);text-transform:uppercase;color:var(--faint);letter-spacing:.08em}
+.rlinks{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px 14px}
+.rlinks a{font-size:14px;color:var(--v-d);text-decoration:none}
+.rlinks a:hover{text-decoration:underline}
+.refsel{font:16px var(--grotesk);padding:8px 12px;border:1px solid var(--line);background:#fff;min-width:280px;max-width:100%}
 .ref-b{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:0}
 .ref-g{padding:14px;border-right:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;align-content:start}
 .ref-g figure{border:1px solid var(--line);background:#fff;cursor:zoom-in}
@@ -267,7 +271,7 @@ const VIEWS = {
        pool: f => true, group: 'typ'}
 };
 const BATCH_OPIS = {'ON SALE':'sprzedawane dziś — już w Adshero','Q1':'plan — gotowe do uruchomienia','Q2':'plan — z targetowaniem','Q3':'plan — wymaga developmentu','Q4':'plan — wideo'};
-const state = {tryb:'cennik', tab:'formaty', view:'RM', stan:'Q4', typ:new Set(), kanal:new Set(), sel:null, dev:'mobile'};
+const state = {refSiec:'', tryb:'cennik', tab:'formaty', view:'RM', stan:'Q4', typ:new Set(), kanal:new Set(), sel:null, dev:'mobile'};
 const BI = b => R.batche.indexOf(b);
 
 function thumb(f){
@@ -442,14 +446,16 @@ function renderTryb(){
   if (state.tab === 'linki') renderLinki(refs);
 }
 function renderRefs(el){
-  el.innerHTML = `<p class="lead">Jak inne sieci retail media nazywają i pokazują swoje nośniki — zrzut strony oferty i grafiki formatów wprost z niej, obok lista formatów sieci.</p>` +
-    REF.sieci.map(s => {
+  const wyb = `<div class="frow"><span class="flabel">Sieć</span><select id="refSel" class="refsel"><option value="">wszystkie sieci (${REF.sieci.length})</option>${REF.sieci.map(s => `<option value="${esc(s.siec)}" ${state.refSiec===s.siec?'selected':''}>${esc(s.siec)} · ${s.formaty.length}</option>`).join('')}</select></div>`;
+  el.innerHTML = `<p class="lead">Jak inne sieci retail media nazywają i pokazują swoje nośniki — zrzut strony oferty i grafiki formatów wprost z niej, obok lista formatów sieci.</p>` + wyb +
+    REF.sieci.filter(s => !state.refSiec || s.siec === state.refSiec).map(s => {
       const zr = REF.zrodla.filter(z => z.siec === s.siec);
       const gal = zr.flatMap(z => [...(z.strona ? [{src: z.strona, cap: `Strona: ${z.tytul || z.url}`, cls: 'strona'}] : []), ...(z.grafiki || []).map(g => ({src: g.src, cap: g.alt || 'grafika ze strony oferty'}))]);
-      return `<article class="ref"><div class="ref-h"><h3>${esc(s.siec)}</h3><span class="rn">${esc(s.rynek || '')}</span><span class="rn">${s.formaty.length} formatów · ${zr.length} źródeł</span></div>
+      return `<article class="ref"><div class="ref-h"><h3>${esc(s.siec)}</h3><span class="rn">${esc(s.rynek || '')}</span><span class="rn">${s.formaty.length} formatów · ${zr.length} źródeł</span><div class="rlinks">${zr.map(z => `<a href="${esc(z.url)}" target="_blank" rel="noopener"><span class="lt ${esc(z.typ)}">${esc(z.typ)}</span> ${esc((z.tytul || z.url).slice(0, 70))}${z.martwy ? ' <span class="tbc">404</span>' : ''} ↗</a>`).join('')}</div></div>
         <div class="ref-b"><div class="ref-g">${gal.length ? gal.map(g => `<figure class="${g.cls||''}"><img loading="lazy" src="${esc(IMG(g.src))}" alt=""><figcaption>${esc(g.cap)}</figcaption></figure>`).join('') : `<div class="brak tbcbox">${TBC}</div>`}</div>
         <div class="ref-f">${s.formaty.map(f => `<div><b>${esc(f.nazwa_formatu)}${f.wideo ? '<span class="tag">wideo</span>' : ''}</b><span>${T(f.gdzie)} · ${T(f.mechanizm)}</span><br><span>spec: ${T(f.specyfikacja)} · rozliczenie: ${T(f.rozliczenie)}</span></div>`).join('') || TBC}</div></div></article>`;
     }).join('');
+  document.getElementById('refSel').onchange = e => { state.refSiec = e.target.value; renderRefs(el); };
   el.querySelectorAll('figure').forEach(fg => fg.onclick = () => { const z = document.getElementById('zoom'); z.querySelector('img').src = fg.querySelector('img').src; z.style.display = 'flex'; });
 }
 function renderLinki(el){
