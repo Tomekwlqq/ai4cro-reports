@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<title>Lista błędów i problemów — DD (spotkanie 9.09 + nasze analizy)</title>
+<style>
+  :root{--ink:#141a24;--ink-2:#4a5568;--line:#e3e7ee;--soft:#f7f8fa;
+        --cash:#1a7f5a;--warn:#b7791f;--bad:#c0392b;--accent:#7c5cff}
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff;color:var(--ink);
+       font-family:"Space Grotesk","Helvetica Neue",Arial,sans-serif;font-size:19px;line-height:1.55}
+  .wrap{max-width:1200px;margin:0 auto;padding:44px 28px 80px}
+  h1{font-size:34px;margin:0 0 6px}
+  h2{font-size:30px;margin:46px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h3{font-size:23px;margin:24px 0 10px}
+  .sub{color:var(--ink-2);font-size:18px;margin:0 0 24px}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-size:18px}
+  th{font-size:16px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.03em}
+  .box{border-left:6px solid var(--accent);background:#faf9ff;padding:18px 22px;border-radius:0 12px 12px 0;margin:22px 0}
+  .box.bad{border-color:var(--bad);background:#fdf5f4}
+  .box.good{border-color:var(--cash);background:#f4fbf7}
+  .box.warn{border-color:var(--warn);background:#fdfaf1}
+  .small{font-size:16px;color:var(--ink-2)}
+  .tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:14px;font-weight:600;white-space:nowrap}
+  .t-ok{background:#e8f6ef;color:var(--cash)} .t-no{background:#fdecea;color:var(--bad)}
+  .t-w{background:#fdf6e3;color:var(--warn)} .t-n{background:#eef1f6;color:var(--ink-2)}
+  .lvl{display:grid;grid-template-columns:150px 1fr;gap:14px;border-bottom:1px solid var(--line);padding:14px 0}
+  .lvl b{font-size:21px}
+  ul{margin:10px 0 0 22px} li{margin:7px 0}
+</style>
+</head>
+<body><div class="wrap">
+  <h1>Lista błędów i problemów — Dobry Dach</h1>
+  <p class="sub">Zestawienie: <b>zapis Twojego spotkania z klientem (9.09.2026)</b> + <b>to, co już zmierzyliśmy w bazach</b>.
+     Każda pozycja: co to jest, czym to udowodniliśmy, jak to wykrywamy i na którym poziomie systemu się blokuje.
+     2026-09-21 · źródło liczb: kopia bazy komandytowej.</p>
+
+  <div class="box warn">
+    <h3 style="margin-top:0">Najpierw najważniejsze: Twoje założenia zmieniają cel projektu</h3>
+    <p style="margin:0">To nie jest projekt „raport" ani „tracker WZ". To jest <b>system 4-poziomowy, który wyklucza błędy w przyszłości</b>,
+       budowany pod <b>nową bazę i nową wersję Subiekta od 1.01</b>. Tracker WZ to Twój punkt 5.iv („workflow z konsoli"),
+       a raport A6 to punkt 5.iii i 8 („automatyzacje i alerty"). Nasze dotychczasowe prace pasują w ten obraz,
+       ale <b>kolejność prac trzeba odwrócić: najpierw wykrywanie i blokowanie, raportowanie na końcu</b>.</p>
+  </div>
+
+  <h2>1. Lista — co wiemy o błędach (Twoje punkty 4a–4h + nasze pomiary)</h2>
+  <table>
+    <thead><tr><th>#</th><th>Problem</th><th>Czym udowodniony</th><th>Jak wykrywamy / czym blokujemy</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>Wsteczne edycje dokumentów</b> — zmiana faktury, a najgorsze: <b>zmiana kontrahenta</b> (4d)</td>
+          <td>Sprawdziliśmy: baza ma znacznik <span class="mono">dok_KorektaDanychNabywcy</span> — ustawiony na <b>2 dokumentach</b> z ~74 tys., oba korekty zerowe z 2024. Znacznik „zmiana daty dok. kasowego" jest na <b>71 281</b> dokumentach, czyli nie znaczy nic.</td>
+          <td><span class="tag t-no">DZIŚ NIE WYKRYJEMY</span> Ślad rewizyjny (<span class="mono">dkr_SladRewizyjny</span>) istnieje w bazie, ale jest <b>pusty — 0 rekordów</b>. To pozycja do zbudowania w nowej bazie, nie do wyciągnięcia z obecnej.</td></tr>
+      <tr><td>2</td><td><b>Te same firmy w obu bazach</b> — ten sam klient wpisany i w jawnej, i w komandytowej (4c)</td>
+          <td><b>551 z 851 klientów wydań (64,7%) nie istnieje w jawej</b> — mimo że wszyscy mają NIP. Dopasowanie po NIP trafia w <b>1,5%</b> przypadków, po znormalizowanej nazwie w <b>21,3%</b>.</td>
+          <td>Gotowa kaskada 6 stopni (NIP → nazwa → adres → kontakt → pozycje → powiązania) + 8 reguł normalizacji nazw. <b>Element mechanizmu synchronizacji, o który prosisz.</b></td></tr>
+      <tr><td>3</td><td><b>Brak rejestru <u>budów klientów</u></b> — różne sposoby „ustawiania" inwestycji, brak definicji (4b)</td>
+          <td>Wydania na budowy prowadzone przez klientów to <b>3 152 wydania / 16 016 720 zł</b> (24% wartości). Mapowanie „wydanie → nazwa budowy" istnieje wyłącznie w arkuszu klienta („ALEX KACZKI", „PARK DRAGONÓW"). <b>Baza nie ma pola „inwestycja"</b> — i to jest sedno problemu, nie to, że budowa nie jest przychodem.</td>
+          <td>Dziś: ręczna mapa plikowa, nieodtwarzalna z bazy. Docelowo: <b>rejestr budów</b> jako źródło prawdy + wymuszenie wyboru budowy przy ZK (poziom I). Sprawdzenie reguły — zadanie dla M.</td></tr>
+      <tr><td>4</td><td><b>Klient indywidualny z 3 inwestycjami nachodzącymi na siebie</b> (4a)</td>
+          <td>Nie mamy tego zmierzonego — <b>i to jest luka w naszym rozpoznaniu</b>. Bez rejestru inwestycji nie da się tego policzyć z bazy.</td>
+          <td><span class="tag t-w">DO ZMIERZENIA</span> Potrzebny rejestr inwestycji — wtedy jedno zapytanie pokaże takich klientów.</td></tr>
+      <tr><td>5</td><td><b>Ręczne pliki, w tym plik kasowy</b> (4e)</td>
+          <td>Kasa w bazie: <b>2 942 rozrachunki na 31 040 478 zł</b>, otwarte salda <b>816 588 zł</b>, po terminie <b>657 246 zł</b>. Kasa nie domyka się z plikiem ręcznym — to było źródło Twoich rozbieżności.</td>
+          <td>Plik kasowy = materiał kontrolny. Docelowo: kasa czytana z bazy, plik ręczny znika.</td></tr>
+      <tr><td>6</td><td><b>Brak umów przy fakturach wychodzących ze spółki jawnej</b> (4f)</td>
+          <td>Nie zweryfikowane — nie mamy jeszcze listy faktur z jawnej.</td>
+          <td><span class="tag t-w">PO STRONIE M</span> Proste: faktura z jawnej bez powiązanej umowy = alert.</td></tr>
+      <tr><td>7</td><td><b>Wydania bez dokumentu — „dziury"</b></td>
+          <td><b>1 171 wydań / 3 892 693 zł</b> (metoda powiązań, 21.09). Uwaga: mapa z 15.09 mówiła <b>557 / 1,21 mln</b>, automat z 17.09 — <b>1 359</b>. Trzy liczby, to samo zjawisko.</td>
+          <td><span class="tag t-no">ROZJAZD DO ROZSTRZYGNIĘCIA</span> To pozycja E4 — bez niej każda liczba o dziurach jest niepewna.</td></tr>
+      <tr><td>8</td><td><b>Obieg wewnętrzny liczony jak sprzedaż</b></td>
+          <td><b>6 003 wydania / 23 233 738 zł</b> to faktury na własne spółki (HURTOWNIA POKRYĆ DACHOWYCH DOBRY DACH + DOBRY DACH sp. z o.o.). Bez rozdzielenia przychód byłby zawyżony o 23,2 mln.</td>
+          <td><span class="tag t-ok">WYKRYTE I ODCIĘTE</span> Ale <b>to nie zakończenie — to stan przejściowy „w drodze"</b>: zero przychodu teraz, przychód powstaje, gdy druga spółka zafakturuje klientowi. Nasza kolejka do pilnowania, nie pozycja zamknięta.</td></tr>
+      <tr><td>9</td><td><b>Towar wyjechał, faktury nie ma</b></td>
+          <td><b>456 wydań</b> nowszych niż ostatnia faktura dla tego samego klienta.</td>
+          <td><span class="tag t-ok">GOTOWE DO WDROŻENIA</span> Najszybciej zamienialne w pieniądze — faktura do wystawienia, nie spór.</td></tr>
+      <tr><td>10</td><td><b>Faktury zbiorcze</b> — jedna faktura na wiele wydań</td>
+          <td><b>47%</b> faktur obejmuje 4–10 wydań, <b>15,2%</b> ponad 10, tylko <b>17,6%</b> to jedno wydanie.</td>
+          <td><span class="tag t-ok">ZASADA</span> Przypisujemy <b>towarem i ilością</b>, nigdy kwotą. Bez tej reguły 63% powiązań byłoby fałszywych.</td></tr>
+      <tr><td>11</td><td><b>Błędne kategorie handlowca</b></td>
+          <td>Wpisane: „Sprzedaż" 439, „PAL" 119, „Detal" 87. Powinno być: MP 322, INWENTARYZACJA 154, SM 36 i dalej. <b>497 z 659 pozycji wciąż w bazie.</b></td>
+          <td><span class="tag t-w">CZEKA NA DECYZJĘ</span> Kto poprawia i czy w starej bazie w ogóle poprawiamy.</td></tr>
+      <tr><td>12</td><td><b>Nadwyżka kosztu nad wartością</b></td>
+          <td>Koszt <b>68 586 749 zł</b> vs wartość netto <b>67 622 038 zł</b> — nadwyżka <b>965 tys. zł</b>. Przy takim układzie <b>marży nie liczymy</b>.</td>
+          <td><span class="tag t-no">BLOKUJE WYNIK</span> Trzeba wyjaśnić, zanim jakakolwiek marża trafi do raportu.</td></tr>
+      <tr><td>13</td><td><b>Dokumenty bez bazy po drugiej stronie (VIA)</b></td>
+          <td><b>157 faktur</b> <span class="mono">FS …/VIA/…</span> z lat 2023–2026, dla których nie mamy bazy. Mamy tylko <span class="mono">_2022_VIA</span>.</td>
+          <td><span class="tag t-ok">PYTANIE PRZYGOTOWANE</span> Treść do wysłania klientowi leży w kanale.</td></tr>
+      <tr><td>14</td><td><b>Brak telefonów w kartotekach</b></td>
+          <td><b>0 telefonów na 7 595 kartotek</b> — kontakt wyłącznie mailowy.</td>
+          <td>Nie błąd merytoryczny, ale blokuje automatyczne „dzwoń do zalegających" z Twojego punktu 5.iii.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2. Twoje 4 poziomy systemu a to, co mamy</h2>
+  <div class="lvl"><b>I · Prewencja</b><div><i>„Uniemożliwienie wystąpienia błędów — wymuszenia procesowe"</i><br>
+     <b>Nie mamy nic.</b> To jest nowa baza od 1.01 i reguły w Subiekcie: ZK generuje umowę, trzeba zaznaczyć które ZK idzie dalej, rejestr inwestycji, blokada wstecznej edycji kontrahenta. <b>Tu jest największa wartość i najwięcej pracy.</b></div></div>
+  <div class="lvl"><b>II · Kontrola stanu</b><div><i>„Bieżąca kontrola stanu i rozjazdów, punkt zero startowy"</i><br>
+     <b>Mamy podstawy:</b> umiemy liczyć stan wydań, rozrachunków i zaległości. <b>Brakuje punktu zero</b> — zamrożonego obrazu baz na 1.01, do którego wszystko się porównuje. To trzeba zrobić raz i wtedy zaczyna się wykrywanie rozjazdów.</div></div>
+  <div class="lvl"><b>III · Automatyzacje</b><div><i>„Wymuszanie akcji na podstawie stanu, regularne informowanie, alerty o nietypowych zdarzeniach"</i><br>
+     <b>Mamy projekt raportu dziennego A6</b> (dwa widoki: handlowiec i właściciel) + reguły liczenia. Brakuje wpięcia: wydania bez faktury, dziury, alert „WZ po ostatniej fakturze".</div></div>
+  <div class="lvl"><b>IV · Workflow z konsoli</b><div><i>„Np. sprawdź WZ i system idzie algorytmem tropiąc WZ i jego powiązania"</i><br>
+     <b>Mamy gotowy algorytm i wykonany przebieg:</b> 19 477 wydań sklasyfikowanych, suma domyka się co do 0,00 zł — 38,47 mln przychód z dowodem, 23,23 mln przesunięcia, 3,89 mln dziury. To jest <b>działający workflow</b>, tylko jeszcze nie wpięty w konsolę.</div></div>
+
+  <div class="box bad">
+    <h3 style="margin-top:0">Wniosek, który muszę powiedzieć wprost</h3>
+    <p style="margin:0">Z Twoich 8 założeń <b>najsłabiej stoimy na punkcie 4a i 4d</b> — a to są rzeczy, które najbardziej Cię bolą.
+       <b>4d (wsteczne edycje)</b>: baza tego dziś nie zapisuje — trzeba to zbudować w nowej bazie, bo inaczej nie ma czego pilnować.
+       <b>4a (nachodzące inwestycje)</b>: nie da się tego zmierzyć bez rejestru inwestycji — czyli bez punktu I poziomu systemu.
+       Wszystko inne mamy albo zmierzone, albo gotowe do wpięcia.</p>
+  </div>
+
+  <div class="box good">
+    <h3 style="margin-top:0">Co proponuję jako najbliższy krok (i dlaczego)</h3>
+    <ul style="margin-top:6px">
+      <li><b>Punkt zero baz na 1.01</b> — zamrożony obraz stanu + reguły porównania. Bez tego nie ma „bieżącej kontroli rozjazdów" z poziomu II.</li>
+      <li><b>Pilnowanie wstecznych edycji</b> — projekt mechanizmu dla nowej bazy (ślad rewizyjny w Subiekcie jest, trzeba go włączyć i dopisać to, czego nie obejmuje).</li>
+      <li><b>Workflow „sprawdź WZ" z konsoli</b> — mamy algorytm i przebieg, brakuje tylko wywołania z konsoli. Najmniejszy wysiłek, największy efekt pokazowy.</li>
+    </ul>
+  </div>
+
+  <p class="small" style="margin-top:44px">Lista błędów i problemów · ARGUS · 2026-09-21 ·
+     źródła: zapis spotkania z klientem 9.09.2026 (<span class="mono">message.txt</span>), mapa stanów wydań,
+     przebieg E1 na 19 477 wydaniach, pomiary rozrachunków i kasy · kwoty netto w zł.</p>
+</div>
+</body>
+</html>

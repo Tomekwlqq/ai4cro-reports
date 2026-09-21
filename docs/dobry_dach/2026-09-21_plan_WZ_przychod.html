@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<title>Plan działania — WZ a ustalanie przychodu</title>
+<style>
+  :root{--ink:#141a24;--ink-2:#4a5568;--line:#e3e7ee;--soft:#f7f8fa;
+        --cash:#1a7f5a;--warn:#b7791f;--bad:#c0392b;--accent:#7c5cff}
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff;color:var(--ink);
+       font-family:"Space Grotesk","Helvetica Neue",Arial,sans-serif;font-size:19px;line-height:1.55}
+  .wrap{max-width:1140px;margin:0 auto;padding:44px 28px 80px}
+  h1{font-size:34px;margin:0 0 6px}
+  h2{font-size:30px;margin:46px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h3{font-size:23px;margin:24px 0 10px}
+  .sub{color:var(--ink-2);font-size:18px;margin:0 0 24px}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+  ul,ol{margin:12px 0 0 24px} li{margin:8px 0}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{text-align:left;padding:13px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:17px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.03em}
+  .box{border-left:6px solid var(--accent);background:#faf9ff;padding:18px 22px;border-radius:0 12px 12px 0;margin:22px 0}
+  .box.bad{border-color:var(--bad);background:#fdf5f4}
+  .box.good{border-color:var(--cash);background:#f4fbf7}
+  .box.warn{border-color:var(--warn);background:#fdfaf1}
+  .small{font-size:16px;color:var(--ink-2)}
+  .bar{height:14px;border-radius:8px;background:#eef1f6;overflow:hidden}
+  .bar>i{display:block;height:100%}
+  .step{border:2px solid var(--line);border-radius:16px;padding:20px 22px;margin:16px 0}
+  .step h3{margin:0 0 6px}
+  .step .who{font-size:16px;color:var(--ink-2);margin-bottom:10px}
+  .tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:15px;font-weight:600;background:#eef1f6;color:var(--ink-2)}
+  .tag.ok{background:#e8f6ef;color:var(--cash)} .tag.no{background:#fdecea;color:var(--bad)} .tag.w{background:#fdf6e3;color:var(--warn)}
+  .k{display:grid;grid-template-columns:210px 1fr 130px;gap:14px;border-bottom:1px solid var(--line);padding:12px 0;align-items:start}
+  .k b{font-size:19px}
+</style>
+</head>
+<body><div class="wrap">
+
+  <h1>Plan działania — WZ a ustalanie przychodu</h1>
+  <p class="sub">Krok po kroku: jak przejść od wydań magazynowych do przychodu firmy — z dowodem przy każdej kwocie.
+     Dane: kopia bazy komandytowej (mapa stanów, dane do 07.09.2026). Kwoty netto w zł.</p>
+
+  <div class="box bad">
+    <h3 style="margin-top:0">Punkt wyjścia — mapa stanów <span class="tag w">metoda z 15.09, zastąpiona przez sekcję 1a</span></h3>
+    <p class="small" style="margin-top:0">Poniższe liczby pochodzą z mapy stanów (klasyfikacja wg klienta i kategorii).
+       Nowy pomiar — sekcja 1a — czyta wprost powiązania dokumentów i jest liczbą bieżącą. Zostawiamy oba, bo różnica między nimi
+       jest częścią roboty (etap E4).</p>
+    <p>Wydania magazynowe (WZ) na komandytowej to <b class="mono">66 856 616 zł</b>. Ale <b>WZ nie jest przychodem</b> —
+       przychód powstaje dopiero wtedy, gdy towar opuszcza firmę na rzecz klienta zewnętrznego i jest na to faktura.
+       Reszta to przesunięcia wewnątrz firmy, korekty i sprawy bez dokumentu:</p>
+    <table>
+      <thead><tr><th>Zakończenie wydania</th><th>Kwota</th><th>Udział</th><th>Czy to przychód</th></tr></thead>
+      <tbody>
+        <tr><td><b>Faktura na klienta</b></td><td class="mono">26 483 922</td><td><div class="bar"><i style="width:39.6%;background:var(--cash)"></i></div>39,6%</td><td><span class="tag ok">TAK</span></td></tr>
+        <tr><td><b>Przesunięcie na własną jawną</b> (PNBM)</td><td class="mono">17 014 441</td><td><div class="bar"><i style="width:25.4%;background:var(--warn)"></i></div>25,4%</td><td><span class="tag w">zależy od drugiej strony</span></td></tr>
+        <tr><td><b>Wydanie na budowę klienta</b> („inwestycja")</td><td class="mono">16 016 720</td><td><div class="bar"><i style="width:24.0%;background:var(--warn)"></i></div>24,0%</td><td><span class="tag w">PRZYCHÓD — faktura w innym okresie</span></td></tr>
+        <tr><td><b>Faktura inwentaryzacyjna</b></td><td class="mono">2 800 636</td><td><div class="bar"><i style="width:4.2%;background:var(--ink-2)"></i></div>4,2%</td><td><span class="tag no">NIE</span></td></tr>
+        <tr><td><b>Zaliczka jawna</b></td><td class="mono">2 409 908</td><td><div class="bar"><i style="width:3.6%;background:var(--cash)"></i></div>3,6%</td><td><span class="tag ok">TAK (rozliczona)</span></td></tr>
+        <tr><td><b>Bez dokumentu — dziura</b></td><td class="mono">1 209 585</td><td><div class="bar"><i style="width:1.8%;background:var(--bad)"></i></div>1,8%</td><td><span class="tag no">NIE WIEMY</span></td></tr>
+        <tr><td><b>Zaliczka komandytowa</b></td><td class="mono">722 912</td><td><div class="bar"><i style="width:1.1%;background:var(--cash)"></i></div>1,1%</td><td><span class="tag ok">TAK (rozliczona)</span></td></tr>
+        <tr><td><b>PNBM niezafakturowane na jawną</b></td><td class="mono">198 492</td><td><div class="bar"><i style="width:0.3%;background:var(--warn)"></i></div>0,3%</td><td><span class="tag no">NIE</span></td></tr>
+      </tbody>
+    </table>
+    <p style="margin-bottom:0"><b>Wniosek:</b> z 66,9 mln wydań <b>44,3% (29,6 mln)</b> ma dziś fakturę, a kolejne
+       <b>24,0% (16,0 mln)</b> to wydania na budowy klientów — <b>też przychód</b>, tylko fakturowany w innym okresie.
+       <b>35,1% wg E1 (23,2 mln) to stan „w drodze"</b> — nie zakończenie, a kolejka czekająca na fakturę w drugiej spółce.
+       Reszta: <b>4,2% (2,8 mln)</b> korekty inwentaryzacyjne, <b>1,8% (1,2 mln)</b> bez adresu.
+       To nie są błędy — to jest zakres roboty.</p>
+  </div>
+
+  <h2>1. Definicja, na której stoimy</h2>
+  <div class="box good">
+    <ul style="margin-top:0">
+      <li><b>Przychód</b> = faktura sprzedaży na klienta <b>zewnętrznego</b> (albo zaliczka, która została rozliczona taką fakturą).</li>
+      <li><b>Przesunięcie</b> = towar idzie do drugiej spółki tej samej grupy. <b>Zero przychodu, zero zysku</b> — dopóki druga spółka nie sprzeda klientowi.</li>
+      <li><b>Korekta</b> = inwentaryzacja, zwrot materiału, przyjęcie korygujące. Nie przychód, ale wpływa na stan magazynu i koszt.</li>
+      <li><b>Dziura</b> = wydanie, po którym nie ma żadnego dokumentu. Kwota jest, adres nie.</li>
+      <li><b>Urwany łańcuch</b> = komandytowa wydała do jawnej, a jawna nie ma faktury dla klienta. To <b>strata</b> równa kosztowi wydania.</li>
+    </ul>
+  </div>
+
+  <h2>1a. Wynik E1 — policzone na wszystkich wydaniach (21.09.2026)</h2>
+  <p class="sub">Klasyfikacja wszystkich 19 477 wydań z kopii bazy. Suma klas domyka się do sumy wydań <b>co do 0,00 zł</b>.</p>
+  <table>
+    <thead><tr><th>Zakończenie wydania</th><th>Wydań</th><th>Netto</th><th>Udział</th><th>Co to znaczy</th></tr></thead>
+    <tbody>
+      <tr><td><b>Faktura na klienta spoza grupy</b></td><td class="mono">9 978</td><td class="mono">38 474 748,80</td><td class="mono">58,2%</td><td><span class="tag ok">przychód z dowodem</span></td></tr>
+      <tr><td><b>Faktura na własną spółkę</b></td><td class="mono">6 003</td><td class="mono">23 233 738,23</td><td class="mono">35,1%</td><td><span class="tag w">w drodze — czeka na fakturę w drugiej spółce</span></td></tr>
+      <tr><td><b>Brak powiązania — dziura</b></td><td class="mono">1 171</td><td class="mono">3 892 693,44</td><td class="mono">5,9%</td><td><span class="tag no">bez adresu</span></td></tr>
+      <tr><td>Korekty (KFS/KFZ)</td><td class="mono">188</td><td class="mono">291 482,04</td><td class="mono">0,4%</td><td>korekta, nie przychód</td></tr>
+      <tr><td>Paragony (PA)</td><td class="mono">1 085</td><td class="mono">178 653,00</td><td class="mono">0,3%</td><td><span class="tag ok">przychód detaliczny</span></td></tr>
+      <tr><td>ZK nierozliczone</td><td class="mono">10</td><td class="mono">67 443,56</td><td class="mono">0,1%</td><td>zamówienie, faktury brak</td></tr>
+      <tr><td>FZ (kierunek odwrotny)</td><td class="mono">1</td><td class="mono">19,77</td><td class="mono">0,0%</td><td>do sprawdzenia</td></tr>
+      <tr><td>Nagłówki 0,00 (obieg wewnętrzny)</td><td class="mono">1 041</td><td class="mono">0,00</td><td class="mono">0,0%</td><td>eksport/import wewnątrz firmy</td></tr>
+      <tr><td><b>RAZEM</b></td><td class="mono"><b>19 477</b></td><td class="mono"><b>66 138 778,84</b></td><td class="mono"><b>100%</b></td><td>kontrola: 0,00 zł różnicy</td></tr>
+    </tbody>
+  </table>
+  <div class="box bad">
+    <h3 style="margin-top:0">Ustalenie, które zmienia rachunek</h3>
+    <p style="margin:0">Faktura typu FS <b>nie znaczy „klient zewnętrzny"</b>. W klasie faktur siedzą faktury na <b>własne spółki</b>:
+       HURTOWNIA POKRYĆ DACHOWYCH DOBRY DACH (5 266 wydań / 19 508 512,67 zł) i DOBRY DACH SP. Z O.O. (737 / 3 725 225,56 zł).
+       Razem <b>6 003 wydań / 23 233 738,23 zł</b> to przesunięcie między spółkami — <b>zero przychodu</b>.
+       Bez tego podziału przychód byłby <b>zawyżony o 23,2 mln zł</b>. To była najważniejsza poprawka tego etapu.</p>
+  </div>
+  <div class="box warn">
+    <h3 style="margin-top:0">Dwie metody, trzy liczby — do rozstrzygnięcia (etap E4)</h3>
+    <p style="margin:0">Dziury liczone na trzy sposoby: <b>1 171 wydań / 3,89 mln</b> (powiązanie dokumentów, 21.09),
+       <b>557 / 1,21 mln</b> (mapa stanów, 15.09) i <b>1 359</b> (pomiar automatyczny, 17.09).
+       To samo zjawisko, trzy metody. Metoda z 21.09 czyta wprost powiązanie nagłówka, dlatego uznajemy ją za bliższą prawdy —
+       ale <b>rozstrzygnięcie należy do żywej bazy</b> (zadanie M).</p>
+  </div>
+
+  <h2>2a. Zakończenia wydania (Z1–Z4) — tak kończy się wydanie</h2>
+  <p class="small">Tylko te cztery stany są zamknięciem sprawy. Każde wydanie kończy się w jednym z nich.</p>
+  <div class="k"><b>Z1 · KASA — faktura dla klienta</b><div>Wydanie ma fakturę sprzedaży na klienta <b>zewnętrznego</b>. To jest przychód. <b>26 483 922 zł</b> (39,6% wydań) w mapie stanów.</div><div><span class="tag ok">zakończone</span></div></div>
+  <div class="k"><b>Z2 · KOREKTA</b><div>Faktura inwentaryzacyjna, zwrot materiału, przyjęcie korygujące. Nie przychód — sprawa zamknięta administracyjnie. <b>2 800 636 zł</b> (4,2%).</div><div><span class="tag no">zamknięte bez kasy</span></div></div>
+  <div class="k"><b>Z3 · STRATA — łańcuch urwany</b><div>Wydanie na własną spółkę bez faktury po drugiej stronie. <b>Strata = koszt wydania.</b></div><div><span class="tag no">zamknięte stratą</span></div></div>
+  <div class="k"><b>Z4 · PYTANIE — brak dokumentu</b><div>Nic nie ma po drugiej stronie: <b>557 wydań / 1 209 585 zł</b> (mapa) albo 1 171 / 3,89 mln (metoda powiązań). Nie jest to ani przychód, ani strata — to <b>pytanie do zamknięcia decyzją</b>.</div><div><span class="tag no">niezamknięte</span></div></div>
+
+  <h2>2b. Stany przejściowe — „W DRODZE" (W1–W4)</h2>
+  <p class="small">To <b>nie są zakończenia</b>. Sprawa jest w połowie drogi: coś się stało, ale nie wiadomo jeszcze, czy będzie z tego kasa, korekta czy strata.
+     Proponowana nazwa: <b>„w drodze"</b>. Każda pozycja czeka na konkretny następny ruch.</p>
+  <div class="k"><b>W1 · Przesunięcie na własną spółkę</b><div>Wydanie ma fakturę, ale na <b>naszą własną spółkę</b> (HURTOWNIA POKRYĆ DACHOWYCH DOBRY DACH, DOBRY DACH sp. z o.o.). Zero przychodu <b>w tym momencie</b> — przychód powstanie dopiero, gdy druga spółka zafakturuje klientowi końcowemu. <b>6 003 wydania / 23 233 738 zł</b> (35,1%). Czeka na: fakturę w drugiej spółce.</div><div><span class="tag w">w drodze</span></div></div>
+  <div class="k"><b>W2 · Wydanie na budowę klienta</b><div>Budowa prowadzona przez klienta (nazwy: „ALEX KACZKI", „PARK DRAGONÓW"). To <b>sprzedaż, czyli przyszły przychód</b> — ale faktura bywa w innym okresie, dlatego trzeba spinać po towarze i ilości. <b>3 152 wydania / 16 016 720 zł</b> (24,0%). Czeka na: fakturę za budowę.</div><div><span class="tag w">w drodze</span></div></div>
+  <div class="k"><b>W3 · Zaliczka bez faktury końcowej</b><div>Zaliczka wpłacona (jawna 2 409 908 zł / komandytowa 722 912 zł), faktury końcowej brak — więc przychód jeszcze nie jest rozliczony. Czeka na: fakturę końcową.</div><div><span class="tag w">w drodze</span></div></div>
+  <div class="k"><b>W4 · Towar wyszedł, faktury nie ma</b><div><b>456 wydań</b> nowszych niż ostatnia faktura dla tego klienta. Najprostsze do zamknięcia: wystarczy wystawić fakturę. Czeka na: fakturę (albo wyjaśnienie, dlaczego jej nie ma).</div><div><span class="tag w">w drodze</span></div></div>
+  <div class="box warn">
+    <p style="margin:0"><b>Dlaczego to rozdzielenie ma znaczenie:</b> „w drodze" nie jest wynikiem. Jeśli policzymy przesunięcie na spółkę jako zakończenie,
+       pokażemy 23,2 mln jako sprawę zamkniętą — a to jest <b>kolejka do pilnowania</b>. Stan przejściowy ma zawsze trzy rzeczy:
+       gdzie jest, ile czeka, i na co czeka. Dopiero brak ruchu w tej kolejce jest problemem.</p>
+  </div>
+
+  <h2>3. Plan — etapy po kolei</h2>
+
+  <div class="step">
+    <h3>E0 · Zamrożenie definicji i kolejności</h3>
+    <div class="who">ARGUS · <span class="tag ok">zrobione</span></div>
+    <ul>
+      <li>Definicja przychodu, przesunięcia, korekty, dziury, straty (sekcja 1).</li>
+      <li>Kolejność sprawdzania K1→K7 (kolejność = jakość; odwrotna kolejność daje fałszywe dziury).</li>
+      <li>Reguła dowodu: <b>każda kwota z zapytaniem, którego nie da się podważyć</b>, i z datą pomiaru.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>E1 · Klasyfikacja wszystkich wydań na kopii</h3>
+    <div class="who">ARGUS + M · start: 19 477 wydań</div>
+    <ul>
+      <li>Każde wydanie dostaje jedno z <b>zakończeń Z1–Z4</b> albo jeden ze <b>stanów przejściowych W1–W4</b> („w drodze") — albo jawnie „niesklasyfikowane", nigdy na siłę.</li>
+      <li>Wynik: tabela z sumami per zakończenie + liczba sztuk. Pierwsze przejście już mamy (mapa stanów).</li>
+      <li><b>Kryterium zamknięcia:</b> suma kategorii równa się sumie wydań co do złotówki.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>E2 · Dziury na pierwszy ogień — 557 wydań / 1,21 mln zł</h3>
+    <div class="who">ARGUS zleca, M sprawdza na żywej bazie · <span class="tag w">w toku</span></div>
+    <ul>
+      <li>Dla każdego z 557: szukamy dokumentu po towarze i ilości (nie po kwocie — faktury zbiorcze to 47% przypadków).</li>
+      <li>Powtarzający się powód → <b>wzorzec</b> (dopiero od trzech przypadków, nigdy z jednego).</li>
+      <li>Wzorce podejrzane już teraz: wydania wewnętrzne z nagłówkiem 0,00 zł (znaleźliśmy 138 900 zł, 90 000 zł, 75 184 zł) — to prawdopodobnie główna część rozjazdu.</li>
+      <li><b>Kryterium zamknięcia:</b> dla każdej dziury jest zdanie „co się z nią stało" albo wpis „nierozstrzygnięte" z powodem.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>E3 · Alerty — 456 wydań po ostatniej fakturze</h3>
+    <div class="who">M (na żywej bazie) · <span class="tag">kolejny krok</span></div>
+    <ul>
+      <li>Wydanie nowsze niż ostatnia faktura dla tego samego klienta = towar wyszedł, faktury nie ma.</li>
+      <li>To najszybciej zamienialne w pieniądze: faktura do wystawienia, nie sprawa sporna.</li>
+      <li><b>Kryterium zamknięcia:</b> lista z kwotą i klientem, wręczona handlowcom.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>E4 · Rozjazd 2 153 vs 557 — nazwanie różnicy</h3>
+    <div class="who">M (żywa baza) + ARGUS (kontrola)</div>
+    <ul>
+      <li>Nasza liczba dziur (557) i liczba z arkusza Tomka (2 153) opisują to samo zjawisko inaczej.</li>
+      <li>Sprawdzamy po kolei: wydania wewnętrzne zerowe, zakres dat, kategorie niehandlowe, dokumenty VIA bez bazy.</li>
+      <li><b>Kryterium zamknięcia:</b> każda złotówka różnicy ma przypisany powód.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>E5 · Druga spółka — łańcuch do klienta końcowego</h3>
+    <div class="who">M · po domknięciu komandytowej</div>
+    <ul>
+      <li>17,0 mln przesunięć na jawną: dla każdego wydania szukamy faktury w jawej dla klienta końcowego.</li>
+      <li>Powiązanie: <b>nazwa znormalizowana</b> (21,3% skuteczności), potem NIP (1,5%), potem towar i ilość.</li>
+      <li>Wynik: łańcuchy domknięte → przychód; urwane → strata (K3).</li>
+      <li><b>Kryterium zamknięcia:</b> każda złotówka przesunięcia ma status: domknięta / urwana / nierozstrzygnięta.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>E6 · Domknięcie kosztu i marży</h3>
+    <div class="who">ARGUS · po E1–E5</div>
+    <ul>
+      <li>Dziś koszt (68,6 mln) przekracza wartość netto (67,6 mln) o ok. <b>965 tys. zł</b> — dopóki to nie jest wyjaśnione, <b>marży nie liczymy</b>.</li>
+      <li>Koszt przypisujemy tam, gdzie przychód: K1 → koszt sprzedaży, K5 → inwestycja, K6 → korekta.</li>
+    </ul>
+  </div>
+
+  <h2>4. Bramy, których nie przechodzimy na skróty</h2>
+  <table>
+    <thead><tr><th>Brama</th><th>Zasada</th></tr></thead>
+    <tbody>
+      <tr><td><b>Dowód</b></td><td>Żadna kwota nie wchodzi do przychodu bez zapytania, które można powtórzyć. Liczby z kopii są kontrolą; wiążące są z żywej bazy.</td></tr>
+      <tr><td><b>Rozjazd</b></td><td>Nasz wynik vs materiał kontrolny: różnica &gt; 0,5% → nie publikujemy, najpierw wyjaśnienie.</td></tr>
+      <tr><td><b>Wzorzec</b></td><td>Powód uznajemy za wzorzec dopiero od trzech przypadków. Z jednego przypadku nie robimy reguły.</td></tr>
+      <tr><td><b>Jawność</b></td><td>Nierozstrzygnięte pozycje zostają widoczne jako „nierozstrzygnięte" z kwotą — nigdy nie znikają w „pozostałe".</td></tr>
+      <tr><td><b>Zakres</b></td><td>Nie ruszamy bazy klienta. Wszystkie eksperymenty na kopii; na żywej bazie tylko odczyt.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box warn">
+    <h3 style="margin-top:0">Co blokuje wynik (i czego potrzebuję od M)</h3>
+    <ul>
+      <li><b>Kolumna prawdy</b> (<span class="mono">0015</span>) — czy „pozostało do zapłaty" to faktycznie ta kolumna, którą przyjęliśmy. Bez tego kwoty mogą być zaniżone ~15×.</li>
+      <li><b>Łańcuch między spółkami</b> — czy 84 wydania PNBM niezafakturowane to naprawdę wszystko, czy to tylko wierzchołek.</li>
+      <li><b>Kategorie niehandlowe</b> — potwierdzić, że inwestycja i inwentaryzacja faktycznie nie są przychodem (na dziś 28,1% wydań).</li>
+      <li><b>VIA po 2022</b> — 157 dokumentów bez bazy po drugiej stronie; pytanie do klienta już przygotowane.</li>
+    </ul>
+  </div>
+
+  <p class="small" style="margin-top:44px">Plan działania · ARGUS · 2026-09-21 ·
+     źródło liczb: mapa stanów wydań (kopia bazy komandytowej, dane do 07.09.2026) ·
+     powiązane dokumenty: „A6 — 16 założeń", „A6 — inżynieria", „MODEL_POLACZEN_DOKUMENTOW" (§9, §10, §10a).</p>
+</div>
+</body>
+</html>
