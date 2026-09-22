@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setup Boy — Dobry Dach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --vio:#7c5cff;--ink:#1a1f2b;--mut:#667085;--line:#e4e7ec;
+  --green:#166534;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --amber:#92400e;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --red:#991b1b;--red-bg:#fef2f2;--red-border:#fecaca;
+  --blue:#1e40af;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Space Grotesk',-apple-system,'Segoe UI',Arial,sans-serif;background:#f8f9fc;color:var(--ink);line-height:1.6}
+code,pre,.mono{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+
+.hdr{background:#fff;border-bottom:2px solid var(--line);position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(26,31,43,.06)}
+.hdr-inner{max-width:1140px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hdr .brand{font-weight:800;font-size:15px;color:var(--ink);margin-right:8px}
+.hdr .brand span{color:var(--vio)}
+.nav-link{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:#3a4250;text-decoration:none;border:1.5px solid var(--line);border-radius:999px;padding:5px 12px;white-space:nowrap;transition:.15s;background:#fff}
+.nav-link:hover{border-color:var(--vio);color:var(--vio)}
+
+.wrap{max-width:1140px;margin:0 auto;padding:28px 20px 80px}
+.section{margin-bottom:40px}
+h2{font-size:20px;font-weight:700;letter-spacing:-.2px;margin-bottom:4px;scroll-margin-top:70px}
+.section-sub{color:var(--mut);font-size:13.5px;margin-bottom:18px}
+
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+@media(max-width:700px){.summary-grid{grid-template-columns:1fr}}
+.sum-card{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:16px 18px}
+.sum-card .num{font-size:32px;font-weight:800;color:var(--vio);line-height:1;margin-bottom:4px}
+.sum-card .lbl{font-size:13px;color:var(--mut);font-weight:600}
+.sum-card .detail{font-size:13px;color:var(--ink);margin-top:6px}
+
+.hbox{border-radius:12px;padding:14px 18px;margin-bottom:14px;border:1.5px solid}
+.hbox.green{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
+.hbox.amber{background:var(--amber-bg);border-color:var(--amber-border);color:var(--amber)}
+.hbox.red{background:var(--red-bg);border-color:var(--red-border);color:var(--red)}
+.hbox.blue{background:var(--blue-bg);border-color:var(--blue-border);color:var(--blue)}
+.hbox.vio{background:#f5f3ff;border-color:#c4b5fd;color:#5b21b6}
+.hbox b{display:block;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;opacity:.75}
+.hbox p{font-size:14px;line-height:1.5}
+
+.timeline{list-style:none;position:relative}
+.timeline::before{content:'';position:absolute;left:28px;top:0;bottom:0;width:2px;background:var(--line)}
+.tl-item{display:flex;gap:16px;margin-bottom:20px;position:relative}
+.tl-dot{flex-shrink:0;width:58px;height:58px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:13px;border:2px solid;position:relative;z-index:1;background:#fff;text-align:center}
+.tl-dot.ok{border-color:var(--green-border);color:var(--green);background:var(--green-bg)}
+.tl-dot.now{border-color:var(--vio);color:var(--vio);background:#f5f3ff}
+.tl-dot.wait{border-color:var(--line);color:var(--mut)}
+.tl-body{flex:1;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px}
+.tl-body h3{font-size:15px;font-weight:700;margin-bottom:6px}
+.tl-body .tl-sub{font-size:13px;color:var(--mut);margin-bottom:10px}
+.tl-body ul{font-size:13.5px;padding-left:18px}
+.tl-body li{margin-bottom:4px}
+.tl-time{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mut);margin-top:8px}
+
+.chk-group{background:#fff;border:1.5px solid var(--line);border-radius:14px;margin-bottom:16px;overflow:hidden}
+.chk-group-hdr{padding:12px 16px;background:#f8f9fc;border-bottom:1px solid var(--line);font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px}
+.chk-group-hdr .cnt{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mut);margin-left:auto;font-weight:500}
+.chk-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid #f0f2f5;cursor:pointer;transition:.1s}
+.chk-item:last-child{border-bottom:0}
+.chk-item:hover{background:#fafafa}
+.chk-item.done{opacity:.6}
+.chk-item.done .chk-text{text-decoration:line-through;color:var(--mut)}
+.chk-box{flex-shrink:0;width:20px;height:20px;border:2px solid var(--line);border-radius:5px;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:.1s;font-size:12px}
+.chk-item.done .chk-box{background:var(--vio);border-color:var(--vio);color:#fff}
+.chk-text{font-size:13.5px;line-height:1.5}
+.chk-text .criteria{font-size:12px;color:var(--mut);font-family:'IBM Plex Mono',monospace;margin-top:2px}
+.progress-bar{height:4px;background:#e4e7ec;border-radius:999px;margin:0 16px 12px;overflow:hidden}
+.progress-fill{height:100%;background:var(--vio);border-radius:999px;transition:.3s}
+
+.matrix{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--ink);border-radius:12px;overflow:hidden;margin-bottom:8px}
+.quad{padding:18px;border:1px solid #e4e7ec}
+.quad:nth-child(1){border-right:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+.quad:nth-child(2){border-bottom:2px solid var(--ink)}
+.quad:nth-child(3){border-right:2px solid var(--ink)}
+.quad-label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+.quad-title{font-size:14px;font-weight:700;margin-bottom:8px}
+.quad.ql{background:#f0fdf4}
+.quad.qs{background:#fffbeb}
+.quad.qr{background:#f8f9fc}
+.quad.qq{background:#fef2f2}
+.auto-chip{display:inline-block;background:#fff;border:1.5px solid;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;margin:2px;font-family:'IBM Plex Mono',monospace}
+.auto-chip.green{border-color:var(--green-border);color:var(--green)}
+.auto-chip.amber{border-color:var(--amber-border);color:var(--amber)}
+.auto-chip.vio{border-color:#c4b5fd;color:#5b21b6}
+.matrix-axis{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mut);font-weight:600;margin-bottom:8px}
+
+table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+th{text-align:left;background:#f6f8fa;padding:8px 12px;border-bottom:2px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#57606a;font-family:'IBM Plex Mono',monospace}
+td{padding:9px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
+tr:last-child td{border-bottom:0}
+.tbl-wrap{background:#fff;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:16px}
+
+.arch{font-family:'IBM Plex Mono',monospace;background:#1a1f2b;color:#e4e7ec;border-radius:14px;padding:20px 24px;font-size:13px;line-height:1.8;overflow-x:auto;margin-bottom:16px}
+.arch .comment{color:#667085}
+.arch .label{color:#7c5cff}
+.arch .ok{color:#34d399}
+
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.card-grid{grid-template-columns:1fr}}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:16px 18px}
+.card .card-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mut);font-weight:600;margin-bottom:6px}
+.card h3{font-size:15px;font-weight:700;margin-bottom:8px}
+.card p{font-size:13.5px;color:var(--mut)}
+
+.sprint-phases{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:700px){.sprint-phases{grid-template-columns:1fr 1fr}}
+.phase{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px}
+.phase .ph-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--vio);font-weight:700;margin-bottom:6px}
+.phase h4{font-size:14px;font-weight:700;margin-bottom:8px}
+.phase ul{font-size:12.5px;color:var(--mut);padding-left:16px}
+.phase li{margin-bottom:3px}
+.phase.active{border-color:var(--vio);background:#f5f3ff}
+
+.step-row{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+.step-num{flex-shrink:0;width:28px;height:28px;background:var(--vio);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.step-body{flex:1;font-size:13.5px}
+.step-body strong{display:block;margin-bottom:2px}
+.step-body code{background:#f5f3ff;color:#5b21b6;padding:2px 6px;border-radius:4px;font-size:12px}
+
+.dec-list{list-style:none}
+.dec-item{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid #f0f2f5}
+.dec-item:last-child{border-bottom:0}
+.dec-num{flex-shrink:0;width:24px;height:24px;background:#f0f2f5;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:var(--mut)}
+.dec-body{flex:1}
+.dec-body strong{font-size:14px;display:block;margin-bottom:2px}
+.dec-body span{font-size:13px;color:var(--mut)}
+.dec-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:6px}
+.dec-tag.klient{background:#fef2f2;color:var(--red)}
+.dec-tag.ja{background:#eff6ff;color:var(--blue)}
+.dec-tag.obaj{background:#fffbeb;color:var(--amber)}
+
+.layer-row{display:grid;grid-template-columns:60px 160px 1fr 1fr 80px;gap:14px;padding:12px 16px;border-bottom:1px solid #f0f2f5;align-items:start;font-size:13px}
+.layer-row:last-child{border-bottom:0}
+.layer-num{font-weight:800;font-size:20px;color:var(--vio)}
+.layer-name{font-weight:700}
+.layer-sub{font-size:11px;color:var(--mut);font-family:'IBM Plex Mono',monospace}
+@media(max-width:700px){.layer-row{grid-template-columns:1fr}}
+
+@media(max-width:700px){.wrap{padding:16px 14px 60px}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-inner">
+    <span class="brand">Setup Boy <span>· Dobry Dach</span></span>
+    <a href="#plan" class="nav-link">📅 Plan dnia</a>
+    <a href="#z0" class="nav-link">✅ Checklista</a>
+    <a href="#arch" class="nav-link">🔧 Architektura</a>
+    <a href="#warstwy" class="nav-link">🏗 5 Warstw</a>
+    <a href="#kolejnosc" class="nav-link">🚦 Kolejność</a>
+    <a href="#roadmapa" class="nav-link">🛣 2 Rundy</a>
+    <a href="#decyzje" class="nav-link">🔑 Decyzje</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- SUMMARY -->
+<div class="section">
+  <h2>Setup Boy — plan operacyjny</h2>
+  <p class="section-sub">Cel: A6 na produkcji + Claude Desktop skonfigurowany jako Bedrock + baza jawna odblokowana. Wirtualny dostęp (RDP) = robisz to zdalnie.</p>
+
+  <div class="summary-grid">
+    <div class="sum-card">
+      <div class="num">1</div>
+      <div class="lbl">Automat na start</div>
+      <div class="detail">A6 działa end-to-end (11/11). Brakuje: Python na maszynie + konto SQL + godzina/odbiorcy.</div>
+    </div>
+    <div class="sum-card">
+      <div class="num">0 zł/mc</div>
+      <div class="lbl">Koszt infrastruktury</div>
+      <div class="detail">Maszyna always-on już stoi w firmie. Brak VPS, brak Tailscale, brak abonamentu.</div>
+    </div>
+    <div class="sum-card">
+      <div class="num">~2h</div>
+      <div class="lbl">Czas Z0</div>
+      <div class="detail">Python + venv na maszynie (30 min) + konto SQL (10 min) + test + A6 + Task Scheduler. Reszta to rozmowa.</div>
+    </div>
+  </div>
+
+  <div class="hbox green">
+    <b>Co już mamy — nie instalujesz od zera</b>
+    <p>Claude Desktop zainstalowany na always-on maszynie · wirtualny dostęp (RDP) działa · A6 przetestowane end-to-end · OAuth Google Calendar (6 pojazdów, 37 eventów odczytanych) · SMTP potwierdzone · algorytm marży odtworzony z bazy (21,44% ≈ mediana Tomasza)</p>
+  </div>
+
+  <div class="hbox vio">
+    <b>Kluczowa zmiana architektury vs poprzedni plan</b>
+    <p>Firma ma komputer który chodzi 24/7 — tam mieszka Claude Desktop i tam stanie Python runner. Brak VPS, brak Tailscale. Runner widzi SQL Server przez LAN (sieć lokalna biura), nie przez tunel. Zarządzanie przez RDP = wirtualny dostęp Tomka. <strong>Prościej, taniej, mniej punktów awarii.</strong></p>
+  </div>
+
+  <div class="hbox amber">
+    <b>⚠ Wciąż krytyczne — dwie bazy</b>
+    <p>Klient ma dwie bazy: komandytową (mamy kopię) + jawną (faktury do klienta, sprzedaż usług). Bez jawnej A6 pokazuje pół obrazu. Dostęp SELECT na jawnej = priorytet #1. Jeśli obie bazy są na tej samej instancji SQL → jedno konto <code>dd_auto</code>, dwa GRANT SELECT.</p>
+  </div>
+</div>
+
+<!-- ARCHITEKTURA -->
+<div class="section" id="arch">
+  <h2>🔧 Architektura — maszyna always-on jako centrum</h2>
+  <p class="section-sub">Runner i model na tej samej maszynie w biurze. Baza lokalna przez LAN. Claude Desktop widzi logi — nie widzi surowych danych z bazy.</p>
+
+  <div class="arch">
+<span class="comment">        BIURO KLIENTA (sieć lokalna)                   CHMURA</span>
+<span class="comment">        ──────────────────────────────────               ──────────────────</span>
+<span class="label">┌────────────────────────────────────────┐</span>          <span class="label">┌──────────────────┐</span>
+<span class="label">│  MASZYNA ALWAYS-ON (Windows, RDP)      │          │  Claude API       │</span>
+<span class="label">│                                        │          │  (tylko A1: skan  │</span>
+<span class="label">│  ┌─────────────────────────────────┐   │◄────────►│   projektu)       │</span>
+<span class="label">│  │  runner (Python 3.11 + venv)    │   │          └──────────────────┘</span>
+<span class="label">│  │  ├ auto4_final.py (A6)          │   │</span>
+<span class="label">│  │  ├ gcal_events.py (A4)          │   │          <span class="comment">Tomek zarządza przez:</span></span>
+<span class="label">│  │  ├ Task Scheduler (cron Windows) │   │◄────────►  RDP do maszyny</span>
+<span class="label">│  │  └ watchdog.py (7:05)           │   │          <span class="ok">  (wirtualny dostęp ✅)</span></span>
+<span class="label">│  └─────────────────────────────────┘   │</span>
+<span class="label">│                                        │</span>
+<span class="label">│  ┌─────────────────────────────────┐   │</span>
+<span class="label">│  │  Claude Desktop (zainstalowany)  │   │</span>
+<span class="label">│  │  ├ CLAUDE.md (Bedrock firmy)     │   │</span>
+<span class="label">│  │  ├ MCP filesystem → logi/        │   │</span>
+<span class="label">│  │  └ NIE widzi bazy, widzi raporty │   │</span>
+<span class="label">│  └─────────────────────────────────┘   │</span>
+<span class="label">│                      │  LAN            │</span>
+<span class="label">│          ┌───────────▼─────────────┐   │</span>
+<span class="label">│          │  MS SQL Server           │   │</span>
+<span class="label">│          │  ├ baza KOMANDYTOWA      │   │</span>
+<span class="label">│          │  └ baza JAWNA            │   │</span>
+<span class="label">│          └─────────────────────────┘   │</span>
+<span class="label">└────────────────────────────────────────┘</span>
+         <span class="comment">             ↓</span>
+   SMTP poczta.dobry-dach.pl:587 → raporty mailowe
+   Google Calendar API (OAuth)   → A4
+  </div>
+
+  <div class="hbox green">
+    <b>Dlaczego maszyna always-on &gt; VPS</b>
+    <p>Runner musi widzieć bazę SQL. Baza stoi w LAN biura. Maszyna already-on jest w tym samym LAN → połączenie bezpośrednie, bez tunelu, zero opóźnień sieciowych, zero abonamentu. Kto to podnosi o 7 rano gdy nie wyszedł raport? Tomek przez RDP — dokładnie tak samo jak przez SSH do VPS-a, tylko bez dodatkowej maszyny.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-num">RUNNER (Python)</div>
+      <h3>Co robi na maszynie</h3>
+      <p>Łączy się z SQL Server przez LAN, liczy deterministycznie (marże, portfele, ZK vs WZ), wysyła maile, zapisuje do kalendarzy. Dane nie wychodzą z sieci biura — nie ma dokąd.</p>
+    </div>
+    <div class="card">
+      <div class="card-num">MODEL (Claude API)</div>
+      <h3>Co robi w chmurze</h3>
+      <p>Dostaje tylko to, co runner mu wyśle: treść skanu projektu dla A1. Nie widzi bazy, nie liczy pieniędzy. Claude Desktop widzi logi z raportu — nie surowe dane kontrahentów.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PLAN DNIA -->
+<div class="section" id="plan">
+  <h2>📅 Plan dnia — Setup Boy</h2>
+  <p class="section-sub">Wszystko przez RDP. Nie potrzebujesz być fizycznie — wirtualny dostęp jest wystarczający do całego Z0.</p>
+
+  <ul class="timeline">
+
+    <li class="tl-item">
+      <div class="tl-dot ok">PRE</div>
+      <div class="tl-body">
+        <h3>Przed sesją (przygotuj lokalnie)</h3>
+        <div class="tl-sub">Gotowe skrypty, żeby na sesji tylko wgrać i uruchomić.</div>
+        <ul>
+          <li>auto4_final.py + gcal_events.py + watchdog.py gotowe lokalnie</li>
+          <li>.env.example przygotowany (pola: DB_HOST, DB_NAME_K, DB_NAME_J, DB_USER, DB_PASS, SMTP_HOST, SMTP_USER, SMTP_PASS)</li>
+          <li>requirements.txt: pymssql, google-api-python-client, google-auth-oauthlib</li>
+          <li>Kopia bazy komandytowej zweryfikowana — znasz liczbę dokumentów</li>
+        </ul>
+        <div class="tl-time">~30 min dzień wcześniej</div>
+      </div>
+    </li>
+
+    <li class="tl-item">
+      <div class="tl-dot now">G1</div>
+      <div class="tl-body">
+        <h3>Godzina 1 — Rozpoznanie przez RDP</h3>
+        <div class="tl-sub">Zanim cokolwiek instalujesz — patrz. Maszyna always-on może mieć już Python, może mieć inne procesy których nie chcesz tknąć.</div>
+        <ul>
+          <li>Połącz przez RDP do maszyny always-on</li>
+          <li><code>python --version</code> lub <code>python3 --version</code> — czy jest? jaka wersja?</li>
+          <li>Sprawdź Task Scheduler — czy są już zaplanowane zadania, kto je ustawił</li>
+          <li>Ping do instancji SQL Server: <code>ping &lt;nazwa-instancji&gt;</code> i <code>Test-NetConnection -ComputerName &lt;host&gt; -Port 1433</code></li>
+          <li>Potwierdź: baza jawna na tej samej instancji co komandytowa (jedno okno Management Studio → sys.databases)</li>
+          <li>Kto ma dostęp admina SQL? Czy jest na miejscu teraz?</li>
+        </ul>
+        <div class="tl-time">~30 min</div>
+      </div>
+    </li>
+
+    <li class="tl-item">
+      <div class="tl-dot now">G2</div>
+      <div class="tl-body">
+        <h3>Godzina 2 — Python + konto SQL</h3>
+        <div class="tl-sub">Instalacja środowiska i konto read-only. Wszystko przez RDP.</div>
+        <ul>
+          <li>Python 3.11 jeśli nie ma (python.org, instalator .exe, dodaj do PATH)</li>
+          <li>Katalog <code>C:\dd-automaty\</code>, venv: <code>python -m venv venv</code></li>
+          <li>Instalacja: <code>venv\Scripts\pip install pymssql google-api-python-client google-auth-oauthlib</code></li>
+          <li>Wgraj skrypty (kopiuj przez RDP clipboard lub wspólny folder)</li>
+          <li>Admin SQL zakłada konto <code>dd_auto</code>: CREATE LOGIN + CREATE USER + db_datareader na <strong>obu bazach</strong></li>
+          <li>Test połączenia: <code>python test_db.py</code> → liczba dokumentów z komandytowej i jawnej</li>
+          <li><strong>Kryterium:</strong> dwie liczby na ekranie, żadna nie jest błędem</li>
+        </ul>
+        <div class="tl-time">~60 min z buforem</div>
+      </div>
+    </li>
+
+    <li class="tl-item">
+      <div class="tl-dot now">G3</div>
+      <div class="tl-body">
+        <h3>Godzina 3 — A6 na produkcji</h3>
+        <div class="tl-sub">Jeden działający automat > osiem w planach. Dry-run → akceptacja klienta → ostro → Task Scheduler.</div>
+        <ul>
+          <li>Uzupełnij .env: hasła DB (komandytowa + jawna), SMTP, refresh token GCal</li>
+          <li>Dry-run: <code>python auto4_final.py --dry-run</code> → raport na ekranie bez wysyłki</li>
+          <li>Pokaż klientowi: "czy to co widzisz zgadza się z tym co masz w Subiekcie?"</li>
+          <li>Ostro: <code>python auto4_final.py</code> → mail idzie na dwie skrzynki</li>
+          <li>Task Scheduler: nowe zadanie → <code>C:\dd-automaty\venv\Scripts\python.exe C:\dd-automaty\auto4_final.py</code>, trigger: codziennie 7:00, uruchamiaj nawet gdy użytkownik wylogowany (konto serwisowe lub SYSTEM)</li>
+          <li>Watchdog 7:05 — to samo Task Scheduler, osobne zadanie</li>
+          <li><strong>Kryterium:</strong> mail odebrany na obu skrzynkach, 3 PH ręcznie sprawdzone</li>
+        </ul>
+        <div class="tl-time">~45 min</div>
+      </div>
+    </li>
+
+    <li class="tl-item">
+      <div class="tl-dot now">G4</div>
+      <div class="tl-body">
+        <h3>Godzina 4 — Claude Desktop jako Bedrock</h3>
+        <div class="tl-sub">Desktop już zainstalowany — konfigurujesz, nie instalujesz. Cel: "cyfrowy pracownik który zna firmę".</div>
+        <ul>
+          <li>Stwórz katalog projektu Claude Desktop: <code>C:\dd-automaty\claude-context\</code></li>
+          <li>Wgraj CLAUDE.md projektu DD — kontekst firmy (dwie spółki, role, zasady bezpieczeństwa danych)</li>
+          <li>Skonfiguruj MCP filesystem → <code>C:\dd-automaty\logs\</code> (Claude czyta logi, nie bazę)</li>
+          <li>Demo: "co było w raporcie PH dziś rano?" → Claude Desktop czyta log A6 → odpowiada po polsku</li>
+          <li>Powiedz klientowi: "Claude nie widzi bazy SQL. Widzi tylko raporty które Python już wygenerował."</li>
+        </ul>
+        <div class="tl-time">~30 min</div>
+      </div>
+    </li>
+
+    <li class="tl-item">
+      <div class="tl-dot wait">G5</div>
+      <div class="tl-body">
+        <h3>Godzina 5 — Demo i kolejne kroki</h3>
+        <div class="tl-sub">Pokaż co działa. Powiedz wprost co nie działa i dlaczego. Kolejka, nie porażka.</div>
+        <ul>
+          <li>AI Potential Matrix — Quick Wins (A6 ✅, A3 blisko) vs Strategic (A1, A2, A7)</li>
+          <li>Roadmapa: Runda 1 (automaty wokół Subiekta) → Runda 2 (agent kontraktu dla dużych GW)</li>
+          <li>Co nie wejdzie bez dodatkowych decyzji: A1 (próbki), A2 (Sfera), A5 (tabela adresów PH)</li>
+          <li>Ustal termin sprint review (propozycja: 2 tygodnie)</li>
+        </ul>
+        <div class="tl-time">~30 min</div>
+      </div>
+    </li>
+
+  </ul>
+</div>
+
+<!-- Z0 CHECKLISTA -->
+<div class="section" id="z0">
+  <h2>✅ Checklista Z0 — interaktywna</h2>
+  <p class="section-sub">Klikaj żeby odhaczać. Stan zapisuje się w przeglądarce. Kryterium = liczba, nie brak błędu.</p>
+
+  <div class="chk-group">
+    <div class="chk-group-hdr">🔍 Recon — przed instalacją <span class="cnt" id="cnt-re">0/5</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="pf-re" style="width:0%"></div></div>
+    <div class="chk-item" data-grp="re" data-id="r1" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Połączenie RDP do maszyny always-on działa
+        <div class="criteria">Kryterium: pulpit maszyny na ekranie</div></div>
+    </div>
+    <div class="chk-item" data-grp="re" data-id="r2" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Python na maszynie zweryfikowany (wersja i ścieżka)
+        <div class="criteria">Kryterium: python --version → 3.x.x</div></div>
+    </div>
+    <div class="chk-item" data-grp="re" data-id="r3" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Port 1433 do SQL Server otwarty z maszyny
+        <div class="criteria">Kryterium: Test-NetConnection -Port 1433 → TcpTestSucceeded: True</div></div>
+    </div>
+    <div class="chk-item" data-grp="re" data-id="r4" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Obie bazy na tej samej instancji SQL potwierdzone
+        <div class="criteria">Kryterium: SELECT name FROM sys.databases → widać komandytową i jawną</div></div>
+    </div>
+    <div class="chk-item" data-grp="re" data-id="r5" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Admin SQL dostępny teraz (może zakładać konta)
+        <div class="criteria">Kryterium: kontakt potwierdzony, ma czas w tej sesji</div></div>
+    </div>
+  </div>
+
+  <div class="chk-group">
+    <div class="chk-group-hdr">🐍 Python + środowisko <span class="cnt" id="cnt-py">0/5</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="pf-py" style="width:0%"></div></div>
+    <div class="chk-item" data-grp="py" data-id="p1" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Katalog C:\dd-automaty\ stworzony, venv zainstalowany
+        <div class="criteria">Kryterium: dir C:\dd-automaty\venv\ → widać Scripts\</div></div>
+    </div>
+    <div class="chk-item" data-grp="py" data-id="p2" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">pymssql + google-api-python-client zainstalowane w venv
+        <div class="criteria">Kryterium: venv\Scripts\python -c "import pymssql" → brak błędu</div></div>
+    </div>
+    <div class="chk-item" data-grp="py" data-id="p3" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Skrypty wgrane (auto4_final.py, gcal_events.py, watchdog.py)
+        <div class="criteria">Kryterium: dir C:\dd-automaty\ → 3+ pliki .py</div></div>
+    </div>
+    <div class="chk-item" data-grp="py" data-id="p4" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">.env uzupełniony (hasła poza repo, tylko na maszynie)
+        <div class="criteria">Kryterium: .env istnieje, zawiera ≥5 kluczy</div></div>
+    </div>
+    <div class="chk-item" data-grp="py" data-id="p5" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Katalog C:\dd-automaty\logs\ stworzony (logi automatów)
+        <div class="criteria">Kryterium: dir C:\dd-automaty\logs\ → pusta, ale istnieje</div></div>
+    </div>
+  </div>
+
+  <div class="chk-group">
+    <div class="chk-group-hdr">🗄 Konto SQL dd_auto <span class="cnt" id="cnt-sql">0/4</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="pf-sql" style="width:0%"></div></div>
+    <div class="chk-item" data-grp="sql" data-id="s1" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">CREATE LOGIN dd_auto na instancji SQL
+        <div class="criteria">Kryterium: SELECT name FROM sys.server_principals WHERE name='dd_auto' → 1 wiersz</div></div>
+    </div>
+    <div class="chk-item" data-grp="sql" data-id="s2" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">GRANT SELECT na bazie KOMANDYTOWEJ (db_datareader)
+        <div class="criteria">Kryterium: python test_db.py komandytowa → liczba dokumentów</div></div>
+    </div>
+    <div class="chk-item" data-grp="sql" data-id="s3" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">GRANT SELECT na bazie JAWNEJ (db_datareader)
+        <div class="criteria">Kryterium: python test_db.py jawna → liczba dokumentów</div></div>
+    </div>
+    <div class="chk-item" data-grp="sql" data-id="s4" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Backup bazy komandytowej świeży (przed pierwszym A6 na produkcji)
+        <div class="criteria">Kryterium: znasz datę i liczbę dokumentów w backupie</div></div>
+    </div>
+  </div>
+
+  <div class="chk-group">
+    <div class="chk-group-hdr">🚀 A6 na produkcji <span class="cnt" id="cnt-a6">0/4</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="pf-a6" style="width:0%"></div></div>
+    <div class="chk-item" data-grp="a6" data-id="a1" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Dry-run zaakceptowany przez klienta (liczby z wczoraj)
+        <div class="criteria">Kryterium: klient mówi "tak, zgadza się z Subiektem" na 3 pozycjach</div></div>
+    </div>
+    <div class="chk-item" data-grp="a6" data-id="a2" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Mail wysłany ostro na obie skrzynki i odebrany
+        <div class="criteria">Kryterium: tomekw@ i tomekj@ mają mail z dzisiejszą datą</div></div>
+    </div>
+    <div class="chk-item" data-grp="a6" data-id="a3" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Task Scheduler: A6 codziennie 7:00 (uruchamiaj bez logowania — SYSTEM lub konto serwisowe)
+        <div class="criteria">Kryterium: zadanie widoczne w Schedulerze, status "Ready"</div></div>
+    </div>
+    <div class="chk-item" data-grp="a6" data-id="a4" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Watchdog 7:05 aktywny (sprawdza logi z doby, mail tylko przy błędzie)
+        <div class="criteria">Kryterium: drugie zadanie w Schedulerze, "Ready"</div></div>
+    </div>
+  </div>
+
+  <div class="chk-group">
+    <div class="chk-group-hdr">🖥 Claude Desktop — Bedrock <span class="cnt" id="cnt-cd">0/3</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="pf-cd" style="width:0%"></div></div>
+    <div class="chk-item" data-grp="cd" data-id="c1" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">CLAUDE.md projektu DD w katalogu projektu Claude Desktop (kontekst firmy = Warstwa 1 Bedrock)
+        <div class="criteria">Kryterium: nowa rozmowa w Claude Desktop → widzi kontekst firmy bez pytania</div></div>
+    </div>
+    <div class="chk-item" data-grp="cd" data-id="c2" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">MCP filesystem skonfigurowany na C:\dd-automaty\logs\
+        <div class="criteria">Kryterium: "przeczytaj a6.log" → Claude Desktop pokazuje zawartość</div></div>
+    </div>
+    <div class="chk-item" data-grp="cd" data-id="c3" onclick="toggleCheck(this)">
+      <div class="chk-box">✓</div>
+      <div class="chk-text">Demo dla klienta zaakceptowane: "co było w raporcie PH dziś rano?"
+        <div class="criteria">Kryterium: klient rozumie separację baza vs raport vs AI</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 5 WARSTW -->
+<div class="section" id="warstwy">
+  <h2>🏗 Architektura 5-warstwowa AI OS</h2>
+  <p class="section-sub">Blueprint Gemini / Antigravity. Każda warstwa czerpie z poprzedniej. Dziś realizujemy Warstwę 1 i 5. Reszta wchodzi sukcesywnie.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>W.</th><th>Nazwa</th><th>Co to robi</th><th>Jak wygląda u DD</th><th>Status</th></tr>
+      <tr>
+        <td><strong>1</strong></td>
+        <td><strong>Bedrock</strong><br><span class="mono" style="font-size:11px;color:var(--mut)">Atlas · Echo · Genesis</span></td>
+        <td>Kontekst firmy ładowany przy starcie. Zastępuje ciągłe "kim jest klient". Misja, ICP, SOP, styl.</td>
+        <td><code>CLAUDE.md</code> z strukturą spółek (komandytowa/jawna), rolami (PH → kategoria → osoba), zasadami bezpieczeństwa: co Runner widzi, czego Claude nie dostaje</td>
+        <td style="color:#7c5cff;font-weight:700">Dziś ✅</td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td><strong>Force Multipliers</strong><br><span class="mono" style="font-size:11px;color:var(--mut)">Pulse · Socrates</span></td>
+        <td>Filtry jakości nad resztą. Pulse = "nie mów jak bot". Socrates = krytyk przed decyzją (pre-mortem).</td>
+        <td>Agent weryfikujący ofertę przed wysyłką: "marża 3% — decyzja świadoma czy pomyłka?". Runda 2: walidacja aneksu do kontraktu GW zanim podpiszesz.</td>
+        <td style="color:var(--amber);font-weight:700">Runda 2</td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td><strong>Content Execution</strong><br><span class="mono" style="font-size:11px;color:var(--mut)">Skille egzekucji</span></td>
+        <td>Konkretna robota na danych — raporty, alerty, skany, PDF. Spójne z Bedrock bez dodatkowych instrukcji.</td>
+        <td>Automaty A0–A7: raporty PH (A6), marża (A3), terminy (A4), WZ→PH (A5). Runda 2: raport kamieni milowych, protokoły odbioru per ZK.</td>
+        <td style="color:var(--amber);font-weight:700">A6 dziś → reszta sukcesywnie</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td><strong>Sales Intelligence</strong><br><span class="mono" style="font-size:11px;color:var(--mut)">Analityka i wzrost</span></td>
+        <td>Sygnały popytowe, pełny obraz finansowy, gdzie gubi się pieniądz, kto przynosi zysk.</td>
+        <td>Przepływ gotówki per zamówienie, per klient: FV z jawnej vs wpłaty vs wydania z WZ. Portfel 9 657 ZK → ile realnie warty. Marże per PH (kto jest Quick Win, kto Odrzuć).</td>
+        <td style="color:var(--amber);font-weight:700">Runda 2</td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td>
+        <td><strong>Automation</strong><br><span class="mono" style="font-size:11px;color:var(--mut)">Task Scheduler · MCP · always-on</span></td>
+        <td>Działanie autonomiczne. Task Scheduler wyzwala runnerów. MCP jako mosty do systemów firmy.</td>
+        <td>Task Scheduler 7:00 (A6) + 7:05 (watchdog). Claude Desktop + MCP filesystem. Runda 2: MCP Subiekt przez Sferę, MCP Gcal write, webhook EDB/GUNB.</td>
+        <td style="color:#7c5cff;font-weight:700">Dziś ✅ (Scheduler+watchdog)</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="hbox vio">
+    <b>Zasada: ownership zamiast SaaS</b>
+    <p>System mieszka na maszynie klienta — nie w chmurze Anthropic, nie na Twoim VPS-ie. Z każdą iteracją staje się mądrzejszy: pamięta pułapki w danych, preferencje, wcześniejsze odkrycia. Skille to pliki .md — klient może je czytać i rozumieć. Zero czarnej skrzynki.</p>
+  </div>
+</div>
+
+<!-- KOLEJNOŚĆ -->
+<div class="section" id="kolejnosc">
+  <h2>🚦 Kolejność wdrożenia — Start-o-meter</h2>
+  <p class="section-sub">Kolejność wynika z liczby niewiadomych, nie z atrakcyjności. Bez nowych dostępów ruszasz A6 i A3.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>#</th><th>Automat</th><th>Kod</th><th>Co blokuje</th><th>Tydzień</th></tr>
+      <tr>
+        <td><strong>Z0</strong></td><td>Infrastruktura</td><td>—</td>
+        <td>Python na maszynie + konto dd_auto + .env</td>
+        <td style="color:#7c5cff;font-weight:700">Dziś ✅</td>
+      </tr>
+      <tr>
+        <td><strong>A6</strong></td><td>Raport dzienny PH</td>
+        <td style="color:#166534;font-weight:700">✅ 11/11</td>
+        <td>Baza jawna + godzina + odbiorcy</td>
+        <td style="color:#7c5cff;font-weight:700">Tydzień 1 ✅</td>
+      </tr>
+      <tr>
+        <td><strong>A3</strong></td><td>Marża + flaga &lt;5%</td>
+        <td>Algorytm ✅</td>
+        <td>Próg flagi + odbiorca alertu</td>
+        <td>Tydzień 2</td>
+      </tr>
+      <tr>
+        <td><strong>A4</strong></td><td>Terminy i transport</td>
+        <td>OAuth ✅</td>
+        <td>Decyzja: czy automat pisze do kalendarzy</td>
+        <td>Tydzień 3 (raport)</td>
+      </tr>
+      <tr>
+        <td><strong>A5</strong></td><td>WZ → PH</td>
+        <td>Mock gotowy</td>
+        <td style="color:#991b1b"><strong>Tabela adresów PH</strong></td>
+        <td>Tydzień 4+ po adresach</td>
+      </tr>
+      <tr>
+        <td><strong>A7</strong></td><td>ZK vs WZ różnice</td>
+        <td>—</td>
+        <td>Obie bazy + definicja rozjazdu</td>
+        <td>Razem z A5</td>
+      </tr>
+      <tr>
+        <td><strong>A0</strong></td><td>Rejestr zapytań</td>
+        <td>—</td>
+        <td>Decyzja: gdzie żyje rejestr</td>
+        <td>Po warsztacie</td>
+      </tr>
+      <tr>
+        <td><strong>A2</strong></td><td>Oferta z ZK</td>
+        <td>—</td>
+        <td style="color:#991b1b"><strong>Sfera (licencja InsERT) — jedyny piszący</strong></td>
+        <td>Osobna decyzja</td>
+      </tr>
+      <tr>
+        <td><strong>A1</strong></td><td>Scan projektu (Vision)</td>
+        <td>—</td>
+        <td style="color:#991b1b"><strong>10–20 próbek projektów PDF</strong></td>
+        <td>Osobna decyzja</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- AI POTENTIAL MATRIX -->
+<div class="section">
+  <h2>📊 AI Potential Matrix</h2>
+  <p class="section-sub">Framework Escola: impact × ease. Quick Wins wchodzą teraz, Strategic planujemy w sprintach.</p>
+  <div class="matrix-axis">↑ IMPACT (wartość dla biznesu)</div>
+  <div class="matrix">
+    <div class="quad ql">
+      <div class="quad-label">Wysoki impact · Łatwe</div>
+      <div class="quad-title">⭐ Quick Wins</div>
+      <span class="auto-chip green">A6 raport PH</span>
+      <span class="auto-chip green">A3 marża &lt;5%</span>
+      <p style="font-size:12.5px;color:#166534;margin-top:8px">Kod gotowy lub algorytm odtworzony. Zero nowych dostępów poza bazą jawną (A6). A3 nie wymaga nic nowego.</p>
+    </div>
+    <div class="quad qs">
+      <div class="quad-label">Wysoki impact · Trudniejsze</div>
+      <div class="quad-title">🎯 Strategic — sprint 4–8</div>
+      <span class="auto-chip amber">A1 Vision/skan</span>
+      <span class="auto-chip amber">A2 oferta ZK</span>
+      <span class="auto-chip amber">A7 ZK vs WZ</span>
+    </div>
+    <div class="quad qr">
+      <div class="quad-label">Niższy impact · Łatwe</div>
+      <div class="quad-title">🔧 Small Things</div>
+      <span class="auto-chip vio">A0 rejestr</span>
+      <span class="auto-chip vio">A4 calendar read</span>
+    </div>
+    <div class="quad qq">
+      <div class="quad-label">Niższy impact · Trudniejsze</div>
+      <div class="quad-title">❌ Odsuń — nie teraz</div>
+      <p style="font-size:12.5px;color:#991b1b;margin-top:4px">Brak kandydatów</p>
+    </div>
+  </div>
+  <div class="matrix-axis">→ EASE (łatwość realizacji)</div>
+</div>
+
+<!-- ROADMAPA 2 RUND -->
+<div class="section" id="roadmapa">
+  <h2>🛣 Roadmapa — 2 Rundy</h2>
+  <p class="section-sub">Runda 1 aktywna dziś. Runda 2 po stabilizacji Rundy 1 — szkielet maszyny ten sam, dodajemy warstwy.</p>
+
+  <div class="card-grid" style="margin-bottom:16px">
+    <div class="card" style="border-color:#7c5cff;border-width:2px">
+      <div class="card-num" style="color:#7c5cff">RUNDA 1 — AKTYWNA · Warstwy 1, 3, 5</div>
+      <h3>Usprawnienia i automatyzacje</h3>
+      <p style="font-size:13.5px;color:var(--ink);margin-bottom:10px">Obudowujemy Subiekt GT w inteligentne powiadamianie i monitoring. Read-only (poza A2/Sferą). Baza danych zostaje w biurze.</p>
+      <ul style="font-size:13px;padding-left:18px;color:var(--mut)">
+        <li><strong>W1 Bedrock:</strong> CLAUDE.md z kontekstem firmy w Claude Desktop</li>
+        <li><strong>W3 Egzekucja:</strong> A6 raport PH · A3 marża · A4 terminy · A5 WZ→PH</li>
+        <li><strong>W5 Automation:</strong> Task Scheduler + watchdog + MCP filesystem</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:var(--amber-border);border-width:2px">
+      <div class="card-num" style="color:var(--amber)">RUNDA 2 — PLANOWANA · Warstwy 2, 4 + nowe MCP</div>
+      <h3>Wsparcie inwestycji (duże GW)</h3>
+      <p style="font-size:13.5px;color:var(--ink);margin-bottom:10px">Agent kontraktu dla dużych zleceń (NDI/Groddeck: 3,875 mln zł). Claude PM kontraktu — STATUS.md + pozycje.csv.</p>
+      <ul style="font-size:13px;padding-left:18px;color:var(--mut)">
+        <li><strong>W2 Socrates:</strong> weryfikacja aneksu przed podpisaniem</li>
+        <li><strong>W4 Intelligence:</strong> przepływ gotówki per inwestycja (FV vs wpłaty vs WZ)</li>
+        <li>Bot raportowania z terenu (brygadzista, 3–5 pytań wieczorem)</li>
+        <li>MCP Subiekt przez Sferę · EDB/GUNB · KSeF</li>
+        <li>STATUS.md + pozycje.csv + komendy tekstowe ("oznacz kamień milowy")</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="hbox green">
+    <b>Bramka Runda 1 → Runda 2</b>
+    <p>A6 bez interwencji &gt;4 tygodnie · marża liczy się automatycznie dla &gt;80% dokumentów · klient aktywnie używa raporty · mamy 2–3 kontrakty GW jako dane do modelowania. Maszyna, Python, Claude Desktop — to samo. Dodajemy warstwy, nie burzymy fundamentu.</p>
+  </div>
+</div>
+
+<!-- DECYZJE -->
+<div class="section" id="decyzje">
+  <h2>🔑 Decyzje — co musisz uzyskać</h2>
+  <div class="tbl-wrap">
+    <ul class="dec-list">
+      <li class="dec-item">
+        <div class="dec-num">1</div>
+        <div class="dec-body">
+          <strong>GRANT SELECT na bazie JAWNEJ <span class="dec-tag klient">klient: admin SQL</span></strong>
+          <span>Faktury do klienta żyją w jawnej. Bez niej A6 jest połową raportu. Jedna instancja → te same 5 minut pracy admina co komandytowa.</span>
+        </div>
+      </li>
+      <li class="dec-item">
+        <div class="dec-num">2</div>
+        <div class="dec-body">
+          <strong>Godzina A6 + odbiorcy <span class="dec-tag obaj">razem</span></strong>
+          <span>Propozycja: 7:00, tomekw@ + tomekj@. Jeden zbiorczy mail czy per PH? Przed ustawieniem Task Schedulera.</span>
+        </div>
+      </li>
+      <li class="dec-item">
+        <div class="dec-num">3</div>
+        <div class="dec-body">
+          <strong>Tabela: kategoria PH → osoba → mail/telefon <span class="dec-tag klient">klient: Tomek/Artur</span></strong>
+          <span>CD, MR, LR, SM, GG, MP, GM, BK, LP → imię + mail + tel. Blokuje A5. Excel wystarczy.</span>
+        </div>
+      </li>
+      <li class="dec-item">
+        <div class="dec-num">4</div>
+        <div class="dec-body">
+          <strong>Task Scheduler: konto SYSTEM czy konto serwisowe? <span class="dec-tag ja">do ustalenia z IT</span></strong>
+          <span>Zadanie musi działać gdy nikt nie jest zalogowany. SYSTEM = najprostsze ale wymaga lokalnego konta. Konto serwisowe = wymaga "Log on as batch job" — robota dla IT admina.</span>
+        </div>
+      </li>
+      <li class="dec-item">
+        <div class="dec-num">5</div>
+        <div class="dec-body">
+          <strong>Sfera (InsERT) — licencja <span class="dec-tag klient">klient</span></strong>
+          <span>Dotyczy wyłącznie A2. Jedyny automat piszący do Subiekta. Osobna licencja + stanowisko Windows. Jeśli nie ma — A2 odpada lub zostaje "obok" bazy.</span>
+        </div>
+      </li>
+      <li class="dec-item">
+        <div class="dec-num">6</div>
+        <div class="dec-body">
+          <strong>10–20 próbek projektów PDF <span class="dec-tag klient">klient</span></strong>
+          <span>Potrzebne do oceny A1 (Vision → wymiary dachu). Bez próbek nie wiadomo czy Vision w ogóle daje radę z ich formatem.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- PITCH -->
+<div class="section">
+  <h2>💬 Jak to powiedzieć klientowi</h2>
+  <div class="hbox blue">
+    <b>Co to jest i po co</b>
+    <p>"Python robi wszystkie liczenia na waszym komputerze — baza, kalendarze, maile. Claude to głowa, która dostaje tylko wyniki. Dane klienta nie wychodzą z waszej sieci."</p>
+  </div>
+  <div class="hbox green">
+    <b>Dlaczego maszyna w biurze, nie zewnętrzny serwer</b>
+    <p>"Baza SQL jest w waszej sieci. Runner musi ją widzieć. Komputer który chodzi 24/7 jest w tej samej sieci — połączenie bezpośrednie, zero abonamentów, zero dodatkowych maszyn."</p>
+  </div>
+  <div class="hbox amber">
+    <b>Co dostajecie dziś vs co jest w kolejce</b>
+    <p>"Dziś ruszamy jeden automat: codzienny raport portfeli handlowców. Sprawdzony, gotowy. Reszta wchodzi tydzień po tygodniu — jak zdejmiemy kolejne blokady."</p>
+  </div>
+  <div class="hbox vio">
+    <b>Runda 2 — skąd się bierze</b>
+    <p>"Jak automaty będą działać stabilnie 4 tygodnie, zaczniemy budować agenta kontraktu — takiego PM-a dla dużych zleceń jak NDI. Ten sam komputer, ta sama baza — tylko dodajemy warstwy."</p>
+  </div>
+</div>
+
+<!-- TRUTH CHECKER -->
+<div class="section">
+  <h2>⚠ Truth Checker</h2>
+  <div class="tbl-wrap" style="padding:18px">
+    <p style="font-size:13.5px;margin-bottom:10px"><strong>Co wiem:</strong> Maszyna always-on istnieje (RDP do pośredniczącego komputera). Claude Desktop zainstalowany. A6 end-to-end przetestowane. OAuth Calendar działa. SMTP potwierdzone. Wirtualny dostęp aktywny.</p>
+    <p style="font-size:13.5px;margin-bottom:10px"><strong>Co zakładam:</strong> Maszyna always-on ma dostęp do sieci LAN z SQL Serverem. Python może być zainstalowany lub nie. Konto SYSTEM może uruchamiać Task Scheduler bez logowania.</p>
+    <p style="font-size:13.5px;margin-bottom:10px"><strong>Co może być błędne:</strong> SQL Server może wymagać uwierzytelnienia Windows (nie SQL Login) → konto dd_auto musi być kontem domenowym, nie SQL Login. Task Scheduler w trybie SYSTEM może nie mieć dostępu do zasobów sieciowych. Port 1433 może być zablokowany firewallem między maszyną a SQL Serverem.</p>
+    <p style="font-size:13.5px;margin-bottom:10px"><strong>Co zweryfikuj na starcie RDP:</strong> Test-NetConnection port 1433. Tryb uwierzytelnienia SQL Server (SQL + Windows vs tylko Windows). Wersja Python i dostępność pip.</p>
+    <p style="font-size:13.5px"><strong>Co poprawię z jednym inputem:</strong> Jeśli poznasz OS maszyny always-on (Windows/Linux) i tryb auth SQL Servera (Mixed Mode vs Windows Only) — checklista Z0 stanie się jeszcze bardziej konkretna.</p>
+  </div>
+</div>
+
+<div style="text-align:center;color:var(--mut);font-size:12px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line)">
+  Setup Boy Plan · Dobry Dach · v2 · 31.08.2026 · AI4CRO
+</div>
+
+</div>
+
+<script>
+function toggleCheck(el){
+  var grp=el.dataset.grp,id=el.dataset.id;
+  var done=el.classList.toggle('done');
+  try{localStorage.setItem('sb2-'+grp+'-'+id,done?'1':'0')}catch(e){}
+  updateProgress(grp);
+}
+function updateProgress(grp){
+  var items=document.querySelectorAll('.chk-item[data-grp="'+grp+'"]');
+  var done=[].filter.call(items,function(i){return i.classList.contains('done')}).length;
+  var c=document.getElementById('cnt-'+grp);
+  var p=document.getElementById('pf-'+grp);
+  if(c)c.textContent=done+'/'+items.length;
+  if(p)p.style.width=Math.round(done/items.length*100)+'%';
+}
+function loadChecks(){
+  document.querySelectorAll('.chk-item').forEach(function(el){
+    var grp=el.dataset.grp,id=el.dataset.id;
+    try{if(localStorage.getItem('sb2-'+grp+'-'+id)==='1')el.classList.add('done')}catch(e){}
+  });
+  ['re','py','sql','a6','cd'].forEach(updateProgress);
+}
+loadChecks();
+</script>
+</body>
+</html>

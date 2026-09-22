@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setup — plan i architektura · Dobry Dach</title>
+<style>
+:root{--vio:#7c5cff;--ink:#1a1f2b;--mut:#667085;--line:#e4e7ec;--bg:#f8f9fc;
+--green:#166534;--green-bg:#f0fdf4;--amber:#92400e;--amber-bg:#fffbeb;--red:#991b1b;--red-bg:#fef2f2;--blue:#1e40af;--blue-bg:#eff6ff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Space Grotesk',-apple-system,'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+.hdr{background:#fff;border-bottom:2px solid var(--line);position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(26,31,43,.05)}
+.hdr-inner{max-width:1000px;margin:0 auto;padding:10px 18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.nav-link{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:#3a4250;text-decoration:none;border:1.5px solid var(--line);border-radius:999px;padding:5px 11px;white-space:nowrap;transition:.15s;background:#fff}
+.nav-link:hover{border-color:var(--vio);color:var(--vio)}
+.wrap{max-width:1000px;margin:0 auto;padding:30px 22px 90px}
+h1{font-size:30px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
+.sub{color:var(--mut);font-size:14px;margin-bottom:26px}
+h2{font-size:20px;font-weight:700;margin:44px 0 8px;padding-top:16px;border-top:2px solid var(--ink);letter-spacing:-.2px;scroll-margin-top:70px}
+h2 .n{color:var(--vio);font-family:'IBM Plex Mono',monospace;font-size:15px;margin-right:6px}
+h3{font-size:15.5px;font-weight:700;margin:20px 0 8px}
+p{margin:0 0 12px;font-size:15px}
+ul,ol{margin:0 0 14px;padding-left:22px}
+li{margin-bottom:6px;font-size:14.5px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+th{text-align:left;background:#f6f8fa;padding:9px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#57606a;border-bottom:2px solid var(--line);font-family:'IBM Plex Mono',monospace}
+td{padding:10px 12px;border-bottom:1px solid #f0f2f5;vertical-align:top}
+tr:last-child td{border-bottom:none}
+code{background:#f3f0ff;color:#5b21b6;padding:1px 6px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:12.5px}
+.box{border-radius:12px;padding:14px 18px;margin:14px 0;border:1.5px solid}
+.box.green{background:var(--green-bg);border-color:#bbf7d0;color:var(--green)}
+.box.amber{background:var(--amber-bg);border-color:#fde68a;color:var(--amber)}
+.box.red{background:var(--red-bg);border-color:#fecaca;color:var(--red)}
+.box.blue{background:var(--blue-bg);border-color:#bfdbfe;color:var(--blue)}
+.box.vio{background:#f5f3ff;border-color:#c4b5fd;color:#5b21b6}
+.box b{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;opacity:.8}
+.box p{font-size:14px;margin:0}
+.chip{display:inline-block;background:#fff;border:1.5px solid;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;margin:2px;font-family:'IBM Plex Mono',monospace}
+.chip.green{border-color:#bbf7d0;color:var(--green);background:var(--green-bg)}
+.chip.amber{border-color:#fde68a;color:var(--amber);background:var(--amber-bg)}
+.chip.red{border-color:#fecaca;color:var(--red);background:var(--red-bg)}
+.chip.blue{border-color:#bfdbfe;color:var(--blue);background:var(--blue-bg)}
+.chip.vio{border-color:#c4b5fd;color:#5b21b6;background:#f5f3ff}
+.small{font-size:12px;color:var(--mut)}
+.arch-frame{width:100%;height:980px;border:1.5px solid var(--line);border-radius:12px;background:#fff;margin:14px 0}
+.layer-row{display:grid;grid-template-columns:70px 200px 1fr;gap:12px;padding:11px 14px;border-bottom:1px solid #f0f2f5;align-items:start;font-size:14px;background:#fff}
+.layer-row:last-child{border-bottom:none}
+.layer-num{font-weight:800;font-size:18px;color:var(--vio)}
+.layer-name{font-weight:700}
+.layer-sub{font-size:12px;color:var(--mut)}
+@media(max-width:760px){.layer-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hdr"><div class="hdr-inner">
+  <a href="#cel" class="nav-link">🎯 Cel</a>
+  <a href="#zalozenia" class="nav-link">📐 Założenia</a>
+  <a href="#arch" class="nav-link">🏗 Architektura</a>
+  <a href="#warstwy" class="nav-link">🧅 Warstwy</a>
+  <a href="#kolejnosc" class="nav-link">🚦 Kolejność</a>
+  <a href="#automaty" class="nav-link">⚙️ Automaty</a>
+  <a href="#obszary" class="nav-link">🗂 Obszary</a>
+  <a href="#decyzje" class="nav-link">🔑 Decyzje</a>
+  <a href="#polaczenia" class="nav-link">🔌 Połączenia</a>
+  <a href="#hermes" class="nav-link">🤖 Hermes/Claude</a>
+  <a href="#interfejs" class="nav-link">🖥 Interfejs setupu</a>
+  <a href="#runy" class="nav-link">🩺 Runy diagnostyczne</a>
+  <a href="#wiedza" class="nav-link">📚 Wiedza jako asset</a>
+  <a href="#z0" class="nav-link">✅ Checklista Z0</a>
+</div>
+<div class="hdr-inner" style="padding-top:8px;flex-wrap:wrap;gap:8px">
+  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.03em">Reszta dokumentów setupu:</span>
+  <a href="SETUP_BOY_PLAN.html" class="nav-link">📋 Plan operacyjny (Setup Boy)</a>
+  <a href="TECH_SETUP_WDROZENIOWY.md" class="nav-link">🧰 Tech setup — wdrożenie A0–A7 (tekst)</a>
+  <a href="SETUP_DOKUMENT.md" class="nav-link">📄 Dokument setupu (tekst)</a>
+  <a href="README_WDROZENIE.md" class="nav-link">📄 README wdrożenia (tekst)</a>
+</div></div>
+
+<div class="wrap">
+
+<h1>🛠 Setup — plan i architektura</h1>
+<p class="sub">Dobry Dach · AI OS · spisane 02.09.2026 · układ wg Setup Boy (warstwy/kolejność), treść urealniona · szczegółowa checklista Z0 → <a href="SETUP_BOY_PLAN.html#z0">Setup Boy</a></p>
+
+<h2 id="cel"><span class="n">1.</span>Cel główny</h2>
+<p>Budowa automatyzacji w oparciu o <b>kluczowy proces biznesowy</b> i <b>kluczowe dane klienta</b>:</p>
+<ul>
+<li><b>baza danych z Subiekta</b> (komandytowa + jawna)</li>
+<li><b>kilka raportów Excel</b> (np. raport kasowy)</li>
+<li><b>nasz mapping procesu</b> — dlatego musi być potem <b>osobnym assetem</b></li>
+<li><b>dokumenty Tomasza</b></li>
+<li><b>kalendarze</b> jako narzędzie logistyczne</li>
+<li><b>maile</b> jako narzędzie komunikacji — ale i (chyba) źródło wiedzy o powodach zmian</li>
+</ul>
+<div class="box vio">
+<b>Fundament (najważniejsze założenie)</b>
+<p>Runner (Python) czyta bazę Subiekta <b>read-only</b> · wiedza o firmie żyje w <b>folderze .md</b> · oba na <b>maszynie w biurze, nigdy nie zasypiającej</b> (decyzja 26.08: zero VPS, zero Tailscale). Bez dostępu do bazy nie ma nic.</p>
+</div>
+
+<h2 id="zalozenia"><span class="n">2.</span>Założenia — 8 punktów</h2>
+<ol>
+<li><b>Setup lokalny</b> — jeden konkretny lokalny folder z wiedzą (skille i reszta w jednym miejscu).</li>
+<li><b>Second brain = folder .md (Obsidian), nie baza danych.</b> Obsidian = tylko edytor — zero lock-inu. Postgres dopiero gdy automaty zaczną pisać dane strukturalne.</li>
+<li><b>Chatbot w sieci biura (LAN)</b> — ludzie pytają przez przeglądarkę na maszynę always-on (RAG, cytuje źródło). <span class="small">Folder = wiedza stała · baza = stan na dziś — pytania „żywe" (asortyment) wymagają mostu runnera.</span></li>
+<li><b>Osobny vault DD, osobny vault TW — jedna metoda.</b> Wiele zbiorów w jednym vaultcie: Procesy / Asortyment / Klienci / Automaty / Ludzie / Czat-publiczny.</li>
+<li><b>Sposób budowy agentów</b> (wzorzec CASE_STUDY_AGENT_Z_WIKI): czytanie wiedzy = krok procesu, nauka wraca do pliku, który czyta kod. KANON · MASZYNA · TRIKI+ZAKAZY · RESEARCH · CBA. <span class="small">Cel: agenci/bazy CRO wg tego wzorca.</span></li>
+<li><b>STRAŻNIK — audytor procesu (głowa, w centrum).</b> Czyta bazę (4 lata historii) i mierzy proces: cykle ZK→WZ→FV, dziury, „jak ma być vs jak jest". Raport dziur co tydzień → dziura = kandydat na automat/regułę. <b>Automaty = egzekucja, strażnik = detekcja.</b> Persona: NIE — rola z protokołem i ZAKAZAMI.</li>
+<li><b>Watchdog — robotnik strażnika, i to NAPRAWIACZ.</b> Zbiera logi; wykrył → naprawia sam (restart, ponów wysyłkę, rollback); alert po 2 nieudanych próbach. <span class="small">Ciche samonaprawienie = zero hałasu.</span></li>
+<li><b>Boty — warstwa komunikacyjna z ludźmi.</b> Kanał: <b>WhatsApp, nie Discord</b>. Boty: biurowy (LAN), terenowy (WhatsApp + głos), publiczny (strona). <b>Marzenie: ludzie dzwonią do botów, boty rejestrują</b> (wymaga mappingu procesu).</li>
+<li><b>Repo HTML/dokumentów — osobne od folderu wiedzy.</b> <span class="small">Istnieje: ai4cro-reports (GH Pages) → docs/dobry_dach/.</span></li>
+</ol>
+
+<h2 id="arch"><span class="n">3.</span>Architektura — diagram</h2>
+<p class="small">Edytowalny: plik <code>ARCHITEKTURA_DD.excalidraw</code> → excalidraw.com (drag &amp; drop). Strażnik w centrum · maszyna-wykonawca pod nim · automaty z kolorami statusu na dole.</p>
+<iframe class="arch-frame" src="ARCHITEKTURA_DD.html"></iframe>
+
+<h2 id="warstwy"><span class="n">4.</span>Warstwy (układ Setup Boy, urealnione 02.09)</h2>
+<div class="box green" style="margin-bottom:10px"><p>Układ z Setup Boy zostaje — warstwy 1, 3, 5 realizowane dziś; strażnik i boty dopięte do warstw jako realne byty (nie dekoracje).</p></div>
+<div style="border:1.5px solid var(--line);border-radius:12px;overflow:hidden">
+<div class="layer-row"><div class="layer-num">1</div><div class="layer-name">Bedrock</div><div><b>Vault DD + CLAUDE.md</b> — wiedza firmy w folderze .md, kontekst przy starcie. <span class="layer-sub">Teraz: vault do zbudowania; wzorzec TW_vault.</span></div></div>
+<div class="layer-row"><div class="layer-num">1.5</div><div class="layer-name" style="color:var(--vio)">STRAŻNIK</div><div><b>Audytor procesu — głowa w centrum.</b> Czyta vault + bazę, mierzy cykle, raport dziur co tydzień. <span class="layer-sub">Nowość 02.09: agent-środek ciężkości, nie opiekun automatów.</span></div></div>
+<div class="layer-row"><div class="layer-num">2</div><div class="layer-name">Force Multipliers</div><div>Krytyk przed decyzją (Socrates) — Runda 2. <span class="layer-sub">np. weryfikacja aneksu GW przed podpisaniem.</span></div></div>
+<div class="layer-row"><div class="layer-num">3</div><div class="layer-name">Content Execution</div><div><b>Automaty A0–A7 + N1–N4</b> — raporty PH (A6), dziennik WZ (N4), marża (A3), terminy (A4), WZ→PH (A5). <span class="layer-sub">A6+N4 w realizacji/testach.</span></div></div>
+<div class="layer-row"><div class="layer-num">3.5</div><div class="layer-name" style="color:var(--vio)">WATCHDOG</div><div><b>Robotnik strażnika — NAPRAWIACZ.</b> Logi, stan automatów, samonaprawa, eskalacja po 2 próbach. <span class="layer-sub">Urealnienie: nie tylko alarmuje — naprawia.</span></div></div>
+<div class="layer-row"><div class="layer-num">4</div><div class="layer-name">Sales Intelligence</div><div>Przepływ gotówki per zamówienie/klient — Runda 2. <span class="layer-sub">FV vs wpłaty vs WZ; portfel ZK; marże per PH.</span></div></div>
+<div class="layer-row"><div class="layer-num">5</div><div class="layer-name">Automation</div><div><b>Maszyna w biurze (always-on)</b> — Task Scheduler 7:00 + watchdog, logi+.env. <span class="layer-sub">Urealnienie: hosting = maszyna w biurze (decyzja 26.08), nie VPS.</span></div></div>
+<div class="layer-row"><div class="layer-num">5.5</div><div class="layer-name" style="color:var(--vio)">BOTY</div><div><b>Warstwa komunikacji z ludźmi — WhatsApp.</b> Biurowy LAN · terenowy (głos→rejestr) · publiczny (strona, lead). <span class="layer-sub">Nowość 02.09: kanał = WhatsApp, nie Discord.</span></div></div>
+</div>
+
+<h2 id="kolejnosc"><span class="n">5.</span>Kolejność wdrożenia (Start-o-meter, urealniony)</h2>
+<table>
+<tr><th>#</th><th>Co</th><th>Kod</th><th>Co blokuje / stan</th><th>Kiedy</th></tr>
+<tr><td><b>Z0</b></td><td>Infrastruktura</td><td>—</td><td>Python + konto <code>dd_auto</code> + .env na maszynie w biurze; <b>hosting rozstrzygnięty</b></td><td>Dziś ✅ (decyzja 26.08)</td></tr>
+<tr><td><b>1</b></td><td>Raport dzienny PH</td><td style="color:#166534">A6 ✅</td><td>11/11 end-to-end; testy na lipcu; brak godziny/odbiorców</td><td>Tydzień 1</td></tr>
+<tr><td><b>2</b></td><td>Dziennik WZ dla PH</td><td style="color:#166534">N4 ✅</td><td>generator + 10 dni testowych (lipiec); brak decyzji mail per PH vs zbiorczy</td><td>Tydzień 1–2</td></tr>
+<tr><td><b>3</b></td><td>Marża + flaga &lt;5%</td><td style="color:#92400e">A3 🟡</td><td>algorytm gotowy (ob_WartMag); brak progu i odbiorcy alertu</td><td>Tydzień 2</td></tr>
+<tr><td><b>4</b></td><td>Terminy i transport</td><td style="color:#92400e">A4 🟡</td><td>OAuth działa (37 eventów); decyzja: czy pisze do kalendarzy</td><td>Tydzień 3 (raport)</td></tr>
+<tr><td><b>5</b></td><td>WZ → info do PH</td><td style="color:#991b1b">A5 🔴</td><td><b>brak tabeli kategoria→osoba→mail</b></td><td>Tydzień 4+ po adresach</td></tr>
+<tr><td><b>6</b></td><td>ZK vs WZ rozjazdy</td><td style="color:#991b1b">A7 🔴</td><td>obie bazy + definicja rozjazdu</td><td>Razem z A5</td></tr>
+<tr><td><b>7</b></td><td>Rejestr zapytań</td><td style="color:#991b1b">A0 🔴</td><td>decyzja: gdzie żyje rejestr</td><td>Po warsztacie</td></tr>
+<tr><td><b>8</b></td><td>Oferta z ZK</td><td style="color:#991b1b">A2 🔴 ⚠</td><td><b>Sfera (licencja InsERT) — jedyna trudna, jedyny piszący</b></td><td>Osobna decyzja</td></tr>
+<tr><td><b>9</b></td><td>Scan projektu (Vision)</td><td style="color:#991b1b">A1 🔴</td><td>10–20 próbek PDF</td><td>Osobna decyzja</td></tr>
+<tr><td><b>—</b></td><td>Strażnik (audytor)</td><td style="color:#5b21b6">🆕</td><td>może startować od dziś — czyta bazę, nie czeka na automaty</td><td>Równolegle</td></tr>
+<tr><td><b>—</b></td><td>N1 walidator podmiotów · N2 OPIS · N3 obieg pieniądza</td><td style="color:#1e40af">🔵</td><td>nowe z wizyty 25.08</td><td>Po A6/N4</td></tr>
+</table>
+
+<h2 id="automaty"><span class="n">6.</span>Automaty — stan (02.09)</h2>
+<p>
+<span class="chip green">A6 raport PH — działa end-to-end</span>
+<span class="chip green">N4 dziennik WZ — testy na lipcu ✓</span>
+<span class="chip amber">A3 marża <5% — algorytm gotowy</span>
+<span class="chip amber">A4 terminy — OAuth działa</span>
+<span class="chip red">A5 — brak adresów PH</span>
+<span class="chip red">A7 — definicja rozjazdu</span>
+<span class="chip red">A0 — czeka decyzja</span>
+<span class="chip red">A2 — Sfera, trudna ⚠</span>
+<span class="chip red">A1 — brak próbek</span>
+<span class="chip blue">N1 walidator podmiotów</span>
+<span class="chip blue">N2 inwestycje po OPIS</span>
+<span class="chip blue">N3 obieg pieniądza</span>
+</p>
+
+<h2 id="obszary"><span class="n">7.</span>Obszary (kolejność wg Tomka)</h2>
+<ol>
+<li><b>Automatyzacje</b> — nr 1: 7 w planie (jedna trudna), 3 nowe, 2 w realizacji i testach</li>
+<li><b>Bieżące wsparcie</b> — baza, procesy, procedury; „jak ma być vs jak jest"; asortyment</li>
+<li><b>Wsparcie inwestycji i pracy w terenie</b> — GW, brygady, raport z dachu</li>
+<li><b>Nadzór nad umowami</b></li>
+<li><b>Asystent i czat</b> — ludzie pytają, czat odpowiada z wiedzy</li>
+</ol>
+
+<h2 id="decyzje"><span class="n">8.</span>Decyzje do uzyskania (układ Setup Boy, urealnione)</h2>
+<table>
+<tr><th>#</th><th>Decyzja</th><th>Kto</th><th>Stan</th></tr>
+<tr><td>1</td><td><b>GRANT SELECT na bazie JAWNEJ</b> — bez niej A6 = pół raportu</td><td>admin SQL klienta</td><td>⏳ czeka</td></tr>
+<tr><td>2</td><td><b>Godzina A6/N4 + odbiorcy</b> (propozycja 7:00, tomekw@ + tomekj@; N4: per PH czy zbiorczy?)</td><td>razem</td><td>⏳ czeka</td></tr>
+<tr><td>3</td><td><b>Tabela kategoria PH → osoba → mail/tel</b> (CD·MR·LR·SM·GG·MP·GM·BK·LP) — blokuje A5 i N4</td><td>klient</td><td>⏳ czeka</td></tr>
+<tr><td>4</td><td><b>Task Scheduler: SYSTEM czy konto serwisowe</b></td><td>z IT</td><td>⏳ czeka</td></tr>
+<tr><td>5</td><td><b>Sfera (InsERT)</b> — dotyczy wyłącznie A2</td><td>klient</td><td>⏳ czeka</td></tr>
+<tr><td>6</td><td><b>10–20 próbek PDF</b> — do oceny A1</td><td>klient</td><td>⏳ czeka</td></tr>
+<tr><td>—</td><td><b>Hosting: maszyna w biurze always-on</b> — zero VPS, zero Tailscale</td><td>—</td><td>✅ rozstrzygnięte 26.08</td></tr>
+</table>
+
+<div class="box amber">
+<b>Następny krok</b>
+<p>Diagram edytowalny: ARCHITEKTURA_DD.excalidraw (drag &amp; drop na excalidraw.com). Mapping procesu = warunek bota-rejestratora (marzenie „dzwonią → boty rejestrują"). Checklista Z0 krok po kroku → Setup Boy.</p>
+</div>
+
+<h2 id="polaczenia"><span class="n">9.</span>Połączenia — z czym i jak (mapa integracji)</h2>
+<p>System łączy się z 6 źródłami. Każde ma: technologię, kierunek (odczyt/zapis), poświadczenie i właściciela dostępu. To jest komplet — nic poza tą listą nie jest używane.</p>
+<table>
+<tr><th style="width:140px">Źródło</th><th style="width:150px">Technologia</th><th>Jak się łączy</th><th style="width:170px">Poświadczenie</th><th>Kierunek</th></tr>
+<tr><td><b>Subiekt GT — komandytowa</b></td><td>MS SQL (port 1433)</td><td>pymssql, read-only; widoki vwKlienci, dok__Dokument, pozycje; model połączeń: dok_DoDokId + wspólna pozycja + ob_DoId</td><td>login <code>dd_auto</code> (SELECT = db_datareader)</td><td>← odczyt</td></tr>
+<tr><td><b>Subiekt GT — jawna</b></td><td>MS SQL (ta sama instancja)</td><td>j.w. — faktury do klienta, sprzedaż usług, wpłaty (bez niej A6 KASA kłamie)</td><td><code>dd_auto</code> + GRANT na jawnej</td><td>← odczyt</td></tr>
+<tr><td><b>Kalendarze pojazdów</b></td><td>Google Calendar API v3</td><td>OAuth Desktop (token ~/.config/gcal/token.json), 6 kalendarzy (VW CRAFTER, HDS DAF, HDS MAN, PEUGEOT, RENAULT, PAWEŁEK); event = pojazd + numer ZK</td><td>OAuth — konto <code>tomek@</code> (publikacja aplikacji w Cloud Console)</td><td>← odczyt / → zapis (A4, po decyzji)</td></tr>
+<tr><td><b>SMTP poczty firmowej</b></td><td>SMTP (poczta.dobry-dach.pl:587)</td><td>smtplib + STARTTLS; wysyłka raportów A6/N4/A5 na skrzynki PH</td><td>login + hasło w <code>.env</code> (NIE w repo)</td><td>→ zapis (wysyłka)</td></tr>
+<tr><td><b>Claude / Hermes</b></td><td>lokalnie na maszynie (Claude Desktop + Hermes); API tylko gdy trzeba</td><td>Claude Desktop i Hermes <b>na maszynie u klienta</b> — czytają raporty runnera (logi przez MCP filesystem) i wiedzę z repo; nie widzą bazy SQL; Ty zarządzasz zdalnie przez VM; do chmury (API) wychodzi tylko to, co sami wyślemy (np. skan projektu A1)</td><td>konfiguracja lokalna (Tomek przez VM)</td><td>↔ lokalne / API na żądanie</td></tr>
+<tr><td><b>Repo GitHub (opcjonalnie)</b></td><td>git (GitHub: ai4cro-reports)</td><td><b>NIE jest wymagane na maszynie</b> — maszyna pracuje na <b>lokalnym folderze</b> (wiedza + skrypty leżą razem z nią); <b>folder lokalny = źródło prawdy</b>. Repo służy tylko do publikacji wybranych HTML dla klienta (GH Pages, build ~2–3 min) — jednokierunkowo, ręcznie, gdy chcemy coś pokazać na zewnątrz</td><td>token git (Tomek, tylko przy publikacji)</td><td>→ opcjonalny push</td></tr>
+<tr><td><b>Vault DD (wiedza .md)</b></td><td>Obsidian vault / folder .md</td><td>Second brain pod RAG: proces-roboczy, STRUKTURA_WEZLOW.json, KB, AUTOMATYZACJE — czytane przez agenta procesu i RAG bota LAN</td><td>lokalny (maszyna w biurze)</td><td>↔ obie</td></tr>
+</table>
+<div class="box amber">
+<b>Zasada połączeń</b>
+<p>Każde połączenie ma <b>jeden test diagnostyczny</b> (sekcja 12). Jeśli test nie przechodzi — automat, który z niego korzysta, nie startuje i to jest OK: lepiej jawny brak niż cichy błąd.</p>
+</div>
+
+<h2 id="hermes"><span class="n">10.</span>Jak pracuje Claude / Hermes (podział ról)</h2>
+<p>Wszystko siedzi <b>na maszynie u klienta (always-on)</b> — runner (Python) i Claude/Hermes razem, obok bazy w LAN. Dostęp zdalny przez wirtualną maszynę (RDP). Do chmury wychodzi tylko to, co sami wyślemy (np. skan projektu dla API).</p>
+<table>
+<tr><th style="width:160px">Warstwa</th><th style="width:210px">Gdzie żyje</th><th>Co robi</th><th>Przykład</th></tr>
+<tr><td><b>Runner (Python)</b></td><td>maszyna u klienta (always-on)</td><td>łączy się z bazą/kalendarzami/SMTP; generuje raporty (A6/N4/A3/A5); zapisuje logi do <code>C:\dd-automaty\logs\</code>; uruchamiany przez Task Scheduler (7:00, co 15/30 min); <b>czyta wiedzę i skrypty z lokalnego folderu</b> (bez sieci)</td><td>A6 7:00: SELECT z bazy → HTML → SMTP</td></tr>
+<tr><td><b>Claude / Hermes</b></td><td><b>na tej samej maszynie u klienta</b> (Claude Desktop + Hermes)</td><td>czyta wiedzę (z lokalnego folderu) i raporty runnera (logi przez MCP filesystem), rozumie, planuje, pisze treść; <b>nie widzi bazy bezpośrednio</b> — widzi raporty i logi, które runner wygenerował; Ty zarządzasz zdalnie (VM)</td><td>„co było w raporcie PH dziś rano?" → czyta log A6 → odpowiada po polsku</td></tr>
+<tr><td><b>Agent Procesu (STRAŻNIK)</b></td><td>Hermes na maszynie / cron</td><td>czyta wiedzę non stop (proces-roboczy, kanon, KB, AUTOMATYZACJE), pilnuje spójności list, poluje na obszary do automatyzacji, raportuje tylko deltę</td><td>codzienny przegląd: nowa odpowiedź → sync do wszystkich list + push</td></tr>
+<tr><td><b>Watchdog</b></td><td>maszyna u klienta</td><td>logi automatów, samonaprawa (restart, ponów wysyłkę), alert po 2 nieudanych próbach</td><td>7:05 sprawdza logi z doby, mail tylko przy błędzie</td></tr>
+</table>
+<div class="box vio">
+<b>Zasada współpracy</b>
+<p>Runner robi to, co wymaga determinizmu (liczby, wysyłka). Claude/Hermes robi to, co wymaga rozumienia (treść, plan, decyzja). <b>Claude nie widzi bazy SQL — widzi tylko raporty i logi, które runner wygenerował.</b> Kontrakt między nimi: pliki (JSON/HTML/log) w znanych ścieżkach. Zawsze można sprawdzić, co runner zrobił — logi są, raport jest.</p>
+</div>
+
+<h2 id="interfejs"><span class="n">11.</span>Interfejs setupu — panel sterowania</h2>
+<p>Cel: <b>jedno miejsce, w którym widać stan systemu i można odpalić wszystko ręcznie</b> — bez grzebania w skryptach i bez czekania na crona. To ma być strona (HTML na maszynie w biurze, localhost), nie aplikacja webowa.</p>
+<table>
+<tr><th style="width:200px">Widok / akcja</th><th>Co pokazuje / robi</th></tr>
+<tr><td><b>🏠 Pulpit stanu</b></td><td>każdy automat (A0–A7, N1–N4): ostatnie uruchomienie, wynik (OK/błąd), log; zielono/czerwono jak lista zadań</td></tr>
+<tr><td><b>▶ Uruchom ręcznie</b></td><td>przycisk per automat: „odpal A6 teraz" → runner wykonuje → wynik wraca na stronę (nie mailem)</td></tr>
+<tr><td><b>🩺 Diagnostyka</b></td><td>odpala wszystkie runy z sekcji 12 jednym kliknięciem; wynik = tabela zielone/czerwone + powód</td></tr>
+<tr><td><b>📜 Logi</b></td><td>podgląd C:\dd-automaty\logs\ (ostatnie N linii per automat) — bez RDP</td></tr>
+<tr><td><b>📊 Raporty</b></td><td>lista wygenerowanych HTML z linkami (otwórz w przeglądarce) — to samo co wysyłka mailowa, ale do podglądu</td></tr>
+<tr><td><b>📚 Wiedza</b></td><td>linki do KB / proces-roboczy / AUTOMATYZACJE (repo) + status spójności (czy listy się zgadzają)</td></tr>
+</table>
+<div class="box blue">
+<b>Dlaczego HTML na localhost, nie apka?</b>
+<p>Zero zależności: python http.server + statyczne pliki. Działa na maszynie w biurze bez instalacji czegokolwiek. Jak zaufamy — można wystawić w LAN dla klienta (czytanie). Docelowo interfejs = zakładka w dd-jeden (jeśli maszyna będzie miała publiczny adres) albo osobna podstrona.</p>
+</div>
+
+<h2 id="runy"><span class="n">12.</span>Runy diagnostyczne (healthcheck)</h2>
+<p>Jednorazowe, powtarzalne sprawdzenia — <b>każde odpowiada na jedno pytanie o system</b>. Odpalamy ręcznie (interfejs 11) albo w watchdodze. To nie raporty dla klienta — to badanie, czy system jest zdrowy.</p>
+<table>
+<tr><th style="width:70px">Kod</th><th>Pytanie</th><th>Jak sprawdza</th><th style="width:150px">Wynik</th></tr>
+<tr><td><b>D1</b></td><td>Czy połączenie z bazą (komandytowa) działa?</td><td>SELECT 1 + liczba dokumentów</td><td>OK / błąd + powód</td></tr>
+<tr><td><b>D2</b></td><td>Czy baza jawna jest dostępna? (A6 KASA)</td><td>SELECT z sys.databases — czy jawna istnieje i ma GRANT</td><td>OK / brak jawnej</td></tr>
+<tr><td><b>D3</b></td><td>Czy WZ ma pokrycie we wpływie? (dziury)</td><td>WZ z ostatnich N dni → czy ma dokument (ZK/FS/PA) → czy towar faktycznie rozliczony; algorytm kwalifikacji z MODEL_POLACZEN_DOKUMENTOW (kolejność 1–5)</td><td>lista GOŁE + liczba</td></tr>
+<tr><td><b>D4</b></td><td>Czy kalendarze pojazdów są czytelne? (A4)</td><td>OAuth token ważny + 6 kalendarzy + liczba eventów</td><td>OK / wygasły token</td></tr>
+<tr><td><b>D5</b></td><td>Czy SMTP wysyła?</td><td>mail testowy na skrzynkę techniczną</td><td>OK / błąd auth</td></tr>
+<tr><td><b>D6</b></td><td>Czy wiedza jest spójna? (23/23)</td><td>porównanie kanonu (STRUKTURA_WEZLOW.json) z listami: proces-roboczy, KB, AUTOMATYZACJE, lista_zadan — liczniki i statusy</td><td>23/23 / rozjazd (który plik)</td></tr>
+<tr><td><b>D7</b></td><td>Czy marża liczy się z bazy? (A3)</td><td>ob_WartMag na próbce FS — czy wynik ≈ 21,4%</td><td>OK / rozjazd</td></tr>
+<tr><td><b>D8</b></td><td>Czy raport z wczoraj powstał? (A6/N4)</td><td>czy plik HTML/log z wczorajszym timestampem istnieje</td><td>OK / brak raportu</td></tr>
+</table>
+<div class="box green">
+<b>Run D3 = Twój przykład, rozpisany</b>
+<p>„Ustal czy WZ ma pokrycie we wpływie": bierzemy WZ (typ 11) z okna (dziś/wczoraj/14 dni), kwalifikujemy każdy wg algorytmu — ① ZK wskazuje WZ → pokryte, ② pole na WZ = FS/FZ lub wspólna pozycja → pokryte, ③ PA → pokryte (detal), ④ KFZ dziedziczy → pokryte, ⑤ nic → <b>GOŁE</b> (dziura — towar wyjechał bez dokumentu). GOŁE starsze niż 1 dzień = realna dziura do pokazania. To jest <b>N4 w jednym zapytaniu</b> — run używa tej samej logiki co raport dzienny.</p>
+</div>
+
+<h2 id="wiedza"><span class="n">13.</span>Wiedza jako asset — serce systemu</h2>
+<div class="box red">
+<b>Problem, który Tomek nazwał wprost</b>
+<p>Cała wiedza zebrana w tym projekcie (proces-roboczy 18 węzłów, STRUKTURA_WEZLOW.json, KB, AUTOMATYZACJE, odkrycia) <b>nie jest używana przez system</b> — żyje w HTML dla ludzi, a automaty działają na zapytaniach SQL pisanych obok. To błąd: <b>strona z procesem (co wiemy i jak działa) jest święta</b> — powinna być fundamentem, z którego system czyta, a nie dokumentacją obok.</p>
+</div>
+<p>Docelowy układ — wiedza jest <b>jedynym źródłem konfiguracji</b>, nie ozdobą:</p>
+<table>
+<tr><th style="width:220px">Plik / zasób</th><th>Rola w systemie</th></tr>
+<tr><td><b>proces-roboczy.html</b> (18 węzłów)</td><td>kanon procesu: co wiemy (✅), czego nie wiemy (🟡), problemy (⚠️). Czyta go Agent Procesu przy starcie — to jego mapa.</td></tr>
+<tr><td><b>STRUKTURA_WEZLOW.json</b></td><td>kanon maszynowy (pytania + werdykty) — punkt porównania dla runu D6; jeśli JSON ≠ HTML → rozjazd</td></tr>
+<tr><td><b>AUTOMATYZACJE_PROJEKT.html</b></td><td>opis wszystkich automatów: pain → trigger → logika → wyjście → ROI → blokery. Runy i raporty biorą stąd <b>definicję</b> (co liczyć), nie z komentarzy w kodzie</td></tr>
+<tr><td><b>odkrycia.html</b></td><td>fakty z dowodami — każde „wiemy, że…" w automacie ma tu źródło i datę</td></tr>
+<tr><td><b>RAG (Second Brain)</b></td><td>vault .md (wiedza stała) indeksowany pod RAG — bot LAN odpowiada z cytatem źródła; pytania „żywe" (asortyment, stan) idą przez runner do bazy</td></tr>
+</table>
+<div class="box vio">
+<b>Kierunek: wiedza → system, nie system → wiedza</b>
+<p>Automat nie ma <b>swojej prywatnej prawdy</b> w kodzie. Definicje (co to GOŁE, jaki próg marży, kto jest PH) mieszkają w wiedzy; kod je czyta. Zmiana definicji = zmiana w wiedzy, nie w 5 skryptach. Agent Procesu pilnuje, żeby wiedza i kod się nie rozjechały (run D6 + SYNC po każdej zmianie).</p>
+</div>
+
+<h2 id="z0"><span class="n">14.</span>Checklista Z0 — rozszerzona (co faktycznie instalujemy)</h2>
+<p>To, co było w Setup Boy (plan dnia godzina po godzinie) + rzeczy, których tam brakowało: <b>Second Brain pod RAG i repozytorium wiedzy</b>. Pełna interaktywna checklista → <a href="SETUP_BOY_PLAN.html#z0">Setup Boy #z0</a>.</p>
+<table>
+<tr><th style="width:180px">Krok</th><th>Co robimy</th><th style="width:260px">Kryterium (liczba, nie „działa")</th></tr>
+<tr><td><b>1 · Recon</b></td><td>RDP do maszyny; Python; port 1433; obie bazy na instancji; admin SQL dostępny</td><td>Test-NetConnection → True; sys.databases → 2 bazy</td></tr>
+<tr><td><b>2 · Python + env</b></td><td>C:\dd-automaty\ + venv + pymssql + google-api-python-client; skrypty wgrane; .env (hasła tylko tu); logs\</td><td>python -c "import pymssql" → bez błędu; .env ≥5 kluczy</td></tr>
+<tr><td><b>3 · Konto dd_auto</b></td><td>CREATE LOGIN dd_auto + db_datareader na KOMANDYTOWEJ i JAWNEJ; świeży backup przed pierwszym A6</td><td>test_db.py → liczba dokumentów z obu baz</td></tr>
+<tr><td><b>4 · A6 na produkcji</b></td><td>dry-run zaakceptowany; mail na obie skrzynki; Task Scheduler 7:00 (SYSTEM); watchdog 7:05</td><td>klient potwierdza 3 pozycje; zadania „Ready"</td></tr>
+<tr><td><b>5 · Repozytorium wiedzy</b></td><td>struktura vault DD (Procesy/Asortyment/Klienci/Automaty/Ludzie) + STRUKTURA_WEZLOW.json + proces-roboczy jako kanon — <b>lokalnie, w folderze projektu</b> (bez repo online); publikacja HTML dla klienta opcjonalnie przez git</td><td>vault ma 5 katalogów; kanon 1:1 z HTML</td></tr>
+<tr><td><b>6 · Second Brain pod RAG</b></td><td>wiedza .md indeksowana (embeddingi lokalnie — brak wysyłki danych klienta do chmury); bot LAN odpowiada z cytatem</td><td>„jak działa WZ bez ZK?" → odpowiedź z cytatem źródła</td></tr>
+<tr><td><b>7 · Interfejs setupu</b></td><td>localhost: pulpit stanu + uruchom ręcznie + diagnostyka + logi (sekcja 11)</td><td>każdy automat ma przycisk i status; runy D1–D8 odpalają się</td></tr>
+<tr><td><b>8 · Claude/Hermes Bedrock</b></td><td>CLAUDE.md projektu w katalogu roboczym; MCP filesystem na logs\; demo „co było w raporcie PH dziś rano?"</td><td>nowa rozmowa widzi kontekst firmy; czyta a6.log</td></tr>
+</table>
+<div class="box green">
+<b>Rzeczy, które JUŻ działają (nie czekają na Z0)</b>
+<p>Model połączeń dokumentów (MODEL_POLACZEN_DOKUMENTOW.md) · algorytm kwalifikacji WZ (run D3 = N4) · marża z bazy (A3, 21,44%) · OAuth kalendarzy (37 eventów) · A6 end-to-end (11/11, SMTP na 2 skrzynki) · Agent Procesu DD zaprojektowany (AGENT_PROCESS_DD.html) · wiedza 23/23 wpisana na stałe i zsynchronizowana (08.09). Z0 odblokowuje tylko: maszynę, konto, interfejs i RAG.</p>
+</div>
+
+<p class="small" style="margin-top:30px;text-align:center">Dobry Dach · Setup v2 · aktualizacja 2026-09-08 · AI4CRO</p>
+</div>
+</body>
+</html>
