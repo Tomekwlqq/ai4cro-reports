@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A6 — wzór raportu dziennego (PH / właściciel)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+ *{box-sizing:border-box}
+ body{margin:0;background:#fff;color:#1a1f2b;font-family:'Space Grotesk',system-ui,sans-serif;font-size:15px;line-height:1.5}
+ .wrap{max-width:1280px;margin:0 auto;padding:30px 24px 64px}
+ h1{font-size:32px;margin:0 0 6px}
+ h2{font-size:23px;margin:34px 0 12px}
+ h3{font-size:18px;margin:0 0 10px}
+ .sub{color:#667085;font-size:14px;margin-bottom:18px}
+ .tabs{display:flex;gap:10px;margin:16px 0 18px;border-bottom:1.5px solid #e4e7ec}
+ .tabs button{background:none;border:none;font-family:inherit;font-size:17px;font-weight:600;color:#667085;
+   padding:12px 18px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+ .tabs button.on{color:#7c5cff;border-bottom-color:#7c5cff}
+ .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:0 0 8px}
+ .kpi div{border:1.5px solid #e4e7ec;border-radius:14px;padding:14px 16px}
+ .kpi b{display:block;font-size:26px;line-height:1.15}
+ .kpi span{font-size:12.5px;color:#667085;text-transform:uppercase;letter-spacing:.04em}
+ table{width:100%;border-collapse:collapse;font-size:14.5px}
+ th{text-align:left;background:#f6f8fa;color:#475467;font-size:12px;text-transform:uppercase;letter-spacing:.04em;
+   padding:10px 11px;border-bottom:1.5px solid #e4e7ec}
+ td{padding:11px;border-bottom:1px solid #eef0f3;vertical-align:middle}
+ tr:hover td{background:#faf9ff}
+ .num{text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13.5px;white-space:nowrap}
+ .b{font-weight:600} .vio{color:#7c5cff} .red{color:#b42318}
+ .nm{font-weight:500;max-width:270px} .ph{font-family:'IBM Plex Mono',monospace;color:#667085}
+ .mono{font-family:'IBM Plex Mono',monospace;font-size:12.5px} .strz{color:#98a2b3;text-align:center}
+ .al{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+ .al-ok{background:#eefaf1;color:#1d7a3f;border:1px solid #bfe6cb}
+ .al-warn{background:#fff8e8;color:#9a6b00;border:1px solid #f0dca8}
+ .al-bad{background:#fdf2f2;color:#b42318;border:1px solid #f3c9c9}
+ .hide{display:none}
+ .card{border:1.5px solid #e4e7ec;border-radius:14px;padding:18px 20px;margin:14px 0}
+ .uwaga{background:#fdf2f2;border:1px solid #f3c9c9;border-radius:12px;padding:14px 18px;font-size:14.5px;margin:14px 0}
+ .mail{background:#f4f0ff;border:1px solid #d8cffb;border-radius:12px;padding:16px 20px;margin:18px 0;font-size:14.5px}
+ .small{font-size:13px;color:#667085}
+</style></head><body><div class="wrap">
+
+<h1>📊 A6 — raport dzienny</h1>
+<div class="sub">Wzór do wysyłki mailem · raport za <b>21.09.2026</b> (dzień poprzedni) · stan narastający na <b>22.09.2026</b> · źródło: baza Subiekt</div>
+
+<div class="mail"><b>Jak to leci mailem:</b> jeden plik HTML w treści wiadomości. PH dostaje swój widok (tylko jego klienci), Tomek Jurewicz widok sum po PH. Bez kolumn technicznych — te zostają w wersji roboczej.</div>
+
+<div class="tabs">
+  <button class="on" onclick="pokaz('ph',this)">👤 Widok PH (handlowiec)</button>
+  <button onclick="pokaz('ow',this)">🏢 Widok właściciela — suma po PH</button>
+</div>
+
+<section id="ph">
+  <div class="kpi"><div><b>16</b><span>wydania wczoraj (szt.)</span></div><div><b>170 879 zł</b><span>wydano netto wczoraj</span></div><div><b>11</b><span>faktury wystawione</span></div><div><b>52 601 zł</b><span>do zapłaty (całość)</span></div><div><b>321 113 zł</b><span>narastająco: miesiąc</span></div><div><b>1 697 900 zł</b><span>narastająco: rok</span></div></div>
+
+  <h2>Twoi klienci — wczoraj i stan narastający</h2>
+  <table>
+    <tr><th>Klient</th><th>PH</th><th>WZ wczoraj</th><th>wydano netto</th><th>FV</th><th>naliczone</th>
+        <th>do zapłaty</th><th>narastająco: miesiąc</th><th>narastająco: rok</th><th>po terminie</th><th>alert</th></tr>
+    <tr><td class="nm">3534 — P.H.U. Dach-Bud</td><td class="ph">MP</td><td class="num">4</td><td class="num b">69 366 zł</td><td class="num">3</td><td class="num">85 320 zł</td><td class="num b vio">43 500 zł</td><td class="num">128 400 zł</td><td class="num">741 900 zł</td><td class="num red">21 800 zł</td><td><span class="al al-ok">—</span></td></tr><tr><td class="nm">49 — Zakład Dekarski Nowak</td><td class="ph">MP</td><td class="num">0</td><td class="num b">0 zł</td><td class="num">8</td><td class="num">69 279 zł</td><td class="num b vio">9 101 zł</td><td class="num">91 200 zł</td><td class="num">402 300 zł</td><td class="num">0 zł</td><td><span class="al al-ok">—</span></td></tr><tr><td class="nm">6489 — Wspólnota Mieszkaniowa</td><td class="ph">MP</td><td class="num">12</td><td class="num b">101 513 zł</td><td class="num">0</td><td class="num">0 zł</td><td class="num b vio">0 zł</td><td class="num">101 513 zł</td><td class="num">553 700 zł</td><td class="num">0 zł</td><td><span class="al al-bad">WZ bez FS</span></td></tr>
+  </table>
+  <p class="small">„Naliczone” = wartość pierwotna rozrachunku (<code>nzf_WartoscPierwotna</code>), „do zapłaty” = saldo (<code>nzf_Wartosc</code>). Kwoty netto. Narastające liczone od 1. dnia miesiąca i od 1. stycznia — bez cięcia do roku.</p>
+
+  <h2>WZ ↔ kasa — co się z czym zeszło</h2>
+  <table>
+    <tr><th>Wydanie (WZ)</th><th>netto</th><th></th><th>Faktura</th><th>netto</th><th></th><th>Wpłata / kasa</th><th>kwota</th><th>stan</th></tr>
+    <tr class="r-warn"><td class="mono">WZ 1631/MAG/08/2026</td><td class="num">3 885,84 zł</td><td class="strz">→</td><td class="mono">FS 88/MAG/08/2026</td><td class="num">3 885,84 zł</td><td class="strz">→</td><td class="mono">KP 412/08/2026</td><td class="num">2 000,00 zł</td><td><span class="al al-warn">zapłacone częściowo</span></td></tr><tr class="r-ok"><td class="mono">WZ 1624/MAG/08/2026</td><td class="num">2 140,07 zł</td><td class="strz">→</td><td class="mono">FS 61/MAG/08/2026</td><td class="num">2 140,07 zł</td><td class="strz">→</td><td class="mono">Bank przyjmie 918</td><td class="num">2 140,07 zł</td><td><span class="al al-ok">zamknięte</span></td></tr><tr class="r-bad"><td class="mono">WZ 1712/MAG/08/2026</td><td class="num">18 400,00 zł</td><td class="strz">→</td><td class="mono">— brak FS</td><td class="num">—</td><td class="strz">→</td><td class="mono">—</td><td class="num">—</td><td><span class="al al-bad">dziura: WZ bez faktury</span></td></tr>
+  </table>
+  <p class="small">Łańcuch z bazy: WZ → FS (powiązanie nagłówków) → rozrachunek faktury → wpłata (kasa / bank / spłata). Wiersz bez faktury = dziura do wyjaśnienia, nie „w drodze”.</p>
+</section>
+
+<section id="ow" class="hide">
+  <div class="kpi"><div><b>18</b><span>wydania wczoraj (szt.)</span></div><div><b>202 379 zł</b><span>wydano netto wczoraj</span></div><div><b>384 313 zł</b><span>narastająco: miesiąc</span></div><div><b>1 917 300 zł</b><span>narastająco: rok</span></div><div><b>64 601 zł</b><span>do zapłaty (całość)</span></div><div><b>33 800 zł</b><span>po terminie</span></div></div>
+
+  <h2>Suma firmy — z podziałem na handlowców</h2>
+  <table>
+    <tr><th>Handlowiec (PH)</th><th>klientów</th><th>wydano netto</th><th>FV</th><th>naliczone</th>
+        <th>do zapłaty</th><th>narastająco: miesiąc</th><th>narastająco: rok</th><th>po terminie</th></tr>
+    <tr><td class="nm">MP — Marcin Pawlak</td><td class="num">3</td><td class="num b">170 879 zł</td><td class="num">11</td><td class="num">154 599 zł</td><td class="num b vio">52 601 zł</td><td class="num">321 113 zł</td><td class="num">1 697 900 zł</td><td class="num red">21 800 zł</td></tr><tr><td class="nm">SM — Sylwia Matysiak</td><td class="num">1</td><td class="num b">31 500 zł</td><td class="num">1</td><td class="num">31 500 zł</td><td class="num b vio">12 000 zł</td><td class="num">63 200 zł</td><td class="num">219 400 zł</td><td class="num red">12 000 zł</td></tr>
+  </table>
+
+  <h2>Na co patrzeć dzisiaj</h2>
+  <div class="uwaga">
+    <b>WZ bez faktury:</b> WZ 1712/MAG/08/2026 — 18 400 zł (klient 6489). Wystawienie faktury zamyka łańcuch i przenosi kwotę z „wydane” do „naliczone”.<br>
+    <b>Po terminie:</b> 21 800 zł (MP) + 12 000 zł (SM) = 33 800 zł.<br>
+    <b>Do wyjaśnienia:</b> rozjazd liczby dziur — 1 171 (powiązanie) vs 557 (mapa 15.09) vs 1 359 (cron 17.09). Blokuje zaufanie do kolumny „dziury”.
+  </div>
+
+  <h2>WZ ↔ kasa — pełny łańcuch, bez cięcia do jednego handlowca</h2>
+  <table>
+    <tr><th>Wydanie (WZ)</th><th>netto</th><th></th><th>Faktura</th><th>netto</th><th></th><th>Wpłata / kasa</th><th>kwota</th><th>stan</th></tr>
+    <tr class="r-warn"><td class="mono">WZ 1631/MAG/08/2026</td><td class="num">3 885,84 zł</td><td class="strz">→</td><td class="mono">FS 88/MAG/08/2026</td><td class="num">3 885,84 zł</td><td class="strz">→</td><td class="mono">KP 412/08/2026</td><td class="num">2 000,00 zł</td><td><span class="al al-warn">zapłacone częściowo</span></td></tr><tr class="r-ok"><td class="mono">WZ 1624/MAG/08/2026</td><td class="num">2 140,07 zł</td><td class="strz">→</td><td class="mono">FS 61/MAG/08/2026</td><td class="num">2 140,07 zł</td><td class="strz">→</td><td class="mono">Bank przyjmie 918</td><td class="num">2 140,07 zł</td><td><span class="al al-ok">zamknięte</span></td></tr><tr class="r-bad"><td class="mono">WZ 1712/MAG/08/2026</td><td class="num">18 400,00 zł</td><td class="strz">→</td><td class="mono">— brak FS</td><td class="num">—</td><td class="strz">→</td><td class="mono">—</td><td class="num">—</td><td><span class="al al-bad">dziura: WZ bez faktury</span></td></tr>
+  </table>
+</section>
+
+<div class="card">
+  <h3>Skąd te liczby — i co jeszcze musi dojść z żywej bazy</h3>
+  <p class="small">Wartości w tym wzorze pochodzą z pilota na kopii bazy (21.09: klienci 3534, 49, 6489) i z pomiaru kasy z 15.09 — <b>to układ raportu, nie raport dnia</b>. Zlecenie do METRONA: (1) kolumna prawdy dla kwot (blokada: podejrzenie zaniżenia ~15×), (2) rozrachunki per faktura, (3) wydania i wpłaty w podziale miesiąc / rok, (4) łańcuch WZ → FS → rozrachunek → wpłata za ostatnie 30 dni.</p>
+</div>
+
+<div class="card">
+  <h3>Czego w wersji „do maila” nie ma — i tak zostaje</h3>
+  <p class="small">Zero identyfikatorów technicznych, zero kolumn „kategoria / typ / ID pozycji”, zero listy wszystkich wydań. Te rzeczy zostają w wersji roboczej o tej samej strukturze. Mail ma odpowiadać na pytanie „co u mnie dzisiaj”, nie być archiwum.</p>
+</div>
+
+<script>
+function pokaz(id, btn) {
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('ph').classList.toggle('hide', id !== 'ph');
+  document.getElementById('ow').classList.toggle('hide', id !== 'ow');
+}
+</script>
+</div></body></html>
