@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A6 — powiązania WZ ↔ FV ↔ kasa</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+ *{box-sizing:border-box}
+ body{margin:0;background:#fff;color:#1a1f2b;font-family:'Space Grotesk',system-ui,sans-serif;font-size:15px;line-height:1.5}
+ .wrap{max-width:1320px;margin:0 auto;padding:30px 24px 70px}
+ h1{font-size:32px;margin:0 0 6px}
+ h2{font-size:22px;margin:32px 0 12px}
+ .sub{color:#667085;font-size:14px;margin-bottom:20px}
+ .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:22px}
+ .kpi div{border:1.5px solid #e4e7ec;border-radius:14px;padding:14px 16px}
+ .kpi b{display:block;font-size:25px}
+ .kpi span{font-size:12.5px;color:#667085;text-transform:uppercase;letter-spacing:.04em}
+ .szukaj{display:flex;gap:10px;margin:0 0 14px;flex-wrap:wrap;align-items:center}
+ .szukaj input{font-family:inherit;font-size:15px;padding:10px 14px;border:1.5px solid #e4e7ec;border-radius:10px;min-width:320px}
+ .filtr{background:#f6f8fa;border:1.5px solid #e4e7ec;border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer;font-family:inherit}
+ .filtr.on{background:#7c5cff;color:#fff;border-color:#7c5cff}
+ table{width:100%;border-collapse:collapse;font-size:14.5px}
+ th{text-align:left;background:#f6f8fa;color:#475467;font-size:12px;text-transform:uppercase;letter-spacing:.04em;padding:10px 11px;border-bottom:1.5px solid #e4e7ec}
+ td{padding:11px;border-bottom:1px solid #eef0f3;vertical-align:top}
+ .num{text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13.5px;white-space:nowrap}
+ .mono{font-family:'IBM Plex Mono',monospace;font-size:13px}
+ .fv{cursor:pointer;font-weight:600}
+ .fv:hover{color:#7c5cff}
+ .strz{color:#98a2b3}
+ .lisc{background:#fbfaff;display:none}
+ .lisc.on{display:table-row}
+ .lisc td{padding:0}
+ .lisc .in{padding:14px 18px 18px 44px}
+ .lisc h4{margin:0 0 8px;font-size:14px;color:#475467;text-transform:uppercase;letter-spacing:.04em}
+ .al{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+ .al-ok{background:#eefaf1;color:#1d7a3f;border:1px solid #bfe6cb}
+ .al-warn{background:#fff8e8;color:#9a6b00;border:1px solid #f0dca8}
+ .al-bad{background:#fdf2f2;color:#b42318;border:1px solid #f3c9c9}
+ .badge{display:inline-block;background:#eef1f6;color:#475467;border-radius:6px;padding:2px 8px;font-size:12px;font-family:'IBM Plex Mono',monospace}
+ table.mini{font-size:14px;margin-top:4px}
+ table.mini th{background:#f4f0ff;color:#5b46c9;font-size:11.5px}
+ .uwaga{background:#fdf2f2;border:1px solid #f3c9c9;border-radius:12px;padding:14px 18px;margin:18px 0;font-size:14.5px}
+ .card{border:1.5px solid #e4e7ec;border-radius:14px;padding:18px 20px;margin:18px 0}
+ .small{font-size:13px;color:#667085}
+</style></head><body><div class="wrap">
+
+<h1>🔗 A6 — powiązania WZ ↔ FV ↔ kasa</h1>
+<div class="sub">Klikalne listy między bazami: <b>każda faktura wie, których wydań dotyczy</b>, a każde wydanie — czy ma fakturę i czy pieniądze wpłynęły. Dane: <span id="zrodlo"></span></div>
+
+<div class="kpi" id="kpi"></div>
+
+<div class="szukaj">
+  <input id="q" placeholder="Szukaj: numer WZ, numer FV, klient…" oninput="rysuj()">
+  <button class="filtr on" data-f="all" onclick="filtr(this)">wszystko</button>
+  <button class="filtr" data-f="brak" onclick="filtr(this)">bez wpłaty</button>
+  <button class="filtr" data-f="czesciowe" onclick="filtr(this)">zapłacone częściowo</button>
+  <button class="filtr" data-f="dziury" onclick="filtr(this)">WZ bez faktury</button>
+</div>
+
+<h2>Faktury i wydania, których dotyczą</h2>
+<table>
+  <thead><tr><th>Faktura</th><th>klient</th><th>netto</th><th>wydań (WZ)</th><th>wpłaty</th><th>termin</th><th>stan</th></tr></thead>
+  <tbody id="t_fv"></tbody>
+</table>
+<p class="small">Klik w wiersz faktury rozwija listę wydań (WZ) i wpłat, które ją zamykają. To ta sama struktura, którą METRON ma dostarczyć z bazy: <code>faktury[] → wz[]</code>.</p>
+
+<h2 id="dz">Wydania bez faktury — dziury</h2>
+<table>
+  <thead><tr><th>Wydanie (WZ)</th><th>klient</th><th>netto</th><th>data</th><th>stan</th></tr></thead>
+  <tbody id="t_dz"></tbody>
+</table>
+
+<div class="uwaga"><b>Dlaczego tak:</b> dziura to nie „w drodze” — to wydanie, po którym nie ma dokumentu po drugiej stronie. Tu jest lista do zamknięcia, nie statystyka (rozjazd liczby dziur: 1 171 vs 557 vs 1 359 — do uzgodnienia z METRONEM).</div>
+
+<div class="card">
+  <h3 style="margin:0 0 8px">Czego potrzebuje ta strona od bazy</h3>
+  <p class="small">Struktura danych (jedna odpowiedź z bazy, bez przetwarzania po drodze):</p>
+  <pre class="small" style="background:#f6f8fa;border:1px solid #e4e7ec;border-radius:10px;padding:12px;overflow:auto">{ "pomiar": "RRRR-MM-DD",
+  "klienci": { "id": "nazwa" },
+  "faktury": [ { "fv": "FS …", "klient": "id", "netto": 0.00, "termin": "RRRR-MM-DD",
+                 "wz": [ { "nr": "WZ …", "netto": 0.00 } ],
+                 "wplaty": [ { "nr": "KP / Bank przyjmie …", "kwota": 0.00, "data": "RRRR-MM-DD" } ] } ],
+  "wz_bez_fv": [ { "nr": "WZ …", "klient": "id", "netto": 0.00, "data": "RRRR-MM-DD" } ] }</pre>
+  <p class="small">Ta strona tylko to rysuje — nie liczy i nie zgaduje. Jeśli baza czegoś nie wie (np. brak powiązania), ma to zostać puste pole, nie zero.</p>
+</div>
+
+<script>
+const DANE = {
+ "pomiar": "2026-09-15",
+ "zrodlo": "kopia bazy _2024_KOMANDYTOWA (przykład z pilota)",
+ "klienci": {
+  "3534": "P.H.U. Dach-Bud",
+  "49": "Zakład Dekarski Nowak",
+  "6489": "Wspólnota Mieszkaniowa"
+ },
+ "faktury": [
+  {
+   "fv": "FS 88/MAG/08/2026",
+   "klient": "3534",
+   "netto": 3885.84,
+   "termin": "2026-08-29",
+   "wz": [
+    {
+     "nr": "WZ 1631/MAG/08/2026",
+     "netto": 3885.84
+    }
+   ],
+   "wplaty": [
+    {
+     "nr": "KP 412/08/2026",
+     "kwota": 2000.0,
+     "data": "2026-09-02"
+    }
+   ]
+  },
+  {
+   "fv": "FS 61/MAG/08/2026",
+   "klient": "3534",
+   "netto": 2140.07,
+   "termin": "2026-08-22",
+   "wz": [
+    {
+     "nr": "WZ 1624/MAG/08/2026",
+     "netto": 2140.07
+    }
+   ],
+   "wplaty": [
+    {
+     "nr": "Bank przyjmie 918/08",
+     "kwota": 2140.07,
+     "data": "2026-08-20"
+    }
+   ]
+  },
+  {
+   "fv": "FS 102/MAG/08/2026",
+   "klient": "49",
+   "netto": 12400.0,
+   "termin": "2026-09-19",
+   "wz": [
+    {
+     "nr": "WZ 1702/MAG/08/2026",
+     "netto": 8000.0
+    },
+    {
+     "nr": "WZ 1707/MAG/08/2026",
+     "netto": 4400.0
+    }
+   ],
+   "wplaty": []
+  },
+  {
+   "fv": "FS 141/MAG/09/2026",
+   "klient": "6489",
+   "netto": 9100.0,
+   "termin": "2026-10-14",
+   "wz": [
+    {
+     "nr": "WZ 1750/MAG/09/2026",
+     "netto": 9100.0
+    }
+   ],
+   "wplaty": [
+    {
+     "nr": "Bank przyjmie 1204/09",
+     "kwota": 9100.0,
+     "data": "2026-09-18"
+    }
+   ]
+  }
+ ],
+ "wz_bez_fv": [
+  {
+   "nr": "WZ 1712/MAG/08/2026",
+   "klient": "6489",
+   "netto": 18400.0,
+   "data": "2026-08-21"
+  },
+  {
+   "nr": "WZ 1733/MAG/08/2026",
+   "klient": "3534",
+   "netto": 5620.0,
+   "data": "2026-08-27"
+  }
+ ]
+};
+const zl = n => n.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' zł';
+let filtrStan = 'all';
+
+function stan(f) {
+  const suma = f.wplaty.reduce((a, w) => a + w.kwota, 0);
+  if (!f.wplaty.length) return 'brak';
+  if (suma + 0.005 < f.netto) return 'czesciowe';
+  return 'ok';
+}
+function etykieta(s) {
+  const m = {ok: ['al-ok', '✅ zapłacone'], brak: ['al-bad', '⛔ bez wpłaty'], czesciowe: ['al-warn', '🟡 częściowo']};
+  return '<span class="al ' + m[s][0] + '">' + m[s][1] + '</span>';
+}
+function filtr(btn) {
+  document.querySelectorAll('.filtr').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on'); filtrStan = btn.dataset.f; rysuj();
+}
+function pasuje(txt) {
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  return !q || txt.toLowerCase().includes(q);
+}
+function rysuj() {
+  // faktury
+  const tb = document.getElementById('t_fv'); tb.innerHTML = '';
+  DANE.faktury.forEach((f, i) => {
+    const s = stan(f);
+    if (filtrStan !== 'all' && filtrStan !== 'dziury' && filtrStan !== s) return;
+    if (filtrStan === 'dziury') return;
+    const tekst = f.fv + ' ' + f.klient + ' ' + (DANE.klienci[f.klient] || '');
+    if (!pasuje(tekst)) return;
+    const sumaW = f.wplaty.reduce((a, w) => a + w.kwota, 0);
+    tb.insertAdjacentHTML('beforeend',
+      '<tr class="fv" onclick="rozwin(' + i + ',this)"><td class="mono">▸ ' + f.fv + '</td>'
+      + '<td>' + (DANE.klienci[f.klient] || f.klient) + '</td>'
+      + '<td class="num">' + zl(f.netto) + '</td>'
+      + '<td class="num">' + f.wz.length + '</td>'
+      + '<td class="num">' + (f.wplaty.length ? zl(sumaW) : '—') + '</td>'
+      + '<td class="mono">' + f.termin + '</td><td>' + etykieta(s) + '</td></tr>'
+      + '<tr class="lisc" id="w' + i + '"><td colspan="7"><div class="in">'
+      + '<h4>Wydania, których dotyczy ta faktura</h4>'
+      + '<table class="mini"><thead><tr><th>WZ</th><th>netto</th></tr></thead><tbody>'
+      + f.wz.map(w => '<tr><td class="mono">' + w.nr + '</td><td class="num">' + zl(w.netto) + '</td></tr>').join('')
+      + '</tbody></table>'
+      + '<h4 style="margin-top:12px">Wpłaty</h4>'
+      + (f.wplaty.length
+          ? '<table class="mini"><thead><tr><th>dokument</th><th>kwota</th><th>data</th></tr></thead><tbody>'
+            + f.wplaty.map(w => '<tr><td class="mono">' + w.nr + '</td><td class="num">' + zl(w.kwota) + '</td><td class="mono">' + w.data + '</td></tr>').join('')
+            + '</tbody></table>'
+          : '<p class="small">brak wpłat — termin ' + f.termin + '</p>')
+      + '</div></td></tr>');
+  });
+  // dziury
+  const td = document.getElementById('t_dz'); td.innerHTML = '';
+  DANE.wz_bez_fv.forEach(w => {
+    const tekst = w.nr + ' ' + w.klient + ' ' + (DANE.klienci[w.klient] || '');
+    if (filtrStan !== 'all' && filtrStan !== 'dziury') return;
+    if (!pasuje(tekst)) return;
+    td.insertAdjacentHTML('beforeend', '<tr><td class="mono">' + w.nr + '</td><td>'
+      + (DANE.klienci[w.klient] || w.klient) + '</td><td class="num">' + zl(w.netto) + '</td>'
+      + '<td class="mono">' + w.data + '</td><td><span class="al al-bad">⛔ brak faktury</span></td></tr>');
+  });
+  // kpi
+  const sumaFv = DANE.faktury.reduce((a, f) => a + f.netto, 0);
+  const sumaWz = DANE.faktury.reduce((a, f) => a + f.wz.reduce((x, w) => x + w.netto, 0), 0);
+  const sumaWpl = DANE.faktury.reduce((a, f) => a + f.wplaty.reduce((x, w) => x + w.kwota, 0), 0);
+  const dziury = DANE.wz_bez_fv.reduce((a, w) => a + w.netto, 0);
+  document.getElementById('zrodlo').textContent = DANE.zrodlo + ' · pomiar ' + DANE.pomiar;
+  document.getElementById('kpi').innerHTML = [
+    [DANE.faktury.length + ' / ' + DANE.faktury.reduce((a, f) => a + f.wz.length, 0), 'faktury / wydania'],
+    [zl(sumaFv), 'zafakturowane netto'],
+    [zl(sumaWz), 'wydane netto (te faktury)'],
+    [zl(sumaWpl), 'wpłacone'],
+    [DANE.wz_bez_fv.length + ' · ' + zl(dziury), 'wydania bez faktury'],
+  ].map(x => '<div><b>' + x[0] + '</b><span>' + x[1] + '</span></div>').join('');
+}
+function rozwin(i, tr) {
+  const r = document.getElementById('w' + i);
+  r.classList.toggle('on');
+  tr.querySelector('td').textContent = (r.classList.contains('on') ? '▾ ' : '▸ ') + DANE.faktury[i].fv;
+}
+rysuj();
+</script>
+</div></body></html>

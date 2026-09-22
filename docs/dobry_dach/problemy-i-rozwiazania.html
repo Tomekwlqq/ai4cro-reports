@@ -33,6 +33,9 @@
   .box.warn{border-color:var(--warn);background:#fdfaf1}
   ul{margin:8px 0 0 20px} li{margin:5px 0}
   .small{font-size:15px;color:var(--ink-2)}
+
+   table.sz col.s1{width:21%} table.sz col.s2{width:26%} table.sz col.s3{width:22%}
+   table.sz col.s4{width:18%} table.sz col.s5{width:13%}
 </style>
 </head>
 <body><div class="wrap">
@@ -290,6 +293,34 @@
       </tr>
     </tbody>
   </table>
+
+
+  <style>
+   table.sz tbl{}
+   td.sz{font-weight:600}
+   .kol{display:inline-block;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12.5px;color:#667085;
+     background:#f2f4f7;border-radius:6px;padding:3px 7px;margin-bottom:6px}
+   .pill{display:inline-block;font-size:12.5px;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
+   .s-ok{background:#eefaf1;color:#1d7a3f;border:1px solid #bfe6cb}
+   .s-todo{background:#fff8e8;color:#9a6b00;border:1px solid #f0dca8}
+   .licznik{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0 6px}
+   .licznik div{border:1.5px solid var(--line);border-radius:12px;padding:10px 16px;font-size:15px}
+   .licznik b{font-size:22px;display:block}
+  </style>
+
+  <h2 id="szanse">Szanse na porządek — jedna zmiana, kilka problemów zamkniętych</h2>
+  <p class="sub">Poprzednia tabela pokazuje, co boli. Ta pokazuje, gdzie <b>jedna zmiana porządkuje kilka rzeczy naraz</b> — i co jest do tego potrzebne. Kolejność: najpierw fundamenty (te, które inne rzeczy zależą), potem blokady, na końcu rzeczy wymagające decyzji klienta.</p>
+  <div class="licznik">
+    <div><b>6</b>już działa</div>
+    <div><b>6</b>do zrobienia</div>
+    <div><b>12</b>szans łącznie</div>
+  </div>
+  <table class="sz">
+    <colgroup><col class="s1"><col class="s2"><col class="s3"><col class="s4"><col class="s5"></colgroup>
+    <tr><th>Szansa — co porządkuje</th><th>Zamyka problemy</th><th>Co daje</th><th>Warunek</th><th>Kolejność / stan</th></tr>
+    <tr><td class="p sz">Rejestr zapytań = baza klientów (A0)</td><td class="d">zapytania przepadające przez brak oddzwonienia · brak follow-upu · oferty żyjące w głowie i Excelu</td><td>policzalny % wygranych; każde zapytanie ma właściciela i przypomnienie</td><td class="d">pole rejestru + przypomnienie; wpis od razu, nie po fakcie</td><td><span class="kol">1 · fundament</span><br><span class="pill s-todo">⬜ do zrobienia</span></td></tr><tr><td class="p sz">Kategoria dokumentu = handlowiec (PH)</td><td class="d">spory „czyj to klient” · brak podziału raportów na PH · ręczne dzielenie portfela</td><td>raport A6 dzieli się sam; suma per PH schodzi z bazy, nie z arkusza</td><td class="d">już potwierdzone w bazie (dok_KatId → sl_Kategoria) — trzeba tego pilnować przy wystawianiu</td><td><span class="kol">1 · fundament</span><br><span class="pill s-ok">✅ działa</span></td></tr><tr><td class="p sz">Kolumna prawdy dla kwot</td><td class="d">podejrzenie zaniżenia kwot ~15× · rozjazd sum między widokami · kwoty, którym nikt nie wierzy</td><td>każda kwota w raportach wiarygodna; koniec dwóch prawd w jednym raporcie</td><td class="d">pomiar M: wskazać jedną kolumnę + 3 dokumenty z dowodem (zadanie 0038, pkt 1)</td><td><span class="kol">1 · blokada</span><br><span class="pill s-todo">⬜ do zrobienia</span></td></tr><tr><td class="p sz">Zasada: obieg wewnętrzny = 0 przychodu</td><td class="d">przesunięcia na własne spółki liczone jak sprzedaż (23,2 mln) · mylone „wydane” z „zarobione”</td><td>23,2 mln przestaje udawać przychód; realna sprzedaż czytelna</td><td class="d">decyzja o definicji i wpisanie jej do sposobu liczenia (już opisane, wymaga stosowania)</td><td><span class="kol">1 · definicja</span><br><span class="pill s-ok">✅ działa</span></td></tr><tr><td class="p sz">Łańcuch WZ → FS → rozrachunek → wpłata w jednym widoku</td><td class="d">brak wiedzy, czy wydanie zostało zafakturowane i opłacone · zaliczki niepowiązane z rozrachunkami (0 z 2 291) · ręczne domysły</td><td>widać koniec każdego wydania; dziura znaczy dziura, a nie „w drodze”</td><td class="d">dane M: rozrachunki per faktura + łańcuch za 30 dni (zadanie 0038, pkt 2 i 4)</td><td><span class="kol">2 · po blokadzie</span><br><span class="pill s-todo">⬜ do zrobienia</span></td></tr><tr><td class="p sz">Alerty dzienne: WZ bez FS · FS bez wpłaty · po terminie</td><td class="d">gubione WZ bez faktury · brak pilnowania zaliczek · rozjazd liczby dziur (1 171 / 557 / 1 359)</td><td>dziury stają się kolejką do zamknięcia; różnica znika sama, bo każdy wątek ma właściciela</td><td class="d">jedna liczba dziur z kryterium (zadanie 0038, pkt 5) + wysyłka dzienna</td><td><span class="kol">2 · po blokadzie</span><br><span class="pill s-todo">⬜ do zrobienia</span></td></tr><tr><td class="p sz">Stany przejściowe „w drodze” jako kolejka, nie jako strata</td><td class="d">przesunięcia, budowy klienta i zaliczki wpadały do jednego worka „nie nasze” · brak pilnowania, czy wróciły</td><td>23,2 mln + 16,0 mln przestaje ginąć w statystyce; widać, co wróciło</td><td class="d">lista W1–W4 z terminem przeglądu (opisana w planie WZ → przychód)</td><td><span class="kol">2 · po blokadzie</span><br><span class="pill s-todo">⬜ do zrobienia</span></td></tr><tr><td class="p sz">Jeden rejestr zamiast arkuszy obok bazy</td><td class="d">rozjazd Excel ↔ baza · dublowanie tej samej pracy · pytania „które liczby są prawdziwe”</td><td>jedno źródło; arkusze stają się weryfikacją, nie źródłem</td><td class="d">decyzja klienta, że źródłem jest baza (Tomek J.)</td><td><span class="kol">3 · z klientem</span><br><span class="pill s-todo">⬜ do zrobienia</span></td></tr><tr><td class="p sz">Mapa procesu jako warsztat, nie dokument</td><td class="d">23 pytania bez odpowiedzi w jednym miejscu · procedury (2017–2021) brane za praktykę</td><td>rozjazd procedura ↔ praktyka staje się uzasadnieniem automatyzacji, nie zarzutem</td><td class="d">warsztat przy kliencie; statusy przy pytaniach (już wprowadzone w „Status projektu”)</td><td><span class="kol">2 · po blokadzie</span><br><span class="pill s-ok">✅ działa</span></td></tr><tr><td class="p sz">Odtwarzalność wyników: narzędzie + dane + artefakt</td><td class="d">„skąd ta liczba?” · wyniki nie do powtórzenia bez pytania autora · rozjazd .md vs .html</td><td>każdy pomiar da się odtworzyć bez bazy i bez M; rozjazd dwóch wersji niemożliwy</td><td class="d">M trzyma komplet (.json + .py + .html) w WYNIKI_Z_BAZY — już działa, ma tak zostać</td><td><span class="kol">1 · fundament</span><br><span class="pill s-ok">✅ działa</span></td></tr><tr><td class="p sz">Kanał pracy: rozmowa jako plik (numer + prefiks autora)</td><td class="d">zgubione ustalenia · kolizje numerów · decyzje tylko w czacie</td><td>każde ustalenie ma plik i autora; nie trzeba nic pamiętać</td><td class="d">numery rosnące, prefiksy _MAC / _VM / _AUTO — pilnowane</td><td><span class="kol">1 · fundament</span><br><span class="pill s-ok">✅ działa</span></td></tr><tr><td class="p sz">Dostęp tylko do odczytu + opis pól zamiast domysłów</td><td class="d">ryzyko zmiany danych klienta · definicje pól ustalane po fakcie · raporty na domysłach</td><td>pomiary nie mogą zepsuć produkcji; definicje są w jednym miejscu</td><td class="d">konto read-only (jest) + opis pól aktualizowany przy każdej zmianie</td><td><span class="kol">1 · fundament</span><br><span class="pill s-ok">✅ działa</span></td></tr>
+  </table>
+  <p class="sub">Zasada: szansa, która nie zamyka problemu z listy powyżej, nie jest szansą — to zajęcie. Dlatego w kolumnie drugiej są konkretne pozycje z listy, nie ogólniki.</p>
 
   <h2>Pokrycie briefu (spotkanie 9.09) — żeby nie było wątpliwości, że nic nie wypadło</h2>
   <table>
