@@ -1,0 +1,270 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8">
+<title>Dobry Dach — co może być po drugiej stronie WZ</title><style>
+:root{--vio:#7c5cff;--ink:#1a1f2b;--mut:#667085;--line:#e4e7ec;--ok:#0d8050;--warn:#b54708;--bad:#b42318;--soft:#f7f8fa}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:'Space Grotesk',-apple-system,'Segoe UI',Arial,sans-serif;font-size:19px;line-height:1.55}
+.wrap{max-width:1500px;margin:0 auto;padding:44px 32px 90px}
+h1{font-size:44px;line-height:1.1;letter-spacing:-1px;margin:0 0 8px}
+h2{font-size:31px;margin:56px 0 6px;letter-spacing:-.5px}
+h3{font-size:23px;margin:32px 0 4px}
+.sub{color:var(--mut);font-size:21px;margin:0 0 4px}
+.meta{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:14px;color:var(--mut);margin:10px 0 26px}
+table{width:100%;border-collapse:collapse;margin:14px 0 8px;font-size:17px}
+th{background:var(--soft);text-align:left;font-family:'IBM Plex Mono',monospace;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:#475467;padding:12px 12px;border-bottom:2px solid var(--line);vertical-align:bottom}
+td{padding:13px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+td.num{font-family:'IBM Plex Mono',monospace;font-weight:600;white-space:nowrap;text-align:right;font-size:17px}
+td.stan{font-weight:700;min-width:230px}
+td.prz{font-family:'IBM Plex Mono',monospace;font-size:14px;min-width:290px;color:#475467}
+.mut{color:var(--mut)}
+.card{border:2px solid var(--line);border-left:6px solid var(--vio);border-radius:14px;padding:22px 26px;margin:22px 0;background:#fff}
+.card.bad{border-left-color:var(--bad)} .card.ok{border-left-color:var(--ok)} .card.warn{border-left-color:var(--warn)}
+.card h3{margin-top:0}
+.legend{display:flex;gap:26px;flex-wrap:wrap;margin:18px 0 8px;font-family:'IBM Plex Mono',monospace;font-size:15px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:8px;vertical-align:-2px}
+.k{background:var(--vio)} .r{background:var(--bad)} .o{background:var(--warn)} .g{background:var(--ok)}
+code{font-family:'IBM Plex Mono',monospace;background:var(--soft);padding:2px 6px;border-radius:5px;font-size:15px}
+.droga{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--warn);white-space:nowrap}
+.dzkasa{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ok);font-weight:700;white-space:nowrap}
+.dzdziura{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--bad);font-weight:700;white-space:nowrap}
+</style></head><body><div class="wrap">
+<h1>Co może być po drugiej stronie WZ</h1>
+<p class="sub">Mapa stanów końcowych wydania z magazynu — żeby wiedzieć, czym może skończyć się śledztwo, zanim je zaczniemy.</p>
+<div class="meta">Źródło liczb: rejestr WZ z pliku Tomka (WZ komandytowa 19,732 · WZ jawna 6,019), dane do 2026-09-07 · złożone przez ARGUS 2026-09-15. Do połączenia z mapą typów dokumentów (M).</div>
+<div class="legend"><span><i class="k"></i>droga domknięcia</span><span><i class="r"></i>dziura</span><span><i class="o"></i>wymaga decyzji</span><span><i class="g"></i>kontrola</span></div>
+
+<div class="card">
+<h3>Jak czytać tę mapę</h3>
+<p>Każdy WZ z magazynu może skończyć się na <b>jednym z dwunastu stanów</b>. Sześć z nich to normalne, domknięte życie dokumentu; dwa to dziury; dwa to obiegi <b>między spółkami</b>; dwa to kontrolne worki Tomka. Liczby są zmierzone, nie oszacowane — i pochodzą z <b>weryfikacji</b>, nie ze źródła: źródłem jest baza.</p>
+<p><b>Kolumna DROGA mówi, czy to już kasa, czy jeszcze droga do niej:</b></p>
+<ul>
+<li><b>kasa</b> — tu pieniądze wchodzą od klienta (faktura dla klienta, zaliczka wpłacona),</li>
+<li><b>KROK (inna spółka)</b> — <b>to nie jest pozycja w tropieniu kasy, to krok po drodze.</b> Faktura na własną spółkę to przesunięcie: <b>przychód 0, zysk 0</b>. Pieniądze nie weszły z zewnątrz, więc nie ma tu czego pokazywać jako wynik. Droga idzie dalej — do faktury dla klienta końcowego.</li>
+<li><b>dziura</b> — ślepy koniec: towar wyszedł, nie ma czego ścigać. Jedyna pozycja wymagająca działania.</li>
+</ul>
+</div>
+
+<h2>1. Stany końcowe WZ — spółka komandytowa</h2>
+<table id="wzk">
+<thead><tr><th>stan po drugiej stronie WZ</th><th>droga</th><th>ile</th><th>wartość netto</th><th>co to znaczy</th><th>jak to wykrywamy</th><th>co z tego dla kasy</th><th>przykłady</th></tr></thead><tbody>
+<tr><td class="stan">PRZYPISANE DO TOWAR — FV NA KLIENTA</td><td class="dzkasa">kasa</td><td class="num">9 384</td><td class="num">26 483 922 zł</td><td>Towar wyjechał  klient dostał fakturę (FS/PA). Najzwyklejsza  domknięta sprzedaż.</td><td class="mut">WZ ↔ FS: pole „dokument powiązany"  wspólna pozycja magazynowa albo FV z tej samej kartoteki.</td><td class="mut">Kasa: faktura na klienta → rozrachunek 39 (należności) → wpłata 17/19. Marża liczona z tego WZ.</td><td class="prz">WZ 1/MAG/01/2024 <span class="mut">· 2024-01-04 · TRAFFIC GPS SPÓŁKA Z OGRANICZONĄ · → FS 1/MAG/01/2024</span><br>WZ 2/MAG/01/2024 <span class="mut">· 2024-01-04 · TRAFFIC GPS SPÓŁKA Z OGRANICZONĄ · → FS 1/MAG/01/2024</span><br>WZ 3/MAG/01/2024 <span class="mut">· 2024-01-04 · TRAFFIC GPS SPÓŁKA Z OGRANICZONĄ · → FS 1/MAG/01/2024</span></td></tr>
+<tr><td class="stan">UJĘTE PNBM — FV NA JAWNĄ</td><td class="droga">KROK (inna spółka)</td><td class="num">4 325</td><td class="num">17 014 441 zł</td><td>WZ z komandytowej rozliczony fakturą wystawioną na spółkę jawną — czyli koszt materiału pod usługę „prace budowlane na budynku mieszkalnym".</td><td class="mut">FV z kategorii INWENTARYZACJA/HURTOWA na jawną + koszt usługi dekarskiej na WZ.</td><td class="mut">Kasa: pieniądze idą przez jawną (FV na klienta końcowego wystawia jawna). Tu jest KOSZT  nie przychód — dlatego marża z tego WZ sama nie istnieje.</td><td class="prz">WZ 62/MAG/01/2024 <span class="mut">· 2024-01-04 · REMER ROBERT · → FS 38/MAG/01/2024</span><br>WZ 66/MAG/01/2024 <span class="mut">· 2024-01-04 · TRZYNSCY JOANNA I MAREK · → FS 108/MAG/01/2024</span><br>WZ 72/MAG/01/2024 <span class="mut">· 2024-01-08 · CZAPIEWSKI ANDRZEJ · → FS 42/MAG/01/2024</span></td></tr>
+<tr><td class="stan">PRZYPISANE DO INWESTYCJI</td><td class="">krok</td><td class="num">3 152</td><td class="num">16 016 720 zł</td><td>WZ poszedł na budowę  którą klient prowadzi jako inwestycję (nazwana: „ALEX KACZKI"  „PARK DRAGONÓW"…).</td><td class="mut">Ręczna mapa klienta: arkusz WZ → nazwa inwestycji (baza tego nie ma!).</td><td class="mut">Kasa: faktury inwestycji bywają w innym roku niż WZ. Bez spięcia kosztu (arkusz INWESTYCJE WZ) marża inwestycji NIE ISTNIEJE.</td><td class="prz">WZ 31/MAG/01/2024 <span class="mut">· 2024-01-04 · PRZEDSIĘBIORSTWO BUDOWLANE &quot;NORDEC</span><br>WZ 70/MAG/01/2024 <span class="mut">· 2024-01-04 · OSIEDLE ASNYKA JOANNA DANIELS · → FS 20019/MAG/12/2024</span><br>WZ 71/MAG/01/2024 <span class="mut">· 2024-01-04 · INTERIUM INVESTMENT SP. Z O O SPÓŁ · → FS 20004/MAG/12/2024</span></td></tr>
+<tr><td class="stan">ROZLICZONE FV INWENTARYZACJA</td><td class="droga">KROK (inna spółka)</td><td class="num">1 310</td><td class="num">2 800 636 zł</td><td>WZ rozliczony fakturą zbiorczą z kategorią INWENTARYZACJA — obieg między spółkami  nie sprzedaż dla klienta.</td><td class="mut">Kategoria faktury INWENTARYZACJA na dokumencie handlowym.</td><td class="mut">Kasa: to nie przychód  to przesunięcie. Nie wliczać do sprzedaży ani do marż — osobny worek.</td><td class="prz">WZ 22/MAG/01/2024 <span class="mut">· 2024-01-04 · KAM TRANS KAMIL ŁABĘDŹ · → FS 40003/MAG/12/2024</span><br>WZ 64/MAG/01/2024 <span class="mut">· 2024-01-04 · ZWIEFKA · → FS 30002/MAG/12/2024</span><br>WZ 68/MAG/01/2024 <span class="mut">· 2024-01-04 · FIRMA USŁUGOWO HANDLOWA PRZEMYSŁAW · → FS 20045/MAG/12/2024</span></td></tr>
+<tr><td class="stan">BRAK DOKUMENTU DO PRZYPISANIA</td><td class="dzdziura">DZIURA</td><td class="num">557</td><td class="num">1 209 585 zł</td><td>WZ wyszedł i po drugiej stronie NIC nie ma. Jedyna prawdziwa dziura w całym rejestrze.</td><td class="mut">Brak FS/PA/KFZ  brak ZK  brak zaliczki — po wyłączeniu depozytu  Brus  wycofanego skutku magazynowego.</td><td class="mut">Kasa: towar wyjechał  faktury nie ma → pieniędzy nie ma. 557 pozycji na liście do zamknięcia.</td><td class="prz">WZ 21/MAG/01/2024 <span class="mut">· 2024-01-04 · KUBUS ANNA I PIOTR GOSTOMCZYK SPÓŁ</span><br>WZ 42/MAG/01/2024 <span class="mut">· 2024-01-04 · SALA ADAM</span><br>WZ 44/MAG/01/2024 <span class="mut">· 2024-01-04 · KOBIEROWSKI JOACHIM</span></td></tr>
+<tr><td class="stan">ZALICZKA JAWNA</td><td class="dzkasa">kasa (część)</td><td class="num">489</td><td class="num">2 409 908 zł</td><td>WZ dotyczy zamówienia  na które klient wpłacił zaliczkę  a fakturę wystawia jawna.</td><td class="mut">ZK/ZD → faktura zaliczkowa (FZ) + ten sam klient/nazwa znormalizowana.</td><td class="mut">Kasa: zaliczka to już wpłacone pieniądze (rozrachunek)  faktura końcowa jeszcze nie. Nie liczyć jako sprzedaż  dopóki brak FS końcowej.</td><td class="prz">WZ 369/MAG/01/2024 <span class="mut">· 2024-01-31 · LASKOWSKI RADOSŁAW · → FS 108/MAG/01/2024</span><br>WZ 378/MAG/01/2024 <span class="mut">· 2024-01-31 · LASKOWSKI RADOSŁAW · → FS 108/MAG/01/2024</span><br>WZ 118/MAG/04/2024 <span class="mut">· 2024-04-06 · OSSOWSKI MARCIN · → FS 44/MAG/04/2024</span></td></tr>
+<tr><td class="stan">ROZLICZONE FV INWENTARYZACJA — UJĘTE PNBM</td><td class="droga">KROK (inna spółka)</td><td class="num">237</td><td class="num">757 427 zł</td><td>Ten sam obieg inwentaryzacyjny  ale koszt dodatkowo wchodzi w koszt PNBM.</td><td class="mut">Kategoria INWENTARYZACJA + reguła PNBM (usługa dekarska).</td><td class="mut">Kasa: podwójna rola — przesunięcie między spółkami I koszt. Jeden WZ  dwa zastosowania: nie policzyć dwa razy.</td><td class="prz">WZ 17/MAG/01/2024 <span class="mut">· 2024-01-04 · DZIK WITOLD · → FS 20024/MAG/12/2024</span><br>WZ 60/MAG/01/2024 <span class="mut">· 2024-01-04 · WSPÓLNOTA MIESZKANIOWA TUCHOLSKA1 · → FS 20012/MAG/12/2024</span><br>WZ 91/MAG/01/2024 <span class="mut">· 2024-01-09 · DZIK WITOLD · → FS 20024/MAG/12/2024</span></td></tr>
+<tr><td class="stan">ZALICZKA KOMANDYTOWA</td><td class="dzkasa">kasa (część)</td><td class="num">193</td><td class="num">722 912 zł</td><td>To samo  ale zaliczkę rozlicza komandytowa.</td><td class="mut">Jak wyżej  po stronie komandytowej.</td><td class="mut">Kasa: jak wyżej.</td><td class="prz">WZ 78/MAG/02/2024 <span class="mut">· 2024-02-08 · Arche Tomasz Wróblewski · → FS 20022/MAG/12/2024</span><br>WZ 173/MAG/02/2024 <span class="mut">· 2024-02-15 · Arche Tomasz Wróblewski · → FS 20022/MAG/12/2024</span><br>WZ 219/MAG/02/2024 <span class="mut">· 2024-02-20 · Arche Tomasz Wróblewski · → FS 20022/MAG/12/2024</span></td></tr>
+<tr><td class="stan">UJĘTE PNBM — NIEZFAKTUROWANE</td><td class="dzdziura">dziura</td><td class="num">84</td><td class="num">198 492 zł</td><td>Koszt materiału wszedł do PNBM  ale faktury na jawną nie ma — brakuje domknięcia.</td><td class="mut">Reguła PNBM + brak dokumentu handlowego.</td><td class="mut">Kasa: koszt policzony  przychodu brak → do domknięcia  inaczej zaniża wynik.</td><td class="prz">WZ 34/MAG/01/2024 <span class="mut">· 2024-01-04 · BRZEZIŃSKI JAROSŁAW</span><br>WZ 51/MAG/01/2024 <span class="mut">· 2024-01-04 · SKAJEWSKI ŁUKASZ</span><br>WZ 53/MAG/01/2024 <span class="mut">· 2024-01-04 · MAJERSKI KAZIMIERZ</span></td></tr>
+<tr><td class="stan">UJĘTE PNBM — KLIENT WŁAŚCIWY</td><td class="">krok</td><td class="num">1</td><td class="num">7 995 zł</td><td>Jak wyżej  z korektą nazwy klienta (błędna kartoteka).</td><td class="mut">Lista BŁĄD POWIĄZANIA / BŁĘDNA FV po stronie klienta.</td><td class="mut">Kasa: uwaga na tego jednego — może być klient z innej kartoteki.</td><td class="prz">WZ 210/MAG/02/2024 <span class="mut">· 2024-02-20 · SPIEREWKA ZDZISŁAW · → FS 78/MAG/02/2024</span></td></tr>
+</tbody></table>
+
+<h2>2. SCENARIUSZE — dwanaście ścieżek, którymi może pójść WZ</h2>
+<p class="sub">To jest rama pracy: nie „stan dokumentu", a <b>ścieżka od WZ do pieniędzy</b> — i miejsce, w którym ta ścieżka może się urwać.</p>
+<table id="scen">
+<thead><tr><th>#</th><th>ścieżka</th><th>gdzie są pieniądze</th><th>jak się urywa</th><th>skutek urwania</th></tr></thead><tbody>
+<tr><td class="num">1</td><td class="stan">WZ → FS na klienta → rozrachunek 39 → wpłata 17/19</td><td class="dzkasa">na końcu, raz</td><td>FS jest, wpłat nie ma</td><td>należność po terminie — do windykacji, nie strata</td></tr>
+<tr><td class="num">2</td><td class="stan">WZ → FV komandytowa→jawna <b>(krok, 0 zł)</b> → FV jawna→klient → wpłata</td><td class="dzkasa">na końcu, raz</td><td>brak FV jawna→klient albo brak wpłaty</td><td><b>STRATA</b> = koszt tego WZ (nie kwota FV wewnętrznej)</td></tr>
+<tr><td class="num">3</td><td class="stan">WZ → inwestycja (mapa klienta) → FV inwestycji → wpłata</td><td class="dzkasa">na końcu</td><td>koszt WZ niespięty z FV inwestycji</td><td>marża nie istnieje (nie „100%")</td></tr>
+<tr><td class="num">4</td><td class="stan">WZ → FV inwentaryzacyjna <b>(przesunięcie, 0 zł)</b> → dalej klient</td><td class="krok">nie tutaj</td><td>zatrzymanie na kroku wewnętrznym</td><td>policzony przychód, którego nie ma</td></tr>
+<tr><td class="num">5</td><td class="stan">WZ → zaliczka (FZ) → FS końcowa → wpłata reszty</td><td class="dzkasa">część już wpłacona</td><td>brak FS końcowej</td><td>zaliczka wpłacona, towar wyjechał — otwarte</td></tr>
+<tr><td class="num">6</td><td class="stan">WZ → paragon PA (detal)</td><td class="dzkasa">od razu, przy ladzie</td><td>—</td><td>domknięte</td></tr>
+<tr><td class="num">7</td><td class="stan">WZ → ZWZ / zwrot materiału z budowy (typ 36)</td><td class="krok">cofa koszt</td><td>zwrot nierozliczony</td><td>koszt zawyżony, marża zaniżona</td></tr>
+<tr><td class="num">8</td><td class="stan">WZ → <b>BRAK</b> dokumentu</td><td class="dzdziura">nigdzie</td><td>to już jest urwane</td><td>towar wyszedł, faktury nie ma: <b>557 pozycji</b></td></tr>
+<tr><td class="num">9</td><td class="stan">WZ-rezerwacja (ZK status 7, bez wywozu)</td><td class="krok">jeszcze nic</td><td>rezerwacja nigdy nie wyjechała</td><td>nie jest sprzedażą — nie liczyć</td></tr>
+<tr><td class="num">10</td><td class="stan">WZ → korekta PZ (od klienta / zwrot)</td><td class="krok">pomniejsza koszt</td><td>korekta bez powiązania</td><td>koszt zawyżony</td></tr>
+<tr><td class="num">11</td><td class="stan">WZ → sprzedaż między spółkami (HURTOWA)</td><td class="krok">0 zł — przesunięcie</td><td>pokazanie jako sprzedaż</td><td>przychód i zysk wymyślony (20,7% „marży")</td></tr>
+<tr><td class="num">12</td><td class="stan">WZ → usługa dekarska / azbest w koszt</td><td class="krok">koszt robocizny</td><td>policzenie razem z materiałem</td><td>nie widać, ile zostaje na materiale</td></tr>
+</tbody></table>
+<div class="card bad">
+<h3>Trzy zdania, które streszczają całą robotę</h3>
+<p><b>1.</b> Idziemy <b>po kliencie, do samego końca</b> — aż do faktury dla klienta i wpłaty. Faktura na własną spółkę to <b>krok</b>, nie pozycja: <b>0 zł przychodu, 0 zł zysku</b>.<br>
+<b>2.</b> Jeśli łańcuch urwie się na kliencie — <b>to strata</b>, a jej kwota to koszt WZ.<br>
+<b>3.</b> Pytanie „ile tu jest zysku" ma sens tylko tam, gdzie pieniądze weszły <b>z rynku</b>.</p>
+</div>
+
+<h2>3. Jak do tego doszliśmy — metoda przypisania</h2>
+<p class="sub">Kolejność tropów jest odwrócona wobec intuicji: <b>NIP jest ostatni</b>.</p>
+<h2></h2>
+<table id="met">
+<thead><tr><th>stan po drugiej stronie WZ</th><th>droga</th><th>ile</th><th>wartość netto</th><th>co to znaczy</th><th>jak to wykrywamy</th><th>co z tego dla kasy</th><th>przykłady</th></tr></thead><tbody>
+<tr><td class="stan">POWIĄZANIE WZ–FV</td><td class="">—</td><td class="num">12 790</td><td class="num">42 079 363 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 1/MAG/01/2024 <span class="mut">· 2024-01-04 · TRAFFIC GPS SPÓŁKA Z OGRANICZONĄ · → FS 1/MAG/01/2024</span><br>WZ 2/MAG/01/2024 <span class="mut">· 2024-01-04 · TRAFFIC GPS SPÓŁKA Z OGRANICZONĄ · → FS 1/MAG/01/2024</span><br>WZ 3/MAG/01/2024 <span class="mut">· 2024-01-04 · TRAFFIC GPS SPÓŁKA Z OGRANICZONĄ · → FS 1/MAG/01/2024</span></td></tr>
+<tr><td class="stan">NAZWA ZNORMALIZOWANA</td><td class="">—</td><td class="num">4 197</td><td class="num">16 666 745 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 34/MAG/01/2024 <span class="mut">· 2024-01-04 · BRZEZIŃSKI JAROSŁAW</span><br>WZ 51/MAG/01/2024 <span class="mut">· 2024-01-04 · SKAJEWSKI ŁUKASZ</span><br>WZ 53/MAG/01/2024 <span class="mut">· 2024-01-04 · MAJERSKI KAZIMIERZ</span></td></tr>
+<tr><td class="stan">BRAK DOPASOWANIA</td><td class="">—</td><td class="num">1 609</td><td class="num">4 430 258 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 21/MAG/01/2024 <span class="mut">· 2024-01-04 · KUBUS ANNA I PIOTR GOSTOMCZYK SPÓŁ</span><br>WZ 31/MAG/01/2024 <span class="mut">· 2024-01-04 · PRZEDSIĘBIORSTWO BUDOWLANE &quot;NORDEC</span><br>WZ 42/MAG/01/2024 <span class="mut">· 2024-01-04 · SALA ADAM</span></td></tr>
+<tr><td class="stan">ZALICZKA — NAZWA</td><td class="">—</td><td class="num">567</td><td class="num">2 805 679 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 369/MAG/01/2024 <span class="mut">· 2024-01-31 · LASKOWSKI RADOSŁAW · → FS 108/MAG/01/2024</span><br>WZ 378/MAG/01/2024 <span class="mut">· 2024-01-31 · LASKOWSKI RADOSŁAW · → FS 108/MAG/01/2024</span><br>WZ 118/MAG/04/2024 <span class="mut">· 2024-04-06 · OSSOWSKI MARCIN · → FS 44/MAG/04/2024</span></td></tr>
+<tr><td class="stan">KATEGORIA FV INWENTARYZACJA</td><td class="">—</td><td class="num">241</td><td class="num">758 669 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 17/MAG/01/2024 <span class="mut">· 2024-01-04 · DZIK WITOLD · → FS 20024/MAG/12/2024</span><br>WZ 60/MAG/01/2024 <span class="mut">· 2024-01-04 · WSPÓLNOTA MIESZKANIOWA TUCHOLSKA1 · → FS 20012/MAG/12/2024</span><br>WZ 91/MAG/01/2024 <span class="mut">· 2024-01-09 · DZIK WITOLD · → FS 20024/MAG/12/2024</span></td></tr>
+<tr><td class="stan">NIP</td><td class="">—</td><td class="num">200</td><td class="num">514 876 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 285/MAG/01/2024 <span class="mut">· 2024-01-24 · MALAGA SPÓŁKA Z OGRANICZONĄ ODPOWI · → FS 108/MAG/01/2024</span><br>WZ 296/MAG/01/2024 <span class="mut">· 2024-01-25 · MALAGA SPÓŁKA Z OGRANICZONĄ ODPOWI · → FS 108/MAG/01/2024</span><br>WZ 320/MAG/01/2024 <span class="mut">· 2024-01-29 · MALAGA SPÓŁKA Z OGRANICZONĄ ODPOWI · → FS 108/MAG/01/2024</span></td></tr>
+<tr><td class="stan">ZALICZKA — NIP</td><td class="">—</td><td class="num">115</td><td class="num">327 141 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 78/MAG/02/2024 <span class="mut">· 2024-02-08 · Arche Tomasz Wróblewski · → FS 20022/MAG/12/2024</span><br>WZ 173/MAG/02/2024 <span class="mut">· 2024-02-15 · Arche Tomasz Wróblewski · → FS 20022/MAG/12/2024</span><br>WZ 219/MAG/02/2024 <span class="mut">· 2024-02-20 · Arche Tomasz Wróblewski · → FS 20022/MAG/12/2024</span></td></tr>
+<tr><td class="stan">NAZWA WŁAŚCIWA</td><td class="">—</td><td class="num">12</td><td class="num">31 312 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 228/MAG/02/2024 <span class="mut">· 2024-02-21 · SPIEREWKA ZDZISŁAW · → FS 102/MAG/03/2024</span><br>WZ 40/MAG/03/2024 <span class="mut">· 2024-03-04 · SPIEREWKA ZDZISŁAW · → FS 102/MAG/03/2024</span><br>WZ 41/MAG/03/2024 <span class="mut">· 2024-03-04 · SPIEREWKA ZDZISŁAW · → FS 102/MAG/03/2024</span></td></tr>
+<tr><td class="stan">BŁĘDNA FV — NAZWA WŁAŚCIWA</td><td class="">—</td><td class="num">1</td><td class="num">7 995 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 210/MAG/02/2024 <span class="mut">· 2024-02-20 · SPIEREWKA ZDZISŁAW · → FS 78/MAG/02/2024</span></td></tr>
+</tbody></table>
+
+<h2>4. Co stoi na dokumencie po drugiej stronie</h2>
+<h2></h2>
+<table id="katf">
+<thead><tr><th>stan po drugiej stronie WZ</th><th>droga</th><th>ile</th><th>wartość netto</th><th>co to znaczy</th><th>jak to wykrywamy</th><th>co z tego dla kasy</th><th>przykłady</th></tr></thead><tbody>
+<tr><td class="stan">Hurtowa</td><td class="">—</td><td class="num">5 324</td><td class="num">22 635 108 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 62/MAG/01/2024 <span class="mut">· 2024-01-04 · REMER ROBERT · → FS 38/MAG/01/2024</span><br>WZ 66/MAG/01/2024 <span class="mut">· 2024-01-04 · TRZYNSCY JOANNA I MAREK · → FS 108/MAG/01/2024</span><br>WZ 72/MAG/01/2024 <span class="mut">· 2024-01-08 · CZAPIEWSKI ANDRZEJ · → FS 42/MAG/01/2024</span></td></tr>
+<tr><td class="stan">Inwentaryzacja</td><td class="">—</td><td class="num">3 606</td><td class="num">13 556 732 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 17/MAG/01/2024 <span class="mut">· 2024-01-04 · DZIK WITOLD · → FS 20024/MAG/12/2024</span><br>WZ 22/MAG/01/2024 <span class="mut">· 2024-01-04 · KAM TRANS KAMIL ŁABĘDŹ · → FS 40003/MAG/12/2024</span><br>WZ 60/MAG/01/2024 <span class="mut">· 2024-01-04 · WSPÓLNOTA MIESZKANIOWA TUCHOLSKA1 · → FS 20012/MAG/12/2024</span></td></tr>
+<tr><td class="stan">—</td><td class="">—</td><td class="num">2 533</td><td class="num">4 915 183 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 21/MAG/01/2024 <span class="mut">· 2024-01-04 · KUBUS ANNA I PIOTR GOSTOMCZYK SPÓŁ</span><br>WZ 31/MAG/01/2024 <span class="mut">· 2024-01-04 · PRZEDSIĘBIORSTWO BUDOWLANE &quot;NORDEC</span><br>WZ 34/MAG/01/2024 <span class="mut">· 2024-01-04 · BRZEZIŃSKI JAROSŁAW</span></td></tr>
+<tr><td class="stan">SM</td><td class="">—</td><td class="num">2 329</td><td class="num">8 710 190 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 11/MAG/01/2024 <span class="mut">· 2024-01-04 · PAWEŁ KLONN FIRMA OGÓLNOBUDOWLANA  · → FS 58/MAG/01/2024</span><br>WZ 12/MAG/01/2024 <span class="mut">· 2024-01-04 · PAWEŁ KLONN FIRMA OGÓLNOBUDOWLANA  · → FS 58/MAG/01/2024</span><br>WZ 13/MAG/01/2024 <span class="mut">· 2024-01-04 · PAWEŁ KLONN FIRMA OGÓLNOBUDOWLANA  · → FS 58/MAG/01/2024</span></td></tr>
+<tr><td class="stan">LR</td><td class="">—</td><td class="num">1 492</td><td class="num">3 547 298 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 81/MAG/01/2024 <span class="mut">· 2024-01-08 · RADKOWIAK JACEK  PRZEDSIĘBIORSTWO  · → FS 4/MAG/01/2024</span><br>WZ 82/MAG/01/2024 <span class="mut">· 2024-01-08 · RADKOWIAK JACEK  PRZEDSIĘBIORSTWO  · → FS 4/MAG/01/2024</span><br>WZ 84/MAG/01/2024 <span class="mut">· 2024-01-08 · RADKOWIAK JACEK  PRZEDSIĘBIORSTWO  · → FS 4/MAG/01/2024</span></td></tr>
+<tr><td class="stan">BK</td><td class="">—</td><td class="num">1 011</td><td class="num">2 111 185 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 151/MAG/03/2024 <span class="mut">· 2024-03-08 · PPH Giergips Tomasz Gierszewski · → FS 32/MAG/03/2024</span><br>WZ 535/MAG/03/2024 <span class="mut">· 2024-03-26 · ROGGENBUCK WOJCIECH · → FS 136/MAG/03/2024</span><br>WZ 588/MAG/03/2024 <span class="mut">· 2024-03-29 · NARLOCH MAREK · → FS 160/MAG/03/2024</span></td></tr>
+<tr><td class="stan">MR</td><td class="">—</td><td class="num">958</td><td class="num">2 088 447 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 85/MAG/01/2024 <span class="mut">· 2024-01-08 · JĘDRZEJCZYK JAKUB · → FS 54/MAG/01/2024</span><br>WZ 97/MAG/01/2024 <span class="mut">· 2024-01-10 · Dom Bez Kosztów Piotr Łangowski · → FS 51/MAG/01/2024</span><br>WZ 103/MAG/01/2024 <span class="mut">· 2024-01-11 · Dom Bez Kosztów Piotr Łangowski · → FS 51/MAG/01/2024</span></td></tr>
+<tr><td class="stan">GG</td><td class="">—</td><td class="num">621</td><td class="num">2 270 224 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 15/MAG/01/2024 <span class="mut">· 2024-01-04 · RUBIKON SPÓŁKA Z OGRANICZONĄ ODPOW · → FS 29/MAG/01/2024</span><br>WZ 67/MAG/01/2024 <span class="mut">· 2024-01-04 · PAWEŁ MILOCH DEKARSTWO · → FS 55/MAG/01/2024</span><br>WZ 69/MAG/01/2024 <span class="mut">· 2024-01-04 · PAWEŁ MILOCH DEKARSTWO · → FS 55/MAG/01/2024</span></td></tr>
+<tr><td class="stan">LP</td><td class="">—</td><td class="num">410</td><td class="num">735 498 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 36/MAG/02/2025 <span class="mut">· 2025-02-03 · DACHMAN ADAM CZARNOTTA · → FS 51/MAG/02/2025</span><br>WZ 75/MAG/02/2025 <span class="mut">· 2025-02-05 · DACHMAN ADAM CZARNOTTA · → FS 51/MAG/02/2025</span><br>WZ 168/MAG/02/2025 <span class="mut">· 2025-02-11 · DUDKIEWICZ PIOTR · → FS 43/MAG/02/2025</span></td></tr>
+<tr><td class="stan">PZ</td><td class="">—</td><td class="num">352</td><td class="num">2 663 005 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 1/MAG/01/2024 <span class="mut">· 2024-01-04 · TRAFFIC GPS SPÓŁKA Z OGRANICZONĄ · → FS 1/MAG/01/2024</span><br>WZ 2/MAG/01/2024 <span class="mut">· 2024-01-04 · TRAFFIC GPS SPÓŁKA Z OGRANICZONĄ · → FS 1/MAG/01/2024</span><br>WZ 3/MAG/01/2024 <span class="mut">· 2024-01-04 · TRAFFIC GPS SPÓŁKA Z OGRANICZONĄ · → FS 1/MAG/01/2024</span></td></tr>
+<tr><td class="stan">GM</td><td class="">—</td><td class="num">256</td><td class="num">1 246 060 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 19/MAG/02/2024 <span class="mut">· 2024-02-02 · DAMIAN LEMAŃCZYK LEMAR · → FS 108/MAG/02/2024</span><br>WZ 160/MAG/02/2024 <span class="mut">· 2024-02-15 · WNUK LIPIŃSKI SŁAWOMIR · → FS 40/MAG/02/2024</span><br>WZ 185/MAG/02/2024 <span class="mut">· 2024-02-16 · INTERMED INDYWIDUALNA SPECJALISTYC · → FS 50/MAG/02/2024</span></td></tr>
+<tr><td class="stan">CD</td><td class="">—</td><td class="num">233</td><td class="num">768 251 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 106/MAG/01/2024 <span class="mut">· 2024-01-11 · GOSPODARSTWO ROLNE DANIEL PEPLIŃSK · → FS 19/MAG/01/2024</span><br>WZ 141/MAG/01/2024 <span class="mut">· 2024-01-15 · Usługi Ciesielskie Januszewski Grz · → FS 77/MAG/01/2024</span><br>WZ 206/MAG/01/2024 <span class="mut">· 2024-01-17 · PGI2 SPÓŁKA Z OGRANICZONĄ ODPOWIED · → FS 49/MAG/01/2024</span></td></tr>
+<tr><td class="stan">MP</td><td class="">—</td><td class="num">227</td><td class="num">1 500 669 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 93/MAG/01/2024 <span class="mut">· 2024-01-09 · INTERIUM INVESTMENT SP. Z O O SPÓŁ · → FS 14/MAG/01/2024</span><br>WZ 135/MAG/01/2024 <span class="mut">· 2024-01-15 · PRO-WAM  SPÓŁKA Z OGRANICZONĄ ODPO · → FS 26/MAG/01/2024</span><br>WZ 310/MAG/01/2024 <span class="mut">· 2024-01-26 · GOSPODARSTWO ROLNE  ANNA CICHACZEW · → FS 88/MAG/01/2024</span></td></tr>
+<tr><td class="stan">WA</td><td class="">—</td><td class="num">189</td><td class="num">284 584 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 4/MAG/01/2024 <span class="mut">· 2024-01-04 · DACHMAN ADAM CZARNOTTA · → FS 12/MAG/01/2024</span><br>WZ 5/MAG/01/2024 <span class="mut">· 2024-01-04 · DACHMAN ADAM CZARNOTTA · → FS 12/MAG/01/2024</span><br>WZ 6/MAG/01/2024 <span class="mut">· 2024-01-04 · DACHMAN ADAM CZARNOTTA · → FS 13/MAG/01/2024</span></td></tr>
+<tr><td class="stan">Sprzedaż</td><td class="">—</td><td class="num">101</td><td class="num">288 299 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 65/MAG/02/2024 <span class="mut">· 2024-02-07 · CZERWIŃSKI KRZYSZTOF · → FS 11/MAG/02/2024</span><br>WZ 484/MAG/03/2024 <span class="mut">· 2024-03-25 · GALECO · → FS 125/MAG/03/2024</span><br>WZ 581/MAG/03/2024 <span class="mut">· 2024-03-28 · STANISŁAWSKI ZBIGNIEW · → FS 156/MAG/03/2024</span></td></tr>
+<tr><td class="stan">PAL</td><td class="">—</td><td class="num">86</td><td class="num">296 545 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 368/MAG/03/2024 <span class="mut">· 2024-03-19 · SYLVA SPÓŁKA Z OGRANICZONĄ ODPOWIE · → FS 97/MAG/03/2024</span><br>WZ 525/MAG/03/2024 <span class="mut">· 2024-03-26 · Zakład Usługowo-Produkcyjny PLAST- · → FS 135/MAG/03/2024</span><br>WZ 731/MAG/04/2024 <span class="mut">· 2024-04-17 · SYLVA SPÓŁKA Z OGRANICZONĄ ODPOWIE · → FS 102/MAG/04/2024</span></td></tr>
+<tr><td class="stan">Zakup</td><td class="">—</td><td class="num">2</td><td class="num">850 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 472/MAG/04/2025 <span class="mut">· 2025-04-03 · PRO-WAM  SPÓŁKA Z OGRANICZONĄ ODPO · → FS 20/MAG/04/2025</span><br>WZ 5802/MAG/09/2025 <span class="mut">· 2025-09-16 · PRO-WAM  SPÓŁKA Z OGRANICZONĄ ODPO · → FS 127/MAG/09/2025</span></td></tr>
+<tr><td class="stan">Akwizytor</td><td class="">—</td><td class="num">1</td><td class="num">3 683 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 3785/MAG/10/2024 <span class="mut">· 2024-10-10 · FIRMA BUDOWLANA KAMIL GIERSZEWSKI · → FS 129/MAG/10/2024</span></td></tr>
+<tr><td class="stan">Bank</td><td class="">—</td><td class="num">1</td><td class="num">230 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 4297/MAG/05/2025 <span class="mut">· 2025-05-21 · ŁONSKI WITOLD · → FS 95/MAG/05/2025</span></td></tr>
+</tbody></table>
+
+<h2>5. Stany końcowe WZ — spółka jawna</h2>
+<h2></h2>
+<table id="wzj">
+<thead><tr><th>stan po drugiej stronie WZ</th><th>droga</th><th>ile</th><th>wartość netto</th><th>co to znaczy</th><th>jak to wykrywamy</th><th>co z tego dla kasy</th><th>przykłady</th></tr></thead><tbody>
+<tr><td class="stan">ROZLICZONE FV INWENTARYZACJA</td><td class="droga">KROK (inna spółka)</td><td class="num">4 502</td><td class="num">16 313 458 zł</td><td>WZ rozliczony fakturą zbiorczą z kategorią INWENTARYZACJA — obieg między spółkami  nie sprzedaż dla klienta.</td><td class="mut">Kategoria faktury INWENTARYZACJA na dokumencie handlowym.</td><td class="mut">Kasa: to nie przychód  to przesunięcie. Nie wliczać do sprzedaży ani do marż — osobny worek.</td><td class="prz">WZ 117/MG/01/2024 <span class="mut">· 2024-01-04 · TRZYNSCY JOANNA I MAREK · → FS 1028/MG/12/2024</span><br>WZ 1/MG/01/2024 <span class="mut">· 2024-01-16 · ANNA GAŃCZA I KAMIL DETTLAFF · → FS 1001/MG/12/2024</span><br>WZ 2/MG/01/2024 <span class="mut">· 2024-01-16 · ANNA I DAWID ŁOSIŃSCY · → FS 1291/MG/12/2024</span></td></tr>
+<tr><td class="stan">KONTROLNIE — POZA KOSZTEM PNBM</td><td class="">kontrola</td><td class="num">1 441</td><td class="num">5 871 992 zł</td><td>WZ z jawnej  który świadomie NIE wchodzi w koszt PNBM (kontrola  nie błąd).</td><td class="mut">Flaga kontrolna po stronie jawnej.</td><td class="mut">Kasa: nie doliczać do PNBM — inaczej koszt zawyżony.</td><td class="prz">WZ 11/MG/01/2024 <span class="mut">· 2024-01-16 · DŁUGOŁĘCKI MICHAŁ</span><br>WZ 29/MG/01/2024 <span class="mut">· 2024-01-16 · MICHAŁOWSKI MIROSŁAW</span><br>WZ 58/MG/01/2024 <span class="mut">· 2024-01-17 · DOBRY DACH SPÓŁKA Z O.O  SPÓŁKA KO · → FS 10/MG/01/2024</span></td></tr>
+<tr><td class="stan">UJĘTE PNBM — USŁUGA DEKARSKA</td><td class="">krok</td><td class="num">54</td><td class="num">14 065 zł</td><td>WZ jawna z usługą dekarską wchodzący w koszt PNBM.</td><td class="mut">Pozycja usługi dekarskiej na WZ.</td><td class="mut">Kasa: koszt robocizny — oddzielić od kosztu materiału.</td><td class="prz">WZ 7/MG/11/2025 <span class="mut">· 2025-11-14 · BIELIŃSKI MIKOŁAJ</span><br>WZ 31/MG/11/2025 <span class="mut">· 2025-11-28 · POŁOM SZYPRYT MONIKA</span><br>WZ 38/MG/11/2025 <span class="mut">· 2025-11-30 · BERNAŚ MAREK · → FS 10042/MG/12/2026</span></td></tr>
+<tr><td class="stan">USŁUGA DEKARSKA — BRAK PNBM</td><td class="dzdziura">dziura</td><td class="num">22</td><td class="num">74 200 zł</td><td>Jest usługa dekarska  nie ma z czym jej powiązać (brak PNBM).</td><td class="mut">Usługa dekarska + brak dokumentu docelowego.</td><td class="mut">Kasa: 22 pozycje — małe  ale to dziura tej samej klasy co BRAK DOKUMENTU.</td><td class="prz">WZ 10/MG/04/2025 <span class="mut">· 2025-04-07 · ELŻBIETA MAŃKOWSKA</span><br>WZ 21/MG/04/2025 <span class="mut">· 2025-04-24 · HURTOWNIA POKRYĆ DACHOWYCH DOBRY D</span><br>WZ 69/MG/10/2025 <span class="mut">· 2025-10-31 · MOCEK JERZY</span></td></tr>
+</tbody></table>
+
+<h2>6. Kontrole, które Tomek ma, a my nie mieliśmy</h2>
+<h2></h2>
+<table id="alert">
+<thead><tr><th>stan po drugiej stronie WZ</th><th>droga</th><th>ile</th><th>wartość netto</th><th>co to znaczy</th><th>jak to wykrywamy</th><th>co z tego dla kasy</th><th>przykłady</th></tr></thead><tbody>
+<tr><td class="stan">WZ PO OSTATNIEJ FAKTURZE</td><td class="">—</td><td class="num">456</td><td class="num">881 598 zł</td><td>(opis do uzupełnienia)</td><td class="mut">—</td><td class="mut">—</td><td class="prz">WZ 380/MAG/03/2024 <span class="mut">· 2024-03-20 · KUBAT RADOSŁAW · → FS 108/MAG/03/2024</span><br>WZ 190/MAG/04/2024 <span class="mut">· 2024-04-10 · ŻUGAJ STANISŁAW · → FS 45/MAG/04/2024</span><br>WZ 676/MAG/04/2024 <span class="mut">· 2024-04-15 · ŻAKOWSKI JAN PIOTR · → FS 229/MAG/04/2024</span></td></tr>
+</tbody></table>
+
+<h2>7. Czego z tej mapy jeszcze nie wiemy</h2>
+<div class="card warn">
+<h3>Otwarte — i kto ma odpowiedź</h3>
+<ol>
+<li><b>Koszt wyższy od sprzedaży</b> (68 586 748,63 zł vs 67 622 037,88 zł) w rejestrze komandytowej — do wyjaśnienia, zanim policzymy marżę. <span class="mut">→ M (baza)</span></li>
+<li><b>Marża inwestycji</b> — nie istnieje, dopóki arkusz <code>INWESTYCJE WZ</code> (87 inwestycji: koszt vs FV) nie zostanie spięty z fakturą. <span class="mut">→ M (spięcie)</span></li>
+<li><b>497 dokumentów z błędną kategorią handlowca</b> w bazie — każdy raport per PH liczy je źle. <span class="mut">→ defekt do naprawy w Subiekcie (lista gotowa)</span></li>
+<li><b>VIA po 2022</b> — 157 dokumentów, których nie ma w żadnej bazie; w kanonie jest tylko <code>_2022_VIA</code>. <span class="mut">→ Tomek (gdzie ta spółka zapisuje dokumenty)</span></li>
+<li><b>ZWZ (typ 36)</b> — zwrot materiału z budowy; w tej mapie nie występuje jako stan końcowy WZ, a powinien być widoczny jako <b>cofnięcie</b> kosztu. <span class="mut">→ M (dodać jako stan)</span></li>
+<li><b>URWANY ŁAŃCUCH = STRATA</b> — jeśli WZ rozliczono fakturą na własną spółkę, a dalej nie ma faktury dla klienta ani wpłaty, to <b>nie jest należność, to strata</b> (kwota = koszt tych WZ). Ile tego jest i na jaką kwotę — <b>nie policzone</b>. <span class="mut">→ M (zadanie w kolejce): WZ, dla których komandytowa ma z jawnej, a jawna nie ma od klienta</span></li>
+</ol>
+</div>
+
+<h2>8. Dla M — co z tym zrobić</h2>
+<div class="card ok">
+<h3>Zadanie: złożyć jedną mapę</h3>
+<p>Twoja mapa odpowiada na pytanie <b>jakie dokumenty istnieją i jak się łączą</b>. Ta odpowiada na pytanie <b>czym może skończyć się WZ</b>. To dwie strony jednej rzeczy — <b>złóż je w jedną mapę</b> i wstaw do niej liczby z bazy (moje są z weryfikatora):</p>
+<ul>
+<li>dla każdego stanu podaj liczbę <b>z bazy</b> i <b>z jego pliku</b> obok siebie — jeśli się różnią, to jest zadanie, nie błąd do ukrycia,</li>
+<li>dodaj stan końcowy <b>ZWZ / zwrot materiału</b> (typ 36) — brakuje go,</li>
+<li>zaznacz stany, które są <b>obiegami między spółkami</b>, a nie sprzedażą — inaczej marże będą liczone dwa razy,</li>
+<li>zostaw <b>bramę 0,5%</b> jako bramę publikacji, nie jako ozdobnik.</li>
+</ul>
+</div>
+<div class="meta">Pliki kontrolne do tej mapy: <code>PROJEKT/KONTROLA_Z_PLIKOW_TOMKA/</code> (12 CSV) · indeks: <code>_INDEKS.md</code> · weryfikacja: <code>PROJEKT/2026-09-15_weryfikacja-exceli-tomka.md</code></div>
+<h2>9. Kolumna „z bazy" — pomiar kontrolny, zrobiony na kopii lokalnej</h2>
+<p class="sub">Sekcja dodana 2026-09-17 przez ARGUSA. Odpowiada na pytanie „ile z tego potwierdza baza" — liczby są zmierzone, ale na <b>kopii</b> bazy, więc mają status kontroli, nie liczby wiążącej.</p>
+<div class="meta">Źródło kolumny „z bazy": lokalny kontener <code>subiekt-mssql</code> (SQL Server 2022, utworzony 2026-08-07), baza <code>Kopia_2024_KOMANDYTOWA</code>, dane 2024-01-04…2026-08-07, odczyt 2026-09-17 (ARGUS, Mac). Wiążące są liczby z ŻYWEJ bazy (M, VM). Kolumna „z pliku" = arkusz Tomka, dane do 2026-09-07.</div>
+
+<div class="card warn">
+<h3>Dwie rzeczy, które trzeba wiedzieć przed porównaniem tych kolumn</h3>
+<ol>
+<li><b>Rejestry nie są tej samej długości i to jest normalne.</b> Kopia: 19 477 WZ (2024-01-04…2026-08-07). Arkusz Tomka: 19 732 WZ. Różnica 255 (1,3%) przy dacie odcięcia starszej o miesiąc — czyli arkusza nie da się porównać „jeden do jednego" bez wyrównania daty.</li>
+<li><b>Ile to jest miesiąc różnicy:</b> żywa baza (M, 2026-09-15) ma 20 467 WZ, kopia (07.08) 19 477 → <b>+25 WZ/dzień</b>. Miesiąc = ~750 sztuk. Każda różnica poniżej tego rzędu może być samą datą odcięcia, nie rozjazdem definicji.</li>
+</ol>
+</div>
+
+<h3>9.1 Mechanizm — co stoi po drugiej stronie WZ (baza, kopia 07.08)</h3>
+<table id="zbaza">
+<thead><tr><th>co stoi po drugiej stronie WZ</th><th>WZ z bazy (kopia 07.08)</th><th>% rejestru</th><th>netto WZ</th><th>z pliku (mapa §3, metoda przypisania)</th><th>brama 0,5%</th></tr></thead><tbody>
+<tr><td class="stan">Faktura FS — powiązanie po nagłówku</td><td class="num">14 290</td><td class="num">73,4%</td><td class="num">51 913 979,67 zł</td><td class="mut">—</td><td class="mut">—</td></tr>
+<tr><td class="stan">Faktura FS — powiązanie po pozycji</td><td class="num">2 544</td><td class="num">13,1%</td><td class="num">9 794 507,36 zł</td><td class="mut">—</td><td class="mut">—</td></tr>
+<tr><td class="stan">FS razem</td><td class="num">16 834</td><td class="num">86,4%</td><td class="num">61 708 487,03 zł</td><td class="num">12 790 · 42 079 363 zł</td><td><b>NIE</b> — 31,6%</td></tr>
+<tr><td class="stan">Paragon PA</td><td class="num">1 085</td><td class="num">5,6%</td><td class="num">178 653,00 zł</td><td class="mut">brak osobnego wiersza</td><td class="mut">—</td></tr>
+<tr><td class="stan">Korekta KFZ</td><td class="num">174</td><td class="num">0,9%</td><td class="num">289 524,91 zł</td><td class="mut">—</td><td class="mut">—</td></tr>
+<tr><td class="stan">Korekta KFS</td><td class="num">14</td><td class="num">0,1%</td><td class="num">1 957,13 zł</td><td class="mut">—</td><td class="mut">—</td></tr>
+<tr><td class="stan">ZK — rezerwacja (WZ pilnujący zamówienia)</td><td class="num">10</td><td class="num">0,05%</td><td class="num">67 443,56 zł</td><td class="mut">§2 ścieżka 9 — pierwsza liczba z bazy</td><td class="mut">nowy</td></tr>
+<tr><td class="stan">Faktura zaliczkowa FZ</td><td class="num">1</td><td class="num">0,01%</td><td class="num">19,77 zł</td><td class="mut">ZALICZKA 682 (489 + 193)</td><td class="mut">definicja</td></tr>
+<tr><td class="stan">BRAK DOKUMENTU (naiwnie, bez wyłączeń)</td><td class="num">1 359</td><td class="num">7,0%</td><td class="num">3 892 693,44 zł</td><td class="num">1 215 (naiwnie) · 557 (po wyłączeniach)</td><td><b>NIE</b> — 11,9%</td></tr>
+<tr><td class="stan">RAZEM rejestr</td><td class="num">19 477</td><td class="num">100%</td><td class="num">—</td><td class="num">19 732</td><td><b>NIE</b> — 3,7% (żywa 20 467)</td></tr>
+</tbody></table>
+<p class="mut">Rozkład sumuje się dokładnie do rejestru kopii (14 290 + 2 544 + 1 085 + 174 + 14 + 10 + 1 + 1 359 = 19 477), więc żaden WZ nie jest policzony dwa razy ani pominięty.</p>
+
+<h3>9.2 Kategoria dokumentu po drugiej stronie — baza obok arkusza</h3>
+<table id="zbazakat">
+<thead><tr><th>kategoria</th><th>WZ z bazy (kopia)</th><th>netto WZ (baza)</th><th>z pliku (mapa §4)</th><th>odchylenie liczby</th><th>brama 0,5%</th></tr></thead><tbody>
+<tr><td class="stan">Hurtowa</td><td class="num">5 155</td><td class="num">21 855 189,99 zł</td><td class="num">5 324</td><td class="num">−3,2%</td><td>poza bramą</td></tr>
+<tr><td class="stan">Inwentaryzacja</td><td class="num">3 762</td><td class="num">14 426 575,66 zł</td><td class="num">3 606</td><td class="num">+4,3%</td><td>poza bramą</td></tr>
+<tr><td class="stan">SM</td><td class="num">2 592</td><td class="num">8 492 960,00 zł</td><td class="num">2 329</td><td class="num">+11,3%</td><td>poza bramą</td></tr>
+<tr><td class="stan">LR</td><td class="num">1 463</td><td class="num">3 419 598,76 zł</td><td class="num">1 492</td><td class="num">−1,9%</td><td>poza bramą</td></tr>
+<tr><td class="stan">BK</td><td class="num">1 271</td><td class="num">2 063 026,66 zł</td><td class="num">1 011</td><td class="num">+25,7%</td><td>poza bramą</td></tr>
+<tr><td class="stan">MR</td><td class="num">962</td><td class="num">1 910 921,87 zł</td><td class="num">958</td><td class="num">+0,4%</td><td class="mut"><b>przepuszcza</b></td></tr>
+<tr><td class="stan">GG</td><td class="num">601</td><td class="num">2 196 610,29 zł</td><td class="num">621</td><td class="num">−3,2%</td><td>poza bramą</td></tr>
+<tr><td class="stan">LP</td><td class="num">480</td><td class="num">738 996,52 zł</td><td class="num">410</td><td class="num">+17,1%</td><td>poza bramą</td></tr>
+<tr><td class="stan">PZ</td><td class="num">333</td><td class="num">2 515 949,31 zł</td><td class="num">352</td><td class="num">−5,4%</td><td>poza bramą</td></tr>
+<tr><td class="stan">GM</td><td class="num">254</td><td class="num">1 241 456,56 zł</td><td class="num">256</td><td class="num">−0,8%</td><td>poza bramą</td></tr>
+<tr><td class="stan">CD</td><td class="num">225</td><td class="num">733 842,90 zł</td><td class="num">233</td><td class="num">−3,4%</td><td>poza bramą</td></tr>
+<tr><td class="stan">WA</td><td class="num">241</td><td class="num">294 576,82 zł</td><td class="num">189</td><td class="num">+27,5%</td><td>poza bramą</td></tr>
+<tr><td class="stan">MP</td><td class="num">226</td><td class="num">1 468 702,67 zł</td><td class="num">227</td><td class="num">−0,4%</td><td class="mut"><b>przepuszcza</b></td></tr>
+<tr><td class="stan">Sprzedaż</td><td class="num">206</td><td class="num">302 455,93 zł</td><td class="num">101</td><td class="num">+104,0%</td><td>poza bramą</td></tr>
+<tr><td class="stan">Detal</td><td class="num">87</td><td class="num">10 238,94 zł</td><td class="mut">brak w arkuszu</td><td class="mut">—</td><td class="mut">do ustalenia</td></tr>
+<tr><td class="stan">Zakup</td><td class="num">176</td><td class="num">289 045,28 zł</td><td class="num">2</td><td class="num">+8 700%</td><td>poza bramą</td></tr>
+<tr><td class="stan">PAL</td><td class="num">80</td><td class="num">280 540,00 zł</td><td class="num">86</td><td class="num">−7,0%</td><td>poza bramą</td></tr>
+<tr><td class="stan">Bank</td><td class="num">2</td><td class="num">365,04 zł</td><td class="num">1</td><td class="num">+100%</td><td class="mut">pomijalne (1 dok.)</td></tr>
+<tr><td class="stan">Akwizytor</td><td class="num">1</td><td class="num">3 682,80 zł</td><td class="num">1</td><td class="num">0,0%</td><td class="mut"><b>przepuszcza</b></td></tr>
+<tr><td class="stan">Magazyn</td><td class="num">1</td><td class="num">1 349,40 zł</td><td class="mut">brak w arkuszu</td><td class="mut">—</td><td class="mut">do ustalenia</td></tr>
+<tr><td class="stan">RAZEM</td><td class="num">18 118</td><td class="num">—</td><td class="num">19 732</td><td class="mut">2 533 w arkuszu = „—" (bez dokumentu)</td><td class="mut">—</td></tr>
+</tbody></table>
+<p class="mut">Uwaga o wartościach: po stronie bazy to <b>netto wydania (WZ)</b>, po stronie arkusza prawdopodobnie <b>netto dokumentu handlowego</b> — dlatego porównuję liczby dokumentów, a wartości podaję tylko jako kontekst. Porównywanie wartości wprost dałoby fałszywy rozjazd (np. MR: liczby zgodne, wartości różne o 8,5%).</p>
+
+<h3>9.3 Obieg między spółkami — zmierzony na bazie, nie domniemany</h3>
+<table id="zbazobieg">
+<thead><tr><th>co mierzę</th><th>ile</th><th>netto</th><th>% WZ z dokumentem</th></tr></thead><tbody>
+<tr><td class="stan">nabywca na dokumencie po drugiej stronie = DOBRY DACH (obieg wewnętrzny)</td><td class="num">6 003</td><td class="num">23 233 738,23 zł</td><td class="num">33,1%</td></tr>
+<tr><td class="stan">nabywca zewnętrzny / pozostali</td><td class="num">12 313</td><td class="num">39 509 602,68 zł</td><td class="num">66,9%</td></tr>
+<tr><td class="stan">z pliku — suma stanów „obiegowych" (INWENTARYZACJA 1 310 + UJĘTE PNBM 4 325 + ZALICZKA JAWNA 489 + INWENTARYZACJA-PNBM 237 + KLIENT WŁAŚCIWY 1)</td><td class="num">6 362</td><td class="num">45 666 773 zł</td><td class="num">—</td></tr>
+</tbody></table>
+<p class="mut">Reguła, którą policzyłem: <code>dok__Dokument o</code> po drugiej stronie + nazwa nabywcy z <code>vwKlienci.adr_NazwaPelna</code> zawierająca „DOBRY DACH". To filtr zgrubny (nie rozdziela komandytowej od jawnej), więc <b>6 003</b> traktuję jako dolną granicę obiegu, nie jako liczbę ostateczną. Różnica wobec sumy stanów z arkusza: −5,6%.</p>
+
+<h3>9.4 ZWZ (typ 36) — ścieżka 7 z §2, pierwsza liczba z bazy</h3>
+<div class="card">
+<p><b>Jawna: 599 dokumentów</b>, aktywne, mediana 35 dni po wydaniu WZ, powiązanie <code>ZWZ → WZ</code> 599/599 (M, żywa baza, 2026-09-15). <b>Komandytowa: 0</b> (typ 36 nie występuje w rejestrze kopii).</p>
+<p>Znaczenie dla mapy: to <b>zwrot materiału z budowy</b> — cofa koszt, więc nie może zostać przemilczany w żadnym rachunku marży. Wchodzi jako stan końcowy WZ po stronie jawnej.</p>
+</div>
+
+<h3>9.5 Lista „dziur" Tomka — rozkład po latach (sprawdzona, bez duplikatów)</h3>
+<table id="zbazdziury">
+<thead><tr><th>rok</th><th>lista Tomka (557 wierszy)</th><th>baza/kopia naiwnie (1 359)</th><th>różnica</th></tr></thead><tbody>
+<tr><td class="stan">2024</td><td class="num">38</td><td class="num">144</td><td class="num">106</td></tr>
+<tr><td class="stan">2025</td><td class="num">49</td><td class="num">317</td><td class="num">268</td></tr>
+<tr><td class="stan">2026 (do 07.08/07.09)</td><td class="num">470</td><td class="num">898</td><td class="num">428</td></tr>
+<tr><td class="stan">RAZEM komandytowa</td><td class="num">557</td><td class="num">1 359</td><td class="num">802</td></tr>
+<tr><td class="stan">jawna (osobny plik)</td><td class="num">22 (2025: 5 · 2026: 17)</td><td class="mut">brak pomiaru (kopia tylko komandytowa)</td><td class="mut">—</td></tr>
+</tbody></table>
+<p class="mut">Sprawdzone na pliku <code>brak_dokumentu_WZ_komandytowa.csv</code>: 557 wierszy danych, 557 unikalnych numerów WZ, zero duplikatów (plik ma w komentarzu znaki nowej linii — stąd 856 linii fizycznych). Zakresy lat po obu stronach się pokrywają, więc różnica 802 sztuk <b>nie jest czasem</b>, a definicją wyłączeń (depozyt, Brus, wycofany skutek magazynowy, inwentaryzacja osobno). To jest dokładnie poz. 2 z kolejki — i da się ją sprawdzić rok po roku.</p>
+
+<div class="card bad">
+<h3>Werdykt bramy 0,5% — co wolno publikować, a czego nie</h3>
+<ul>
+<li><b>Liczba „dziur" (BRAK DOKUMENTU): NIE.</b> Cztery liczby w obiegu: 557 (arkusz po wyłączeniach), 1 215 (arkusz naiwnie), 1 359 (baza/kopia 07.08), 1 655 (suma rozbicia po wieku w pliku M z 15.09). Rozjazd plik↔kopia = +11,9%, a wobec 1 655 = +36,2%. Rozkład listy 557 po latach: 38 (2024) · 49 (2025) · 470 (2026) — wobec 144 / 317 / 898 w kopii (§9.5).</li>
+<li><b>Sprzeczność w pliku M, do wyjaśnienia jedną liczbą.</b> Plik <code>WYNIKI_Z_BAZY/2026-09-15_weryfikacja-exceli-tomka.wynik.md</code> podaje jednocześnie: „GOŁE 1 215 vs 1 218, różnica 3 dokumenty (0,25%)" oraz rozbicie po wieku 65 + 87 + 285 + 1 218 = <b>1 655</b>. Te dwie rzeczy nie mogą być prawdziwe naraz. Kopia z 07.08 ma 1 359 (miesiąc starsza!), więc total na żywej bazie nie może wynosić 1 218. <b>Wniosek: dowód „0,25%" jest porównaniem liczby z arkusza policzonej po wszystkich wiekach z kubełkiem „ponad 30 dni" po stronie bazy. Do przeliczenia.</b></li>
+<li><b>„POWIĄZANIE WZ–FV" (12 790 vs 16 834): NIE</b> — ale to nie błąd, tylko inne pojęcie: arkusz dzieli wydania po <i>sposobie</i> przypisania, baza po <i>typie</i> dokumentu po drugiej stronie. Trzeba ustalić jedną definicję, bo od niej zależy każda marża.</li>
+<li><b>Rozkład kategorii: 3 z 20 pozycji przepuszczają</b> (MR 0,4%, MP 0,4%, Akwizytor 0,0%) — reszta poza bramą, z czego największe: Zakup, Sprzedaż, WA, BK.</li>
+<li><b>Rejestr WZ (19 477 kopia / 20 467 żywa / 19 732 arkusz): NIE</b> — 3,7%, ale różnica jest w większości datą odcięcia (~750 szt./miesiąc); po wyrównaniu zostaje ~−500 (−2,5%) do wyjaśnienia.</li>
+</ul>
+</div>
+
+<div class="card ok">
+<h3>Co z tego jest już pewne, a co tylko z pliku</h3>
+<ul>
+<li><b>Pewne (rozkład domyka się do rejestru):</b> FS 86,4% · PA 5,6% · KFZ 0,9% · KFS 0,1% · ZK 0,05% · FZ 0,01% · brak dokumentu 7,0%.</li>
+<li><b>Tylko z pliku, bez odpowiednika w bazie do czasu podania reguły:</b> UJĘTE PNBM (4 325 + 237 + 84 + 1), PRZYPISANE DO INWESTYCJI (3 152), ZALICZKA JAWNA / KOMANDYTOWA (489 / 193). Baza nie ma pola „inwestycja" ani reguły PNBM — te stany zostają w mapie oznaczone jako plikowe, dopóki M nie poda sposobu ich policzenia z bazy.</li>
+<li><b>Zmierzone na bazie i wchodzi do mapy:</b> ZWZ typ 36 (jawna, 599) oraz ZK-rezerwacja (10 WZ w kopii) — §2 ujmuje je jako ścieżki 7 i 9, tu dostają pierwsze liczby z bazy.</li>
+</ul>
+</div>
+
+<div class="meta">Do domknięcia na ŻYWEJ bazie (M): (a) jedna liczba GOŁE z datą odcięcia i rozbiciem na wiek + rok, (b) WZ per rok + liczba anulowanych/rezerwacji, (c) reguła policzenia PNBM / INWESTYCJI / ZALICZKI z bazy albo wprost „nie da się", (d) ZWZ i ZK-rezerwacja potwierdzone na żywej bazie. Zapytania i definicje: <code>ROZMOWA/0039_MAC.md</code>.</div>
+</div></body></html>
