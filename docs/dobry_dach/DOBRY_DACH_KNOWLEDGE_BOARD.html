@@ -1,261 +1,667 @@
-<!doctype html>
-<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Status projektu — Dobry Dach</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<style id="sg">
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+:root{--sg-vio:#7c5cff;--sg-ink:#1a1f2b;--sg-mut:#667085;--sg-line:#e4e7ec}
+body{font-family:'Space Grotesk',-apple-system,'Segoe UI',Roboto,Arial,sans-serif !important;color:var(--sg-ink);background:#fff}
+h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;letter-spacing:-.2px}
+code,pre,.mono,label,.tab,.badge,.go,.meta,.cnt,th{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+a{color:var(--sg-vio)}
+
+.pflow{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.pstep{display:flex;align-items:center;gap:12px;background:#f6f8fa;border:1.5px solid #e4e7ec;border-left:4px solid #7c5cff;border-radius:12px;padding:10px 14px;text-decoration:none;color:#16181d;transition:.15s}
+.pstep:hover{border-color:#7c5cff;background:#f4f0ff;transform:translateX(3px)}
+.pnum{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:15px;color:#7c5cff;min-width:34px;text-align:center;background:#fff;border:1.5px solid #7c5cff;border-radius:9px;padding:4px 0}
+.pbody{flex:1}
+.ptitle{font-weight:700;font-size:14.5px}
+.proc-auto{display:inline-block;background:#7c5cff;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;margin-left:8px;vertical-align:2px;font-family:'IBM Plex Mono',monospace}
+.pasis{color:#667085;font-size:12.3px;margin-top:2px}
+.parrow{color:#7c5cff;font-weight:700}
+
+.qwrap{margin-top:8px}
+.qstatus{background:#fff;border:1.5px solid #e4e7ec;border-radius:14px;padding:14px 16px}
+.qstat-note{font-size:13.5px;margin-bottom:10px}
+.qtbl{width:100%;border-collapse:collapse;font-size:13px}
+.qtbl th{text-align:left;background:#f6f8fa;padding:7px 10px;border-bottom:2px solid #e4e7ec;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#57606a}
+.qtbl td{padding:7px 10px;border-bottom:1px solid #f0f2f5;vertical-align:top}
+.pkod{font-family:'IBM Plex Mono',monospace;font-weight:700;color:#7c5cff}
+.plink a{color:#7c5cff;font-weight:600;text-decoration:none;white-space:nowrap;font-size:12.5px}
+.plink a:hover{text-decoration:underline}
+.qknown{margin-top:12px;border-top:1px dashed #d9dee5;padding-top:10px}
+.qknown summary{cursor:pointer;font-weight:700;color:#2e7d4f;font-size:13.5px}
+.qknown ul{margin:8px 0 4px;padding-left:20px;font-size:12.8px;color:#444}
+.pstat{text-align:center;white-space:nowrap;font-size:15px;line-height:1.25}.pstat-t{display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#667085;margin-top:2px}.legenda{margin:10px 0 6px;font-size:13px;color:#444;background:#f6f8fa;border:1px solid #e4e7ec;border-radius:10px;padding:9px 12px}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dobry Dach — Status projektu</title>
 <style>
- *{box-sizing:border-box}
- body{margin:0;background:#f7f8fa;color:#1a1f2b;font-family:'Space Grotesk',system-ui,sans-serif;font-size:17px;line-height:1.55}
- .wrap{max-width:1400px;margin:0 auto;padding:34px 26px 60px}
- h1{font-size:38px;margin:0 0 6px;letter-spacing:-.5px}
- h2{font-size:27px;margin:40px 0 14px}
- h3{font-size:20px;margin:22px 0 8px}
- .sub{color:#667085;font-family:'IBM Plex Mono',monospace;font-size:13px}
- .kpi{display:flex;gap:14px;flex-wrap:wrap;margin:22px 0 8px}
- .kpi div{background:#fff;border:1px solid #e4e7ec;border-radius:12px;padding:14px 20px;min-width:150px}
- .kpi b{display:block;font-size:30px;color:#7c5cff}
- .legenda{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 10px}
- .legenda span{background:#fff;border:1px solid #e4e7ec;border-radius:10px;padding:10px 16px;font-size:15px}
- table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e4e7ec;border-radius:12px;overflow:hidden}
- th{background:#f2f4f7;text-align:left;padding:13px 14px;font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:#475467}
- td{padding:13px 14px;border-top:1px solid #eef0f3;vertical-align:top}
- .kod{font-family:'IBM Plex Mono',monospace;font-weight:600;color:#7c5cff;white-space:nowrap}
- .pyt{font-weight:500;max-width:380px}
- .st{text-align:center;font-size:22px;white-space:nowrap}
- .st-txt{font-size:12px;font-family:'IBM Plex Mono',monospace;color:#667085}
- .co{max-width:520px}
- .dow{margin-top:6px;font-size:13px;color:#667085}
- code{font-family:'IBM Plex Mono',monospace;background:#f2f4f7;padding:1px 6px;border-radius:5px;font-size:12.5px}
- .brak{color:#98a2b3;font-style:italic}
- tr.s-zamkniete{background:#f6fef9} tr.s-wtoku{background:#fffcf5} tr.s-otwarte{background:#fff}
- a{color:#7c5cff} a:hover{text-decoration:none}
- .card{background:#fff;border:1px solid #e4e7ec;border-radius:12px;padding:20px 24px;margin:14px 0}
- .os{border-left:3px solid #7c5cff;padding-left:18px;margin:18px 0}
- .os div{margin:0 0 16px} .os b{display:block}
- .small{font-size:14px;color:#667085}
- .warn{background:#fdf2f2;border:1px solid #f3c9c9;border-radius:12px;padding:18px 22px;margin:14px 0}
-</style></head><body><div class="wrap">
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #ffffff; color: #1a1a1a; font-size: 18px; line-height: 1.5; padding: 40px 48px 80px; }
+  .wrap { max-width: 1280px; margin: 0 auto; }
+  h1 { font-size: 40px; font-weight: 800; letter-spacing: -0.5px; }
+  .sub { color: #666; font-size: 19px; margin-top: 6px; }
+  .meta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 22px; }
+  .stat { border: 2px solid #111; border-radius: 12px; padding: 10px 18px; font-weight: 700; font-size: 18px; background: #fff; }
+  .stat b { font-size: 26px; }
+  .stat.opow { border-color: #0a5fa8; color: #0a5fa8; }
+  .stat.pyt { border-color: #cf222e; color: #cf222e; }
+  .stat.wzr { border-color: #1a7f37; color: #1a7f37; }
+  .progress { margin-top: 16px; background: #eaeaea; border-radius: 999px; height: 26px; overflow: hidden; }
+  .progress > div { background: #1a7f37; height: 100%; border-radius: 999px; display: flex; align-items: center; justify-content: flex-end; padding-right: 14px; color: #fff; font-size: 14px; font-weight: 700; min-width: 60px; }
+  .tabs { display: flex; gap: 12px; margin: 34px 0 26px; flex-wrap: wrap; }
+  .tab { border: 2px solid #111; background: #fff; color: #111; font-size: 20px; font-weight: 800; padding: 12px 26px; border-radius: 999px; cursor: pointer; }
+  .tab.active { background: #111; color: #fff; }
+  .tab .cnt { opacity: 0.6; font-size: 15px; }
+  .group-label { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #888; margin: 30px 0 12px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+  .card { border: 1.5px solid #ddd; border-radius: 14px; padding: 18px 20px; background: #fff; }
+  .card.w { border-left: 6px solid #1a7f37; }
+  .card.q { border-left: 6px solid #cf222e; }
+  .card.q.done { border-left-color: #1a7f37; opacity: 0.8; }
+  .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+  .card .proof { font-size: 15px; color: #555; margin-top: 8px; }
+  .card .proof b { color: #333; }
+  .card .tag { display: inline-block; font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 999px; margin-right: 6px; margin-top: 6px; }
+  .tag.src { background: #eef1f5; color: #444; }
+  .tag.done { background: #2e7d4f; color: #fff; }
+  .tag.open { background: #cf222e; color: #fff; }
+  .tag.wip { background: #b98a00; color: #fff; }
+  .tag.hi { background: #cf222e; color: #fff; }
+  .tag.mid { background: #b98a00; color: #fff; }
+  .tag.lo { background: #eaeef2; color: #57606a; }
+  .q-main { font-size: 19px; font-weight: 700; margin-bottom: 6px; }
+  .q-ctx { font-size: 15.5px; color: #444; margin-bottom: 6px; }
+  .q-close { font-size: 15px; background: #f6f8fa; border-radius: 8px; padding: 8px 12px; margin-top: 8px; }
+  .q-close b { color: #1a7f37; }
+  .q-dialog { font-size: 14px; color: #0a5fa8; margin-top: 8px; font-weight: 600; }
+  .timeline { border-left: 3px solid #0a5fa8; margin-left: 12px; padding-left: 26px; display: flex; flex-direction: column; gap: 22px; }
+  .tl-item { position: relative; }
+  .tl-item::before { content: ""; position: absolute; left: -33px; top: 6px; width: 13px; height: 13px; border-radius: 50%; background: #0a5fa8; }
+  .tl-date { font-size: 14px; font-weight: 800; color: #0a5fa8; text-transform: uppercase; letter-spacing: 1px; }
+  .tl-title { font-size: 20px; font-weight: 800; margin: 2px 0 4px; }
+  .tl-body { font-size: 16px; color: #333; }
+  .tl-out { margin-top: 6px; font-size: 15.5px; background: #f6f8fa; border-radius: 8px; padding: 8px 12px; }
+  .tl-out b { color: #1a7f37; }
+  .filters { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; font-size: 16px; font-weight: 600; }
+  .filters label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .filters input { width: 20px; height: 20px; }
+  .hidden { display: none !important; }
+  .foot { margin-top: 50px; color: #888; font-size: 15px; border-top: 1px solid #eee; padding-top: 16px; }
+  /* ── Opowieść: ścieżka procesu ── */
+  .path { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 6px; }
+  .pstep { border: 2px solid #111; border-radius: 10px; padding: 8px 14px; font-size: 15px; font-weight: 700; background: #fff; }
+  .pstep .pn { color: #0a5fa8; font-weight: 800; }
+  .pstep.auto { border-color: #0a5fa8; background: #f0f6fc; }
+  .pstep .pa { font-size: 12px; color: #0a5fa8; font-weight: 800; }
+  .narr { font-size: 17px; color: #333; background: #f6f8fa; border-radius: 12px; padding: 16px 20px; margin-top: 14px; }
+  .narr b { color: #111; }
+  /* ── Transformacje ── */
+  .trans { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .trow { display: flex; align-items: stretch; gap: 10px; border: 1.5px solid #ddd; border-radius: 12px; padding: 12px 16px; background: #fff; }
+  .tq { flex: 1; font-size: 15.5px; color: #cf222e; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .tarrow { font-size: 22px; color: #1a7f37; font-weight: 800; display: flex; align-items: center; }
+  .tf { flex: 1.4; font-size: 15.5px; color: #1a7f37; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .tf .dowod { display: block; font-size: 13px; color: #666; font-weight: 400; margin-top: 3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
 
-<h1>Status projektu — Dobry Dach</h1>
-<p class="sub">stan na 22.09.2026 · źródło prawdy: OneDrive <code>AI_DD_wymiana/</code> · pytania: 23 (węzły mapy procesu)</p>
+  <h1>🧠 Dobry Dach — Status projektu</h1>
+  <div class="sub">Jedno narzędzie: opowieść o procesie · pytania, na które szukamy odpowiedzi · wizualny dowód, że wiedza rośnie. Aktualizacja: 2026-09-22 — domknięte 5 pytań „do potwierdzenia” werdyktami z bazy (15.09) · statusy przy każdym pytaniu</div>
 
-<div class="kpi">
-  <div><b>23</b><span class="small">pytań w mapie procesu</span></div>
-  <div><b>5</b><span class="small">zamknięte (z dowodem)</span></div>
-  <div><b>3</b><span class="small">w toku</span></div>
-  <div><b>15</b><span class="small">otwarte</span></div>
+  <div class="meta">
+    <div class="stat opow">📖 <b id="cOpow">18</b> KROKÓW PROCESU</div>
+    <div class="stat pyt">❓ <b id="cPyt">23</b> PYTANIA-LUKI <span style="font-weight:600;font-size:15px">(+16 znanych)</span></div>
+    <div class="stat wzr">✅ <b id="cWzr">28</b> KART Z DOWODEM</div>
+    <div class="stat dia">💬 <b id="cDia">8</b> ROZMÓW</div>
+  </div>
+  <div class="progress"><div id="pbar" style="width:41%">41% wiedzy</div></div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="opowiesc">⚙️ PROCES <span class="cnt">18</span></div>
+    <div class="tab" data-tab="pytania">❓ PYTANIA <span class="cnt">23+16</span></div>
+    <div class="tab" data-tab="wzrost">📈 WZROST WIEDZY <span class="cnt">16</span></div>
+    <div class="tab" data-tab="rozmowy">💬 ROZMOWY <span class="cnt">8</span></div>
+    <div class="tab" data-tab="reguly">📐 REGUŁY POŁĄCZEŃ <span class="cnt">1</span></div>
+  </div>
+
+  <!-- ════════════ TAB 1: OPOWIEŚĆ ════════════ -->
+    <section id="tab-opowiesc">
+    <div class="group-label">PROCES — 18 kroków od zapytania do dokumentacji · klik = otwiera węzeł w mapie (AS-IS + automat)</div>
+    <div class="pflow">
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-00">
+        <div class="pnum">00</div>
+        <div class="pbody">
+          <div class="ptitle">Kontakt klienta / zapytanie<span class="proc-auto">A0: rejestr zapytań = baza klientów — każde zapytanie dopisane + follow-up (przypomnienie oddzwonienia) · scenariusz pytań dla PH przy kliencie (lista kontrolna)</span></div>
+          <div class="pasis">Zapytanie wpisujecie do bazy OD RAZU (warsztat 10.08).</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-01">
+        <div class="pnum">01</div>
+        <div class="pbody">
+          <div class="ptitle">Przyjęcie projektu<span class="proc-auto">A1: scan + Vision — wymiary, powierzchnia, krycie prosto z projektu</span></div>
+          <div class="pasis">Projekt przychodzi w różnych formach — rozkład nieznany.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-02">
+        <div class="pnum">02</div>
+        <div class="pbody">
+          <div class="ptitle">Wycena + marża<span class="proc-auto">A3: marża z bazy — tw_Cena + reguły (zakup, sprzedaż, narzut) — koniec wycen na oko</span></div>
+          <div class="pasis">Algorytm z pliku Tomasza: (Netto−Koszt)/Netto per dokument; TOWAR 12,8% (7% na minusie), HURTOWA ≈ koszt+3% — A3 odblokowane.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-03">
+        <div class="pnum">03</div>
+        <div class="pbody">
+          <div class="ptitle">Oferta (ZK)<span class="proc-auto">A2: oferta z pozycji starego ZK klienta + ceny z tw_Cena → PDF + ślad w bazie (bramka: każda oferta w ZK)</span></div>
+          <div class="pasis">19 314 ZK w bazie, 17 wystawców (baza).</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-04">
+        <div class="pnum">04</div>
+        <div class="pbody">
+          <div class="ptitle">Negocjacje<span class="proc-auto">A2: historia wersji wyceny w ZK (negocjacje = wersje oferty)</span></div>
+          <div class="pasis">Negocjacje przebiegają bez śladu w systemie.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-05">
+        <div class="pnum">05</div>
+        <div class="pbody">
+          <div class="ptitle">Akceptacja oferty<span class="proc-auto">A4: event w kalendarzu z umowy przy akceptacji + przypomnienie o umowie/dokumentacji 8%</span></div>
+          <div class="pasis">Status „z rezerwacją” (7) zmienia logistyk (2 os.) z maila PH — nie PH (notatki Jura).</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-06">
+        <div class="pnum">06</div>
+        <div class="pbody">
+          <div class="ptitle">Umowa<span class="proc-auto">A7: ślad zmian umowy (zgłoszenie → wycena → akceptacja → aneks)</span></div>
+          <div class="pasis">Umowa NDI 13937/25/01 — ryczałt 3 875 000 zł netto; zmiany tylko aneksem.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-07">
+        <div class="pnum">07</div>
+        <div class="pbody">
+          <div class="ptitle">Status → start realizacji<span class="proc-auto">A4: pilnuje maila PH→logistyk + przypomnienie o zmianie statusu (kontrola zostaje u logistyka)</span></div>
+          <div class="pasis">Status 7 zmienia logistyk (2 osoby) z maila PH — PH się mylili/ściemniali (notatki Jura).</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-08">
+        <div class="pnum">08</div>
+        <div class="pbody">
+          <div class="ptitle">Kalendarze / terminy<span class="proc-auto">A4: event z umowy przy akceptacji + przypomnienia ekipie · porównywarka kalendarz ↔ baza (ZK bez transportu, konflikty pojazdów)</span></div>
+          <div class="pasis">Kalendarze Google per pojazd: VW CRAFTER, HDS DAF, HDS MAN, PEUGEOT, RENAULT, PAWEŁEK (odczyt A…</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-09">
+        <div class="pnum">09</div>
+        <div class="pbody">
+          <div class="ptitle">Zamówienie materiałów<span class="proc-auto">A4: zamówienie z pozycji ZK (bez przepisywania) + integracja baz = koniec podwójnego wprowadzania</span></div>
+          <div class="pasis">Pain: podwójne wprowadzanie (komandytowa + jawna) — notatki Jura.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-10">
+        <div class="pnum">10</div>
+        <div class="pbody">
+          <div class="ptitle">Wydanie towaru (WZ)<span class="proc-auto">A5: nowe WZ → wiadomość do PH („Dla ZK #1234 wyszło WZ, postęp X%”) — mock gotowy</span></div>
+          <div class="pasis">62% WZ bez ZK (16 834 WZ→FS, 6 648 ZK→WZ) — baza.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-11">
+        <div class="pnum">11</div>
+        <div class="pbody">
+          <div class="ptitle">Informacja do PH<span class="proc-auto">A5: automatyczna wiadomość per WZ (postęp, % realizacji)</span></div>
+          <div class="pasis">Numer ZK w eventach kalendarza (format */MAG/*) — wyciągalny automatycznie.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-12">
+        <div class="pnum">12</div>
+        <div class="pbody">
+          <div class="ptitle">FV zaliczkowe<span class="proc-auto">A6: płatności + alerty zaległości („BRAKUJE X zł”), KSeF</span></div>
+          <div class="pasis">FV do klienta wystawia JAWNA — „Prace budowlane na budynku mieszkalnym”, pozycja 1 + wartość (n…</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-13">
+        <div class="pnum">13</div>
+        <div class="pbody">
+          <div class="ptitle">Summary PH (raport)<span class="proc-auto">A6: dzienny summary per PH — nowe ZK, portfel, WZ, FS, wpłaty (wysyłka działa)</span></div>
+          <div class="pasis">Identyfikacja PH = KATEGORIA dokumentu (dok_KatId → sl_Kategoria: CD, MR, LR, SM, GG, MP, GM, BK, LP) — A6 przestawiony.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-14">
+        <div class="pnum">14</div>
+        <div class="pbody">
+          <div class="ptitle">Zmiany zakresu<span class="proc-auto">A7: ślad zmian (zgłoszenie → wycena → akceptacja → aneks)</span></div>
+          <div class="pasis">Ślad zmian zakresu — brak w systemie (do potwierdzenia).</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-15">
+        <div class="pnum">15</div>
+        <div class="pbody">
+          <div class="ptitle">Finalizacja (ZK vs WZ)<span class="proc-auto">A7: różnice ZK vs WZ per pozycja przed finalizacją (raport rozjazdów)</span></div>
+          <div class="pasis">34% ZK doczekało się WZ (6 648 z 19 314) — baza.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-16">
+        <div class="pnum">16</div>
+        <div class="pbody">
+          <div class="ptitle">FV finalna<span class="proc-auto">A6: raport poranny (prototyp działa 11/11) + KSeF</span></div>
+          <div class="pasis">FV finalna wychodzi z JAWNEJ (usługa = towar + montaż, niższy VAT) — notatki Jura.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+      <a class="pstep" href="https://tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html#wezel-17">
+        <div class="pnum">17</div>
+        <div class="pbody">
+          <div class="ptitle">Zamknięcie / dokumentacja<span class="proc-auto">A7: komplet dokumentów z automatu + różnice ZK vs WZ</span></div>
+          <div class="pasis">Zamknięcie i komplet dokumentów — praktyka do ustalenia.</div>
+        </div>
+        <div class="parrow">→</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ════════════ TAB 2: PYTANIA ════════════ -->
+  <section id="tab-pytania" class="hidden">
+    <div class="filters">
+      <span>Status:</span>
+      <label><input type="checkbox" class="f-status" value="open" checked> 🔴 otwarte</label>
+      <label><input type="checkbox" class="f-status" value="wip" checked> 🟡 w toku</label>
+      <label><input type="checkbox" class="f-status" value="done" checked> ✅ zamknięte</label>
+      <span style="margin-left:14px">Priorytet:</span>
+      <label><input type="checkbox" class="f-prio" value="hi" checked> 🔥 bloker</label>
+      <label><input type="checkbox" class="f-prio" value="mid" checked> średni</label>
+      <label><input type="checkbox" class="f-prio" value="lo" checked> niski</label>
+    </div>
+    <div class="qwrap">      <div class="qstatus">
+        <div class="legenda"><b>Status przy każdym pytaniu:</b> ✅ odpowiedź z klientem (wizyta 25.08) · 🔵 potwierdzone bazą (15.09, pliki w <code>WYNIKI_Z_BAZY/</code>) · ⚪ nieistotne<br><span style="color:#667085">Stan na 22.09: 23 z 23 pytań mają status — 17 z klienta, 5 potwierdzonych bazą, 1 nieistotne.</span></div><div class="qstat-note">Klik w wiersz otwiera węzeł mapy procesu (plik leży w projekcie — nie na zewnętrznej stronie)</div>
+        <table class="qtbl">
+          <tr><th style="width:70px">Kod</th><th>Pytanie</th><th style="width:118px">Status</th><th style="width:170px"></th></tr>
+      <tr>
+        <td class="pkod">n00_1</td><td class="pstat">⚪<span class="pstat-t">nieistotne</span></td>
+        <td class="ptresc">Ile % zapytań realnie przepada przez brak oddzwonienia?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-00">węzeł 00 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n00_2</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Kto przyjmuje zapytania i wpisuje do bazy?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-00">węzeł 00 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n01_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Która forma projektu przeważa?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-01">węzeł 01 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n01_2</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Gdzie ląduje projekt?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-01">węzeł 01 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n02_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Czy każda wycena przechodzi przez arkusz kalkulacji?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-02">węzeł 02 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n02_2</td><td class="pstat">🔵<span class="pstat-t">baza 15.09</span></td>
+        <td class="ptresc">Skąd ceny w wycenie?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-02">węzeł 02 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n03_1</td><td class="pstat">🔵<span class="pstat-t">baza 15.09</span></td>
+        <td class="ptresc">Jaki % ofert nie trafia do ZK (żyje w głowie/Excelu)?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-03">węzeł 03 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n04_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Jak ustalacie ceny w negocjacjach — jest ślad?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-04">węzeł 04 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n05_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Czy umowa z klientem podpisywana przed startem — zawsze?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-05">węzeł 05 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n06_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Czy umowa z dekarzem podpisywana na każdą budowę?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-06">węzeł 06 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n07_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Czy flagowanie (czerwona/żółta/zielona) realnie działa?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-07">węzeł 07 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n08_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Procedura: Kalendarz dostaw prowadzi Artur — czy realnie tak jest?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-08">węzeł 08 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n08_2</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Czy każdy ZK dostaje transport?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-08">węzeł 08 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n09_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Procedura: PH wysyła zamówienie mailem do logistyka — czy realnie mailem?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-09">węzeł 09 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n09_2</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Czy zdarza się zamówienie towaru bez ZK w systemie?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-09">węzeł 09 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n10_1</td><td class="pstat">🔵<span class="pstat-t">baza 15.09</span></td>
+        <td class="ptresc">Dlaczego WZ bywają bez ZK?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-10">węzeł 10 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n11_1</td><td class="pstat">🔵<span class="pstat-t">baza 15.09</span></td>
+        <td class="ptresc">Jak PH dowiaduje się, że towar wyjechał?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-11">węzeł 11 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n12_1</td><td class="pstat">🔵<span class="pstat-t">baza 15.09</span></td>
+        <td class="ptresc">Procedura: rozliczenia klientów prowadzi Monika — czy ktoś realnie pilnuje wpłat zaliczek?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-12">węzeł 12 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n13_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Kto ma dostawać dzienny raport PH?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-13">węzeł 13 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n14_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Jak dziś wygląda zmiana zakresu?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-14">węzeł 14 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n15_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Czy rozliczacie ZK vs WZ przed zamknięciem?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-15">węzeł 15 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n16_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Czy stawki realnie działają: 23% przy wywozie, 8% po transakcji?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-16">węzeł 16 w mapie →</a></td>
+      </tr>
+      <tr>
+        <td class="pkod">n17_1</td><td class="pstat">✅<span class="pstat-t">klient 25.08</span></td>
+        <td class="ptresc">Czy archiwum dokumentów realnie się składa (teczka → Natalia)?</td>
+        <td class="plink"><a href="mapa-procesow-male-po_bazie.html#wezel-17">węzeł 17 w mapie →</a></td>
+      </tr>
+        </table>
+        <details class="qknown">
+          <summary>✅ 16 znanych — odpowiedzi z warsztatu/notatek/bazy (klik, aby zobaczyć)</summary>
+          <ul><li><b>n00_z</b> — Zapytanie wpisywane od razu; nowy rejestrowany przed ofertą; kontakt się urywa</li><li><b>n02_z</b> — Algorytm marży Tomasza: (Netto−Koszt)/Netto; HURTOWA ≈ koszt+3%</li><li><b>n03_z</b> — Oferta = ZK; 19 313 ZK, 9 657 otwartych (529 mln pipeline); <b>ZK = OFERTY</b> — mały % kończy się transakcją; „Sprzedaż” (90,7 mln) = worek ofert, nie portfel; realna sprzedaż ~70 mln/4 lata (wizyta 25.08)</li><li><b>n07_z</b> — Status 7 zmienia logistyk (2 os.) z maila PH</li><li><b>n08_z</b> — Terminy NIE żyją w bazie — kalendarze = rejestr</li><li><b>n09_z</b> — Podwójne wprowadzanie komandytowa ↔ jawna</li><li><b>n10_z</b> — 62% WZ bez ZK; <b>najważniejsze są WZ-tki</b> — raporty oparte o WZ, nie o ZK (wizyta 25.08)</li><li><b>n12_z</b> — FV zaliczkowe z JAWNEJ: &#x27;Prace budowlane na budynku mieszkalnym&#x27;; <b>FV 8% też z komandytowej</b> (instytucje); zaliczka na zakup towaru ≠ zaliczka na zamówienie (wizyta 25.08)</li><li><b>n13_z</b> — PH = kategoria dokumentu (dok_KatId → CD, MR, LR, SM, GG, MP, GM, BK, LP); <b>specyfikacja raportu PH od klienta</b>: per klient — pierwotna wartość ZK, % realizacji (suma kosztu WZ), wartość wydanych, suma FV zaliczek, suma wpłat (wizyta 25.08)</li><li><b>n16_z</b> — FV finalna z JAWNEJ; 23%/8%; <b>FV 8% z komandytowej dla instytucji</b>; inwestycje też z komandytowej; FV z jawnej na 8% BEZ wyszczególnionego towaru (wizyta 25.08)</li><li><b>n17_z</b> — Archiwum: teczka → Natalia; <b>REGUŁA STANU ZERO</b>: FV sprawdzone i zaadresowane nie podlegają działaniom; kejs telmax — kartoteki „telmax + inwestycja”, rozróżnienie po polu OPIS (wizyta 25.08)</li>
+<li><b>n04_z</b> — Negocjacje przebiegają bez śladu w systemie (warsztat 10.08)</li>
+<li><b>n05_z</b> — ZK wiszą na statusie 6: 9 657 otwartych, 0 anulowań (baza 07.08)</li>
+<li><b>n06_z</b> — Umowa NDI 13937/25/01: ryczałt 3 875 000 zł netto, zmiany tylko aneksem</li>
+<li><b>n11_z</b> — Numer ZK w eventach kalendarza (format */MAG/*) — wyciągalny automatycznie</li>
+<li><b>n15_z</b> — 34% ZK doczekało się WZ (6 648 z 19 314 — baza)</li></ul>
+        </details>
+      </div></div></section>
+
+  <!-- ════════════ TAB 3: WZROST WIEDZY ════════════ -->
+  <section id="tab-wzrost" class="hidden">
+    <div class="group-label">Wiedza rośnie — licznik</div>
+    <div class="cards">
+<div class="card w"><h3>22.09 — domknięcie: 5 pytań „do potwierdzenia" potwierdzonych bazą (15.09)</h3>
+Pytania <b>n02_2</b> (skąd ceny w wycenie), <b>n03_1</b> (ofert poza ZK), <b>n10_1</b> (WZ bez ZK), <b>n11_1</b> (jak PH dowiaduje się o wysyłce), <b>n12_1</b> (kto pilnuje zaliczek) dostały werdykty z bazy — każdy z plikiem-dowodem w <code>WYNIKI_Z_BAZY/</code>. Razem z 17 odpowiedziami z wizyty 25.08 daje to <b>23 z 23 pytań ze statusem</b>.
+<div class="proof"><b>Dowód:</b> WYNIKI_Z_BAZY/2026-09-15_n02_2_zrodlo-cen.wynik.md · n03_1_oferty-poza-zk · n10_1_wz-bez-zk · n11_1_ph-a-wysylka · n12_1_zaliczki-i-wplaty</div></div>
+
+<div class="card w"><h3>15.09 — hierarchia pracy (Tomek → ARGUS → METRON)</h3>
+Kto ma władzę nad czym: Tomek — jego słowo unieważnia wszystko; ARGUS (Mac) — forma dokumentów, role, kolejność prac; METRON (VM) — fakty z bazy: liczby i definicje pól. Jeśli pomiar przeczy dokumentowi, wygrywa pomiar.
+<div class="proof"><b>Dowód:</b> _CO_TERAZ_CZYTAC.md (14.09) · ZASADY_PRACY.md</div></div>
+
+<div class="card w"><h3>21.09 — A6 (raport dzienny PH) i klasyfikacja wydań</h3>
+<b>A6:</b> projekt raportu + 16 założeń i sposób liczenia; zakres ustalony: <b>aktywność = poprzedni dzień, stan = na dzień wysyłki, bez limitu roku</b> (cięcie do roku ukrywałoby 824 259 zł starych zaległości).
+<b>E1 (na kopii bazy):</b> 19 477 wydań sklasyfikowanych — <b>58,2%</b> z dowodem przychodu (38,5 mln), <b>35,1%</b> przesunięcie na własne spółki (23,2 mln), <b>5,9%</b> dziury (3,9 mln). Faktura <code>FS</code> ≠ klient: 6 003 wydania to faktury na własne spółki.
+<div class="proof"><b>Dowód:</b> PROJEKT/2026-09-21_E1_klasyfikacja-wydan-wynik.md · A6: projekt raportu, założenia, inżynieria</div></div>
+
+<div class="card w"><h3>22.09 — porządki: jedno źródło prawdy i jedno archiwum</h3>
+Praca tylko na OneDrive (<code>AI_DD_wymiana/</code>) — klony roboczne repo usunięte, rzeczy nieużywane w <code>_ARCHIWUM/</code>. Nowe zakładki widoku: <b>🛠 Setup plan</b> (z osadzonym planem operacyjnym Setup Boy) i <b>🏗 Architektura DD</b>. Ta strona dostała status przy każdym pytaniu i prawdziwe linki do mapy.
+<div class="proof"><b>Dowód:</b> _INWENTARZ/JEDNO_ZRODLO_I_ARCHIWUM.md</div></div>
+
+<div class="card w"><h3>Nadal otwarte blokery (liczby, nie opinie)</h3>
+<b>Która kolumna mówi prawdę</b> — podejrzenie zaniżenia kwot ~15×; blokuje każdą kwotę w A6.<br>
+<b>Rozjazd liczby dziur:</b> 1 171 (powiązanie) vs 557 (mapa 15.09) vs 1 359 (cron 17.09).<br>
+<b>Nadwyżka kosztu:</b> <code>Koszt</code> 68 586 748,63 vs <code>Wartość netto</code> 67 622 037,88 (~965 tys.).<br>
+<b>Via po 2022:</b> 157 dokumentów <code>FS x/VIA/…</code> bez bazy — pytanie do klienta gotowe.
+<div class="proof"><b>Dowód:</b> lista 30 problemów i rozwiązań (zakładka „Problemy i rozwiązania”) · PLAN WZ → przychód</div></div>
+
+      <div class="card w"><h3>33 z 39 pytań ma odpowiedź (85%)</h3>Pula po przebudowie 11.08: 23 luki + 16 znanych = 39. **Wizyta 25.08: 17 z 23 luk odpowiedzianych z klientem** (zapisane w proces-roboczy), +5 z podpowiedziami z bazy (do potwierdzenia), 1 nieistotne. Zostaje 6 otwartych (n00_1 nieistotne, n02_2/n03_1/n10_1/n11_1/n12_1 do potwierdzenia). Wcześniejsze „19 z 91” dotyczyło puli sprzed cięcia — 91 pytań zawierało rzeczy opisane w dokumentach Jurewicza, które trafiły do kolumny 1 jako wiedza.<div class="proof"><b>Dowód:</b> pytania_robocze.html — badge „✅ znane"</div></div>
+      <div class="card w"><h3>11.08 — przebudowa: 23 pytania-luki z 91 (−78%)</h3>Węzły przeprojektowane wg dokumentacji Jurewicza: 3 kolumny (powinno być / jest / ma być z automatami). Pytania o rzeczy z dokumentów USUNIĘTE — trafiły do kolumny 1 jako wiedza. Zostały tylko istotne luki.<div class="proof"><b>Dowód:</b> STRUKTURA_WEZLOW.json · mapa-procesow-male-po_bazie.html (kol3 ×18)</div></div>
+      <div class="card w"><h3>11.08 — procedury = warstwa 1 (ideal, nie praktyka)</h3>5 dokumentów klienta (2017–2021) zapisane jako PROCEDURY_FIRMOWE.md z metką „to opis jak MA być, nie jak JEST". Rozjazd procedura ↔ praktyka = pain = uzasadnienie automatyzacji.<div class="proof"><b>Dowód:</b> PROCEDURY_FIRMOWE.md</div></div>
+      <div class="card w"><h3>11.08 — kalendarze transportowe podpięte (OAuth)</h3>Pełny dostęp read/write do 6 kalendarzy pojazdów (VW CRAFTER, HDS DAF, HDS MAN, PEUGEOT, RENAULT, PAWEŁEK) przez Google Calendar API. Event = pojazd + numer ZK („MR-ZK 95/MAG/07/2026").<div class="proof"><b>Dowód:</b> token OAuth (~/.config/gcal/token.json) · gcal_events.py — 70 eventów odczytanych</div></div>
+      <div class="card w"><h3>11.08 — algorytm marży Tomasza (A3 odblokowane)</h3>Plik „sprzedaż 2026-05.xlsx": marża = (Netto−Koszt)/Netto per dokument; RODZAJE: PNBM/inwestycja = 100% (koszt 0), TOWAR 12,8% (mediana 21,3%, 7% na minusie), HURTOWA ~3–13%.<div class="proof"><b>Dowód:</b> sprzedaż 2026-05.xlsx · 301 dokumentów · 2,66 mln zł netto</div></div>
+      <div class="card w"><h3>12.08 — projekt A0–A7 + setup gotowe</h3>Wszystkie automatyzacje zaprojektowane (AUTOMATYZACJE_PROJEKT.html): pain → trigger → logika → wyjście → ROI → blokery. Setup wdrożeniowy u klienta (TECH_SETUP: maszyna w biurze always-on + read-only + cron). 6 z 9 zadań czeka na odpowiedzi na pytania.<div class="proof"><b>Dowód:</b> AUTOMATYZACJE_PROJEKT.html · TECH_SETUP_WDROZENIOWY.md · lista_zadan_i_blokery.html</div></div>
+      <div class="card w"><h3>10 faktów potwierdzonych bazą</h3>Każdy ma dowód SQL/plik (niżej). Zero „na słowo".<div class="proof"><b>Dowód:</b> ta zakładka</div></div>
+      <div class="card w"><h3>A6 grupuje po KATEGORII dokumentu (PH prowadzący)</h3>Osoba wystawiająca (dok_PersonelId) ≠ PH prowadzący (dok_KatId → sl_Kategoria) — to naturalne (biuro wystawia, PH prowadzi). A6 przestawiony na dok_KatId 11.08.<div class="proof"><b>Dowód:</b> sl_Kategoria (9 pozycji-PH: CD, MR, LR, SM, GG, MP, GM, BK, LP) · auto4_final.py</div></div>
+    </div>
+
+    <div class="group-label">Transformacje — niewiadoma → fakt</div>
+    <div class="trans">
+      <div class="trow"><div class="tq">❓ Gdzie w produkcji żyją „2 inicjały PH"?</div><div class="tarrow">→</div><div class="tf">✅ Kategoria dokumentu (dok_KatId → sl_Kategoria)<span class="dowod">27 pozycji z nazwiskami w kopii · 87% rozjazdu z dok_PersonelId · 10.08</span></div></div>
+      <div class="trow"><div class="tq">❓ Ile dokumentów dostaje klient indywidualny?</div><div class="tarrow">→</div><div class="tf">✅ Jeden — FV z SPJ: „Prace budowlane na budynku mieszkalnym", poz. 1 + wartość<span class="dowod">procedury 2017/2021 · odpowiedź Tomka · 10.08</span></div></div>
+      <div class="trow"><div class="tq">❓ Czy klient wraca / czy budować na historii?</div><div class="tarrow">→</div><div class="tf">✅ Nie wraca — historia OFF, A0 (follow-up) = rdzeń<span class="dowod">odpowiedź Tomka · 10.08</span></div></div>
+      <div class="trow"><div class="tq">❓ Jaki wymiar identyfikuje PH w raporcie?</div><div class="tarrow">→</div><div class="tf">✅ Kategoria dokumentu (dok_KatId) — wystawca ≠ prowadzący, to naturalne; A6 po kategorii<span class="dowod">sl_Kategoria · auto4_final.py · 11.08</span></div></div>
+      <div class="trow"><div class="tq">❓ 91 pytań w węzłach — ile naprawdę potrzebujemy?</div><div class="tarrow">→</div><div class="tf">✅ 23 pytania-luki (−78%) — reszta była wiedzą z dokumentów i warsztatu<span class="dowod">przebudowa 11.08 · STRUKTURA_WEZLOW.json</span></div></div>
+      <div class="trow"><div class="tq">❓ Jak dostać się do kalendarzy transportowych?</div><div class="tarrow">→</div><div class="tf">✅ OAuth podpięty (read/write, 6 kalendarzy pojazdów) — eventy czytane przez API<span class="dowod">token + gcal_events.py · 11.08</span></div></div>
+    </div>
+
+    <div class="group-label">Fakty z dowodami</div>
+    <div class="cards">
+      <div class="card w"><h3>🆕 ZK to oferty — raporty oparte o WZ-tki</h3>Kluczowe ustalenie wizyty: <b>zamówienia (ZK) to oferty</b> — wystawia się ich dużo, mały procent kończy się transakcją (34% ZK doczekało się WZ; 62% WZ bez ZK). Kategoria „Sprzedaż” (995 ZK / 90,7 mln zł) to <b>worek ofert, nie portfel</b> — cała firma robi ~70 mln zł sprzedaży w 4 lata. Dlatego <b>raporty budujemy na WZ-tkach</b> (realne wydania), nie na ZK. <div class="proof"><b>Dowód:</b> notatki Jura (spotkanie 25.08) · 19 314 ZK vs ~70 mln/4 lata</div></div>
+      <div class="card w"><h3>🆕 Marża liczy się z samej bazy — plik Excel niepotrzebny</h3>Koszt własny siedzi w <code>ob_WartMag</code> na pozycjach FS (typ 2). Policzalne dla <b>68%</b> dokumentów (2 538 z 3 735), średnia marża <b>21,44%</b> — plik Tomasza podawał medianę 21,3%. Marża &lt;5%: 219 dok. (8,6%), na minusie: 20 (0,8%). <div class="proof"><b>Dowód:</b> weryfikacja_faktow.py sekcja 5 · 17.08</div></div>
+      <div class="card w"><h3>🆕 Cennik ma koszt tylko w 19% pozycji</h3><code>tw_Cena</code>: 1 503 z 7 823 pozycji ma cenę zakupu (<code>tc_CenaNetto0</code>), sprzedażną ma 87%. Dlatego A3 liczy z dokumentów, <b>nie z cennika</b> — inaczej pokryłby piątą część asortymentu. <div class="proof"><b>Dowód:</b> weryfikacja_faktow.py sekcja 2 · 17.08</div></div>
+      <div class="card w"><h3>🆕 Kategorie, które nie są człowiekiem</h3>Na ZK jest <b>19 kategorii</b>, nie 9. Obok PH: „Sprzedaż” <b>995 ZK / 90,7 mln zł</b>, WA (563), PZ (217), Detal, Magazyn, PAL, KOSZT. Raport per PH musi je wykazać osobno — inaczej 90 mln nie ma właściciela. <div class="proof"><b>Dowód:</b> GROUP BY dok_KatId, suma 19 314 ✔ · 17.08</div></div>
+      <div class="card w"><h3>🆕 Subiekt ma próg minimalnej marży — wyłączony</h3><code>su_MinMarza = 0</code> — wbudowana blokada sprzedaży poniżej progu nie jest używana. Zanim zbudujemy alert A3, warto zapytać, czemu ją wyłączyli. <div class="proof"><b>Dowód:</b> su_Parametr · 17.08</div></div>
+      <div class="card w"><h3>🆕 Na instancji jest tylko komandytowa</h3>Potwierdzone: <code>Kopia_2024_KOMANDYTOWA</code> i nic więcej. Baza jawna — gdzie wychodzą faktury do klienta — <b>nie została dostarczona</b>. <div class="proof"><b>Dowód:</b> sys.databases · 17.08</div></div>
+      <div class="card w"><h3>Kategoria dokumentu = PH</h3>sl_Kategoria: CD=Dariusz Czapiewski, SM=Misza Sundeev, BK=Karolina Blank, LR=Radek Laskowski... <div class="proof"><b>Dowód:</b> sl_Kategoria (27) + dok_KatId na 19 313 ZK · 10.08</div></div>
+      <div class="card w"><h3>Portfele PH (kopia 2024)</h3>SM 3 758 ZK / 214 mln zł · LR 3 168 / 55 mln · BK 2 854 / 64 mln · MR 2 715 · GG 1 717 · CD 1 650. <div class="proof"><b>Dowód:</b> GROUP BY dok_KatId · 10.08</div></div>
+      <div class="card w"><h3>Statusy ZK: 6/7/8 natywne</h3>6=bez rezerwacji (9 356), 7=z rezerwacją (185), 8=zrealizowane (6 064+); StatusEx 0/1/2/4/8/16. <div class="proof"><b>Dowód:</b> baza 07.08</div></div>
+      <div class="card w"><h3>Terminy NIE żyją w bazie</h3>dok_TerminRealizacji = data wystawienia (9 657/9 657). Prawdziwe terminy tylko w kalendarzach Google. <div class="proof"><b>Dowód:</b> baza 07.08</div></div>
+      <div class="card w"><h3>Transporty = kalendarze Google per pojazd</h3>VW CRAFTER, HDS DAF, HDS MAN, PEUGEOT, RENAULT, PAWEŁEK; event = pojazd + numer ZK. <div class="proof"><b>Dowód:</b> warsztat 10.08</div></div>
+      <div class="card w"><h3>62% WZ bez ZK</h3>Większość wydań nie ma powiązanego zamówienia — PH nie wie o wydaniach. <div class="proof"><b>Dowód:</b> baza (mapa węzeł 11)</div></div>
+      <div class="card w"><h3>Zaległości ~6,5 mln zł</h3>Kwota wisi u klientów — oferta „na ślepo" = sprzedaż niepłacącym. <div class="proof"><b>Dowód:</b> baza (mapa węzeł 00)</div></div>
+      <div class="card w"><h3>FV: jedna pozycja, usługa, 8%</h3>Nazwa usługi nie może łączyć usługi z materiałem; wymagana dokumentacja do 8% (projekt/akt/pozwolenie). <div class="proof"><b>Dowód:</b> procedury 2017/2021 · odpowiedź Tomka</div></div>
+      <div class="card w"><h3>Zaliczka min 20%</h3>Przy umowie na prace budowlane lub nietypowym materiale; 100% przy towarze wymagającym przedpłaty. <div class="proof"><b>Dowód:</b> procedura sprzedaży 2017</div></div>
+      <div class="card w"><h3>Kopia bazy = komandytowa, gt_Atrybut pusty ✔ potwierdzone 17.08 (0 wierszy)</h3>Kolejne kopie (jawna!) do zdobycia — tam FV. Atrybuty dokumentów nie w kopii. <div class="proof"><b>Dowód:</b> sys.databases + gt_Atrybut 0 wierszy · 07-10.08</div></div>
+    </div>
+
+    <div class="group-label">Oś czasu — jak rosła wiedza</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">04.08.2026</div>
+        <div class="tl-title">Kopia bazy + explorer</div>
+        <div class="tl-body">Klient daje pełną kopię Subiekta (komandytowa). Docker + explore_subiekt_baza.py — odczyt SQL działa, zapis tylko przez Sferę.</div>
+        <div class="tl-out"><b>Wynik:</b> fundament odblokowany — analiza na prawdziwych danych</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">07.08.2026</div>
+        <div class="tl-title">Statusy, atrybuty, terminy — z bazy</div>
+        <div class="tl-body">Statusy natywne 6/7/8 + StatusEx z rozkładem; gt_Atrybut pusty („2 inicjały" niewidoczne); terminy = data wystawienia.</div>
+        <div class="tl-out"><b>Wynik:</b> 3 pytania zamknięte bazą; „atrybut PH" zostaje otwarte — do produkcji</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">10.08.2026</div>
+        <div class="tl-title">Warsztat + notatki Jura + dokumenty klienta</div>
+        <div class="tl-body">Odpowiedzi Tomka (klient → komandytowa, FV z SPJ, 1 dokument), notatki Jura (logistyk, atrybut), procedury 2017/2021 (zaliczki, 8%, nazwy usług), screenshot listy ZK.</div>
+        <div class="tl-out"><b>Wynik:</b> FV z SPJ→KI potwierdzona; rola logistyka; kody na liście = kategoria</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">10.08.2026</div>
+        <div class="tl-title">🏆 Kategoria = PH — rozstrzygnięte bazą</div>
+        <div class="tl-body">sl_Kategoria = słownik PH z nazwiskami; dok_KatId na dokumentach; porównanie z dok_PersonelId: 87% rozjazdu. Pytanie „gdzie w produkcji" — zamknięte bez produkcji.</div>
+        <div class="tl-out"><b>Wynik:</b> A6 do poprawy (grupowanie po dok_KatId); 3 pytania domknięte; 19/91 znanych</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">11.08.2026</div>
+        <div class="tl-title">Przebudowa struktury: 3 kolumny + 23 luki + kalendarze</div>
+        <div class="tl-body">Węzły przeprojektowane wg dokumentacji Jurewicza (3 kolumny: powinno być / jest / ma być z automatami); pytania z dokumentów weszły do kolumny 1 jako wiedza (91 → 23 luki). PROCEDURY_FIRMOWE.md = warstwa 1 (ideal, nie praktyka). Google Calendar OAuth podpięty — 6 kalendarzy pojazdów czytane przez API.</div>
+        <div class="tl-out"><b>Wynik:</b> mapa gotowa do warsztatu; kalendarze = rejestr terminów (A4 ma pisać do kalendarza)</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">25.08.2026</div>
+        <div class="tl-title">🏆 Wizyta u klienta — notatki Jura: ZK to oferty, WZ-tki to podstawa</div>
+        <div class="tl-body">Spotkanie w siedzibie. Przełom: <b>ZK = oferty</b> (wystawiają dużo, mały % kończy się transakcją; cała firma ~70 mln zł sprzedaży w 4 lata — a „Sprzedaż” w ZK pokazuje 90,7 mln = worek ofert, nie portfel). <b>Najważniejsze są WZ-tki</b> — raporty oparte o WZ. Specyfikacja raportu PH od klienta (per klient: pierwotna wartość ZK, % realizacji z kosztu WZ, wydane, FV zaliczki, wpłaty). FV 8% też z komandytowej (instytucje). Zaliczka na zakup towaru ≠ zaliczka na zamówienie. Reguła stanu zero (FV zatwierdzone = koniec działań). Kejs telmax (kartoteki-inwestycje, rozróżnienie po opisie). 14 faktów wciągniętych do STRUKTURA_WEZLOW.json.</div>
+        <div class="tl-out"><b>Wynik:</b> kierunek potwierdzony (A6 start, raporty WZ-first); nowe pomysły do przegadania: obieg pieniądza per klient, reguła stanu zero jako filtr, grupowanie kartotek-inwestycji</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">12.08.2026</div>
+        <div class="tl-title">Projekt wszystkich automatyzacji A0–A7 + setup wdrożeniowy</div>
+        <div class="tl-body">AUTOMATYZACJE_PROJEKT.html: 8 automatów z blokerami wiedzowymi i ROI. TECH_SETUP_WDROZENIOWY.md: maszyna w biurze (always-on), konto read-only dd_auto, cron (A6 7:00, A4 15 min, A5 30 min), RDP zarządzanie. lista_zadan_i_blokery.html: 9 zadań × 23 pytania. Jeden widok (wrapper nav+iframe) ze wszystkimi artefaktami.</div>
+        <div class="tl-out"><b>Wynik:</b> pełna mapa drogi do automatyzacji — jutro odpowiedzi na pytania (23 luki)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ TAB 4: ROZMOWY ════════════ -->
+  <section id="tab-rozmowy" class="hidden">
+    <div class="group-label">Rozmowy, które produkowały wiedzę — przebieg, nie tylko wynik</div>
+    <div class="cards">
+      <div class="card w"><h3>💬 Wizyta w siedzibie — 25.08</h3>
+        <div class="q-ctx" style="margin-top:6px"><b>Klient:</b> „Sprzedaż normalna (FV ze spółki komandytowej) — nie ma problemu z marżą, różnice widać na WZ. Powstaje ZK w komandytowej, potem status zamówienie z rezerwacją… Idziemy do jawnej, robimy FV na 8% z pracą budowlaną i bez towaru wyszczególnionego. Super ważne — fizyczny obieg pieniądza: na ile FV z jawnej, ile wpłacone, ile wydane. Najważniejsze są WZ-tki.”</div>
+        <div class="q-close"><b>Ustalenie:</b> <b>ZK = oferty</b> (mały % kończy się transakcją; „Sprzedaż” 90,7 mln = worek ofert; realna sprzedaż ~70 mln/4 lata); <b>raporty WZ-first</b>; specyfikacja raportu PH (per klient: wartość ZK, % realizacji z kosztu WZ, wydane, FV, wpłaty); FV 8% z komandytowej (instytucje); zaliczka na zakup towaru; reguła stanu zero; kejs telmax (kartoteki-inwestycje, pole OPIS).</div>
+        <div class="q-dialog">→ wiedza: 14 faktów w STRUKTURA_WEZLOW.json · nowe pomysły do przegadania (obieg pieniądza, stan zero, telmax)</div>
+      </div>
+      <div class="card w"><h3>💬 „Jedyny dokument jako KI" — 10.08</h3>
+        <div class="q-ctx" style="margin-top:6px"><b>Tomek:</b> „4. Jedyny dokument jako KI dostaje to dokument «Prace budowlane na budynku mieszkalnym» i pozycja 1 – i wartość"</div>
+        <div class="q-close"><b>Ustalenie:</b> FV z SPJ na KI = JEDEN dokument, jedna pozycja, całość jako usługa (towar + montaż). Nazwa usługi nie może łączyć usługi z materiałem. Kasa wpływa do jawnej, komandytowa sprzedaje jej towar.</div>
+        <div class="q-dialog">→ wiedza: obieg między spółkami · zamknięte pytanie n12_mw</div>
+      </div>
+      <div class="card w"><h3>💬 „Gdzie w produkcji żyje atrybut 2 inicjały PH?" — 10.08</h3>
+        <div class="q-ctx" style="margin-top:6px"><b>Tomek:</b> „Gdzie w produkcji żyje atrybut «2 inicjały PH» — pole, kategoria, osobna tabela? - co to znaczy?"</div>
+        <div class="q-close"><b>Ustalenie:</b> sprawdziliśmy gt_Atrybut (pusty w kopii) i dok_PersonelId → atrybut to NIE to; to KATEGORIA dokumentu (dok_KatId → sl_Kategoria, 27 pozycji z nazwiskami). 87% rozjazdu z dok_PersonelId.</div>
+        <div class="q-dialog">→ wiedza: kategoria = PH · A6 do poprawy · zamknięte pytanie n13_kat</div>
+      </div>
+      <div class="card w"><h3>💬 „Jakim cudem w mailu są kody PH?" — 10.08</h3>
+        <div class="q-ctx" style="margin-top:6px"><b>Tomek:</b> „oki, to jakim cudem w mailu jaki wysłałeś są te kody poszczególnych PH?"</div>
+        <div class="q-close"><b>Ustalenie:</b> A6 brał kody z pd_Uzytkownik (uz_Identyfikator osoby WYSTAWIAJĄCEJ), nie z kategorii (PH prowadzącego). Proxy działało „na oko", ale w 87% przypisuje dokumenty do złego PH.</div>
+        <div class="q-dialog">→ wiedza: A6 raportuje źle · poprawka na dok_KatId</div>
+      </div>
+      <div class="card w"><h3>💬 Screenshot listy ZK — 10.08</h3>
+        <div class="q-ctx" style="margin-top:6px"><b>Tomek:</b> wysłał screenshot Subiekta — lista „Zamówienia od klientów" z kolumną „Kategoria": LR, CD, MR, SM, LP, BK, GG, GM. Zaznaczony ZK 8/MAG/08/2026 → BK.</div>
+        <div class="q-close"><b>Ustalenie:</b> kody z kolumny = słownik sl_Kategoria = ludzie (BK = Karolina Blank). To był klucz do odkrycia, że „2 inicjały PH" = kategoria dokumentu.</div>
+        <div class="q-dialog">→ wiedza: kategoria = PH (potwierdzenie wizualne + baza)</div>
+      </div>
+      <div class="card w"><h3>💬 „Klient indywidualny, zazwyczaj nowy..." — 10.08</h3>
+        <div class="q-ctx" style="margin-top:6px"><b>Tomek:</b> „Klient indywidualny, zazwyczaj nowy, od razu spisywany do subiekta - ważne! na spółkę komandytową (mamy dwie bazy!) ... rzadko się zdarza ponownie ten sam ... żeby nie robić z tego standardu i np. korzystania z historii jako ułatwienia"</div>
+        <div class="q-close"><b>Ustalenie:</b> nowy klient → komandytowa (dwie bazy = fakt); powroty sporadyczne → historia klienta NIE jest feature; każdy kontakt = jednorazowa szansa → A0 (follow-up) = rdzeń.</div>
+        <div class="q-dialog">→ wiedza: odpowiedź q1 · priorytet A0</div>
+      </div>
+      <div class="card w"><h3>💬 Procedury klienta 2017–2021 — 10.08</h3>
+        <div class="q-ctx" style="margin-top:6px"><b>Tomek:</b> dostarczył 5 dokumentów: procedura sprzedaży (2017), obsługa zamówień (2020/2021), FV zaliczkowe (2021/2021).</div>
+        <div class="q-close"><b>Ustalenie:</b> podział spółek (jawna = usługi 8% / komandytowa = materiały); zaliczka min 20%; dokumentacja do 8% (projekt/akt/pozwolenie); towar zamawia wyłącznie Łukasz/Artur; role: Misza/Łukasz/Artur/Monika/Arleta/Marlena.</div>
+        <div class="q-dialog">→ wiedza: opowieść + fakty z dowodami</div>
+      </div>
+      <div class="card w"><h3>💬 Warsztat + notatki Jura — 10.08</h3>
+        <div class="q-ctx" style="margin-top:6px"><b>Tomek/klient:</b> odpowiedzi z warsztatu (rejestracja od razu, oferta od razu, telefonicznie, kontakt się urywa) + notatki ze spotkania z Jurą (logistyk zmienia status 7, FV z jawnej, identyfikacja PH po atrybucie).</div>
+        <div class="q-close"><b>Ustalenie:</b> status 7 = logistyk (2 osoby) po mailu PH; terminy NIE żyją w bazie (kalendarze); transporty per pojazd; „2 inicjały" = atrybut wg Jura — w praktyce kategoria.</div>
+        <div class="q-dialog">→ wiedza: 16 pytań z odpowiedziami · oś czasu</div>
+      </div>
+      <div class="card w"><h3>💬 „Przeprojektuj węzły wg dokumentacji Jurewicza" — 11.08</h3>
+        <div class="q-ctx" style="margin-top:6px"><b>Tomek:</b> „1. przeprojektuj wezly dostosowujac je do dokumentacji Tomka Jurewicza «Jury» 2. zrob 3 kolumny — powinno byc, jest — ma byc i tam wsadzasz automatyzacje" + „nie chodzi o ilosc. JAKOSC! duzo juz wiesz i wykorzystaj to"</div>
+        <div class="q-close"><b>Ustalenie:</b> węzły = 3 kolumny (procedura / opowieść + 23 luki / automaty); pytania o wiedzę z dokumentów usunięte; procedury = warstwa 1 (ideal, nie praktyka); rozjazd procedura ↔ praktyka = pain = uzasadnienie automatyzacji.</div>
+        <div class="q-dialog">→ wiedza: struktura 18 węzłów · mapa gotowa do warsztatu</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-reguly" class="hidden">
+    <div class="group-label">📐 Model połączeń dokumentów — JEDEN zbiór reguł (N4/A6)</div>
+    <div class="cards">
+      <div class="card w"><h3>Typy dokumentów (potwierdzone w bazie)</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px">
+        <tr style="background:#f6f8fa"><th style="text-align:left;padding:5px 8px">Typ</th><th style="text-align:left;padding:5px 8px">Dokument</th><th style="text-align:left;padding:5px 8px">Rola</th><th style="text-align:left;padding:5px 8px">Pozycje przez</th></tr>
+        <tr><td style="padding:4px 8px">11</td><td style="padding:4px 8px"><b>WZ</b> — wydanie</td><td style="padding:4px 8px">towar WYSZEDŁ</td><td style="padding:4px 8px"><code>ob_DokMagId</code></td></tr>
+        <tr><td style="padding:4px 8px">16</td><td style="padding:4px 8px"><b>ZK</b> — zamówienie klienta</td><td style="padding:4px 8px">umowa/oferta</td><td style="padding:4px 8px"><code>ob_DokHanId</code></td></tr>
+        <tr><td style="padding:4px 8px">2</td><td style="padding:4px 8px"><b>FS</b> — faktura sprzedaży</td><td style="padding:4px 8px">rozliczenie</td><td style="padding:4px 8px"><code>ob_DokHanId</code></td></tr>
+        <tr><td style="padding:4px 8px">1</td><td style="padding:4px 8px"><b>FZ</b> — faktura zaliczkowa</td><td style="padding:4px 8px">zaliczka</td><td style="padding:4px 8px"><code>ob_DokHanId</code></td></tr>
+        <tr><td style="padding:4px 8px">21</td><td style="padding:4px 8px"><b>PA</b> — paragon</td><td style="padding:4px 8px">sprzedaż detaliczna</td><td style="padding:4px 8px"><code>ob_DokHanId</code></td></tr>
+        <tr><td style="padding:4px 8px">5</td><td style="padding:4px 8px"><b>KFZ</b> — korekta faktury</td><td style="padding:4px 8px">korekta FS/FZ</td><td style="padding:4px 8px"><code>ob_DokHanId</code></td></tr>
+        <tr><td style="padding:4px 8px">10</td><td style="padding:4px 8px"><b>PZ</b> — przyjęcie</td><td style="padding:4px 8px">towar DO magazynu</td><td style="padding:4px 8px"><code>ob_DokMagId</code></td></tr>
+        </table>
+        <div class="proof"><b>Dowód:</b> GROUP BY dok_Typ · Kopia_2024_KOMANDYTOWA · 26.08</div></div>
+
+      <div class="card w"><h3>3 fizyczne mechanizmy powiązań (KLUCZ — raport sprawdza WSZYSTKIE)</h3>
+        <div style="font-size:13px;line-height:1.7;margin-top:4px">
+        <b>A. Pole <code>dok_DoDokId</code></b> („dokument powiązany"): WZ→FS (16 834) lub WZ→ZK (10) · <b>ZK→WZ (6 648)</b> ← główne ZK↔WZ · FS→ZK (3 016).<br>
+        <b>B. Wspólna pozycja magazynowa</b>: ta sama <code>dok_Pozycja</code> ma <code>ob_DokMagId</code> = WZ i <code>ob_DokHanId</code> = FS/PA. 127 WZ lipca ma dokument TYLKO tą drogą — bez tego fałszywa dziura.<br>
+        <b>C. Relacja pozycji <code>ob_DoId</code></b> — pozycja wskazuje inną pozycję (PZ, korekty).</div>
+        <div class="proof"><b>Dowód:</b> analiza powiązań 07.08 · poz. 620037 = WZ 1622 + PA 12 · 26.08</div></div>
+
+      <div class="card w"><h3>Algorytm kwalifikacji WZ (kolejność ważna — każdy WZ w 1 klasie)</h3>
+        <div style="font-size:13px;line-height:1.8;margin-top:4px">
+        1. ZK wskazuje WZ lub pole na WZ = ZK → <b>ZK</b><br>
+        2. Pole na WZ = FS/FZ lub wspólna pozycja ma FS/FZ → <b>FS</b><br>
+        3. Pole na WZ = PA lub wspólna pozycja ma PA → <b>PA</b> (detal = pokrycie!)<br>
+        4. Wspólna pozycja ma KFZ → <b>FS</b> (korekta dziedziczy)<br>
+        5. Nic → <b>GOŁE</b> (dziura — towar wyjechał bez dokumentu)</div>
+        <div class="proof"><b>Dowód:</b> MODEL_POLACZEN_DOKUMENTOW.md · tabela STATUSY_WZ_lipiec2026.html</div></div>
+
+      <div class="card w"><h3>Moment domknięcia: WZ musi dostać dokument w dniu wystawienia</h3>
+        <div style="font-size:13px;margin-top:4px">432 z 450 par WZ→dokument w lipcu = <b>ten sam dzień</b> (96%). GOŁE starsze niż 1 dzień = realna dziura. Porządek robi Tomek Jurewicz — raport tylko pokazuje.</div>
+        <div class="proof"><b>Dowód:</b> DATEDIFF(day, WZ.data, dok.data) GROUP BY · lipiec 2026</div></div>
+
+      <div class="card w"><h3>Klient / PH / inwestycja — do czego przypisujemy</h3>
+        <div style="font-size:13px;line-height:1.7;margin-top:4px">
+        <b>Klient WZ</b> = <code>dok_OdbiorcaId</code> → <code>kh__Kontrahent</code> · <b>Klient faktury (prezentacja)</b> = <code>dok_PlatnikId</code> (nabywca — może różnić się od odbiorcy WZ!)<br>
+        <b>PH</b> = kategoria <code>dok_KatId</code> → <code>sl_Kategoria</code> (CD, MR, LR, SM, GG, MP, GM, BK, LP) — NIE osoba wystawiająca<br>
+        <b>Inwestycja</b> = grupa po nazwie/OPIS (kejs Telmax: kartoteki „telmax + inwestycja")</div>
+        <div class="proof"><b>Dowód:</b> sl_Kategoria · 87% rozjazdu dok_PersonelId vs dok_KatId · 10.08</div></div>
+
+      <div class="card w"><h3>Czego NIE wolno raportowi</h3>
+        <div style="font-size:13px;line-height:1.7;margin-top:4px">
+        ✗ nazwa klienta ≠ powiązanie (nie uznawać za pokryte „bo klient się zgadza")<br>
+        ✗ nie mieszać <code>dok_OdbiorcaId</code> z <code>dok_PlatnikId</code><br>
+        ✗ nie liczyć dwa razy (pole ORAZ pozycja = jedna faktura)<br>
+        ✗ nie chować nierozstrzygniętych — GOŁE zostaje widoczne kontrolnie</div>
+        <div class="proof"><b>Dowód:</b> MODEL_POLACZEN_DOKUMENTOW.md §6</div></div>
+    </div>
+  </section>
+
+  <div class="foot">Dobry Dach · Status projektu — zasada: każdy fakt ma dowód i datę · każde pytanie ma definicję domknięcia · źródła: mapa-procesow-male-po_bazie.html · pytania_robocze.html · kopia bazy Subiekt · procedury klienta 2017–2021 · aktualizacja po każdej sesji</div>
 </div>
 
-<h2>Jak czytać statusy</h2>
-<div class="legenda">
-  <span>✅ <b>zamknięte</b> — jest odpowiedź i plik z dowodem z bazy</span>
-  <span>🟡 <b>w toku</b> — ruszone, mam częściowe dane, brak domknięcia</span>
-  <span>🔴 <b>otwarte</b> — brak pomiaru, pytanie do klienta / na warsztat</span>
-</div>
-<p class="small">Reguła: status daję tylko wtedy, gdy mam dowód. Pytanie bez dowodu zostaje czerwone, nawet jeśli „wszyscy wiedzą”.</p>
-
-<h2>Pytania — status, dowód, gdzie sprawdzić</h2>
-<table><thead><tr><th>Kod</th><th>Pytanie</th><th>Status</th><th>Co wiemy</th><th>Gdzie</th></tr></thead>
-<tbody>
-<tr class="s-otwarte">
-<td class="kod">n00_1</td>
-<td class="pyt">Ile % zapytań realnie przepada przez brak oddzwonienia?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-00">węzeł 00 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n00_2</td>
-<td class="pyt">Kto przyjmuje zapytania i wpisuje do bazy?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-00">węzeł 00 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n01_1</td>
-<td class="pyt">Która forma projektu przeważa?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-01">węzeł 01 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n01_2</td>
-<td class="pyt">Gdzie ląduje projekt?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-01">węzeł 01 w mapie</a></td>
-</tr>
-<tr class="s-wtoku">
-<td class="kod">n02_1</td>
-<td class="pyt">Czy każda wycena przechodzi przez arkusz kalkulacji?</td>
-<td class="st">🟡<br><span class="st-txt">w toku</span></td>
-<td class="co"><b>W toku:</b> zmierzone pozycje ZK 2026 (mieszane źródło cen), sam arkusz kalkulacji — do potwierdzenia u klienta<div class="dow">dowód: <code>WYNIKI_Z_BAZY/2026-09-15_n02_2_zrodlo-cen.wynik.md</code></div></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-02">węzeł 02 w mapie</a></td>
-</tr>
-<tr class="s-zamknięte">
-<td class="kod">n02_2</td>
-<td class="pyt">Skąd ceny w wycenie?</td>
-<td class="st">✅<br><span class="st-txt">zamknięte</span></td>
-<td class="co"><b>Odpowiedź:</b> ~⅔ pozycji wycenianych ceną z cennika, ~⅓ ceną spoza cennika<div class="dow">dowód: <code>2026-09-15_n02_2_zrodlo-cen.wynik.md</code></div></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-02">węzeł 02 w mapie</a></td>
-</tr>
-<tr class="s-zamknięte">
-<td class="kod">n03_1</td>
-<td class="pyt">Jaki % ofert nie trafia do ZK (żyje w głowie/Excelu)?</td>
-<td class="st">✅<br><span class="st-txt">zamknięte</span></td>
-<td class="co"><b>Odpowiedź:</b> baza tego nie zmierzy — oferta poza systemem nie zostawia śladu; zmierzono drugą stronę: ZK, które nie zamieniły się w wydanie<div class="dow">dowód: <code>2026-09-15_n03_1_oferty-poza-zk.wynik.md</code></div></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-03">węzeł 03 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n04_1</td>
-<td class="pyt">Jak ustalacie ceny w negocjacjach — jest ślad?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-04">węzeł 04 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n05_1</td>
-<td class="pyt">Czy umowa z klientem podpisywana przed startem — zawsze?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-05">węzeł 05 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n06_1</td>
-<td class="pyt">Czy umowa z dekarzem podpisywana na każdą budowę?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-06">węzeł 06 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n07_1</td>
-<td class="pyt">Czy flagowanie (czerwona/żółta/zielona) realnie działa?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-07">węzeł 07 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n08_1</td>
-<td class="pyt">Procedura: Kalendarz dostaw prowadzi Artur — czy realnie tak jest?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-08">węzeł 08 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n08_2</td>
-<td class="pyt">Czy każdy ZK dostaje transport?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-08">węzeł 08 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n09_1</td>
-<td class="pyt">Procedura: PH wysyła zamówienie mailem do logistyka — czy realnie mailem?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-09">węzeł 09 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n09_2</td>
-<td class="pyt">Czy zdarza się zamówienie towaru bez ZK w systemie?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-09">węzeł 09 w mapie</a></td>
-</tr>
-<tr class="s-zamknięte">
-<td class="kod">n10_1</td>
-<td class="pyt">Dlaczego WZ bywają bez ZK?</td>
-<td class="st">✅<br><span class="st-txt">zamknięte</span></td>
-<td class="co"><b>Odpowiedź:</b> celowe szybkie wysyłki bez czekania na ZK — ale nie tylko; część WZ bez ZK ma inne przyczyny<div class="dow">dowód: <code>2026-09-15_n10_1_wz-bez-zk.wynik.md</code></div></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-10">węzeł 10 w mapie</a></td>
-</tr>
-<tr class="s-zamknięte">
-<td class="kod">n11_1</td>
-<td class="pyt">Jak PH dowiaduje się, że towar wyjechał?</td>
-<td class="st">✅<br><span class="st-txt">zamknięte</span></td>
-<td class="co"><b>Odpowiedź:</b> w systemie nie ma żadnego mechanizmu powiadamiania — PH wie z rozmowy, nie z bazy<div class="dow">dowód: <code>2026-09-15_n11_1_ph-a-wysylka.wynik.md</code></div></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-11">węzeł 11 w mapie</a></td>
-</tr>
-<tr class="s-zamknięte">
-<td class="kod">n12_1</td>
-<td class="pyt">Procedura: rozliczenia klientów prowadzi Monika — czy ktoś realnie pilnuje wpłat zaliczek?</td>
-<td class="st">✅<br><span class="st-txt">zamknięte</span></td>
-<td class="co"><b>Odpowiedź:</b> nikt nie pilnuje: 0 z 2 291 zaliczek powiązanych z rozrachunkami, wpłaty nie powiązane<div class="dow">dowód: <code>2026-09-15_n12_1_zaliczki-i-wplaty.wynik.md</code></div></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-12">węzeł 12 w mapie</a></td>
-</tr>
-<tr class="s-wtoku">
-<td class="kod">n13_1</td>
-<td class="pyt">Kto ma dostawać dzienny raport PH?</td>
-<td class="st">🟡<br><span class="st-txt">w toku</span></td>
-<td class="co"><b>W toku:</b> A6 = dzienny raport PH: projekt + 16 założeń gotowe (21.09), brak wdrożenia na produkcji<div class="dow">dowód: <code>Projekt A6 — zakładka „WZ → przychód” / DOKUMENTY_PROJEKTU</code></div></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-13">węzeł 13 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n14_1</td>
-<td class="pyt">Jak dziś wygląda zmiana zakresu?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-14">węzeł 14 w mapie</a></td>
-</tr>
-<tr class="s-wtoku">
-<td class="kod">n15_1</td>
-<td class="pyt">Czy rozliczacie ZK vs WZ przed zamknięciem?</td>
-<td class="st">🟡<br><span class="st-txt">w toku</span></td>
-<td class="co"><b>W toku:</b> E1: 19 477 wydań sklasyfikowanych — 58,2% z dowodem przychodu, 35,1% przesunięcie na własne spółki, 5,9% dziury<div class="dow">dowód: <code>2026-09-21_E1_klasyfikacja-wydan-wynik.md</code></div></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-15">węzeł 15 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n16_1</td>
-<td class="pyt">Czy stawki realnie działają: 23% przy wywozie, 8% po transakcji?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-16">węzeł 16 w mapie</a></td>
-</tr>
-<tr class="s-otwarte">
-<td class="kod">n17_1</td>
-<td class="pyt">Czy archiwum dokumentów realnie się składa (teczka → Natalia)?</td>
-<td class="st">🔴<br><span class="st-txt">otwarte</span></td>
-<td class="co"><span class="brak">brak pomiaru — pytanie otwarte (klient / warsztat)</span></td>
-<td class="gdzie"><a href="mapa-procesow-male-po_bazie.html#wezel-17">węzeł 17 w mapie</a></td>
-</tr>
-</tbody></table>
-<p class="small">Wcześniej wszystkie te linki prowadziły na zewnętrzną stronę (<code>tomekwlqq.github.io/dobry-dach/mapa-procesow-male.html</code>), której plik nie leżał w katalogu projektu — stąd wrażenie „źle zlinkowane”. Teraz prowadzą do mapy leżącej w projekcie.</p>
-
-<h2>Co się zmieniło od 8.09 (poprzedniej wersji tej zakładki)</h2>
-<div class="os">
-  <div><b>14–15.09 — porządek pracy i pierwsze werdykty z bazy</b>
-  Ustalona hierarchia: Tomek → ARGUS (forma, kolejność prac) → METRON (fakty z bazy). Pięć pytań z mapy dostało odpowiedzi z liczbami (patrz tabela: n02_2, n03_1, n10_1, n11_1, n12_1). Pliki w <code>WYNIKI_Z_BAZY/</code>.</div>
-  <div><b>21.09 — A6 (raport dzienny PH) i klasyfikacja wydań</b>
-  A6: projekt raportu, 16 założeń i sposób liczenia, inżynieria wdrożenia. Zakres ustalony: <b>aktywność = poprzedni dzień, stan = na dzień wysyłki, bez limitu roku</b>.
-  E1 (na kopii bazy): 19 477 wydań — <b>58,2%</b> z dowodem przychodu (38,5 mln), <b>35,1%</b> przesunięcie na własne spółki (23,2 mln), <b>5,9%</b> dziury (3,9 mln).</div>
-  <div><b>21.09 — lista problemów i plan WZ</b>
-  30 problemów w 4 poziomach (prewencja / informacje / automatyzacja / workflow od eventu). WZ → przychód: zakonczenia Z1–Z4 + stany przejściowe W1–W4 „w drodze”, etapy E0–E6.</div>
-  <div><b>22.09 — porządki i jedno źródło prawdy</b>
-  Praca tylko na OneDrive. Jedno archiwum (<code>_ARCHIWUM/</code>). Nowe zakładki: <b>🛠 Setup plan</b> (z osadzonym planem operacyjnym Setup Boy) i <b>🏗 Architektura DD</b>.</div>
-</div>
-
-<h2>Ustalenia z 15.09 (hierarchia i reguły)</h2>
-<div class="card">
-  <ol>
-    <li><b>Tomek</b> — jego słowo unieważnia wszystko inne.</li>
-    <li><b>ARGUS (Mac)</b> — moc decyzyjna między nami: role, forma dokumentów, kolejność prac.</li>
-    <li><b>METRON (VM)</b> — strona od faktów: liczby, definicje pól. Jeśli pomiar przeczy dokumentowi, wygrywa pomiar.</li>
-  </ol>
-  <p class="small">Werdykty z bazy z 15.09 mają pliki-dowody w <code>WYNIKI_Z_BAZY/</code> — dzięki temu status przy pytaniu nie jest opinią, tylko śladem.</p>
-</div>
-
-<h2>Blokery, które wstrzymują liczby</h2>
-<div class="warn">
-  <b>Która kolumna mówi prawdę</b> — podejrzenie zaniżenia kwot ~15×; blokuje każdą kwotę w A6 (zadanie 0015).<br>
-  <b>Rozjazd liczby dziur</b>: 1 171 (powiązanie) vs 557 (mapa 15.09) vs 1 359 (cron 17.09).<br>
-  <b>Nadwyżka kosztu</b>: <code>Koszt</code> 68 586 748,63 vs <code>Wartość netto</code> 67 622 037,88 (~965 tys.).<br>
-  <b>Via po 2022</b> — 157 dokumentów <code>FS x/VIA/…</code> bez bazy; pytanie do klienta gotowe (0062).
-</div>
-
-<h2>Gdzie co leży</h2>
-<div class="card">
-  <p><b>Widok projektu:</b> ta strona jest częścią jednego widoku (zakładki u góry) — proces roboczy, mapa procesów, założenia, setup, architektura, problemy i rozwiązania, WZ → przychód.</p>
-  <p><b>Pliki:</b> OneDrive <code>AI_DD_wymiana/</code> — dokumenty projektu w <code>DOKUMENTY_PROJEKTU/</code>, wyniki pomiarów z bazy w <code>WYNIKI_Z_BAZY/</code>, wymiana z METRONEM w <code>ROZMOWA/</code>, rzeczy nieużywane w <code>_ARCHIWUM/</code>.</p>
-</div>
-
-<p class="small" style="margin-top:30px">Status projektu · przebudowany 22.09.2026 · poprzednia wersja (08.09) w <code>_ARCHIWUM/2026-09-22_porzadki/</code></p>
-</div></body></html>
+<script>
+  document.querySelectorAll('.tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('.tab').forEach(function (x) { x.classList.remove('active'); });
+      t.classList.add('active');
+      document.querySelectorAll('section[id^="tab-"]').forEach(function (s) { s.classList.add('hidden'); });
+      document.getElementById('tab-' + t.dataset.tab).classList.remove('hidden');
+    });
+  });
+  function applyFilters() {
+    var st = {}; var pr = {};
+    document.querySelectorAll('.f-status').forEach(function (c) { st[c.value] = c.checked; });
+    document.querySelectorAll('.f-prio').forEach(function (c) { pr[c.value] = c.checked; });
+    document.querySelectorAll('#qcards .card.q').forEach(function (c) {
+      c.classList.toggle('hidden', !(st[c.dataset.s] && pr[c.dataset.p]));
+    });
+  }
+  document.querySelectorAll('.f-status, .f-prio').forEach(function (c) { c.addEventListener('change', applyFilters); });
+</script>
+</body>
+</html>
