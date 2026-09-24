@@ -704,6 +704,14 @@ function renderKPI(d,cmp){
   </div>`;
 }
 
+// Znacznik zmiany pomiaru (24.09.2026) — od 23.09 dane nieporównywalne 1:1 ze starszymi
+function measureNote(day){
+  if(!day||day<'2026-09-23')return '';
+  return `<div class="concl c-amber"><span class="lab">⚠ Zmiana pomiaru od 23.09.2026</span>
+  <b>Shopify:</b> nowy sposób liczenia sesji (boty wycięte domyślnie, sesje nie kończą się o północy) — sesje i CR Shopify to nowa baza, nie porównuj wprost z dniami sprzed 23.09. 23.09 (2–18h) Shopify błędnie geolokalizował ruch z PL jako „USA / Kansas City” — te sesje są doliczone do PL.<br>
+  <b>GA4:</b> Littledata od 23.09 16:00 wysyła add_to_cart / checkout / purchase z lokalizacją serwera (USA / Ashburn) — w kartach PL liczone jako Polska (obejście do czasu naprawy przez Littledata).</div>`;
+}
+
 function renderFunnel(d,s,e){
   // Lejek konwersji (bazowy) — 6 zestawów × 5 poziomów × własna konwersja; live = widok dzienny (R02_DAY)
   const dksAll=Object.keys(LEJEK).filter(x=>x>=s&&x<=e);
@@ -779,6 +787,7 @@ function renderFunnel(d,s,e){
   const crShHumPL=shHumPL.wej>0?(shHumPL.zak/shHumPL.wej*100):0;
   return `<h2><span class="r">R02</span> Lejek konwersji (bazowy) — dzień</h2>
   <div class="what">Dzień: <b>${R02_DAY||'—'}</b> (pełne dane dzienne). Każdy zestaw × 5 kroków × własna konwersja. Shopify nie raportuje kroku PDP — stąd „—”. Karty PL: zakupy z Q1 (sesje-match), globalne z Q3 Online Store.</div>
+  ${measureNote(R02_DAY)}
   <div class="lkgrid lkgrid-3" style="margin-top:10px">
     ${funCard('GA4 All','<span class="sbadge sbadge-ga4">GA4</span>',ga4All,crAll,'zakupy ÷ wejście · wszystkie kraje')}
     ${funCard('GA4 PL','<span class="sbadge sbadge-ga4">GA4</span>',ga4PL,crPL,'zakupy ÷ wejście · country=Poland')}
