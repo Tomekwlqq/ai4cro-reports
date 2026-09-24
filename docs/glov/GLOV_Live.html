@@ -399,13 +399,16 @@ function renderLive(key){
   const _liveInject = data.date && !LEJEK[data.date] && data.ga4 && data.ga4.funnel;
   if(_liveInject){
     const f=data.ga4.funnel;
+    // FIX 24.09: GA4 All na dziś = funnel_all (wszystkie kraje) — reszta świata idzie do wiadra xx
+    const fa=data.ga4.funnel_all||null;
+    const rest=k=>fa?Math.max(0,(fa[k]||0)-(f[k]||0)):0;
     const shk=(data.shopify&&data.shopify.kpi)||{};
     const shCh=shk.channels||{};
     const shHuman=shk.human_sessions||0;
     const shBot=(shk.bot_sessions)||(shk.sessions||0)-shHuman;
     const onlineOrd=(shCh['Online Store']&&shCh['Online Store'].orders)||0;
     LEJEK[data.date]={
-      ga4:{all:{pl:{session_start:f.session_start||0,view_item:f.view_item||0,add_to_cart:f.add_to_cart||0,begin_checkout:f.begin_checkout||0,purchase:f.purchase||0},unknown:{},xx:{}}},
+      ga4:{all:{pl:{session_start:f.session_start||0,view_item:f.view_item||0,add_to_cart:f.add_to_cart||0,begin_checkout:f.begin_checkout||0,purchase:f.purchase||0},unknown:{},xx:{session_start:rest('session_start'),view_item:rest('view_item'),add_to_cart:rest('add_to_cart'),begin_checkout:rest('begin_checkout'),purchase:rest('purchase')}}},
       shopify:{
         human:{pl:{sessions:shHuman,atc:f.add_to_cart||0,checkout:f.begin_checkout||0,completed:onlineOrd},unknown:{},xx:{}},
         bot:{pl:{sessions:shBot},unknown:{},xx:{}},
