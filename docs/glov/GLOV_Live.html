@@ -706,10 +706,11 @@ function renderKPI(d,cmp){
 
 // Znacznik zmiany pomiaru (24.09.2026) — od 23.09 dane nieporównywalne 1:1 ze starszymi
 function measureNote(day){
-  if(!day||day<'2026-09-23')return '';
-  return `<div class="concl c-amber"><span class="lab">⚠ Zmiana pomiaru od 23.09.2026</span>
-  <b>Shopify:</b> nowy sposób liczenia sesji (boty wycięte domyślnie, sesje nie kończą się o północy) — sesje i CR Shopify to nowa baza, nie porównuj wprost z dniami sprzed 23.09. 23.09 (2–18h) Shopify błędnie geolokalizował ruch z PL jako „USA / Kansas City” — te sesje są doliczone do PL.<br>
-  <b>GA4:</b> Littledata od 23.09 16:00 wysyła add_to_cart / checkout / purchase z lokalizacją serwera (USA / Ashburn) — w kartach PL liczone jako Polska (obejście do czasu naprawy przez Littledata).</div>`;
+  if(!day||day<'2026-09-09')return '';
+  const sh=`<b>Shopify (od 09.09):</b> Shopify zmienił liczenie sesji — przy stałym ruchu w GA4 liczy ~⅓ mniej sesji ludzi (Shopify÷GA4 PL: ~0,74 → ~0,50), boty PL spadły z ~250/dzień do 0; 21–23.09 oficjalne wdrożenie „session measurement” (boty wycięte, sesje nie kończą się o północy). Sesje i CR Shopify nieporównywalne z dniami sprzed 09.09 — trend ruchu czytaj z GA4.`
+    +(day==='2026-09-23'?` 23.09 (2–18h) Shopify błędnie geolokalizował ruch z PL jako „USA / Kansas City” — te sesje są doliczone do PL.`:'');
+  const ga=day>='2026-09-23'?`<br><b>GA4 (od 23.09 16:00):</b> Littledata wysyła add_to_cart / checkout / purchase z lokalizacją serwera (USA / Ashburn) — w kartach PL liczone jako Polska (obejście do czasu naprawy przez Littledata).`:'';
+  return `<div class="concl c-amber"><span class="lab">⚠ Zmiana pomiaru</span>${sh}${ga}</div>`;
 }
 
 function renderFunnel(d,s,e){
