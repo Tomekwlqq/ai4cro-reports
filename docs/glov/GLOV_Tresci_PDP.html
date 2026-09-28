@@ -102,11 +102,13 @@ const P = D.produkty;
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const COPY = b => b.rodzaj === 'zakładka' || b.rodzaj === 'sekcja';
+const PL = {a:'aą',c:'cć',e:'eę',l:'lł',n:'nń',o:'oó',s:'sś',z:'zźż'};
+const norm = s => String(s).toLowerCase().replace(/ł/g, 'l').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const img = (u, w) => u ? u + (u.includes('?') ? '&' : '?') + 'width=' + w : '';
 P.forEach(p => {
   p._copy = p.bloki.filter(COPY).reduce((a, b) => a + b.znakow, 0);
   p._nb = p.bloki.filter(COPY).length;
-  p._szuk = (p.tytul + ' ' + p.h1 + ' ' + p.bloki.map(b => b.naglowek + ' ' + b.tekst).join(' ')).toLowerCase();
+  p._szuk = norm(p.tytul + ' ' + p.h1 + ' ' + p.bloki.map(b => b.naglowek + ' ' + b.tekst).join(' '));
 });
 [...new Set(P.map(p => p.typ || '— bez typu'))].sort().forEach(t => $('#typ').insertAdjacentHTML('beforeend', `<option>${esc(t)}</option>`));
 let akt = null;
@@ -114,18 +116,20 @@ let akt = null;
 function podswietl(tekst, q) {
   const e = esc(tekst);
   if (!q) return e;
-  const re = new RegExp(esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+  // wzorzec odporny na polskie znaki: „wizaz” podświetla też „Wizaż”
+  const wz = [...norm(q)].map(ch => PL[ch] ? '[' + PL[ch] + ']' : esc(ch).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('');
+  const re = new RegExp(wz, 'gi');
   return e.replace(re, m => `<mark>${m}</mark>`);
 }
 function widoczne() {
-  const q = $('#q').value.trim().toLowerCase(), t = $('#typ').value, s = $('#sort').value;
+  const q = norm($('#q').value.trim()), t = $('#typ').value, s = $('#sort').value;
   let w = P.filter(p => (!q || p._szuk.includes(q)) && (!t || (p.typ || '— bez typu') === t));
   const cmp = {az: (a, b) => a.tytul.localeCompare(b.tytul, 'pl'), dluzej: (a, b) => b._copy - a._copy,
                krocej: (a, b) => a._copy - b._copy, bloki: (a, b) => a._nb - b._nb}[s];
   return w.sort(cmp);
 }
 function rysujListe() {
-  const w = widoczne(), q = $('#q').value.trim().toLowerCase();
+  const w = widoczne(), q = norm($('#q').value.trim());
   $('#stat').textContent = `${w.length} / ${P.length}`;
   $('#lista').innerHTML = w.length ? w.map(p => {
     const traf = q ? (p._szuk.split(q).length - 1) : 0;
