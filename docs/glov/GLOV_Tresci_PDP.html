@@ -137,7 +137,7 @@ function rysujListe() {
 }
 function rysujProdukt(h) {
   const p = P.find(x => x.handle === h);
-  if (!p) { $('#szczegol').innerHTML = '<div class="pusto">Wybierz produkt z listy.</div>'; document.body.classList.remove('otwarty'); return; }
+  if (!p) { akt = null; $('#szczegol').innerHTML = '<div class="pusto">Nie ma takiego produktu — wybierz z listy.</div>'; document.body.classList.remove('otwarty'); rysujListe(); return; }
   akt = h;
   const q = $('#q').value.trim(), obce = $('#obce').checked;
   const bloki = p.bloki.filter(b => obce || COPY(b));
