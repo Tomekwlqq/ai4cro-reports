@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Agent głosowy AI — sami czy kupić?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF6F1; --surface:#FFFFFF; --ink:#2B2326; --muted:#6B5D5A; --faint:#9C8D88;
+  --line:#E9DFD6; --v:#C9A84C; --v-d:#8A6D1F; --v-soft:#F6EEDA;
+  --green:#2E8B57; --green-soft:#E6F3EC; --orange:#E07A3C; --orange-soft:#FBEADF;
+  --blue:#4A7FB5; --blue-soft:#E7EFF7; --amber:#B07C22; --dark:#3F4A44;
+  --r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;font-size:16px;line-height:1.55}
+a{color:var(--v-d)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px;display:flex;flex-direction:column;gap:40px}
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--v-d);font-weight:500}
+h1{font-size:clamp(28px,6vw,44px);line-height:1.1;font-weight:700;letter-spacing:-.01em}
+h2{font-size:clamp(22px,4.2vw,30px);line-height:1.2;font-weight:700}
+h3{font-size:18px;font-weight:600;line-height:1.3}
+p,li{color:var(--ink)}
+.muted{color:var(--muted)}
+small,.small{font-size:13px;color:var(--muted)}
+section{display:flex;flex-direction:column;gap:16px}
+.head{display:flex;flex-direction:column;gap:8px}
+
+/* topbar */
+.top{background:var(--dark);color:#F3EEE6}
+.top .wrap{padding-top:14px;padding-bottom:14px;flex-direction:row;justify-content:space-between;align-items:center;gap:12px}
+.top .kicker{color:#E6CF86}
+.top span{font-size:13px;color:#CFC6BA}
+
+/* hero */
+.hero{padding-top:32px;display:flex;flex-direction:column;gap:14px}
+.hero p.lead{font-size:18px;color:var(--muted);max-width:760px}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}
+.grid{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:760px){.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}}
+
+.verdict{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--v);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:14px}
+.verdict ol{display:flex;flex-direction:column;gap:10px;padding-left:22px}
+.verdict li b{font-weight:600}
+
+/* tier cards */
+.tier{position:relative}
+.tier .badge{align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;font-weight:600;padding:4px 10px;border-radius:999px}
+.b-no{background:var(--orange-soft);color:#9A4A1C}
+.b-later{background:var(--blue-soft);color:#2F5E8C}
+.b-go{background:var(--green-soft);color:#1F6B42}
+.tier.go{border:2px solid var(--green)}
+.tier dl{display:flex;flex-direction:column;gap:10px}
+.tier dt{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.tier dd{font-size:15px}
+
+/* tables */
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:15px}
+th{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;background:#F7F0E8;border-bottom:1px solid var(--line)}
+td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* stat strip */
+.stats{display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
+@media(min-width:760px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:4px}
+.stat b{font-size:24px;font-weight:700;color:var(--v-d);font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted);line-height:1.35}
+
+/* brain diagram */
+.brain{display:flex;flex-direction:column;gap:12px;align-items:stretch}
+@media(min-width:760px){.brain{flex-direction:row;align-items:center}}
+.node{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;flex:1;display:flex;flex-direction:column;gap:6px}
+.node.core{background:var(--v-soft);border-color:var(--v)}
+.node ul{padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:3px}
+.arrow{font-family:'IBM Plex Mono',monospace;color:var(--v-d);text-align:center;font-size:20px}
+.chan{display:flex;flex-direction:column;gap:12px;flex:1}
+
+/* semantic boxes */
+.box{border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.box.ok{background:var(--green-soft);border:1px solid #BFDFCB}
+.box.warn{background:var(--orange-soft);border:1px solid #F1CDB5}
+.box.info{background:var(--blue-soft);border:1px solid #C9DAEC}
+.box h3{font-size:16px}
+ul.clean{padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:2px 7px;border-radius:6px;background:#F1E7DA;color:var(--muted);white-space:nowrap}
+
+/* loop */
+.loop{display:grid;gap:10px;grid-template-columns:1fr}
+@media(min-width:760px){.loop{grid-template-columns:repeat(5,1fr)}}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:4px;font-size:14px}
+.step .n{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--v-d);letter-spacing:.1em}
+.step.human{border-color:var(--v);background:var(--v-soft)}
+
+/* CTA */
+.cta{background:var(--dark);color:#F3EEE6;border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:14px}
+.cta .kicker{color:#E6CF86}
+.cta h2{color:#fff}
+.cta ol{padding-left:22px;display:flex;flex-direction:column;gap:10px}
+.cta li{color:#F3EEE6}
+.cta a{color:#E6CF86}
+.phone{font-family:'IBM Plex Mono',monospace;font-weight:600;background:rgba(255,255,255,.1);padding:2px 8px;border-radius:6px;white-space:nowrap}
+
+/* truth checker */
+.tc{background:var(--surface);border:1px dashed var(--faint);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:10px;font-size:15px}
+.tc p b{font-weight:600}
+
+footer{padding:8px 0 48px}
+footer .small a{color:var(--muted)}
+.sources{font-size:14px;display:flex;flex-direction:column;gap:6px;padding-left:20px}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <div class="kicker">Research · 29.09.2026</div>
+  <span>8 zwiadowców · źródła PL + EN · kluczowe liczby sprawdzone u źródła</span>
+</div></div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kicker">Agent głosowy + asystent zakupowy</div>
+    <h1>Postawimy to sami? Tak — ale bez motyki na słońce.</h1>
+    <p class="lead">Wyzwalacz: <a href="https://www.rinvo.io/" rel="noopener">Rinvo</a>, polski agent głosowy AI dla dealerów aut. Pytania: czy zbudujemy coś takiego sami, co to kosztuje i jakiej mocy wymaga, czy potrzebny jest też asystent zakupowy do sklepu i czy taki agent „uczy się na żywo”.</p>
+  </header>
+
+  <div class="verdict">
+    <div class="kicker">Werdykt</div>
+    <ol>
+      <li><b>Mózg budujemy sami, silnik głosu wynajmujemy.</b> Wiedza, scenariusze, narzędzia, integracje i pętla ulepszeń są nasze. Mowa, synteza i telefonia kosztują ~$0,08–0,30 za minutę.</li>
+      <li><b>Pełny self-host na własnych GPU odpada przy naszej skali.</b> Płacisz €180–500 miesięcznie, zanim padnie pierwsza minuta. Polski TTS open-source jest słaby albo niekomercyjny, a telefon 8 kHz psuje rozpoznawanie. Opłaca się dopiero od dziesiątek tysięcy minut miesięcznie.</li>
+      <li><b>Asystent zakupowy do sklepu jest łatwiejszy i ważniejszy.</b> Działa w przeglądarce, bez telefonii i bez GPU, a mózg (standard kategorii pomp ciepła, pole pytań, konfigurator doboru) częściowo już mamy. Telefon to drugi kanał tego samego mózgu.</li>
+    </ol>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b>$0,08</b><span>minuta ElevenLabs Agents (silnik głosu + telefonia w planie)</span></div>
+    <div class="stat"><b>$0,22</b><span>minuta Twilio do komórek w PL. Zadarma od 0,07 zł</span></div>
+    <div class="stat"><b>0 GPU</b><span>potrzebne w rekomendowanym wariancie</span></div>
+    <div class="stat"><b>~1,86 zł</b><span>minuta: szacowany koszt u polskich dostawców (raport branżowy)</span></div>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <div class="head">
+      <div class="kicker">01 · Agent głosowy</div>
+      <h2>Trzy sposoby zbudowania. Werdykt przy każdym.</h2>
+      <p class="muted">Skala odniesienia: pilot = 50–100 leadów × ~3 min ≈ 150–300 min/mies. Jeden aktywny dealer (serwis + leady) ≈ 2–5 tys. min/mies. Kurs 1 USD ≈ 3,65 zł.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card tier">
+        <span class="badge b-no">A · NIE</span>
+        <h3>Pełny self-host</h3>
+        <p class="small">Własny serwer GPU: Whisper + LLM (Bielik/Llama) + open-source TTS + Pipecat/LiveKit + SIP.</p>
+        <dl>
+          <div><dt>Moc obliczeniowa</dt><dd>1 karta 24 GB (L4 / RTX 4090) ≈ 15–30 rozmów naraz (szacunek). W UE: Hetzner GEX44 ~€184/mies.</dd></div>
+          <div><dt>Pilot 300 min</dt><dd>~700–1 900 zł/mies. + utrzymanie serwera</dd></div>
+          <div><dt>Ryzyko</dt><dd>polski głos open-source (XTTS-v2: licencja niekomercyjna; Piper brzmi robotycznie), ASR na 8 kHz, opóźnienia, dyżury</dd></div>
+        </dl>
+      </div>
+      <div class="card tier">
+        <span class="badge b-later">B · KROK 2</span>
+        <h3>Własna orkiestracja + klocki API</h3>
+        <p class="small">Pipecat albo LiveKit Agents na naszym VPS. ASR (Deepgram / Soniox), LLM (GPT-4o-mini / Gemini Flash / Haiku) i TTS (ElevenLabs Flash) przez API. SIP trunk PL.</p>
+        <dl>
+          <div><dt>Moc obliczeniowa</dt><dd>zero GPU, VPS za €10–20/mies.</dd></div>
+          <div><dt>Pilot 300 min</dt><dd>~60–300 zł/mies., większość to telefonia</dd></div>
+          <div><dt>Ryzyko</dt><dd>3–6 tygodni do jakości produkcyjnej: opóźnienia &lt;800 ms, przerywanie, testy. Utrzymanie na stałe.</dd></div>
+        </dl>
+      </div>
+      <div class="card tier go">
+        <span class="badge b-go">C · START</span>
+        <h3>Platforma + nasz mózg</h3>
+        <p class="small">ElevenLabs Agents robi głos, pilnowanie kolejności mówienia i telefonię. My dajemy scenariusz, bazę wiedzy, narzędzia (webhooki do CRM i sklepu) oraz analizę rozmów.</p>
+        <dl>
+          <div><dt>Moc obliczeniowa</dt><dd>zero GPU, zero serwera głosu</dd></div>
+          <div><dt>Pilot 300 min</dt><dd>~110–330 zł/mies. (plan $22 = 275 min + operator)</dd></div>
+          <div><dt>Ryzyko</dt><dd>uzależnienie od jednej platformy, dane w USA (DPF/SCC), koszt rośnie liniowo z minutami</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="tbl"><table>
+      <thead><tr><th>Koszt miesięczny</th><th>A · self-host</th><th>B · klocki API</th><th>C · platforma</th></tr></thead>
+      <tbody>
+        <tr><td>Pilot · 300 min</td><td class="num">700–1 900 zł</td><td class="num">60–300 zł</td><td class="num">110–330 zł</td></tr>
+        <tr><td>Dealer · 3 000 min</td><td class="num">700–1 900 zł</td><td class="num">550–3 000 zł</td><td class="num">1 300–3 500 zł</td></tr>
+        <tr><td>Czas do pierwszej rozmowy</td><td>tygodnie</td><td>~1 tydzień (plaster)</td><td>dni</td></tr>
+      </tbody>
+    </table></div>
+    <div class="box info">
+      <h3>Co naprawdę kosztuje</h3>
+      <p>Przy 300 min miesięcznie różnica B vs C to kilkadziesiąt dolarów. Realne koszty to czas budowy i strojenia, cotygodniowe utrzymanie scenariuszy i bazy wiedzy oraz jakość polskiego audio przez telefon. GPU nie jest tu kosztem.</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="head">
+      <div class="kicker">02 · Rynek</div>
+      <h2>Na czym stoi Rinvo i reszta</h2>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Rinvo</h3>
+        <ul class="clean">
+          <li>Założyciele: Marek Rewoliński (CEO), Michał Wójcik (CTO).</li>
+          <li>Na stronie logotypy: VW, Audi, Škoda, Cupra, Hyundai, MG, Chery, Omoda&nbsp;&amp;&nbsp;Jaecoo, grupy Bemo i Ciesiółka.</li>
+          <li>Integracje: centrale 3CX, Thulium, Welyo; DMS przez Autofis; Meta Lead Ads; CRM.</li>
+          <li>Stack nieujawniony. W stopce logo <b>ElevenLabs Startup Grants</b>, więc najpewniej ElevenLabs pod spodem. To wnioskowanie, nie dowód.</li>
+          <li>Cena: subskrypcja zależna od wolumenu, wycena na rozmowie.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Wzorzec rynku</h3>
+        <ul class="clean">
+          <li><b>SoftBlue</b>: voicebot e-Rejestracji NFZ, 23,6 mln zł na 60 mies., jawnie na <b>ElevenLabs</b>.</li>
+          <li>Własną technologię głosu mają nieliczni: VoiceLab (ASR PL), Talkie.ai (medycyna).</li>
+          <li>Ceny: 169–499 zł/mies. (SaaS podstawowy) do 30–100 tys. zł (enterprise). Wdrożenie 2–8 tygodni.</li>
+          <li>Wniosek: przewagą nie jest silnik głosu. Przewagą są <b>scenariusze branżowe, integracje i wdrożenie</b>, a to da się powtórzyć.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="box ok">
+      <h3>Marża istnieje</h3>
+      <p>Nasz koszt w wariancie B/C ≈ 0,2–1,2 zł za minutę. Rynek wycenia ~1–2 zł. Gdyby to sprzedawać dealerom, jest z czego żyć.</p>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="head">
+      <div class="kicker">03 · Asystent zakupowy</div>
+      <h2>Jeden mózg, dwa kanały</h2>
+      <p class="muted">Asystent w sklepie to inna bestia niż telefon: przeglądarka zamiast linii telefonicznej, tekst najpierw, zero GPU. Mózg budujemy raz i podpinamy do obu kanałów.</p>
+    </div>
+    <div class="brain">
+      <div class="node core">
+        <div class="kicker">Mózg · nasz</div>
+        <ul>
+          <li>standard kategorii pomp ciepła + pole pytań (są)</li>
+          <li>konfigurator doboru jako kalkulator (moc do metrażu, izolacji, strefy)</li>
+          <li>katalog, specyfikacje, FAQ (wyszukiwanie z bazy wiedzy)</li>
+          <li>narzędzia sklepu: szukaj, cena, stan, dodaj do koszyka</li>
+          <li>reguły przekazania do człowieka</li>
+        </ul>
+      </div>
+      <div class="arrow">→</div>
+      <div class="chan">
+        <div class="node">
+          <div class="kicker">Kanał 1 · sklep</div>
+          <p class="small">Czat na stronie produktu, opcjonalnie głos w przeglądarce. Koszt rozmowy od &lt;$0,01 (GPT-4o-mini) do ~$0,05 (Haiku 4.5).</p>
+        </div>
+        <div class="node">
+          <div class="kicker">Kanał 2 · telefon</div>
+          <p class="small">Ten sam mózg na ElevenLabs Agents. Oddzwonienie do leada z formularza, przypomnienia, obsługa po godzinach.</p>
+        </div>
+      </div>
+    </div>
+    <div class="grid g2">
+      <div class="box warn">
+        <h3>Zasada anty-halucynacyjna</h3>
+        <p>Ceny, stany, parametry i dopłaty tylko z narzędzi i danych, nigdy z pamięci modelu. LLM prowadzi rozmowę, a moc pompy liczy kalkulator.</p>
+      </div>
+      <div class="box info">
+        <h3>Rynek PL: pusto</h3>
+        <p>Allegro ma asystenta w aplikacji (Q1 2026). W pompach ciepła jest tylko B2B dla instalatorów. Twarde dowody wzrostu konwersji są wyłącznie w case'ach vendorów, więc trzeba to sprawdzić własnym A/B.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="head">
+      <div class="kicker">04 · Uczenie się</div>
+      <h2>Czy to się „uczy na żywo”? Nie. I dobrze.</h2>
+      <p class="muted">Nikt tego nie robi w produkcji, łącznie z Retell, Vapi i ElevenLabs. „Learns from every call” to marketing. W trakcie rozmowy agent pamięta tylko tę rozmowę. Między rozmowami korzysta z podglądu w CRM (np. że klient dzwonił wczoraj), który trzeba zbudować. Ulepszenia robi człowiek.</p>
+    </div>
+    <div class="loop">
+      <div class="step"><span class="n">01</span>Analiza rozmów: transkrypcja, ocena, flagi</div>
+      <div class="step"><span class="n">02</span>Agent proponuje zmianę: scenariusz, baza wiedzy, reguły</div>
+      <div class="step"><span class="n">03</span>UAT: testy na symulowanych rozmowach</div>
+      <div class="step human"><span class="n">04</span>Człowiek zatwierdza</div>
+      <div class="step"><span class="n">05</span>Wdrożenie na live</div>
+    </div>
+    <div class="box warn">
+      <h3>Dlaczego nie automatycznie</h3>
+      <p>Grozi dryf celu, prompt injection od rozmówcy albo z pól CRM i utrwalenie halucynacji („zniosę tę opłatę” staje się regułą). Bez przeglądu baza wiedzy starzeje się w 4–6 tygodni. Nasza pętla UAT → live to dokładnie ta dobra praktyka, i da się ją sprzedać.</p>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="head">
+      <div class="kicker">05 · Prawo PL</div>
+      <h2>Co blokuje, a co nie</h2>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Temat</th><th>Stan</th><th>Co robimy</th></tr></thead>
+      <tbody>
+        <tr><td><b>AI Act art. 50(1)</b><br><span class="small">informacja „rozmawiasz z AI”</span></td><td>Obowiązuje od 2.08.2026. Digital Omnibus tego nie przesunął (karencja do 2.12.2026 dotyczy tylko oznaczania treści).</td><td>Pierwsze zdanie: „jestem wirtualną asystentką, rozmowa jest nagrywana”.</td></tr>
+        <tr><td><b>PKE art. 398</b><br><span class="small">telefon / automatyczne wywołania</span></td><td>Marketing bezpośredni wymaga uprzedniej zgody. Czy formularz leada to już zgoda na automatyczny telefon: nierozstrzygnięte.</td><td>W formularzu jawny checkbox: zgoda na kontakt telefoniczny, w tym automatyczny/AI.</td></tr>
+        <tr><td><b>UOKiK</b></td><td>Kara dla Centrum Dotacji OZE: 308 728 zł za telemarketing bez zgody.</td><td>Żadnych zimnych telefonów. Dzwonimy tylko do leadów ze zgodą.</td></tr>
+        <tr><td><b>RODO</b><br><span class="small">nagrywanie, transkrypcje</span></td><td>Potrzebna podstawa prawna, informacja na starcie, retencja i możliwość usunięcia.</td><td>Krótka formuła na starcie, retencja np. 90 dni.</td></tr>
+        <tr><td><b>RODO · USA</b></td><td>ElevenLabs, Retell, Vapi, OpenAI to firmy z USA, więc transfer danych wymaga DPF lub SCC.</td><td>Sprawdzić DPF i podpisać DPA przed pilotem.</td></tr>
+        <tr><td><b>Klon głosu</b></td><td>Głos to dobro osobiste i dane osobowe.</td><td>Głosy katalogowe. Klon pracownika tylko z pisemną zgodą.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="box ok"><h3>Nic nie blokuje startu</h3><p>Warunek: zgoda w formularzu leada, dopisana zanim ktokolwiek zadzwoni.</p></div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <div class="head">
+      <div class="kicker">06 · Głos społeczności PL</div>
+      <h2>Mało surowego sygnału. Większość to blogi dostawców.</h2>
+    </div>
+    <div class="card">
+      <ul class="clean">
+        <li>Irytacja rośnie, gdy bot nie rozumie i <b>nie daje przejścia na człowieka</b>. <span class="tag">vendor</span></li>
+        <li>Wykop: <a href="https://wykop.pl/link/6262549/rozmowa-z-botem-od-fotowoltaiki-jak-bot-z-botem" rel="noopener">„Rozmowa z botem od fotowoltaiki”</a>. Branża OZE ma już zły wizerunek botów telefonicznych.</li>
+        <li>Praktycy na GitHubie: polski ASR przekręca nazwy firm, a TTS gubi sz/cz/ż i czyta z angielską fonetyką.</li>
+        <li>Opóźnienie przeciętnego wdrożenia to 1,4–1,7 s, a komfort zaczyna się poniżej 0,8 s. <span class="tag">vendor</span></li>
+        <li>Polski ASR: VoiceLab, Soniox (dedykowany PL), Deepgram Nova-3. <b>Brak publicznego benchmarku polskiego ASR na 8 kHz</b>, więc trzeba zmierzyć samemu.</li>
+        <li>Nikt w PL nie opisał produkcyjnego stacku z kosztami. To luka, którą możemy zająć.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- rekomendacja -->
+  <section>
+    <div class="head">
+      <div class="kicker">07 · Rekomendacja</div>
+      <h2>Mózg nasz, głos wynajęty. Sklep najpierw.</h2>
+    </div>
+    <div class="grid g2">
+      <div class="card" style="border:2px solid var(--green)">
+        <span class="badge b-go" style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px">REKOMENDACJA</span>
+        <ol class="clean" style="padding-left:20px">
+          <li>Asystent zakupowy w sklepie (Medusa, tekst). Mózg: standard kategorii + pole pytań + konfigurator + narzędzia sklepu.</li>
+          <li>Telefon to ten sam mózg na ElevenLabs Agents. Pilot: oddzwonienie do 50–100 leadów ze zgodą.</li>
+          <li>Pętla UAT → live od pierwszego dnia.</li>
+        </ol>
+        <p class="small">Dlaczego: budujemy raz na dwa kanały, a pieniądze idą w wartość (scenariusze, integracje, pętla ulepszeń), nie w infrastrukturę głosu, którą Rinvo i SoftBlue też wynajmują.</p>
+      </div>
+      <div class="card">
+        <span class="badge b-later" style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px">ALTERNATYWA</span>
+        <p><b>Od razu wariant B</b>: Pipecat/LiveKit + API dla telefonu.</p>
+        <p class="small"><b>Zyskujesz:</b> brak zależności od jednej platformy, składniki z UE, pełną kontrolę nad opóźnieniami i niższy koszt minuty przy dużym wolumenie.</p>
+        <p class="small"><b>Tracisz:</b> 3–6 tygodni pracy i stałe utrzymanie, za oszczędność rzędu dziesiątek dolarów miesięcznie w pilocie.</p>
+        <p class="small"><b>Przełącznik:</b> powyżej ~10–20 tys. min/mies. albo gdy klient wymaga danych w UE.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="tc">
+    <div class="kicker">Truth Checker</div>
+    <p><b>Co wiem:</b> cenniki ElevenLabs, Twilio i Zadarma oraz daty AI Act sprawdzone u źródła 29.09. Treść rinvo.io z własnego odczytu. Mamy 2 kompletne standardy kategorii dla sklepu.</p>
+    <p><b>Co zakładam:</b> wolumen pilota 150–300 min/mies., kurs 3,65 zł/$, Rinvo na ElevenLabs (tylko odznaka grantu), polski głos ElevenLabs wystarczający przez telefon (nie słyszany jeszcze na 8 kHz).</p>
+    <p><b>Co może być błędne:</b> liczby GPU (równoległe rozmowy, próg opłacalności) pochodzą z wtórnych blogów i są niespójne. Ceny SIP w PL są umowne. Interpretacja PKE dla oddzwonienia do leada nie jest rozstrzygnięta.</p>
+    <p><b>Co zweryfikować:</b> jakość PL na telefonie (krok 1 poniżej), DPF/DPA i miejsce danych w ElevenLabs, treść zgody z prawnikiem, realny wolumen leadów.</p>
+    <p><b>Jeden input więcej:</b> 10 nagranych rozmów testowych (Rinvo vs ElevenLabs PL) zamieniłoby opinie z blogów w twardy werdykt jakości.</p>
+  </div>
+
+  <div class="cta">
+    <div class="kicker">Następny krok · cienki plaster</div>
+    <h2>Zanim cokolwiek zbudujemy: dwa testy</h2>
+    <ol>
+      <li><b>10 minut, za darmo:</b> zadzwoń na numer testowy Rinvo <span class="phone">+48 732 144 390</span> i odpal polskie demo <a href="https://elevenlabs.io/conversational-ai" rel="noopener">ElevenLabs Agents</a>. Oceń: czy brzmi po ludzku, jakie jest opóźnienie, czy rozumie nazwę ulicy i modelu, czy da się mu przerwać.</li>
+      <li><b>Sklep:</b> 1 strona produktu pompy ciepła + asystent tekstowy odpowiadający ze standardu kategorii + 1 narzędzie sklepu (cena/stan). Przed oczy, zanim ruszy reszta.</li>
+    </ol>
+  </div>
+
+  <footer>
+    <div class="kicker" style="margin-bottom:10px">Źródła sprawdzone ręcznie</div>
+    <ul class="sources">
+      <li><a href="https://elevenlabs.io/pricing/agents" rel="noopener">ElevenLabs Agents: cennik</a></li>
+      <li><a href="https://www.twilio.com/en-us/voice/pricing/pl" rel="noopener">Twilio: ceny dla Polski</a></li>
+      <li><a href="https://zadarma.com/en/tariffs/calls/" rel="noopener">Zadarma: taryfy</a></li>
+      <li><a href="https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act" rel="noopener">Komisja Europejska: art. 50 AI Act</a></li>
+      <li><a href="https://itwiz.pl/voicebot-od-elevenlabs-usprawni-centralna-e-rejestracje-i-zadzwoni-do-pacjentow-nfz/" rel="noopener">ITwiz: voicebot NFZ na ElevenLabs</a></li>
+      <li><a href="https://uokik.gov.pl/wykrecanie-takich-numerow-nie-poplaca-prezes-uokik-karze-za-telemarketing-bez-zgody-konsumentow" rel="noopener">UOKiK: kara za telemarketing bez zgody</a></li>
+    </ul>
+    <p class="small" style="margin-top:14px">Pozostałe fakty pochodzą z 8 raportów zwiadowczych (Haiku), z URL-ami przy każdym fakcie. Surowe raporty nie były weryfikowane w całości. Błędy zwiadowców poprawione przed syntezą.</p>
+  </footer>
+
+</div>
+
+<style>
+#pub-lightbox-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;cursor:zoom-out}
+#pub-lightbox-overlay.open{display:flex}
+#pub-lightbox-overlay img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+#pub-lightbox-close{position:fixed;top:16px;right:20px;font-size:36px;color:#fff;cursor:pointer;line-height:1;user-select:none;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+</style>
+<div id="pub-lightbox-overlay"><span id="pub-lightbox-close">&times;</span><img id="pub-lightbox-img" src="" alt=""></div>
+<script>
+(function(){
+  var ov=document.getElementById('pub-lightbox-overlay');
+  var im=document.getElementById('pub-lightbox-img');
+  document.querySelectorAll('a.pub-lightbox-trigger').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var img=a.querySelector('img');
+      if(img){im.src=img.src;ov.classList.add('open');}
+    });
+  });
+  document.getElementById('pub-lightbox-close').addEventListener('click',function(){ov.classList.remove('open');im.src='';});
+  ov.addEventListener('click',function(e){if(e.target===ov){ov.classList.remove('open');im.src='';}});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){ov.classList.remove('open');im.src='';}});
+})();
+</script>
+</body>
+</html>
