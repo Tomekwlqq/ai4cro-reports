@@ -422,11 +422,12 @@ function renderLive(key){
 
   // Δ vs mediana dnia tygodnia — 8 tyg wstecz, ten sam dzień tygodnia (28.08.2026)
   const wdnGen=['niedzieli','poniedziałku','wtorku','środy','czwartku','piątku','soboty'];
-  const wdMed=(metric,excl)=>{
+  const wdMed=(metric,excl,skipGap)=>{
     const wd=new Date(excl+'T12:00:00').getDay();
     const vals=[];
     Object.keys(DAILY).filter(x=>x<excl).sort().slice(-56).forEach(x=>{
       const k=DAILY[x]&&DAILY[x].kpi; if(!k)return;
+      if(skipGap&&x>='2026-09-29'&&x<='2026-10-05')return; // dziura GA4 (Littledata) — nie zaniżaj mediany sesji
       if(new Date(x+'T12:00:00').getDay()!==wd)return;
       const v=metric(k); if(v!=null)vals.push(v);
     });
@@ -437,8 +438,8 @@ function renderLive(key){
   const d0=data.date;
   const medOrd=wdMed(k=>k.shopify_orders!=null?k.shopify_orders:k.transactions,d0);
   const medRev=wdMed(k=>k.shopify_revenue!=null?k.shopify_revenue:k.totalRevenue,d0);
-  const medSess=wdMed(k=>k.sessions,d0);
-  const medBounce=wdMed(k=>k.bounceRate!=null?k.bounceRate*100:null,d0);
+  const medSess=wdMed(k=>k.sessions,d0,true);
+  const medBounce=wdMed(k=>k.bounceRate!=null?k.bounceRate*100:null,d0,true);
   const dp=(cur,med)=>med>0?((cur-med)/med*100):null;
   const dTile=(nm,cur,med,isToday)=>{
     const dd=dp(cur,med);
@@ -710,7 +711,8 @@ function measureNote(day){
   const sh=`<b>Shopify (od 09.09):</b> Shopify zmienił liczenie sesji — przy stałym ruchu w GA4 liczy ~⅓ mniej sesji ludzi (Shopify÷GA4 PL: ~0,74 → ~0,50), boty PL spadły z ~250/dzień do 0; 21–23.09 oficjalne wdrożenie „session measurement” (boty wycięte, sesje nie kończą się o północy). Sesje i CR Shopify nieporównywalne z dniami sprzed 09.09 — trend ruchu czytaj z GA4.`
     +(day==='2026-09-23'?` 23.09 (2–18h) Shopify błędnie geolokalizował ruch z PL jako „USA / Kansas City” — te sesje są doliczone do PL.`:'');
   const ga=day>='2026-09-23'?`<br><b>GA4 (od 23.09 16:00):</b> Littledata wysyła add_to_cart / checkout / purchase z lokalizacją serwera (USA / Ashburn) — w kartach PL liczone jako Polska (obejście do czasu naprawy przez Littledata).`:'';
-  return `<div class="concl c-amber"><span class="lab">⚠ Zmiana pomiaru</span>${sh}${ga}</div>`;
+  const gap=(day>='2026-09-29'&&day<='2026-10-05')?`<br><b>⛔ Dziura w danych GA4 (29.09 ~14:00 – 05.10):</b> po aktualizacji aplikacji Littledata odłączył się od sklepu — brak odsłon, oglądania produktów i list; sesje GA4 zaniżone, lejek GA4 tych dni nieporównywalny. Zamówienia i przychód (Shopify) pełne. Naprawione 05.10.`:'';
+  return `<div class="concl c-amber"><span class="lab">⚠ Zmiana pomiaru</span>${sh}${ga}${gap}</div>`;
 }
 
 function renderFunnel(d,s,e){
