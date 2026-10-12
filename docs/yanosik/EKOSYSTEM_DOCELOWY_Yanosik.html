@@ -1,0 +1,224 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docelowy ekosystem marek Yanosika</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#F5F6F3; --surface:#FFFFFF; --ink:#17212A; --muted:#56626C; --line:#DDE1DC;
+  --accent:#9A6A00; --mark:#F2C230; --mark-soft:#FBF0C6;
+  --ok:#2E7D4F; --ok-bg:#E3F2E8; --warn:#9A5B00; --warn-bg:#FCEFD9; --bad:#B23A2E; --bad-bg:#F9E3E0;
+  --bar:#2F4B5E; --bar-soft:#D6DEE3;
+  --display:"Barlow Semi Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#12181D; --surface:#1A2229; --ink:#E6EAEC; --muted:#9AA6AF; --line:#2C3740;
+    --accent:#F2C230; --mark:#F2C230; --mark-soft:#3A3217;
+    --ok:#7ACB98; --ok-bg:#183626; --warn:#F0B866; --warn-bg:#3A2A12; --bad:#F08A7E; --bad-bg:#3D1D1A;
+    --bar:#8FB3C9; --bar-soft:#2C3A44;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#12181D; --surface:#1A2229; --ink:#E6EAEC; --muted:#9AA6AF; --line:#2C3740;
+  --accent:#F2C230; --mark:#F2C230; --mark-soft:#3A3217;
+  --ok:#7ACB98; --ok-bg:#183626; --warn:#F0B866; --warn-bg:#3A2A12; --bad:#F08A7E; --bad-bg:#3D1D1A;
+  --bar:#8FB3C9; --bar-soft:#2C3A44;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;padding-inline:20px;padding-block:0 64px}
+.wrap{max-width:1040px;margin:0 auto}
+header.top{padding-block:40px 28px;border-bottom:3px solid var(--ink);display:grid;gap:10px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,6vw,56px);line-height:1;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 .hl{background:linear-gradient(transparent 62%,var(--mark) 62%);padding-inline:2px}
+.lede{max-width:68ch;color:var(--muted);margin:0;font-size:17px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+section{padding-block:36px 8px;display:grid;gap:14px}
+h2{font-family:var(--display);font-weight:600;font-size:28px;line-height:1.1;margin:0;display:flex;gap:12px;align-items:baseline;text-wrap:balance}
+h2 .n{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);min-width:2.2em}
+h3{font-family:var(--display);font-weight:600;font-size:20px;margin:0}
+p{margin:0;max-width:72ch}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+ul{margin:0;padding-left:20px;display:grid;gap:6px;max-width:76ch}
+.tldr{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--mark);padding:18px 22px;display:grid;gap:10px}
+.tldr h3{font-size:18px}
+.tbl{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td.k{font-weight:700;white-space:nowrap}
+.lvl{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600;background:var(--mark-soft)}
+.num{font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:13.5px}
+.grp{display:inline-grid;place-items:center;width:26px;height:26px;border:2px solid var(--ink);border-radius:4px;font-family:var(--display);font-weight:700;font-size:15px}
+.chip{display:inline-block;font-family:var(--mono);font-size:11.5px;padding:2px 8px;border-radius:3px;white-space:nowrap;font-weight:600}
+.ok{background:var(--ok-bg);color:var(--ok)} .warn{background:var(--warn-bg);color:var(--warn)} .bad{background:var(--bad-bg);color:var(--bad)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);padding:18px 20px;display:grid;gap:10px;align-content:start}
+.panel .tag{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:600}
+/* mock report */
+.report{border:2px solid var(--ink);background:var(--surface);display:grid}
+.report-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:14px 18px;border-bottom:1px solid var(--line);align-items:baseline}
+.report-head h3{font-size:22px}
+.sample{font-family:var(--mono);font-size:11.5px;background:var(--mark-soft);color:var(--ink);padding:3px 8px;border:1px dashed var(--accent)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border-bottom:1px solid var(--line)}
+.kpi{padding:14px 18px;border-right:1px solid var(--line);display:grid;gap:2px}
+.kpi:last-child{border-right:0}
+.kpi .lbl{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.kpi .val{font-family:var(--display);font-weight:700;font-size:32px;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi .d{font-family:var(--mono);font-size:12px}
+.up{color:var(--ok)} .down{color:var(--bad)}
+.report-body{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0}
+.rb{padding:16px 18px;display:grid;gap:10px;align-content:start;border-right:1px solid var(--line)}
+.rb:last-child{border-right:0}
+.rb h4{margin:0;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.barrow{display:grid;grid-template-columns:28px 1fr 46px;gap:10px;align-items:center}
+.track{height:14px;background:var(--bar-soft);position:relative}
+.fill{height:100%;background:var(--bar)}
+.tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--accent)}
+.legend{font-size:12.5px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.sw{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:4px}
+.ev{background:var(--surface);border:1px solid var(--line);padding:16px 20px;display:grid;gap:8px}
+.ev .q{font-family:var(--mono);font-size:13px;background:var(--bg);padding:8px 10px;border-left:3px solid var(--mark)}
+.scale{display:flex;flex-wrap:wrap;gap:6px}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+a{color:var(--accent)}
+@media (max-width:560px){.kpi{border-right:0;border-bottom:1px solid var(--line)}.rb{border-right:0;border-bottom:1px solid var(--line)}}
+
+:root{--aud:#2F5E8C;--aud-bg:#E2ECF6;--int:#6B4E9B;--int-bg:#EEE8F6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--aud:#8FB8E0;--aud-bg:#1B2C3D;--int:#C3AEE6;--int-bg:#2A2238}}
+:root[data-theme="dark"]{--aud:#8FB8E0;--aud-bg:#1B2C3D;--int:#C3AEE6;--int-bg:#2A2238}
+.aud{background:var(--aud-bg);color:var(--aud)}
+.int{background:var(--int-bg);color:var(--int)}
+.statuslegend{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:14px;align-items:center}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0;border:1px solid var(--line);background:var(--surface)}
+.step{padding:14px 16px;border-right:1px solid var(--line);display:grid;gap:6px;align-content:start}
+.step:last-child{border-right:0}
+.step .sn{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:600}
+.step h3{font-size:18px}
+.step p{font-size:13.5px;color:var(--muted)}
+.note{background:var(--mark-soft);border-left:4px solid var(--mark);padding:12px 16px;font-size:14.5px;display:grid;gap:6px}
+.intbox{border:1px dashed var(--int);padding:14px 18px;display:grid;gap:8px;background:var(--surface)}
+.intbox .tag{font-family:var(--mono);font-size:12px;color:var(--int);font-weight:600}
+.changes td:first-child{font-family:var(--mono);font-size:13px;white-space:nowrap}
+.src{font-size:13.5px;display:grid;gap:4px;padding-left:20px}
+.stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));border:1px solid var(--line);background:var(--surface)}
+.stat div{padding:14px 16px;border-right:1px solid var(--line);display:grid;gap:4px}
+.stat div:last-child{border-right:0}
+.stat b{font-family:var(--display);font-size:28px;line-height:1.05;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+td.w{font-family:var(--display);font-weight:700;font-size:18px;white-space:nowrap}
+@media (max-width:560px){.step,.stat div{border-right:0;border-bottom:1px solid var(--line)}}
+
+.st{font-size:12px;padding:2px 8px;border-radius:2px;font-weight:600;white-space:nowrap} .st.sprzeczne{background:#F3D9D6;color:#7A2219} .st.decyzja{background:#F6E7B3;color:#5B4400} .st.luka{background:#E4E1F5;color:#3B2F7A}
+.zdanie{background:var(--ink);color:#fff;padding:18px 20px;font-family:var(--display);font-size:22px;line-height:1.25;margin:10px 0 8px} .zdanie small{display:block;font-family:var(--body);font-size:14px;opacity:.8;margin-top:8px}
+.claims{display:grid;gap:10px;margin:12px 0 24px} @media (min-width:760px){.claims{grid-template-columns:repeat(2,1fr)}}
+.claim{background:var(--surface);border:1px solid var(--line);padding:12px 14px;font-size:14.5px} .claim b{font-family:var(--display);font-size:17px;display:block;margin-bottom:3px}
+.twrap{overflow-x:auto;width:100%;max-width:calc(100vw - 32px)} table.m{border-collapse:collapse;font-size:12.5px;min-width:1100px} table.m th,table.m td{border:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left} table.m thead th{background:var(--surface);font-family:var(--display);font-size:13px} table.m tbody th{font-weight:700;min-width:150px;background:var(--surface)} td.brak{color:var(--muted);text-align:center}
+.wz{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--ink);padding:14px 16px;margin:12px 0} .wz h3{margin:0 0 8px;font-size:20px}
+.row{display:grid;grid-template-columns:120px 1fr;gap:8px;font-size:14px;padding:5px 0;border-top:1px solid var(--line)} .row .m{color:var(--muted);font-size:12.5px} .row ol{margin:0;padding-left:18px} .row>span{min-width:0;overflow-wrap:anywhere} .nie{color:#7A2219}
+@media (max-width:600px){.row{grid-template-columns:95px 1fr}}
+.ruch{display:grid;grid-template-columns:34px 1fr;gap:10px;padding:12px 0;border-top:1px solid var(--line)} .ruch .n{font:700 22px var(--display);color:var(--muted)} .ruch h4{margin:0 0 4px;font-size:17px} .ruch p{margin:3px 0;font-size:14px}
+table.d{width:100%!important;min-width:0!important;border-collapse:collapse;font-size:14px;table-layout:fixed} table.d td{border:1px solid var(--line);padding:7px 9px;vertical-align:top;overflow-wrap:anywhere} section{min-width:0;max-width:100%}
+</style></head><body><div class="wrap">
+<header class="top">
+  <div class="eyebrow">Yanosik S.A. · esencja Etapu 0 · warstwa propozycji</div>
+  <h1>Docelowy ekosystem <span class="hl">marek Yanosika</span></h1>
+  <p class="lede">Jak ma wyglądać każde miejsce, w którym klient spotyka markę: która marka tam mówi, jaką nazwą, z jaką kategorią, które trzy fakty padają, kto podpisuje i jak Yanosik stoi obok YANBOX-a. Pod spodem droga od dziś do celu w siedmiu ruchach, z liczbami z analizy treści.</p>
+  <div class="meta"><span>odniesienie: definicje z briefu</span><span>dziś: 61 touchpointów; uwag z analizy: sprzeczne 18 · luki 24 · do decyzji 105</span><span>12.10.2026</span></div>
+</header>
+
+<section><h2>1. Jedno zdanie, które ma paść wszędzie</h2>
+<div class="zdanie">Yanosik to system do zgłaszania i odbierania ostrzeżeń drogowych. Od 17 lat, w całej Europie, [liczba] użytkowników. Właściciel: Yanosik S.A.<small>[liczba] = jedna wartość z datą i źródłem, do ustalenia przez Yanosika. To zdanie jest opisem profilu na każdym kanale, pierwszym akapitem yanosik.pl i częścią opisu w sklepach z aplikacjami.</small></div>
+<div class="claims">
+<div class="claim"><b>Aplikacja Yanosik</b>Yanosik w telefonie: bezpłatna, Android i iOS, system Yanosik plus mapa, nawigacja, e-winiety, ubezpieczenia, e-TOLL, kupony. Z reklamami; możliwa usługa abonamentowa bez reklam (dziś nazywana „Pakiet PRO” — nazwa do decyzji).</div>
+<div class="claim"><b>YANBOX od Yanosik</b>Asystent kierowcy na stałe w aucie, urządzenie do obsługi systemu Yanosik: własna karta SIM, bez reklam, nie jest nawigacją. Modele od najwyższego: RS, GTR, GTM, XS; abonament miesięczny albo wersja dożywotnia; aktywacja w aplikacji Y24. Forma „YANBOX od Yanosik” to propozycja z architektury marek.</div>
+<div class="claim"><b>YANBOX GO</b>Najmniejszy asystent kierowcy YANBOX: bez abonamentu, internet z telefonu, konfiguracja w aplikacji YANBOX GO, po sparowaniu działa samodzielnie. Na prezent i do każdego auta.</div>
+<div class="claim"><b>Sklep Yanosik</b>Sklep spółki Yanosik S.A.: YANBOX-y, akcesoria i produkty innych marek. Nazwa miejsca, nie marka.</div>
+</div></section>
+
+<section><h2>2. Docelowa mapa: kto mówi na jakim typie touchpointu</h2>
+<p class="small muted">Wiersz = marka, kolumna = typ touchpointu. „—” = marka tam nie występuje. Tabelę przesuwa się w bok.</p>
+<div class="twrap"><table class="m"><thead><tr><th>Marka</th><th>Strony własne</th><th>Sklep</th><th>Sklepy z aplikacjami</th><th>Opakowanie i urządzenie</th><th>Partnerzy handlowi</th><th>Profile społecznościowe</th><th>Regulaminy i dokumenty</th></tr></thead><tbody><tr><th>Yanosik S.A.</th><td class=''>stopka i dane strukturalne każdej strony; „dawniej Neptis S.A.” tylko w dokumentach walnych</td><td class=''>nadawca sklepu: stopka, dane strukturalne, paragon</td><td class=''>deweloper wszystkich aplikacji (Yanosik, YANBOX GO, Y24, Warsztaty)</td><td class=''>drobnym drukiem: producent, adres, CE</td><td class=''>producent w specyfikacji</td><td class=''>w sekcji „informacje”; LinkedIn = strona firmowa</td><td class=''>strona regulaminów i polityk; jedna nazwa spółki</td></tr><tr><th>YANOSIK — marka parasolowa (system)</th><td class=''>yanosik.pl: jedno zdanie o systemie + 3 fakty (17 lat · cała Europa · liczba użytkowników)</td><td class=''>nagłówek sklepu „Sklep Yanosik”; w opisach urządzeń jako „system Yanosik”</td><td class=''>nazwa aplikacji = Yanosik; podtytuł z kategorią, bez „antyradar”</td><td class=''>małe logo Yanosik jako podpis („od Yanosik”); nigdy nazwa urządzenia</td><td class=''>w opisie produktu jako „z systemem Yanosik”; nie w nazwie produktu</td><td class=''>jeden wspólny opis profilu: system ostrzeżeń drogowych, 17 lat, cała Europa</td><td class=''>„Platforma Yanosik” / „system Yanosik”; nigdy „Terminal”</td></tr><tr><th>Aplikacja Yanosik (+ Pakiet PRO)</th><td class=''>„Aplikacja Yanosik”: bezpłatna, Android i iOS, mapa i nawigacja, e-winiety, ubezpieczenia, e-TOLL; Pakiet PRO jako wariant bez reklam</td><td class=''>nie sprzedaje; link do sklepów z aplikacjami</td><td class=''>główny touchpoint aplikacji: tytuł „Yanosik: ostrzeżenia drogowe i nawigacja”, opis bez „bez mandatów”</td><td class='brak'>—</td><td class='brak'>—</td><td class=''>jako funkcje: nowe wersje, moduły, Pakiet PRO</td><td class=''>regulamin aplikacji, Pakiet PRO jako usługa abonamentowa</td></tr><tr><th>YANBOX RS · GTR · GTM · XS</th><td class=''>yanbox.com: marka YANBOX w danych strukturalnych, „od Yanosik”; porównanie modeli; cechy: asystent kierowcy, własna karta SIM, bez reklam, nie nawigacja, abonament albo dożywotnio, Y24</td><td class=''>kategoria „YANBOX”; tytuł „YANBOX GTR + abonament”; te same 6 cech w opisie; nigdy „Yanosik GTR” ani „komunikator / antyradar”</td><td class=''>Y24: „aplikacja do aktywacji i zarządzania YANBOX”</td><td class=''>front: YANBOX | GTR; bok: asystent kierowcy z systemem Yanosik, 3 cechy; ekran startowy: YANBOX GTR</td><td class=''>tytuł: „YANBOX GTR — asystent kierowcy z systemem Yanosik”; opis z karty faktów Yanosika (plik z ofertą)</td><td class=''>recenzje i unboxingi pod nazwą „YANBOX RS od Yanosik”</td><td class=''>regulamin Y24 i instrukcje: „urządzenie YANBOX”</td></tr><tr><th>YANBOX GO</th><td class=''>yanbox.com/pl/yanbox-go: najmniejszy, bez abonamentu, internet z telefonu, aplikacja YANBOX GO, po sparowaniu działa samodzielnie</td><td class=''>karta „YANBOX GO” w kategorii YANBOX; cechy jak wyżej; dla kupujących prezent</td><td class=''>aplikacja YANBOX GO: „konfiguracja urządzenia YANBOX GO”</td><td class=''>nazwa YANBOX GO na pudełku i na urządzeniu (dziś urządzenie bez nazwy)</td><td class=''>„YANBOX GO — asystent kierowcy bez abonamentu”</td><td class=''>jako produkt do prezentu i na wyjazd; bez „zero mandatów”</td><td class=''>instrukcja YANBOX GO</td></tr><tr><th>Sklep Yanosik (kanał)</th><td class=''>link „Sklep” w menu; nie jako marka</td><td class=''>nazwa miejsca: „Sklep Yanosik”; nadawca: Yanosik S.A.; w środku mówią marki produktów</td><td class='brak'>—</td><td class=''>adres sklepu na ulotce w pudełku</td><td class='brak'>—</td><td class=''>linki do kart produktów</td><td class=''>regulamin sklepu: sprzedawca Yanosik S.A.</td></tr><tr><th>Yanosik Warsztaty · Traffic · Ubezpieczenia (usługi i moduły pod parasolem)</th><td class=''>usługi pod parasolem: nazwa „Yanosik + funkcja”; jedna nazwa na usługę (Ubezpieczenia, nie YU! / Pay How You Drive)</td><td class='brak'>—</td><td class=''>Warsztaty jako aplikacja Yanosik S.A. (dziś zdjęta z Google Play)</td><td class='brak'>—</td><td class='brak'>—</td><td class=''>jako funkcje ekosystemu</td><td class=''>regulaminy usług pod Yanosik S.A.</td></tr><tr><th>Flotis</th><td class=''>flotis.pl: „usługa Yanosik S.A.”; relacja do urządzeń YANBOX zapisana, jeśli z nich korzysta (do potwierdzenia)</td><td class='brak'>—</td><td class=''>Flotis Manager, deweloper Yanosik S.A.</td><td class='brak'>—</td><td class='brak'>—</td><td class=''>LinkedIn</td><td class=''>polityka cookies: Yanosik S.A., nie Neptis</td></tr><tr><th>Radio Yanosik · Autoplac (partnerzy)</th><td class=''>jako partnerzy, poza menu „Produkty i usługi”</td><td class='brak'>—</td><td class='brak'>—</td><td class='brak'>—</td><td class='brak'>—</td><td class=''>własne profile</td><td class=''>lista partnerów w polityce prywatności</td></tr></tbody></table></div></section>
+
+<section><h2>3. Sześć wzorców touchpointów</h2>
+<p class="small muted">Każdy wzorzec to karta do wdrożenia przez właściciela kanału. „Dziś” = liczby z analizy treści dla tej grupy touchpointów.</p>
+<article class="wz"><h3>Karta urządzenia w sklepie</h3>
+        <div class="row"><span class="m">Nazwa</span><span>„YANBOX GTR z rocznym abonamentem” (tytuł strony, nagłówek, okruszki, adres /yanbox-gtr). Kategoria sklepu: „YANBOX”.</span></div>
+        <div class="row"><span class="m">Kategoria</span><span>asystent kierowcy — w tytule strony i w pierwszym zdaniu opisu</span></div>
+        <div class="row"><span class="m">Trzy fakty, które mają paść</span><span><ol><li>własna karta SIM, bez reklam</li><li>nie zastępuje nawigacji; działa z systemem Yanosik w całej Europie</li><li>abonament miesięczny albo wersja dożywotnia; aktywacja w aplikacji Y24</li></ol></span></div>
+        <div class="row"><span class="m">Kto podpisuje</span><span>nagłówek: logo Yanosik SKLEP; stopka i dane strukturalne: Yanosik S.A.; producent: Yanosik S.A.</span></div>
+        <div class="row"><span class="m">Yanosik i YANBOX obok siebie</span><span>logo urządzenia YANBOX GTR w treści; „od Yanosik” raz, przy pierwszym wystąpieniu</span></div>
+        <div class="row"><span class="m">Czego nie ma być</span><span class="nie">„Yanosik GTR”, „YANBOX Yanosik GTR”, „komunikator drogowy”, „legalny antyradar”, „bez mandatu”</span></div><p class='small muted'><b>Dziś w tej grupie:</b> 12 touchpointów z uwagami · <span class="st sprzeczne">sprzeczne 4</span> <span class="st luka">luki 7</span> <span class="st decyzja">do decyzji 45</span></p></article><article class="wz"><h3>Opakowanie i ekran startowy</h3>
+        <div class="row"><span class="m">Nazwa</span><span>front: YANBOX | GTR; ekran startowy: YANBOX GTR (dziś RS wyświetla „YANOSIK RS”)</span></div>
+        <div class="row"><span class="m">Kategoria</span><span>asystent kierowcy z systemem Yanosik — jedno zdanie na boku</span></div>
+        <div class="row"><span class="m">Trzy fakty, które mają paść</span><span><ol><li>własna karta SIM, bez reklam</li><li>urządzenie do obsługi systemu Yanosik, działa w całej Europie</li><li>abonament albo dożywotnio; aktywacja w Y24</li></ol></span></div>
+        <div class="row"><span class="m">Kto podpisuje</span><span>mała zakładka z logo Yanosik; drobny druk: Yanosik S.A., adres, CE</span></div>
+        <div class="row"><span class="m">Yanosik i YANBOX obok siebie</span><span>dwie marki w stałym układzie: YANBOX duże, Yanosik małe jako podpis</span></div>
+        <div class="row"><span class="m">Czego nie ma być</span><span class="nie">„ZE MNĄ DOJEDZIESZ DO CELU BEZPIECZNIE I BEZ MANDATÓW” (GTR, XS, GO); pudełko bez nazwy modelu (stare RS); urządzenie bez nazwy (GO)</span></div><p class='small muted'><b>Dziś w tej grupie:</b> 5 touchpointów z uwagami · <span class="st sprzeczne">sprzeczne 4</span> <span class="st decyzja">do decyzji 1</span></p></article><article class="wz"><h3>Sklep z aplikacjami (Google Play, App Store)</h3>
+        <div class="row"><span class="m">Nazwa</span><span>„Yanosik: ostrzeżenia drogowe i nawigacja”; podtytuł w App Store: „system ostrzeżeń dla kierowców”</span></div>
+        <div class="row"><span class="m">Kategoria</span><span>dla aplikacji brief nie nadaje kategorii; „antyradar” poza słownikiem</span></div>
+        <div class="row"><span class="m">Trzy fakty, które mają paść</span><span><ol><li>bezpłatna, Android i iOS</li><li>ostrzeżenia, mapa i nawigacja, e-winiety, ubezpieczenia, e-TOLL</li><li>z reklamami; Pakiet PRO bez reklam; 17 lat, cała Europa, liczba użytkowników</li></ol></span></div>
+        <div class="row"><span class="m">Kto podpisuje</span><span>deweloper: Yanosik S.A.; ta sama ikona co na stronach i w social</span></div>
+        <div class="row"><span class="m">Yanosik i YANBOX obok siebie</span><span>aplikacje YANBOX GO i Y24 opisane jako „do urządzeń YANBOX od Yanosik”</span></div>
+        <div class="row"><span class="m">Czego nie ma być</span><span class="nie">„JEDŹ BEZPIECZNIE I BEZ MANDATÓW” (Google Play), „DRIVE SAFELY AND AVOID FINES” (App Store), „antyradar” w tytule</span></div><p class='small muted'><b>Dziś w tej grupie:</b> 5 touchpointów z uwagami · <span class="st sprzeczne">sprzeczne 2</span> <span class="st luka">luki 2</span> <span class="st decyzja">do decyzji 16</span></p></article><article class="wz"><h3>Profil społecznościowy</h3>
+        <div class="row"><span class="m">Nazwa</span><span>nazwa profilu: Yanosik; urządzenia w postach: „YANBOX RS od Yanosik”</span></div>
+        <div class="row"><span class="m">Kategoria</span><span>opis profilu = jedno wspólne zdanie z sekcji 1: system do zgłaszania i odbierania ostrzeżeń drogowych, 17 lat, cała Europa, liczba użytkowników</span></div>
+        <div class="row"><span class="m">Trzy fakty, które mają paść</span><span><ol><li>to samo zdanie na FB, IG, TikTok, X, YouTube; LinkedIn dopisuje: spółka Yanosik S.A., producent urządzeń YANBOX</li><li>wyróżnione relacje nazwane z marką: „YANBOX RS”, nie „Recenzja RS”</li><li>linki: yanosik.pl i sklep</li></ol></span></div>
+        <div class="row"><span class="m">Kto podpisuje</span><span>ta sama ikona i nazwa; LinkedIn: jedna strona firmowa (dziś dwie: Yanosik i „Yanosik S.A. | dla inwestorów”)</span></div>
+        <div class="row"><span class="m">Yanosik i YANBOX obok siebie</span><span>YANBOX w postach zawsze jako urządzenie z systemem Yanosik</span></div>
+        <div class="row"><span class="m">Czego nie ma być</span><span class="nie">sześć różnych opisów marki (dziś); „bez mandatów” w bio na X; „YANBOX GO” jako cały opis profilu (TikTok)</span></div><p class='small muted'><b>Dziś w tej grupie:</b> 6 touchpointów z uwagami · <span class="st sprzeczne">sprzeczne 1</span> <span class="st luka">luki 5</span> <span class="st decyzja">do decyzji 1</span></p></article><article class="wz"><h3>Strona partnera handlowego</h3>
+        <div class="row"><span class="m">Nazwa</span><span>„YANBOX GTR — asystent kierowcy z systemem Yanosik + 5 lat abonamentu” (tytuł z pliku z ofertą dostarczanego przez Yanosika)</span></div>
+        <div class="row"><span class="m">Kategoria</span><span>asystent kierowcy; kategoria sklepu partnera do uzgodnienia (dziś „Antyradary”, „Nawigacja”, „Kamery samochodowe”)</span></div>
+        <div class="row"><span class="m">Trzy fakty, które mają paść</span><span><ol><li>opis z karty faktów Yanosika: 6 cech urządzenia</li><li>marka produktu: YANBOX; producent: Yanosik S.A.</li><li>zdjęcia opakowania w nowym układzie</li></ol></span></div>
+        <div class="row"><span class="m">Kto podpisuje</span><span>partner; Yanosik dostarcza plik z ofertą (tytuł, opis, atrybuty, zdjęcia); marka produktu w systemie partnera: YANBOX; producent: Yanosik S.A.</span></div>
+        <div class="row"><span class="m">Yanosik i YANBOX obok siebie</span><span>YANBOX jako marka, Yanosik tylko w opisie („z systemem Yanosik”); nigdy „Yanosik YANBOX GTR” ani „Yanosik GTR”</span></div>
+        <div class="row"><span class="m">Czego nie ma być</span><span class="nie">„Antyradar samochodowy Yanosik YANBOX GTR” (x-kom, Neonet), „Yanosik GTR”, urządzenie opisane jako nawigacja (Komputronik), „Komunikator drogowy YANBOX YANOSIK GO” (Allegro)</span></div><p class='small muted'><b>Dziś w tej grupie:</b> 6 touchpointów z uwagami · <span class="st sprzeczne">sprzeczne 7</span> <span class="st luka">luki 4</span> <span class="st decyzja">do decyzji 19</span></p></article><article class="wz"><h3>Strona własna i dokument</h3>
+        <div class="row"><span class="m">Nazwa</span><span>yanosik.pl: Yanosik (system) i Aplikacja Yanosik; yanbox.com: YANBOX od Yanosik; regulaminy: „urządzenie YANBOX”, „Platforma Yanosik”</span></div>
+        <div class="row"><span class="m">Kategoria</span><span>system ostrzeżeń drogowych (Yanosik); asystent kierowcy (YANBOX)</span></div>
+        <div class="row"><span class="m">Trzy fakty, które mają paść</span><span><ol><li>na stronie głównej: 17 lat, cała Europa, liczba użytkowników z datą</li><li>menu „Produkty i usługi” tylko z ofertą Yanosika; partnerzy osobno</li><li>yanbox.com: dane strukturalne brand = YANBOX, Organization = Yanosik S.A.</li></ol></span></div>
+        <div class="row"><span class="m">Kto podpisuje</span><span>stopka Yanosik S.A. na każdej stronie; Neptis tylko w datowanych dokumentach walnych</span></div>
+        <div class="row"><span class="m">Yanosik i YANBOX obok siebie</span><span>Yanosik parasol nad: aplikacją, YANBOX, Warsztatami, Traffic, Ubezpieczeniami; Flotis obok; Radio i Autoplac jako partnerzy</span></div>
+        <div class="row"><span class="m">Czego nie ma być</span><span class="nie">„Terminal” w regulaminie usługi; „© Neptis S.A.” na stronie docelowej; pusta domena yanosikpro.pl; „Yanosik Traffic by BEMOBILE” bez wyjaśnienia relacji</span></div><p class='small muted'><b>Dziś w tej grupie:</b> 12 touchpointów z uwagami · <span class="st luka">luki 6</span> <span class="st decyzja">do decyzji 23</span></p></article></section>
+
+<section><h2>4. Droga od dziś do celu: siedem ruchów w kolejności</h2>
+<p class="small muted">Kolejność: najpierw to, co sprzeczne z briefem, potem luki, potem kategoria i podpis, na końcu sprawy do rozstrzygnięcia.</p>
+<div class='ruch'><div class='n'>1</div><div><h4>Nazwy urządzeń</h4><p>„YANBOX + model” wszędzie: kategoria i tytuły w sklepie, tytuły filmów, ekran startowy RS, regulamin Y24 i deklaracje zgodności, plik z ofertą do partnerów.</p><p class='small muted'>Dziś (obszar: nazwa, tylko YANBOX): 24 touchpointów · <span class="st sprzeczne">sprzeczne 11</span> <span class="st decyzja">do decyzji 36</span></p></div></div><div class='ruch'><div class='n'>2</div><div><h4>Narracja o mandatach</h4><p>Nowe hasło na opakowaniach GTR, XS, GO (wzór: pudełko RS 2026); opisy w Google Play i App Store; opis profilu na X. Słownik zastępczy: „bezpiecznie i zgodnie z przepisami”.</p><p class='small muted'>Dziś (obszar: narracja): 6 touchpointów · <span class="st sprzeczne">sprzeczne 6</span> </p></div></div><div class='ruch'><div class='n'>3</div><div><h4>Cechy przy nazwie</h4><p>Karty RS, GTM, XS: dopisać „własna karta SIM”, „asystent kierowcy”, „nie jest nawigacją”; porównanie modeli na yanbox.com. yanosik.pl: 17 lat, cała Europa, liczba użytkowników.</p><p class='small muted'>Dziś (obszar: cechy): 24 touchpointów · <span class="st luka">luki 24</span> </p></div></div><div class='ruch'><div class='n'>4</div><div><h4>Kategoria</h4><p>„asystent kierowcy” w tytułach stron i pierwszym zdaniu; „komunikator” i „antyradar” wycofane z własnych stron; u partnerów przez plik z ofertą.</p><p class='small muted'>Dziś (obszar: kategoria): 28 touchpointów · <span class="st sprzeczne">sprzeczne 1</span> <span class="st decyzja">do decyzji 39</span></p></div></div><div class='ruch'><div class='n'>5</div><div><h4>Kto podpisuje</h4><p>Sklep: w danych strukturalnych organizacja = Yanosik S.A., nazwa spółki w stopce. yanbox.com: marka w danych strukturalnych = YANBOX. Neptis wymieniony w bieżących regulaminach.</p><p class='small muted'>Dziś (obszar: nadawca): 19 touchpointów · <span class="st decyzja">do decyzji 19</span></p></div></div><div class='ruch'><div class='n'>6</div><div><h4>Jedno zdanie w social</h4><p>Ten sam opis profilu na sześciu profilach; wyróżnione relacje z nazwą marki.</p><p class='small muted'>Dziś (obszar: cechy + narracja + nazwa, profile społecznościowe): 5 touchpointów · <span class="st sprzeczne">sprzeczne 1</span> <span class="st luka">luki 5</span> </p></div></div><div class='ruch'><div class='n'>7</div><div><h4>Porządek wokół parasola</h4><p>Pakiet PRO jako wariant (yanosikpro.pl → przekierowanie); Connect+ i Alert w jednym miejscu; Flotis z zapisaną relacją; Radio i Autoplac poza menu produktów. To sprawy do decyzji Yanosika.</p></div></div></section>
+
+<section><h2>5. Co to zmienia w odpowiedziach modeli</h2>
+<p class="small muted">Pięć deficytów z briefu i ruchy, które je usuwają. Pomiar: audyt zerowy (etap 1) na liście pytań kontrolnych.</p>
+<table class="d"><tbody><tr><td>1. Modele nie rozróżniają systemu, aplikacji, urządzeń i modeli</td><td>ruchy 1, 5, 7: jedna nazwa na byt, jeden nadawca, jasne drzewo marek</td></tr><tr><td>2. Nie podają przewag i nie pomagają wybrać</td><td>ruch 3: sześć cech przy każdej nazwie urządzenia i porównanie modeli na yanbox.com</td></tr><tr><td>3. Nazywają urządzenia jak popadnie (terminale, pudełka, yanosiki)</td><td>ruchy 1 i 4: „YANBOX + model”, kategoria „asystent kierowcy”, regulaminy bez „Terminal”</td></tr><tr><td>4. Zawężają działanie do Polski</td><td>ruchy 3 i 6: „cała Europa” na stronie głównej, w sklepach z aplikacjami i w opisach profili</td></tr><tr><td>5. Mają nieaktualną ofertę</td><td>ruchy 1 i 4: plik z ofertą do partnerów (MediaMarkt zdjął kartę GO, Amazon.de bez ofert, Allegro 561 ofert z różnymi nazwami)</td></tr></tbody></table></section>
+
+<section><h2>6. Co zakładamy</h2>
+<p class="small">Że Yanosik przyjmie propozycję z architektury marek: YANBOX jako marka urządzeń wspierana przez Yanosik („YANBOX od Yanosik”), sklep jako kanał spółki, Pakiet PRO jako wariant aplikacji, Flotis jako produkt spółki pod osobną nazwą, Radio Yanosik i Autoplac jako partnerzy poza ofertą, Connect+ i Alert w jednym miejscu (do wyboru). Że opisy u partnerów handlowych pochodzą z pliku z ofertą Yanosika, a nie są pisane przez sklepy. Że pudełka GTR, GTM i XS w sprzedaży wyglądają jak na zdjęciach w sklepie. Każde z tych założeń Yanosik może odwrócić jednym zdaniem i wtedy zmienia się wzorzec, nie diagnoza.</p></section>
+<footer>Docelowy ekosystem marek Yanosika · 12.10.2026 · warstwa propozycji na podstawie briefu, zapisu z touchpointów i analizy treści</footer>
+</div>
+<style>
+#pub-lightbox-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;cursor:zoom-out}
+#pub-lightbox-overlay.open{display:flex}
+#pub-lightbox-overlay img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+#pub-lightbox-close{position:fixed;top:16px;right:20px;font-size:36px;color:#fff;cursor:pointer;line-height:1;user-select:none;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+</style>
+<div id="pub-lightbox-overlay"><span id="pub-lightbox-close">&times;</span><img id="pub-lightbox-img" src="" alt=""></div>
+<script>
+(function(){
+  var ov=document.getElementById('pub-lightbox-overlay');
+  var im=document.getElementById('pub-lightbox-img');
+  document.querySelectorAll('a.pub-lightbox-trigger').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var img=a.querySelector('img');
+      if(img){im.src=img.src;ov.classList.add('open');}
+    });
+  });
+  document.getElementById('pub-lightbox-close').addEventListener('click',function(){ov.classList.remove('open');im.src='';});
+  ov.addEventListener('click',function(e){if(e.target===ov){ov.classList.remove('open');im.src='';}});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){ov.classList.remove('open');im.src='';}});
+})();
+</script>
+</body></html>
