@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Analizy UX branży · import aut z Chin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #FBF6F1;
+  --surface:   #FFFFFF;
+  --surface-2: #F7F0EA;
+  --line:      #EFE3DA;
+  --line-soft: #F4EBE4;
+  --ink:       #2B2326;
+  --muted:     #6B5D5A;
+  --faint:     #9C8D88;
+  --v:         #C9A84C;
+  --v-d:       #8A6D1F;
+  --v-soft:    rgba(201,168,76,.10);
+  --v-line:    rgba(201,168,76,.32);
+  --g:  #2E8B57; --g-d: #236B43; --g-soft: rgba(46,139,87,.10);  --g-line: rgba(46,139,87,.28);
+  --o:  #E07A3C; --o-d: #C4652B; --o-soft: rgba(224,122,60,.10); --o-line: rgba(224,122,60,.30);
+  --b:  #4A7FB5; --b-d: #3A6691; --b-soft: rgba(74,127,181,.10); --b-line: rgba(74,127,181,.28);
+  --font: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --r: 10px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font);
+       line-height: 1.6; padding: 0 16px 60px; }
+a { color: var(--b-d); }
+a:hover { color: var(--b); }
+.page-wrap { max-width: 1280px; margin: 0 auto; }
+header { padding: 32px 0 16px; border-bottom: 2px solid var(--v-line); margin-bottom: 28px; }
+header h1 { font-size: clamp(20px, 3.5vw, 30px); font-weight: 800; color: var(--ink); }
+header .subtitle { font-size: 14.5px; color: var(--muted); margin-top: 6px; }
+/* Grid kafli */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px; margin-top: 8px; }
+@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+/* Kafel sklepu */
+.shop-card { border: 1px solid var(--line); border-radius: 14px; background: var(--surface);
+             overflow: hidden; box-shadow: 0 1px 4px rgba(43,35,38,.05);
+             display: flex; flex-direction: column; }
+.shop-card.gold { border: 2px solid var(--v); box-shadow: 0 2px 14px rgba(201,168,76,.18); }
+.shop-card-thumb-wrap { overflow: hidden; aspect-ratio: 16/6; background: var(--surface-2);
+                        border-bottom: 1px solid var(--line-soft); position: relative; }
+.shop-card-thumb { width: 100%; height: 100%; object-fit: cover; object-position: top left; display: block; }
+.shop-card-thumb-ph { width: 100%; height: 100%; display: flex; align-items: center;
+                      justify-content: center; color: var(--faint); font-size: 12px; }
+.gold-badge { position: absolute; top: 8px; right: 8px; background: var(--v);
+              color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .05em;
+              text-transform: uppercase; padding: 2px 8px; border-radius: 20px; }
+.shop-card-body { padding: 14px 16px 16px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.shop-name { font-size: 16px; font-weight: 700; color: var(--ink); }
+.shop-meta { font-size: 12.5px; color: var(--muted); }
+/* Liczniki widoków */
+.views-grid { display: flex; flex-direction: column; gap: 6px; }
+.view-row { display: flex; align-items: center; justify-content: space-between;
+            font-size: 13px; gap: 8px; }
+.view-row .view-label { color: var(--muted); flex-shrink: 0; min-width: 100px; }
+.view-row .view-counts { display: flex; gap: 5px; align-items: center; }
+.chip-wada { background: var(--o-soft); color: var(--o-d); border: 1px solid var(--o-line);
+             border-radius: 20px; padding: 1px 8px; font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+.chip-ok   { background: var(--g-soft); color: var(--g-d); border: 1px solid var(--g-line);
+             border-radius: 20px; padding: 1px 8px; font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+.chip-nd   { background: var(--surface-2); color: var(--faint); border: 1px solid var(--line);
+             border-radius: 20px; padding: 1px 8px; font-size: 11.5px; white-space: nowrap; }
+/* Przycisk link */
+.shop-link { display: block; margin-top: auto; text-align: center;
+             background: var(--v-soft); border: 1px solid var(--v-line);
+             color: var(--v-d); text-decoration: none; font-size: 13px; font-weight: 600;
+             padding: 8px 14px; border-radius: 8px; transition: background .15s; }
+.shop-link:hover { background: var(--v); color: #fff; }
+.gold .shop-link { background: var(--v); color: #fff; border-color: var(--v-d); }
+.gold .shop-link:hover { background: var(--v-d); }
+/* Totals row */
+.total-row { font-size: 13px; color: var(--muted); padding-top: 8px;
+             border-top: 1px solid var(--line-soft); }
+.total-row strong { color: var(--ink); }
+/* Backlink */
+#hub-backlink-bar { position: sticky; top: 0; z-index: 100; background: #3F4A44;
+  padding: 8px 16px; font: 600 13px/1.4 'JetBrains Mono', monospace; letter-spacing: .04em; }
+#hub-backlink-bar a { color: var(--v); text-decoration: none; }
+</style>
+</head>
+<body>
+<div id="hub-backlink-bar">
+  <a href="../../../../CC/design/DESIGN_HUB.html">← Benchmark &amp; Design</a>
+</div>
+<div class="page-wrap">
+<header>
+  <h1>Analizy UX branży · import aut z Chin</h1>
+  <div class="subtitle">China Select i 15 rywali · 4 widoki desktop · każdy element oceniony regułami z wycinka · 12.10.2026</div>
+</header>
+<div class="grid">
+<div class="shop-card gold"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/chinaselect.jpg" alt="China Select" loading="lazy"><div class="gold-badge">China Select</div></div><div class="shop-card-body"><div class="shop-name">China Select</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">7 wad</span><span class="chip-ok">13 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">5 wad</span><span class="chip-ok">7 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-ok">8 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">7 wad</span><span class="chip-ok">6 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>53</strong> elementów · <strong>19</strong> wad · <strong>34</strong> ok</div><a href="../../../UX_CHINASELECT.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_autochina.jpg" alt="AutoChina" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">AutoChina</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">5 wad</span><span class="chip-ok">10 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">2 wady</span><span class="chip-ok">5 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-wada">3 wady</span><span class="chip-ok">8 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">6 wad</span><span class="chip-ok">4 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>43</strong> elementów · <strong>16</strong> wad · <strong>27</strong> ok</div><a href="../../../UX_BENCH_AUTOCHINA.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_autohero.jpg" alt="AutoHero" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">AutoHero</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">4 wady</span><span class="chip-ok">13 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-ok">6 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-wada">2 wady</span><span class="chip-ok">11 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">5 wad</span><span class="chip-ok">19 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>60</strong> elementów · <strong>11</strong> wad · <strong>49</strong> ok</div><a href="../../../UX_BENCH_AUTOHERO.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_autoscout24.jpg" alt="AutoScout24" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">AutoScout24</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">3 wady</span><span class="chip-ok">7 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">1 wada</span><span class="chip-ok">9 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-wada">1 wada</span><span class="chip-ok">8 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">5 wad</span><span class="chip-ok">22 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>56</strong> elementów · <strong>10</strong> wad · <strong>46</strong> ok</div><a href="../../../UX_BENCH_AUTOSCOUT24.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_autoselect_arval_pl.jpg" alt="Autoselect (Arval)" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">Autoselect (Arval)</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">6 wad</span><span class="chip-ok">2 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">1 wada</span><span class="chip-ok">6 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-wada">2 wady</span><span class="chip-ok">7 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">5 wad</span><span class="chip-ok">12 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>75</strong> elementów · <strong>17</strong> wad · <strong>58</strong> ok</div><a href="../../../UX_BENCH_AUTOSELECT_ARVAL_PL.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_azjaauto_com.jpg" alt="AzjaAuto" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">AzjaAuto</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">5 wad</span><span class="chip-ok">15 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">1 wada</span><span class="chip-ok">3 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-wada">3 wady</span><span class="chip-ok">8 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">4 wady</span><span class="chip-ok">12 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>51</strong> elementów · <strong>13</strong> wad · <strong>38</strong> ok</div><a href="../../../UX_BENCH_AZJAAUTO_COM.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_cars_drivewave_pl.jpg" alt="Cars DriveWave" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">Cars DriveWave</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">12 wad</span><span class="chip-ok">31 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">3 wady</span><span class="chip-ok">9 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-wada">5 wad</span><span class="chip-ok">7 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">6 wad</span><span class="chip-ok">10 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>83</strong> elementów · <strong>26</strong> wad · <strong>57</strong> ok</div><a href="../../../UX_BENCH_CARS_DRIVEWAVE_PL.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_carwow.jpg" alt="Carwow" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">Carwow</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">4 wady</span><span class="chip-ok">32 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">1 wada</span><span class="chip-ok">15 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-wada">1 wada</span><span class="chip-ok">12 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">2 wady</span><span class="chip-ok">17 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>84</strong> elementów · <strong>8</strong> wad · <strong>76</strong> ok</div><a href="../../../UX_BENCH_CARWOW.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_cinch.jpg" alt="Cinch" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">Cinch</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">6 wad</span><span class="chip-ok">7 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">2 wady</span><span class="chip-ok">9 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-ok">13 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">6 wad</span><span class="chip-ok">7 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>50</strong> elementów · <strong>14</strong> wad · <strong>36</strong> ok</div><a href="../../../UX_BENCH_CINCH.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_guazi.jpg" alt="Guazi" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">Guazi</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">9 wad</span><span class="chip-ok">23 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">3 wady</span><span class="chip-ok">17 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-ok">10 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">10 wad</span><span class="chip-ok">10 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>82</strong> elementów · <strong>22</strong> wad · <strong>60</strong> ok</div><a href="../../../UX_BENCH_GUAZI.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_mychinapal_pl.jpg" alt="MyChinaPal" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">MyChinaPal</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">3 wady</span><span class="chip-ok">13 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">1 wada</span><span class="chip-ok">8 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-wada">1 wada</span><span class="chip-ok">9 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">4 wady</span><span class="chip-ok">11 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>50</strong> elementów · <strong>9</strong> wad · <strong>41</strong> ok</div><a href="../../../UX_BENCH_MYCHINAPAL_PL.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_otomoto.jpg" alt="Otomoto" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">Otomoto</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">1 wada</span><span class="chip-ok">10 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">1 wada</span><span class="chip-ok">36 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-wada">2 wady</span><span class="chip-ok">13 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">2 wady</span><span class="chip-ok">6 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>71</strong> elementów · <strong>6</strong> wad · <strong>65</strong> ok</div><a href="../../../UX_BENCH_OTOMOTO.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_primaauto_com_pl.jpg" alt="Primaauto" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">Primaauto</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">4 wady</span><span class="chip-ok">12 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-ok">5 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-wada">2 wady</span><span class="chip-ok">9 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">7 wad</span><span class="chip-ok">8 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>47</strong> elementów · <strong>13</strong> wad · <strong>34</strong> ok</div><a href="../../../UX_BENCH_PRIMAAUTO_COM_PL.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_tntcars_pl.jpg" alt="TNT Cars" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">TNT Cars</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">4 wady</span><span class="chip-ok">6 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">2 wady</span><span class="chip-ok">3 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-ok">6 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">4 wady</span><span class="chip-ok">4 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>29</strong> elementów · <strong>10</strong> wad · <strong>19</strong> ok</div><a href="../../../UX_BENCH_TNTCARS_PL.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_vehis.jpg" alt="Vehis" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">Vehis</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">4 wady</span><span class="chip-ok">9 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">2 wady</span><span class="chip-ok">7 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-ok">11 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">5 wad</span><span class="chip-ok">7 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>45</strong> elementów · <strong>11</strong> wad · <strong>34</strong> ok</div><a href="../../../UX_BENCH_VEHIS.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+<div class="shop-card"><div class="shop-card-thumb-wrap"><img class="shop-card-thumb" src="ux_img/bench_yanviacars_pl.jpg" alt="Yanvia Cars" loading="lazy"></div><div class="shop-card-body"><div class="shop-name">Yanvia Cars</div><div class="views-grid"><div class="view-row"><span class="view-label">Strona główna</span><span class="view-counts"><span class="chip-wada">6 wad</span><span class="chip-ok">5 ok</span></span></div>
+<div class="view-row"><span class="view-label">Lista</span><span class="view-counts"><span class="chip-wada">1 wada</span><span class="chip-ok">9 ok</span></span></div>
+<div class="view-row"><span class="view-label">Kafel</span><span class="view-counts"><span class="chip-ok">13 ok</span></span></div>
+<div class="view-row"><span class="view-label">Karta auta</span><span class="view-counts"><span class="chip-wada">3 wady</span><span class="chip-ok">3 ok</span></span></div>
+</div><div class="total-row">Łącznie: <strong>40</strong> elementów · <strong>10</strong> wad · <strong>30</strong> ok</div><a href="../../../UX_BENCH_YANVIACARS_PL.html" class="shop-link" target="_blank" rel="noopener">otwórz analizę →</a></div></div>
+
+</div>
+</div>
+</body>
+</html>

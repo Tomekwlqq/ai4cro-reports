@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="light">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benchmark &amp; Design — China Select</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ── tokeny z BRAND_STYLE_GUIDE — motyw Warm · Gold, jasny tryb ── */
+:root{
+  --bg:#FBF6F1;--surface:#FFFFFF;--surface-2:#F7F0EA;
+  --line:#EFE3DA;--line-soft:#F4EBE4;
+  --ink:#2B2326;--muted:#6B5D5A;--faint:#9C8D88;
+  --v:#C9A84C;--v-d:#8A6D1F;--v-soft:rgba(201,168,76,.10);
+  --dark:#3F4A44;
+  --r-md:12px;--r-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Space Grotesk",system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+
+/* ── Layout ── */
+.wrap{max-width:1200px;margin:0 auto;padding:28px 16px 80px}
+
+/* ── Header ── */
+.hub-header{margin-bottom:32px}
+.kicker{font:600 12px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--v-d);display:block;margin-bottom:8px}
+.hub-title{font-size:clamp(24px,4vw,36px);font-weight:700;line-height:1.15;margin-bottom:8px}
+.hub-lead{font-size:16px;line-height:1.55;color:var(--ink);max-width:860px;margin:6px 0 4px}
+.hub-status{font-size:14px;color:var(--muted);padding:8px 12px;background:var(--surface);border:1px solid var(--line);border-radius:999px;display:inline-block}
+
+
+/* ── Wejścia do mini hubów (portal, nie kafel) ── */
+.portale{display:grid;gap:14px;margin:4px 0 28px}
+.portal{display:flex;flex-direction:column;gap:16px;text-decoration:none;color:#F4EFE7;
+  background:linear-gradient(135deg,#3F4A44 0%,#2F3833 100%);border-radius:var(--r-lg);padding:22px 22px 20px;
+  border:1px solid #2F3833;box-shadow:0 6px 18px rgba(43,35,38,.14);transition:transform .15s ease,box-shadow .15s ease}
+.portal:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(43,35,38,.2)}
+.portal__kicker{font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:#C9A84C}
+.portal__tytul{font-size:clamp(22px,3.4vw,30px);font-weight:700;line-height:1.15;margin:8px 0 6px;color:#fff}
+.portal__opis{font-size:15px;color:#DCD3C7;max-width:62ch}
+.portal__status{margin-top:10px;font:500 13px/1.4 "IBM Plex Mono",monospace;color:#F1D98F}
+.portal__chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.portal__chip{font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;padding:6px 9px 6px 12px;border-radius:999px;background:var(--tb,rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.16);color:var(--ta,#EDE6DA);box-shadow:inset 4px 0 0 var(--ta,transparent)}
+.portal__side{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;border-top:1px solid rgba(255,255,255,.14);padding-top:14px}
+.portal__num{font:600 34px/1 "IBM Plex Mono",monospace;color:#C9A84C}
+.portal__numlbl,.portal__date{font-size:13px;color:#CFC6B9}
+.portal__btn{margin-left:auto;font:600 13px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;background:#C9A84C;color:#2B2326;padding:11px 16px;border-radius:999px}
+@media(min-width:760px){
+  .portal{flex-direction:row;align-items:stretch;padding:26px 28px}
+  .portal__main{flex:1}
+  .portal__side{flex-direction:column;align-items:flex-end;justify-content:center;border-top:0;border-left:1px solid rgba(255,255,255,.14);padding:0 0 0 24px;min-width:190px}
+  .portal__btn{margin-left:0;margin-top:10px}
+}
+
+/* ── Archiwum ── */
+.archiwum{margin-top:36px;border-top:1px solid var(--line);padding-top:18px}
+.archiwum summary{cursor:pointer;font:600 13px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:10px 0;list-style:none}
+.archiwum summary::-webkit-details-marker{display:none}
+.archiwum summary::before{content:"▸ ";color:var(--v-d)}
+.archiwum[open] summary::before{content:"▾ "}
+.archiwum__opis{font-size:14px;color:var(--faint);margin:2px 0 14px}
+.kafle--archiwum .kafel{opacity:.72;filter:saturate(.6)}
+.kafle--archiwum .kafel:hover{opacity:1;filter:none}
+
+/* ── Filtry ── */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+/* Filtry w kodzie kolorów kafli (08.10): tło = tło typu, pasek z lewej = akcent typu — jak na kaflu */
+.filter-btn{
+  font:600 12px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;
+  padding:9px 14px 9px 16px;border:1px solid var(--line);border-radius:999px;
+  background:var(--tb,var(--surface));color:var(--ink);cursor:pointer;
+  box-shadow:inset 5px 0 0 var(--ta,var(--line));
+  transition:all .15s ease;
+}
+.filter-btn:hover:not(.filter-active){
+  border-color:var(--ta,var(--v));
+}
+.filter-btn.filter-active{
+  background:var(--ta,var(--v-d));
+  border-color:var(--ta,var(--v-d));
+  box-shadow:none;
+  color:#fff;
+}
+
+/* ── Siatka kafli ── */
+.kafle{display:grid;gap:14px;grid-template-columns:1fr}
+.kafle-sekcje{display:block}
+.sekcja{margin:0 0 30px}
+.sekcja__t{font-size:19px;font-weight:700;margin:0 0 4px;padding-top:14px;border-top:2px solid var(--line)}
+.sekcja__o{font-size:14px;color:var(--muted);margin:0 0 14px;max-width:820px}
+.sekcja.sekcja--pusta{display:none}
+@media(min-width:600px){.kafle{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.kafle{grid-template-columns:repeat(3,1fr)}}
+
+/* ── Kafel — kolory z CSS var ustawianych inline per kafel ── */
+.kafel{
+  background:var(--kafel-bg,var(--surface));
+  border:1px solid var(--line);
+  border-left:5px solid var(--kafel-accent,var(--line));
+  border-radius:var(--r-lg);
+  padding:18px;display:flex;flex-direction:column;gap:10px;
+  transition:border-color .15s,box-shadow .15s;cursor:pointer;
+}
+.kafel:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.kafel--broken{opacity:.6;border-style:dashed}
+.kafel--hidden{display:none}
+
+.kafel__badges{display:flex;flex-wrap:wrap;gap:6px}
+.kafel__tytul{font-size:15px;font-weight:700;line-height:1.3;color:var(--ink)}
+.kafel__opis{font-size:13px;color:var(--muted);line-height:1.5;flex:1}
+.kafel__meta{font:600 11px/1 "IBM Plex Mono",monospace;color:var(--faint);margin-top:auto}
+.kafel__data{}
+
+/* ── Plakietki ── */
+.badge{
+  display:inline-block;font:600 11px/1 "IBM Plex Mono",monospace;
+  padding:3px 8px;border-radius:999px;white-space:nowrap;letter-spacing:.05em;
+}
+/* Plakietka typu — biały bg + tekst i ramka w kolorze akcentu typu (z CSS var kafla) */
+.badge-typ{
+  background:#fff;
+  color:var(--kafel-accent,var(--muted));
+  border:1px solid var(--kafel-accent,var(--line));
+  text-transform:uppercase;
+}
+.badge-ok   {background:#E3F2E9;color:#236B43}
+.badge-warn {background:#FBEBDD;color:#A4521F}
+.badge-q    {background:#EEE8E3;color:var(--muted)}
+.badge-new  {background:#C9A84C;color:#fff;font-weight:700;animation:pulse 2s ease infinite}
+.badge-intern{background:#F6E1E1;color:#A33}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.75}}
+
+/* ── Licznik ── */
+.kafle-count{font:14px/1 "IBM Plex Mono",monospace;color:var(--muted);margin-bottom:12px}
+/* ── Wyszukiwarka treści ── */
+.szukaj{position:sticky;top:var(--bar-h,34px);z-index:60;background:var(--bg);padding:10px 0 8px;margin:0 0 16px;border-bottom:1px solid var(--line)}
+.szukaj__pole{display:flex;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:0 6px 0 16px}
+.szukaj__pole:focus-within{border-color:var(--v-d);box-shadow:0 0 0 3px var(--v-soft)}
+.szukaj__in{flex:1;min-width:0;border:0;outline:0;background:transparent;font:16px/1.3 "Space Grotesk",system-ui,sans-serif;color:var(--ink);padding:13px 0}
+.szukaj__in::placeholder{color:var(--faint)}
+.szukaj__in::-webkit-search-cancel-button,.szukaj__in::-webkit-search-decoration{-webkit-appearance:none;appearance:none;display:none}
+.szukaj__x{flex:none;border:0;background:var(--v-soft);color:var(--v-d);width:34px;height:34px;border-radius:50%;font:600 18px/1 "IBM Plex Mono",monospace;cursor:pointer}
+.szukaj__x[hidden]{display:none}
+.szukaj__licznik{font:600 12px/1.4 "IBM Plex Mono",monospace;color:var(--muted);margin-top:8px;min-height:17px}
+.szukaj-wyniki{display:grid;gap:10px;margin:0 0 28px}
+.szukaj-wyniki[hidden]{display:none}
+.wynik{display:block;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--v);border-radius:12px;padding:12px 14px;overflow-wrap:anywhere;word-break:break-word}
+.wynik:hover,.wynik:focus-visible{border-color:var(--v-d);box-shadow:0 2px 12px rgba(0,0,0,.08);outline:0}
+.wynik__gora{font:600 11px/1.4 "IBM Plex Mono",monospace;color:var(--v-d);letter-spacing:.06em;text-transform:uppercase}
+.wynik__sekcja{font-weight:700;font-size:15px;line-height:1.35;margin:3px 0 4px}
+.wynik__frag{font-size:14px;color:var(--muted);line-height:1.55}
+.wynik__wsk{font:500 12px/1.4 "IBM Plex Mono",monospace;color:var(--faint);margin-top:6px}
+.wynik mark{background:#F3E3A8;color:var(--ink);border-radius:3px;padding:0 1px}
+.szukaj-chipy{display:flex;flex-wrap:wrap;gap:6px}
+.szukaj-chip{font:600 11px/1.2 "IBM Plex Mono",monospace;letter-spacing:.04em;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer;max-width:100%;overflow-wrap:anywhere;text-align:left}
+.szukaj-chip:hover{border-color:var(--v-d)}
+.szukaj-chip--on{background:var(--v-d);border-color:var(--v-d);color:#fff}
+.szukaj-arch{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:999px;background:#EEE8E3;color:var(--muted);letter-spacing:.04em}
+body.szukam #filters,body.szukam #kafle-count,body.szukam #kafle,body.szukam .archiwum,body.szukam .portale{display:none}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hub-header">
+    <span class="kicker">China Select · Benchmark &amp; Design</span>
+    <h1 class="hub-title">Benchmark &amp; Design — China Select</h1>
+    <p class="hub-lead">Strona China Select na tle 15 serwisów sprzedających auta z Chin i auta używane (strona główna, lista aut, kafel, karta auta), zestawiona z obawami kupującego auto z importu. Trzy części: rekomendacje i projekty zmian (z listą MUST HAVE), wnioski oraz analizy, na których to stoi.</p>
+  </header>
+  <section class="szukaj" role="search" aria-label="Szukaj w treści benchmarku i projektów">
+    <div class="szukaj__pole">
+      <input class="szukaj__in" id="szukaj-in" type="search" autocomplete="off" spellcheck="false"
+             placeholder="Szukaj w całym benchmarku i projektach…" aria-label="Szukaj w całym benchmarku i projektach" aria-controls="szukaj-wyniki">
+      <button class="szukaj__x" id="szukaj-x" type="button" aria-label="Wyczyść wyszukiwanie" hidden>×</button>
+    </div>
+    <div class="szukaj__licznik" id="szukaj-licznik" aria-live="polite"></div>
+  </section>
+  <div class="szukaj-wyniki" id="szukaj-wyniki" hidden></div>
+
+
+  <nav class="filters" id="filters" aria-label="Filtruj po typie">
+    <button class="filter-btn filter-active" data-typ="wszystkie" style="--tb:#FBF3E0;--ta:#8A6D1F">Wszystkie 11</button>
+    <button class="filter-btn" data-typ="analiza" style="--tb:#F5EDF0;--ta:#8A4F5D">Analiza 1</button>
+    <button class="filter-btn" data-typ="porównanie" style="--tb:#F1EBF4;--ta:#6A4D65">Porównanie 1</button>
+    <button class="filter-btn" data-typ="projekt" style="--tb:#FBF3E0;--ta:#8A6D1F">Projekt 5</button>
+    <button class="filter-btn" data-typ="wnioski" style="--tb:#EAF3EC;--ta:#2F6B45">Wnioski 3</button>
+    <button class="filter-btn" data-typ="wzorce" style="--tb:#EEF3F9;--ta:#3A6691">Wzorce z rynku 1</button>
+  </nav>
+
+  <div class="kafle-count" id="kafle-count">11 pozycji</div>
+
+  <main class="kafle-sekcje" id="kafle">
+    <section class="sekcja" data-sekcja="propozycje"><h2 class="sekcja__t">1 · Rekomendacje i projekty</h2><p class="sekcja__o">Lista wszystkich zmian z MUST HAVE, projekt każdej strony (dziś obok projektu) i projekty kluczowych elementów.</p><div class="kafle"><a class="kafel" href="../projekty/LISTA_ZMIAN_UX.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-ok">Gotowe</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Wszystkie zmiany w jednym miejscu — MUST HAVE na początek</h3>
+  <p class="kafel__opis">Jedna lista wszystkich zmian ze strony głównej, listy aut i karty auta: dziś obok projektu, co się zmienia, link do pełnej rekomendacji. MUST HAVE = braki wobec rynku o najwyższym priorytecie, finansowanie i wymogi prawne; osobno pozycje do dyskusji. Filtr: tylko MUST HAVE / obszar.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">12.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="../projekty/REKOMENDACJE_STRONA_GLOWNA.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Projekt zmian UX — Home Page (HP)</h3>
+  <p class="kafel__opis">Elementy strony głównej: najlepsze na rynku, dziś obok projektu, co się zmienia, pole komentarzy zespołu, uzasadnienie i testy A/B; na końcu cała strona dziś | projekt.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">9.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="../projekty/REKOMENDACJE_LISTA_AUT.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Projekt zmian UX — Lista aut (PLP) i kafel</h3>
+  <p class="kafel__opis">Nagłówek, filtry, paginacja i zmiany kafla: najlepsze na rynku, dziś obok projektu, co się zmienia, pole komentarzy, uzasadnienie i testy A/B; na końcu cała lista z nowym kaflem.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">9.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="../projekty/REKOMENDACJE_KARTA_AUTA.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Projekt zmian UX — Product Page (PDP)</h3>
+  <p class="kafel__opis">Elementy karty auta: najlepsze na rynku, dziś obok projektu, co się zmienia, pole komentarzy, uzasadnienie i testy A/B; na końcu cała karta — sekcje bez zmian 1:1, nic nie usunięte.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">9.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="../projekty/PROJEKTY_ELEMENTOW_KLUCZOWYCH.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Projekty elementów kluczowych — kafel, blok ceny, nagłówek listy, pierwszy ekran</h3>
+  <p class="kafel__opis">Kafel auta, blok ceny, nagłówek listy, pierwszy ekran — dziś obok projektu, z uzasadnieniem z rynku, UX i psychologii. Wzór formatu wszystkich projektów.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">4.10.2026</span>
+  </div>
+</a></div></section>
+<section class="sekcja" data-sekcja="wnioski"><h2 class="sekcja__t">2 · Wnioski</h2><p class="sekcja__o">Czego kupujący auta z importu się boi, jak odpowiada rynek i gdzie jest China Select — osobno dla karty auta, strony głównej i listy aut.</p><div class="kafle"><a class="kafel" href="../projekty/WNIOSKI_KARTA_AUTA_20261009.html" data-typ="wnioski"
+   style="--kafel-bg:#EAF3EC;--kafel-accent:#2F6B45">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Wnioski</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Wnioski — Product Page (PDP), zaakceptowane 9.10</h3>
+  <p class="kafel__opis">Czego kupujący się boi przy aucie z importu, jak odpowiada rynek, gdzie jest China Select i jakie zmiany karty z tego wynikają (raport Guazi, bateria, homologacja, cena do odbioru…) oraz pytania do decyzji. Rekomendacja karty scala element 4 w 2 i dodaje pytania o auto, zgody i „Zobacz również”.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">9.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="../projekty/WNIOSKI_STRONA_GLOWNA_20261009.html" data-typ="wnioski"
+   style="--kafel-bg:#EAF3EC;--kafel-accent:#2F6B45">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Wnioski</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Wnioski — Home Page (HP)</h3>
+  <p class="kafel__opis">Czego kupujący szuka na stronie głównej, jak odpowiada rynek i gdzie jest China Select; podstawa projektu zmian strony głównej.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">9.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="../projekty/WNIOSKI_LISTA_AUT_20261009.html" data-typ="wnioski"
+   style="--kafel-bg:#EAF3EC;--kafel-accent:#2F6B45">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Wnioski</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Wnioski — Lista aut (PLP) i kafel</h3>
+  <p class="kafel__opis">Jak kupujący wybiera auto z listy, co pokazuje rynek na kaflu i czego brakuje na liście China Select; podstawa projektu listy i kafla.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">9.10.2026</span>
+  </div>
+</a></div></section>
+<section class="sekcja" data-sekcja="analizy"><h2 class="sekcja__t">3 · Analizy</h2><p class="sekcja__o">Porównanie stron China Select i 15 rywali: całe strony obok siebie, analiza UX każdego elementu i wzorce z rynku.</p><div class="kafle"><a class="kafel" href="../../Ecomms_Activation_Agency/clients/chinaselect/benchmark/BENCHMARK_H2H.html" data-typ="porównanie"
+   style="--kafel-bg:#F1EBF4;--kafel-accent:#6A4D65">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Porównanie</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Porównanie stron — China Select obok każdego rywala</h3>
+  <p class="kafel__opis">Dwie całe strony obok siebie: China Select i wybrany rywal, 4 widoki (strona główna, lista aut, karta auta, kafel), 15 rywali, z opisem różnic przy każdej parze elementów i podsumowaniem, co z rywala wchodzi do projektu.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">9.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="../../Ecomms_Activation_Agency/clients/chinaselect/benchmark/ANALIZY_UX_BRANZY.html" data-typ="analiza"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Analiza UX — każdy element strony u China Select i 15 rywali</h3>
+  <p class="kafel__opis">China Select i 15 serwisów przebadanych w 4 widokach (strona główna, lista aut, kafel, karta auta). Każdy element opisany z wycinka i sprawdzony regułami; wady i poprawki per widok.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">9.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="../../Ecomms_Activation_Agency/clients/chinaselect/benchmark/H2H_RYNEK.html" data-typ="wzorce"
+   style="--kafel-bg:#EEF3F9;--kafel-accent:#3A6691">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Wzorce z rynku</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Wzorce z rynku — element po elemencie, kto robi to najlepiej</h3>
+  <p class="kafel__opis">Każdy element strony u wszystkich 16 serwisów naraz: miniatury, powiększenie, ranking i oznaczenie najlepszego wzorca. Tu widać, skąd pochodzą wzorce w projektach.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">9.10.2026</span>
+  </div>
+</a></div></section>
+  </main>
+
+  
+
+
+</div>
+<script>
+(function(){
+  var btns  = document.querySelectorAll('.filter-btn');
+  var kafle = document.querySelectorAll('#kafle .kafel');
+  var count = document.getElementById('kafle-count');
+
+  function setFilter(typ) {
+    var visible = 0;
+    kafle.forEach(function(k) {
+      var match = typ === 'wszystkie' || k.dataset.typ === typ;
+      k.classList.toggle('kafel--hidden', !match);
+      if (match) visible++;
+    });
+    count.textContent = visible + ' pozycji';
+    document.querySelectorAll('#kafle .sekcja').forEach(function(s) {
+      s.classList.toggle('sekcja--pusta', !s.querySelector('.kafel:not(.kafel--hidden)'));
+    });
+    btns.forEach(function(b) {
+      b.classList.toggle('filter-active', b.dataset.typ === typ);
+    });
+    // Stan w hash URL
+    if (typ !== 'wszystkie') {
+      history.replaceState(null, '', location.pathname + location.search + '#' + encodeURIComponent(typ));
+    } else {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+  }
+
+  // Odczyt hasha przy starcie
+  var initTyp = decodeURIComponent(location.hash.slice(1)) || 'wszystkie';
+  setFilter(initTyp);
+
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      setFilter(btn.dataset.typ);
+    });
+  });
+
+  // Obsługa przycisku wstecz/naprzód
+  window.addEventListener('hashchange', function() {
+    var typ = decodeURIComponent(location.hash.slice(1)) || 'wszystkie';
+    setFilter(typ);
+  });
+})();
+</script>
+<script src="szukaj_indeks.js" defer onerror="window.SZUKAJ_BLAD=1"></script>
+<script>
+(function(){
+  var inp=document.getElementById('szukaj-in'), box=document.getElementById('szukaj-wyniki'),
+      lic=document.getElementById('szukaj-licznik'), xb=document.getElementById('szukaj-x');
+  if(!inp) return;
+  var MAX=50, F=null, S=null, timer=null, ost=null, filtr='';
+  var MAPA={'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z'};
+  // fold: znak po znaku, 1:1 (pozycje w tekście znormalizowanym = pozycje w oryginale); ł osobno, bo NFD jej nie rozkłada
+  function fold(s){
+    var o='', c, l, m, d;
+    for(var i=0;i<s.length;i++){
+      c=s.charAt(i); l=c.toLowerCase(); if(l.length!==1) l=c;
+      m=MAPA[l];
+      if(!m){ d=l.normalize?l.normalize('NFD').charAt(0):l; m=d||l; }
+      o+=m;
+    }
+    return o;
+  }
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function przygotuj(){
+    if(F) return true;
+    var I=window.SZUKAJ_INDEKS;
+    if(!I) return false;
+    F=new Array(I.length); S=new Array(I.length);
+    for(var i=0;i<I.length;i++){ S[i]=fold(I[i].sekcja||''); F[i]=S[i]+' '+fold(I[i].tekst||''); }
+    return true;
+  }
+  function href(r){
+    var h=r.url||'';
+    if(r.kotwica) h+='#'+encodeURIComponent(r.kotwica);
+    else if(r.tf) h+='#:~:text='+encodeURIComponent(r.tf).replace(/-/g,'%2D');
+    return h;
+  }
+  // podświetlenie: przedziały trafień liczone na tekście znormalizowanym, wycinane z oryginału
+  function mark(orig, folded, terms){
+    var iv=[], t, p;
+    terms.forEach(function(t){ p=0; while((p=folded.indexOf(t,p))>=0){ iv.push([p,p+t.length]); p+=t.length; } });
+    iv.sort(function(a,b){return a[0]-b[0]||b[1]-a[1];});
+    var out='', pos=0;
+    iv.forEach(function(v){
+      if(v[1]<=pos) return;
+      var s=Math.max(v[0],pos);
+      out+=esc(orig.slice(pos,s))+'<mark>'+esc(orig.slice(s,v[1]))+'</mark>';
+      pos=v[1];
+    });
+    return out+esc(orig.slice(pos));
+  }
+  function wycinek(tekst, ft, terms){
+    var first=-1;
+    terms.forEach(function(t){ var p=ft.indexOf(t); if(p>=0 && (first<0||p<first)) first=p; });
+    var st=Math.max(0,(first<0?0:first)-70), en=Math.min(tekst.length,st+240);
+    if(st>0){ var sp=tekst.indexOf(' ',st); if(sp>=0&&sp<first) st=sp+1; }
+    if(en<tekst.length){ var sp2=tekst.lastIndexOf(' ',en); if(sp2>st+120) en=sp2; }
+    var o=tekst.slice(st,en), f=ft.slice(st,en);
+    return (st>0?'… ':'')+mark(o,f,terms)+(en<tekst.length?' …':'');
+  }
+  function pokaz(q){
+    var I=window.SZUKAJ_INDEKS;
+    var qf=fold(q).trim(), terms=qf.split(/\s+/).filter(Boolean);
+    if(qf.length<2){ box.hidden=true; box.innerHTML=''; lic.textContent=''; document.body.classList.remove('szukam'); return; }
+    document.body.classList.add('szukam');
+    if(!przygotuj()){
+      box.hidden=false; box.innerHTML='';
+      lic.textContent=window.SZUKAJ_BLAD?'Indeks wyszukiwarki nie został załadowany (brak szukaj_indeks.js obok huba).':'Indeks wyszukiwarki jeszcze się ładuje…';
+      return;
+    }
+    var trafione=[], i, k, sc;
+    for(i=0;i<F.length;i++){
+      var h=F[i], ok=true;
+      for(k=0;k<terms.length;k++){ if(h.indexOf(terms[k])<0){ ok=false; break; } }
+      if(!ok) continue;
+      sc=(h.indexOf(qf)>=0?4:0);
+      for(k=0;k<terms.length;k++){ if(S[i].indexOf(terms[k])>=0) sc+=2; }
+      if(I[i].kotwica) sc+=1;
+      if(I[i].arch) sc-=3;
+      trafione.push([sc,i]);
+    }
+    trafione.sort(function(a,b){return b[0]-a[0]||a[1]-b[1];});
+    ost={q:q, terms:terms, lista:trafione};
+    rysuj();
+  }
+  function plural(n){ return n+' '+(n===1?'wynik':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?'wyniki':'wyników')); }
+  function rysuj(){
+    var I=window.SZUKAJ_INDEKS, terms=ost.terms, q=ost.q, wszystkie=ost.lista;
+    // liczniki per strona (chipy) — filtr zawęża wyniki do jednej strony, gdy jedna strona zalewa listę
+    var licz={}, kolej=[];
+    wszystkie.forEach(function(p){ var t=I[p[1]].strona_tytul; if(!(t in licz)){ licz[t]=0; kolej.push(t); } licz[t]++; });
+    if(filtr && !(filtr in licz)) filtr='';
+    var lista=filtr?wszystkie.filter(function(p){return I[p[1]].strona_tytul===filtr;}):wszystkie;
+    var n=lista.length, pokazane=lista.slice(0,MAX);
+    lic.textContent=n===0?'Brak wyników dla „'+q.trim()+'”. Spróbuj krótszego słowa.':
+      (plural(n)+(filtr?' w wybranej stronie':'')+(n>MAX?' · pokazano '+MAX:''));
+    var html='';
+    if(kolej.length>1){
+      kolej.sort(function(a,b){return licz[b]-licz[a];});
+      var krotkie=kolej.map(function(t){return t.split(' — ')[0];});
+      html+='<div class="szukaj-chipy" role="group" aria-label="Zawęź do strony">'
+        +'<button type="button" class="szukaj-chip'+(filtr?'':' szukaj-chip--on')+'" data-s="">Wszystkie '+wszystkie.length+'</button>';
+      kolej.forEach(function(t,ix){
+        var nazwa=krotkie.indexOf(krotkie[ix])===krotkie.lastIndexOf(krotkie[ix])?krotkie[ix]:t;
+        html+='<button type="button" class="szukaj-chip'+(filtr===t?' szukaj-chip--on':'')+'" data-s="'+esc(t)+'" title="'+esc(t)+'">'+esc(nazwa)+' '+licz[t]+'</button>';
+      });
+      html+='</div>';
+    }
+    pokazane.forEach(function(p){
+      var r=I[p[1]], ft=F[p[1]].slice(S[p[1]].length+1);
+      html+='<a class="wynik" href="'+esc(href(r))+'">'
+        +'<div class="wynik__gora">'+esc(r.strona_tytul)+(r.arch?'<span class="szukaj-arch">archiwum</span>':'')+'</div>'
+        +(r.sekcja?'<div class="wynik__sekcja">'+mark(r.sekcja,S[p[1]],terms)+'</div>':'')
+        +'<div class="wynik__frag">'+wycinek(r.tekst,ft,terms)+'</div>'
+        +(r.para?'<div class="wynik__wsk">Strona otworzy się bez wybranej pary — ustaw ją w polach u góry.</div>':'')
+        +'</a>';
+    });
+    box.innerHTML=html; box.hidden=false;
+  }
+  box.addEventListener('click',function(e){
+    var b=e.target.closest?e.target.closest('.szukaj-chip'):null;
+    if(!b||!ost) return;
+    filtr=b.getAttribute('data-s')||'';
+    rysuj();
+  });
+  function zmiana(){
+    xb.hidden=!inp.value;
+    clearTimeout(timer);
+    timer=setTimeout(function(){
+      pokaz(inp.value);
+      try{ sessionStorage.setItem('szukaj_q_design',inp.value); }catch(e){}
+    },150);
+  }
+  inp.addEventListener('input',zmiana);
+  inp.addEventListener('keydown',function(e){ if(e.key==='Escape'){ inp.value=''; zmiana(); } });
+  xb.addEventListener('click',function(){ inp.value=''; zmiana(); inp.focus(); });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='/' && !/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||'')){ e.preventDefault(); inp.focus(); }
+  });
+  window.addEventListener('DOMContentLoaded',function(){
+    try{
+      var nav=(performance.getEntriesByType('navigation')[0]||{}).type;
+      var q=sessionStorage.getItem('szukaj_q_design');
+      if(nav==='back_forward' && q){ inp.value=q; xb.hidden=false; pokaz(q); }
+    }catch(e){}
+  });
+})();
+</script>
+
+</body>
+</html>
