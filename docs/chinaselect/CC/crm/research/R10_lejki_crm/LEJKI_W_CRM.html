@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lejki w CRM — China Select</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF6F1; --surface:#FFFFFF; --ink:#2B2326; --muted:#6B5D5A; --faint:#9C8D88;
+  --v:#C9A84C; --v-d:#8A6D1F; --v-l:#F5ECD4; --line:#E8DED3;
+  --green:#2E8B57; --green-l:#E7F3EC; --orange:#E07A3C; --orange-l:#FCEEE4;
+  --blue:#4A7FB5; --blue-l:#E8F0F8; --amber:#B07C22; --amber-l:#FBF1DE;
+  --red:#B5473A; --red-l:#F8E6E3; --dark:#3F4A44;
+  --mono:'IBM Plex Mono',monospace; --sans:'Space Grotesk',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6}
+a{color:var(--v-d)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.top{background:var(--dark);color:#fff;font-size:13px;padding:12px 0}
+.top a{color:var(--v)}
+.hero{padding:32px 0 20px;border-bottom:2px solid var(--v)}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--v-d)}
+h1{font-size:26px;line-height:1.25;margin:6px 0 10px}
+.lead{color:var(--muted);max-width:760px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{font-family:var(--mono);font-size:12px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:4px 10px;color:var(--muted)}
+nav.tabs{position:sticky;top:34px;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;padding-top:8px;padding-bottom:0}
+nav.tabs button{font:inherit;font-size:14px;font-weight:600;background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav.tabs button.on{color:var(--ink);border-bottom-color:var(--v)}
+.panel{display:none;padding:28px 0 40px}
+.panel.on{display:block}
+h2{font-size:21px;margin-bottom:6px}
+h3{font-size:16px;margin:22px 0 8px}
+p+p{margin-top:8px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.note{border-left:4px solid var(--v);background:var(--v-l);padding:12px 14px;border-radius:0 8px 8px 0;margin:14px 0}
+.warn{border-left-color:var(--orange);background:var(--orange-l)}
+.ok{border-left-color:var(--green);background:var(--green-l)}
+/* kanban */
+.kanban{display:flex;gap:10px;overflow-x:auto;padding:10px 2px 14px;scroll-snap-type:x mandatory}
+.col{flex:0 0 210px;background:#F3ECE3;border-radius:10px;padding:10px;scroll-snap-align:start}
+.col h4{font-size:13px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.col h4 span{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.col.ops{background:#ECEFEC}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 10px;margin-bottom:8px;cursor:pointer;font-size:13px}
+.card:hover{border-color:var(--v)}
+.card b{display:block;font-size:13px}
+.tag{display:inline-block;font-family:var(--mono);font-size:10.5px;border-radius:4px;padding:1px 6px;margin:4px 4px 0 0}
+.t-hot{background:var(--red-l);color:var(--red)} .t-warm{background:var(--amber-l);color:var(--amber)} .t-cold{background:var(--blue-l);color:var(--blue)}
+.t-src{background:#EFEAE4;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin-top:4px}
+.drawer{margin-top:12px}
+.grid2{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:820px){.grid2{grid-template-columns:1fr 1fr}}
+.grid3{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:820px){.grid3{grid-template-columns:repeat(3,1fr)}}
+ul.clean{list-style:none}
+ul.clean li{padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+ul.clean li:last-child{border-bottom:0}
+/* flow */
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 16px}
+.seg button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:6px 12px;cursor:pointer}
+.seg button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.flow{position:relative;padding-left:26px}
+.flow:before{content:"";position:absolute;left:10px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.step{position:relative;margin-bottom:12px}
+.step:before{content:"";position:absolute;left:-21px;top:16px;width:12px;height:12px;border-radius:50%;background:var(--v);border:2px solid var(--bg)}
+.step.wait:before{background:var(--faint);width:10px;height:10px;left:-20px}
+.step.branch:before{background:var(--orange);border-radius:2px;transform:rotate(45deg)}
+.step.end:before{background:var(--dark)}
+.step .box{padding:12px 14px}
+.step .when{font-family:var(--mono);font-size:11.5px;color:var(--v-d)}
+.step .subj{font-weight:600}
+.branches{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px}
+@media(min-width:700px){.branches{grid-template-columns:repeat(3,1fr)}}
+.br{font-size:13px;border-radius:8px;padding:8px 10px}
+.br.r{background:var(--green-l)} .br.c{background:var(--orange-l)} .br.n{background:#F1EDE8}
+.rules{display:grid;grid-template-columns:1fr;gap:8px}
+@media(min-width:700px){.rules{grid-template-columns:repeat(3,1fr)}}
+/* vendor tabs */
+.vtabs{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.vtabs button{font:inherit;font-weight:600;font-size:14px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;cursor:pointer}
+.vtabs button.on{border-color:var(--v);background:var(--v-l)}
+.vpanel{display:none}.vpanel.on{display:block}
+.verdict{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:500;border-radius:4px;padding:2px 8px}
+.v-ok{background:var(--green-l);color:var(--green)} .v-part{background:var(--amber-l);color:var(--amber)} .v-no{background:var(--red-l);color:var(--red)}
+.shots{display:grid;grid-template-columns:1fr;gap:14px;margin-top:12px}
+@media(min-width:820px){.shots{grid-template-columns:1fr 1fr}}
+figure{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+figure img{display:block;width:100%;height:auto;max-height:360px;object-fit:contain;background:#fff;cursor:zoom-in;border-bottom:1px solid var(--line)}
+figcaption{padding:10px 12px;font-size:13px}
+figcaption .src{display:block;font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--surface)}
+th{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;text-align:left;color:var(--muted);background:#F3ECE3;padding:8px 10px}
+td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:top}
+.tblwrap{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+@media(max-width:700px){
+  table.stack thead{display:none}
+  table.stack tr{display:block;border-top:1px solid var(--line);padding:6px 0}
+  table.stack td{display:block;border:0;padding:3px 10px}
+  table.stack td:before{content:attr(data-l);display:block;font-family:var(--mono);font-size:10.5px;text-transform:uppercase;color:var(--faint)}
+}
+.num{font-family:var(--mono);font-weight:500}
+.tc{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--dark);border-radius:0 10px 10px 0;padding:14px 16px;margin-top:18px}
+.tc h4{font-family:var(--mono);font-size:12px;letter-spacing:.06em;margin-bottom:6px}
+.tc li{margin:4px 0 4px 18px;font-size:14px}
+#lb{position:fixed;inset:0;background:rgba(43,35,38,.88);display:none;align-items:center;justify-content:center;z-index:50;padding:16px;cursor:zoom-out}
+#lb img{max-width:100%;max-height:92vh;background:#fff;border-radius:6px}
+footer{border-top:1px solid var(--line);padding:20px 0 40px;font-size:12.5px;color:var(--muted)}
+
+/* kalkulator własnego rozwiązania */
+.calc{display:grid;grid-template-columns:1fr;gap:12px;margin:14px 0}
+@media(min-width:820px){.calc{grid-template-columns:repeat(4,1fr)}}
+.calc label{display:block;font-family:var(--mono);font-size:11.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.calc input[type=range]{width:100%}
+.calc .val{font-weight:700;font-size:18px}
+.seg2 button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:5px 12px;cursor:pointer;margin-right:4px}
+.seg2 button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.kpi{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:820px){.kpi{grid-template-columns:repeat(3,1fr)}}
+.kpi .box h4{font-size:15px;margin-bottom:6px}
+.kpi .big{font-family:var(--mono);font-size:22px;font-weight:500}
+.bar{height:12px;border-radius:6px;background:var(--v);margin:3px 0 8px}
+.bar.b{background:var(--blue)} .bar.c{background:var(--orange)}
+.barlbl{font-size:12.5px;color:var(--muted)}
+td.h{font-family:var(--mono);white-space:nowrap}
+tr.sum td{font-weight:700;background:#F3ECE3}
+.ev li{margin:6px 0 6px 18px;font-size:14px}
+</style>
+</head>
+<body>
+<!-- hub-backlink -->
+<div id="hub-backlink-bar" style="position:sticky;top:0;z-index:100;background:#3F4A44;padding:8px 16px;font:600 13px/1.4 'IBM Plex Mono',monospace;letter-spacing:.04em;">
+  <a href="../../CRM_HUB.html" style="color:#C9A84C;text-decoration:none;">← Hub CRM i leadów</a>
+</div>
+<!-- /hub-backlink -->
+
+<header class="hero"><div class="wrap">
+  <div class="kicker">China Select · CRM · 06–08.10.2026 · wewnętrzne</div>
+  <h1>Lejki i ścieżki mailowe w CRM — jak to wygląda u China Select</h1>
+  <p class="lead">Na jednej stronie: Lejek sprzedaży CC tak, jak handlowiec zobaczy go w CRM. Ścieżka dogrzewania L4 z rozgałęzieniami na odpowiedź i klik. I jak tę samą ścieżkę buduje się w Pipedrive, HubSpot, Bitrix24 i Livespace — na prawdziwych zrzutach z ich dokumentacji. Na końcu: co jest najtrudniejsze w CRM, czy da się to zrobić na open source i ile kosztuje własne rozwiązanie w godzinach i złotówkach.</p>
+  <div class="chips">
+    <span class="chip">lejek: proces.json v0 (04.10)</span>
+    <span class="chip">ścieżka L4: LEJKI_v0.md</span>
+    <span class="chip">limity: dokumentacja producentów, odczyt 05–06.10</span>
+    <span class="chip">ceny: PORÓWNANIE_CRM.html</span>
+  </div>
+</div></header>
+
+<nav class="tabs"><div class="wrap">
+  <button class="on" data-p="p1">1 · Lejek CC</button>
+  <button data-p="p2">2 · Ścieżka L4</button>
+  <button data-p="p3">3 · Jak to wygląda w CRM</button>
+  <button data-p="p4">4 · Budować czy kupić</button>
+  <button data-p="p5">5 · Własne rozwiązanie: czas i koszt</button>
+</div></nav>
+
+<main class="wrap">
+
+<!-- ================= 1. LEJEK ================= -->
+<section class="panel on" id="p1">
+  <h2>Lejek CC w widoku kanban</h2>
+  <p class="muted">Tak wygląda główny widok pracy handlowca w każdym z czterech CRM: kolumny to etapy, karty to leady i transakcje. Etapy wzięte z mapy procesu sprzedaży. Karty są przykładowe. Kliknij kartę, żeby zobaczyć, co CRM o niej wie.</p>
+  <div class="legend"><span><span class="tag t-hot">HOT</span> dzwoni Rinvo do 5 min</span><span><span class="tag t-warm">WARM</span> ścieżka mailowa + Rinvo na sygnał</span><span><span class="tag t-cold">COLD</span> lista podtrzymania, remarketing</span></div>
+
+  <h3>Sprzedaż — od leada do zaliczki</h3>
+  <div class="kanban" id="kb-sales"></div>
+  <h3>Operacje — od zaliczki do wydania auta</h3>
+  <p class="small muted">Najdłuższy kawałek procesu to tygodnie importu. Dlatego lejek nie kończy się na „wygrany”: klient czeka i musi wiedzieć, gdzie jest jego auto.</p>
+  <div class="kanban" id="kb-ops"></div>
+
+  <div class="drawer box" id="drawer"><span class="muted small">Kliknij kartę powyżej.</span></div>
+
+  <div class="grid3" style="margin-top:18px">
+    <div class="box"><h3 style="margin-top:0">Osobno, poza lejkiem</h3><ul class="clean">
+      <li>Auto na zamówienie (concierge) — osobny lejek albo osobna ścieżka</li>
+      <li>Kanał B2B: dealerzy, komisy, floty — osobny lejek</li>
+      <li>Podtrzymanie COLD — lista, nie lejek</li></ul></div>
+    <div class="box"><h3 style="margin-top:0">Automaty wokół lejka</h3><ul class="clean">
+      <li>Licznik czasu reakcji od wpadnięcia leada (obietnica 30 min)</li>
+      <li>Rinvo: transkrypcja, streszczenie i ocena leada zapisane do CRM</li>
+      <li>Oddzwonienie po nieodebranym i po formularzu nocą</li>
+      <li>Alarm HOT do opiekuna</li>
+      <li>Zarezerwowany egzemplarz znika ze strony</li>
+      <li>Powiadomienia klienta o statusie importu</li>
+      <li>Codzienny raport: HOT, oferty, rezerwacje, utracone HOT</li></ul></div>
+    <div class="box"><h3 style="margin-top:0">Pola na karcie</h3><ul class="clean">
+      <li><b>Skąd przyszedł:</b> grupa, model, kreacja, wariant, UTM</li>
+      <li><b>Z rozmowy:</b> budżet, finansowanie, firma czy prywatnie, termin zakupu, główna potrzeba, obiekcja, następny krok, ocena leada, transkrypcja, streszczenie AI</li>
+      <li><b>Z operacji:</b> egzemplarz/VIN, status importu, ETA, zaliczka, raport techniczny, oględziny, rejestracja, wydanie</li></ul></div>
+  </div>
+</section>
+
+<!-- ================= 2. ŚCIEŻKA L4 ================= -->
+<section class="panel" id="p2">
+  <h2>Ścieżka L4 — dogrzewanie ciepłego leada</h2>
+  <p class="muted">To jest to, o co chodzi w „sekwencjach dla segmentów”. Nie newsletter do całej bazy, tylko automat: lead wpada do ścieżki sam, dostaje maile pod swój model, a ścieżka reaguje na to, co robi. Pięć kroków odpowiada pięciu obawom z FAQ klienta.</p>
+  <div class="seg" id="seg">
+    <button class="on" data-s="ev">Segment: elektryk SUV, rodzina</button>
+    <button data-s="biz">Segment: firma, leasing</button>
+    <button data-s="hyb">Segment: hybryda PHEV, pierwszy import</button>
+  </div>
+
+  <div class="flow" id="flow"></div>
+
+  <h3>Reguły, które działają przez całą ścieżkę</h3>
+  <div class="rules">
+    <div class="br r"><b>Odpowiedź na dowolny mail</b><br>Ścieżka staje. Handlowiec dostaje zadanie „odpisz dziś”. Automat nie pisze do kogoś, kto już rozmawia.</div>
+    <div class="br c"><b>Zmiana etapu w lejku</b><br>Zaliczka, oferta albo utrata leada zatrzymuje ścieżkę. Inaczej klient po wpłacie dostaje maila „czy nadal się zastanawiasz”.</div>
+    <div class="br n"><b>Wypisanie i zgoda</b><br>Klik „wypisz” zatrzymuje ścieżkę i odnotowuje brak zgody w CRM. Rinvo dzwoni tylko przy zgodzie na połączenia automatyczne.</div>
+  </div>
+  <div class="note warn small"><b>Otwarcia maila nie traktujemy jako sygnału.</b> Apple Mail i część skrzynek otwiera maile automatycznie, więc „otworzył” bywa fałszywe. Rozgałęzienia opieramy na odpowiedzi i kliknięciu w link do raportu albo karty auta.</div>
+</section>
+
+<!-- ================= 3. W CRM ================= -->
+<section class="panel" id="p3">
+  <h2>Ta sama ścieżka w czterech CRM</h2>
+  <p class="muted">Każda zakładka pokazuje: jak zbudować L4, prawdziwe zrzuty interfejsu z dokumentacji producenta i twarde limity. Ocena dotyczy tylko automatycznych ścieżek dla segmentów, czyli kryterium K04 z porównania.</p>
+
+  <div class="tblwrap" style="margin:14px 0">
+  <table class="stack">
+    <thead><tr><th>CRM i plan</th><th>Automatyczny zapis do ścieżki</th><th>5 maili z opóźnieniem</th><th>Odpowiedź / klik</th><th>Stop po odpowiedzi</th><th>Ocena L4</th><th>Rok, 3 / 5 os.</th></tr></thead>
+    <tbody>
+      <tr><td data-l="CRM i plan"><b>Pipedrive Premium</b></td><td data-l="Zapis">tak, wyzwalacz deal/lead + warunki</td><td data-l="5 maili">tak, do 10 opóźnień</td><td data-l="Odpowiedź / klik">odpowiedź: tak, „czekaj na zdarzenie”; klik: śledzony, jako warunek do sprawdzenia</td><td data-l="Stop">tak, warunek „Email has been replied to”</td><td data-l="Ocena"><span class="verdict v-ok">SPEŁNIA</span></td><td data-l="Rok" class="num">9 291 / 15 486 zł</td></tr>
+      <tr><td data-l="CRM i plan"><b>Pipedrive Growth</b></td><td data-l="Zapis">tak</td><td data-l="5 maili">nie, 3 opóźnienia = max 4 maile</td><td data-l="Odpowiedź / klik">tak</td><td data-l="Stop">tak</td><td data-l="Ocena"><span class="verdict v-no">NIE</span></td><td data-l="Rok" class="num">6 141 / 10 235 zł</td></tr>
+      <tr><td data-l="CRM i plan"><b>HubSpot Sales Pro</b></td><td data-l="Zapis">nie, ręcznie przez handlowca; auto = Enterprise</td><td data-l="5 maili">tak, do 10 maili</td><td data-l="Odpowiedź / klik">tylko odpowiedź</td><td data-l="Stop">tak, domyślnie</td><td data-l="Ocena"><span class="verdict v-no">INNY PLAN</span></td><td data-l="Rok" class="num">19 829 / 29 161 zł</td></tr>
+      <tr><td data-l="CRM i plan"><b>HubSpot Sales Pro + Marketing Pro</b></td><td data-l="Zapis">tak, z listy/segmentu</td><td data-l="5 maili">tak</td><td data-l="Odpowiedź / klik">tak</td><td data-l="Stop">tak</td><td data-l="Ocena"><span class="verdict v-ok">SPEŁNIA</span></td><td data-l="Rok" class="num">130 174 / 144 171 zł</td></tr>
+      <tr><td data-l="CRM i plan"><b>Bitrix24 Professional Vibe+</b></td><td data-l="Zapis">tak, lead wpada na etap</td><td data-l="5 maili">tak, reguły z opóźnieniem na etapach</td><td data-l="Odpowiedź / klik">klik i otwarcie: wyzwalacz przesuwa etap</td><td data-l="Stop">brak dowodu na wyzwalacz „odpowiedź”</td><td data-l="Ocena"><span class="verdict v-part">CZĘŚCIOWO</span></td><td data-l="Rok" class="num">11 520 zł* (pakiet do 100 os.)</td></tr>
+      <tr><td data-l="CRM i plan"><b>Livespace Growth</b></td><td data-l="Zapis">nie, handlowiec uruchamia z profilu</td><td data-l="5 maili">tak</td><td data-l="Odpowiedź / klik">brak rozgałęzień, jest zadanie „brak odpowiedzi”</td><td data-l="Stop">tak</td><td data-l="Ocena"><span class="verdict v-no">OSOBNE NARZĘDZIE</span></td><td data-l="Rok" class="num">8 112 / 13 520 zł</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">* Bitrix24: cena premierowa na pierwsze 12 miesięcy przy zakupie do 10.12.2026. Cena odnowienia nieopublikowana; przy rozliczeniu miesięcznym 19 188 zł/rok. Pipedrive Growth: €39 × os. × 12 × 4,3745 zł. Pozostałe kwoty z PORÓWNANIE_CRM.html.</p>
+
+  <div class="vtabs" id="vtabs">
+    <button class="on" data-v="pd">Pipedrive</button>
+    <button data-v="hs">HubSpot</button>
+    <button data-v="bx">Bitrix24</button>
+    <button data-v="ls">Livespace</button>
+  </div>
+
+  <!-- Pipedrive -->
+  <div class="vpanel on" id="v-pd">
+    <h3>Pipedrive — złożone sekwencje robi się w Automatyzacjach, nie w Sekwencjach</h3>
+    <p>Pipedrive ma dwa narzędzia o mylących nazwach. <b>Sekwencje</b> to pomocnik handlowca: liniowa lista maili i zadań, do 10 kroków i 250 rekordów na sekwencję, bez rozgałęzień, a zatrzymanie po odpowiedzi trzeba kliknąć ręcznie. <b>Automatyzacje</b> to właściwy silnik ścieżek: odpalają się same dla każdego leada spełniającego warunki i umieją czekać na odpowiedź. Kliknięcia linków są śledzone; czy da się na nich rozgałęzić ścieżkę, sprawdzimy w trialu.</p>
+    <div class="grid2" style="margin-top:10px">
+      <div class="box"><h3 style="margin-top:0">Jak zbudować L4</h3><ol style="margin-left:18px;font-size:14px">
+        <li>Wyzwalacz „Lead utworzony” z warunkami: etykieta WARM i model = segment.</li>
+        <li>Akcja „Wyślij e-mail” z szablonu ze zmiennymi: imię, model, link do raportu egzemplarza.</li>
+        <li>Opóźnienie, potem warunek if/else „Email has been replied to”: tak oznacza stop i zadanie dla handlowca, nie oznacza kolejny mail.</li>
+        <li>Powtórzyć dla maili 2–5. Mieści się w jednej automatyzacji na planie Premium.</li>
+        <li>Sygnał „kliknął raport” najlepiej obsłużyć osobną, małą automatyzacją: klik daje zadanie dla Rinvo. Nie krokiem „czekaj na zdarzenie” w głównej ścieżce, bo gdy klient nie kliknie, ten krok kończy całą ścieżkę. Czy warunek if/else widzi klik, trzeba sprawdzić w trialu.</li></ol></div>
+      <div class="box"><h3 style="margin-top:0">Limity, które realnie przeszkadzają</h3><ul class="clean">
+        <li>Growth: 3 opóźnienia, 3 warunki i 3 kroki „czekaj” na automatyzację. Premium i Ultimate: po 10.</li>
+        <li>Maks. 10 akcji na automatyzację; łączne opóźnienie maks. 90 dni.</li>
+        <li>Krok „czekaj na zdarzenie” trwa maks. 7 dni. Jeśli nic się nie stanie, automatyzacja się kończy, więc „brak reakcji” buduje się opóźnieniem i warunkiem, nie oczekiwaniem.</li>
+        <li>Maile idą ze skrzynki handlowca, max 40 akcji mailowych na minutę na firmę, plus limity Gmaila lub Outlooka.</li>
+        <li>Zmiana aktywnej automatyzacji wymaga decyzji, co z leadami w środku ścieżki: zostawić czy anulować.</li></ul></div>
+    </div>
+    <div class="shots">
+      <figure><img src="img/pd_wait_cond_a.png" alt="Pipedrive: krok czekaj na warunek z warunkiem Email has been replied"><figcaption>Automatyzacja: wyzwalacz „Deal created”, wysyłka maila z szablonu i krok „czekaj na warunek” ustawiony na odpowiedź na maila, limit 3 dni.<span class="src">support.pipedrive.com · Automations: wait for condition · odczyt 06.10.2026</span></figcaption></figure>
+      <figure><img src="img/pd_wait_cond_b.png" alt="Pipedrive: historia wykonania kroku czekaj"><figcaption>Historia wykonania: krok czeka (status PENDING) aż warunek się spełni albo minie czas.<span class="src">support.pipedrive.com · Automations: wait for condition</span></figcaption></figure>
+      <figure><img src="img/pd_auto_enroll.png" alt="Pipedrive: automatyzacja zapisująca deal do sekwencji"><figcaption>Automatyczny zapis do Sekwencji: po zakończonym telefonie deal trafia do sekwencji. To spina oba narzędzia.<span class="src">support.pipedrive.com · Sequences: automatic enrollment · odczyt 06.10.2026</span></figcaption></figure>
+      <figure><img src="img/pd_seq_main.png" alt="Pipedrive: ekran Sekwencji"><figcaption>Ekran Sekwencji (Pulse): liniowa lista kroków — research, telefon, mail. Dobre do pracy handlowca, za słabe na ścieżki dla segmentów.<span class="src">support.pipedrive.com · Sequences feature · odczyt 06.10.2026</span></figcaption></figure>
+      <figure><img src="img/pd_seq_auto_send.png" alt="Pipedrive: krok mailowy z wysyłką automatyczną"><figcaption>Krok mailowy w sekwencji z przełącznikiem „Send automatically” i opóźnieniem po poprzednim kroku.<span class="src">support.pipedrive.com · Sequences feature</span></figcaption></figure>
+      <figure><img src="img/pd_seq_overview.png" alt="Pipedrive: przegląd sekwencji"><figcaption>Podgląd sekwencji: kto jest w środku, na którym kroku, co się nie udało. Zrzut starszy — pokazuje limit 100, artykuł z 23.09.2026 mówi już o 250.<span class="src">support.pipedrive.com · Sequences feature</span></figcaption></figure>
+    </div>
+  </div>
+
+  <!-- HubSpot -->
+  <div class="vpanel" id="v-hs">
+    <h3>HubSpot — sekwencje są w Sales Hub, ścieżki w Marketing Hub</h3>
+    <p>W Sales Hub Professional sekwencja ma do 10 maili i domyślnie zatrzymuje się, gdy kontakt odpowie. Ale zapisuje do niej handlowiec. Automatyczny zapis przez workflow wymaga <b>Sales Hub Enterprise</b>. Pełne ścieżki z rozgałęzieniami dla segmentów to workflow kontaktowe w <b>Marketing Hub Professional</b>, czyli osobna, droga licencja.</p>
+    <div class="note small">Dowód: „A Sales or Service Hub Enterprise subscription is required to enroll contacts in sequences using workflows” — knowledge.hubspot.com, odczyt 06.10.2026. Kontakt może być w jednej sekwencji naraz.</div>
+    <div class="shots">
+      <figure><img src="img/hs_wf_triggers.png" alt="HubSpot: wyzwalacze workflow"><figcaption>Workflow: wybór wyzwalacza zapisu, np. wysłany formularz albo odsłona strony.<span class="src">knowledge.hubspot.com · Create workflows · odczyt 06.10.2026</span></figcaption></figure>
+      <figure><img src="img/hs_seq_enroll_workflow.png" alt="HubSpot: akcja zapisu do sekwencji w workflow"><figcaption>Akcja „zapisz do sekwencji” w workflow — dostępna od Enterprise.<span class="src">knowledge.hubspot.com · Create and edit sequences</span></figcaption></figure>
+      <figure><img src="img/hs_seq_delay.png" alt="HubSpot: opóźnienie między krokami sekwencji"><figcaption>Opóźnienie między krokami sekwencji, liczone w dniach roboczych.<span class="src">knowledge.hubspot.com · Create and edit sequences</span></figcaption></figure>
+      <figure><img src="img/hs_seq_auto_email.png" alt="HubSpot: automatyczny mail w sekwencji"><figcaption>Krok „automatyczny mail” w sekwencji, jako nowy wątek albo odpowiedź na poprzedni.<span class="src">knowledge.hubspot.com · Create and edit sequences</span></figcaption></figure>
+      <figure><img src="img/hs_wf_add_action.png" alt="HubSpot: dodawanie akcji w workflow"><figcaption>Dodawanie akcji w edytorze workflow.<span class="src">knowledge.hubspot.com · Create workflows</span></figcaption></figure>
+    </div>
+  </div>
+
+  <!-- Bitrix24 -->
+  <div class="vpanel" id="v-bx">
+    <h3>Bitrix24 — ścieżka to etapy z regułami, nie edytor przepływu</h3>
+    <p>W Bitrix24 automat siedzi na etapach lejka. Reguły robią rzeczy, gdy lead wejdzie na etap, na przykład wysyłają maila z opóźnieniem albo pod warunkiem. Wyzwalacze śledzą klienta: otwarcie albo klik w mail przesuwa leada na inny etap, gdzie czekają inne reguły. L4 buduje się jako pomocniczy lejek „Dogrzewanie” z pięcioma etapami.</p>
+    <div class="note warn small"><b>Dwie pułapki.</b> Od 01.09.2026 plany dzielą się na Essentials i Vibe+. W Essentials od 30.11.2026 „REST API turned off”, więc bez Vibe+ nie ma n8n, Rinvo ani Meta przez n8n. „Automatyzacja sprzedaży” i „E-mail marketing” są dopiero od Professional. Zostaje Professional Vibe+, a jego 960 zł/mies. to cena premierowa do 10.12.2026.</div>
+    <div class="shots">
+      <figure><img src="img/bx_automation_stages.jpg" alt="Bitrix24: reguły automatyzacji na etapach"><figcaption>Reguły automatyzacji przypięte do etapów lejka — każdy etap ma swoje akcje.<span class="src">helpdesk.bitrix24.com · Automation rules in CRM · odczyt 06.10.2026</span></figcaption></figure>
+      <figure><img src="img/bx_conditions.jpg" alt="Bitrix24: warunki reguły"><figcaption>Warunek reguły: działa tylko dla wybranych leadów — to jest wybór segmentu.<span class="src">helpdesk.bitrix24.com · Automation rules in CRM</span></figcaption></figure>
+      <figure><img src="img/bx_multiple_rules.jpg" alt="Bitrix24: kilka reguł na etapie"><figcaption>Kilka reguł na jednym etapie, wykonywanych po kolei albo równolegle.<span class="src">helpdesk.bitrix24.com · Automation rules in CRM</span></figcaption></figure>
+      <figure><img src="img/bx_crm_deals.jpg" alt="Bitrix24: automatyzacja w dealach"><figcaption>Sekcja automatyzacji w dealach.<span class="src">helpdesk.bitrix24.com · Automation rules and triggers</span></figcaption></figure>
+      <figure><img src="img/bx_deal.jpg" alt="Bitrix24: karta deala"><figcaption>Karta deala z polami i osią zdarzeń.<span class="src">helpdesk.bitrix24.com · Automation rules in CRM</span></figcaption></figure>
+      <figure><img src="img/bx_rules.jpg" alt="Bitrix24: lista reguł"><figcaption>Lista dostępnych reguł, pogrupowanych według zadania.<span class="src">helpdesk.bitrix24.com · Automation rules and triggers</span></figcaption></figure>
+    </div>
+  </div>
+
+  <!-- Livespace -->
+  <div class="vpanel" id="v-ls">
+    <h3>Livespace — dobra sekwencja handlowca, brak automatu dla segmentów</h3>
+    <p>Sekwencję uruchamia się z profilu kontaktu albo szansy przyciskiem „Zaplanuj”. Ma maile ze zmiennymi, zadania, szablony całych sekwencji i zatrzymuje się, gdy klient odpowie. Jest też zadanie typu „zadzwoń, jeśli brak odpowiedzi po 3 dniach”. W dokumentacji nie ma automatycznego zapisu segmentu ani rozgałęzień na klik. Cennik mówi o sekwencjach „uruchamianych na podstawie określonych warunków” — do sprawdzenia w trialu.</p>
+    <div class="note small">Dowód: „Livespace będzie kontaktował się z klientem do skutku (tj. do momentu otrzymania odpowiedzi…)” — baza wiedzy Livespace, artykuł z 22.02.2026, odczyt 06.10.2026. Dla L4 potrzebny byłby zewnętrzny silnik ścieżek, np. Mautic przez n8n.</div>
+    <div class="shots">
+      <figure><img src="img/ls_sekwencje.webp" alt="Livespace: sekwencje e-mail"><figcaption>Sekwencje e-mail w Livespace (ilustracja produktu).<span class="src">livespace.io · Automatyzacje sprzedaży · odczyt 06.10.2026</span></figcaption></figure>
+      <figure><img src="img/ls_automatyzacje.webp" alt="Livespace: automatyzacje procesu"><figcaption>Automatyzacje procesu: reguły „jeśli → to” na krokach i polach.<span class="src">livespace.io · Automatyzacje sprzedaży</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. BUDOWAĆ CZY KUPIĆ ================= -->
+<section class="panel" id="p4">
+  <h2>Co jest najtrudniejsze w CRM i czy da się to zrobić na open source</h2>
+  <p class="muted">Kanban, baza kontaktów i formularze to łatwa część. Każdy darmowy CRM ma je w tydzień. Trudne jest to, co dzieje się między systemami i w czasie.</p>
+
+  <div class="grid2" style="margin-top:12px">
+    <div class="box"><h3 style="margin-top:0">Najtrudniejsze — w kolejności bólu dla CC</h3><ol style="margin-left:18px;font-size:14px">
+      <li><b>Dostarczalność i wykrywanie odpowiedzi.</b> SPF, DKIM, DMARC, rozgrzanie domeny, limity Gmaila. Jeśli automat nie zobaczy odpowiedzi, wyśle mail nr 3 komuś, kto już się umówił.</li>
+      <li><b>Silnik ścieżek.</b> Opóźnienia, okna wysyłki, warunki stopu, zmiana ścieżki z leadami w środku. Pipedrive każe decydować, co z nimi zrobić — to nie przypadek.</li>
+      <li><b>Integracje, które nie gubią leadów.</b> Bitrix24 wysyła w webhooku tylko ID. Livespace uprzedza, że to samo zdarzenie może przyjść dwa razy i w złej kolejności. Potrzebne ponowienia i zabezpieczenie przed duplikatem.</li>
+      <li><b>Duplikaty i zgody RODO.</b> Ten sam człowiek z Meta i ze strony, wypisanie, które działa w każdym kanale, log zgód na połączenia Rinvo.</li>
+      <li><b>Atrybucja.</b> UTM i pola ukryte Meta muszą dojść od kliknięcia reklamy do zaliczki. GA4 widzi stronę, CRM resztę, łączy je ID leada.</li>
+      <li><b>Utrzymanie.</b> Aktualizacje, kopie, monitoring. Ktoś musi odebrać telefon, gdy o 7 rano leady przestaną wpadać.</li></ol></div>
+    <div class="box"><h3 style="margin-top:0">Open source do postawienia u siebie (zweryfikowane 06.10)</h3>
+      <div class="tblwrap"><table class="stack"><thead><tr><th>Produkt</th><th>Licencja</th><th>PL</th><th>Ścieżki mailowe</th></tr></thead><tbody>
+      <tr><td data-l="Produkt"><b>Twenty</b><br><span class="small muted">~58 tys. ★, wydanie 05.10.2026</span></td><td data-l="Licencja">AGPLv3 + pliki enterprise</td><td data-l="PL">tak</td><td data-l="Ścieżki">workflow no-code, kroki mailowe niepotwierdzone</td></tr>
+      <tr><td data-l="Produkt"><b>Odoo Community</b></td><td data-l="Licencja">LGPLv3</td><td data-l="PL">tak</td><td data-l="Ścieżki">marketing automation w Enterprise</td></tr>
+      <tr><td data-l="Produkt"><b>EspoCRM</b></td><td data-l="Licencja">AGPLv3</td><td data-l="PL">?</td><td data-l="Ścieżki">tylko płatny Advanced Pack</td></tr>
+      <tr><td data-l="Produkt"><b>Krayin</b><br><span class="small muted">~24 tys. ★</span></td><td data-l="Licencja">MIT</td><td data-l="PL">nie</td><td data-l="Ścieżki">niepotwierdzone</td></tr>
+      <tr><td data-l="Produkt"><b>Frappe CRM</b></td><td data-l="Licencja">AGPLv3</td><td data-l="PL">?</td><td data-l="Ścieżki">niepotwierdzone</td></tr>
+      <tr><td data-l="Produkt"><b>Mautic</b><br><span class="small muted">automatyzacja marketingu, ~10,7 tys. ★, wydanie 23.09.2026</span></td><td data-l="Licencja">GPL</td><td data-l="PL">?</td><td data-l="Ścieżki"><b>tak — to jego rdzeń</b>: kampanie dla segmentów z decyzjami na klik</td></tr>
+      </tbody></table></div>
+      <p class="small muted" style="margin-top:8px">Tanie CRM-y AI (Attio od €31, Folk od $24 za osobę/mies.) to lekkie CRM-y relacyjne bez polskiego UI i bez telefonii pod Rinvo. Nie pasują do lejka importu aut.</p>
+    </div>
+  </div>
+
+  <h3>Rekomendacja</h3>
+  <div class="note ok"><b>Kupić CRM i trzymać ścieżki w nim: Pipedrive Premium.</b> Spełnia L4 natywnie: automatyczny zapis, 5 maili, czekanie na odpowiedź i klik, stop po odpowiedzi. Kosztuje 9,3 tys. zł rocznie dla 3 osób. n8n zostaje tylko klejem do Meta i Rinvo, zgodnie ze stackiem VPS. Pasuje do briefu klienta, który i tak zakłada Pipedrive. Kierunek pozostaje warunkowy do odpowiedzi Rinvo.</div>
+  <div class="note"><b>Alternatywa: podzielić role — polski CRM plus Mautic na VPS.</b> Livespace Growth za 8,1 tys. zł robi lejek, a Mautic obok n8n robi ścieżki. <b>Zysk:</b> pełny edytor ścieżek z decyzjami na klik, polski CRM i producent, zero licencji za automatyzację marketingu. <b>Strata:</b> drugi system do synchronizacji kontaktów i zgód, a dostarczalność, SMTP i utrzymanie przechodzą na nas. Ma sens, gdy ścieżek będzie dużo i będą bardziej marketingowe niż handlowe.</div>
+  <p class="small muted">Całość na open source, np. Twenty z Mautic, rekomenduję dopiero wtedy, gdy klient chce mieć własność danych i ma kogoś do utrzymania. Na start koszt pracy zjada oszczędność na licencjach.</p>
+
+  <div class="tc">
+    <h4>TRUTH CHECKER</h4>
+    <ul>
+      <li><b>Co wiem:</b> limity Pipedrive, HubSpot, Bitrix24 i Livespace z ich dokumentacji (odczyt 05–06.10, cytaty w raw/), licencje i aktywność repozytoriów z GitHuba, lejek i pola z mapy procesu CC.</li>
+      <li><b>Co zakładam:</b> że L4 to 5 maili na lead WARM i że leady spływają do ścieżek na bieżąco, a nie jako jednorazowa wysyłka do 25 tys. kontaktów.</li>
+      <li><b>Co może być błędne:</b> Bitrix24 może mieć wyzwalacz na odpowiedź, którego nie opisuje pomoc. Livespace może uruchamiać sekwencje warunkiem, o czym wspomina cennik. Cena HubSpot Marketing Pro dla mniejszej liczby kontaktów może być niższa niż przyjęte 25 tys.</li>
+      <li><b>Co zweryfikować przed decyzją:</b> trial Pipedrive Premium z ścieżką L4 na testowym leadzie z Meta przez n8n. Odpowiedź Rinvo, z którym CRM ma gotowy konektor. Cena odnowienia Bitrix24 Vibe+.</li>
+      <li><b>Co poprawiłbym z jednym inputem:</b> treść i liczba ścieżek, które klient naprawdę chce prowadzić. Przy jednej ścieżce wygrywa Pipedrive. Przy dziesięciu marketingowych ścieżkach rośnie sens Mautic albo Marketing Hub.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= 5. WŁASNE ROZWIĄZANIE ================= -->
+<section class="panel" id="p5">
+  <h2>Ile kosztuje własne rozwiązanie na gotowych silnikach</h2>
+  <p class="muted">Porównanie trzech dróg dla tego samego zakresu: lejek L1–L4, lead z Meta przez n8n, zapis rozmów Rinvo, ścieżka dogrzewania L4, zgody RODO, raport źródeł leadów, 3–5 handlowców. Licencja to mniejsza część rachunku. Większą są godziny budowy i utrzymania. Suwakami ustawisz stawkę, przyspieszenie z Claude Code i horyzont.</p>
+
+  <div class="calc box">
+    <div><label>Stawka za godzinę pracy</label><input type="range" id="c-rate" min="100" max="400" step="10" value="200"><div class="val"><span id="o-rate">200</span> zł/h</div></div>
+    <div><label>Przyspieszenie z Claude Code</label><input type="range" id="c-ai" min="0" max="60" step="5" value="30"><div class="val"><span id="o-ai">30</span>%</div><div class="small muted">tylko na pracy „pisanie kodu i konfiguracji”</div></div>
+    <div><label>Handlowcy</label><div class="seg2" id="c-os"><button data-v="3" class="on">3 os.</button><button data-v="5">5 os.</button></div></div>
+    <div><label>Horyzont</label><div class="seg2" id="c-yr"><button data-v="1">1 rok</button><button data-v="3" class="on">3 lata</button></div></div>
+  </div>
+
+  <div class="kpi" id="kpi"></div>
+
+  <h3>Skąd te godziny</h3>
+  <p class="small muted">Wycena inżynierska w godzinach od–do, przed przyspieszeniem z Claude Code. Kolumna „AI” mówi, czy praca to głównie pisanie kodu i konfiguracji, które Claude Code realnie skraca, czy testy z prawdziwymi systemami, rozgrzewanie domeny i ustalenia z klientem, których nie skraca.</p>
+  <div class="tblwrap"><table class="stack" id="wbs"><thead><tr><th>Pakiet pracy</th><th>AI</th><th>A · Pipedrive + n8n</th><th>B · Livespace + Mautic</th><th>C · Twenty + Mautic + n8n</th></tr></thead><tbody></tbody></table></div>
+
+  <h3>Koszty stałe przyjęte w modelu</h3>
+  <div class="tblwrap"><table class="stack" id="run"><thead><tr><th>Pozycja</th><th>A</th><th>B</th><th>C</th><th>Źródło</th></tr></thead><tbody></tbody></table></div>
+
+  <h3>Co mówią społeczność i GitHub</h3>
+  <div class="box" id="ccse">
+    <p class="small muted">Przeszukane wzorem skilla /ccse: Hacker News, GitHub, fora Mautic i n8n, blogi. <b>Reddit jest zablokowany dla naszych narzędzi</b> — linki do ręcznego przejrzenia są w pliku źródłowym R11. Twardych liczb o czasie budowy jest mało, za to problemów produkcyjnych sporo.</p>
+    <ul class="ev">
+      <li><b>Twenty, GitHub #27567, 07.10.2026, priorytet wysoki:</b> wysyłka z Gmaila tworzy zdublowane wiadomości w CRM po synchronizacji skrzynki. Otwarte.</li>
+      <li><b>Mautic, forum wsparcia:</b> wątek „Emails marked »Email sent« but don't arrive” — system pokazuje wysłane, klient nic nie dostaje.</li>
+      <li><b>n8n, forum:</b> „Stop duplicate side effects on webhook retries” — ponowienie webhooka powtarza akcję. Bez zabezpieczenia lead z Meta może wpaść do CRM dwa razy.</li>
+      <li><b>SuiteCRM, studium przypadku z 03.2026:</b> kancelaria bez zaplecza technicznego nie nadążała z aktualizacjami, „the system became unstable and performance declined”. Skończyło się hostingiem zarządzanym.</li>
+      <li><b>Mautic, Open Collective:</b> saldo ok. 6,6 tys. USD przy celu 80 tys. USD rocznie. Projekt żyje, ale budżet na utrzymanie jest cienki.</li>
+      <li><b>Hacker News, dyskusja o agentowym CRM (03.2026):</b> najmocniejszy głos dotyczył bezpieczeństwa — agent widzi wszystkie dane klientów.</li>
+      <li><b>Koszt wysyłki:</b> Amazon SES to 0,10 USD za 1 000 maili, więc 10 tys. maili miesięcznie CC kosztuje ok. 1 USD. Pieniądze idą na pilnowanie dostarczalności, nie na wysyłkę.</li>
+      <li><b>Claude Code:</b> w społeczności brak twardych danych, ile skraca budowę CRM. Domyślne 30% w kalkulatorze to założenie, nie pomiar.</li>
+    </ul>
+    <p class="small muted">Odrzucone: „25% leadów ginie w n8n” (ogłoszenie na Upworku), case „180 → 8 h miesięcznie” (anonimowa firma, niespójne liczby). Źródła: <code>crm/research/R11_wlasny_crm_ccse/</code>.</p>
+  </div>
+
+  <h3>Wniosek</h3>
+  <div class="note ok" id="wniosek"><b>Dla CC kupić CRM, budować tylko klej.</b> Serwer i wysyłka maili kosztują grosze, więc własne rozwiązanie nie oszczędza na infrastrukturze, tylko na licencji — i płaci za to godzinami. Wariant A wymaga budowy tylko tam, gdzie i tak trzeba: Meta, Rinvo i atrybucja. Własne rozwiązanie wygrywa licencją dopiero przy długim horyzoncie i taniej godzinie, a przegrywa ryzykiem: dostarczalność maili, zgubione leady i jedna osoba, która wie, jak to działa.</div>
+</section>
+</main>
+
+<footer><div class="wrap">
+  Źródła: support.pipedrive.com (Sequences 23.09.2026; Automations: emails, wait for condition, automatic enrollment, automation limits — 03.09.2026) · knowledge.hubspot.com (Create and edit sequences, Enroll contacts in a sequence, Create workflows) · helpdesk.bitrix24.com (Automation rules and triggers, Automation rules in CRM, Marketing, New Vibe+ lineup) · bitrix24.pl/prices · livespace.io/pl/cennik i baza wiedzy Livespace (Sekwencja wiadomości e-mail w CRM, 22.02.2026) · GitHub API (06.10.2026). Zrzuty interfejsu pochodzą z dokumentacji producentów, użyte jako ilustracja do wewnętrznej decyzji. Teksty źródłowe: <code>crm/research/R8_crm_porownanie/raw/</code>, recon open source: <code>crm/research/R9_crm_opensource_ai/</code>.
+</div></footer>
+
+<div id="lb"><img alt=""></div>
+
+<script>
+// ---- dane lejka (etapy z proces.json; karty przykładowe) ----
+const SALES=[
+ ["Nowy lead",[["Li Auto L7","meta","hot","Meta · formularz natywny","Rinvo dzwoni w ciągu 5 min. Pola ukryte: grupa = rodzina, model = L7, kreacja = karuzela 03."],["BYD Seal U DM-i","web","warm","Karta auta · „wyślij pełny koszt”","Raport i pełny koszt wysłane automatem. Lead wpada do ścieżki L4, segment: hybryda PHEV."]]],
+ ["Kontakt nawiązany",[["Zeekr 001","google","hot","Google Search · zapytaj o ofertę","Rozmowa Rinvo 4 min. Streszczenie AI i transkrypcja w karcie. Następny krok: oferta z egzemplarzem."]]],
+ ["Zakwalifikowany",[["Xpeng G6","meta","warm","Meta · formularz","Ocena WARM: budżet 180–200 tys., termin 3 mies., obiekcja „gwarancja”. Ścieżka L4 aktywna, krok 2 z 5."],["MG4 — flota 3 szt.","b2b","cold","Polecenie · B2B","Do osobnego lejka B2B. Tu tylko do przepięcia."]]],
+ ["Oferta wysłana",[["Li Auto L7","meta","hot","Meta · formularz","Oferta z VIN i harmonogramem płatności. Licznik: 2 dni bez odpowiedzi → zadanie telefon."]]],
+ ["Zaliczka / zadatek",[["BYD Seal","web","hot","Strona · rezerwacja","Zaliczka zaksięgowana. Ścieżka L4 zatrzymana przez zmianę etapu. Egzemplarz znika ze strony."]]],
+];
+const OPS=[
+ ["Zakup w Chinach",[["BYD Seal","web","hot","Operacje","Zakup potwierdzony przez partnera. Klient dostaje automatyczny status."]]],
+ ["W transporcie",[["Zeekr 007","meta","hot","Operacje","ETA w polu karty. Powiadomienie co tydzień."]]],
+ ["Odprawa i homologacja",[]],["Oględziny",[]],["Dopłata",[]],["Rejestracja",[]],["Wydane",[["Li Auto L9","meta","hot","Operacje","Wydane. Prośba o opinię i polecenie po 14 dniach."]]],
+];
+const SRC={meta:"Meta",web:"Strona",google:"Google",b2b:"B2B"};
+function renderKB(el,data,ops){
+  el.innerHTML=data.map(([name,cards])=>`<div class="col${ops?' ops':''}"><h4>${name}<span>${cards.length}</span></h4>${cards.map((c,i)=>`<div class="card" data-t="${encodeURIComponent(JSON.stringify(c))}"><b>${c[0]}</b><span class="tag t-${c[2]}">${c[2].toUpperCase()}</span><span class="tag t-src">${SRC[c[1]]}</span></div>`).join('')||'<div class="small muted" style="padding:6px">—</div>'}</div>`).join('');
+}
+renderKB(document.getElementById('kb-sales'),SALES,false);
+renderKB(document.getElementById('kb-ops'),OPS,true);
+document.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>{
+  const d=JSON.parse(decodeURIComponent(c.dataset.t));
+  document.getElementById('drawer').innerHTML=`<div class="kicker">przykładowa karta</div><h3 style="margin:4px 0">${d[0]} <span class="tag t-${d[2]}">${d[2].toUpperCase()}</span></h3><p class="small muted">${d[3]}</p><p>${d[4]}</p>`;
+}));
+
+// ---- ścieżka L4 per segment ----
+const SEG={
+ ev:{m:"BYD Atto 3",w:"rodzina",hook:"zasięg zimą i ładowanie w domu"},
+ biz:{m:"Zeekr 001",w:"firma",hook:"leasing, VAT i koszt floty"},
+ hyb:{m:"BYD Seal U DM-i",w:"pierwszy import",hook:"spalanie w trasie i serwis hybrydy"}
+};
+function flow(s){
+  const x=SEG[s];
+  const steps=[
+   ["entry","Wejście do ścieżki","Lead WARM: zostawił mail przy „wyślij pełny koszt” albo po rozmowie Rinvo bez decyzji. Segment: model = "+x.m+", grupa = "+x.w+". Zapis automatyczny, bez ręki handlowca."],
+   ["mail","Natychmiast · mail 1","Raport egzemplarza "+x.m+" i pełny koszt importu","Dostawa obietnicy z karty auta: cena all-in, nie „cena w Chinach”.",true],
+   ["wait","Czekaj do 2 dni","Klik w link do raportu albo odpowiedź?"],
+   ["mail","+3 dni · mail 2","Jak wygląda import "+x.m+" i ile trwa — w tygodniach","Odpowiedź na obawę nr 1 z FAQ. Wątek dla segmentu: "+x.hook+".",true],
+   ["mail","+4 dni · mail 3","Kto i kiedy płaci: zaliczka, transze, co jest zwrotne","Najczęstsza blokada przy imporcie. Link do harmonogramu płatności.",true],
+   ["mail","+5 dni · mail 4","Gwarancja i serwis "+x.m+" w Polsce — z nazwy","Konkretny serwis i warunki, nie ogólnik.",true],
+   ["mail","+7 dni · mail 5","Zrealizowane importy: "+x.w+", ten sam model","Opinie i zdjęcia z wydań. Link wraca na kartę egzemplarza.",true],
+   ["end","Koniec bez reakcji","Lead przechodzi na listę COLD: remarketing Meta i Google, kontakt za 60 dni."]
+  ];
+  return steps.map(st=>{
+    const [k,a,b,c,br]=st;
+    if(k==="wait") return `<div class="step wait"><div class="when">${a}</div><div class="small muted">${b}</div></div>`;
+    if(k==="end"||k==="entry") return `<div class="step ${k==='end'?'end':''}"><div class="box"><div class="when">${a}</div><div>${b}</div></div></div>`;
+    return `<div class="step branch"><div class="box"><div class="when">${a}</div><div class="subj">${b}</div><div class="small muted">${c}</div>${br?`<div class="branches"><div class="br r"><b>Odpisał</b> → stop ścieżki, zadanie dla handlowca: odpisz dziś</div><div class="br c"><b>Kliknął raport lub kartę</b> → sygnał gorący: Rinvo dzwoni (przy zgodzie)</div><div class="br n"><b>Nic</b> → po opóźnieniu kolejny mail</div></div>`:''}</div></div>`;
+  }).join('');
+}
+const flowEl=document.getElementById('flow'); flowEl.innerHTML=flow('ev');
+document.querySelectorAll('#seg button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#seg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); flowEl.innerHTML=flow(b.dataset.s);
+}));
+
+// ---- zakładki ----
+function tabs(sel,attr,prefix,panelSel){
+  document.querySelectorAll(sel).forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll(sel).forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    document.querySelectorAll(panelSel).forEach(p=>p.classList.remove('on'));
+    document.getElementById(prefix+b.dataset[attr]).classList.add('on');
+    try{localStorage.setItem('r10_'+attr,b.dataset[attr])}catch(e){}
+  }));
+}
+tabs('nav.tabs button','p','','.panel');
+tabs('#vtabs button','v','v-','.vpanel');
+
+
+// ---- kalkulator własnego rozwiązania ----
+// h: [min,max] godzin dla A,B,C; ai: czy praca to głównie kod/konfiguracja (skracana przez Claude Code)
+const WBS=[
+ ["Serwer: VPS, Docker, kopie zapasowe, monitoring, domeny", true,  [[4,6],[8,12],[12,18]]],
+ ["CRM: lejki, etapy, pola, użytkownicy, uprawnienia",      true,  [[6,10],[6,10],[14,22]]],
+ ["Meta Lead Ads → CRM przez n8n: mapowanie, duplikaty, ponowienia", true, [[8,12],[8,12],[10,14]]],
+ ["Rinvo → CRM: nagranie, transkrypt, wynik rozmowy",        true,  [[6,10],[6,10],[8,12]]],
+ ["Ścieżka L4: 5 maili, segmenty, stop po odpowiedzi",       true,  [[4,8],[12,18],[14,20]]],
+ ["Synchronizacja CRM ↔ narzędzie mailowe (kontakty, zgody, etapy)", true, [[0,0],[10,16],[10,16]]],
+ ["Dostarczalność: SPF/DKIM/DMARC, SMTP, rozgrzanie domeny",  false, [[1,2],[6,10],[6,10]]],
+ ["RODO: zgody, wypisy, log, retencja nagrań",               false, [[3,4],[6,10],[8,12]]],
+ ["Raport źródeł leadów i atrybucji",                        true,  [[4,6],[6,10],[10,16]]],
+ ["Testy od reklamy do zaliczki, poprawki",                  false, [[6,8],[10,14],[14,20]]],
+ ["Dokumentacja i szkolenie handlowców",                     false, [[4,6],[6,8],[8,12]]],
+];
+// utrzymanie [min,max] h/mies.; koszty stałe zł/mies. (bez licencji) — RUN uzupełniane ze źródeł
+const MAINT=[[2,4],[5,8],[8,14]];
+const RUN={
+ vps:[60,110,160], smtp:[0,10,10], backup:[15,25,30],
+ src:{vps:"przedział $12–40/mies. za 2–4 GB (aliteq.com, 10.2026, źródło wtórne); Hetzner 08.10 nie pokazuje cen online. A = mały serwer pod n8n, B/C = większy pod Mautic i Twenty",
+      smtp:"Amazon SES $0,10 za 1 000 maili (aws.amazon.com, 08.10.2026); CC ≈ 10 tys. maili/mies. ≈ $1. A wysyła ze skrzynek handlowców",
+      backup:"szacunek: kopie na zewnętrznym dysku sieciowym"}
+};
+const LIC={A:o=>o*59*12*4.3745, B:o=>o*225.33*12, C:o=>0};
+const VN=["A · Pipedrive Premium + n8n","B · Livespace Growth + Mautic","C · Twenty + Mautic + n8n"];
+let OS=3, YR=3;
+function fmt(n){return Math.round(n).toLocaleString('pl-PL')+' zł'}
+function calc(){
+  const rate=+document.getElementById('c-rate').value, ai=+document.getElementById('c-ai').value/100;
+  document.getElementById('o-rate').textContent=rate; document.getElementById('o-ai').textContent=Math.round(ai*100);
+  const res=[0,1,2].map(i=>{
+    let lo=0,hi=0; WBS.forEach(([_,isAi,h])=>{const f=isAi?(1-ai):1; lo+=h[i][0]*f; hi+=h[i][1]*f;});
+    const runM=RUN.vps[i]+RUN.smtp[i]+RUN.backup[i];
+    const lic=[LIC.A,LIC.B,LIC.C][i](OS);
+    const mLo=MAINT[i][0]*rate*12, mHi=MAINT[i][1]*rate*12;
+    const tcoLo=lo*rate+(lic+runM*12+mLo)*YR, tcoHi=hi*rate+(lic+runM*12+mHi)*YR;
+    return {lo,hi,lic,runM,mLo,mHi,tcoLo,tcoHi};
+  });
+  const max=Math.max(...res.map(r=>r.tcoHi));
+  document.getElementById('kpi').innerHTML=res.map((r,i)=>`<div class="box"><h4>${VN[i]}</h4>
+    <div class="barlbl">Budowa</div><div class="big">${Math.round(r.lo)}–${Math.round(r.hi)} h</div><div class="small muted">${fmt(r.lo*rate)} – ${fmt(r.hi*rate)}</div>
+    <div class="barlbl" style="margin-top:8px">Rocznie: licencja ${fmt(r.lic)} · serwer i wysyłka ${fmt(r.runM*12)} · utrzymanie ${MAINT[i][0]}–${MAINT[i][1]} h/mies.</div>
+    <div class="barlbl" style="margin-top:8px">Razem przez ${YR===1?'rok':YR+' lata'}</div><div class="big">${fmt(r.tcoLo)} – ${fmt(r.tcoHi)}</div>
+    <div class="bar ${i===1?'b':i===2?'c':''}" style="width:${Math.max(4,r.tcoHi/max*100)}%"></div></div>`).join('');
+  const tb=document.querySelector('#wbs tbody'); let sums=[[0,0],[0,0],[0,0]];
+  tb.innerHTML=WBS.map(([n,isAi,h])=>{h.forEach((x,i)=>{sums[i][0]+=x[0];sums[i][1]+=x[1]});
+    return `<tr><td data-l="Pakiet">${n}</td><td data-l="AI">${isAi?'skraca':'nie skraca'}</td>${h.map((x,i)=>`<td data-l="${VN[i]}" class="h">${x[1]?x[0]+'–'+x[1]+' h':'—'}</td>`).join('')}</tr>`}).join('')
+    +`<tr class="sum"><td data-l="Pakiet">Razem przed przyspieszeniem</td><td data-l="AI"></td>${sums.map((s,i)=>`<td data-l="${VN[i]}" class="h">${s[0]}–${s[1]} h</td>`).join('')}</tr>`;
+  const rb=document.querySelector('#run tbody');
+  rb.innerHTML=[["Licencja CRM / rok ("+OS+" os.)",[0,1,2].map(i=>fmt([LIC.A,LIC.B,LIC.C][i](OS))),"PORÓWNANIE_CRM.html (Pipedrive €59, Livespace 225,33 zł, Twenty self-host 0)"],
+    ["Serwer VPS / mies.",RUN.vps.map(fmt),RUN.src.vps],["Wysyłka maili (SMTP) / mies.",RUN.smtp.map(fmt),RUN.src.smtp],["Kopie zapasowe / mies.",RUN.backup.map(fmt),RUN.src.backup],
+    ["Utrzymanie h / mies.",MAINT.map(m=>m[0]+'–'+m[1]+' h'),"wycena; korekta wg społeczności"]]
+    .map(([n,v,s])=>`<tr><td data-l="Pozycja">${n}</td>${v.map((x,i)=>`<td data-l="${'ABC'[i]}" class="h">${x}</td>`).join('')}<td data-l="Źródło" class="small">${s}</td></tr>`).join('');
+}
+['c-rate','c-ai'].forEach(id=>document.getElementById(id).addEventListener('input',calc));
+document.querySelectorAll('#c-os button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#c-os button').forEach(x=>x.classList.remove('on'));b.classList.add('on');OS=+b.dataset.v;calc()}));
+document.querySelectorAll('#c-yr button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#c-yr button').forEach(x=>x.classList.remove('on'));b.classList.add('on');YR=+b.dataset.v;calc()}));
+calc();
+
+// ---- lightbox ----
+const lb=document.getElementById('lb');
+document.querySelectorAll('figure img').forEach(i=>i.addEventListener('click',()=>{lb.querySelector('img').src=i.src;lb.style.display='flex'}));
+lb.addEventListener('click',()=>lb.style.display='none');
+</script>
+</body>
+</html>

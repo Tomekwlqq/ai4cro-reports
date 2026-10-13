@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Porównanie CRM — China Select</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #B9802A;
+  --gold-light: #f5e6c8;
+  --gold-border: #d4a853;
+  --dark: #1a1a1a;
+  --gray-bg: #f9f7f4;
+  --gray-2: #f0ece4;
+  --gray-3: #e8e1d4;
+  --gray-text: #6b6560;
+  --red: #c0392b;
+  --red-light: #fdecea;
+  --green: #27695c;
+  --green-light: #e6f4f1;
+  --amber: #b8860b;
+  --amber-light: #fff8e1;
+  --border: #ddd5c8;
+  --font-main: 'Space Grotesk', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-main);
+  background: #fff;
+  color: var(--dark);
+  font-size: 15px;
+  line-height: 1.6;
+}
+a { color: var(--gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+/* Nagłówek */
+.site-header {
+  background: var(--dark);
+  color: #fff;
+  padding: 14px 0;
+  font-size: 13px;
+}
+.site-header a { color: var(--gold); font-weight: 500; }
+.report-hero {
+  background: var(--gray-bg);
+  border-bottom: 2px solid var(--gold);
+  padding: 40px 0 32px;
+}
+.report-hero h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+.report-hero .meta {
+  font-size: 13px;
+  color: var(--gray-text);
+  font-family: var(--font-mono);
+}
+
+/* Sekcje */
+section { padding: 40px 0; border-bottom: 1px solid var(--border); }
+section:last-child { border-bottom: none; }
+h2 {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--gold-border);
+  display: inline-block;
+}
+h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 12px;
+  margin-top: 24px;
+}
+
+/* Werdykt karty */
+.verdict-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media(max-width: 700px) { .verdict-grid { grid-template-columns: 1fr; } }
+
+.verdict-card {
+  background: var(--gray-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px 24px;
+}
+.verdict-card h3 { margin-top: 0; color: var(--gold); font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+.verdict-card .plan-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.verdict-card .price { font-size: 24px; font-weight: 700; color: var(--green); font-family: var(--font-mono); }
+.verdict-card .price-breakdown { font-size: 12px; color: var(--gray-text); font-family: var(--font-mono); margin-top: 4px; }
+.verdict-card .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; margin-top: 8px; }
+.badge-ok { background: var(--green-light); color: var(--green); }
+.badge-warn { background: var(--amber-light); color: var(--amber); }
+.badge-fail { background: var(--red-light); color: var(--red); }
+
+/* Tabela kryteriów */
+.criteria-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 16px;
+}
+.criteria-table th {
+  background: var(--dark);
+  color: #fff;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.criteria-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.criteria-table tr:nth-child(even) td { background: var(--gray-bg); }
+.criteria-table .kryterium-name { font-weight: 600; }
+.criteria-table .kryterium-group { font-size: 11px; color: var(--gray-text); font-family: var(--font-mono); }
+.status-ok { color: var(--green); font-weight: 600; }
+.status-partial { color: var(--amber); font-weight: 600; }
+.status-fail { color: var(--red); font-weight: 600; }
+.status-extra { color: #7c5c00; font-weight: 600; }
+
+/* Tabela kosztów */
+.cost-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 16px;
+}
+.cost-table th {
+  background: var(--gray-3);
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border);
+}
+.cost-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.cost-table .kwota { font-family: var(--font-mono); font-weight: 600; }
+.cost-table .breakdown { font-size: 11px; color: var(--gray-text); font-family: var(--font-mono); }
+
+/* Tabele na telefonie: przewijanie w tabeli, nie całej strony (06.10) */
+.criteria-table, .cost-table { display:block; max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.niepotwierdzone-list li { overflow-wrap:anywhere; }
+/* Sekcja NIEPOTWIERDZONE */
+.niepotwierdzone-box {
+  background: var(--amber-light);
+  border: 1px solid var(--amber);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-top: 20px;
+}
+.niepotwierdzone-box h3 { color: var(--amber); margin-top: 0; }
+.niepotwierdzone-list { list-style: none; padding: 0; margin-top: 12px; }
+.niepotwierdzone-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0c040;
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+.niepotwierdzone-list li:last-child { border-bottom: none; }
+
+/* Weryfikacja */
+.weryfikacja-box {
+  background: var(--gray-2);
+  border-radius: 8px;
+  padding: 16px 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  margin-top: 16px;
+}
+
+/* Mobile */
+@media(max-width: 700px) {
+  .criteria-table, .cost-table { font-size: 12px; }
+  .criteria-table td, .criteria-table th { padding: 8px 10px; }
+}
+</style>
+</head>
+<body>
+<!-- hub-backlink -->
+<div id="hub-backlink-bar" style="position:sticky;top:0;z-index:100;background:#3F4A44;padding:8px 16px;font:600 13px/1.4 'IBM Plex Mono',monospace;letter-spacing:.04em;">
+  <a href="../../CRM_HUB.html" style="color:#C9A84C;text-decoration:none;">← Hub CRM i leadów</a>
+</div>
+<!-- /hub-backlink -->
+
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../CRM_HUB.html">← Hub CRM</a>
+    &nbsp;/&nbsp; Porównanie CRM
+  </div>
+</header>
+
+
+<div class="report-hero">
+  <div class="container">
+    <h1>Porównanie CRM dla China Select</h1>
+    <div class="meta">
+      Wygenerowano: 2026-10-13 &nbsp;·&nbsp;
+      Vendorzy: Bitrix24, HubSpot, Livespace, Pipedrive &nbsp;·&nbsp;
+      Kursy: 1 EUR = 4.3745 PLN (NBP 2026-10-02), 1 USD = 3.8881 PLN (NBP 2026-10-02)
+    </div>
+    <div class="meta" style="margin-top:8px;">
+      Scenariusz bazowy: 25 000 leadów, 2 warianty użytkowników (3 i 5 os.),
+      2 warianty zakresu (tylko sekwencje 1:1 handlowca / plus automatyczne ścieżki mailowe dla segmentów)
+    </div>
+  </div>
+</div>
+
+<section><div class="container">
+<h2>Werdykt per scenariusz</h2>
+<h3>CC 25k / 3 os. / 1:1 tylko</h3>
+<p style="color:var(--gray-text);font-size:13px;margin-bottom:16px;">China Select, 25 000 kontaktów/leadów w bazie (lub 25 000 nowych rocznie), 3 handlowców. Wymagania: lejki L1-L4 (sekwencje 1:1, automatyzacje), webhook do n8n/Rinvo, UTM, lead scoring. BEZ automatycznych ścieżek dla segmentów (sekwencje 1:1 prowadzi handlowiec).</p>
+<div class="verdict-grid">
+
+<div class="verdict-card">
+  <h3>Bitrix24</h3>
+  <div class="plan-name">Bitrix24 Professional Vibe+</div>
+  <div class="price">11 520 zł / rok</div>
+  <div class="price-breakdown">pakiet 960 PLN/mies. (do 100 os.) × 12 mies. = 11520 (PLN)</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  <div style='margin-top:10px;font-size:12px;color:var(--gray-text);'>Jedyny plan Bitrix24 spełniający wymagania CC. Rok 1 = 11 520 zł niezależnie od 3 czy 5 osób; od roku 2 cena regularna nieznana (sufit przy rozliczeniu miesięcznym 19 188 zł/rok).</div>
+</div>
+
+
+<div class="verdict-card">
+  <h3>HubSpot</h3>
+  <div class="plan-name">Sales Hub Professional</div>
+  <div class="price">19 829 zł / rok</div>
+  <div class="price-breakdown">$100 × 3 os. × 12 mies. + $1500 onboarding = $5100 (USD) × 3.89 = 19,829 PLN</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  <div style='margin-top:10px;font-size:12px;color:var(--gray-text);'>Spełnia S1 i S2 (1:1 sekwencje przez Sequences, webhook w workflow). NIE spełnia S3/S4 bez dokupienia Marketing Hub.</div>
+</div>
+
+
+<div class="verdict-card">
+  <h3>Livespace</h3>
+  <div class="plan-name">Livespace Growth</div>
+  <div class="price">8 112 zł / rok</div>
+  <div class="price-breakdown">225.33 PLN × 3 os. × 12 mies. = 8112 (PLN)</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  <div style='margin-top:10px;font-size:12px;color:var(--gray-text);'>S1/S2: spełnia (Growth). S3/S4: automatyczne ścieżki dla segmentów wymagają osobnego narzędzia — wycena do ustalenia.</div>
+</div>
+
+
+<div class="verdict-card">
+  <h3>Pipedrive</h3>
+  <div class="plan-name">Pipedrive Premium</div>
+  <div class="price">9 291 zł / rok</div>
+  <div class="price-breakdown">€59 × 3 os. × 12 mies. = €2124 (EUR) × 4.37 = 9,291 PLN</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  <div style='margin-top:10px;font-size:12px;color:var(--gray-text);'>Spełnia S1–S4: limit kontaktów z zapasem (45 000 dla 3 os.) i ścieżki dla segmentów w Automatyzacjach (10 opóźnień i warunków). Klik jako warunek ścieżki do sprawdzenia w trialu.</div>
+</div>
+
+</div>
+<h3>CC 25k / 5 os. / 1:1 tylko</h3>
+<p style="color:var(--gray-text);font-size:13px;margin-bottom:16px;">China Select, 25 000 kontaktów w bazie, 5 handlowców. Wymagania jak S1.</p>
+<div class="verdict-grid">
+
+<div class="verdict-card">
+  <h3>Bitrix24</h3>
+  <div class="plan-name">Bitrix24 Professional Vibe+</div>
+  <div class="price">11 520 zł / rok</div>
+  <div class="price-breakdown">pakiet 960 PLN/mies. (do 100 os.) × 12 mies. = 11520 (PLN)</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  <div style='margin-top:10px;font-size:12px;color:var(--gray-text);'>Jedyny plan Bitrix24 spełniający wymagania CC. Rok 1 = 11 520 zł niezależnie od 3 czy 5 osób; od roku 2 cena regularna nieznana (sufit przy rozliczeniu miesięcznym 19 188 zł/rok).</div>
+</div>
+
+
+<div class="verdict-card">
+  <h3>HubSpot</h3>
+  <div class="plan-name">Sales Hub Professional</div>
+  <div class="price">29 161 zł / rok</div>
+  <div class="price-breakdown">$100 × 5 os. × 12 mies. + $1500 onboarding = $7500 (USD) × 3.89 = 29,161 PLN</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  <div style='margin-top:10px;font-size:12px;color:var(--gray-text);'>Spełnia S1 i S2 (1:1 sekwencje przez Sequences, webhook w workflow). NIE spełnia S3/S4 bez dokupienia Marketing Hub.</div>
+</div>
+
+
+<div class="verdict-card">
+  <h3>Livespace</h3>
+  <div class="plan-name">Livespace Growth</div>
+  <div class="price">13 520 zł / rok</div>
+  <div class="price-breakdown">225.33 PLN × 5 os. × 12 mies. = 13520 (PLN)</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  <div style='margin-top:10px;font-size:12px;color:var(--gray-text);'>S1/S2: spełnia (Growth). S3/S4: automatyczne ścieżki dla segmentów wymagają osobnego narzędzia — wycena do ustalenia.</div>
+</div>
+
+
+<div class="verdict-card">
+  <h3>Pipedrive</h3>
+  <div class="plan-name">Pipedrive Premium</div>
+  <div class="price">15 486 zł / rok</div>
+  <div class="price-breakdown">€59 × 5 os. × 12 mies. = €3540 (EUR) × 4.37 = 15,486 PLN</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  <div style='margin-top:10px;font-size:12px;color:var(--gray-text);'>Spełnia S1–S4: limit kontaktów z zapasem (45 000 dla 3 os.) i ścieżki dla segmentów w Automatyzacjach (10 opóźnień i warunków). Klik jako warunek ścieżki do sprawdzenia w trialu.</div>
+</div>
+
+</div>
+<h3>CC 25k / 3 os. / z sekwencjami dla segmentów</h3>
+<p style="color:var(--gray-text);font-size:13px;margin-bottom:16px;">China Select, 25 000 kontaktów, 3 handlowców. PLUS automatyczne, personalizowane ścieżki mailowe dla segmentów (L4 dogrzewanie: 5 maili, rozgałęzienie na odpowiedź/klik, stop po odpowiedzi) — leady wpadają do ścieżek na bieżąco, nie jednorazowy mailing.</p>
+<div class="verdict-grid">
+
+<div class="verdict-card">
+  <h3>Bitrix24</h3>
+  <div class="plan-name">Bitrix24 Professional Vibe+</div>
+  <div class="price">11 520 zł / rok</div>
+  <div class="price-breakdown">pakiet 960 PLN/mies. (do 100 os.) × 12 mies. = 11520 (PLN)</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  <div style='margin-top:10px;font-size:12px;color:var(--gray-text);'>Jedyny plan Bitrix24 spełniający wymagania CC. Rok 1 = 11 520 zł niezależnie od 3 czy 5 osób; od roku 2 cena regularna nieznana (sufit przy rozliczeniu miesięcznym 19 188 zł/rok).</div>
+</div>
+
+
+<div class="verdict-card">
+  <h3>HubSpot</h3>
+  <div class="plan-name">Sales Hub Professional + Marketing Hub Professional (25k kontaktów)</div>
+  <div class="price">130 174 zł / rok</div>
+  <div class="price-breakdown">2415 USD/mies. × 12 = 28980 USD + 4500 USD onboarding = 33480 USD × 3.89 = 130,174 PLN</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  
+</div>
+
+
+<div class="verdict-card">
+  <h3>Livespace</h3>
+  <div class="plan-name">Żaden plan Livespace nie spełnia wszystkich wymagań scenariusza S3</div>
+  <div class="price">— / rok</div>
+  <div class="price-breakdown"></div>
+  <span class="badge badge-fail">Brak zgodnego planu</span>
+  
+</div>
+
+
+<div class="verdict-card">
+  <h3>Pipedrive</h3>
+  <div class="plan-name">Pipedrive Premium</div>
+  <div class="price">9 291 zł / rok</div>
+  <div class="price-breakdown">€59 × 3 os. × 12 mies. = €2124 (EUR) × 4.37 = 9,291 PLN</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  <div style='margin-top:10px;font-size:12px;color:var(--gray-text);'>Spełnia S1–S4: limit kontaktów z zapasem (45 000 dla 3 os.) i ścieżki dla segmentów w Automatyzacjach (10 opóźnień i warunków). Klik jako warunek ścieżki do sprawdzenia w trialu.</div>
+</div>
+
+</div>
+<h3>CC 25k / 5 os. / z sekwencjami dla segmentów</h3>
+<p style="color:var(--gray-text);font-size:13px;margin-bottom:16px;">China Select, 25 000 kontaktów, 5 handlowców. PLUS automatyczne, personalizowane ścieżki mailowe dla segmentów (L4 dogrzewanie: 5 maili, rozgałęzienie na odpowiedź/klik, stop po odpowiedzi) — leady wpadają do ścieżek na bieżąco, nie jednorazowy mailing.</p>
+<div class="verdict-grid">
+
+<div class="verdict-card">
+  <h3>Bitrix24</h3>
+  <div class="plan-name">Bitrix24 Professional Vibe+</div>
+  <div class="price">11 520 zł / rok</div>
+  <div class="price-breakdown">pakiet 960 PLN/mies. (do 100 os.) × 12 mies. = 11520 (PLN)</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  <div style='margin-top:10px;font-size:12px;color:var(--gray-text);'>Jedyny plan Bitrix24 spełniający wymagania CC. Rok 1 = 11 520 zł niezależnie od 3 czy 5 osób; od roku 2 cena regularna nieznana (sufit przy rozliczeniu miesięcznym 19 188 zł/rok).</div>
+</div>
+
+
+<div class="verdict-card">
+  <h3>HubSpot</h3>
+  <div class="plan-name">Sales Hub Professional + Marketing Hub Professional (25k kontaktów)</div>
+  <div class="price">144 171 zł / rok</div>
+  <div class="price-breakdown">2715 USD/mies. × 12 = 32580 USD + 4500 USD onboarding = 37080 USD × 3.89 = 144,171 PLN</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  
+</div>
+
+
+<div class="verdict-card">
+  <h3>Livespace</h3>
+  <div class="plan-name">Żaden plan Livespace nie spełnia wszystkich wymagań scenariusza S4</div>
+  <div class="price">— / rok</div>
+  <div class="price-breakdown"></div>
+  <span class="badge badge-fail">Brak zgodnego planu</span>
+  
+</div>
+
+
+<div class="verdict-card">
+  <h3>Pipedrive</h3>
+  <div class="plan-name">Pipedrive Premium</div>
+  <div class="price">15 486 zł / rok</div>
+  <div class="price-breakdown">€59 × 5 os. × 12 mies. = €3540 (EUR) × 4.37 = 15,486 PLN</div>
+  <span class="badge badge-ok">Spełnia wymagania</span>
+  <div style='margin-top:10px;font-size:12px;color:var(--gray-text);'>Spełnia S1–S4: limit kontaktów z zapasem (45 000 dla 3 os.) i ścieżki dla segmentów w Automatyzacjach (10 opóźnień i warunków). Klik jako warunek ścieżki do sprawdzenia w trialu.</div>
+</div>
+
+</div>
+</div></section>
+<section><div class="container">
+<h2>Tabela kryteriów — plan minimalny per vendor</h2>
+<p style="color:var(--gray-text);font-size:13px;margin-bottom:16px;">Dla scenariusza S1 (25k leadów, 3 os., tylko sekwencje 1:1) — najtańszy plan spełniający wymagania.</p>
+<table class="criteria-table">
+<tr><th>#</th><th>Kryterium</th><th>Bitrix24</th><th>HubSpot</th><th>Livespace</th><th>Pipedrive</th></tr>
+<tr><td>✱ K01</td><td><div class="kryterium-name">Lejki sprzedażowe (wiele pipeline'ów)</div><div class="kryterium-group">lejki_automatyzacja</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — lejki sprzedażowe (od Basic)</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — nieogr. pipeline'ów</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">20 procesów sprzedaży (CC: L1–L4 = 4 lejki)</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK</span></td></tr>
+<tr><td>✱ K02</td><td><div class="kryterium-name">Automatyzacje wieloetapowe z warunkami (workflows)</div><div class="kryterium-group">lejki_automatyzacja</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — reguły automatyzacji na etapach (warunki, czas wykonan</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — 300 pełnych workflows</span></td><td><span class="status-partial">CZĘŚCIOWE</span> <span style="color:var(--gray-text);font-size:11px;">CZĘŚCIOWE — sekwencje maili/zadań po zmianie etapu lub braku</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK</span></td></tr>
+<tr><td>✱ K03</td><td><div class="kryterium-name">Sekwencje maili 1:1 (seria timed emails przez skrzynkę handlowca)</div><div class="kryterium-group">lejki_automatyzacja</div></td><td><span class="status-partial">CZĘŚCIOWE</span> <span style="color:var(--gray-text);font-size:11px;">CZĘŚCIOWE — seria maili = reguły „wyślij e-mail” z opóźnieni</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — Sequences 5000/konto</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — Sekwencje email w planie (wysyłka ze skrzynki handlowc</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK</span></td></tr>
+<tr><td>K04</td><td><div class="kryterium-name">Sekwencje automatyczne dla segmentów (ścieżki marketing automation)</div><div class="kryterium-group">lejki_automatyzacja</div></td><td><span class="status-partial">CZĘŚCIOWE</span> <span style="color:var(--gray-text);font-size:11px;">CZĘŚCIOWE — ścieżki przez etapy: lead wpada na etap → reguły</span></td><td><span class="status-extra">PŁATNY ADD-ON</span></td><td><span class="status-extra">PŁATNY ADD-ON</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — Automatyzacje: wyzwalacz deal/lead utworzony/zmieniony</span></td></tr>
+<tr><td>✱ K05</td><td><div class="kryterium-name">Webhook wychodzący (do n8n/Rinvo)</div><div class="kryterium-group">integracje</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — REST API + webhooki (Vibe+)</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — webhook action w workflow</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — webhooki (subskrypcje zdarzeń: deal, person, company, </span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK</span></td></tr>
+<tr><td>✱ K06</td><td><div class="kryterium-name">Lead scoring</div><div class="kryterium-group">dane_atrybucja</div></td><td><span class="status-partial">CZĘŚCIOWE</span> <span style="color:var(--gray-text);font-size:11px;">brak dowodu na scoring punktowy w cenniku</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — scoring zaawansowany</span></td><td><span class="status-partial">CZĘŚCIOWE</span> <span style="color:var(--gray-text);font-size:11px;">NIE natywnie — brak lead scoringu; Sales Bot = przydział wg </span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — AI priorytety + zaawansowane</span></td></tr>
+<tr><td>✱ K07</td><td><div class="kryterium-name">Atrybucja źródła UTM</div><div class="kryterium-group">dane_atrybucja</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — natywne pola UTM na leadzie + pola własne</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — UTM + source reports</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — pola dodatkowe + API z oznaczeniem źródła kontaktu; UT</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK</span></td></tr>
+<tr><td>K08</td><td><div class="kryterium-name">Formularze natywne (osadzane na stronie)</div><div class="kryterium-group">pozyskiwanie_leadow</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — kreator formularzy CRM (od Standard)</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — Forms natywne</span></td><td><span class="status-partial">CZĘŚCIOWE</span> <span style="color:var(--gray-text);font-size:11px;">CZĘŚCIOWE — brak kreatora formularzy www w cenniku; własny f</span></td><td><span class="status-partial">CZĘŚCIOWE</span> <span style="color:var(--gray-text);font-size:11px;">add-on LeadBooster lub zewnętrzne</span></td></tr>
+<tr><td>✱ K09</td><td><div class="kryterium-name">Limit kontaktów w CRM (obsługa 25 000 rekordów)</div><div class="kryterium-group">limity_skalowanie</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — nieograniczona liczba leadów (od Standard)</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — 15M non-marketing contacts</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — nieograniczona liczba kontaktów i szans we wszystkich </span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">45 000 (3 seats) / 75 000 (5 seats)</span></td></tr>
+<tr><td>✱ K10</td><td><div class="kryterium-name">Limit automatyzacji/workflows</div><div class="kryterium-group">limity_skalowanie</div></td><td><span class="status-partial">CZĘŚCIOWE</span> <span style="color:var(--gray-text);font-size:11px;">brak opublikowanego limitu reguł automatyzacji</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">300 workflows</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">Do 20 automatyzacji procesów; sekwencje email/zadań bez poda</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">150 aktywnych automatyzacji</span></td></tr>
+<tr><td>✱ K11</td><td><div class="kryterium-name">Integracja Meta Lead Ads (natywna lub via n8n)</div><div class="kryterium-group">integracje</div></td><td><span class="status-partial">CZĘŚCIOWE</span> <span style="color:var(--gray-text);font-size:11px;">CZĘŚCIOWE — natywna integracja Facebook Lead Ads (formularz </span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — natywna Meta Lead Ads</span></td><td><span class="status-partial">CZĘŚCIOWE</span> <span style="color:var(--gray-text);font-size:11px;">NIE natywnie — Meta Lead Ads przez Zapier/Make lub n8n → API</span></td><td><span class="status-partial">CZĘŚCIOWE</span> <span style="color:var(--gray-text);font-size:11px;">NIE natywnie — via n8n</span></td></tr>
+<tr><td>✱ K12</td><td><div class="kryterium-name">Log połączeń Rinvo przez API (URL nagrania, transkrypt, wynik)</div><div class="kryterium-group">integracje</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — Telephony API: rejestracja połączenia, podpięcie nagra</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — pełne API calls</span></td><td><span class="status-partial">CZĘŚCIOWE</span> <span style="color:var(--gray-text);font-size:11px;">CZĘŚCIOWE — operacja „Log a Call for a Person” (API, widoczn</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK</span></td></tr>
+<tr><td>✱ K13</td><td><div class="kryterium-name">Raportowanie i dashboardy (source lead reports, conversion funnel)</div><div class="kryterium-group">dane_atrybucja</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — analityka i raporty (Professional)</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — pełne raporty, ads attribution</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — raporty standardowe (konwersje lejka) + raporty własne</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK</span></td></tr>
+<tr><td>K14</td><td><div class="kryterium-name">Polski interfejs UI</div><div class="kryterium-group">rodo_obsluga</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — polski interfejs i cennik bitrix24.pl</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — polski producent, UI i wsparcie PL</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK</span></td></tr>
+<tr><td>✱ K15</td><td><div class="kryterium-name">EU data center + DPA (zgodność RODO)</div><div class="kryterium-group">rodo_obsluga</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — bitrix24.pl hostowany we Frankfurcie (AWS), DPA podpis</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — Frankfurt EU, DPA</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — AWS Irlandia (EOG), umowa powierzenia akceptowana przy</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK</span></td></tr>
+<tr><td>K16</td><td><div class="kryterium-name">Obowiązkowy onboarding (jednorazowy koszt)</div><div class="kryterium-group">koszty</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">Brak wymaganego onboardingu</span></td><td><span class="status-partial">WLICZ KOSZT</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">Brak wymaganego onboardingu</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">Brak wymaganego onboardingu</span></td></tr>
+<tr><td>✱ K17</td><td><div class="kryterium-name">Liczba użytkowników (seats) w planie</div><div class="kryterium-group">koszty</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">960 zł netto/organizację/mies. (rocznie), do 100 os. — rozli</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">$100/seat/mies.</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">259 zł netto/user/mies. (rocznie 225.33 zł) — POTWIERDZONE 0</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">€59/seat/mies. (POTWIERDZONE 05.10)</span></td></tr>
+<tr><td>✱ K18</td><td><div class="kryterium-name">Pola custom na rekordach (deal, kontakt)</div><div class="kryterium-group">lejki_automatyzacja</div></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — pola własne UF_CRM_* (API) / pola w formularzach</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — pełne custom properties</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK — pola dodatkowe: bez limitu</span></td><td><span class="status-ok">TAK</span> <span style="color:var(--gray-text);font-size:11px;">TAK</span></td></tr>
+</table>
+</div></section>
+<section><div class="container">
+<h2>Rozbicie kosztów — wszystkie scenariusze</h2>
+<table class="cost-table">
+<tr><th>Scenariusz</th><th>Bitrix24</th><th>HubSpot</th><th>Livespace</th><th>Pipedrive</th></tr>
+<tr><td><strong>CC 25k / 3 os. / 1:1 tylko</strong><br><span style="font-size:11px;color:var(--gray-text);">25,000 kontaktów, 3 os.</span></td><td><span class="kwota">11 520 zł <small style='color:var(--amber)'>*</small></span><br><span class="breakdown">pakiet 960 PLN/mies. (do 100 os.) × 12 mies. = 11520 (PLN)</span></td><td><span class="kwota">19 829 zł</span><br><span class="breakdown">$100 × 3 os. × 12 mies. + $1500 onboarding = $5100 (USD) × 3.89 = 19,829 PLN</span></td><td><span class="kwota">8 112 zł</span><br><span class="breakdown">225.33 PLN × 3 os. × 12 mies. = 8112 (PLN)</span></td><td><span class="kwota">9 291 zł</span><br><span class="breakdown">€59 × 3 os. × 12 mies. = €2124 (EUR) × 4.37 = 9,291 PLN</span></td></tr>
+<tr><td><strong>CC 25k / 5 os. / 1:1 tylko</strong><br><span style="font-size:11px;color:var(--gray-text);">25,000 kontaktów, 5 os.</span></td><td><span class="kwota">11 520 zł <small style='color:var(--amber)'>*</small></span><br><span class="breakdown">pakiet 960 PLN/mies. (do 100 os.) × 12 mies. = 11520 (PLN)</span></td><td><span class="kwota">29 161 zł</span><br><span class="breakdown">$100 × 5 os. × 12 mies. + $1500 onboarding = $7500 (USD) × 3.89 = 29,161 PLN</span></td><td><span class="kwota">13 520 zł</span><br><span class="breakdown">225.33 PLN × 5 os. × 12 mies. = 13520 (PLN)</span></td><td><span class="kwota">15 486 zł</span><br><span class="breakdown">€59 × 5 os. × 12 mies. = €3540 (EUR) × 4.37 = 15,486 PLN</span></td></tr>
+<tr><td><strong>CC 25k / 3 os. / z sekwencjami dla segmentów</strong><br><span style="font-size:11px;color:var(--gray-text);">25,000 kontaktów, 3 os.</span></td><td><span class="kwota">11 520 zł <small style='color:var(--amber)'>*</small></span><br><span class="breakdown">pakiet 960 PLN/mies. (do 100 os.) × 12 mies. = 11520 (PLN)</span></td><td><span class="kwota">130 174 zł</span><br><span class="breakdown">2415 USD/mies. × 12 = 28980 USD + 4500 USD onboarding = 33480 USD × 3.89 = 130,1</span></td><td><span class="status-fail" style="font-size:12px;">Żaden plan Livespace nie spełnia wszystkich wymagań scenariusza S3</span></td><td><span class="kwota">9 291 zł</span><br><span class="breakdown">€59 × 3 os. × 12 mies. = €2124 (EUR) × 4.37 = 9,291 PLN</span></td></tr>
+<tr><td><strong>CC 25k / 5 os. / z sekwencjami dla segmentów</strong><br><span style="font-size:11px;color:var(--gray-text);">25,000 kontaktów, 5 os.</span></td><td><span class="kwota">11 520 zł <small style='color:var(--amber)'>*</small></span><br><span class="breakdown">pakiet 960 PLN/mies. (do 100 os.) × 12 mies. = 11520 (PLN)</span></td><td><span class="kwota">144 171 zł</span><br><span class="breakdown">2715 USD/mies. × 12 = 32580 USD + 4500 USD onboarding = 37080 USD × 3.89 = 144,1</span></td><td><span class="status-fail" style="font-size:12px;">Żaden plan Livespace nie spełnia wszystkich wymagań scenariusza S4</span></td><td><span class="kwota">15 486 zł</span><br><span class="breakdown">€59 × 5 os. × 12 mies. = €3540 (EUR) × 4.37 = 15,486 PLN</span></td></tr>
+</table>
+<p style="font-size:12px;color:var(--amber);margin-top:8px;">* Cena planu bez potwierdzenia w cenniku producenta. Patrz sekcja NIEPOTWIERDZONE.</p>
+</div></section>
+<section><div class="container">
+<h2>Pola NIEPOTWIERDZONE</h2>
+<div class="niepotwierdzone-box">
+<h3>Liczba pól bez potwierdzenia z primary source: 22</h3>
+<p style="font-size:13px;margin-top:8px;">Pola oznaczone NIEPOTWIERDZONE — dane z notatek wcześniejszych rund badań, bez cytatu z cennika lub dokumentacji producenta. Przed podpisaniem umowy zweryfikuj u vendora.</p>
+<ul class="niepotwierdzone-list">
+<li>[Bitrix24 / Bitrix24 Professional (Essentials)] maile_miesiecznie = zależny od planu — nieopublikowany | NIEPOTWIERDZONE — liczba miesięczna nieopublikowana; wyższe limity Vibe+ potwier</li>
+<li>[Bitrix24 / Bitrix24 Professional (Essentials)] stop_po_odpowiedzi = brak dowodu | NIEPOTWIERDZONE — wyzwalacz na odpowiedź nie wymieniony</li>
+<li>[Bitrix24 / Bitrix24 Professional Vibe+] maile_miesiecznie = zależny od planu — nieopublikowany | NIEPOTWIERDZONE — liczba miesięczna nieopublikowana; wyższe limity Vibe+ potwier</li>
+<li>[Bitrix24 / Bitrix24 Professional Vibe+] stop_po_odpowiedzi = brak dowodu | NIEPOTWIERDZONE — wyzwalacz na odpowiedź nie wymieniony</li>
+<li>[Bitrix24 / Bitrix24 Professional Vibe+] cena = 960 | NIEPOTWIERDZONE po roku 1 — 960 zł to cena premierowa (zakup do 10.12.2026, 12 m</li>
+<li>[HubSpot / Sales Hub Starter] lead_scoring = do 5 score'ów | NIEPOTWIERDZONE — z R7 notatki, brak cytatu z primary source</li>
+<li>[HubSpot / Sales Hub Starter] lejki_pipeline = 15 | NIEPOTWIERDZONE — strona cennika renderuje JS, cytat z R7 notatki</li>
+<li>[HubSpot / Sales Hub Professional] lejki_pipeline = nieograniczone | NIEPOTWIERDZONE — strona JS, cytat z R7 notatki</li>
+<li>[Livespace / Livespace Automation] sekwencje_email_kroki = brak danych | NIEPOTWIERDZONE — limit kroków nieopublikowany; funkcja w planie potwierdzona</li>
+<li>[Livespace / Livespace Automation] masowa_wysylka_limit = brak danych | NIEPOTWIERDZONE — limit nieopublikowany; funkcja w planie potwierdzona</li>
+<li>[Livespace / Livespace Growth] sekwencje_email_kroki = brak danych | NIEPOTWIERDZONE — limit kroków nieopublikowany; funkcja w planie potwierdzona</li>
+<li>[Livespace / Livespace Growth] masowa_wysylka_limit = brak danych | NIEPOTWIERDZONE — limit nieopublikowany; funkcja w planie potwierdzona</li>
+<li>[Livespace / Livespace Professional+] sekwencje_email_kroki = brak danych | NIEPOTWIERDZONE — limit kroków nieopublikowany; funkcja w planie potwierdzona</li>
+<li>[Livespace / Livespace Professional+] masowa_wysylka_limit = brak danych | NIEPOTWIERDZONE — limit nieopublikowany; funkcja w planie potwierdzona</li>
+<li>[Pipedrive / Pipedrive Growth] aktywne_leady_deale = 5000 per seat, max 300 000 | NIEPOTWIERDZONE — Cloudflare blokuje primary source</li>
+<li>[Pipedrive / Pipedrive Growth] webhook_wychodzacy = True | NIEPOTWIERDZONE — z R7 notatki</li>
+<li>[Pipedrive / Pipedrive Growth] sekwencje_email_1to1 = True | CZĘŚCIOWO POTWIERDZONE — funkcja emaili potwierdzona, szczegóły planu Growth i o</li>
+<li>[Pipedrive / Pipedrive Growth] email_masowy_marketing = add-on: Campaigns | NIEPOTWIERDZONE</li>
+<li>[Pipedrive / Pipedrive Growth] lejki_pipeline = nieograniczone | NIEPOTWIERDZONE — Cloudflare blokuje</li>
+<li>[Pipedrive / Pipedrive Growth] lead_scoring = priorytety AI (beta) | NIEPOTWIERDZONE</li>
+<li>[Pipedrive / Pipedrive Premium] aktywne_leady_deale = 15 000 per seat, max 300 000 | NIEPOTWIERDZONE — Cloudflare blokuje</li>
+<li>[Pipedrive / Pipedrive Premium] ai_email_drafts = True | NIEPOTWIERDZONE</li>
+</ul>
+</div>
+<div class="weryfikacja-box">
+<strong>Weryfikacja cytatów:</strong> 49/59 cytatów z plików raw potwierdzonych automatycznie.
+</div>
+</div></section>
+
+<footer style="background:var(--gray-bg);padding:24px 0;font-size:12px;color:var(--gray-text);">
+  <div class="container">
+    <div>China Select — porównanie CRM &nbsp;·&nbsp; Wygenerowano 2026-10-13</div>
+    <div>Źródło Bitrix24: https://www.bitrix24.pl/prices/ (odczyt 2026-10-06)</div><div>Źródło HubSpot: https://legal.hubspot.com/hubspot-product-and-services-catalog (odczyt 2026-10-05)</div><div>Źródło Livespace: https://livespace.io/pl/cennik/ (odczyt 2026-10-06)</div><div>Źródło Pipedrive: https://www.pipedrive.com/en/pricing (w przeglądarce; curl = Cloudflare) (odczyt 2026-10-05)</div>
+    <div>Kursy walut: NBP tabela A 192/A/NBP/2026 (api.nbp.pl), tabela z 2026-10-02</div>
+  </div>
+</footer>
+
+</body></html>

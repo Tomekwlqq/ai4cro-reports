@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="pl" data-theme="light">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ścieżka zakupowa · S2 Rodzina · v0 (plaster K0)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>:root{
+  --bg:#FBF6F1;--surface:#FFFFFF;--surface-2:#F7F0EA;
+  --line:#EFE3DA;--line-soft:#F4EBE4;
+  --ink:#2B2326;--muted:#6B5D5A;--faint:#9C8D88;
+  --v:#C9A84C;--v-d:#8A6D1F;--v-soft:rgba(201,168,76,.10);--v-line:rgba(201,168,76,.32);
+  --dark:#3F4A44;
+  --grotesk:'Space Grotesk',-apple-system,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --green:#236B43;--green-soft:#E5F2EB;--green-line:#9DD4B0;
+  --amber:#8A6D1F;--amber-soft:#FDF3DC;--amber-line:#E8C97B;
+  --red:#8B2E2E;--red-soft:#F9E8E8;--red-line:#E8B4B4;
+  --r:12px;--r-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden;max-width:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--grotesk);font-size:14px;line-height:1.6}
+a{color:var(--v-d);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.wrap{max-width:980px;margin:0 auto;padding:36px 18px 80px}
+.backlink{display:inline-block;font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-bottom:20px}
+.backlink:hover{color:var(--v-d)}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--v-d);margin-bottom:8px}
+h1{font-size:clamp(24px,4vw,36px);letter-spacing:-.02em;line-height:1.15;margin-bottom:6px}
+.meta{font-size:13px;color:var(--muted);margin-bottom:26px;max-width:720px}
+
+/* ── Sekcja ── */
+.sek{margin-top:42px}
+.sek-h{font-size:18px;font-weight:700;letter-spacing:-.01em;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sek-n{font-family:var(--mono);font-size:12px;color:var(--v-d);font-weight:600}
+
+/* ── Hero header ── */
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px 24px;margin-bottom:8px}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 28px}
+.hero-label{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:4px}
+.hero-val{font-size:15px;font-weight:600;color:var(--ink)}
+.hero-val.big{font-size:18px;color:var(--v-d)}
+.obietnica{background:var(--v-soft);border:1px solid var(--v-line);border-radius:var(--r);padding:14px 18px;margin-top:14px;font-size:15px;font-weight:600;color:var(--v-d)}
+.modele{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.model-chip{background:var(--surface-2);border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:12.5px;font-family:var(--mono)}
+.przekaz{font-size:13px;color:var(--muted);font-style:italic;margin:2px 0}
+
+/* ── CEP karty ── */
+.cep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.cep-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.cep-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.cep-badge{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;border:1px solid;white-space:nowrap}
+.cep-badge.strong{background:#E3F2E9;color:var(--green);border-color:var(--green-line)}
+.cep-badge.weak{background:#EEF3F9;color:#3A6691;border-color:#C0D5EC}
+.cep-name{font-size:14.5px;font-weight:600;flex:1}
+.cep-row{font-size:13px;color:var(--muted);margin:4px 0}
+.cep-row b{color:var(--ink);font-weight:600}
+.cep-show{background:var(--surface-2);border-radius:6px;padding:8px 10px;font-size:12.5px;margin-top:8px;color:var(--ink)}
+.cep-show-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--faint);letter-spacing:.1em;margin-bottom:3px}
+
+/* ── Decyzja wspólna (alert) ── */
+.alert{background:var(--amber-soft);border:1px solid var(--amber-line);border-radius:var(--r);padding:14px 18px;font-size:13.5px;margin-top:14px}
+.alert b{color:var(--amber)}
+
+/* ── Oś kroków ── */
+.kroki-lista{display:flex;flex-direction:column;gap:8px}
+.krok{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.krok>summary{cursor:pointer;list-style:none;padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.krok>summary::-webkit-details-marker{display:none}
+.krok>summary .krok-num{font-family:var(--mono);font-size:11px;font-weight:700;width:28px;flex-shrink:0;color:var(--v-d)}
+.krok>summary .krok-faza{font-family:var(--mono);font-size:10px;color:var(--faint);flex-shrink:0}
+.krok>summary .krok-gdzie{font-size:13.5px;font-weight:600;flex:1}
+.stan-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.stan-dot.red{background:#C0393B}
+.stan-dot.amber{background:#C9A84C}
+.stan-dot.green{background:#2E8B57}
+.krok-body{padding:12px 16px 14px;border-top:1px solid var(--line-soft);display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+.krok-field{font-size:13px}
+.krok-field-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--faint);letter-spacing:.1em;margin-bottom:3px}
+.krok-field-val{color:var(--ink);line-height:1.5}
+.stan-box{grid-column:1/-1;padding:8px 12px;border-radius:8px;font-size:13px}
+.ab-badge{font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:99px;background:#EEF3F9;color:#3A6691;border:1px solid #C0D5EC}
+.side-branch{background:var(--surface-2);border:1px dashed var(--line);border-radius:var(--r);padding:12px 16px;font-size:13.5px;margin-top:8px}
+.side-branch-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--v-d);margin-bottom:6px;font-weight:700}
+
+/* ── Braki ── */
+.braki-lista{display:flex;flex-direction:column;gap:8px}
+.brak{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;font-size:13.5px}
+.brak-num{font-family:var(--mono);font-weight:700;font-size:13px;min-width:32px;color:var(--v-d)}
+.brak.bloker{border-color:#E8B4B4;background:#FEF7F7}
+.brak.bloker .brak-num{color:#8B2E2E}
+.brak-bloker-label{font-family:var(--mono);font-size:10px;background:#F9E8E8;color:#8B2E2E;border:1px solid #E8B4B4;border-radius:99px;padding:1px 6px;margin-bottom:4px;display:inline-block}
+
+/* ── Decyzje chipy ── */
+.decyzje{display:flex;flex-wrap:wrap;gap:8px}
+.decyzja-chip{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:5px 12px;font-size:13px;font-family:var(--mono)}
+.decyzja-chip.blokada{border-color:#E8B4B4;background:#FEF7F7;color:#8B2E2E;font-weight:700}
+
+/* ── Co dalej ── */
+.co-dalej{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px;font-size:14px}
+.co-dalej ul{padding-left:18px}
+.co-dalej li{margin:5px 0;color:var(--muted)}
+.co-dalej li::marker{color:var(--v-d)}
+
+/* ── Foot ── */
+.foot{margin-top:52px;border-top:1px solid var(--line);padding-top:14px;font-family:var(--mono);font-size:11px;color:var(--faint)}
+
+@media(max-width:600px){
+  .hero-grid{grid-template-columns:1fr}
+  .krok-body{grid-template-columns:1fr}
+  .cep-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<!-- hub-backlink -->
+<div id="hub-backlink-bar" style="position:sticky;top:0;z-index:100;background:#3F4A44;padding:8px 16px;font:600 13px/1.4 'IBM Plex Mono',monospace;letter-spacing:.04em;">
+  <a href="../CC_HUB.html" style="color:#C9A84C;text-decoration:none;">← Hub China Select</a>
+</div>
+<!-- /hub-backlink -->
+<div class="wrap">
+
+<a class="backlink" href="../CC_HUB.html">← Hub China Select</a>
+
+<div class="kicker">CC · ścieżka zakupowa · S2</div>
+<h1>Ścieżka zakupowa · S2 Rodzina · v0 (plaster K0)</h1>
+<p class="meta"></p>
+
+<!-- 1. Kto -->
+<div class="sek">
+  <div class="sek-h"><span class="sek-n">01</span>Grupa i obietnica</div>
+  
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-label">Segment</div>
+      <div class="hero-val">Grupa 02 Rodzina — 35–45 lat, dom pod miastem, dwoje–troje dzieci; potrzebuje sześciu miejsc i bagażnika; nie chce eksperymentować, ale chce lepszego auta, niż pozwala budżet.</div>
+    </div>
+    <div>
+      <div class="hero-label">Budżet reklamy</div>
+      <div class="hero-val big">18 000 zł / mies.</div>
+    </div>
+    <div style="grid-column:1/-1">
+      <div class="hero-label">Modele-bohaterowie</div>
+      <div class="modele"><span class="model-chip">Li Auto L9 (EREV, 6 miejsc)</span><span class="model-chip">Li Auto L6 (wejście)</span><span class="model-chip">Denza D9 DM-i (MPV, 7 miejsc)</span><span class="model-chip">AITO M9 (EREV, 6 miejsc)</span><span class="model-chip">Denza N9 (PHEV, 6 miejsc)</span></div>
+    </div>
+  </div>
+  <div class="obietnica">🎯 „Ponad 1000 km zasięgu i koniec strachu o ładowanie.”</div>
+  <div style="margin-top:12px"><div class="hero-label" style="margin-bottom:6px">Przekazy reklam</div><div class="przekaz">„1000 km zasięgu. Ładujesz, kiedy chcesz, nie kiedy musisz.”</div><div class="przekaz">„Sześć miejsc. Trzy rzędy. Nikt się nie kłóci o bagażnik.”</div><div class="przekaz">„Obejrzysz je z całą rodziną, zanim dopłacisz resztę.”</div><div class="przekaz">„Tyle miejsca ma w Polsce auto dwa razy droższe.”</div><div class="przekaz">„Wakacje bez planowania postojów przy ładowarce.”</div><div class="przekaz">„Trzy rzędy i 1000 km zasięgu. Bez kompromisu.”</div></div>
+</div>
+</div>
+
+<!-- 2. CEP -->
+<div class="sek">
+  <div class="sek-h"><span class="sek-n">02</span>Momenty wejścia i obawy (CEP)</div>
+  <div class="cep-grid">
+<div class="cep-card">
+  <div class="cep-header">
+    <span class="cep-badge weak">Prawdopodobne (✅)</span>
+    <div class="cep-name">Rodzina przestała się mieścić</div>
+  </div>
+  <div class="cep-row"><b>Moment:</b> trzecie dziecko, nie wchodzą z bagażami</div>
+  <div class="cep-row"><b>Obawa:</b> trzy rzędy, bezpieczeństwo, bagażnik</div>
+  <div class="cep-show">
+    <div class="cep-show-label">Co strona musi pokazać</div>
+    3 rzędy, ISOFIX, bagażnik przy rozłożonych fotelach, wynik Euro NCAP
+  </div>
+</div>
+<div class="cep-card">
+  <div class="cep-header">
+    <span class="cep-badge weak">Prawdopodobne (✅)</span>
+    <div class="cep-name">Długie trasy bez stresu o ładowanie</div>
+  </div>
+  <div class="cep-row"><b>Moment:</b> morze/góry, nie chce planować ładowarek</div>
+  <div class="cep-row"><b>Obawa:</b> realny zasięg (CLTC ≠ WLTP)</div>
+  <div class="cep-show">
+    <div class="cep-show-label">Co strona musi pokazać</div>
+    zasięg WLTP obok CLTC, osobno na prądzie i łącznie
+  </div>
+</div>
+<div class="cep-card">
+  <div class="cep-header">
+    <span class="cep-badge strong">Udowodnione (✅✅)</span>
+    <div class="cep-name">Więcej auta za te pieniądze</div>
+  </div>
+  <div class="cep-row"><b>Moment:</b> chce więcej niż kupi w PL</div>
+  <div class="cep-row"><b>Obawa:</b> czy „więcej” przetrwa doliczenie kosztów</div>
+  <div class="cep-show">
+    <div class="cep-show-label">Co strona musi pokazać</div>
+    cena do odbioru z rozbiciem: auto + transport + cło + akcyza
+  </div>
+</div>
+<div class="cep-card">
+  <div class="cep-header">
+    <span class="cep-badge weak">Prawdopodobne (✅)</span>
+    <div class="cep-name">Klasa wyżej za ten sam budżet</div>
+  </div>
+  <div class="cep-row"><b>Moment:</b> w salonie dostaje gołego średniaka</div>
+  <div class="cep-row"><b>Obawa:</b> czy to naprawdę klasa wyżej</div>
+  <div class="cep-show">
+    <div class="cep-show-label">Co strona musi pokazać</div>
+    porównanie z autem tej samej wielkości z Europy w jednej tabeli
+  </div>
+</div>
+<div class="cep-card">
+  <div class="cep-header">
+    
+    <div class="cep-name">Obawy UDOWODNIONE (✅✅) — pierwszeństwo na karcie, nad linią zgięcia</div>
+  </div>
+  <div class="cep-row"><b>Moment:</b> „czy się nie rozsypie”, „gdzie serwisować”, „za ile sprzedam”</div>
+  <div class="cep-row"><b>Obawa:</b> trwałość, serwis i części, wartość rezydualna</div>
+  <div class="cep-show">
+    <div class="cep-show-label">Co strona musi pokazać</div>
+    znane usterki modelu i co obejmuje gwarancja; kto serwisuje w PL i ile trwają części; ile egzemplarz stracił od nowości
+  </div>
+</div>
+<div class="cep-card">
+  <div class="cep-header">
+    
+    <div class="cep-name">Obawy PRAWDOPODOBNE (✅) — niżej na karcie i w mailach</div>
+  </div>
+  <div class="cep-row"><b>Moment:</b> „kupuję auto, którego nie widziałem”, „czy będzie po polsku”, „co powiedzą znajomi”</div>
+  <div class="cep-row"><b>Obawa:</b> stan egzemplarza, menu PL/CarPlay, opinia otoczenia (rodzina!)</div>
+  <div class="cep-show">
+    <div class="cep-show-label">Co strona musi pokazać</div>
+    raport inspekcji + zasady zaliczki; język menu i CarPlay; opinie właścicieli z PL z modelem i przebiegiem
+  </div>
+</div></div><div class="alert"><b>Decyzja jest wspólna.</b> Auto za 150–250 tys. zł w rodzinie z dziećmi kupuje para, a opór pojawia się zanim padnie lead („jak pokonam w głowie powtarzane przez rodzinę obawy” — fo_113; „Rodzina mówi, że chińczyk się rozsypie” — cep_obawa_smiech_otoczenia). <b>Bezpieczeństwo działa jak weto</b> — jeśli drugi decydent nie zobaczy go od razu, rozmowa z handlowcem kończy się na „muszę porozmawiać z żoną/mężem”.</div>
+</div>
+
+<!-- 3. Kroki -->
+<div class="sek">
+  <div class="sek-h"><span class="sek-n">03</span>Ścieżka krok po kroku
+    <span style="font-size:13px;font-weight:400;color:var(--muted)">— 10 kroków;
+      <span style="display:inline-flex;gap:5px;align-items:center">
+        <span class="stan-dot green"></span>jest
+        <span class="stan-dot amber"></span>plan/zakładamy
+        <span class="stan-dot red"></span>brak/sprzeczne
+      </span>
+    </span>
+  </div>
+  <div class="kroki-lista">
+<details class="krok">
+  <summary>
+    <span class="krok-num">1</span>
+    
+    <span class="krok-faza">f1 Popyt (K01–K03)</span>
+    <span class="krok-gdzie">Reklama Meta, przekaz z grupy 02, model L9</span>
+    <span class="stan-dot amber" title="plan / zakładamy"></span>
+  </summary>
+  <div class="krok-body">
+    <div class="krok-field">
+      <div class="krok-field-label">Co myśli / pyta</div>
+      <div class="krok-field-val">„1000 km — naprawdę?”</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Co musi zobaczyć</div>
+      <div class="krok-field-val">przekaz zgodny z kartą (WLTP!)</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Akcja → zdarzenie</div>
+      <div class="krok-field-val">klik / otwarcie formularza → `ad_click` (UTM: grupa_02, model)</div>
+    </div>
+    <div class="stan-box" style="background:#FDF3DC;color:#7D5415;border:1px solid #E8C97B">
+      <b>Stan dziś:</b> kreacje w strategii; lead oznaczany 4 polami — plan (K03)
+    </div>
+  </div>
+</details>
+<details class="krok">
+  <summary>
+    <span class="krok-num">2A</span>
+    <span class="ab-badge">A</span>
+    <span class="krok-faza">f2 Kontakt (K06)</span>
+    <span class="krok-gdzie">A: formularz natywny Meta (L1)</span>
+    <span class="stan-dot red" title="brak / sprzeczne"></span>
+  </summary>
+  <div class="krok-body">
+    <div class="krok-field">
+      <div class="krok-field-label">Co myśli / pyta</div>
+      <div class="krok-field-val">„zostawię numer, oddzwonią”</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Co musi zobaczyć</div>
+      <div class="krok-field-val">3–4 pola + zgoda na połączenie automatyczne (Rinvo)</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Akcja → zdarzenie</div>
+      <div class="krok-field-val">`lead_form_submit` (źródło meta_form)</div>
+    </div>
+    <div class="stan-box" style="background:#F9E8E8;color:#8B2E2E;border:1px solid #E8B4B4">
+      <b>Stan dziś:</b> zgoda pod Rinvo — do decyzji
+    </div>
+  </div>
+</details>
+<details class="krok">
+  <summary>
+    <span class="krok-num">2B</span>
+    <span class="ab-badge">B</span>
+    <span class="krok-faza">f1→f2</span>
+    <span class="krok-gdzie">B: karta Li Auto L9 (L2)</span>
+    <span class="stan-dot red" title="brak / sprzeczne"></span>
+  </summary>
+  <div class="krok-body">
+    <div class="krok-field">
+      <div class="krok-field-label">Co myśli / pyta</div>
+      <div class="krok-field-val">„ile do odbioru, ile miejsc, ile realnie przejadę, czy po polsku”</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Co musi zobaczyć</div>
+      <div class="krok-field-val">nad linią zgięcia: cena do odbioru z rozbiciem, 6 miejsc/3 rzędy/ISOFIX/bagażnik, Euro NCAP (weto bezpieczeństwa), zasięg WLTP i CLTC, termin odbioru w tygodniach; niżej: menu PL/CarPlay, gwarancja i serwis z nazwy, raport inspekcji, link „wyślij partnerowi/partnerce”</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Akcja → zdarzenie</div>
+      <div class="krok-field-val">3 wyjścia: Zapytaj o ofertę → gorący · „Wyślij mi pełny koszt i raport tego auta” → ciepły · kalkulator raty/kosztu → `calculator_use`</div>
+    </div>
+    <div class="stan-box" style="background:#F9E8E8;color:#8B2E2E;border:1px solid #E8B4B4">
+      <b>Stan dziś:</b> karta ma cenę brutto bez rozbicia, „Zapytaj o ofertę”, pasek parametrów, tabelę specyfikacji; brak kosztu all-in, terminu, raportu do pobrania, WLTP, kalkulatora (lista braków P1/P2)
+    </div>
+  </div>
+</details>
+<details class="krok">
+  <summary>
+    <span class="krok-num">3</span>
+    
+    <span class="krok-faza">f3 Reakcja (K09–K10)</span>
+    <span class="krok-gdzie">Rinvo dzwoni ≤5 min (gorący) / automat mailowy z raportem (ciepły)</span>
+    <span class="stan-dot green" title="jest"></span>
+  </summary>
+  <div class="krok-body">
+    <div class="krok-field">
+      <div class="krok-field-label">Co myśli / pyta</div>
+      <div class="krok-field-val">„czy ktoś w ogóle odpowie”</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Co musi zobaczyć</div>
+      <div class="krok-field-val">dla ciepłego natychmiast: mail z pełnym kosztem egzemplarza, harmonogramem płatności, gwarancją</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Akcja → zdarzenie</div>
+      <div class="krok-field-val">`call_connected` / `report_request`</div>
+    </div>
+    <div class="stan-box" style="background:#E5F2EB;color:#236B43;border:1px solid #9DD4B0">
+      <b>Stan dziś:</b> czas pierwszego kontaktu sprzeczny (K09: 30 min vs Rinvo 5 min)
+    </div>
+  </div>
+</details>
+<details class="krok">
+  <summary>
+    <span class="krok-num">4</span>
+    
+    <span class="krok-faza">f4 Kwalifikacja (K12–K13)</span>
+    <span class="krok-gdzie">Rinvo → HOT do człowieka od razu</span>
+    <span class="stan-dot amber" title="plan / zakładamy"></span>
+  </summary>
+  <div class="krok-body">
+    <div class="krok-field">
+      <div class="krok-field-label">Co myśli / pyta</div>
+      <div class="krok-field-val">„czy to auto dla nas”</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Co musi zobaczyć</div>
+      <div class="krok-field-val">pytania kwalifikujące rodzinę: liczba miejsc, kiedy auto potrzebne, budżet/rata, czy chce oglądać z rodziną, kto jeszcze decyduje i co go niepokoi (odpowiedź → co wysłać drugiej osobie)</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Akcja → zdarzenie</div>
+      <div class="krok-field-val">`lead_qualified` (HOT/WARM/COLD)</div>
+    </div>
+    <div class="stan-box" style="background:#FDF3DC;color:#7D5415;border:1px solid #E8C97B">
+      <b>Stan dziś:</b> plan
+    </div>
+  </div>
+</details>
+<details class="krok">
+  <summary>
+    <span class="krok-num">5</span>
+    
+    <span class="krok-faza">f5 Dobór i oferta (K15–K18)</span>
+    <span class="krok-gdzie">doradca: max 3 auta</span>
+    <span class="stan-dot red" title="brak / sprzeczne"></span>
+  </summary>
+  <div class="krok-body">
+    <div class="krok-field">
+      <div class="krok-field-label">Co myśli / pyta</div>
+      <div class="krok-field-val">„ile w sumie, jaka rata, jaki stan”</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Co musi zobaczyć</div>
+      <div class="krok-field-val">pełny koszt „pod klucz” (K17), raport techniczny 100+ pkt (K16), leasing/kredyt (K18)</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Akcja → zdarzenie</div>
+      <div class="krok-field-val">oferta wysłana</div>
+    </div>
+    <div class="stan-box" style="background:#F9E8E8;color:#8B2E2E;border:1px solid #E8B4B4">
+      <b>Stan dziś:</b> K17, K18 — do ustalenia
+    </div>
+  </div>
+</details>
+<details class="krok">
+  <summary>
+    <span class="krok-num">6</span>
+    
+    <span class="krok-faza">f6 Rezerwacja (K20–K22)</span>
+    <span class="krok-gdzie">„Obejrzysz je z całą rodziną, zanim dopłacisz resztę”</span>
+    <span class="stan-dot red" title="brak / sprzeczne"></span>
+  </summary>
+  <div class="krok-body">
+    <div class="krok-field">
+      <div class="krok-field-label">Co myśli / pyta</div>
+      <div class="krok-field-val">„co, jeśli auto będzie inne niż na zdjęciach?”</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Co musi zobaczyć</div>
+      <div class="krok-field-val">zasady zaliczki: ile, kiedy zwrotna, co przy niezgodności</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Akcja → zdarzenie</div>
+      <div class="krok-field-val">`reservation_paid`</div>
+    </div>
+    <div class="stan-box" style="background:#F9E8E8;color:#8B2E2E;border:1px solid #E8B4B4">
+      <b>Stan dziś:</b> 10% — sprzeczne (K20); zadatek vs zaliczka (SP02)
+    </div>
+  </div>
+</details>
+<details class="krok">
+  <summary>
+    <span class="krok-num">7</span>
+    
+    <span class="krok-faza">f7 Import (K24–K27)</span>
+    <span class="krok-gdzie">status auta</span>
+    <span class="stan-dot red" title="brak / sprzeczne"></span>
+  </summary>
+  <div class="krok-body">
+    <div class="krok-field">
+      <div class="krok-field-label">Co myśli / pyta</div>
+      <div class="krok-field-val">„gdzie jest nasze auto”</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Co musi zobaczyć</div>
+      <div class="krok-field-val">czas importu liczbą tygodni, śledzenie</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Akcja → zdarzenie</div>
+      <div class="krok-field-val">—</div>
+    </div>
+    <div class="stan-box" style="background:#F9E8E8;color:#8B2E2E;border:1px solid #E8B4B4">
+      <b>Stan dziś:</b> K24 do ustalenia; K27 zakładamy
+    </div>
+  </div>
+</details>
+<details class="krok">
+  <summary>
+    <span class="krok-num">8</span>
+    
+    <span class="krok-faza">f8 Oględziny (K28–K29)</span>
+    <span class="krok-gdzie">oględziny z rodziną</span>
+    <span class="stan-dot red" title="brak / sprzeczne"></span>
+  </summary>
+  <div class="krok-body">
+    <div class="krok-field">
+      <div class="krok-field-label">Co myśli / pyta</div>
+      <div class="krok-field-val">„czy zgodne z opisem”</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Co musi zobaczyć</div>
+      <div class="krok-field-val">procedura oględzin i niezgodności</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Akcja → zdarzenie</div>
+      <div class="krok-field-val">—</div>
+    </div>
+    <div class="stan-box" style="background:#F9E8E8;color:#8B2E2E;border:1px solid #E8B4B4">
+      <b>Stan dziś:</b> sprzeczne (K28, SP03)
+    </div>
+  </div>
+</details>
+<details class="krok">
+  <summary>
+    <span class="krok-num">9–10</span>
+    
+    <span class="krok-faza">f9–f10 Wydanie, po zakupie (K30–K35)</span>
+    <span class="krok-gdzie">dopłata 90%, rejestracja, gwarancja, serwis</span>
+    <span class="stan-dot red" title="brak / sprzeczne"></span>
+  </summary>
+  <div class="krok-body">
+    <div class="krok-field">
+      <div class="krok-field-label">Co myśli / pyta</div>
+      <div class="krok-field-val">„kto serwisuje”</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Co musi zobaczyć</div>
+      <div class="krok-field-val">gwarancja do 36 mies. (K33), serwis i części (K34)</div>
+    </div>
+    <div class="krok-field">
+      <div class="krok-field-label">Akcja → zdarzenie</div>
+      <div class="krok-field-val">opinia i polecenie (K35)</div>
+    </div>
+    <div class="stan-box" style="background:#F9E8E8;color:#8B2E2E;border:1px solid #E8B4B4">
+      <b>Stan dziś:</b> K33 zakładamy; K34 do ustalenia
+    </div>
+  </div>
+</details></div>
+<div class="side-branch">
+  <div class="side-branch-label">C · Organicznie / GEO</div>
+  <div>C · Organicznie / GEO (L5): pytania S2 z bazy CEP (np. „Jakie chińskie auto 7-osobowe kupić?”, „Czy chińskie samochody są bezpieczne?”, „Ile naprawdę przejedzie hybryda z dużą baterią?”, „Czy auto z Chin ma polskie menu?”) → strona odpowiedzi → karta L9 → wyjście „pełny koszt i raport” (jak 2B).</div>
+</div>
+<div class="side-branch">
+  <div class="side-branch-label">D · Dogrzewanie</div>
+  <div>D · Dogrzewanie (L4): ciepli/chłodni z 2B → mail 0 do przekazania partnerowi/partnerce (bezpieczeństwo, miejsce, koszt w jednym widoku) + sekwencja 5 maili, każdy na jedną obawę S2: (1) pełny koszt i raport egzemplarza, (2) ile trwa import (tygodnie), (3) kto i jak płaci (zaliczka → transze, co zwrotne), (4) gwarancja i serwis z nazwy + menu PL/CarPlay, (5) opinie właścicieli z PL (model, przebieg) → powrót na kartę → Rinvo.</div>
+</div>
+</div>
+
+<!-- 4. Braki -->
+<div class="sek">
+  <div class="sek-h"><span class="sek-n">04</span>Czego brakuje, żeby ścieżka działała
+    <span style="font-size:13px;font-weight:400;color:var(--muted)">(13 pozycji)</span>
+  </div>
+  <div class="braki-lista">
+<div class="brak bloker">
+  <div class="brak-num">0.</div>
+  <div><span class="brak-bloker-label">BLOKADA</span><br>Warunek wstępny: czy modele-bohaterowie są w stocku/feedzie (Li Auto L9/L6, Denza D9/N9, AITO M9; K05 „zakładamy”). Dzisiejsza karta na stagingu to XPeng G6 — nie wiemy, czy karta L9 istnieje. Reklama nie może obiecywać auta, którego nie ma.</div>
+</div>
+<div class="brak bloker">
+  <div class="brak-num">00.</div>
+  <div><span class="brak-bloker-label">BLOKADA</span><br>Blokada #1: gdzie i kiedy rodzina ogląda auto (K28/SP03 — sprzeczne). Główny przekaz grupy („Obejrzysz je z całą rodziną, zanim dopłacisz resztę”) wskazuje proces, który dziś ma trzy wykluczające się wersje (oglądanie w PL / dostawa pod adres / showroom i jazda próbna). Bez decyzji ten przekaz nie może iść w reklamę.</div>
+</div>
+<div class="brak">
+  <div class="brak-num">1.</div>
+  <div>Cena do odbioru z rozbiciem na karcie (K17 — decyzja klienta) — bez tego obietnica grupy 02 „więcej auta” nie ma dowodu.</div>
+</div>
+<div class="brak">
+  <div class="brak-num">2.</div>
+  <div>Zasięg WLTP obok CLTC na karcie L9/AITO/Denza — inaczej reklama „1000 km” obiecuje więcej, niż karta potwierdzi. Jeśli model nie ma pomiaru WLTP (do sprawdzenia per model), pokazujemy CLTC z uczciwym wyjaśnieniem różnicy i realnym zasięgiem w polskich warunkach.</div>
+</div>
+<div class="brak">
+  <div class="brak-num">3.</div>
+  <div>Wyjście „wyślij mi pełny koszt i raport” (quasi-lead jak Guazi) + automat mailowy — dziś jedyne wyjście to „Zapytaj o ofertę”.</div>
+</div>
+<div class="brak">
+  <div class="brak-num">4.</div>
+  <div>Raport inspekcji (przykład do pobrania) i zasady zaliczki przy karcie (K16, K20, SP02).</div>
+</div>
+<div class="brak">
+  <div class="brak-num">5.</div>
+  <div>Rodzinne parametry nad linią zgięcia: 3 rzędy, ISOFIX, bagażnik, Euro NCAP (weto bezpieczeństwa).</div>
+</div>
+<div class="brak">
+  <div class="brak-num">6.</div>
+  <div>Termin odbioru w tygodniach (K24).</div>
+</div>
+<div class="brak">
+  <div class="brak-num">7.</div>
+  <div>Menu PL / CarPlay przy każdym modelu.</div>
+</div>
+<div class="brak">
+  <div class="brak-num">8.</div>
+  <div>Kalkulator raty/kosztu (K18) — dziś brak.</div>
+</div>
+<div class="brak">
+  <div class="brak-num">9.</div>
+  <div>Zgoda pod Rinvo w formularzach (Meta i strona).</div>
+</div>
+<div class="brak">
+  <div class="brak-num">10.</div>
+  <div>Pomiar: UTM grupa/model + zdarzenia z kolumny „Akcja” + ID leada GA4↔CRM.</div>
+</div>
+<div class="brak">
+  <div class="brak-num">11.</div>
+  <div>Jedna liczba punktów kontroli: strategia mówi „300 punktów kontroli” (Guazi), karta i proces „100+ punktów” (raport egzemplarza, K16). Klient, który usłyszy 300 w reklamie i zobaczy 100+ na karcie, zapyta o różnicę — ustalić, która liczba gdzie idzie i jak ją wyjaśnić.</div>
+</div></div>
+</div>
+
+<!-- 5. Decyzje -->
+<div class="sek">
+  <div class="sek-h"><span class="sek-n">05</span>Decyzje potrzebne od klienta</div>
+  <div class="decyzje"><span class="decyzja-chip blokada">K28/SP03 oględziny (blokada #1)</span><span class="decyzja-chip">K17 cena all-in</span><span class="decyzja-chip">K24 czas importu</span><span class="decyzja-chip">K33 gwarant/gwarancja z nazwy</span><span class="decyzja-chip">SP02 zadatek vs zaliczka</span><span class="decyzja-chip">K09 czas reakcji (30 min vs 5 min)</span><span class="decyzja-chip">K16/K28 raport egzemplarza przed czy po zaliczce</span><span class="decyzja-chip">zgoda pod Rinvo</span><span class="decyzja-chip">liczba punktów kontroli w komunikacji (300 vs 100+).</span></div>
+</div>
+
+<!-- 6. Co dalej -->
+<div class="sek">
+  <div class="sek-h"><span class="sek-n">06</span>Co dalej</div>
+  <div class="co-dalej"><ul><li>Ten sam szablon dla grup 01, 03, 04, 05 (+ decyzja Tomka, czy dokładamy segmenty S6–S8 spoza strategii).</li><li>Dane ścieżek do `proces/proces.json` (jedno źródło) + render HTML obok mapy procesu; wymagania z sekcji 4 → briefy dla wykonawców strony (Zał. 1 „Nadzór nad produkcją”) i lista do raportu miesięcznego.</li></ul></div>
+</div>
+
+<div class="foot">Generowane z SCIEZKA_S2_RODZINA_v0.md przez tools/render_sciezka.py · </div>
+
+</div>
+</body>
+</html>

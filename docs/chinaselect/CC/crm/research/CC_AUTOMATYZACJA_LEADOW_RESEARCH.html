@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>China Select — automatyzacja leadów</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FBF6F1;--surface:#FFFFFF;--ink:#2B2326;--muted:#6B5D5A;--faint:#9C8D88;--line:#EADFD4;
+--v:#C9A84C;--v-d:#8A6D1F;--green:#2E8B57;--orange:#E07A3C;--blue:#4A7FB5;--amber:#B07C22;--dark:#3F4A44;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Space Grotesk",system-ui,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 16px 64px;display:flex;flex-direction:column;gap:40px}
+.kicker{font:600 12px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--v-d)}
+h1{font-size:36px;line-height:1.15;margin:0}
+h2{font-size:26px;margin:0}
+h3{font-size:18px;margin:0}
+p{margin:0}
+section{display:flex;flex-direction:column;gap:16px}
+.head{display:flex;flex-direction:column;gap:8px}
+.lead{font-size:18px;color:var(--muted);max-width:760px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.verdict{background:var(--dark);color:#F4EFE8;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:12px}
+.verdict .kicker{color:var(--v)}
+.verdict b{color:#fff}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px}
+th{font:600 11px/1.3 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;background:#F5EEE6}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+.tw{overflow-x:auto}
+a{color:var(--v-d)}
+.badge{display:inline-block;font:600 11px/1 "IBM Plex Mono",monospace;padding:4px 8px;border-radius:999px;white-space:nowrap}
+.b-ok{background:#E3F2E9;color:var(--green)}.b-warn{background:#FBEBDD;color:#A4521F}.b-q{background:#EEE8E3;color:var(--muted)}.b-no{background:#F6E1E1;color:#A33}
+.flow{display:flex;flex-direction:column;gap:10px}
+.step{display:grid;grid-template-columns:56px 1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.num{font:700 22px/1 "IBM Plex Mono",monospace;color:var(--v-d);background:#F6EEDC;border-radius:10px;display:flex;align-items:center;justify-content:center;height:48px}
+.muted{color:var(--muted);font-size:14px}
+.tc{background:var(--surface);border-left:4px solid var(--v);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.tc li{margin-bottom:4px}
+.cta{background:#F6EEDC;border:1px solid #E7D6A8;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px}
+ul{margin:0;padding-left:20px}
+@media(max-width:640px){h1{font-size:28px}.step{grid-template-columns:44px 1fr}.num{height:40px;font-size:18px}}
+</style>
+</head>
+<body>
+<!-- hub-backlink -->
+<div id="hub-backlink-bar" style="position:sticky;top:0;z-index:100;background:#3F4A44;padding:8px 16px;font:600 13px/1.4 'IBM Plex Mono',monospace;letter-spacing:.04em;">
+  <a href="../CRM_HUB.html" style="color:#C9A84C;text-decoration:none;">← Hub CRM i leadów</a>
+</div>
+<!-- /hub-backlink -->
+<div class="wrap">
+
+<header class="head">
+  <span class="kicker">CC · China Select · research · 27.09.2026</span>
+  <h1>Automatyzacja obsługi leadów — co jest na rynku i jak to złożyć</h1>
+  <p class="lead">China Select sprowadza chińskie auta (BYD, XPeng, Zeekr, Geely, Voyah…) i sprzedaje przez stronę. Leady wpadają dziś czterema drzwiami: formularz „Zapytaj o ofertę”, telefon, WhatsApp, e-mail + „Znajdź samochód dla mnie” (concierge). Cel klienta: wielopoziomowa automatyzacja od pozyskania do sprzedaży. Poniżej: trzy przeglądy rynku (społeczność / CRM-y branżowe / gotowe narzędzia AI) i propozycja złożenia.</p>
+</header>
+
+<section class="verdict">
+  <span class="kicker">Wniosek w jednym akapicie</span>
+  <p><b>Nie kupować amerykańskiego „CRM dla dealera”.</b> DriveCentric, VinSolutions, Impel, Numa czy Toma są zbudowane pod rynek US (Autotrader, DMS CDK/Reynolds, angielski) — po polsku nie gadają, a integracje, za które się płaci, tu nie istnieją. <b>Składamy warstwowo:</b> DealerApp zostaje jako źródło stocku (już jest — zdjęcia aut idą z <code>cdn.dealerapp.pl</code>), obok stawiamy CRM z pipeline'em (Pipedrive / HubSpot / Livespace), orkiestrację n8n i Claude jako „mózg” (kwalifikacja, dopasowanie auta ze stocku, drafty odpowiedzi), a przed kwalifikacją <b>bramka weryfikacji</b> wzięta z ubezpieczeń: automatyczny scrubbing (HLR, dedup) + <b>telefon weryfikujący bota po polsku w ≤ 5 min</b> + SMS jako potwierdzenie zgody. To dokładnie wzorzec, który powtarza się w społeczności: <b>zdarzenie → orkiestracja → osąd AI → CRM</b>.</p>
+</section>
+
+<section>
+  <div class="head"><span class="kicker">01 · Punkt wyjścia</span><h2>Co China Select już ma</h2></div>
+  <div class="grid">
+    <div class="card"><h3>DealerApp.pl</h3><p class="muted">Sprawdzone na stronie producenta: program dla komisu, zarządzanie ofertą pojazdów, <b>strony www dla dealerów</b>, integracja z OTOMOTO API, publikacja na wielu portalach, faktury/umowy, „pojazdy, klienci i terminy w jednym miejscu”. <b>Pakiety od 199 zł netto</b>, 14 dni testu.</p><p class="muted">Obsługi leadów jako procesu (scoring, sekwencje, routing) na stronie nie deklarują.</p><span class="badge b-ok">zweryfikowane · dealerapp.pl</span></div>
+    <div class="card"><h3>Stock z Guazi</h3><p class="muted">Pliki zdjęć aut China Select mają w ścieżce <code>vehicles/guazi-…</code> → oferta zasilana feedem od partnera Guazi. Guazi na swoim PDP pokazuje raport inspekcji (ocena A + 7 kategorii), SOH baterii, VIN, alert ceny — dane, które mogą już płynąć w feedzie.</p><span class="badge b-warn">hipoteza · do sprawdzenia w DealerApp</span></div>
+    <div class="card"><h3>Drzwi dla leada na stronie</h3><p class="muted">Formularz „Zapytaj o ofertę” (PDP), „Przygotuj moją ofertę”, „Znajdź samochód dla mnie” (concierge), telefon, WhatsApp, e-mail. Strona to staging — dane kontaktowe są zaślepkami (+48 123 123 123, test@chinatest.pl).</p><span class="badge b-ok">zrzut 27.09</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="head"><span class="kicker">02 · Propozycja</span><h2>Automatyzacja wielopoziomowa — siedem pięter</h2><p class="lead">Każde piętro ma jedno zadanie. <b>Weryfikacja telefoniczna to osobna bramka przed kwalifikacją</b> — do doradcy trafia tylko lead, o którym wiemy, że jest prawdziwy. Człowiek wchodzi na piętrze 5, z gotową kartą leada.</p></div>
+  <div class="flow">
+    <div class="step"><div class="num">0</div><div><h3>Wejście — jedna skrzynka na wszystkie drzwi</h3><p class="muted">Formularz, telefon, WhatsApp, e-mail, Otomoto → webhook do n8n. Każdy lead dostaje ID, źródło (UTM), auto z którego przyszedł. W formularzu: checkbox zgody na kontakt telefoniczny.</p></div></div>
+    <div class="step"><div class="num">1</div><div><h3>Scrubbing automatyczny — sekundy, zero ludzi</h3><p class="muted">Format numeru i e-maila, deduplikacja (ten sam numer/e-mail/IP), <b>HLR lookup</b> — czy numer jest aktywny (SMSAPI, SerwerSMS). Martwy numer nie dostaje telefonu.</p></div></div>
+    <div class="step"><div class="num">2</div><div><h3>Weryfikacja telefoniczna — bramka ≤ 5 min</h3><p class="muted">Bot po polsku dzwoni w kilka minut: przedstawia się jako AI, informuje o nagrywaniu, potwierdza „czy to Pan/Pani zostawił(a) zgłoszenie”, o które auto chodzi, jak woli kontakt. Brak odbioru → SMS z potwierdzeniem (double opt-in) i ponowna próba. Wzorzec z ubezpieczeń — patrz sekcja 03.</p></div></div>
+    <div class="step"><div class="num">3</div><div><h3>Kwalifikacja — Claude czyta rozmowę</h3><p class="muted">Tylko zweryfikowane leady. Budżet, finansowanie (gotówka/leasing/kredyt), termin, napęd, nadwozie, auto w rozliczeniu. Wynik = karta leada + score.</p></div></div>
+    <div class="step"><div class="num">4</div><div><h3>Dopasowanie do stocku</h3><p class="muted">Claude przez API/feed DealerApp dobiera 2–3 auta z aktualnej oferty i szkicuje ofertę („Przygotuj moją ofertę” robi się sama). Warunek: DealerApp ma API do odczytu stocku.</p></div></div>
+    <div class="step"><div class="num">5</div><div><h3>Routing do doradcy</h3><p class="muted">Hot → natychmiast telefon doradcy (albo przełączenie na żywo z rozmowy bota); warm → sekwencja e-mail/WhatsApp; cold → nurture. Doradca może nadpisać score. Wszystko w CRM.</p></div></div>
+    <div class="step"><div class="num">6</div><div><h3>Follow-up i reaktywacja</h3><p class="muted">Przypomnienia, zmiana ceny auta, nowe auto pasujące do profilu, reaktywacja „zimnych” leadów telefonem AI.</p></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="head"><span class="kicker">03 · Wzorzec z ubezpieczeń</span><h2>Weryfikacja ≠ kwalifikacja — jak to robią ubezpieczenia</h2><p class="lead">Ubezpieczenia i finanse od lat rozdzielają dwa kroki: najpierw „czy ten lead w ogóle jest prawdziwy” (tanio, automatycznie, szybko), potem „czy kupi i czego potrzebuje” (drogo, człowiek). Lead zweryfikowany jest wart więcej niż surowy — na rynku US sprzedaje się je po różnych cenach.</p></div>
+  <div class="tw"><table>
+    <tr><th>Krok</th><th>Jak w ubezpieczeniach</th><th>Narzędzia</th><th>Źródło</th></tr>
+    <tr><td>Scrubbing</td><td>format, dedup, HLR (czy numer aktywny), spójność danych; surowy lead → backlog</td><td>SMSAPI, SerwerSMS (HLR)</td><td><a href="https://www.leadguru.pl/leady-ubezpieczeniowe">LeadGuru</a> · <a href="https://www.smsapi.pl/hlr">SMSAPI</a></td></tr>
+    <tr><td>Potwierdzenie</td><td>SMS double opt-in / kod OTP — dowód zgody i żywego numeru</td><td>bramka SMS</td><td><a href="https://buyleads.co/otp-verified-leads/">OTP-verified leads</a></td></tr>
+    <tr><td>Telefon weryfikujący</td><td>krótka rozmowa: czy chce, czy już ma, przekazanie do agenta</td><td>call center (Polcall, MultiContact) albo voicebot (xoVOICE, Coldbot, EasyCall)</td><td><a href="https://www.polcall.pl/uslugi/branze/finanse-i-ubezpieczenia/">Polcall</a> · <a href="https://www.coldbot.pl/branza/ubezpieczenia">Coldbot</a></td></tr>
+    <tr><td>Przekazanie</td><td>live transfer — agent przejmuje rozmowę na linii</td><td>Retell, Vapi, Convoso</td><td><a href="https://www.retellai.com/case-study/matic-insurance-ai-call-automation-case-study">Retell × Matic</a></td></tr>
+  </table></div>
+  <div class="grid">
+    <div class="card"><h3>Liczby z wdrożeń</h3><p class="muted"><b>Retell × Matic Insurance</b>: 8 000+ rozmów w Q1 2025, 85–90% udanych przekazań do agenta, zbieranie danych krótsze o ~3 min, 80% rozmów bez człowieka.</p><span class="badge b-warn">⚠️ case dostawcy</span><p class="muted">Ceny leadów auto-insurance w US: shared $10–20, exclusive $25–45, <b>live transfer $25–50+</b>, stary lead $3–8 (<a href="https://www.getinsureleads.com/blog/smartfinancial-insurance-leads-pricing">SmartFinancial</a>).</p></div>
+    <div class="card"><h3>Polska</h3><p class="muted">Voiceboty z ofertą pod ubezpieczenia są (xoVOICE, Coldbot, EasyCall), ale <b>żaden nie publikuje twardych liczb</b> z wdrożeń — tylko „24/7” i „krócej”. Przed wyborem: pilot na 50–100 leadach i własny pomiar.</p><span class="badge b-q">brak danych PL</span></div>
+    <div class="card"><h3>Prawo — telefon do leada</h3><p class="muted"><b>PKE art. 398</b> (od 10.11.2024): zgoda opt-in na marketing telefoniczny → checkbox w formularzu + SMS. <b>AI Act art. 50</b> (od 2.08.2026): bot mówi na starcie, że jest AI; kary do 3% obrotu. <b>Nagrywanie</b>: informacja na starcie + podstawa RODO + retencja.</p><span class="badge b-warn">⚠️ interpretacje portali — potwierdzić u prawnika</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="head"><span class="kicker">04 · Dlaczego szybkość</span><h2>Benchmarki — z oznaczeniem jakości dowodu</h2></div>
+  <div class="tw"><table>
+    <tr><th>Twierdzenie</th><th>Wartość</th><th>Skąd</th><th>Klasa dowodu</th></tr>
+    <tr><td>Szansa kwalifikacji leada: kontakt w 5 min vs 30 min</td><td>21×</td><td>MIT / InsideSales (badanie archiwalne, B2B); powtarzane przez dostawców, np. <a href="https://leadtrackai.io/automotive">LeadTrack AI</a></td><td><span class="badge b-warn">⚠️ stare, nie-automotive</span></td></tr>
+    <tr><td>Szansa dodzwonienia: 5 min vs 30 min</td><td>100×</td><td>j.w.</td><td><span class="badge b-warn">⚠️ stare, nie-automotive</span></td></tr>
+    <tr><td>Konwersja przy kontakcie ≤5 min / po 1 h / po 24 h</td><td>25–32% / 3–5% / &lt;1%</td><td>przypisywane Cox Automotive przez <a href="https://resources.rework.com/libraries/automotive-sales-growth/lead-response-time-optimization">rework.com</a> — nie w pierwotnym raporcie</td><td><span class="badge b-no">❌ źródło wtórne</span></td></tr>
+    <tr><td>Dealerzy bez odpowiedzi w 1 h / nigdy</td><td>67% / 18%</td><td>„industry data” bez wskazania badania</td><td><span class="badge b-no">❌ niezweryfikowane</span></td></tr>
+    <tr><td>Podróż kupującego auto</td><td>raport</td><td><a href="https://www.coxautoinc.com/wp-content/uploads/2025/01/2024-Car-Buyer-Journey-Study-Research-Summary.pdf">Cox Car Buyer Journey 2024 (PDF)</a></td><td><span class="badge b-ok">✅ pierwotne — do wyciągnięcia liczb</span></td></tr>
+  </table></div>
+  <p class="muted">Kierunek jest pewny (szybciej = lepiej), konkretne mnożniki do rozmowy z klientem trzeba wziąć z pierwotnego Cox albo zmierzyć u China Select po starcie.</p>
+</section>
+
+<section>
+  <div class="head"><span class="kicker">05 · Rynek</span><h2>CRM-y — co pasuje do polskiego importera</h2></div>
+  <div class="tw"><table>
+    <tr><th>Platforma</th><th>Co daje w leadach</th><th>PL</th><th>Cena</th><th>Dla China Select</th></tr>
+    <tr><td><b>Pipedrive</b></td><td>pipeline, AI e-mail, REST API, Zapier/n8n</td><td><span class="badge b-ok">UI PL</span></td><td>$14–120+/user</td><td>prosty start, dobre pod n8n</td></tr>
+    <tr><td><b>HubSpot</b></td><td>CRM + AI scoring; <a href="https://www.businesswire.com/news/home/20250729579309/en/HubSpot-Launches-First-CRM-Connector-for-Anthropic%E2%80%99s-Claude">oficjalny konektor Claude</a> (07.2025)</td><td><span class="badge b-ok">UI PL</span></td><td>Free–$3 200+/mies.</td><td>najlepsza integracja z Claude</td></tr>
+    <tr><td><b>Livespace</b></td><td>sales CRM, strona pod automotive</td><td><span class="badge b-ok">polska firma</span></td><td>custom</td><td>lokalne wsparcie</td></tr>
+    <tr><td>SalesManago</td><td>marketing automation + CDP, routing</td><td><span class="badge b-ok">PL</span></td><td>custom</td><td>raczej nurture niż pipeline</td></tr>
+    <tr><td>CloudTalk</td><td>call center + AI voice agent</td><td><span class="badge b-q">?</span></td><td>custom</td><td>warstwa telefonii</td></tr>
+    <tr><td>Keyloop · incadea</td><td>DMS + lead mgmt (EU)</td><td><span class="badge b-q">?</span></td><td>custom</td><td>ciężkie, pod salony OEM</td></tr>
+    <tr><td>DriveCentric · VinSolutions · CDK · Tekion · Fullpath · DealerSocket · Salesforce Automotive</td><td>pełne CRM dealerskie z AI BDC</td><td><span class="badge b-no">US / EN</span></td><td>custom / $750+</td><td>przepłacone — integracje z ekosystemem US</td></tr>
+  </table></div>
+  <p class="muted">Źródła i szczegóły: <code>crm/research/R2_crm_automotive.md</code>. Ceny „szacunek” oznaczone w pliku.</p>
+</section>
+
+<section>
+  <div class="head"><span class="kicker">06 · Rynek</span><h2>Gotowe narzędzia AI — warstwa agentów</h2></div>
+  <div class="tw"><table>
+    <tr><th>Kategoria</th><th>Narzędzie</th><th>PL</th><th>Cena</th></tr>
+    <tr><td>Głos</td><td><a href="https://www.retellai.com/languages-ai/polish-ai">Retell AI</a></td><td><span class="badge b-ok">strona PL</span></td><td>~$0,13–0,31/min</td></tr>
+    <tr><td>Głos</td><td><a href="https://docs.vapi.ai/customization/multilingual">Vapi</a></td><td><span class="badge b-warn">przez konfigurację</span></td><td>$0,05/min + dostawcy</td></tr>
+    <tr><td>Głos (PL)</td><td><a href="https://convershake.com/voice-ai-agent/polish-ai-voice-agent-for-automotive-dealerships">Convershake</a> (strona pod dealerów) · <a href="https://autocalls.ai/language/polish">Autocalls</a> · <a href="https://voicegenie.ai/en/voice-ai-agent-in-polish">VoiceGenie</a> · CallPage</td><td><span class="badge b-ok">natywnie</span></td><td>?</td></tr>
+    <tr><td>WhatsApp / czat</td><td><a href="https://respond.io/blog/whatsapp-ai-chatbot-for-lead-management">respond.io</a> · WATI · Tidio · ManyChat</td><td><span class="badge b-q">?</span></td><td>freemium–?</td></tr>
+    <tr><td>Orkiestracja</td><td>n8n (self-host free) · Make · Zapier</td><td><span class="badge b-ok">n8n</span></td><td>0–$599/mies.</td></tr>
+    <tr><td>Agenci dealerscy US</td><td>Impel · Numa · Toma · Conversica · Podium</td><td><span class="badge b-no">brak PL</span></td><td>quote-only</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <div class="head"><span class="kicker">07 · Społeczność (/ccse)</span><h2>Jak to składają ludzie, którzy to już zrobili</h2></div>
+  <div class="grid">
+    <div class="card"><h3>n8n łapie, Claude ocenia</h3><p class="muted">Podział ról: infrastruktura w n8n, osąd (scoring, drafty) w LLM. <a href="https://dev.to/tariq_osmani/n8n-vs-claude-agents-for-sales-and-crm-what-goes-where-in-2026-1oah">DEV</a> · <a href="https://growwstacks.com/blog/ai-voice-agent-n8n-vapi">Groww Stacks</a></p></div>
+    <div class="card"><h3>Gotowe klocki</h3><p class="muted"><a href="https://github.com/zubair-trabzada/ai-sales-team-claude">ai-sales-team-claude</a> (1,4k⭐, BANT/MEDDIC) · <a href="https://github.com/kaymen99/leads-reactivation-with-AI-Voice-Agent">reaktywacja leadów głosem</a> · <a href="https://github.com/iamzeeshan6/N8N-Whatsapp-To-Pipedrive-Automation">WhatsApp → Pipedrive</a> · <a href="https://github.com/czlonkowski/n8n-skills">n8n-skills dla Claude Code</a></p></div>
+    <div class="card"><h3>MCP jako spoiwo</h3><p class="muted">Osobni agenci: CRM / stock / kalendarz. <a href="https://www.fullpath.com/blog/mcp-servers-for-dealerships-what-dealers-need-to-know-about-the-model-context-protocol/">Fullpath</a> · <a href="https://glama.ai/mcp/servers/AlexCojescu/Automotive-Lead-Vertical-">LeadMCP automotive</a></p></div>
+    <div class="card"><h3>Luka</h3><p class="muted">Zero case'ów z Polski. Wszystko US / Indie / DE — tu jest przestrzeń dla nas.</p></div>
+  </div>
+</section>
+
+<section class="tc">
+  <span class="kicker">Truth Checker</span>
+  <ul>
+    <li><b>Co wiem:</b> DealerApp to stock + ogłoszenia + strony www od 199 zł (sprawdzone na stronie); zdjęcia aut China Select idą z CDN DealerApp z plikami „guazi-”; na stronie są 4 drzwi leadowe + concierge; Retell ma stronę PL; HubSpot ma oficjalny konektor Claude.</li>
+    <li><b>Co zakładam:</b> że China Select stoi na DealerApp (strona może być nawet ich produktem „strony www dla dealerów”); że wolumen leadów uzasadnia automatyzację; że klient chce CRM obok DealerApp, a nie w nim.</li>
+    <li><b>Co może być błędne:</b> ceny i opisy platform zebrał tani agent — część z drugiej ręki; mnożniki szybkości (21×, 25–32%) są stare albo wtórne; jakość polskich voicebotów nieprzetestowana.</li>
+    <li><b>Co zweryfikować przed działaniem:</b> czy DealerApp ma API/webhook (odczyt stocku, zapis leada); u prawnika: czy oddzwonienie na prośbę z formularza wymaga osobnej zgody z PKE art. 398; ile leadów/mies. i z jakich kanałów; kto dziś odbiera i w jakim czasie; demo 1 polskiego voicebota na realnym skrypcie.</li>
+    <li><b>Co poprawiłbym z jednym inputem:</b> z liczbą leadów/mies. i obecnym czasem odpowiedzi policzyłbym koszt minut AI vs. wartość odzyskanych leadów i wybrał jeden stos zamiast trzech opcji.</li>
+  </ul>
+</section>
+
+<section class="cta">
+  <span class="kicker">Następny krok</span>
+  <h2>Trzy pytania do China Select</h2>
+  <ul>
+    <li>Ile leadów miesięcznie i z których drzwi (formularz / telefon / WhatsApp / Otomoto)?</li>
+    <li>Czy strona i stock stoją na DealerApp — i czy mamy dostęp do API?</li>
+    <li>Kto dziś odbiera leady i jak szybko — jest CRM czy Excel?</li>
+  </ul>
+  <p class="muted">Pliki źródłowe: <code>Projects/CC/crm/research/R1_ccse_community.md · R2_crm_automotive.md · R3_ai_lead_tools.md · R4_weryfikacja_ubezpieczenia.md</code></p>
+</section>
+
+</div>
+</body>
+</html>

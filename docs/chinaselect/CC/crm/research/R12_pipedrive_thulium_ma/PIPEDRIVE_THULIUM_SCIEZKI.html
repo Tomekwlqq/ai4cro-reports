@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipedrive i Thulium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FBF6F1;--surface:#FFFFFF;--ink:#2B2326;--muted:#6B5D5A;--faint:#9C8D88;--v:#C9A84C;--v-d:#8A6D1F;--v-l:#F5ECD4;--line:#E8DED3;
+--green:#2E8B57;--green-l:#E7F3EC;--orange:#E07A3C;--orange-l:#FCEEE4;--blue:#4A7FB5;--blue-l:#E8F0F8;--amber:#B07C22;--amber-l:#FBF1DE;--red:#B5473A;--red-l:#F8E6E3;--dark:#3F4A44;
+--mono:'IBM Plex Mono',monospace;--sans:'Space Grotesk',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+.hero{padding:30px 0 18px;border-bottom:2px solid var(--v)}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--v-d)}
+h1{font-size:26px;line-height:1.25;margin:6px 0 10px}
+h2{font-size:21px;margin-bottom:6px}
+h3{font-size:16px;margin:20px 0 8px}
+.lead{color:var(--muted);max-width:760px}
+nav.tabs{position:sticky;top:34px;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;padding-top:8px}
+nav.tabs button{font:inherit;font-size:14px;font-weight:600;background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav.tabs button.on{color:var(--ink);border-bottom-color:var(--v)}
+.panel{display:none;padding:26px 0 40px}.panel.on{display:block}
+.muted{color:var(--muted)}.small{font-size:13px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.note{border-left:4px solid var(--v);background:var(--v-l);padding:12px 14px;border-radius:0 8px 8px 0;margin:14px 0}
+.ok{border-left-color:var(--green);background:var(--green-l)} .warn{border-left-color:var(--orange);background:var(--orange-l)}
+.grid2{display:grid;grid-template-columns:1fr;gap:14px}@media(min-width:820px){.grid2{grid-template-columns:1fr 1fr}}
+.grid3{display:grid;grid-template-columns:1fr;gap:12px}@media(min-width:820px){.grid3{grid-template-columns:repeat(3,1fr)}}
+ul.clean{list-style:none}ul.clean li{padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}ul.clean li:last-child{border-bottom:0}
+.tblwrap{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--surface)}
+th{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;text-align:left;color:var(--muted);background:#F3ECE3;padding:8px 10px}
+td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:top}
+@media(max-width:700px){table.stack thead{display:none}table.stack tr{display:block;border-top:1px solid var(--line);padding:6px 0}table.stack td{display:block;border:0;padding:3px 10px}table.stack td:before{content:attr(data-l);display:block;font-family:var(--mono);font-size:10.5px;text-transform:uppercase;color:var(--faint)}}
+.v{display:inline-block;font-family:var(--mono);font-size:11.5px;font-weight:500;border-radius:4px;padding:2px 7px}
+.v-ok{background:var(--green-l);color:var(--green)}.v-part{background:var(--amber-l);color:var(--amber)}.v-no{background:var(--red-l);color:var(--red)}
+.num{font-family:var(--mono);font-weight:500;white-space:nowrap}
+.seg2 button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:5px 12px;cursor:pointer;margin-right:4px}
+.seg2 button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.cite{font-family:var(--mono);font-size:11.5px;color:var(--faint);display:block;margin-top:4px}
+.q{font-style:italic;color:var(--muted)}
+.layers{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+@media(min-width:820px){.layers{grid-template-columns:repeat(4,1fr)}}
+.layer{border-radius:10px;padding:12px;border:1px solid var(--line);background:var(--surface)}
+.layer b{display:block;font-size:14px}.layer .small{color:var(--muted)}
+.layer.cc{border-left:5px solid var(--blue)}.layer.crm{border-left:5px solid var(--v)}.layer.ai{border-left:5px solid var(--green)}.layer.ma{border-left:5px solid var(--orange)}
+.tc{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--dark);border-radius:0 10px 10px 0;padding:14px 16px;margin-top:18px}
+.tc h4{font-family:var(--mono);font-size:12px;letter-spacing:.06em;margin-bottom:6px}.tc li{margin:4px 0 4px 18px;font-size:14px}
+footer{border-top:1px solid var(--line);padding:20px 0 40px;font-size:12.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<!-- hub-backlink -->
+<div id="hub-backlink-bar" style="position:sticky;top:0;z-index:100;background:#3F4A44;padding:8px 16px;font:600 13px/1.4 'IBM Plex Mono',monospace;letter-spacing:.04em;">
+  <a href="../../CRM_HUB.html" style="color:#C9A84C;text-decoration:none;">← Hub CRM i leadów</a>
+</div>
+<!-- /hub-backlink -->
+<header class="hero"><div class="wrap">
+  <div class="kicker">China Select · CRM · 13.10.2026 · wewnętrzne</div>
+  <h1>Pipedrive, Thulium, automation — potwierdzenie i ceny</h1>
+  <p class="lead">Dwa pytania. Jak Pipedrive, który wygrywa porównanie CRM, ma się do Thulium. I czy Pipedrive naprawdę prowadzi automatyczne ścieżki mailowe jak narzędzie do marketing automation. Wszystko sprawdzone 13.10 w dokumentacji producentów — Pipedrive zmienił limity dzień wcześniej.</p>
+</div></header>
+
+<nav class="tabs"><div class="wrap">
+  <button class="on" data-p="p1">1 · Werdykt</button>
+  <button data-p="p2">2 · Pipedrive a Thulium</button>
+  <button data-p="p3">3 · Ścieżki jak w marketing automation</button>
+  <button data-p="p4">4 · Osobne automation: Manago AI czy HubSpot</button>
+</div></nav>
+
+<main class="wrap">
+
+<section class="panel on" id="p1">
+  <h2>Werdykt</h2>
+  <div class="note ok"><b>Thulium nie konkuruje z Pipedrive — to inna warstwa.</b> Pipedrive to lejek sprzedaży. Thulium to centrala telefoniczna i contact center: infolinia, IVR, kampanie wychodzące, SMS, WhatsApp, nagrania i transkrypcje. Pipedrive sam nie ma wbudowanego dzwonienia, więc telefon i tak trzeba dołożyć. Thulium ma z nim gotową integrację.</div>
+  <div class="note ok"><b>Ścieżka L4 w Pipedrive Premium — potwierdzona.</b> Automatyzacje odpalają się same dla segmentu, mieszczą 5 maili z opóźnieniami, czekają na odpowiedź i zatrzymują się warunkiem „Email has been replied to”. Dla maili marketingowych z wypisem i zgodą jest „Automated campaigns” w dodatku Campaigns.</div>
+  <div class="note warn"><b>Pełnego silnika marketing automation to nie zastąpi.</b> Brakuje reakcji na wizytę na stronie, punktacji leadów, przeskoków w ścieżce, a krok „czekaj” trwa maksymalnie 7 dni. Rozgałęzienie na kliknięcie w link jest śledzone, ale jako warunek ścieżki nie znalazłem tego dosłownie w dokumentacji. Przy jednej, dwóch ścieżkach typu L4 to wystarcza. Przy wielu marketingowych ścieżkach — Mautic albo inne narzędzie obok.</div>
+
+  <h3>Jak składa się cały układ</h3>
+  <div class="layers">
+    <div class="layer ai"><b>Rinvo</b><span class="small">AI dzwoni do leada w 5 minut, kwalifikuje, zapisuje wynik i nagranie.</span></div>
+    <div class="layer crm"><b>Pipedrive Premium</b><span class="small">Lejek, karty leadów, automatyzacje, ścieżka L4 ze skrzynki handlowca.</span></div>
+    <div class="layer cc"><b>Telefon handlowców</b><span class="small">Thulium albo prostsza aplikacja dzwoniąca z marketplace Pipedrive. Pipedrive go nie ma.</span></div>
+    <div class="layer ma"><b>Marketing automation (opcja)</b><span class="small">Campaigns w Pipedrive albo Mautic, gdy ścieżek marketingowych będzie dużo.</span></div>
+  </div>
+
+  <h3>Co zmieniło się 12.10 w Pipedrive</h3>
+  <ul class="clean box">
+    <li><b>Growth:</b> 10 opóźnień i 10 kroków „czekaj” zamiast 3. Pięć maili się mieści, ale rozgałęzienia if/else zostały 3. W porównaniu CRM Growth przeszedł z „nie spełnia” na „częściowo”. Ceny i zwycięzcy bez zmian.</li>
+    <li><b>Sekwencje:</b> do 15 kroków i 500 rekordów wg artykułu o Sekwencjach. Tabela limitów z tego samego dnia nadal podaje 100 — dokumentacja Pipedrive jest niespójna.</li>
+    <li><b>Limity wykonań:</b> firma do 10 000 wykonań automatyzacji na 10 minut, maile w kolejce co 30 sekund, maks. 40 maili na minutę na firmę.</li>
+  </ul>
+</section>
+
+<section class="panel" id="p2">
+  <h2>Pipedrive a Thulium</h2>
+  <p class="muted">Thulium to polska platforma contact center. Integrację z Pipedrive wymienia na stronie głównej obok BaseLinkera i IdoSell, ma też osobną stronę integracji.</p>
+
+  <div class="grid2">
+    <div class="box"><h3 style="margin-top:0">Co robi integracja Thulium ↔ Pipedrive</h3><ul class="clean">
+      <li>Agent zakłada szansę sprzedaży w Pipedrive prosto ze zgłoszenia w Thulium, z wyborem lejka, etapu i opiekuna.</li>
+      <li>Rozmowy, maile i czaty z Thulium lądują w Pipedrive jako działania: kierunek, wynik, czas, agent, kampania, opis i link do nagrania.</li>
+      <li>Handlowiec dzwoni kliknięciem w numer w Pipedrive przez Web Softphone Thulium (wtyczka Chrome). Rozmowa jest nagrywana.</li>
+      <li>Kontakty idą w obie strony; na karcie klienta w Thulium jest zakładka z szansami z Pipedrive.</li>
+      <li><b>Ograniczenia:</b> synchronizacja co 30 minut, pola treści do 256 znaków — do Pipedrive trafia fragment i link, pełny zapis zostaje w Thulium.</li></ul>
+      <span class="cite">thulium.com/pl/product/integrations/pipedrive · odczyt 13.10.2026</span></div>
+    <div class="box"><h3 style="margin-top:0">Co to znaczy dla China Select</h3><ul class="clean">
+      <li><b>Thulium nie zastępuje Rinvo.</b> Na liście voicebotów Thulium nie ma Rinvo, tylko ogólny „VoiceBot”. Rinvo zostaje od pierwszego telefonu AI.</li>
+      <li><b>Thulium ma sens, gdy CC potrzebuje infolinii.</b> Jeden numer, IVR, kolejki, nieodebrane z przypomnieniem o oddzwonieniu, kampanie wychodzące dla ludzi.</li>
+      <li><b>Dla 3–5 handlowców może wystarczyć mniej.</b> Pipedrive wskazuje aplikacje dzwoniące z marketplace, np. CloudTalk czy Aircall, albo dzwonienie z telefonu przez aplikację mobilną z zapisem rozmowy jako działania.</li>
+      <li><b>Uwaga na czas:</b> 30 minut synchronizacji Thulium nie przeszkadza w historii klienta, ale alarm HOT musi iść z Rinvo albo z n8n, nie z Thulium.</li>
+      <li><b>Dubel funkcji:</b> Thulium też robi transkrypcje i streszczenia rozmów (AI Voice Analytics, pakiety od 99 zł/mies.). Dla rozmów Rinvo to robi Rinvo.</li></ul></div>
+  </div>
+
+  <h3>Koszt Thulium obok Pipedrive</h3>
+  <div class="seg2" id="os"><button data-o="3" class="on">3 os.</button><button data-o="5">5 os.</button></div>
+  <div class="tblwrap"><table class="stack" id="koszt"><thead><tr><th>Pozycja</th><th>Cena</th><th>Rocznie</th><th>Źródło</th></tr></thead><tbody></tbody></table></div>
+  <p class="small muted">Thulium podaje ceny „już od”, netto, za licencję miesięcznie; minimalna liczba licencji nie jest napisana wprost (przykład na stronie: 5 licencji). Wdrożenie online w Standard i Premium za 1 zł. Thulium w wariancie Premium kosztuje rocznie więcej niż sam Pipedrive Premium.</p>
+</section>
+
+<section class="panel" id="p3">
+  <h2>Czy Pipedrive prowadzi ścieżki jak narzędzie do marketing automation</h2>
+  <p class="muted">Pipedrive ma dwa sposoby wysyłki w ścieżce. <b>„Wyślij e-mail”</b> idzie ze skrzynki handlowca, jak zwykła wiadomość 1:1. <b>„Automated campaign”</b> idzie z infrastruktury Campaigns, z wypisem i wymogiem zgody marketingowej — to tryb marketingowy, płatny dodatek. Punkt odniesienia: Mautic, otwarty silnik marketing automation.</p>
+
+  <div class="tblwrap"><table class="stack">
+    <thead><tr><th>Możliwość</th><th>Pipedrive Premium</th><th>Mautic (wzorzec MA)</th></tr></thead>
+    <tbody>
+      <tr><td data-l="Możliwość">Automatyczny zapis segmentu do ścieżki</td><td data-l="Pipedrive"><span class="v v-ok">TAK</span> wyzwalacz deal/lead utworzony lub zmieniony + warunki</td><td data-l="Mautic"><span class="v v-ok">TAK</span> segmenty, formularze</td></tr>
+      <tr><td data-l="Możliwość">Liczba kroków</td><td data-l="Pipedrive"><span class="v v-part">LIMIT</span> 10 akcji, 10 opóźnień, 10 „czekaj”, 10 if/else na automatyzację</td><td data-l="Mautic"><span class="v v-ok">TAK</span> bez opisanego limitu</td></tr>
+      <tr><td data-l="Możliwość">Czas ścieżki</td><td data-l="Pipedrive"><span class="v v-part">LIMIT</span> łącznie 90 dni opóźnień; krok „czekaj” maks. 7 dni, potem ścieżka się kończy</td><td data-l="Mautic"><span class="v v-ok">TAK</span> opóźnienia względne i daty</td></tr>
+      <tr><td data-l="Możliwość">Reakcja na odpowiedź</td><td data-l="Pipedrive"><span class="v v-ok">TAK</span> „czekaj na zdarzenie” i warunek „Email has been replied to”</td><td data-l="Mautic"><span class="v v-ok">TAK</span> decyzja „Replies to Email” (monitorowana skrzynka IMAP)</td></tr>
+      <tr><td data-l="Możliwość">Reakcja na klik w link</td><td data-l="Pipedrive"><span class="v v-part">?</span> kliknięcia śledzone; jako warunek ścieżki niepotwierdzone</td><td data-l="Mautic"><span class="v v-ok">TAK</span> decyzja „Clicks Email”</td></tr>
+      <tr><td data-l="Możliwość">Reakcja na wizytę na stronie (wrócił na kartę auta)</td><td data-l="Pipedrive"><span class="v v-no">NIE ZNALAZŁEM</span> w przeczytanej dokumentacji automatyzacji</td><td data-l="Mautic"><span class="v v-ok">TAK</span> decyzja „Visits a page”</td></tr>
+      <tr><td data-l="Możliwość">Przeskok w inne miejsce ścieżki</td><td data-l="Pipedrive"><span class="v v-no">NIE</span> typy kroków w tabeli limitów: czekaj, opóźnienie, if/else</td><td data-l="Mautic"><span class="v v-ok">TAK</span> „Jump to Event”</td></tr>
+      <tr><td data-l="Możliwość">Punktacja leadów</td><td data-l="Pipedrive"><span class="v v-part">CZĘŚCIOWO</span> AI priorytety, bez klasycznego scoringu</td><td data-l="Mautic"><span class="v v-ok">TAK</span> punkty i grupy punktów</td></tr>
+      <tr><td data-l="Możliwość">Wysyłka i dostarczalność</td><td data-l="Pipedrive"><span class="v v-ok">TAK</span> skrzynka handlowca (1:1) albo Campaigns (marketing, wypis, uwierzytelnienie domeny)</td><td data-l="Mautic"><span class="v v-part">SAM</span> własny SMTP i pilnowanie dostarczalności</td></tr>
+      <tr><td data-l="Możliwość">Przepustowość</td><td data-l="Pipedrive"><span class="v v-ok">TAK</span> 40 maili/min, 10 000 wykonań/10 min — dla CC z zapasem</td><td data-l="Mautic"><span class="v v-part">ZALEŻY</span> od serwera i kolejki</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Co z tego wynika dla ścieżki L4</h3>
+  <ul class="clean box">
+    <li><b>Mieści się w Premium:</b> 5 maili, 4 opóźnienia, 4 sprawdzenia „czy odpisał”, stop po odpowiedzi — w jednej automatyzacji.</li>
+    <li><b>Tryb wysyłki:</b> L4 to maile od handlowca do konkretnego leada, więc „Wyślij e-mail” ze skrzynki jest właściwy. Campaigns potrzebny dopiero do mailingu do bazy z wypisem.</li>
+    <li><b>Do sprawdzenia w trialu:</b> czy warunek if/else widzi kliknięcie w link do raportu. Jeśli nie, sygnał „kliknął raport” przechodzi przez n8n (webhook z linku) albo zostaje tylko powiadomieniem dla handlowca.</li>
+    <li><b>Sygnał „wrócił na kartę auta”</b> — w Pipedrive go nie ma. Jeśli ma odpalać Rinvo, idzie z GA4 lub strony przez n8n.</li>
+  </ul>
+
+  <div class="tc">
+    <h4>TRUTH CHECKER</h4>
+    <ul>
+      <li><b>Co wiem:</b> limity i funkcje Pipedrive z dokumentacji z 12–13.10, integrację i ceny Thulium ze strony producenta z 13.10, decyzje Mautica z jego dokumentacji.</li>
+      <li><b>Co zakładam:</b> że CC zaczyna od jednej ścieżki L4 i 3–5 handlowców, a pierwszy telefon robi Rinvo.</li>
+      <li><b>Co może być błędne:</b> klik jako warunek może działać, choć dokumentacja tego nie mówi. Ceny Thulium „od” mogą wymagać minimum licencji. Pipedrive zmienia limity w dokumentacji — ostatnio 12.10 — więc liczby trzeba sprawdzić przy zakupie.</li>
+      <li><b>Co zweryfikować:</b> trial Pipedrive Premium z L4 i testem kliku. Pytanie do Thulium o minimum licencji i o integrację z Rinvo. Pytanie do Rinvo, czy dzwoni przez własną telefonię, czy przez centralę klienta.</li>
+      <li><b>Co poprawiłbym z jednym inputem:</b> czy CC planuje infolinię z jednym numerem dla klientów. Jeśli tak, Thulium wchodzi do układu. Jeśli nie, wystarczy aplikacja dzwoniąca z marketplace.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="panel" id="p4">
+  <h2>Czy warto mieć osobne automation — i czy wtedy wraca HubSpot</h2>
+  <p class="muted">Trzy drogi dla tego samego celu: lejek sprzedaży plus automatyczne ścieżki mailowe. Manago AI to dawny SALESmanago, polska platforma marketing automation. Ceny Manago pochodzą ze stałej w kodzie kalkulatora na jego stronie, ceny HubSpot z oficjalnego katalogu produktów.</p>
+
+  <div class="note ok"><b>Odpowiedź krótko: osobne automation tak, ale nie od razu i nie HubSpot.</b> Na start wystarcza sam Pipedrive Premium, bo jedna ścieżka L4 mieści się w jego automatyzacjach. Gdy ścieżek przybędzie albo zechcecie reagować na zachowanie na stronie, dokładacie Manago AI. Pipedrive z Manago kosztuje 2,6–2,9 razy mniej niż HubSpot z Marketing Hub, przy podobnych możliwościach automatyzacji.</div>
+
+  <h3>Koszt rocznie</h3>
+  <div class="grid2" style="align-items:center">
+    <div><span class="small muted">Handlowcy</span><div class="seg2" id="u4"><button data-u="3" class="on">3 os.</button><button data-u="5">5 os.</button></div></div>
+    <div><span class="small muted">Kontakty marketingowe ze zgodą</span><div class="seg2" id="c4"><button data-c="5000">5 tys.</button><button data-c="10000" class="on">10 tys.</button><button data-c="25000">25 tys.</button></div></div>
+  </div>
+  <div class="tblwrap"><table class="stack" id="t4"><thead><tr><th>Wariant</th><th>Licencje rocznie</th><th>Wdrożenie (raz)</th><th>Co zawiera</th></tr></thead><tbody></tbody></table></div>
+  <p class="small muted">Manago AI liczy „aktywne kontakty”: rekordy ze zgodą marketingową albo z zakupem lub koszykiem w ostatnich 180 dniach. Wysyłka maili bez limitu w cenie. Ceny przy umowie rocznej; umowa 2-letnia −10%, 3-letnia −15%, miesięczna +20%. Wdrożenie Manago jest płatne, ale kwoty nie podają. HubSpot: Marketing Hub Professional od 890 USD/mies. z 2 tys. kontaktów, każde kolejne 5 tys. kontaktów +250 USD, Sales Hub Professional 100 USD/os., wdrożenia obowiązkowe 3 000 + 1 500 USD. Kursy NBP z 02.10: 1 EUR = 4,3745 zł, 1 USD = 3,8881 zł.</p>
+
+  <h3>Co potrafi każdy wariant</h3>
+  <div class="tblwrap"><table class="stack">
+    <thead><tr><th>Możliwość</th><th>Pipedrive Premium</th><th>Pipedrive + Manago AI</th><th>HubSpot Sales Pro + Marketing Pro</th></tr></thead>
+    <tbody>
+      <tr><td data-l="Możliwość">Ścieżka L4: 5 maili, stop po odpowiedzi</td><td data-l="Pipedrive"><span class="v v-ok">TAK</span></td><td data-l="+ Manago"><span class="v v-ok">TAK</span></td><td data-l="HubSpot"><span class="v v-ok">TAK</span></td></tr>
+      <tr><td data-l="Możliwość">Reakcja na wizytę na stronie (wrócił na kartę auta)</td><td data-l="Pipedrive"><span class="v v-no">NIE ZNALAZŁEM</span> — tylko przez n8n z naszej strony</td><td data-l="+ Manago"><span class="v v-ok">TAK</span> reguła „visited page”</td><td data-l="HubSpot"><span class="v v-ok">TAK</span> wyzwalacz „Page view”</td></tr>
+      <tr><td data-l="Możliwość">Reakcja na klik w maila</td><td data-l="Pipedrive"><span class="v v-part">?</span> śledzony, warunek niepotwierdzony</td><td data-l="+ Manago"><span class="v v-ok">TAK</span> reguła „clicked”</td><td data-l="HubSpot"><span class="v v-ok">TAK</span></td></tr>
+      <tr><td data-l="Możliwość">Punktacja leadów</td><td data-l="Pipedrive"><span class="v v-part">CZĘŚCIOWO</span> AI priorytety</td><td data-l="+ Manago"><span class="v v-ok">TAK</span> „advanced contact scoring”</td><td data-l="HubSpot"><span class="v v-ok">TAK</span></td></tr>
+      <tr><td data-l="Możliwość">SMS i WhatsApp w tej samej ścieżce</td><td data-l="Pipedrive"><span class="v v-no">NIE</span></td><td data-l="+ Manago"><span class="v v-ok">TAK</span> płatne za wiadomość</td><td data-l="HubSpot"><span class="v v-part">CZĘŚCIOWO</span> SMS przez dodatek</td></tr>
+      <tr><td data-l="Możliwość">Jeden system, bez synchronizacji</td><td data-l="Pipedrive"><span class="v v-ok">TAK</span></td><td data-l="+ Manago"><span class="v v-no">NIE</span> kontakty i zgody przez API lub n8n</td><td data-l="HubSpot"><span class="v v-ok">TAK</span></td></tr>
+      <tr><td data-l="Możliwość">Meta Lead Ads natywnie</td><td data-l="Pipedrive"><span class="v v-part">PRZEZ n8n</span></td><td data-l="+ Manago"><span class="v v-part">PRZEZ n8n</span></td><td data-l="HubSpot"><span class="v v-ok">TAK</span></td></tr>
+      <tr><td data-l="Możliwość">Polski producent i wsparcie</td><td data-l="Pipedrive"><span class="v v-part">UI PL</span></td><td data-l="+ Manago"><span class="v v-ok">TAK</span> Manago</td><td data-l="HubSpot"><span class="v v-part">UI PL</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="grid2" style="margin-top:12px">
+    <div class="box"><h3 style="margin-top:0">Za Manago AI</h3><ul class="clean">
+      <li>Robi to, czego Pipedrivowi brakuje: reakcję na wizytę na stronie, punktację, SMS i WhatsApp w ścieżce.</li>
+      <li>Wysyłka maili bez limitu w cenie — przy 10 tys. maili miesięcznie to ważne.</li>
+      <li>Ta sama rodzina co Thulium: „Leadoo AI, Manago AI and Thulium AI are one seamlessly integrated family”. Jeśli wejdzie Thulium, układ jest spójny.</li></ul></div>
+    <div class="box"><h3 style="margin-top:0">Przeciw Manago AI</h3><ul class="clean">
+      <li>Zbudowany pod e-commerce: koszyk, zakup, rekomendacje produktów. Import aut nie ma koszyka, więc część pakietu się nie przyda.</li>
+      <li>Drugi system: kontakty, zgody i etapy trzeba synchronizować z Pipedrive przez API albo n8n. Gotowego konektora do Pipedrive na stronie nie znalazłem.</li>
+      <li>Kwota wdrożenia nieznana do rozmowy z handlowcem.</li></ul></div>
+  </div>
+
+  <div class="note"><b>Kiedy HubSpot jednak wraca:</b> gdy ważniejsze od ceny jest to, żeby wszystko było w jednym systemie, z atrybucją od reklamy do sprzedaży i natywnym Meta Lead Ads. Za to płaci się ok. 45–80 tys. zł rocznie więcej niż za Pipedrive z Manago, plus ok. 17,5 tys. zł obowiązkowego wdrożenia.</div>
+
+  <div class="tc">
+    <h4>TRUTH CHECKER</h4>
+    <ul>
+      <li><b>Co wiem:</b> ceny Manago AI z kodu kalkulatora na manago.ai (13.10), ceny HubSpot z katalogu legal.hubspot.com, funkcje z dokumentacji producentów.</li>
+      <li><b>Co zakładam:</b> 5–25 tys. kontaktów ze zgodą marketingową; w ścieżkach są tylko leady, które ją dały.</li>
+      <li><b>Co może być błędne:</b> cena Manago w kodzie strony może różnić się od oferty handlowca; wdrożenie Manago nieznane; dopasowanie Manago do sprzedaży aut bez koszyka sprawdzone tylko na poziomie opisu produktu.</li>
+      <li><b>Co zweryfikować:</b> demo Manago AI z pytaniem o konektor do Pipedrive i koszt wdrożenia; trial Pipedrive Premium z L4.</li>
+      <li><b>Co poprawiłbym z jednym inputem:</b> ile ścieżek i kanałów China Select chce prowadzić w pierwszym roku. Jedna ścieżka mailowa — sam Pipedrive. Kilka ścieżek z SMS i reakcją na stronę — Pipedrive z Manago.</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">Źródła (odczyt 13.10.2026): support.pipedrive.com — Automation limits (12.10), Sequences (12.10), Automated campaigns, Campaigns add-on tiers, Campaigns by Pipedrive, Automations: emails, How can I make calls in Pipedrive · thulium.com/pl — strona główna, cennik, produkt, integracje, integracja z Pipedrive · docs.mautic.org 5.x — Campaign Builder, Settings (Contact Replies) · manago.ai — pricing (kod kalkulatora), email marketing, integracje · legal.hubspot.com — katalog produktów · knowledge.hubspot.com — sekwencje i workflow. Teksty: <code>crm/research/R12_pipedrive_thulium_ma/raw/</code>.</div></footer>
+
+<script>
+document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('nav.tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));document.getElementById(b.dataset.p).classList.add('on');window.scrollTo({top:0})}));
+const fmt=n=>Math.round(n).toLocaleString('pl-PL')+' zł';
+function koszt(o){
+  const rows=[["Pipedrive Premium (CRM)","€59 / os. / mies.",59*12*4.3745*o,"pipedrive.com/en/pricing, kurs NBP 02.10"],
+   ["Thulium Standard","od 279 zł / licencja / mies.",279*12*o,"thulium.com/pl/pricing"],
+   ["Thulium Premium (kampanie wychodzące, SMS, WhatsApp, API, transkrypcje)","od 349 zł / licencja / mies.",349*12*o,"thulium.com/pl/pricing"],
+   ["Pipedrive Premium + Thulium Premium","—",(59*12*4.3745+349*12)*o,"suma"]];
+  document.querySelector('#koszt tbody').innerHTML=rows.map(r=>`<tr><td data-l="Pozycja">${r[0]}</td><td data-l="Cena">${r[1]}</td><td data-l="Rocznie" class="num">${fmt(r[2])}</td><td data-l="Źródło" class="small">${r[3]}</td></tr>`).join('');
+}
+document.querySelectorAll('#os button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#os button').forEach(x=>x.classList.remove('on'));b.classList.add('on');koszt(+b.dataset.o)}));
+koszt(3);
+
+// ---- zakładka 4: koszty Pipedrive / + Manago / HubSpot ----
+const EUR=4.3745, USD=3.8881;
+const MG={5000:259,10000:379,25000:639};
+let U4=3, C4=10000;
+function hsMies(u,c){const blocks=c<=2000?0:(c<=22000?Math.ceil((c-2000)/5000)*250:1000+Math.ceil((c-22000)/5000)*225);return 100*u+890+(u>3?50*(u-3):0)+blocks}
+function t4(){
+  const pd=59*12*EUR*U4, mg=MG[C4]*12*EUR, hs=hsMies(U4,C4)*12*USD;
+  const rows=[["Sam Pipedrive Premium",pd,"0 zł","lejek + 1–2 ścieżki mailowe ze skrzynki handlowca"],
+   ["Pipedrive Premium + Manago AI",pd+mg,"płatne, kwota nieznana","+ wizyty na stronie, punktacja, SMS/WhatsApp, maile bez limitu"],
+   ["HubSpot Sales Pro + Marketing Pro",hs,fmt(4500*USD),"wszystko w jednym systemie, natywny Meta Lead Ads, atrybucja"]];
+  document.querySelector('#t4 tbody').innerHTML=rows.map(r=>`<tr><td data-l="Wariant"><b>${r[0]}</b></td><td data-l="Licencje rocznie" class="num">${fmt(r[1])}</td><td data-l="Wdrożenie (raz)">${r[2]}</td><td data-l="Co zawiera" class="small">${r[3]}</td></tr>`).join('');
+}
+document.querySelectorAll('#u4 button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#u4 button').forEach(x=>x.classList.remove('on'));b.classList.add('on');U4=+b.dataset.u;t4()}));
+document.querySelectorAll('#c4 button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#c4 button').forEach(x=>x.classList.remove('on'));b.classList.add('on');C4=+b.dataset.c;t4()}));
+t4();
+</script>
+</body>
+</html>
