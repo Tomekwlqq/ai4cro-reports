@@ -89,7 +89,7 @@ td.nm{color:var(--ink);font-weight:600}
 .shot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
 .shot a{display:block}
 .shot img{width:100%;display:block;max-height:230px;object-fit:cover;object-position:top}
-.shot .cap{font-family:var(--mono);font-size:10.5px;color:var(--faint);padding:6px 10px;border-top:1px solid var(--line)}
+.shot .cap{font-family:var(--mono);font-size:10.5px;color:var(--faint);padding:6px 10px;border-top:1px solid var(--line);overflow-wrap:anywhere}
 .shot .cap b{color:var(--ink);font-weight:600}
 .shot-full{display:inline-block;font-family:var(--mono);font-size:11.5px;color:var(--v-d);text-decoration:none;margin:4px 0 12px}
 .shot-full:hover{text-decoration:underline}
@@ -116,19 +116,35 @@ ul.tick li::before{content:"";position:absolute;left:8px;top:14px;width:5px;heig
 .stab.on{background:var(--v);border-color:var(--v);color:#fff}
 .subview{min-height:60px}
 /* ===== długi zrzut obszaru + kolejność (04.10) ===== */
-.seqv{display:grid;grid-template-columns:minmax(364px,48%) minmax(0,1fr);gap:16px;align-items:start;margin:12px 0}
-.seq-tab{min-width:0;overflow-x:auto}
-.seq-shot{position:sticky;top:64px;max-height:calc(100vh - 90px);overflow-y:auto;border:1px solid var(--line);border-radius:12px;background:#f3f4f6;scroll-behavior:smooth}
+.seqv{display:grid;grid-template-columns:minmax(280px,36%) minmax(0,1fr);gap:16px;align-items:start;margin:12px 0}
+/* 14.10: ZERO wewnętrznych scrolli (Tomek: „nie akceptuję w poziomie”). Zrzut płynie z całą stroną,
+   a tabela obok jest sticky — jedzie z czytelnikiem. Wysoką tabelę przyklejamy dołem (JS seqStick ustawia top). */
+.seq-tab{min-width:0;position:sticky;top:64px}
+.seq-shot{border:1px solid var(--line);border-radius:12px;background:#f3f4f6}
 .seq-in{position:relative}
-.seq-in img{width:100%;display:block}
+.seq-in img{width:100%;display:block;border-radius:11px}
 .seq-dot{position:absolute;left:6px;transform:translateY(-2px);min-width:22px;height:22px;padding:0 5px;border-radius:11px;background:var(--v);color:#fff;font:600 11px/22px var(--mono);text-align:center;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.35)}
 .seq-hl{position:absolute;left:0;right:0;border:3px solid var(--v);background:rgba(201,168,76,.14);border-radius:4px;display:none;pointer-events:none;transition:top .25s,height .25s}
-.seq-tab table{margin-top:0}
-.rsc{min-width:260px;font-size:13px;line-height:1.45}.rbrak{color:var(--muted,#8a8378);font-style:italic}.rola-opis{margin:6px 0;font-size:13.5px;line-height:1.5}
+.seq-tab table{margin-top:0;table-layout:fixed;font-size:12.5px}
+.seq-tab th{padding:8px 7px;font-size:9.5px;letter-spacing:.04em;overflow-wrap:anywhere}
+.seq-tab td{padding:8px 7px;overflow-wrap:anywhere;min-width:0}
+.seq-tab th:nth-child(1){width:5%}.seq-tab th:nth-child(2){width:18%}.seq-tab th:nth-child(3){width:16%}
+.seq-tab th:nth-child(4){width:23%}.seq-tab th:nth-child(5){width:29%}.seq-tab th:nth-child(6){width:9%}
+.seq-tab td.pos{white-space:normal}
+.rsc{font-size:12.5px;line-height:1.45}.rbrak{color:var(--muted,#8a8378);font-style:italic}.rola-opis{margin:6px 0;font-size:13.5px;line-height:1.5}
 tr.seq-row{cursor:pointer}
 tr.seq-row:hover td{background:rgba(201,168,76,.06)}
 tr.seq-row.on td{background:var(--v-soft)}
-@media(max-width:900px){.seqv{grid-template-columns:1fr}.seq-shot{position:relative;top:0;max-height:60vh}}
+@media(max-width:900px){
+  .seqv{grid-template-columns:1fr}.seq-tab{position:static}
+  /* tabela jako lista kart: jeden wiersz = jeden blok, etykiety kolumn z data-l */
+  .seq-tab table{border:none;border-radius:0;margin-top:4px;font-size:13.5px}
+  .seq-tab tr:first-child{display:none}
+  .seq-tab tr{border:1px solid var(--line);border-radius:10px;padding:8px 0;margin:0 0 10px;background:#fff}
+  .seq-tab td{padding:3px 12px;overflow-wrap:anywhere}
+  .seq-tab td[data-l]::before{content:attr(data-l);display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+  .seq-tab td.pos{display:block}
+}
 /* ===== funkcja · etap · działanie (04.10) ===== */
 .rola{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
 .rtag{font-family:var(--mono);font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:99px;border:1px solid var(--line);background:#fff;color:var(--muted)}
@@ -159,7 +175,7 @@ td.typ{font-family:var(--mono);font-size:11px;color:var(--faint)}
 .elc-ex{margin-top:12px;font-size:14px;color:var(--muted);border-left:3px solid var(--v-line);padding-left:12px}
 .badge.klik{background:#eff6ff;color:#1d4ed8;border:1px dashed #93c5fd}
 table.rtab{margin:0;border:none;border-radius:0;font-size:13px}
-table.rtab td{padding:7px 10px;color:var(--ink)}
+table.rtab td{padding:7px 10px;color:var(--ink);overflow-wrap:anywhere}
 table.rtab td.rnote{color:var(--muted)}
 table.rtab tr.v-check td{opacity:.6}
 @media(max-width:900px){.elc-top{grid-template-columns:1fr}.elc{padding:12px}}
