@@ -278,6 +278,8 @@
   }
 
   function odswiezWidok() {
+    // strona-gospodarz (np. zakładka „Do wdrożenia” na liście zmian) dostaje aktualne rekordy
+    try { document.dispatchEvent(new CustomEvent('kmt:dane', { detail: dane })); } catch (e) {}
     Object.keys(kotwice).forEach(function (k) {
       var o = kotwice[k];
       if (o.btn) o.btn.textContent = etykieta(k);

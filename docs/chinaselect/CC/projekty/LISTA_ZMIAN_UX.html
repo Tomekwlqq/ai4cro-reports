@@ -438,6 +438,18 @@ details.reko-test-card:not([open]){padding:12px 18px}
 }
 
 
+.lz-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px auto 6px;max-width:1180px;padding:0 16px}
+.lz-tab{font:inherit;font-weight:700;font-size:15px;padding:12px 18px;border-radius:12px;border:2px solid #d9cfb8;background:#fff;color:#2b2b2b;cursor:pointer;min-height:48px;flex:1 1 200px}
+.lz-tab b{display:inline-block;min-width:26px;margin-left:6px;padding:2px 8px;border-radius:999px;background:#f1ece0;font-size:13px}
+.lz-tab[aria-selected="true"]{background:#1f3b2c;border-color:#1f3b2c;color:#fff}
+.lz-tab[aria-selected="true"] b{background:#c9a74a;color:#1f1f1f}
+.lz-wdr{max-width:1180px;margin:10px auto 30px;padding:0 16px}
+.lz-wdr h2{margin:14px 0 6px}
+.lz-wdr-info{font-weight:700;color:#7a5b12}
+.lz-wdr-info:empty{display:none}
+body.tab-wdr .lz-filtry,body.tab-wdr #must-have,body.tab-wdr .lz-obszar{display:none!important}
+body.tab-all #do-wdrozenia{display:none}
+.lz-mh-lista li.lz-wdr-li a::after{content:"✅ do wdrożenia";margin-left:auto;font-size:11px;font-weight:700;color:#1f3b2c;white-space:nowrap}
 .lz-top{padding:40px max(64px,calc((100% - 1440px)/2)) 28px;background:var(--cas-ink);color:#F0EDE8;border-bottom:3px solid var(--cas-gold)}
 .lz-top h1{font-size:clamp(22px,3vw,34px);font-weight:900;margin-bottom:8px}
 .lz-top p{font-size:14px;color:rgba(240,237,232,.72);max-width:820px}
@@ -492,17 +504,22 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </style>
 </head>
 <body>
-<!-- hub-backlink -->
-<div id="hub-backlink-bar" style="position:sticky;top:0;z-index:100;background:#3F4A44;padding:8px 16px;font:600 13px/1.4 'IBM Plex Mono',monospace;letter-spacing:.04em;">
-  <a href="../design/DESIGN_HUB.html" style="color:#C9A84C;text-decoration:none;">← Benchmark &amp; Design</a>
-</div>
-<!-- /hub-backlink -->
 <header class="lz-top">
   <h1>Wszystkie zmiany UX — strona główna, lista aut, karta auta</h1>
   <p>Jedna lista wszystkich propozycji z trzech stron rekomendacji. Przy każdej zmianie: dziś i projekt, zmiany i link do pełnej rekomendacji. Etykieta MUST HAVE oznacza zmiany na początek: braki o najwyższym priorytecie (P1) z listy braków liczonej z benchmarku i sprzedaży, finansowanie oraz wymogi prawne. Przy każdej jest źródło.</p>
   <p style="font-size:12px;opacity:.75;margin-top:8px">Wybór MUST HAVE jest do akceptacji zespołu. Liczby w projektach są przykładowe; złote pola [X] czekają na dane i decyzje. Liczby „N z 692 pytań” pochodzą z pola pytań zbudowanego z sytuacji kupujących i sprawdzonego śladem w dyskusjach i wyszukiwarce.</p>
   <div class="lz-liczby reko-liczby"><div class="reko-liczba"><strong>39</strong><span>zmian w trzech obszarach</span></div><div class="reko-liczba"><strong>13</strong><span>MUST HAVE — na początek</span></div><div class="reko-liczba"><strong>2</strong><span>MUST HAVE do dyskusji</span></div><div class="reko-liczba"><strong>18</strong><span>zamian</span></div><div class="reko-liczba"><strong>15</strong><span>nowych elementów</span></div><div class="reko-liczba"><strong>6</strong><span>uzupełnień funkcji</span></div></div>
 </header>
+<nav class="lz-tabs" role="tablist">
+  <button class="lz-tab" type="button" role="tab" data-tab="wdr" aria-selected="true">✅ Do wdrożenia <b id="wdr-n">…</b></button>
+  <button class="lz-tab" type="button" role="tab" data-tab="all" aria-selected="false">Pozostałe zmiany <b id="all-n">39</b></button>
+</nav>
+<section class="lz-wdr" id="do-wdrozenia">
+  <h2>Do wdrożenia teraz</h2>
+  <p>Zmiany, przy których Tomek kliknął „Jestem OK”. Lista uzupełnia się sama: kolejne „Jestem OK” od Tomka przenosi zmianę tutaj z zakładki „Pozostałe zmiany”. Uwagi i komentarze zespołu zostają przy zmianie.</p>
+  <p class="lz-wdr-info" id="wdr-info">Wczytuję zatwierdzenia…</p>
+  <div id="wdr-lista"></div>
+</section>
 <div class="lz-filtry"><button class="lz-f lz-f--mh" type="button" data-mh aria-pressed="false">Tylko MUST HAVE</button><button class="lz-f lz-f--dysk" type="button" data-dysk aria-pressed="false">MUST HAVE do dyskusji</button><button class="lz-f" type="button" data-ob="wszystkie" aria-pressed="true">Wszystkie obszary</button><button class="lz-f" type="button" data-ob="strona_glowna" aria-pressed="false">Strona główna (HP)</button><button class="lz-f" type="button" data-ob="lista_aut" aria-pressed="false">Lista aut i kafel (PLP)</button><button class="lz-f" type="button" data-ob="karta_auta" aria-pressed="false">Karta auta (PDP)</button><span class="lz-licznik" id="lz-ile"></span></div>
 <section class="lz-mh-ind" id="must-have">
   <h2>MUST HAVE — na początek (13)</h2>
@@ -512,8 +529,8 @@ details.reko-test-card:not([open]){padding:12px 18px}
   
 </section>
 <section class="lz-obszar" id="ob-strona_glowna"><h2>Strona główna (HP)</h2>
-<p class="lz-ob-sub">10 zmian · 3 MUST HAVE · <a href="REKOMENDACJE_STRONA_GLOWNA.html">pełna strona rekomendacji →</a></p>
-<article class="lz-karta" id="lz-strona_glowna-1" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-1">
+<p class="lz-ob-sub"><span class="lz-ob-ile">10 zmian</span> · 3 MUST HAVE · <a href="REKOMENDACJE_STRONA_GLOWNA.html">pełna strona rekomendacji →</a></p>
+<article data-kol="1" class="lz-karta" id="lz-strona_glowna-1" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-1">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">1</span>
     <h3 class="lz-nazwa">Pierwszy ekran — hero i wyszukiwarka</h3>
@@ -758,7 +775,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_STRONA_GLOWNA.html#el-1">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-strona_glowna-2" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-2">
+<article data-kol="2" class="lz-karta" id="lz-strona_glowna-2" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-2">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">2</span>
     <h3 class="lz-nazwa">Pasek zaufania — zostaje, dochodzi pasek z liczbami</h3>
@@ -933,7 +950,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_STRONA_GLOWNA.html#el-2">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--mh" id="lz-strona_glowna-2a" data-obszar="strona_glowna" data-mh="1" data-komentarz="strona_glowna-2a">
+<article data-kol="3" class="lz-karta lz-karta--mh" id="lz-strona_glowna-2a" data-obszar="strona_glowna" data-mh="1" data-komentarz="strona_glowna-2a">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">2a</span>
     <h3 class="lz-nazwa">Partner Guazi i raporty — nowa sekcja</h3>
@@ -1159,7 +1176,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_STRONA_GLOWNA.html#el-2a">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-strona_glowna-3" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-3">
+<article data-kol="4" class="lz-karta" id="lz-strona_glowna-3" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-3">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">3</span>
     <h3 class="lz-nazwa">Sekcja marek z liczbą ofert</h3>
@@ -1333,7 +1350,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_STRONA_GLOWNA.html#el-3">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-strona_glowna-4" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-4">
+<article data-kol="5" class="lz-karta" id="lz-strona_glowna-4" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-4">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">4</span>
     <h3 class="lz-nazwa">Najczęściej wybierane modele — nowy kafel</h3>
@@ -1849,7 +1866,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_STRONA_GLOWNA.html#el-4">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-strona_glowna-5" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-5">
+<article data-kol="6" class="lz-karta" id="lz-strona_glowna-5" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-5">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">5</span>
     <h3 class="lz-nazwa">Proces zakupu — uzupełnienie funkcji</h3>
@@ -2023,7 +2040,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_STRONA_GLOWNA.html#el-5">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-strona_glowna-6" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-6">
+<article data-kol="7" class="lz-karta" id="lz-strona_glowna-6" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-6">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">6</span>
     <h3 class="lz-nazwa">Gwarancja bezpieczeństwa — uzupełnienie funkcji</h3>
@@ -2206,7 +2223,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_STRONA_GLOWNA.html#el-6">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-strona_glowna-7" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-7">
+<article data-kol="8" class="lz-karta" id="lz-strona_glowna-7" data-obszar="strona_glowna" data-mh="0" data-komentarz="strona_glowna-7">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">7</span>
     <h3 class="lz-nazwa">Sekcja opinii klientów</h3>
@@ -2401,7 +2418,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_STRONA_GLOWNA.html#el-7">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--mh" id="lz-strona_glowna-8" data-obszar="strona_glowna" data-mh="1" data-komentarz="strona_glowna-8">
+<article data-kol="9" class="lz-karta lz-karta--mh" id="lz-strona_glowna-8" data-obszar="strona_glowna" data-mh="1" data-komentarz="strona_glowna-8">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">8</span>
     <h3 class="lz-nazwa">Pasek kontaktu — dodajemy „Zamów rozmowę”</h3>
@@ -2569,7 +2586,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_STRONA_GLOWNA.html#el-8">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--mh" id="lz-strona_glowna-9" data-obszar="strona_glowna" data-mh="1" data-komentarz="strona_glowna-9">
+<article data-kol="10" class="lz-karta lz-karta--mh" id="lz-strona_glowna-9" data-obszar="strona_glowna" data-mh="1" data-komentarz="strona_glowna-9">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">9</span>
     <h3 class="lz-nazwa">Stopka — dane sprzedawcy i linki prawne</h3>
@@ -2783,8 +2800,8 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_STRONA_GLOWNA.html#el-9">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article></section><section class="lz-obszar" id="ob-lista_aut"><h2>Lista aut i kafel (PLP)</h2>
-<p class="lz-ob-sub">11 zmian · 1 MUST HAVE · 1 do dyskusji · <a href="REKOMENDACJE_LISTA_AUT.html">pełna strona rekomendacji →</a></p>
-<article class="lz-karta" id="lz-lista_aut-1" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-1">
+<p class="lz-ob-sub"><span class="lz-ob-ile">11 zmian</span> · 1 MUST HAVE · 1 do dyskusji · <a href="REKOMENDACJE_LISTA_AUT.html">pełna strona rekomendacji →</a></p>
+<article data-kol="11" class="lz-karta" id="lz-lista_aut-1" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-1">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">1</span>
     <h3 class="lz-nazwa">Nagłówek z licznikiem i zakładkami statusu dostępności</h3>
@@ -3047,7 +3064,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_LISTA_AUT.html#el-1">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-lista_aut-2" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-2">
+<article data-kol="12" class="lz-karta" id="lz-lista_aut-2" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-2">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">2</span>
     <h3 class="lz-nazwa">Panel filtrów z liczebnościami i segmentami importu</h3>
@@ -3306,7 +3323,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_LISTA_AUT.html#el-2">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-lista_aut-3" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-3">
+<article data-kol="13" class="lz-karta" id="lz-lista_aut-3" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-3">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">3</span>
     <h3 class="lz-nazwa">Paginacja z łączną liczbą wyników</h3>
@@ -3540,7 +3557,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_LISTA_AUT.html#el-3">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-lista_aut-4" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-4">
+<article data-kol="14" class="lz-karta" id="lz-lista_aut-4" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-4">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">4</span>
     <h3 class="lz-nazwa">Badge jakości inspekcji Guazi na kaflu</h3>
@@ -4086,7 +4103,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_LISTA_AUT.html#el-4">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-lista_aut-5" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-5">
+<article data-kol="15" class="lz-karta" id="lz-lista_aut-5" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-5">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">5</span>
     <h3 class="lz-nazwa">Pełna nazwa wersji i trima na kaflu</h3>
@@ -4583,7 +4600,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_LISTA_AUT.html#el-5">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-lista_aut-6" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-6">
+<article data-kol="16" class="lz-karta" id="lz-lista_aut-6" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-6">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">6</span>
     <h3 class="lz-nazwa">Pojemność baterii kWh i zasięg WLTP na kaflu dla aut elektrycznych i plug-in hybrydy</h3>
@@ -5078,7 +5095,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_LISTA_AUT.html#el-6">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--dysk" id="lz-lista_aut-7" data-obszar="lista_aut" data-mh="d" data-komentarz="lista_aut-7">
+<article data-kol="17" class="lz-karta lz-karta--dysk" id="lz-lista_aut-7" data-obszar="lista_aut" data-mh="d" data-komentarz="lista_aut-7">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">7</span>
     <h3 class="lz-nazwa">Etykieta ceny wyjaśniająca co zawiera</h3>
@@ -5624,7 +5641,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_LISTA_AUT.html#el-7">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-lista_aut-8" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-8">
+<article data-kol="18" class="lz-karta" id="lz-lista_aut-8" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-8">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">8</span>
     <h3 class="lz-nazwa">Czas realizacji na kaflu</h3>
@@ -6175,7 +6192,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_LISTA_AUT.html#el-8">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--mh" id="lz-lista_aut-9" data-obszar="lista_aut" data-mh="1" data-komentarz="lista_aut-9">
+<article data-kol="19" class="lz-karta lz-karta--mh" id="lz-lista_aut-9" data-obszar="lista_aut" data-mh="1" data-komentarz="lista_aut-9">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">9</span>
     <h3 class="lz-nazwa">Rata miesięczna na kaflu</h3>
@@ -6719,7 +6736,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_LISTA_AUT.html#el-9">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-lista_aut-10" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-10">
+<article data-kol="20" class="lz-karta" id="lz-lista_aut-10" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-10">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">10</span>
     <h3 class="lz-nazwa">Dwa aktywne CTA na kaflu</h3>
@@ -7266,7 +7283,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_LISTA_AUT.html#el-10">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-lista_aut-11" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-11">
+<article data-kol="21" class="lz-karta" id="lz-lista_aut-11" data-obszar="lista_aut" data-mh="0" data-komentarz="lista_aut-11">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">11</span>
     <h3 class="lz-nazwa">Ocena ceny na tle rynku</h3>
@@ -7764,8 +7781,8 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_LISTA_AUT.html#el-11">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article></section><section class="lz-obszar" id="ob-karta_auta"><h2>Karta auta (PDP)</h2>
-<p class="lz-ob-sub">18 zmian · 9 MUST HAVE · 1 do dyskusji · <a href="REKOMENDACJE_KARTA_AUTA.html">pełna strona rekomendacji →</a></p>
-<article class="lz-karta lz-karta--mh" id="lz-karta_auta-1" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-1">
+<p class="lz-ob-sub"><span class="lz-ob-ile">18 zmian</span> · 9 MUST HAVE · 1 do dyskusji · <a href="REKOMENDACJE_KARTA_AUTA.html">pełna strona rekomendacji →</a></p>
+<article data-kol="22" class="lz-karta lz-karta--mh" id="lz-karta_auta-1" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-1">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">1</span>
     <h3 class="lz-nazwa">Blok ceny na karcie auta</h3>
@@ -8863,7 +8880,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-1">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--mh" id="lz-karta_auta-2" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-2">
+<article data-kol="23" class="lz-karta lz-karta--mh" id="lz-karta_auta-2" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-2">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">2</span>
     <h3 class="lz-nazwa">Raport Guazi tego auta — streszczenie + pełny raport za e-mail</h3>
@@ -9277,7 +9294,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-2">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-karta_auta-3" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-3">
+<article data-kol="24" class="lz-karta" id="lz-karta_auta-3" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-3">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">3</span>
     <h3 class="lz-nazwa">Bateria trakcyjna — kWh i SOH%</h3>
@@ -9819,7 +9836,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-3">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-karta_auta-5" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-5">
+<article data-kol="25" class="lz-karta" id="lz-karta_auta-5" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-5">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">5</span>
     <h3 class="lz-nazwa">Homologacja — status dla konkretnego modelu</h3>
@@ -10387,7 +10404,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-5">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--mh" id="lz-karta_auta-6" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-6">
+<article data-kol="26" class="lz-karta lz-karta--mh" id="lz-karta_auta-6" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-6">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">6</span>
     <h3 class="lz-nazwa">Gwarancja China Select</h3>
@@ -10680,7 +10697,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-6">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--mh" id="lz-karta_auta-7" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-7">
+<article data-kol="27" class="lz-karta lz-karta--mh" id="lz-karta_auta-7" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-7">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">7</span>
     <h3 class="lz-nazwa">Serwis i części w Polsce</h3>
@@ -11080,7 +11097,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-7">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-karta_auta-8" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-8">
+<article data-kol="28" class="lz-karta" id="lz-karta_auta-8" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-8">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">8</span>
     <h3 class="lz-nazwa">Proces zakupu — uzupełnienie funkcji (jak na stronie głównej)</h3>
@@ -11245,7 +11262,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-8">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-karta_auta-9" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-9">
+<article data-kol="29" class="lz-karta" id="lz-karta_auta-9" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-9">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">9</span>
     <h3 class="lz-nazwa">Galeria — autentyczność zdjęć egzemplarza</h3>
@@ -11595,7 +11612,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-9">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-karta_auta-10" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-10">
+<article data-kol="30" class="lz-karta" id="lz-karta_auta-10" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-10">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">10</span>
     <h3 class="lz-nazwa">Tabela parametrów — specyfikacja i pasek kluczowych danych</h3>
@@ -12072,7 +12089,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-10">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-karta_auta-11" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-11">
+<article data-kol="31" class="lz-karta" id="lz-karta_auta-11" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-11">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">11</span>
     <h3 class="lz-nazwa">„Dlaczego warto?” — bez zmian, warianty do testu</h3>
@@ -12267,7 +12284,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-11">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--mh" id="lz-karta_auta-12" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-12">
+<article data-kol="32" class="lz-karta lz-karta--mh" id="lz-karta_auta-12" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-12">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">12</span>
     <h3 class="lz-nazwa">Rezerwacja z zaliczką — w bloku ceny</h3>
@@ -13232,7 +13249,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-12">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--mh" id="lz-karta_auta-13" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-13">
+<article data-kol="33" class="lz-karta lz-karta--mh" id="lz-karta_auta-13" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-13">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">13</span>
     <h3 class="lz-nazwa">Finansowanie — rata i kalkulator przy cenie</h3>
@@ -14022,7 +14039,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-13">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-karta_auta-14" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-14">
+<article data-kol="34" class="lz-karta" id="lz-karta_auta-14" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-14">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">14</span>
     <h3 class="lz-nazwa">Opinie klientów — ta sama sekcja co na stronie głównej</h3>
@@ -14274,7 +14291,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-14">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--mh" id="lz-karta_auta-15" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-15">
+<article data-kol="35" class="lz-karta lz-karta--mh" id="lz-karta_auta-15" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-15">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">15</span>
     <h3 class="lz-nazwa">Dane sprzedawcy na karcie</h3>
@@ -14743,7 +14760,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-15">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--mh" id="lz-karta_auta-16" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-16">
+<article data-kol="36" class="lz-karta lz-karta--mh" id="lz-karta_auta-16" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-16">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">16</span>
     <h3 class="lz-nazwa">Pytania o to auto — FAQ przy egzemplarzu</h3>
@@ -14932,7 +14949,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-16">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--mh" id="lz-karta_auta-17" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-17">
+<article data-kol="37" class="lz-karta lz-karta--mh" id="lz-karta_auta-17" data-obszar="karta_auta" data-mh="1" data-komentarz="karta_auta-17">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">17</span>
     <h3 class="lz-nazwa">Zgody w formularzach (RODO) — jeden wzór dla wszystkich</h3>
@@ -14985,7 +15002,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
   <div class="kmt-slot-host" data-kmt-slot="karta_auta-17"></div><details class='reko-uzas-wrap'><summary class='reko-testy-sum'>Dlaczego<span class='reko-uzas-krotko'>Zgoda zaznaczona za kupującego budzi opór; dwie osobne, puste zgody oddają mu kontrolę i są wymogiem prawa.</span><span class='reko-testy-hint'>kliknij, aby rozwinąć</span></summary><div class='reko-uzas-2'><div class='reko-uz-2kol'><div class='reko-uz-col reko-uz-col--ux'><div class='reko-uz-h'><span class='reko-sila reko-sila--mocna'>mocna</span><span>UX</span></div><div class='reko-uz-k'>Wzorce</div><div class='reko-uz-t'>AutoChina — formularz zamówienia (nad zgięciem) · MyChinaPal ✓</div><div class='reko-uz-k'>Uzasadnienie</div><div class='reko-uz-t'>Osobna zgoda na kontakt automatyczny, niezależna od marketingowej, to wymóg prawny (art. 7 RODO — zgody rozdzielone). Bez niej nie możemy obsługiwać zapytań przez automat. Jeden blok zgód w każdym formularzu na stronie (raport, rezerwacja, kalkulacja, rozmowa, pytanie o auto) pilnuje, żeby wymóg nie rozjechał się między formularzami. Treść klauzul ustala prawnik.</div><div class='reko-uz-k'>Podstawa oceny siły</div><div class='reko-uz-t'>Wymóg prawny — poza skalą oceny UX; na liście braków w pierwszym priorytecie (pewne).</div><div class='reko-uz-k'>Element → Akcja → Zdarzenie</div><div class='reko-uz-t'><b>Element:</b> Blok dwóch zgód pod polami formularza<br><b>Akcja:</b> Kupujący zaznacza zgodę na kontakt i — jeśli chce — marketingową, potem wysyła formularz<br><b>Zdarzenie:</b> wysłanie formularza</div></div><div class='reko-uz-col reko-uz-col--psi'><div class='reko-uz-h'><span class='reko-sila reko-sila--srednia'>średnia</span><span>Psychologia sprzedaży</span></div><div class='reko-uz-k'>Mechanizm</div><div class='reko-uz-t'>Reaktancja (Reactance): domyślnie zaznaczona zgoda na połączenia automatyczne odbierana jest jako wymuszenie i budzi opór. Osobna, niezaznaczona zgoda przywraca kupującemu poczucie kontroli. Opis „szybszy kontakt w sprawie Twojego zapytania” zmienia narrację z „muszę się zgodzić” na „mogę dostać szybszą odpowiedź”.</div><div class='reko-uz-k'>Źródło i klasa dowodu</div><div class='reko-uz-t'>Reaktancja — klasa dowodu: przypadek (⚠️)</div><div class='reko-uz-k'>Granica</div><div class='reko-uz-t'>Osobna zgoda może zmniejszyć liczbę kontaktów automatycznych — mniej połączeń, ale lepsze zapytania (mniej „nie wiedziałem, że zadzwonicie”). To decyzja China Select, nie psychologii. Strona prawna wyprzedza psychologiczną: treść sprawdza prawnik.</div><div class='reko-uz-k'>Obawa kupującego</div><div class='reko-uz-t'>Brak bezpośredniej sytuacji zakupowej w bazie — zgody to wymóg prawny i operacyjny. Pośrednio: kupujący wrażliwy na narzucanie kontaktu (hipoteza). · <i>Przedsiębiorca — najmniej tolerancyjny na nachalność; Firma/flota — wrażliwość na dane osobowe (hipoteza)</i></div><div class='reko-uz-k'>Uzasadnienie</div><div class='reko-uz-t'>Formularz z zaznaczoną za kupującego zgodą budzi podejrzenie i prawdopodobnie jest niezgodny z RODO. Kupujący, który czuje się przymuszony, odznacza zgodę albo wychodzi. Dwie krótkie, puste zgody z jednym linkiem do informacji o danych nie tworzą ściany tekstu nad przyciskiem.</div></div></div></div></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-17">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta" id="lz-karta_auta-18" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-18">
+<article data-kol="38" class="lz-karta" id="lz-karta_auta-18" data-obszar="karta_auta" data-mh="0" data-komentarz="karta_auta-18">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">18</span>
     <h3 class="lz-nazwa">Zobacz również — ten sam kafel co na liście</h3>
@@ -15238,7 +15255,7 @@ details.reko-test-card:not([open]){padding:12px 18px}
 </details></details>
   <a class="lz-link" href="REKOMENDACJE_KARTA_AUTA.html#el-18">Ten element w projekcie obszaru: wzorce z rynku i cała strona →</a>
 </article>
-<article class="lz-karta lz-karta--dysk" id="lz-karta_auta-19" data-obszar="karta_auta" data-mh="d" data-komentarz="karta_auta-19">
+<article data-kol="39" class="lz-karta lz-karta--dysk" id="lz-karta_auta-19" data-obszar="karta_auta" data-mh="d" data-komentarz="karta_auta-19">
   <header class="lz-head">
     <span class="reko-el-nr lz-nr">19</span>
     <h3 class="lz-nazwa">Znane usterki modelu i co obejmuje gwarancja</h3>
@@ -15423,6 +15440,27 @@ document.querySelectorAll('.lz-f').forEach(function(b){b.addEventListener('click
  else{stan.ob=b.dataset.ob;document.querySelectorAll('.lz-f[data-ob]').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});}
  filtruj();});});
 filtruj();
+/* Zakładka „Do wdrożenia”: karty, przy których Tomek kliknął „Jestem OK”, przechodzą tu na żywo (rekordy z widżetu komentarzy). */
+var ZATW='Tomek', wdr=document.getElementById('wdr-lista'), wdrInfo=document.getElementById('wdr-info'), dostal=false;
+function zakladka(t){document.body.classList.toggle('tab-wdr',t==='wdr');document.body.classList.toggle('tab-all',t!=='wdr');
+ document.querySelectorAll('.lz-tab').forEach(function(b){b.setAttribute('aria-selected',b.dataset.tab===t?'true':'false');});
+ try{history.replaceState(null,'',t==='wdr'?'#do-wdrozenia':'#wszystkie');}catch(e){}
+ setTimeout(skaluj,30);setTimeout(skaluj,400);}
+document.querySelectorAll('.lz-tab').forEach(function(b){b.addEventListener('click',function(){zakladka(b.dataset.tab);});});
+function przenies(dane){dostal=true;var ok={};dane.forEach(function(r){if(r.typ==='akceptacja'&&r.autor===ZATW)ok[r.kotwica]=r.ts;});
+ var karty=[].slice.call(document.querySelectorAll('.lz-karta')).filter(function(k){return ok[k.dataset.komentarz]!==undefined;});
+ karty.sort(function(a,b){return (+a.dataset.kol)-(+b.dataset.kol);});
+ karty.forEach(function(k){if(k.parentNode!==wdr)wdr.appendChild(k);var li=document.querySelector('.lz-mh-lista a[href="#'+k.id+'"]');if(li)li.parentNode.classList.add('lz-wdr-li');});
+ var n=wdr.querySelectorAll('.lz-karta').length, m=document.querySelectorAll('.lz-obszar .lz-karta').length;
+ document.getElementById('wdr-n').textContent=n;document.getElementById('all-n').textContent=m;
+ wdrInfo.textContent=n?'':'Na razie żadna zmiana nie ma „Jestem OK” od Tomka.';
+ document.querySelectorAll('.lz-ob-ile').forEach(function(x){var s=x.closest('.lz-obszar');x.textContent=s.querySelectorAll('.lz-karta').length+' zmian';});
+ filtruj();}
+document.addEventListener('kmt:dane',function(ev){przenies(ev.detail||[]);});
+setTimeout(function(){if(!dostal)wdrInfo.textContent='Nie udało się wczytać zatwierdzeń (serwer komentarzy nie odpowiada). Odśwież stronę.';},10000);
+document.addEventListener('click',function(ev){var a=ev.target.closest&&ev.target.closest('a[href^="#lz-"]');if(!a)return;var t=document.getElementById(a.getAttribute('href').slice(1));if(!t)return;
+ zakladka(wdr.contains(t)?'wdr':'all');setTimeout(function(){t.scrollIntoView({behavior:'smooth'});},60);ev.preventDefault();});
+zakladka(location.hash==='#wszystkie'||/^#lz-|^#must-have|^#ob-/.test(location.hash)?'all':'wdr');
 })();
 </script>
 <script>window.KOMENTARZE_STRONA="ELEMENTY";</script>
