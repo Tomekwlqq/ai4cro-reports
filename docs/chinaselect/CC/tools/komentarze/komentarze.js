@@ -21,7 +21,7 @@
   var KOLOR = { Kamil: '#1F6FB2', Aniela: '#B0306E', Tomek: '#C2571A', Kacper: '#2E7D4F', Bartek: '#6A4BB8', Marta: '#B8322A' };
   function nazwa(n) { return NAZWA[n] || n; }
   // Ocena osoby (Tomek 15.10): jeden wpis na osobę i element, aktualizowany — '' = Jestem OK, na_pozniej, na_ab
-  var OCENY = { '': { ik: '👍', kr: 'OK', dl: 'jestem OK' }, na_pozniej: { ik: '⏳', kr: 'później', dl: 'na później' }, na_ab: { ik: '🧪', kr: 'A/B', dl: 'na A/B' } };
+  var OCENY = { '': { ik: '👍', kr: 'OK', dl: 'jestem OK' }, na_pozniej: { ik: '⏳', kr: 'później', dl: 'na później' }, na_ab: { ik: '🧪', kr: 'A/B', dl: 'na A/B' }, do_zmiany: { ik: '🔧', kr: 'do zmiany', dl: 'do zmiany' } };
   function ocena(r) { return OCENY[r.tekst || ''] || OCENY['']; }
   // Kod propozycji z kotwicy: karta_auta-1 → PDP-01, konwersja-3 → KONW-3
   var PREF = { strona_glowna: 'HP', lista_aut: 'PLP', karta_auta: 'PDP', konwersja: 'KONW' };
@@ -154,11 +154,11 @@
   function rekordy(k) { return dane.filter(function (r) { return r.kotwica === k; }); }
   function liczby(k) {
     var rs = rekordy(k), kom = 0, akc = {};
-    var oc = { '': 0, na_pozniej: 0, na_ab: 0 };
+    var oc = { '': 0, na_pozniej: 0, na_ab: 0, do_zmiany: 0 };
     rs.forEach(function (r) { if (r.typ === 'komentarz') kom++; else { akc[r.autor] = 1; oc[r.tekst || ''] = (oc[r.tekst || ''] || 0) + 1; } });
-    return { kom: kom, akc: oc[''], pozn: oc.na_pozniej, ab: oc.na_ab };
+    return { kom: kom, akc: oc[''], pozn: oc.na_pozniej, ab: oc.na_ab, zm: oc.do_zmiany };
   }
-  function etykieta(k) { var n = liczby(k); return '💬 ' + n.kom + ' · 👍 ' + n.akc + (n.pozn ? ' · ⏳ ' + n.pozn : '') + (n.ab ? ' · 🧪 ' + n.ab : ''); }
+  function etykieta(k) { var n = liczby(k); return '💬 ' + n.kom + ' · 👍 ' + n.akc + (n.pozn ? ' · ⏳ ' + n.pozn : '') + (n.ab ? ' · 🧪 ' + n.ab : '') + (n.zm ? ' · 🔧 ' + n.zm : ''); }
 
   /* ---------- API ---------- */
   function pobierz() {
@@ -205,7 +205,7 @@
     dodaj.type = 'button';
     dodaj.setAttribute('data-kmt', 'dodaj');
     var oceny = el('div', 'kmt-oceny');
-    var przyciski = [['', '👍 Jestem OK'], ['na_pozniej', '⏳ Na później'], ['na_ab', '🧪 Na A/B']].map(function (x) {
+    var przyciski = [['', '👍 Jestem OK'], ['do_zmiany', '🔧 Do zmiany'], ['na_pozniej', '⏳ Na później'], ['na_ab', '🧪 Na A/B']].map(function (x) {
       var b = el('button', 'kmt-akcja kmt-akcja--2', x[1]); b.type = 'button'; b.setAttribute('data-kmt', 'ocena'); b.setAttribute('data-ocena', x[0]); oceny.appendChild(b); return b;
     });
     var lic = el('span', 'kmt-licznik', '0/' + MAX);
@@ -307,7 +307,7 @@
   }
   // Status elementu (Tomek 14.10): „Jestem OK” od Tomka = zmiana zamknięta, wdrażamy. Ta sama zasada co zakładka „Do wdrożenia”.
   var ZATWIERDZA = 'Tomek';
-  var STATUS = { '': ['✅ ZAMKNIĘTE · WDRAŻAMY', '#1f3b2c'], na_pozniej: ['⏳ NA PÓŹNIEJ', '#6b665c'], na_ab: ['🧪 DO TESTU A/B', '#5b3fa8'] };
+  var STATUS = { '': ['✅ ZAMKNIĘTE · WDRAŻAMY', '#1f3b2c'], na_pozniej: ['⏳ NA PÓŹNIEJ', '#6b665c'], na_ab: ['🧪 DO TESTU A/B', '#5b3fa8'], do_zmiany: ['🔧 DO ZMIANY — po ustaleniach', '#c2410c'] };
   function ustawStatus(k, host) {
     if (!host) return;
     var ok = rekordy(k).filter(function (r) { return r.typ === 'akceptacja' && r.autor === ZATWIERDZA; })[0];
@@ -373,7 +373,7 @@
       var sw = el('div', 'kmt kmt-slot');
       var hh = el('div', 'kmt-slot-h');
       hh.appendChild(el('span', 'kmt-slot-t', kodProp(k) ? 'Twoja opinia o propozycji ' + kodProp(k) : 'Twoja opinia o tej propozycji'));
-      hh.appendChild(el('span', 'kmt-slot-s', 'Wybierz imię, dopisz uwagę albo oceń: „Jestem OK”, „Na później” lub „Na A/B”. Widzi to cały zespół.'));
+      hh.appendChild(el('span', 'kmt-slot-s', 'Wybierz imię, dopisz uwagę albo oceń: „Jestem OK”, „Do zmiany”, „Na później” lub „Na A/B”. Widzi to cały zespół.'));
       var od = el('button', 'kmt-odsw', 'odśwież'); od.type = 'button'; od.addEventListener('click', function () { pobierz(); }); hh.appendChild(od);
       var licz = el('span', 'kmt-slot-n', etykieta(k));
       hh.appendChild(licz);
