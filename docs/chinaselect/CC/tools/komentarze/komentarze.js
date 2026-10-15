@@ -20,6 +20,12 @@
   var NAZWA = { Tomek: 'Tomek (Tomcio)' };
   var KOLOR = { Kamil: '#1F6FB2', Aniela: '#B0306E', Tomek: '#C2571A', Kacper: '#2E7D4F', Bartek: '#6A4BB8', Marta: '#B8322A' };
   function nazwa(n) { return NAZWA[n] || n; }
+  // Ocena osoby (Tomek 15.10): jeden wpis na osobę i element, aktualizowany — '' = Jestem OK, na_pozniej, na_ab
+  var OCENY = { '': { ik: '👍', kr: 'OK', dl: 'jestem OK' }, na_pozniej: { ik: '⏳', kr: 'później', dl: 'na później' }, na_ab: { ik: '🧪', kr: 'A/B', dl: 'na A/B' } };
+  function ocena(r) { return OCENY[r.tekst || ''] || OCENY['']; }
+  // Kod propozycji z kotwicy: karta_auta-1 → PDP-01, konwersja-3 → KONW-3
+  var PREF = { strona_glowna: 'HP', lista_aut: 'PLP', karta_auta: 'PDP', konwersja: 'KONW' };
+  function kodProp(k) { var m = /^(.*)-([0-9]+)([a-z]*)$/.exec(k || ''); if (!m || !PREF[m[1]]) return ''; return PREF[m[1]] + '-' + (m[1] === 'konwersja' ? m[2] : ('0' + m[2]).slice(-2)) + m[3]; }
   function imie(n, cls) {
     var b = el('b', cls || 'kmt-imie', nazwa(n));
     b.style.color = KOLOR[n] || '#111214';
@@ -56,6 +62,7 @@
     '.kmt-zamk{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 12px;padding:10px 14px;border-radius:10px;background:#1f3b2c;color:#fff;font:700 14px/1.35 inherit}',
     '.kmt-zamk small{font-weight:500;opacity:.85;font-size:12px}',
     '.kmt-zamkniety{outline:3px solid #1f3b2c;outline-offset:4px;border-radius:12px}',
+    '.kmt-oceny{display:flex;flex-wrap:wrap;gap:6px;width:100%;margin-top:6px}',
     '.kmt-slot-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:10px}',
     '.kmt-slot-t{font-weight:800;font-size:19px;line-height:1.25;color:#111214}',
     '.kmt-slot-s{font-size:13px;color:#7a5a1e}',
@@ -147,10 +154,11 @@
   function rekordy(k) { return dane.filter(function (r) { return r.kotwica === k; }); }
   function liczby(k) {
     var rs = rekordy(k), kom = 0, akc = {};
-    rs.forEach(function (r) { if (r.typ === 'komentarz') kom++; else akc[r.autor] = 1; });
-    return { kom: kom, akc: Object.keys(akc).length };
+    var oc = { '': 0, na_pozniej: 0, na_ab: 0 };
+    rs.forEach(function (r) { if (r.typ === 'komentarz') kom++; else { akc[r.autor] = 1; oc[r.tekst || ''] = (oc[r.tekst || ''] || 0) + 1; } });
+    return { kom: kom, akc: oc[''], pozn: oc.na_pozniej, ab: oc.na_ab };
   }
-  function etykieta(k) { var n = liczby(k); return '💬 ' + n.kom + ' · 👍 ' + n.akc; }
+  function etykieta(k) { var n = liczby(k); return '💬 ' + n.kom + ' · 👍 ' + n.akc + (n.pozn ? ' · ⏳ ' + n.pozn : '') + (n.ab ? ' · 🧪 ' + n.ab : ''); }
 
   /* ---------- API ---------- */
   function pobierz() {
@@ -196,11 +204,12 @@
     var dodaj = el('button', 'kmt-akcja', '💬 Dodaj komentarz');
     dodaj.type = 'button';
     dodaj.setAttribute('data-kmt', 'dodaj');
-    var akc = el('button', 'kmt-akcja kmt-akcja--2', '👍 Jestem OK');
-    akc.type = 'button';
-    akc.setAttribute('data-kmt', 'akceptuj');
+    var oceny = el('div', 'kmt-oceny');
+    var przyciski = [['', '👍 Jestem OK'], ['na_pozniej', '⏳ Na później'], ['na_ab', '🧪 Na A/B']].map(function (x) {
+      var b = el('button', 'kmt-akcja kmt-akcja--2', x[1]); b.type = 'button'; b.setAttribute('data-kmt', 'ocena'); b.setAttribute('data-ocena', x[0]); oceny.appendChild(b); return b;
+    });
     var lic = el('span', 'kmt-licznik', '0/' + MAX);
-    w.appendChild(dodaj); w.appendChild(akc); w.appendChild(lic);
+    w.appendChild(dodaj); w.appendChild(lic); w.appendChild(oceny);
     panel.appendChild(w);
     var err = el('div', 'kmt-err'); err.hidden = true;
     panel.appendChild(err);
@@ -216,7 +225,8 @@
       return false;
     }
     function dopisz(rec) {
-      if (!dane.some(function (r) { return r.id === rec.id; })) dane.push(rec);
+      var i = -1; dane.forEach(function (r, j) { if (r.id === rec.id) i = j; });
+      if (i >= 0) dane[i] = rec; else dane.push(rec);
       odswiezWidok();
     }
     dodaj.addEventListener('click', function () {
@@ -229,15 +239,18 @@
         .catch(function (e) { pokazErr('Nie zapisano: ' + e.message); })
         .then(function () { dodaj.disabled = false; });
     });
-    akc.addEventListener('click', function () {
-      pokazErr('');
-      if (!wymagajOsoby()) return;
-      akc.disabled = true;
-      wyslij(k, 'akceptacja', '').then(function (rec) {
-        info.hidden = !rec.duplikat; info.textContent = rec.duplikat ? '„Jestem OK” już zapisane: ' + nazwa(osoba) + '.' : '';
-        dopisz(rec);
-      }).catch(function (e) { pokazErr('Nie zapisano: ' + e.message); })
-        .then(function () { akc.disabled = false; });
+    przyciski.forEach(function (b) {
+      b.addEventListener('click', function () {
+        pokazErr('');
+        if (!wymagajOsoby()) return;
+        b.disabled = true;
+        var v = b.getAttribute('data-ocena');
+        wyslij(k, 'akceptacja', v).then(function (rec) {
+          info.hidden = !rec.duplikat; info.textContent = rec.duplikat ? 'Ocena „' + OCENY[v].dl + '” już zapisana: ' + nazwa(osoba) + '.' : '';
+          dopisz(rec);
+        }).catch(function (e) { pokazErr('Nie zapisano: ' + e.message); })
+          .then(function () { b.disabled = false; });
+      });
     });
     return { panel: panel, lista: lista, kto: kto };
   }
@@ -247,11 +260,11 @@
     if (!box) return;
     while (box.firstChild) box.removeChild(box.firstChild);
     var st = {};
-    rekordy(k).forEach(function (r) { st[r.autor] = st[r.autor] || {}; st[r.autor][r.typ] = 1; });
+    rekordy(k).forEach(function (r) { st[r.autor] = st[r.autor] || {}; st[r.autor][r.typ] = r.typ === 'akceptacja' ? ocena(r) : 1; });
     var n = OSOBY.filter(function (o) { return st[o]; }).length;
     box.appendChild(el('span', 'kmt-kto-t', 'Odnieśli się ' + n + ' z ' + OSOBY.length + ':'));
     OSOBY.forEach(function (o) {
-      var c = el('span', 'kmt-kto-chip' + (st[o] ? '' : ' brak'), nazwa(o) + (st[o] ? (st[o].akceptacja ? ' 👍 OK' : '') + (st[o].komentarz ? ' 💬' : '') : ''));
+      var c = el('span', 'kmt-kto-chip' + (st[o] ? '' : ' brak'), nazwa(o) + (st[o] ? (st[o].akceptacja ? ' ' + st[o].akceptacja.ik + ' ' + st[o].akceptacja.kr : '') + (st[o].komentarz ? ' 💬' : '') : ''));
       if (st[o]) c.style.color = KOLOR[o];
       box.appendChild(c);
     });
@@ -274,7 +287,7 @@
       m.appendChild(imie(r.autor));
       m.appendChild(document.createTextNode(' · ' + dataPl(r.ts)));
       li.appendChild(m);
-      if (r.typ === 'akceptacja') { var a = el('div', 'kmt-tekst kmt-akc', '👍 '); a.appendChild(imie(r.autor)); a.appendChild(document.createTextNode(' — jestem OK')); li.appendChild(a); }
+      if (r.typ === 'akceptacja') { var oc = ocena(r); var a = el('div', 'kmt-tekst kmt-akc', oc.ik + ' '); a.appendChild(imie(r.autor)); a.appendChild(document.createTextNode(' — ' + oc.dl)); li.appendChild(a); }
       else li.appendChild(el('div', 'kmt-tekst', r.tekst));
       lista.appendChild(li);
     });
@@ -294,16 +307,20 @@
   }
   // Status elementu (Tomek 14.10): „Jestem OK” od Tomka = zmiana zamknięta, wdrażamy. Ta sama zasada co zakładka „Do wdrożenia”.
   var ZATWIERDZA = 'Tomek';
+  var STATUS = { '': ['✅ ZAMKNIĘTE · WDRAŻAMY', '#1f3b2c'], na_pozniej: ['⏳ NA PÓŹNIEJ', '#6b665c'], na_ab: ['🧪 DO TESTU A/B', '#5b3fa8'] };
   function ustawStatus(k, host) {
     if (!host) return;
     var ok = rekordy(k).filter(function (r) { return r.typ === 'akceptacja' && r.autor === ZATWIERDZA; })[0];
     var b = host.querySelector(':scope > .kmt-zamk');
-    host.classList.toggle('kmt-zamkniety', !!ok);
-    if (!ok) { if (b) b.parentNode.removeChild(b); return; }
-    if (b) return;
-    b = el('div', 'kmt kmt-zamk', '✅ ZAMKNIĘTE · WDRAŻAMY');
+    var v = ok ? (ok.tekst || '') : null;
+    host.classList.toggle('kmt-zamkniety', v === '');
+    if (b && (v === null || b.getAttribute('data-v') !== v)) { b.parentNode.removeChild(b); b = null; }
+    if (v === null || b) return;
+    var st = STATUS[v] || STATUS[''];
+    b = el('div', 'kmt kmt-zamk', (kodProp(k) ? kodProp(k) + ' · ' : '') + st[0]);
+    b.setAttribute('data-v', v); b.style.background = st[1];
     var d = new Date(ok.ts);
-    b.appendChild(el('small', null, 'zatwierdził ' + nazwa(ZATWIERDZA) + (isNaN(d) ? '' : ', ' + d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' }))));
+    b.appendChild(el('small', null, 'decyzja: ' + nazwa(ZATWIERDZA) + (isNaN(d) ? '' : ', ' + d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' }))));
     host.insertBefore(b, host.firstChild);
   }
   function ustawCalaBtn() {
@@ -355,8 +372,8 @@
       // pole komentarzy tuż pod projektem: otwarte od razu, z wezwaniem
       var sw = el('div', 'kmt kmt-slot');
       var hh = el('div', 'kmt-slot-h');
-      hh.appendChild(el('span', 'kmt-slot-t', 'Twoja opinia o tej propozycji'));
-      hh.appendChild(el('span', 'kmt-slot-s', 'Wybierz imię, dopisz uwagę albo kliknij „Jestem OK”. Widzi to cały zespół.'));
+      hh.appendChild(el('span', 'kmt-slot-t', kodProp(k) ? 'Twoja opinia o propozycji ' + kodProp(k) : 'Twoja opinia o tej propozycji'));
+      hh.appendChild(el('span', 'kmt-slot-s', 'Wybierz imię, dopisz uwagę albo oceń: „Jestem OK”, „Na później” lub „Na A/B”. Widzi to cały zespół.'));
       var od = el('button', 'kmt-odsw', 'odśwież'); od.type = 'button'; od.addEventListener('click', function () { pobierz(); }); hh.appendChild(od);
       var licz = el('span', 'kmt-slot-n', etykieta(k));
       hh.appendChild(licz);
