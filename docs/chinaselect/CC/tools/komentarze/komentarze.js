@@ -53,6 +53,9 @@
     '.kmt-kto-chip.brak{color:#9aa0a6;border-style:dashed;font-weight:500;background:transparent}',
     /* slot pod projektem: panel otwarty, wyraźny, wystający */
     '.kmt-slot{margin:20px 0 8px;padding:16px 18px 14px;border:2px solid #E8AC4C;border-left-width:8px;border-radius:12px;background:#FFF6E2;box-shadow:0 6px 20px rgba(185,128,42,.22)}',
+    '.kmt-zamk{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 12px;padding:10px 14px;border-radius:10px;background:#1f3b2c;color:#fff;font:700 14px/1.35 inherit}',
+    '.kmt-zamk small{font-weight:500;opacity:.85;font-size:12px}',
+    '.kmt-zamkniety{outline:3px solid #1f3b2c;outline-offset:4px;border-radius:12px}',
     '.kmt-slot-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:10px}',
     '.kmt-slot-t{font-weight:800;font-size:19px;line-height:1.25;color:#111214}',
     '.kmt-slot-s{font-size:13px;color:#7a5a1e}',
@@ -285,8 +288,23 @@
       if (o.btn) o.btn.textContent = etykieta(k);
       if (o.licz) o.licz.textContent = etykieta(k);
       rysujListe(k);
+      ustawStatus(k, o.host);
     });
     if (calaBtn) ustawCalaBtn();
+  }
+  // Status elementu (Tomek 14.10): „Jestem OK” od Tomka = zmiana zamknięta, wdrażamy. Ta sama zasada co zakładka „Do wdrożenia”.
+  var ZATWIERDZA = 'Tomek';
+  function ustawStatus(k, host) {
+    if (!host) return;
+    var ok = rekordy(k).filter(function (r) { return r.typ === 'akceptacja' && r.autor === ZATWIERDZA; })[0];
+    var b = host.querySelector(':scope > .kmt-zamk');
+    host.classList.toggle('kmt-zamkniety', !!ok);
+    if (!ok) { if (b) b.parentNode.removeChild(b); return; }
+    if (b) return;
+    b = el('div', 'kmt kmt-zamk', '✅ ZAMKNIĘTE · WDRAŻAMY');
+    var d = new Date(ok.ts);
+    b.appendChild(el('small', null, 'zatwierdził ' + nazwa(ZATWIERDZA) + (isNaN(d) ? '' : ', ' + d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' }))));
+    host.insertBefore(b, host.firstChild);
   }
   function ustawCalaBtn() {
     while (calaBtn.firstChild) calaBtn.removeChild(calaBtn.firstChild);
