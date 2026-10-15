@@ -46,6 +46,41 @@ section{margin:18px 0}
 svg.linie{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:2}
 .legenda{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .stan{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;border:1px solid;vertical-align:middle;letter-spacing:.02em}
+.param{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:6px}
+@media(min-width:900px){.mapa .param{grid-column:1/-1;grid-template-columns:1fr 1.45fr 1fr;gap:18px}}
+.param-col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.pg-h{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dark);font-weight:900;padding:0 2px}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px;font-size:13.5px;position:relative;z-index:3}
+.pcard p{margin:4px 0 6px;color:var(--muted)}
+.pcard.seg{background:#FFFDF9}.pcard.kom{border-color:var(--gold-d);background:#FFF8EA}
+.lbl2{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:700}
+.haslo{display:block;font-size:17px;line-height:1.25;margin:4px 0 8px}
+.kv2{display:grid;grid-template-columns:118px minmax(0,1fr);gap:8px;padding:5px 0;border-top:1px dashed var(--line);font-size:13px}
+.kv2 span{color:var(--muted);font-size:12px}.kv2.must{color:var(--ink);font-weight:500}
+.kv2 .miss{display:block;color:#9A9DA3;font-size:11.5px;margin-top:2px}
+.przek{margin:0 0 6px 16px;padding:0;font-size:13px;color:var(--muted)}
+.src{color:#9A9DA3;font-size:11px}
+.cepk{background:#fff;border:1px solid #F0DDB3;border-radius:12px;padding:10px 12px;font-size:13px;position:relative;z-index:3}
+.cepk-glowny{background:#FBF1DD}
+.cepk-h{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.cepk-h b{font-size:14.5px}
+.kl{font-size:11px;font-weight:700;color:var(--acc);white-space:nowrap}
+.cepk-t{color:var(--muted);margin:3px 0 6px;font-style:italic}
+.cepk-r{display:grid;grid-template-columns:118px minmax(0,1fr);gap:8px;padding:4px 0;border-top:1px dashed #F0DDB3}
+.cepk-r span{color:var(--muted);font-size:12px}.cepk-r.blok{color:#B23A3A}
+details{margin-top:6px}summary{cursor:pointer;font-size:12.5px;color:var(--acc);font-weight:700}
+.disc,.topq{margin:6px 0 0 16px;padding:0;font-size:12.5px}.disc small{display:block;color:#9A9DA3;font-size:11px}
+.topq li{margin-bottom:6px}.pk{display:inline-block;font-weight:900;color:var(--dark);background:var(--gold);border-radius:6px;padding:0 5px;margin-right:6px;font-size:11px}
+.pe{display:block;color:#9A9DA3;font-size:11px}
+.obawy{display:grid;grid-template-columns:1fr;gap:6px}
+@media(min-width:600px){.obawy{grid-template-columns:1fr 1fr}}
+.ob{background:#FBE5E5;border:1px solid #F2CACA;border-radius:10px;padding:7px 9px;font-size:12.5px;position:relative;z-index:3}
+.ob b{margin-right:6px}.ob small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px}
+.chip.low{background:#F3EEE8}
+.note{display:block;color:var(--muted);font-size:11.5px;margin-top:6px}
+table.kcf{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
+table.kcf th{text-align:left;font-size:10.5px;color:var(--muted);font-weight:700;padding:3px 4px;border-bottom:1px solid var(--line)}
+table.kcf td{padding:4px;border-bottom:1px dashed var(--line)}table.kcf .num{font-weight:700;white-space:nowrap}
+.etap{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;background:#F4F1FB;color:#5B4A8A;border:1px solid #5B4A8A33}
 .kroki{display:flex;flex-direction:column}.krok-b{min-width:0}
 .krok{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px}
 .krok-nr b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--dark);color:var(--gold);font-size:15px;font-weight:900}
@@ -89,27 +124,73 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 <div class="uc act" id="uc-s2_rodzina_b" data-kroki='[&quot;meta_feed.kreacja&quot;, &quot;karta_auta.parametry&quot;, &quot;karta_auta.cena&quot;, &quot;karta_auta.finansowanie&quot;, &quot;karta_auta.gwarancja&quot;, &quot;karta_auta.raport&quot;, &quot;mail.mail0&quot;, &quot;karta_auta.formularz&quot;, &quot;rinvo.telefon&quot;, &quot;konsultant.oferta&quot;]'>
   <div class="uc-h"><div class="lbl">Use case</div><h1>Rodzina z reklamy Meta na kartę Li Auto L9</h1><p class="skrot">Para 35–45 z trojgiem dzieci klika w reklamę „1000 km i trzy rzędy”, chce wiedzieć, ile zapłaci do odbioru i czy auto jest bezpieczne, prosi o raport, pokazuje partnerowi, zostawia numer.</p></div>
   
-<section class="kto">
-  <div class="kto-l">
-    <div class="lbl">Kto idzie</div>
-    <h2>S2 Rodzina</h2>
-    <p>35–45 lat, dom pod miastem, dwoje–troje dzieci. Potrzebuje sześciu miejsc i bagażnika. Nie chce eksperymentować, ale chce lepszego auta, niż pozwala budżet. Decyzja wspólna — bezpieczeństwo działa jak weto.</p>
-    <div class="kv"><span>Model</span><b>Li Auto L9 (EREV, 6 miejsc)</b></div>
-    <div class="kv"><span>Obietnica reklamy</span><b>„Ponad 1000 km zasięgu i koniec strachu o ładowanie.”</b></div>
-    <div class="kv"><span>Cel przebiegu</span><b>Lead gorący (formularz na karcie) albo ciepły (raport na mail) → Rinvo → konsultant</b></div>
-  </div>
-  <div class="kto-r">
-    <div class="lbl">Po co ruszył (CEP)</div>
-    <div class="chips"><span class="chip cep"><b>✅</b> Rodzina przestała się mieścić<i>Urodziło się trzecie dziecko i do obecnego auta nie wchodzimy z bagażami.</i></span><span class="chip cep"><b>✅</b> Długie trasy bez stresu o ładowanie<i>Jeździmy nad morze i w góry — nie chcę planować postojów przy ładowarkach.</i></span></div>
-    <div class="lbl" style="margin-top:14px">Co go blokuje po drodze (obawy)</div>
-    <div class="chips"><span class="chip obawa"><b>✅✅</b> Czy to się nie rozsypie</span><span class="chip obawa"><b>✅✅</b> Gdzie to serwisować</span><span class="chip obawa"><b>✅</b> Kupuję auto, którego nie widziałem</span><span class="chip obawa"><b>✅</b> Co powiedzą znajomi / rodzina</span><span class="chip obawa"><b>✅</b> Czy będzie po polsku</span></div>
-  </div>
-</section>
-  
 <section class="mapa-sec">
-  <div class="sec-h"><div class="lbl">Dokąd idzie</div><h2>Mapa obszarów i elementów</h2>
-  <p>Każdy klocek to element strony lub kanału (ten sam, co w projektach zmian). Numer = krok tego przebiegu. Kolor obwódki = stan dziś. Klik w numer prowadzi do opisu kroku.</p></div>
-  <div class="mapa" id="mapa"><div class="grp grp-wejscie"><div class="grp-h">wejście</div><div class="lane lane-wejscie">
+  <div class="sec-h"><div class="lbl">Mapa ścieżki</div><h2>Kto, po co, z czym — i dokąd idzie</h2>
+  <p>Na górze parametry wejściowe przebiegu: kto, po co, z jakim komunikatem, czego się boi i co jest ważne według CS i CQF. Niżej klocki to elementy strony lub kanału (te same, co w projektach zmian). Numer = krok, kolor obwódki = stan dziś. Linia startuje od komunikatu.</p></div>
+  <div class="mapa" id="mapa">
+<div class="param">
+  <div class="param-col">
+    <div class="pg-h">Parametry wejściowe</div>
+    <div class="pcard seg">
+      <div class="lbl2">Segment</div><b>S2 Rodzina</b>
+      <p>35–45 lat, dom pod miastem, dwoje–troje dzieci. Potrzebuje sześciu miejsc i bagażnika. Nie chce eksperymentować, ale chce lepszego auta, niż pozwala budżet.</p>
+      <div class="kv2"><span>Budżet reklamy</span>18 000 zł / mies. (grupa 02)</div>
+      <div class="kv2"><span>Model-bohater</span>Li Auto L9 · EREV, 6 miejsc, 3 rzędy</div>
+      <div class="kv2"><span>Wejście</span>Reklama Meta · feed / Reels · video 15 s albo karuzela 3 kart (miejsce · zasięg · koszt)</div>
+    </div>
+    <div class="pcard kom" data-start="1">
+      <div class="lbl2">Pomysł na komunikat</div>
+      <b class="haslo">„Trzy rzędy i 1000 km zasięgu. Bez kompromisu.”</b>
+      <div class="kv2"><span>Obietnica segmentu</span>Ponad 1000 km zasięgu i koniec strachu o ładowanie.</div>
+      <ul class="przek"><li>Sześć miejsc. Trzy rzędy. Nikt się nie kłóci o bagażnik.</li><li>1000 km zasięgu. Ładujesz, kiedy chcesz, nie kiedy musisz.</li><li>Obejrzysz je z całą rodziną, zanim dopłacisz resztę.</li></ul>
+      <div class="kv2 must"><span>Strona musi dowieźć</span>Liczbę zasięgu w tej samej normie co reklama, trzy rzędy z ISOFIX i bagażnikiem, Euro NCAP, cenę do odbioru.</div>
+      <small class="src">strategia reklamowa v1.1, grupa 02</small>
+    </div>
+  </div>
+  <div class="param-col">
+    <div class="pg-h">Po co rusza (CEP) i co go zatrzyma</div>
+    <div class="cepk cepk-glowny">
+  <div class="cepk-h"><b>Rodzina przestała się mieścić</b><span class="kl">PRAWDOPODOBNE</span></div>
+  <div class="cepk-t">„Urodziło się trzecie dziecko i do obecnego auta nie wchodzimy z bagażami.”</div>
+  <div class="cepk-r"><span>Szuka</span>trzy rzędy, bezpieczeństwo, bagażnik</div>
+  <div class="cepk-r blok"><span>Blokuje</span>bezpieczeństwo chińskiego auta (testy zderzeniowe)</div>
+  <div class="cepk-r"><span>Strona musi pokazać</span>Trzy rzędy, mocowania ISOFIX, bagażnik przy rozłożonych fotelach, wynik Euro NCAP marki/modelu.</div>
+  <details><summary>Pytania z sieci (3)</summary><ul class="disc"><li>Jakie chińskie auto 7-osobowe kupić?<small>DFS „chińskie samochody siedmioosobowe” 40 — przeformułowane</small></li><li>Jaki jest najbezpieczniejszy chiński samochód?<small>PAA (paa_182)</small></li><li>Czy chińskie samochody są bezpieczne?<small>DFS „czy chińskie samochody są bezpieczne” 30</small></li></ul></details>
+</div><div class="cepk cepk-wsp">
+  <div class="cepk-h"><b>Długie trasy bez stresu o ładowanie</b><span class="kl">PRAWDOPODOBNE</span></div>
+  <div class="cepk-t">„Jeździmy nad morze i w góry — elektryka odpuściłem, bo nie chcę planować postojów przy ładowarkach.”</div>
+  <div class="cepk-r"><span>Szuka</span>realny zasięg (CLTC ≠ WLTP)</div>
+  <div class="cepk-r blok"><span>Blokuje</span>brak zaufania do deklarowanego zasięgu</div>
+  <div class="cepk-r"><span>Strona musi pokazać</span>Zasięg WLTP obok CLTC, osobno: na prądzie i łącznie z benzyną.</div>
+  <details><summary>Pytania z sieci (3)</summary><ul class="disc"><li>Dlaczego nie kupię elektryka?<small>PAA (paa_119)</small></li><li>Ile naprawdę przejedzie hybryda z dużą baterią na jednym tankowaniu?<small>hipoteza (glos yt_008 „Drugie tankowanie miałem przy 1500 km”)</small></li><li>Czy hybryda wystarczy na 800 km bez ładowania?<small>hipoteza (język kupującego zamiast „EREV” — strateg 3.5)</small></li></ul></details>
+</div>
+    <div class="lbl2" style="margin:10px 0 6px">Obawy po drodze (z bazy CEP)</div>
+    <div class="obawy"><div class="ob"><b>Czy to się nie rozsypie</b><span class="kl">UDOWODNIONE</span><small>blokuje: brak historii marek w Polsce</small><small>strona: Konkretnie dla modelu: znane usterki, co obejmuje gwarancja, czy nadwozie jest ocynkowane.</small></div><div class="ob"><b>Gdzie to serwisować</b><span class="kl">UDOWODNIONE</span><small>blokuje: brak ASO marki w Polsce</small><small>strona: Kto serwisuje ten model w Polsce, ile trwa sprowadzenie typowych części, ile kosztuje przegląd.</small></div><div class="ob"><b>Kupuję auto, którego nie widziałem</b><span class="kl">PRAWDOPODOBNE</span><small>blokuje: zaliczka i co, jeśli auto ma wadę wykrytą w Polsce (SP01)</small><small>strona: Raport z inspekcji (przykład do pobrania) + zasady zaliczki: ile, kiedy, kiedy wraca.</small></div><div class="ob"><b>Co powiedzą znajomi</b><span class="kl">PRAWDOPODOBNE</span><small>blokuje: presja otoczenia</small><small>strona: Opinie właścicieli z Polski z nazwą modelu i przebiegiem — nie gwiazdki.</small></div><div class="ob"><b>Czy będzie po polsku</b><span class="kl">PRAWDOPODOBNE</span><small>blokuje: AI Overview mówi, że auta z rynku chińskiego mają „zazwyczaj jedynie język chiński oraz angielski”</small><small>strona: Przy każdym modelu: język menu, CarPlay/Android Auto, kto i kiedy to ustawia, koszt.</small></div></div>
+  </div>
+  <div class="param-col">
+    <div class="pg-h">Charakterystyka ścieżki</div>
+    <div class="pcard">
+      <div class="kv2"><span>Rodzaj</span>pełna — od reklamy do konsultanta</div>
+      <div class="kv2"><span>Długość</span>10 kroków · 5 obszarów · 10 dziur</div>
+      <div class="kv2"><span>Etapy CQF</span>2 Potrzeba/impuls → 5 Preselekcja → 6 Porównywanie → 7 Wybór sklepu/sposobu zakupu → 8 Zakup<small class="miss">pomija: 3 Rozpoznanie CEP, 4 Nauka kategorii</small></div>
+      <div class="kv2"><span>Decyzja</span>wspólna (para); bezpieczeństwo działa jak weto drugiej osoby</div>
+      <div class="kv2"><span>Wyjście</span>gorący lead (formularz na karcie) albo ciepły (raport na mail → dogrzewanie)</div>
+      <div class="kv2"><span>Tempo</span>długa, z powrotem: karta → mail do partnera → karta</div>
+    </div>
+    <div class="pg-h" style="margin-top:12px">Co jest ważne (CS i CQF)</div>
+    <div class="pcard">
+      <div class="lbl2">Psychologia kategorii (CEV, cała kategoria)</div>
+      <div class="chips"><span class="chip"><b>0,85</b> ryzyko</span><span class="chip"><b>0,75</b> lęk przed stratą</span><span class="chip"><b>0,75</b> widoczność dla otoczenia</span><span class="chip low"><b>0,1</b> impuls — najniżej</span></div>
+      <small class="note">Wysokie ryzyko i lęk przed stratą, niski impuls: decyzja z dowodami, nie z emocji. Każdy krok musi coś udowodnić.</small>
+      <div class="lbl2" style="margin-top:10px">Kryteria wyboru (KCF, udział w zapytaniach całej kategorii)</div>
+      <table class="kcf"><thead><tr><th>Kryterium</th><th>Udział</th><th>Gdzie w treści</th></tr></thead><tbody><tr><td>Cena do odbioru</td><td class="num">53,2%</td><td>TITLE</td></tr><tr><td>Napęd</td><td class="num">40,3%</td><td>LEAD</td></tr><tr><td>Homologacja i rejestracja</td><td class="num">4,6%</td><td>przy cenie</td></tr><tr><td>Zasięg</td><td class="num">1,1%</td><td>SPEC</td></tr><tr><td>Rocznik i przebieg</td><td class="num">0,4%</td><td>SPEC</td></tr></tbody></table>
+      <details><summary>Najmocniejsze pytania CQF tych CEP-ów — 5 z 51 (P2 6 · P3 22 · P4 23)</summary>
+        <ul class="topq"><li><span class="pk">P3</span><span class="pe">etap 4 · Nauka kategorii</span>Czym różni się zasięg CLTC od WLTP i ile realnie zostaje na autostradzie?</li><li><span class="pk">P3</span><span class="pe">etap 4 · Nauka kategorii</span>Jak nie pomylić się przy wyborze chińskiego auta rodzinnego, żeby bagażnik nie okazał się za mały po rozłożeniu trzeciego rzędu?</li><li><span class="pk">P3</span><span class="pe">etap 4 · Nauka kategorii</span>Jak to zmieni mnie i moją rodzinę — czy chińskie auto to lepsza wersja obecnego, czy tylko większy problem?</li><li><span class="pk">P3</span><span class="pe">etap 4 · Nauka kategorii</span>Jak działają chińskie auta z trzema rzędami siedzeń — czy trzeci rząd jest realny dla dzieci, czy to tylko awaryjne miejsca?</li><li><span class="pk">P3</span><span class="pe">etap 4 · Nauka kategorii</span>Czym się różnią chińskie auta pod względem bezpieczeństwa — jakie mają normy, klasy i atesty?</li></ul>
+        <small class="note">Priorytet CQF liczony między segmentami (nie tylko dla S2); brak klasy P1 w tej kategorii, P2 = najwyższa. Pytania CQF są sformułowane przez model (metoda LLM); pytania z sieci przy CEP mają źródło (DFS / PAA).</small>
+      </details>
+    </div>
+  </div>
+</div><div class="grp grp-wejscie"><div class="grp-h">wejście</div><div class="lane lane-wejscie">
   <div class="lane-h"><b>Reklama Meta</b><small>Feed / Stories / Reels, kreacje grup 01–05</small></div>
   <div class="lane-b"><a class="el on" href="#krok-1" data-el="meta_feed.kreacja" data-stan="czesciowo"><b class="nr" data-nr="1">1</b><span>Kreacja grupy (statyk / video / karuzela)</span></a></div>
 </div><div class="lane lane-wejscie">
@@ -153,7 +234,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 <article class="krok" id="krok-1" data-el="meta_feed.kreacja">
   <div class="krok-nr"><b>1</b></div>
   <div class="krok-b">
-    <div class="krok-gdzie"><em>Reklama Meta</em> › <b>Kreacja grupy (statyk / video / karuzela)</b> <span class="stan" style="color:#B9802A;background:#FBF1DD;border-color:#B9802A33">częściowo</span><small class="ref">strategia v1.1 · przekazy grupy</small></div>
+    <div class="krok-gdzie"><em>Reklama Meta</em> › <b>Kreacja grupy (statyk / video / karuzela)</b> <span class="stan" style="color:#B9802A;background:#FBF1DD;border-color:#B9802A33">częściowo</span><span class="etap">etap CQF 2 · Potrzeba/impuls</span><small class="ref">strategia v1.1 · przekazy grupy</small></div>
     <blockquote class="pytanie">„1000 km zasięgu — naprawdę? I zmieścimy się we troje z tyłu?”</blockquote>
     <div class="row"><span class="k">Co mu odpowiada</span><div class="v">Przekaz grupy 02: „Trzy rzędy i 1000 km zasięgu. Bez kompromisu.” — kreacja z L9, trzy rzędy w kadrze, liczba zasięgu z tą samą normą, którą pokaże karta.</div></div>
     <div class="row"><span class="k">Co robi dalej</span><div class="v">Klik w kreację → karta Li Auto L9 <code>ad_click · UTM: grupa_02 · model L9 · kreacja · wariant B</code></div></div>
@@ -164,7 +245,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 <article class="krok" id="krok-2" data-el="karta_auta.parametry">
   <div class="krok-nr"><b>2</b></div>
   <div class="krok-b">
-    <div class="krok-gdzie"><em>Karta auta</em> › <b>Pasek kluczowych danych i specyfikacja</b> <span class="stan" style="color:#B23A3A;background:#FBE5E5;border-color:#B23A3A33">brak</span><small class="ref">reko_karta_auta #10</small></div>
+    <div class="krok-gdzie"><em>Karta auta</em> › <b>Pasek kluczowych danych i specyfikacja</b> <span class="stan" style="color:#B23A3A;background:#FBE5E5;border-color:#B23A3A33">brak</span><span class="etap">etap CQF 5 · Preselekcja</span><small class="ref">reko_karta_auta #10</small></div>
     <blockquote class="pytanie">„Ile miejsc, ile realnie przejadę, czy jest bezpieczne? (weto drugiego decydenta)”</blockquote>
     <div class="row"><span class="k">Co mu odpowiada</span><div class="v">Nad linią zgięcia: 6 miejsc / 3 rzędy / ISOFIX / bagażnik przy rozłożonych fotelach · zasięg WLTP obok CLTC, osobno na prądzie i łącznie · wynik Euro NCAP · menu PL / CarPlay.</div></div>
     <div class="row"><span class="k">Co robi dalej</span><div class="v">Przewija do ceny <code>scroll_50 (pośrednio)</code></div></div>
@@ -175,7 +256,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 <article class="krok" id="krok-3" data-el="karta_auta.cena">
   <div class="krok-nr"><b>3</b></div>
   <div class="krok-b">
-    <div class="krok-gdzie"><em>Karta auta</em> › <b>Blok ceny</b> <span class="stan" style="color:#B23A3A;background:#FBE5E5;border-color:#B23A3A33">brak</span><small class="ref">reko_karta_auta #1</small></div>
+    <div class="krok-gdzie"><em>Karta auta</em> › <b>Blok ceny</b> <span class="stan" style="color:#B23A3A;background:#FBE5E5;border-color:#B23A3A33">brak</span><span class="etap">etap CQF 6 · Porównywanie</span><small class="ref">reko_karta_auta #1</small></div>
     <blockquote class="pytanie">„Ile zapłacę do odbioru i co w tym siedzi? Kiedy auto będzie w Polsce?”</blockquote>
     <div class="row"><span class="k">Co mu odpowiada</span><div class="v">„Cena do odbioru w Polsce” zamiast „CENA BRUTTO” · rozpisanie: auto + transport + cło + VAT + homologacja · termin odbioru w tygodniach · zaliczka przy przycisku.</div></div>
     <div class="row"><span class="k">Co robi dalej</span><div class="v">Zostaje na karcie, szuka raty <code>price_breakdown_open</code></div></div>
@@ -186,7 +267,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 <article class="krok" id="krok-4" data-el="karta_auta.finansowanie">
   <div class="krok-nr"><b>4</b></div>
   <div class="krok-b">
-    <div class="krok-gdzie"><em>Karta auta</em> › <b>Finansowanie — rata i kalkulator</b> <span class="stan" style="color:#B23A3A;background:#FBE5E5;border-color:#B23A3A33">brak</span><small class="ref">reko_karta_auta #13</small></div>
+    <div class="krok-gdzie"><em>Karta auta</em> › <b>Finansowanie — rata i kalkulator</b> <span class="stan" style="color:#B23A3A;background:#FBE5E5;border-color:#B23A3A33">brak</span><span class="etap">etap CQF 6 · Porównywanie</span><small class="ref">reko_karta_auta #13</small></div>
     <blockquote class="pytanie">„Stać nas? Jaka rata przy naszym budżecie?”</blockquote>
     <div class="row"><span class="k">Co mu odpowiada</span><div class="v">Rata „od X zł / mies.” przy cenie + kalkulator (leasing / kredyt), wynik policzony dla tego egzemplarza, nie „od”.</div></div>
     <div class="row"><span class="k">Co robi dalej</span><div class="v">Liczy ratę, wraca do karty <code>calculator_use</code></div></div>
@@ -197,7 +278,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 <article class="krok" id="krok-5" data-el="karta_auta.gwarancja">
   <div class="krok-nr"><b>5</b></div>
   <div class="krok-b">
-    <div class="krok-gdzie"><em>Karta auta</em> › <b>Gwarancja i serwis w Polsce</b> <span class="stan" style="color:#B23A3A;background:#FBE5E5;border-color:#B23A3A33">brak</span><small class="ref">reko_karta_auta #6, #7</small></div>
+    <div class="krok-gdzie"><em>Karta auta</em> › <b>Gwarancja i serwis w Polsce</b> <span class="stan" style="color:#B23A3A;background:#FBE5E5;border-color:#B23A3A33">brak</span><span class="etap">etap CQF 7 · Wybór sklepu/sposobu zakupu</span><small class="ref">reko_karta_auta #6, #7</small></div>
     <blockquote class="pytanie">„Czy się nie rozsypie? Kto to w Polsce naprawi i ile będę czekać na części?”</blockquote>
     <div class="row"><span class="k">Co mu odpowiada</span><div class="v">Gwarant z nazwy, okres i zakres gwarancji · serwisy partnerskie w Polsce z nazwy · czas na części · znane usterki modelu i co obejmuje gwarancja.</div></div>
     <div class="row"><span class="k">Co robi dalej</span><div class="v">Obawa rozbrojona → szuka dowodu stanu egzemplarza <code>warranty_open</code></div></div>
@@ -208,7 +289,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 <article class="krok" id="krok-6" data-el="karta_auta.raport">
   <div class="krok-nr"><b>6</b></div>
   <div class="krok-b">
-    <div class="krok-gdzie"><em>Karta auta</em> › <b>Raport Guazi egzemplarza</b> <span class="stan" style="color:#B23A3A;background:#FBE5E5;border-color:#B23A3A33">brak</span><small class="ref">reko_karta_auta #2</small></div>
+    <div class="krok-gdzie"><em>Karta auta</em> › <b>Raport Guazi egzemplarza</b> <span class="stan" style="color:#B23A3A;background:#FBE5E5;border-color:#B23A3A33">brak</span><span class="etap">etap CQF 7 · Wybór sklepu/sposobu zakupu</span><small class="ref">reko_karta_auta #2</small></div>
     <blockquote class="pytanie">„Kupuję auto, którego nie widziałem — w jakim ono jest stanie?”</blockquote>
     <div class="row"><span class="k">Co mu odpowiada</span><div class="v">Streszczenie raportu inspekcji na widoku (kategorie, wynik, SOH baterii) + „Wyślij mi pełny raport i pełny koszt tego auta” za e-mail · zasady zaliczki (ile, kiedy zwrotna).</div></div>
     <div class="row"><span class="k">Co robi dalej</span><div class="v">Podaje e-mail → lead ciepły <code>report_request · źródło: karta · grupa_02 · L9</code></div></div>
@@ -219,7 +300,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 <article class="krok" id="krok-7" data-el="mail.mail0">
   <div class="krok-nr"><b>7</b></div>
   <div class="krok-b">
-    <div class="krok-gdzie"><em>Mail automatyczny</em> › <b>Mail 0 — do przekazania partnerowi/partnerce</b> <span class="stan" style="color:#6B6E75;background:#EEEEF0;border-color:#6B6E7533">plan</span><small class="ref">SCIEZKA_S2 §3 D</small></div>
+    <div class="krok-gdzie"><em>Mail automatyczny</em> › <b>Mail 0 — do przekazania partnerowi/partnerce</b> <span class="stan" style="color:#6B6E75;background:#EEEEF0;border-color:#6B6E7533">plan</span><span class="etap">etap CQF 6 · Porównywanie</span><small class="ref">SCIEZKA_S2 §3 D</small></div>
     <blockquote class="pytanie">„Co powie żona / mąż? (decyzja wspólna, bezpieczeństwo = weto)”</blockquote>
     <div class="row"><span class="k">Co mu odpowiada</span><div class="v">Mail 0 do przekazania partnerowi: bezpieczeństwo (Euro NCAP, ISOFIX) + miejsce (3 rzędy, bagażnik) + pełny koszt egzemplarza w jednym widoku · link do karty · następny krok: „Zapytaj o ofertę”.</div></div>
     <div class="row"><span class="k">Co robi dalej</span><div class="v">Przekazuje dalej, para wraca na kartę <code>mail_open · mail_click → return_visit</code></div></div>
@@ -230,7 +311,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 <article class="krok" id="krok-8" data-el="karta_auta.formularz">
   <div class="krok-nr"><b>8</b></div>
   <div class="krok-b">
-    <div class="krok-gdzie"><em>Karta auta</em> › <b>Formularz „Zapytaj o ofertę” + zgody</b> <span class="stan" style="color:#B9802A;background:#FBF1DD;border-color:#B9802A33">częściowo</span><small class="ref">reko_karta_auta #17</small></div>
+    <div class="krok-gdzie"><em>Karta auta</em> › <b>Formularz „Zapytaj o ofertę” + zgody</b> <span class="stan" style="color:#B9802A;background:#FBF1DD;border-color:#B9802A33">częściowo</span><span class="etap">etap CQF 8 · Zakup</span><small class="ref">reko_karta_auta #17</small></div>
     <blockquote class="pytanie">„Zostawię numer — oddzwonią? Kiedy?”</blockquote>
     <div class="row"><span class="k">Co mu odpowiada</span><div class="v">3–4 pola · „Oddzwonimy w 5 minut” · zgoda na połączenie automatyczne (Rinvo) · jeden wzór zgód RODO.</div></div>
     <div class="row"><span class="k">Co robi dalej</span><div class="v">Wysyła formularz → lead gorący <code>lead_form_submit · źródło: karta · grupa_02 · L9 · wariant B</code></div></div>
@@ -241,7 +322,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 <article class="krok" id="krok-9" data-el="rinvo.telefon">
   <div class="krok-nr"><b>9</b></div>
   <div class="krok-b">
-    <div class="krok-gdzie"><em>Rinvo</em> › <b>Telefon ≤5 min + kwalifikacja</b> <span class="stan" style="color:#7A4BA6;background:#EFE6F8;border-color:#7A4BA633">sprzeczne</span><small class="ref">proces K09–K13</small></div>
+    <div class="krok-gdzie"><em>Rinvo</em> › <b>Telefon ≤5 min + kwalifikacja</b> <span class="stan" style="color:#7A4BA6;background:#EFE6F8;border-color:#7A4BA633">sprzeczne</span><span class="etap">etap CQF 8 · Zakup</span><small class="ref">proces K09–K13</small></div>
     <blockquote class="pytanie">„Czy ktoś w ogóle odpowie? Czy to auto jest dla nas?”</blockquote>
     <div class="row"><span class="k">Co mu odpowiada</span><div class="v">Telefon ≤5 min · pytania kwalifikujące rodzinę: liczba miejsc, kiedy auto potrzebne, budżet / rata, czy chce oglądać z rodziną, kto jeszcze decyduje i co go niepokoi.</div></div>
     <div class="row"><span class="k">Co robi dalej</span><div class="v">HOT → od razu do człowieka; WARM → mail z raportem <code>call_connected → lead_qualified (HOT / WARM / COLD)</code></div></div>
@@ -252,7 +333,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 <article class="krok" id="krok-10" data-el="konsultant.oferta">
   <div class="krok-nr"><b>10</b></div>
   <div class="krok-b">
-    <div class="krok-gdzie"><em>Konsultant</em> › <b>Dobór max 3 aut + oferta pod klucz</b> <span class="stan" style="color:#7A4BA6;background:#EFE6F8;border-color:#7A4BA633">sprzeczne</span><small class="ref">proces K15–K18</small></div>
+    <div class="krok-gdzie"><em>Konsultant</em> › <b>Dobór max 3 aut + oferta pod klucz</b> <span class="stan" style="color:#7A4BA6;background:#EFE6F8;border-color:#7A4BA633">sprzeczne</span><span class="etap">etap CQF 8 · Zakup</span><small class="ref">proces K15–K18</small></div>
     <blockquote class="pytanie">„Ile w sumie, jaki stan, kiedy odbiór — i co, jeśli auto będzie inne niż na zdjęciach?”</blockquote>
     <div class="row"><span class="k">Co mu odpowiada</span><div class="v">Max 3 auta · pełny koszt pod klucz (K17) · raport techniczny egzemplarza (K16) · leasing / kredyt (K18) · zasady zaliczki i oględzin z rodziną przed dopłatą (K20, K28).</div></div>
     <div class="row"><span class="k">Co robi dalej</span><div class="v">Oferta wysłana → rezerwacja <code>offer_sent → reservation_paid</code></div></div>
@@ -276,14 +357,14 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 <section class="jak">
   <b>Jak to czytać.</b>
   <ul>
-    <li><b>Kto idzie</b> — segment i moment zakupowy z bazy CEP; obawy to pytania, które muszą dostać odpowiedź zanim padnie lead.</li>
+    <li><b>Parametry wejściowe</b> (góra mapy) — segment, CEP, pomysł na komunikat, obawy z bazy CEP, charakterystyka ścieżki i to, co według CS i CQF jest ważne dla tej kategorii. Dane czytane z plików CS / CQF przy budowie, nie przepisywane.</li>
     <li><b>Mapa</b> — trzy kolumny: wejścia · nasza strona · obsługa leada. Tory to obszary, klocki to elementy. Numery to kolejne kroki, linia prowadzi od kroku do kroku (przerywana = powrót, np. z maila na kartę).</li>
     <li><b>Krok</b> — pytanie w głowie kupującego, element, który ma odpowiedzieć, komunikacja (co mówi i pokazuje), ruch i zdarzenie do pomiaru, stan dziś.</li>
     <li><b>Dziury</b> — każda przypięta do elementu; trafia do projektu zmian tego elementu („Dziś | Projekt”), nie do osobnej listy życzeń.</li>
   </ul>
 </section>
 </main>
-<footer class="wrap"><b>Źródła</b><ul><li>cs/CEP_BAZA.md v2 (segmenty, CEP, obawy, pytania discovery)</li><li>projekty/dane/reko_karta_auta.json, reko_lista_aut.json, reko_strona_glowna.json (elementy, nr = numer w PROJEKTY_ZMIAN)</li><li>projekty/dane/must_have.json</li><li>sciezki/SCIEZKA_S2_RODZINA_v0.md (kolumny: co myśli / co musi zobaczyć / akcja / stan dziś)</li><li>proces/proces.json (K01–K36, sprzeczności)</li><li>strategia reklamowa v1.1 (grupa 02, przekazy)</li></ul><div style="margin-top:8px">Krok = kto · stoi gdzie (obszar/element) · z jakim pytaniem · co mu odpowiada (komunikacja) · co robi dalej (ruch + zdarzenie) · stan dziś. Element bez odpowiedzi na pytanie = dziura → zmiana elementu w PROJEKTY_ZMIAN.</div></footer>
+<footer class="wrap"><b>Źródła</b><ul><li>cs/CEP_BAZA.md v2 (segmenty, CEP, obawy, pytania discovery)</li><li>projekty/dane/reko_karta_auta.json, reko_lista_aut.json, reko_strona_glowna.json (elementy, nr = numer w PROJEKTY_ZMIAN)</li><li>projekty/dane/must_have.json</li><li>sciezki/SCIEZKA_S2_RODZINA_v0.md (kolumny: co myśli / co musi zobaczyć / akcja / stan dziś)</li><li>proces/proces.json (K01–K36, sprzeczności)</li><li>strategia reklamowa v1.1 (grupa 02, przekazy)</li><li>GEO_PDP_Optimizer/data: cep_baza, cdt (KCF), questions + scored (CQF v6), cs_v2 (CEV) — czytane przy budowie</li></ul><div style="margin-top:8px">Krok = kto · stoi gdzie (obszar/element) · z jakim pytaniem · co mu odpowiada (komunikacja) · co robi dalej (ruch + zdarzenie) · stan dziś. Element bez odpowiedzi na pytanie = dziura → zmiana elementu w PROJEKTY_ZMIAN.</div></footer>
 <script>
 (function(){
   function draw(){
@@ -293,6 +374,7 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
     if(window.innerWidth<900){ return; }
     var order=JSON.parse(uc.getAttribute('data-kroki')||'[]');
     var m=mapa.getBoundingClientRect(), pts=[];
+    var st=mapa.querySelector('[data-start]'); if(st){ var rs=st.getBoundingClientRect(); pts.push([rs.left-m.left+28, rs.bottom-m.top]); }
     order.forEach(function(id,i){
       var el=mapa.querySelector('.el.on[data-el="'+id+'"]'); if(!el) return;
       var b=el.querySelector('.nr[data-nr="'+(i+1)+'"]')||el.querySelector('.nr'); var r=b.getBoundingClientRect();
