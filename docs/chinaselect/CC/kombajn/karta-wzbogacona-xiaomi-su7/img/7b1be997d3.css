@@ -1,0 +1,492 @@
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap');
+/* China Select (kopia silnika GLOV, 20.10): kolory i font = tokeny projektów China Select (--cas-*) */
+
+.nano-lp-wrap *{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --nl-gold:#E8AC4C;
+  --nl-red:var(---color-primary);
+  --nl-txt:var(---color-text);
+  --nl-txt-dark:var(---color-text-dark, #1c1c1c);
+  --nl-bg:var(---color-bg, #fff);
+  --nl-bg-off:var(---color-bg-accent, #F7F7F7);
+  --nl-gray:var(---color-a50, #8b8b8b);
+  --nl-inv-bg:var(---color-bg-inverse, #2f2f2f);
+}
+.nano-lp-wrap{font-family:var(---font-stack-body,'Satoshi',-apple-system,'Segoe UI',sans-serif);
+ color:var(--nl-txt);-webkit-font-smoothing:antialiased;line-height:1.55}
+section{position:relative}
+.kicker{display:flex;align-items:center;gap:10px;font-size:16px;letter-spacing:.22em;
+ text-transform:uppercase;color:var(--nl-gray);margin-bottom:12px}
+.kicker i{width:34px;height:1px;background:#b9b9b9;display:block;flex:none}
+h1{font-size:38px;font-weight:300;line-height:1.02;letter-spacing:-.03em;color:#fff;font-family:'Satoshi',system-ui,sans-serif}
+.tyt-c{font-size:22px;font-weight:400;text-align:center;color:var(--nl-txt-dark);letter-spacing:-.01em;
+ font-family:'Satoshi',system-ui,sans-serif}
+.tyt-l{font-size:20px;font-weight:400;color:var(--nl-txt-dark);display:flex;align-items:center;gap:12px;
+ font-family:'Satoshi',system-ui,sans-serif}
+.tyt-l:before{content:'';width:38px;height:1px;background:var(--nl-txt-dark);flex:none}
+.pod{text-align:center;font-size:13px;color:var(--nl-gray);margin-top:8px;padding:0 22px}
+/* HERO */
+.s-hero{aspect-ratio:3/4;min-height:480px;max-height:680px;display:flex;align-items:flex-start;overflow:hidden}
+.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.hero-ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,22,18,.55) 0%,rgba(28,22,18,.28) 40%,rgba(28,22,18,0) 70%)}
+.hero-tresc{position:relative;padding:44px 26px 0;width:100%}
+.hero-tresc p{color:rgba(255,255,255,.94);font-size:21px;margin:16px 0 0;font-weight:300;line-height:1.35}
+/* KOLUMNY */
+.s-kol{padding:46px 22px 44px;background:var(--nl-bg-off)}
+.kolumny{display:flex;flex-direction:column;gap:2px;margin-top:26px}
+.kol{background:var(--nl-bg);padding:22px 20px;display:grid;grid-template-columns:26px 1fr;gap:0 14px}
+.kol-i{grid-row:1/3;color:#c08a8a;font-size:15px;line-height:1.2}
+.kol h4{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--nl-txt-dark);font-weight:500;margin-bottom:7px}
+.kol p{font-size:12.5px;color:var(--nl-gray);font-weight:300;line-height:1.6}
+/* KOLUMNY z obrazem — layout pionowy zamiast ikona+tekst */
+.kol.kol-z-img{grid-template-columns:1fr;padding:0;overflow:hidden}
+.kol-img{width:100%;aspect-ratio:4/3;overflow:hidden}
+.kol-img img{width:100%;height:100%;object-fit:cover;display:block}
+.kol.kol-z-img h4{padding:14px 16px 4px;margin-bottom:0}
+.kol.kol-z-img p{padding:0 16px 16px}
+/* stopka kolumn — np. przypis Hamilton */
+.kol-stopka{margin-top:16px;font-size:9.5px;color:var(--nl-gray);text-align:center;padding:0 4px;letter-spacing:.02em;line-height:1.55}
+.kol-stopka p{font-size:9.5px;color:var(--nl-gray);text-align:center}
+/* GALERIA */
+.s-gal{padding:46px 16px 44px}
+.gal{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:26px}
+.gk{position:relative;overflow:hidden}
+.gk:first-child{grid-column:1/-1}
+/* kwadrat — kompromis dla portrait i landscape */
+.gk img{width:100%;aspect-ratio:1;height:auto;object-fit:cover;object-position:center center;display:block}
+.gk:first-child img{aspect-ratio:16/9;object-position:center 85%}
+.gk:nth-child(3) img{object-position:center 85%}
+.gk figcaption{display:none}
+/* LISTING */
+.s-listing{padding:46px 16px 44px}
+.siatka{display:grid;gap:22px 12px;margin-top:26px}
+.siatka.k4,.siatka.k5{grid-template-columns:1fr 1fr;gap:22px 12px}
+.gal.gal-kw{grid-template-columns:1fr}
+.gal.gal-kw .gk:first-child{grid-column:auto}
+.gal.gal-kw .gk img,.gal.gal-kw .gk:first-child img{aspect-ratio:1;height:auto;object-position:center}
+.siatka.k2{grid-template-columns:1fr 1fr}
+/* 17.09 — k3 nie miał reguły: 3 produkty = jedna kolumna 1300 px na desktopie. Mobile 2 kolumny, trzeci kafel wyśrodkowany. */
+.siatka.k3{grid-template-columns:1fr 1fr}
+.siatka.k3>:last-child:nth-child(odd){grid-column:1/-1;width:calc(50% - 6px);justify-self:center}
+/* 17.09 — obraz+tekst z nagłówkiem NAD modułem (kicker + tytuł), jak w pozostałych modułach */
+.dbl-naglowek{padding:44px 26px 8px;text-align:center;background:var(--nl-bg)}
+.dbl-naglowek .tyt-c{margin-top:10px}
+.siatka.k1{grid-template-columns:1fr;max-width:400px;margin:26px auto 0}
+.karta{text-decoration:none;color:inherit;display:flex;flex-direction:column}
+.karta-img{position:relative;background:#fff;aspect-ratio:4/5;margin-bottom:0;overflow:hidden}
+.karta-img img{width:100%;height:100%;object-fit:cover;display:block}
+/* badge — krem + ciemny tekst, jak w Pipeline */
+.badge{position:absolute;top:8px;left:8px;background:#F6E3BF;color:#242424;font-size:11px;
+ letter-spacing:1px;padding:5px 10px;z-index:2;font-weight:500;border-radius:4px}
+/* tytuł — Moderat, jak w Pipeline product card */
+.karta-nazwa{font-family:'Satoshi',var(---font-stack-heading,inherit);font-size:14px;
+ line-height:1.4;color:#4c4c4c;min-height:auto;font-weight:500;letter-spacing:-0.3px;
+ padding-top:12px;margin-bottom:2px}
+/* ocena — font i kolor jak w Pipeline */
+.karta-ocena{display:flex;align-items:center;gap:5px;font-size:11.5px;color:#111214;margin:2px 0 10px}
+.karta-ocena span{color:#111214}
+.gw{color:var(--nl-gold);letter-spacing:.5px;font-size:11.5px}
+/* cena — brązowa jak w Pipeline, stara — niebiesko-szara */
+.karta-cena{font-size:14.5px;color:#111214;margin-bottom:11px;font-weight:400}
+.karta-cena .stara{color:#96a4b6;text-decoration:line-through;font-size:12px;font-weight:400}
+/* CTA button — bordowe #16171A, Moderat bold, jak w Pipeline */
+.karta-cta{background:#16171A;color:#fff;text-align:center;padding:23px 0;font-size:11px;
+ letter-spacing:1.4px;font-weight:700;cursor:pointer;width:100%;border:1px solid #333;
+ font-family:'Satoshi',var(---font-stack-heading,inherit);text-transform:uppercase;
+ -webkit-appearance:none;border-radius:0;display:block;margin-top:auto}
+/* OPINIE */
+.s-rev{padding:30px 20px 34px;background:var(--nl-bg-off)}
+.lb{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:32px}
+.lb-i{text-align:center;background:var(--nl-bg);padding:22px 8px 18px;position:relative}
+.lb-i::before{content:'';display:block;width:32px;height:2px;background:var(--nl-red);margin:0 auto 10px}
+.lb-i b{display:block;font-size:28px;font-weight:300;color:var(--nl-txt-dark);letter-spacing:-.04em;line-height:1}
+.lb-i span{display:block;font-size:9px;color:var(--nl-gray);letter-spacing:.1em;text-transform:uppercase;margin-top:7px;line-height:1.4}
+.s-rev .tyt-l{font-size:17px;margin-bottom:4px}
+.opy{display:flex;gap:10px;overflow-x:auto;padding:16px 0 6px;scroll-snap-type:x mandatory}
+.op{flex:0 0 78%;scroll-snap-align:start;background:var(--nl-bg);padding:18px 16px 16px;text-align:left}
+.op p{font-size:13px;color:var(--nl-txt);font-weight:300;line-height:1.55;margin:8px 0 12px}
+.op-a{font-size:10.5px;color:var(--nl-gray);letter-spacing:.04em}
+/* DOUBLE */
+.s-double{display:flex;flex-direction:column}
+.s-double.odwr{flex-direction:column-reverse}
+.dbl-img img{width:100%;aspect-ratio:4/3;height:auto;object-fit:cover;object-position:center top;display:block}
+.dbl-img img.pelny{width:100%;height:auto;aspect-ratio:1/1;object-fit:contain}
+.dbl-txt{padding:38px 26px 42px;background:var(--nl-bg)}
+.dbl-txt h3{font-size:22px;font-weight:300;line-height:1.25;color:var(--nl-txt-dark);letter-spacing:-.01em;
+ font-family:'Satoshi',system-ui,sans-serif}
+.dbl-txt p{font-size:13.5px;color:var(--nl-gray);margin-top:14px;font-weight:300;line-height:1.68}
+/* ZAMIAST lista (wewnątrz dbl-txt) */
+.zamiast-lista{margin-top:22px;display:flex;flex-direction:column;gap:16px}
+.zam-i{display:flex;gap:14px;align-items:flex-start}
+.zam-x{flex:none;font-size:13px;color:var(--nl-red);margin-top:2px}
+.zam-i strong{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--nl-txt-dark);font-weight:600;margin-bottom:4px}
+.zam-i p{font-size:13px;color:var(--nl-gray);font-weight:300;line-height:1.6;margin:0}
+/* PRZED PO */
+.s-ba{padding:44px 0 46px}
+.ba-full{width:100%;display:block;margin-top:18px}
+/* FAQ */
+.s-faq{padding:40px 26px 44px}
+.faq-i{border-bottom:1px solid #ececec}
+.faq-i summary{list-style:none;cursor:pointer;padding:19px 0;font-size:16px;color:var(--nl-txt-dark);
+ display:flex;justify-content:space-between;align-items:center;gap:14px;font-weight:400}
+.faq-i summary::-webkit-details-marker{display:none}
+.faq-i summary i{font-style:normal;color:#b3b3b3;font-size:18px;transition:.2s;flex:none}
+.faq-i[open] summary i{transform:rotate(90deg)}
+.faq-i p{font-size:15px;color:var(--nl-gray);padding:0 0 19px;font-weight:300;line-height:1.65}
+/* STICKY BAR */
+.sticky{position:fixed;bottom:0;left:0;right:0;z-index:40;background:#fff;border-top:1px solid #e8e5e1;
+ display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px}
+.sticky span{font-size:11px;color:var(--nl-gray);line-height:1.3}
+.sticky b{color:var(--nl-txt-dark);font-size:13px;font-weight:500}
+.sticky a{background:#16171A;color:#fff;text-decoration:none;font-size:10.5px;letter-spacing:.14em;
+ padding:13px 18px;font-weight:500;white-space:nowrap}
+.stopka{background:var(--nl-inv-bg);color:#8d8d8d;text-align:center;padding:30px 20px;font-size:10px;letter-spacing:.15em}
+
+/* ——— VS PUMEKS ——— */
+.s-vs{padding:46px 0;background:#F4F4F5}
+.vs-inner{padding:0 20px}
+.vs-head{font-family:'Satoshi',system-ui,sans-serif;font-size:24px;font-weight:700;color:var(--nl-txt-dark);margin:0 0 6px;text-align:center;text-wrap:balance;line-height:1.25}
+.vs-sub{font-size:12px;color:var(--nl-gray);text-align:center;margin:0 0 24px;letter-spacing:.03em}
+.vs-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 18px}
+.vs-col{border-radius:12px;padding:16px 12px;text-align:center}
+.vs-col.glov-c{background:#fff;border:2px solid var(--nl-txt-dark)}
+.vs-col.pumeks-c{background:#E7E7E9}
+.vs-col-img{width:72px;height:72px;object-fit:contain;margin:0 auto 10px;display:block}
+.vs-col-tag{display:inline-block;background:#1c1c1c;color:#fff;font-size:8.5px;letter-spacing:.14em;padding:3px 9px;border-radius:20px;margin:0 0 8px;font-family:'Satoshi',sans-serif;font-weight:700;text-transform:uppercase}
+.vs-col-name{font-size:12px;font-weight:700;color:var(--nl-txt-dark);line-height:1.3;font-family:'Satoshi',sans-serif}
+.vs-col.pumeks-c .vs-col-name{color:#888}
+.vs-col-icon{font-size:72px;margin:0 0 10px;display:block;line-height:1;filter:grayscale(1) opacity(.55)}
+.vs-row{display:grid;grid-template-columns:76px 1fr 1fr;gap:6px;margin-bottom:6px;align-items:start}
+.vs-lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#aaa;font-weight:600;padding-top:10px;line-height:1.3}
+.vs-val{background:#fff;border-radius:8px;padding:9px 10px;font-size:13px;line-height:1.4;color:var(--nl-txt-dark);font-weight:600}
+.vs-val.pumeks-v{background:#E7E7E9;color:#999;font-weight:400}
+/* listy w treści modułu obraz+tekst (rich text Shopify: ul/li/strong/small) — 13.09 */
+.dbl-txt ul{list-style:none;margin:14px 0 0;padding:0}
+.dbl-txt li{position:relative;padding-left:20px;margin:0 0 9px;font-size:12.5px;line-height:1.6;color:var(--nl-gray);font-weight:300}
+.dbl-txt li::before{content:"✓";position:absolute;left:0;top:0;color:#16171A;font-weight:700;font-size:11px}
+.dbl-txt li strong{color:var(--nl-txt-dark);font-weight:500}
+.dbl-txt small{display:block;font-size:10.5px;line-height:1.5;color:#9a9a9a;margin-top:14px;padding-top:10px;border-top:1px solid #e6e1dc}
+/* opcja neutralna (13.09): dwa równorzędne produkty, bez „gorszej” kolumny */
+.vs-neutr .vs-col.glov-c{border:1px solid #d9d2cb}.vs-neutr .vs-col-img{width:96px;height:96px;object-fit:cover;border-radius:8px}
+/* ——— PRODUCT PICKER ——— */
+.s-picker{padding:44px 0;background:#fff}
+.picker-inner{padding:0 20px}
+.picker-scroll{display:grid;grid-auto-flow:column;grid-auto-columns:220px;gap:12px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;scroll-padding-left:20px}
+.picker-col{scroll-snap-align:start}
+.picker-img{width:100%;aspect-ratio:1/1;object-fit:contain;border-radius:8px;background:#F7F7F7;padding:10px;display:block;margin:0 0 10px}
+.picker-name{font-size:13px;font-weight:700;color:var(--nl-txt-dark);font-family:'Satoshi',sans-serif;margin:0 0 12px;line-height:1.3;min-height:38px}
+.picker-label{font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#bbb;font-weight:600;margin:0 0 5px;display:block}
+.picker-desc{font-size:11.5px;color:var(--nl-gray);line-height:1.5;margin:0 0 12px}
+.picker-bene{list-style:none;padding:0;margin:0}
+.picker-bene li{font-size:11px;color:var(--nl-txt-dark);line-height:1.45;margin-bottom:3px;padding-left:14px;position:relative}
+.picker-bene li::before{content:"✓";position:absolute;left:0;color:#16171A;font-weight:700;font-size:10px;top:1px}
+/* ——— TABLET: 2 kolumny listing ——— */
+@media(min-width:768px){
+  .siatka.k4,.siatka.k5{grid-template-columns:repeat(2,1fr);gap:28px 20px}
+  .siatka.k1{max-width:520px}
+  .kolumny{display:grid;grid-template-columns:repeat(2,1fr);gap:2px}
+}
+
+/* ——— DESKTOP: Pipeline breakpoint 990px ——— */
+@media(min-width:990px){
+  .nano-lp-wrap .s-hero{aspect-ratio:21/9;min-height:500px;max-height:none;align-items:flex-end!important}
+  .hero-bg{object-position:center 55%}
+  .hero-tresc{max-width:720px;padding:0 0 64px 64px}
+  .nano-lp-wrap .hero-ov{background:linear-gradient(0deg,rgba(28,22,18,.65) 0%,rgba(28,22,18,.3) 45%,rgba(28,22,18,0) 80%)}
+  .lb-i::before{background:#16171A}
+  h1{font-size:50px;font-family:'Satoshi',system-ui,sans-serif}
+  .hero-tresc p{font-size:19px}
+  .kicker{font-size:19px;letter-spacing:.2em}
+  .badge{font-size:13px;padding:6px 14px;letter-spacing:.8px}
+  .karta-cta{font-size:13px;padding:16px 0}
+  .nano-lp-wrap .s-hero{max-width:1412px;margin-left:auto;margin-right:auto}
+  .s-listing{padding:70px 56px 64px;max-width:1412px;margin-left:auto;margin-right:auto}
+  .siatka.k4{grid-template-columns:repeat(4,1fr);gap:34px 26px}
+  .siatka.k5{grid-template-columns:repeat(5,1fr);gap:34px 18px}
+  .siatka.k3{grid-template-columns:repeat(3,1fr);gap:34px 26px;max-width:1040px;margin-left:auto;margin-right:auto}
+  .siatka.k3>:last-child:nth-child(odd){grid-column:auto;width:auto}
+  .dbl-naglowek{padding:72px 56px 12px;max-width:1412px;margin:0 auto}
+  .siatka.k2{grid-template-columns:repeat(2,1fr);gap:34px 26px;max-width:760px;margin:26px auto 0}
+  .siatka.k1{max-width:400px;margin-left:auto;margin-right:auto}
+  .karta-img{aspect-ratio:1/1}
+  .karta-nazwa{font-size:22px;letter-spacing:-0.5px;line-height:27px;min-height:auto}
+  .karta-cena{font-size:17px}
+  .s-double{flex-direction:row;align-items:stretch;max-width:1412px;margin-left:auto;margin-right:auto}
+  .s-double.odwr{flex-direction:row-reverse}
+  .s-double>div{flex:1 1 50%}
+  .dbl-img img{height:100%;min-height:440px}
+  .dbl-txt{display:flex;flex-direction:column;justify-content:center;padding:56px 64px}
+  .dbl-txt h3{font-size:34px;font-family:'Satoshi',system-ui,sans-serif}
+  .dbl-txt p{font-size:15px}
+  .s-rev{padding:56px 56px 52px;max-width:1412px;margin-left:auto;margin-right:auto}
+  .opy{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible}
+  .op{flex:auto;padding:26px 24px}
+  .lb{max-width:820px;margin:0 auto 34px}
+  .lb-i b{font-size:30px}
+  .s-gal{padding:70px 56px 64px;max-width:1412px;margin-left:auto;margin-right:auto}
+  .gal{grid-template-columns:repeat(2,1fr);gap:16px}
+  .gk:first-child{grid-column:span 2}
+  .gk:first-child img{height:460px;object-position:center 85%}
+  .gk:nth-child(3) img{object-position:center 85%}
+  .karta-nazwa{min-height:48px}
+  .gk img{height:300px}
+  .kolumny{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:2px;padding:0 56px}
+  .kolumny>.kol{flex:0 0 calc((100% - 4px)/3)}
+  .gal.gal-kw{grid-template-columns:repeat(3,1fr)}
+  .gal.gal-kw .gk:first-child{grid-column:auto}
+  .gal.gal-kw .gk img,.gal.gal-kw .gk:first-child img{height:auto;aspect-ratio:1}
+  .s-faq{padding:60px 56px 70px;max-width:1412px;margin-left:auto;margin-right:auto}
+  .tyt-c{font-size:30px;font-family:'Satoshi',system-ui,sans-serif}
+  .ba-full{max-width:900px;margin:18px auto 0}
+  .s-kol{padding:70px 56px 64px;max-width:1412px;margin-left:auto;margin-right:auto}
+  /* vs pumeks desktop */
+  .s-vs{padding:70px 0;max-width:1412px;margin-left:auto;margin-right:auto}
+  .vs-inner{max-width:1300px;margin:0 auto;padding:0 56px}
+  .vs-head{font-size:36px}
+  .vs-cols{max-width:640px;margin:0 auto 32px}
+  .vs-col-img{width:120px;height:120px}
+  .vs-col-icon{font-size:110px}
+  .vs-row{grid-template-columns:190px 1fr 1fr;gap:12px}
+  .vs-val{font-size:15px;padding:14px 16px}
+  .vs-lbl{font-size:10px;padding-top:14px}
+  /* picker desktop */
+  .s-picker{padding:70px 0;max-width:1412px;margin-left:auto;margin-right:auto}
+  .picker-inner{max-width:1300px;margin:0 auto;padding:0 56px}
+  .picker-scroll{grid-auto-flow:row;grid-template-columns:repeat(auto-fit,minmax(220px,300px));justify-content:center;overflow-x:visible;padding-bottom:0}
+  .picker-name{font-size:14px;min-height:auto}
+  .picker-desc{font-size:12px}
+  .picker-bene li{font-size:12px}
+}
+
+/* VIDEO */
+.s-vid{padding:46px 16px 44px;background:var(--nl-bg)}
+.vid-ramka{position:relative;margin-top:26px;overflow:hidden;background:#0e0e0e;aspect-ratio:16/9}
+.vid-ramka img,.vid-ramka video,.vid-ramka iframe{width:100%;height:100%;object-fit:cover;display:block;border:0}
+/* VIDEO pionowe (9:16) — maks. 360px szerokości, wycentrowane */
+.vid-ramka.pionowe{aspect-ratio:9/16;max-width:360px;margin-left:auto;margin-right:auto}
+.vid-yt{position:relative;cursor:pointer;width:100%;height:100%}
+.vid-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:62px;height:62px;
+ border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#16171A;font-size:20px;line-height:1;
+ cursor:pointer;padding-left:4px;transition:transform .18s ease,background .18s ease}
+.vid-yt:hover .vid-play{transform:translate(-50%,-50%) scale(1.08);background:#fff}
+.vid-opis{margin-top:18px;font-size:12.5px;color:var(--nl-gray);font-weight:300;line-height:1.6;text-align:center}
+@media(prefers-reduced-motion:reduce){.vid-yt:hover .vid-play{transform:translate(-50%,-50%)}}
+
+/* 14.09 · tytuł sekcji nad modułem/grupą i odstęp między modułami (opcje: sekcja, sekcja_lead, odstep_przed) */
+.lp-sekcja{padding:44px 26px 6px;text-align:center;background:#fff}
+.lp-sekcja h2{margin:0;font-size:26px;line-height:1.2;font-weight:400;color:var(--nl-txt-dark);letter-spacing:-.01em;text-wrap:balance}
+.lp-sekcja p{margin:10px auto 0;max-width:560px;font-size:13.5px;color:var(--nl-gray);font-weight:300;line-height:1.6}
+.lp-odstep{height:36px;background:#fff}
+@media (min-width:1024px){
+  .lp-sekcja{padding:88px 56px 18px}.lp-sekcja h2{font-size:42px}
+  .lp-odstep{height:72px}
+  .kolumny.k4>.kol{flex:0 0 calc((100% - 6px)/4)}
+}
+
+/* 14.09 · kicker nad wyśrodkowanym tytułem (listing, picker, galeria, przed/po) — kreski z obu stron */
+.kicker.kicker-c{justify-content:center;text-align:center}
+
+/* ===== 17.09.2026 — DESKTOP: układ i oddech (Tomek: picker „włazi na siebie”, obraz+tekst gubi tekst).
+   ROZMIARY PISMA NIE TUTAJ — są w snippets/lp-skala.liquid (skala 1.25), część C. Tu tylko szerokości, odstępy, siatki. ===== */
+@media(min-width:990px){
+  .nano-lp-wrap .kicker{justify-content:center;text-align:center}
+  .nano-lp-wrap .kicker:not(.kicker-c)::after{content:"";width:34px;height:1px;background:#b9b9b9;display:block;flex:none}
+  .nano-lp-wrap .pod{max-width:760px;margin:16px auto 0;line-height:1.55}
+
+  .nano-lp-wrap .s-kol .kolumny{max-width:1180px;margin-left:auto;margin-right:auto}
+  .nano-lp-wrap .kol.kol-z-img h4{padding:20px 22px 6px}
+  .nano-lp-wrap .kol.kol-z-img p{padding:0 22px 22px;line-height:1.6}
+  .nano-lp-wrap .kol-stopka{margin-top:24px}
+
+  .nano-lp-wrap .s-double{max-width:1240px;align-items:center}
+  .nano-lp-wrap .s-double>div.dbl-img{flex:0 0 52%}
+  .nano-lp-wrap .s-double>div.dbl-txt{flex:1 1 48%;padding:48px 56px 48px 64px}
+  .nano-lp-wrap .s-double.odwr>div.dbl-txt{padding:48px 64px 48px 56px}
+  .nano-lp-wrap .dbl-txt ul{margin-top:8px;max-width:520px}
+  .nano-lp-wrap .dbl-txt li{line-height:1.55;margin:0 0 16px;padding-left:28px}
+  .nano-lp-wrap .dbl-txt li::before{font-size:14px;top:2px}
+  .nano-lp-wrap .dbl-naglowek{padding-bottom:32px}
+
+  .nano-lp-wrap .s-picker .pod{margin:16px auto 48px}
+  .nano-lp-wrap .picker-inner{max-width:1180px}
+  .nano-lp-wrap .picker-scroll{grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:40px;max-width:1068px;margin:0 auto}
+  .nano-lp-wrap .picker-img{margin-bottom:24px}
+  .nano-lp-wrap .picker-name{min-height:0;margin-bottom:16px}
+  .nano-lp-wrap .picker-label{margin-bottom:8px}
+  .nano-lp-wrap .picker-desc{line-height:1.55;margin-bottom:24px}
+  .nano-lp-wrap .picker-bene li{line-height:1.5;margin-bottom:8px;padding-left:22px}
+  .nano-lp-wrap .picker-bene li::before{font-size:14px;top:2px}
+
+  .nano-lp-wrap .vs-inner{max-width:1100px}
+  .nano-lp-wrap .s-faq{max-width:980px}
+}
+
+/* ===== 17.09.2026 — kafle produktów równe mimo różnych packshotów (Tomek: „nie centrują się”, „jedna schowana”).
+   Packshoty mają różne formaty (Supernova 4:5, naklejki z białą ramką): w kwadracie contain dawał węższą plamę
+   albo ramkę. Wspólne tło kafla w kolorze tła packshotów = inne kadry nie odcinają się prostokątem, produkt stoi na środku. ===== */
+.nano-lp-wrap .karta-img{background:#fbfbfb;overflow:hidden}   /* tła packshotów GLOV: 250 · 252 · 255 — kafel 251 = różnica niewidoczna */
+.nano-lp-wrap .karta-img img{object-fit:contain;padding:4%;box-sizing:border-box}
+/* hero przy 990–1200 px: aspect-ratio + min-height rozpychał sekcję do 1167 px → poziomy scroll, treść „uciekała” w bok */
+@media(min-width:990px){
+  .nano-lp-wrap .s-hero{width:100%;min-height:0}
+  /* karty kolumn ze zdjęciem: podpisy od góry, na jednej wysokości w całym rzędzie */
+  .nano-lp-wrap .kol.kol-z-img{align-content:start;grid-template-rows:auto auto 1fr}
+}
+
+/* ===== 03.10.2026 — jeden system dla modułów obraz+tekst (propozycja v2) ===== */
+.nano-lp-wrap.lp-v2 .dbl-txt p,.nano-lp-wrap.lp-v2 .zam-i p{color:#6B6E75}                 /* było: 50% przezroczystości */
+.nano-lp-wrap.lp-v2 .lista-plus .zam-x{color:#16171A;font-weight:700}
+.nano-lp-wrap.lp-v2 .lista-plus .zam-i strong{font-size:22px;letter-spacing:-.01em;text-transform:none;font-weight:700;color:#7c546c;margin-bottom:2px}
+.nano-lp-wrap.lp-v2 .dbl-przypis{font-size:11.5px!important;line-height:1.5;color:#9a8b80!important;margin-top:18px!important;padding-top:12px;border-top:1px solid #e6ddd5}
+@media(min-width:990px){
+  .nano-lp-wrap.lp-v2 .s-double{align-items:center}
+  .nano-lp-wrap.lp-v2 .s-double .dbl-img img,.nano-lp-wrap.lp-v2 .s-double .dbl-img img.pelny{aspect-ratio:4/3;height:auto;min-height:0;object-fit:cover}
+  .nano-lp-wrap.lp-v2 .dbl-txt p{font-size:16.5px}
+  .nano-lp-wrap.lp-v2 .lista-plus .zam-i strong{font-size:26px}
+}
+@media(max-width:767px){.nano-lp-wrap.lp-v2 .kolumny.kol-galeria{display:grid;grid-template-columns:1fr!important;gap:10px}}
+/* 03.10 — telefon: obraz ZAWSZE nad tekstem (odwrocony dotyczy tylko desktopu — inaczej liczby z tekstu i z grafiki szly dwa razy pod rzad) */
+@media(max-width:989px){.nano-lp-wrap.lp-v2 .s-double.odwr{flex-direction:column}}
+/* 03.10 — znacznik listy dowodow w linii z liczba, nie ponad nia */
+.nano-lp-wrap.lp-v2 .lista-plus .zam-x{font-size:20px;line-height:1.3;margin-top:0;width:20px}
+@media(min-width:990px){
+  .nano-lp-wrap.lp-v2 .lista-plus .zam-x{font-size:22px;line-height:1.35}
+  /* trzy korzysci: rowne karty w jednym rzedzie, ten sam stopien i to samo tlo */
+  .nano-lp-wrap.lp-v2 .kolumny.kol-hierarchia>.kol,.nano-lp-wrap.lp-v2 .kolumny.kol-hierarchia>.kol:first-child{background:#fff;padding:34px 30px}
+  .nano-lp-wrap.lp-v2 .kolumny.kol-hierarchia>.kol h4,.nano-lp-wrap.lp-v2 .kolumny.kol-hierarchia>.kol:first-child h4{font-size:24px;line-height:1.2;margin-bottom:10px}
+  .nano-lp-wrap.lp-v2 .kolumny.kol-hierarchia>.kol p,.nano-lp-wrap.lp-v2 .kolumny.kol-hierarchia>.kol:first-child p{font-size:16px;line-height:1.55}
+  .nano-lp-wrap.lp-v2 .kolumny.kol-hierarchia>.kol .kol-i,.nano-lp-wrap.lp-v2 .kolumny.kol-hierarchia>.kol:first-child .kol-i{font-size:22px}
+  /* galeria: 2×2 w skali obrazow z modulow obraz+tekst (4 w rzedzie dawalo male kafelki obok duzych) */
+  .nano-lp-wrap.lp-v2 .kolumny.kol-galeria{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:12px;max-width:1180px}
+  .nano-lp-wrap.lp-v2 .kolumny.kol-galeria>.kol{flex:none;width:auto}
+  /* opinie: trzy w jednym rzedzie, bez pustego miejsca po 2+1 */
+  .nano-lp-wrap.lp-v2 .opy:has(> .op:nth-child(3):last-child){grid-template-columns:repeat(3,1fr)!important}
+}
+/* 03.10 — dwa bloki obraz+tekst pod rząd nie sklejają się (oddech jak między pozostałymi modułami) */
+.nano-lp-wrap.lp-v2 .s-double + .s-double{margin-top:56px}
+.lp-v2 [data-lp-idx]:has(> .s-double) + [data-lp-idx] > .s-double{margin-top:56px}   /* to samo w podglądzie edytora (moduły w ramkach) */
+@media(min-width:768px){
+  .nano-lp-wrap.lp-v2 .kol-hierarchia{grid-template-columns:repeat(3,1fr)}
+  .nano-lp-wrap.lp-v2 .kol-hierarchia > .kol:first-child{grid-column:auto}
+}
+/* 03.10 — podpisy pod zdjęciami w kolumnach (galeria sytuacji): pełny kolor, jak tekst w obraz+tekst */
+.nano-lp-wrap.lp-v2 .kol p{color:#6B6E75}
+/* 04.10 — nagłówek „nad modułem” tylko na telefonie, na desktopie w kolumnie tekstu */
+@media(min-width:990px){.nano-lp-wrap.lp-v2 .dbl-naglowek.nad-mobile{display:none}}
+@media(max-width:989px){.nano-lp-wrap.lp-v2 .dbl-nag.w-kolumnie{display:none}}
+/* 04.10 — krótkie moduły obraz+tekst (bez listy liczb): większy stopień na desktopie, żeby kolumna tekstu nie była łysa obok obrazu 4:3 */
+@media(min-width:990px){
+  .nano-lp-wrap.lp-v2 .s-double:not(:has(.zamiast-lista)) .dbl-txt h3{font-size:42px;line-height:1.15;margin-bottom:22px}
+  .nano-lp-wrap.lp-v2 .s-double:not(:has(.zamiast-lista)) .dbl-txt p{font-size:20px;line-height:1.65}
+  .nano-lp-wrap.lp-v2 .s-double:not(:has(.zamiast-lista)) .dbl-txt .kicker{font-size:17px;margin-bottom:18px}
+}
+/* 15.10 HERO — standard układów (opcje.uklad) + przycisk CTA. Domyślny „nakladka” bez zmian. */
+.nano-lp-wrap .hero-cta{display:inline-block;margin-top:22px;background:#16171A;color:#fff;text-decoration:none;
+ font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;padding:16px 28px}
+.nano-lp-wrap .s-hero.hero-dzielony,.nano-lp-wrap .s-hero.hero-produkt{aspect-ratio:auto;min-height:0;max-height:none;
+ flex-direction:column;align-items:stretch;background:var(--nl-bg-off)}
+.nano-lp-wrap .s-hero.hero-produkt{background:#f3e9e4}
+.nano-lp-wrap .hero-dzielony .hero-bg,.nano-lp-wrap .hero-produkt .hero-bg{position:relative;inset:auto;height:auto;aspect-ratio:4/3;display:block}
+.nano-lp-wrap .hero-produkt .hero-bg{object-fit:contain;padding:6% 10% 0;box-sizing:border-box;aspect-ratio:1/1}
+.nano-lp-wrap .hero-dzielony .hero-tresc,.nano-lp-wrap .hero-produkt .hero-tresc{padding:30px 22px 40px}
+.nano-lp-wrap .hero-dzielony h1,.nano-lp-wrap .hero-produkt h1{color:var(--nl-txt-dark)}
+.nano-lp-wrap .hero-dzielony .hero-tresc p,.nano-lp-wrap .hero-produkt .hero-tresc p{color:#6B6E75}
+.nano-lp-wrap .hero-dzielony .hero-fakty p,.nano-lp-wrap .hero-produkt .hero-fakty p{color:#16171A;text-shadow:none}
+@media(min-width:990px){
+  .nano-lp-wrap .s-hero.hero-dzielony,.nano-lp-wrap .s-hero.hero-produkt{aspect-ratio:auto;flex-direction:row;align-items:center!important;min-height:560px}
+  .nano-lp-wrap .hero-dzielony .hero-bg,.nano-lp-wrap .hero-produkt .hero-bg{width:50%;flex:none;align-self:stretch;aspect-ratio:auto;height:auto;min-height:560px}
+  .nano-lp-wrap .hero-produkt .hero-bg{padding:48px}
+  .nano-lp-wrap .hero-dzielony .hero-tresc,.nano-lp-wrap .hero-produkt .hero-tresc{width:50%;max-width:none;padding:56px 64px;box-sizing:border-box}
+  .nano-lp-wrap .hero-dzielony .hero-tresc,.nano-lp-wrap .hero-produkt .hero-tresc{order:-1}
+}
+/* 15.10 VIDEO złożony (pionowe): wideo + nagłówek + claimy + CTA. Mobile: kolejno; desktop: wideo | treść */
+.nano-lp-wrap .vid-bok .vid-claimy{margin-top:26px}
+.nano-lp-wrap .vid-zlozony .vid-claimy{max-width:420px;margin-left:auto;margin-right:auto}
+.nano-lp-wrap .vid-zlozony .vid-bok{text-align:center}
+.nano-lp-wrap .vid-zlozony .vid-bok .zam-i{text-align:left}
+.nano-lp-wrap .vid-cta{margin-top:26px}
+@media(min-width:990px){
+  .nano-lp-wrap .s-vid.vid-zlozony{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,520px);
+   grid-template-rows:auto 1fr;column-gap:72px;justify-content:center;align-items:start;max-width:1100px;margin-left:auto;margin-right:auto}
+  .nano-lp-wrap .vid-zlozony .vid-ramka{grid-column:1;grid-row:1 / span 2;margin-top:0;max-width:none;width:100%}
+  .nano-lp-wrap .vid-zlozony .vid-glowa{grid-column:2;grid-row:1;align-self:end;padding-top:40px}
+  .nano-lp-wrap .vid-zlozony .vid-bok{grid-column:2;grid-row:2;text-align:left}
+  .nano-lp-wrap .vid-zlozony .vid-glowa .tyt-c,.nano-lp-wrap .vid-zlozony .vid-glowa .pod{text-align:left;padding:0}
+  .nano-lp-wrap .vid-zlozony .vid-glowa .tyt-c{font-size:42px;line-height:1.08;letter-spacing:-.02em}
+  .nano-lp-wrap .vid-zlozony .vid-glowa .pod{font-size:19px;line-height:1.5;margin-top:14px}
+  .nano-lp-wrap .vid-zlozony .vid-claimy{margin-left:0;max-width:none}
+  .nano-lp-wrap .vid-zlozony .vid-opis{text-align:left}
+}
+.nano-lp-wrap .hero-produkt .hero-bg{mix-blend-mode:multiply}   /* packshoty GLOV mają białe tło — znika na kolorze */
+/* 15.10 poprawki z oglądu: jasne układy bez cienia tekstu; kicker do lewej przy tekście do lewej; packshot nad tekstem na telefonie */
+.nano-lp-wrap .s-hero.hero-dzielony h1,.nano-lp-wrap .s-hero.hero-produkt h1,.nano-lp-wrap .s-hero.hero-dzielony .hero-tresc p,.nano-lp-wrap .s-hero.hero-produkt .hero-tresc p{text-shadow:none}
+.nano-lp-wrap .hero-produkt .hero-bg{aspect-ratio:4/3;padding:6% 12% 0}
+.nano-lp-wrap .hero-dzielony .kicker,.nano-lp-wrap .hero-produkt .kicker{justify-content:flex-start;text-align:left}
+.nano-lp-wrap .hero-dzielony .kicker::after,.nano-lp-wrap .hero-produkt .kicker::after{display:none}
+@media(min-width:990px){
+  .nano-lp-wrap .vid-zlozony .vid-glowa .kicker{justify-content:flex-start;text-align:left}
+  .nano-lp-wrap .vid-zlozony .vid-glowa .kicker::after{display:none}
+  .nano-lp-wrap .hero-produkt .hero-bg{aspect-ratio:auto;padding:48px}
+}
+/* 15.10 KOLUMNY · kroki (rutyna): numer na grafice; mobile lista miniatura|tekst, desktop jeden rząd; przycisk pod siatką */
+.nano-lp-wrap .kolumny.kol-kroki{display:grid!important;grid-template-columns:1fr!important;gap:10px;padding:0!important}
+.nano-lp-wrap .kol-kroki>.kol.kol-z-img{display:grid;grid-template-columns:104px 1fr;grid-template-rows:auto 1fr;align-items:start;flex:none;width:auto}
+.nano-lp-wrap .kol-kroki .kol-img{grid-row:1 / span 2;aspect-ratio:1/1;position:relative;background:#fbfbfb}
+.nano-lp-wrap .kol-kroki .kol-nr{position:absolute;top:6px;left:6px;z-index:1;width:26px;height:26px;border-radius:50%;background:#16171A;color:#fff;
+ font-size:13px;font-weight:600;line-height:26px;text-align:center}
+.nano-lp-wrap .kol-kroki .kol.kol-z-img h4{padding:16px 16px 4px;font-size:13px}
+.nano-lp-wrap .kol-kroki .kol.kol-z-img p{padding:0 16px 14px;font-size:13.5px;line-height:1.5;color:#6B6E75}
+.nano-lp-wrap .kol-cta{text-align:center;margin-top:8px}
+@media(min-width:990px){
+  .nano-lp-wrap .kolumny.kol-kroki{grid-template-columns:repeat(5,1fr)!important;gap:12px;max-width:1180px}
+  .nano-lp-wrap .kol-kroki>.kol.kol-z-img{grid-template-columns:1fr;grid-template-rows:auto auto 1fr}
+  .nano-lp-wrap .kol-kroki .kol-img{grid-row:auto}
+  .nano-lp-wrap .kol-kroki .kol-nr{top:10px;left:10px;width:32px;height:32px;line-height:32px;font-size:15px}
+  .nano-lp-wrap .kol-kroki .kol.kol-z-img h4{padding:18px 18px 6px;font-size:14px}
+  .nano-lp-wrap .kol-kroki .kol.kol-z-img p{padding:0 18px 20px;font-size:15px}
+  .nano-lp-wrap .kol-cta{margin-top:20px}
+}
+/* 15.10 po sędzim: kicker w hero stoi tam, gdzie tekst (desktop centrował go nad h1 do lewej); wideo złożone — czytelny opis, nagłówek bez sieroty, kolumna tekstu na środku wysokości */
+@media(min-width:990px){
+  .nano-lp-wrap .s-hero .hero-tresc .kicker{justify-content:flex-start;text-align:left}
+  .nano-lp-wrap .s-hero .hero-tresc .kicker::after{display:none}
+  .nano-lp-wrap .s-vid.vid-zlozony{align-items:center}
+  .nano-lp-wrap .vid-zlozony .vid-glowa{align-self:end}
+}
+.nano-lp-wrap .vid-zlozony .vid-glowa .pod{font-size:15px;color:#6B6E75;line-height:1.5}
+.nano-lp-wrap .vid-zlozony .vid-glowa .tyt-c{text-wrap:balance}
+@media(max-width:989px){.nano-lp-wrap .vid-zlozony .vid-glowa .kicker{justify-content:center;text-align:center}}
+@media(min-width:990px){.nano-lp-wrap .vid-zlozony .vid-glowa .pod{font-size:19px}}
+/* 15.10 runda 2 sędziego — wszystko opt-in: hero-mocna (opcja mocna_nakladka), moduł kolumn z opcją kroki */
+.nano-lp-wrap .hero-mocna .hero-ov{opacity:1!important;background:linear-gradient(180deg,rgba(20,8,10,.72) 0,rgba(20,8,10,.5) 55%,rgba(20,8,10,.2) 100%)!important}
+.nano-lp-wrap .hero-mocna .hero-fakty p{color:#fff}
+.nano-lp-wrap .hero-mocna .hero-tresc{text-shadow:0 1px 10px rgba(0,0,0,.5)}
+@media(min-width:990px){.nano-lp-wrap .hero-mocna .hero-ov{background:linear-gradient(90deg,rgba(20,8,10,.78) 0,rgba(20,8,10,.5) 45%,rgba(20,8,10,0) 75%),linear-gradient(to top,rgba(20,8,10,.6) 0,rgba(20,8,10,0) 60%)!important}}
+.nano-lp-wrap .s-kol:has(.kol-kroki) .pod{font-size:15px;color:#6B6E75;line-height:1.5}
+.nano-lp-wrap .s-kol:has(.kol-kroki) .kicker{justify-content:center;text-align:center}
+@media(max-width:989px){.nano-lp-wrap .kol-kroki .kol.kol-z-img p{font-size:15px}}
+@media(min-width:990px){.nano-lp-wrap .kol-kroki .kol.kol-z-img h4{min-height:2.6em}.nano-lp-wrap .s-kol:has(.kol-kroki) .pod{font-size:17px}}
+@media(min-width:990px){.nano-lp-wrap .s-vid.vid-zlozony{align-content:center;row-gap:24px}}
+/* 16.10 KOLUMNY · zestaw Bundlera (opcja zestaw = shortcode): widget Bundlera na sklepie, atrapa w podglądzie */
+.nano-lp-wrap .kol-zestaw{max-width:640px;margin:22px auto 0}
+.nano-lp-wrap .kol-zestaw .bundler-target-element:has(.bndlr-container) .lp-zestaw-atrapa{display:none}
+.nano-lp-wrap .lp-zestaw-atrapa,.nano-lp-wrap .kol-zestaw .bndlr-container{background:#fff;border-radius:16px;padding:8px 16px 18px;box-shadow:0 10px 28px rgba(89,19,21,.08);border:0}
+.nano-lp-wrap .lpz-prod,.nano-lp-wrap .kol-zestaw .bndlr-product{display:grid;grid-template-columns:56px 1fr auto;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #eee5df;margin:0;width:auto;max-width:none}
+.nano-lp-wrap .lpz-prod img,.nano-lp-wrap .kol-zestaw .bndlr-product-image-url{width:56px!important;height:56px!important;object-fit:contain!important;background:#F4F4F5;border-radius:10px;padding:4px;mix-blend-mode:multiply}
+.nano-lp-wrap .lpz-nazwa,.nano-lp-wrap .kol-zestaw .bndlr-product-qn-container{font-size:14px;line-height:1.35;color:#16171A;text-align:left}
+.nano-lp-wrap .lpz-wariant,.nano-lp-wrap .kol-zestaw .bndlr-product select{display:block;width:100%;max-width:100%;margin-top:6px;padding:7px 10px;border:1px solid #e3d8d1;border-radius:8px;background:#fff;font-size:13px}
+.nano-lp-wrap .lpz-cena,.nano-lp-wrap .kol-zestaw .bndlr-product-price{font-weight:700;font-size:14px;white-space:nowrap;color:#16171A}
+.nano-lp-wrap .lpz-suma{display:flex;flex-direction:column;gap:6px;margin:16px 0 14px;text-align:left}
+.nano-lp-wrap .lpz-oszcz{align-self:flex-start;background:#F4F4F5;color:#7a1a37;font-weight:700;font-size:12px;padding:6px 10px;border-radius:999px}
+.nano-lp-wrap .lpz-razem{font-weight:700;font-size:24px;color:#16171A}
+.nano-lp-wrap .lpz-razem s{font-size:15px;font-weight:400;color:#8b7b70;margin-left:6px}
+.nano-lp-wrap .lpz-btn,.nano-lp-wrap .kol-zestaw .bndlr-add-bundle-to-cart{display:block;width:100%;min-height:52px;line-height:52px;border:0;border-radius:4px;background:#16171A;color:#fff;text-align:center;
+ font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;cursor:pointer}
+
+/* China Select 20.10: wiersze kolumn nie rozpychają telefonu (długie pytania, pola [X]) */
+.kol{grid-template-columns:26px minmax(0,1fr)}.kol>*{min-width:0}.kol h4,.kol p{overflow-wrap:anywhere}
+/* China Select 20.10: fakty w pierwszym ekranie mniejsze niż tytuł */
+.nano-lp-wrap .hero-fakty p{font-size:14px;line-height:1.45;letter-spacing:.01em;margin:0 0 6px}
+/* China Select 20.10: telefon = jedna kolumna (długie teksty aut), fakty hero 14px */
+@media(max-width:767px){.nano-lp-wrap .kolumny{grid-template-columns:1fr!important}}
+.nano-lp-wrap .s-hero .hero-fakty,.nano-lp-wrap .s-hero .hero-fakty p{font-size:14px!important;line-height:1.45!important}
