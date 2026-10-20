@@ -306,6 +306,7 @@ h1{font-size:clamp(26px,4vw,40px);line-height:1.15;margin:8px 0 12px}
 .f-zasady{margin-top:10px;font-size:12px}.f-zasady summary{cursor:pointer;text-decoration:underline;opacity:.85}
 .f-pyt{margin-top:10px;font-size:13px;background:#f1ece0;border-radius:10px;padding:10px 12px}.f-pyt ul{margin:4px 0 0;padding-left:18px}
 .f-wariant{font-size:13px;color:var(--mut);margin:8px 0 0}
+.fp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}.fp-l{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#7a5b12;margin:0 0 6px}.fp-brak{border:1px dashed #cdbf9f;border-radius:10px;padding:28px;font-size:14px;color:#6b6457;background:#faf7f0}.fp-zm{font-size:13.5px;margin:10px 0 0;padding-left:20px}.fp-zm li{margin:2px 0}.fp-blok{margin:0 0 30px}@media(max-width:900px){.fp{grid-template-columns:minmax(0,1fr)}}
 .f-pod-akcje{margin-top:12px;text-align:center}.f-pod-akcje p{font-size:12px;opacity:.75;margin:0 0 6px}.f-pod-akcje div{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}.f-akcja{flex:1 1 28%;white-space:nowrap;min-height:40px;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1.5px #E8AC4C;color:#E8AC4C;font-weight:800;font-size:13px;border-radius:2px;padding:6px 8px}
 .ok-stan{background:#eaf3ec;border:1px solid #b9d6c1;border-radius:12px;padding:14px;font-weight:600}.ok-stan b{color:#1f6b3a;margin-right:4px}
 .ukr{border-collapse:collapse;width:100%;font-size:13px}.ukr td{border-top:1px solid var(--line);padding:6px 4px;vertical-align:top;overflow-wrap:anywhere}.ukr td:first-child{color:var(--mut);width:46%}
@@ -362,44 +363,423 @@ h1{font-size:clamp(26px,4vw,40px);line-height:1.15;margin:8px 0 12px}
 <h1>Projekt konwersji — przyciski, formularze i miejsca</h1>
 <p class="lead">Zamienić osobę oglądającą konkretne auto w kontakt do rozmowy — z przypisanym autem, źródłem i grupą kupujących. Strona nie sprzedaje auta; sprzedaje handlowiec po rozmowie.</p>
 <p class="lead2">Sześć konwersji od najlżejszej do najmocniejszej. Każda ma jeden napis na przycisku na całej stronie, jeden formularz z kompletem zastrzeżeń i stałe miejsca w widokach. Miejsca są pokazane w nowych projektach elementów — przycisk danej konwersji zaznaczony czerwoną ramką z numerem.</p>
-<div class="drabina"><a class="dr-krok" href="#k-1"><span class="dr-nr">1</span><span class="cs-btn cs-btn--mini">Zamów raport</span><small>ciepły (najlżejszy)</small></a><a class="dr-krok" href="#k-2"><span class="dr-nr">2</span><span class="cs-btn cs-btn--mini">Zapytaj o ofertę</span><small>ciepły</small></a><a class="dr-krok" href="#k-3"><span class="dr-nr">3</span><span class="cs-btn cs-btn--mini">Zamów rozmowę</span><small>gorący</small></a><a class="dr-krok" href="#k-4"><span class="dr-nr">4</span><span class="cs-btn cs-btn--mini">Zapytaj o finansowanie</span><small>gorący</small></a><a class="dr-krok" href="#k-5"><span class="dr-nr">5</span><span class="cs-btn cs-btn--mini">Zarezerwuj to auto</span><small>najgorętszy</small></a><a class="dr-krok" href="#k-6"><span class="dr-nr">6</span><span class="cs-btn cs-btn--mini">Zadaj pytanie</span><small>ciepły (pytanie ogólne, często bez konkretnego auta)</small></a></div><p class="dr-os">lżejszy krok ← → mocniejsze zobowiązanie</p>
+<div class="drabina"><a class="dr-krok" href="#k-1"><span class="dr-nr">1</span><span class="cs-btn cs-btn--mini">Zamów raport</span><small>ciepły (najlżejszy)</small></a><a class="dr-krok" href="#k-2"><span class="dr-nr">2</span><span class="cs-btn cs-btn--mini">Zapytaj o ofertę</span><small>ciepły</small></a><a class="dr-krok" href="#k-3"><span class="dr-nr">3</span><span class="cs-btn cs-btn--mini">Zamów rozmowę</span><small>gorący</small></a><a class="dr-krok" href="#k-4"><span class="dr-nr">4</span><span class="cs-btn cs-btn--mini">Zapytaj o finansowanie</span><small>gorący</small></a><a class="dr-krok" href="#k-5"><span class="dr-nr">5</span><span class="cs-btn cs-btn--mini">Zarezerwuj to auto</span><small>najgorętszy</small></a><a class="dr-krok" href="#k-6"><span class="dr-nr">6</span><span class="cs-btn cs-btn--mini">Wyślij zapytanie</span><small>ciepły (pytanie ogólne, często bez konkretnego auta)</small></a></div><p class="dr-os">lżejszy krok ← → mocniejsze zobowiązanie</p>
 </div></header>
 <main class="w">
 <section class="blok"><h2>Zasady</h2><ul class="zas"><li>Jedno brzmienie CTA na całej stronie — ten sam napis przy tej samej konwersji w każdym widoku.</li><li>Jeden przycisk główny na widok; reszta drugorzędna albo w kontekście (raport przy raporcie, finansowanie przy kalkulatorze).</li><li>Najlżejszy krok zawsze dostępny: kto nie chce rozmawiać, dostaje raport albo ofertę na e-mail.</li><li>Telefon podany dobrowolnie przy kroku 1–3 + zgoda na kontakt automatyczny = lead gorący, oddzwania doradca.</li><li>Krótki formularz: telefon i e-mail (oba wymagane), jedna zgoda, przycisk. Wszystko inne (pora rozmowy, imię, zgoda marketingowa) — po wysłaniu albo w rozmowie z doradcą.</li></ul></section>
 <nav class="czesci"><a href="#hierarchia">1 · Hierarchia CTA</a><a href="#formularze">2 · Formularze</a><a href="#k-1">3 · Ścieżki po kliknięciu</a><a href="#pdp-prawa">4 · Prawa strona karty auta</a></nav>
 <section class="blok" id="hierarchia"><h2>Hierarchia CTA</h2><div class="h-grid"><div class="h-poz"><div class="ciemne h-wz"><span class="cs-btn">Zapytaj o ofertę</span></div><h4>Primary</h4><p><b>pełny złoty przycisk ze ściętym rogiem</b> · jeden na widok; najważniejsza konwersja w tym miejscu</p></div><div class="h-poz"><div class="ciemne h-wz"><span class="cs-btn cs-btn--2">Zamów raport</span></div><h4>Secondary</h4><p><b>obrys: na ciemnym tle złoty, na jasnym tle (kafel) ciemny — ten sam kształt, inny kolor tła</b> · druga akcja obok primary. Nie wprowadzamy innych wariantów (np. białego przycisku ze złotym obrysem).</p></div><div class="h-poz"><div class="ciemne h-wz"><span class="h-link">Policz ratę →</span></div><h4>Tertiary</h4><p><b>link tekstowy z ikoną i strzałką</b> · akcja w kontekście (Policz ratę, Wyślij partnerce, Zadzwoń)</p></div><div class="h-poz"><div class="ciemne h-wz"><span class="h-pasek"><i>📞</i><i>WA</i><b>Zapytaj o ofertę</b></span></div><h4>Pasek na telefonie</h4><p><b>przyklejony na dole ekranu</b> · primary widoku + słuchawka + WhatsApp</p></div></div><div class="mapa" style="margin-top:14px"><div class="mapa-w"><h4>Strona główna</h4><p class="h-l">Primary</p><ul><li>Zobacz auta (pierwszy ekran)</li><li>Zapytaj o ofertę (sekcja doradcy)</li></ul><p class="h-l">Secondary</p><ul><li>Zamów rozmowę (pasek kontaktu)</li></ul><p class="h-l">Tertiary</p><ul><li>Zamów przykładowy raport</li></ul></div><div class="mapa-w"><h4>Lista aut</h4><p class="h-l">Primary</p><ul><li>cały kafel — przejście do karty auta</li><li>na kaflu: „Zamów raport” (pełny złoty) — konwersja</li></ul><p class="h-l">Secondary</p><ul><li>na kaflu: „Szczegóły” (ciemny obrys) — przejście do karty auta</li></ul><p class="h-l">Tertiary</p><ul><li>kafel „Zamów rozmowę” w siatce aut (PLP-12)</li></ul></div><div class="mapa-w"><h4>Karta auta</h4><p class="h-l">Primary</p><ul><li>Zapytaj o ofertę</li></ul><p class="h-l">Secondary</p><ul><li>Zarezerwuj to auto</li><li>Zamów rozmowę</li></ul><p class="h-l">Tertiary</p><ul><li>Policz ratę</li><li>Wyślij tę kartę partnerowi / partnerce</li><li>Zamów raport (w sekcji raportu)</li></ul></div></div><p class="uw">Kafel ma dwa przyciski obok siebie, jak u Audi Plichta: „Szczegóły” (secondary, ciemny obrys) i „Zamów raport” (primary kafla, pełny złoty). Cały kafel dalej prowadzi do karty auta.</p></section>
-<section class="blok" id="formularze"><h2>Formularze — wszystkie obok siebie</h2><p class="uw">Standard (19.10): telefon i e-mail — oba wymagane — jedna zgoda w jednej linii, przycisk. Bez wyboru kanału w formularzu. Resztę dopytujemy po wysłaniu albo w rozmowie.</p><div class="f-siatka"><div><p class="f-sl">KONW-1 · Zamów raport</p><div class="tel"><div class="form">
-  <h4>Pełny raport tego auta</h4><p class="f-lead">Zdjęcia usterek, stan baterii, historia. Raport wyślemy na e-mail.</p>
-  <div class="f-pole"><label>Telefon <b class="wym">*</b></label><div class="f-in">+48 …</div></div><div class="f-pole"><label>E-mail <b class="wym">*</b></label><div class="f-in">twoj@email.pl</div></div><div class="f-zgody"><label class="f-check"><span class="f-box"></span><span>Zgoda na kontakt w tej sprawie… <u>Rozwiń</u> <b class="wym">*</b></span></label></div>
-  <div class="cs-btn cs-btn--pelny">Zamów raport</div>
-  <details class="f-zasady"><summary>Zasady i dane osobowe</summary><ul class="f-zast"><li>Raport sporządził Guazi podczas inspekcji w Chinach [data inspekcji]. Opisuje stan auta w dniu inspekcji. [Zakres odpowiedzialności — do decyzji prawnej]</li><li>Wybierając WhatsApp, przekazujesz numer telefonu usłudze WhatsApp (Meta).</li><li>Dziś pod galerią stoi „Zdjęcia mogą przedstawiać przykładowy model samochodu” — przy raporcie egzemplarza zdjęcia muszą być zdjęciami tego auta [do decyzji].</li><li>Administrator: [spółka]. Zasady i dane osobowe →</li></ul></details>
-</div></div><div class="f-pyt"><b>Po wysłaniu dopytujemy (opcjonalnie):</b><ul><li>Nowe oferty aut na e-mail (osobna zgoda, opcjonalnie)</li></ul></div></div><div><p class="f-sl">KONW-2 · Zapytaj o ofertę</p><div class="tel"><div class="form">
-  <h4>Oferta na to auto</h4><p class="f-lead">Cena rozpisana, termin, rata.</p>
-  <div class="f-info"><span>Auto</span><b>XPeng G6 · oferta nr 74</b></div><div class="f-pole"><label>Imię <span class="opc">(opcjonalnie)</span></label><div class="f-in">Jak się do Ciebie zwracać?</div></div><div class="f-pole"><label>Telefon <b class="wym">*</b></label><div class="f-in">+48 …</div></div><div class="f-pole"><label>E-mail <b class="wym">*</b></label><div class="f-in">twoj@email.pl</div></div><div class="f-zgody"><label class="f-check"><span class="f-box"></span><span>Zgoda na kontakt w tej sprawie… <u>Rozwiń</u> <b class="wym">*</b></span></label></div>
-  <div class="cs-btn cs-btn--pelny">Zapytaj o ofertę</div><div class="f-pod-akcje"><p>Wolisz inaczej?</p><div><span class="f-akcja">Zamów rozmowę</span><span class="f-akcja">Zadzwoń</span><span class="f-akcja">WhatsApp</span></div></div>
-  <details class="f-zasady"><summary>Zasady i dane osobowe</summary><ul class="f-zast"><li>Oferta ma charakter informacyjny i nie stanowi oferty w rozumieniu art. 66 Kodeksu cywilnego.</li><li>Cena do odbioru wyliczona przy kursie [USD/PLN] z [data]; ostateczną cenę potwierdza umowa.</li><li>Rata przykładowa nie jest ofertą finansowania (zastrzeżenia jak w kroku „Zapytaj o finansowanie”).</li><li>Administrator: [spółka]. Zasady i dane osobowe →</li></ul></details>
-</div></div><p class="f-wariant">Wariant: Na stronie głównej zamiast pola „Auto”: „Jakie auto lub budżet?” (pole tekstowe, wymagane).</p><div class="f-pyt"><b>Po wysłaniu dopytujemy (opcjonalnie):</b><ul><li>Nowe oferty aut na e-mail (osobna zgoda, opcjonalnie)</li></ul></div></div><div><p class="f-sl">KONW-3 · Zamów rozmowę</p><div class="tel"><div class="form">
-  <h4>Zamów rozmowę</h4><p class="f-lead">Doradca oddzwoni [do 5 min].</p>
-  <div class="f-pole"><label>Telefon <b class="wym">*</b></label><div class="f-in">+48 …</div></div><div class="f-pole"><label>E-mail <b class="wym">*</b></label><div class="f-in">twoj@email.pl</div></div><div class="f-zgody"><label class="f-check"><span class="f-box"></span><span>Zgoda na kontakt w tej sprawie… <u>Rozwiń</u> <b class="wym">*</b></span></label></div>
-  <div class="cs-btn cs-btn--pelny">Zamów rozmowę</div>
-  <details class="f-zasady"><summary>Zasady i dane osobowe</summary><ul class="f-zast"><li>Oddzwaniamy pn–pt [09:00–17:00]. Poza tymi godzinami — następnego dnia roboczego. [Czas oddzwonienia do ustalenia: dziś stopka mówi „w ciągu 30 minut”, cel z Rinvo — do 5 minut]</li><li>Pierwsze połączenie może przeprowadzić asystent AI China Select. W każdej chwili możesz poprosić o rozmowę z doradcą. [obowiązek informacyjny AI Act art. 50 — do decyzji prawnej]</li><li>Rozmowa może być nagrywana [do decyzji; jeśli tak — informacja na początku połączenia].</li><li>Administrator: [spółka]. Zasady i dane osobowe →</li></ul></details>
-</div></div><div class="f-pyt"><b>Po wysłaniu dopytujemy (opcjonalnie):</b><ul><li>Kiedy zadzwonić? Jak najszybciej / wybiorę porę</li><li>Jak się do Ciebie zwracać? (opcjonalnie)</li><li>Nowe oferty aut na e-mail (osobna zgoda, opcjonalnie)</li></ul></div></div><div><p class="f-sl">KONW-4 · Zapytaj o finansowanie</p><div class="tel"><div class="form">
-  <h4>Zapytaj o finansowanie</h4><p class="f-lead">Parametry z kalkulatora już są.</p>
-  <div class="f-info"><span>Twoja kalkulacja</span><b>Leasing · dla firmy · 48 mies. · wpłata 20% · wykup 1% · rata [X] zł netto</b></div><div class="f-pole"><label>Telefon <b class="wym">*</b></label><div class="f-in">+48 …</div></div><div class="f-pole"><label>E-mail <b class="wym">*</b></label><div class="f-in">twoj@email.pl</div></div><div class="f-zgody"><label class="f-check"><span class="f-box"></span><span>Zgoda na kontakt w tej sprawie… <u>Rozwiń</u> <b class="wym">*</b></span></label></div>
-  <div class="cs-btn cs-btn--pelny">Zapytaj o finansowanie</div>
-  <details class="f-zasady"><summary>Zasady i dane osobowe</summary><ul class="f-zast"><li>Kalkulacja ma charakter poglądowy i nie stanowi oferty. Finansowania udziela [partner finansowy]; decyzja zależy od oceny zdolności kredytowej.</li><li>Przy kredycie dla osoby prywatnej przykład reprezentatywny (RRSO, całkowita kwota, całkowity koszt, oprocentowanie) — [dane od partnera; wymagane przy reklamie kredytu konsumenckiego].</li><li>Status China Select przy finansowaniu: [pośrednik / polecający — do potwierdzenia prawnego].</li><li>Administrator: [spółka]. Zasady i dane osobowe →</li></ul></details>
-</div></div><div class="f-pyt"><b>Po wysłaniu dopytujemy (opcjonalnie):</b><ul><li>Imię, firma czy osoba prywatna, NIP — doradca dopyta w rozmowie</li><li>Nowe oferty aut na e-mail (osobna zgoda, opcjonalnie)</li></ul></div></div><div><p class="f-sl">KONW-5 · Zarezerwuj to auto</p><div class="tel"><div class="form">
-  <h4>Rezerwacja auta</h4><p class="f-lead">Teraz bez płatności. Doradca zadzwoni z umową: wpłacasz [1 000 zł], resztę przy odbiorze w Polsce.</p>
-  <div class="f-pole"><label>Telefon <b class="wym">*</b></label><div class="f-in">+48 …</div></div><div class="f-pole"><label>E-mail <b class="wym">*</b></label><div class="f-in">twoj@email.pl</div></div><label class="f-check"><span class="f-box"></span><span>Akceptuję warunki rezerwacji → <b class="wym">*</b></span></label><div class="f-zgody"><label class="f-check"><span class="f-box"></span><span>Zgoda na kontakt w tej sprawie… <u>Rozwiń</u> <b class="wym">*</b></span></label></div>
-  <div class="cs-btn cs-btn--pelny">Zarezerwuj to auto</div>
-  <details class="f-zasady"><summary>Zasady i dane osobowe</summary><ul class="f-zast"><li>Rezerwacja wstępna. Auto czeka na Ciebie [X dni] od wysłania formularza; wiążąca jest dopiero wpłata [zaliczki / zadatku — decyzja SP02] według umowy.</li><li>Zasady zwrotu wpłaty: [do decyzji prawnej]. Zadatek i zaliczka mają różne skutki przy odstąpieniu (art. 394 Kodeksu cywilnego).</li><li>Prawo odstąpienia od umowy zawartej na odległość: [do decyzji prawnej].</li><li>Administrator: [spółka]. Zasady i dane osobowe →</li></ul></details>
-</div></div><div class="f-pyt"><b>Po wysłaniu dopytujemy (opcjonalnie):</b><ul><li>Imię i nazwisko i dane do umowy — doradca w rozmowie z umową</li></ul></div></div><div><p class="f-sl">KONW-6 · Zadaj pytanie</p><div class="tel"><div class="form">
-  <h4>W czym możemy pomóc?</h4><p class="f-lead">Wybierz temat i zostaw kontakt. Doradca odpowie [w ciągu X h].</p>
-  <div class="f-pole"><label>Temat <b class="wym">*</b></label><div class="f-in">Wybierz temat ▾</div></div><div class="f-pole"><label>Imię <span class="opc">(opcjonalnie)</span></label><div class="f-in">Jak się do Ciebie zwracać?</div></div><div class="f-pole"><label>Telefon <b class="wym">*</b></label><div class="f-in">+48 …</div></div><div class="f-pole"><label>E-mail <b class="wym">*</b></label><div class="f-in">twoj@email.pl</div></div><div class="f-pole"><label>Wiadomość <span class="opc">(opcjonalnie)</span></label><div class="f-in f-in--ta">Napisz krótko, w czym możemy pomóc (do 300 znaków)</div></div><div class="f-zgody"><label class="f-check"><span class="f-box"></span><span>Zgoda na kontakt w tej sprawie… <u>Rozwiń</u> <b class="wym">*</b></span></label></div>
-  <div class="cs-btn cs-btn--pelny">Zadaj pytanie</div><div class="f-pod-akcje"><p>Wolisz inaczej?</p><div><span class="f-akcja">Zadzwoń</span><span class="f-akcja">WhatsApp</span></div></div>
-  <details class="f-zasady"><summary>Zasady i dane osobowe</summary><ul class="f-zast"><li>Odpowiadamy pn–pt [09:00–17:00]. Poza tymi godzinami — następnego dnia roboczego. [Czas odpowiedzi do ustalenia razem z czasem oddzwonienia KONW-3]</li><li>Pierwszą odpowiedź może przygotować asystent AI China Select. [obowiązek informacyjny AI Act art. 50 — do decyzji prawnej]</li><li>Administrator: [spółka]. Zasady i dane osobowe →</li></ul></details>
-</div></div><div class="f-pyt"><b>Po wysłaniu dopytujemy (opcjonalnie):</b><ul><li>O które auto chodzi? (opcjonalnie — link do oferty)</li><li>Jak się do Ciebie zwracać? (opcjonalnie)</li><li>Nowe oferty aut na e-mail (osobna zgoda, opcjonalnie)</li></ul></div></div></div></section>
-<section class="blok"><h2>Które przyciski w którym widoku</h2><div class="mapa"><div class="mapa-w"><h4>Karta auta</h4><a href="#k-1" class="mapa-cta"><span class="dr-nr dr-nr--s">1</span>Zamów raport</a><a href="#k-3" class="mapa-cta"><span class="dr-nr dr-nr--s">3</span>Zamów rozmowę</a><a href="#k-4" class="mapa-cta"><span class="dr-nr dr-nr--s">4</span>Zapytaj o finansowanie</a><a href="#k-6" class="mapa-cta"><span class="dr-nr dr-nr--s">6</span>Zadaj pytanie</a></div><div class="mapa-w"><h4>Lista aut</h4><a href="#k-1" class="mapa-cta"><span class="dr-nr dr-nr--s">1</span>Zamów raport</a></div><div class="mapa-w"><h4>Strona główna</h4><a href="#k-1" class="mapa-cta"><span class="dr-nr dr-nr--s">1</span>Zamów raport</a><a href="#k-2" class="mapa-cta"><span class="dr-nr dr-nr--s">2</span>Zapytaj o ofertę</a><a href="#k-3" class="mapa-cta"><span class="dr-nr dr-nr--s">3</span>Zamów rozmowę</a></div><div class="mapa-w"><h4>Karta auta (telefon)</h4><a href="#k-2" class="mapa-cta"><span class="dr-nr dr-nr--s">2</span>Zapytaj o ofertę</a><a href="#k-3" class="mapa-cta"><span class="dr-nr dr-nr--s">3</span>Zamów rozmowę</a><a href="#k-4" class="mapa-cta"><span class="dr-nr dr-nr--s">4</span>Zapytaj o finansowanie</a><a href="#k-5" class="mapa-cta"><span class="dr-nr dr-nr--s">5</span>Zarezerwuj to auto</a><a href="#k-6" class="mapa-cta"><span class="dr-nr dr-nr--s">6</span>Zadaj pytanie</a></div><div class="mapa-w"><h4>Lista aut (telefon)</h4><a href="#k-3" class="mapa-cta"><span class="dr-nr dr-nr--s">3</span>Zamów rozmowę</a></div><div class="mapa-w"><h4>Strona Kontakt</h4><a href="#k-6" class="mapa-cta"><span class="dr-nr dr-nr--s">6</span>Zadaj pytanie</a></div></div></section>
+<section class="blok" id="formularze"><h2>Formularze — okna ze strony testowej, dziś i projekt</h2><p class="uw">Wygląd, układ i przyciski są z dzisiejszej strony testowej China Select (20.10). Projekt zmienia tylko to, co jest na znacznikach: standard telefon + e-mail (oba wymagane), zgoda w jednej linii z „Rozwiń”, napis przycisku zgodny z przyciskiem na karcie i inne drogi kontaktu pod spodem.</p><div class="fp-blok"><p class="f-sl">KONW-1 · Zamów raport</p><div class="fp"><div class="fp-kol"><p class="fp-l">Dziś · strona testowa 20.10</p><div class="skala" data-w="860"><div class="skala-in" style="width:860px;padding:20px;background:#ece9e3"><!-- KONW-1 · Zamów raport — DZIŚ na stronie testowej (20.10), odtworzone 1:1 -->
+<style>
+.csm{width:820px;display:grid;grid-template-columns:256px 1fr;font-family:'Satoshi',sans-serif;border-radius:6px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.28);background:#fff;color:#141517}
+.csm *{box-sizing:border-box}
+.csm-l{background:#131416;color:#F0EDE8;padding:18px 18px 22px;display:flex;flex-direction:column}
+.csm-foto{height:165px;background:#222 url(img/reko/karta_auta/galeria_dzis_mobile.jpg) center/cover;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.csm-l small{display:block;margin-top:20px;font-size:10px;letter-spacing:.12em;font-weight:800;color:#E6A84A;text-transform:uppercase}
+.csm-l h5{margin:6px 0 2px;font-size:16px}.csm-l .nr{font-size:12px;color:#b9b5ad}.csm-l .nr b{color:#E6A84A}
+.csm-l hr{border:0;border-top:1px solid #2c2e33;margin:16px 0 12px}
+.csm-l .cl{font-size:10px;letter-spacing:.08em;color:#9a968e;text-transform:uppercase}.csm-l .cv{font-size:17px;font-weight:800;margin-top:2px}
+.csm-l .gw{display:flex;gap:8px;align-items:center;margin-top:auto;padding-top:14px;font-size:11px;color:#b9b5ad}.csm-l .gw b{display:block;color:#fff}
+.csm-r{padding:26px 28px 26px;position:relative}
+.csm-x{position:absolute;right:18px;top:18px;width:34px;height:34px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:18px}
+.csm-r h4{font-size:27px;line-height:1.15;margin:0 46px 10px 0;letter-spacing:-.01em}
+.csm-lead{font-size:12.5px;color:#5a5a5a;margin:0 0 16px;line-height:1.5}
+.csm-in{position:relative;border:1px solid #e3e3e3;border-radius:7px;height:42px;display:flex;align-items:center;gap:9px;padding:0 13px;font-size:14px;color:#8a8a8a;margin-bottom:10px}
+.csm-in .v{color:#141517}.csm-in svg{width:16px;height:16px;stroke:#8a8a8a;fill:none;stroke-width:1.7;flex:none}
+.csm-dw{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.csm-info{border:1px solid #f0dcb5;background:#fbf4e6;border-radius:7px;padding:9px 12px;font-size:12.5px;margin-bottom:10px;position:relative}
+.csm-info b{color:#9a6a12}
+.csm-zg{font-size:10.5px;color:#5a5a5a;line-height:1.5;margin:4px 0 14px;position:relative}
+.csm-zg.chk{display:flex;gap:10px;align-items:center;font-size:12px}.csm-zg.chk i{width:18px;height:18px;border:1.5px solid #cfcfcf;border-radius:4px;flex:none}
+.csm-btn{height:46px;background:#E6A84A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);position:relative}
+.csm-alt{margin-top:12px;text-align:center;position:relative}.csm-alt p{font-size:11.5px;color:#7a7a7a;margin:0 0 6px}
+.csm-alt div{display:flex;gap:8px}.csm-alt span{flex:1;height:38px;border:1.5px solid #E6A84A;color:#141517;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:2px}
+.csm .gwz{color:#c0392b;font-weight:700}
+.csm .var{background:rgba(232,172,76,.15);border:1px dashed rgba(232,172,76,.7);color:#9a6a12;padding:0 4px;border-radius:3px}
+.csm .marker{position:absolute;right:-9px;top:-9px;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#E8AC4C;color:#0A0D0F;font-size:11px;font-weight:900;z-index:2}
+.csm .csm-zm{outline:2px solid #E8AC4C;outline-offset:2px;border-radius:6px}
+</style>
+<div class="csm">
+ <div class="csm-l"><div class="csm-foto"></div><small>Wybrany samochód</small><h5>XPeng G6 2023</h5><div class="nr">Nr ogłoszenia <b>74</b></div>
+  <hr><div class="cl">Cena brutto</div><div class="cv">18 592 zł</div>
+  <div class="gw"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#E6A84A;fill:none;stroke-width:1.8;flex:none"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Zweryfikowany i objęty<b>Gwarancją China Auto Select</b></span></div></div>
+ <div class="csm-r"><div class="csm-x">×</div>
+  <h4>Zamów raport techniczny</h4><p class="csm-lead">Zostaw dane kontaktowe. Doradca sprawdzi dostępność raportu technicznego tego samochodu i skontaktuje się z Tobą.</p>
+  <div class="csm-in"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Imię</div>
+  <div class="csm-dw"><div class="csm-in"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span class="v">+48</span></div><div class="csm-in"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Adres e-mail (opcjonalnie)</div></div>
+  <div class="csm-zg">Klikając przycisk „Poznaj ofertę”, wyrażasz zgodę na przetwarzanie danych osobowych i zamawiasz kontakt w sprawie oferty China Auto Select oraz akceptujesz <u>Politykę Prywatności</u>.</div>
+  <div style="position:relative" class=""><div class="csm-btn">Poznaj ofertę</div></div>
+ </div></div></div></div></div><div class="fp-kol"><p class="fp-l">Projekt · zmiany na znacznikach</p><div class="skala" data-w="860"><div class="skala-in" style="width:860px;padding:20px;background:#ece9e3"><!-- KONW-1 · Zamów raport — PROJEKT w wyglądzie strony testowej (20.10). Zmiany: 1. E-mail wymagany — na niego idzie raport · 2. Zgoda w jednej linii z „Rozwiń” · 3. Przycisk zgodny z tytułem okna (dziś „Poznaj ofertę”) · 4. Opis mówi, gdzie przyjdzie raport. Reszta 1:1 jak dziś. -->
+<style>
+.csm{width:820px;display:grid;grid-template-columns:256px 1fr;font-family:'Satoshi',sans-serif;border-radius:6px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.28);background:#fff;color:#141517}
+.csm *{box-sizing:border-box}
+.csm-l{background:#131416;color:#F0EDE8;padding:18px 18px 22px;display:flex;flex-direction:column}
+.csm-foto{height:165px;background:#222 url(img/reko/karta_auta/galeria_dzis_mobile.jpg) center/cover;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.csm-l small{display:block;margin-top:20px;font-size:10px;letter-spacing:.12em;font-weight:800;color:#E6A84A;text-transform:uppercase}
+.csm-l h5{margin:6px 0 2px;font-size:16px}.csm-l .nr{font-size:12px;color:#b9b5ad}.csm-l .nr b{color:#E6A84A}
+.csm-l hr{border:0;border-top:1px solid #2c2e33;margin:16px 0 12px}
+.csm-l .cl{font-size:10px;letter-spacing:.08em;color:#9a968e;text-transform:uppercase}.csm-l .cv{font-size:17px;font-weight:800;margin-top:2px}
+.csm-l .gw{display:flex;gap:8px;align-items:center;margin-top:auto;padding-top:14px;font-size:11px;color:#b9b5ad}.csm-l .gw b{display:block;color:#fff}
+.csm-r{padding:26px 28px 26px;position:relative}
+.csm-x{position:absolute;right:18px;top:18px;width:34px;height:34px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:18px}
+.csm-r h4{font-size:27px;line-height:1.15;margin:0 46px 10px 0;letter-spacing:-.01em}
+.csm-lead{font-size:12.5px;color:#5a5a5a;margin:0 0 16px;line-height:1.5}
+.csm-in{position:relative;border:1px solid #e3e3e3;border-radius:7px;height:42px;display:flex;align-items:center;gap:9px;padding:0 13px;font-size:14px;color:#8a8a8a;margin-bottom:10px}
+.csm-in .v{color:#141517}.csm-in svg{width:16px;height:16px;stroke:#8a8a8a;fill:none;stroke-width:1.7;flex:none}
+.csm-dw{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.csm-info{border:1px solid #f0dcb5;background:#fbf4e6;border-radius:7px;padding:9px 12px;font-size:12.5px;margin-bottom:10px;position:relative}
+.csm-info b{color:#9a6a12}
+.csm-zg{font-size:10.5px;color:#5a5a5a;line-height:1.5;margin:4px 0 14px;position:relative}
+.csm-zg.chk{display:flex;gap:10px;align-items:center;font-size:12px}.csm-zg.chk i{width:18px;height:18px;border:1.5px solid #cfcfcf;border-radius:4px;flex:none}
+.csm-btn{height:46px;background:#E6A84A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);position:relative}
+.csm-alt{margin-top:12px;text-align:center;position:relative}.csm-alt p{font-size:11.5px;color:#7a7a7a;margin:0 0 6px}
+.csm-alt div{display:flex;gap:8px}.csm-alt span{flex:1;height:38px;border:1.5px solid #E6A84A;color:#141517;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:2px}
+.csm .gwz{color:#c0392b;font-weight:700}
+.csm .var{background:rgba(232,172,76,.15);border:1px dashed rgba(232,172,76,.7);color:#9a6a12;padding:0 4px;border-radius:3px}
+.csm .marker{position:absolute;right:-9px;top:-9px;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#E8AC4C;color:#0A0D0F;font-size:11px;font-weight:900;z-index:2}
+.csm .csm-zm{outline:2px solid #E8AC4C;outline-offset:2px;border-radius:6px}
+</style>
+<div class="csm">
+ <div class="csm-l"><div class="csm-foto"></div><small>Wybrany samochód</small><h5>XPeng G6 2023</h5><div class="nr">Nr ogłoszenia <b>74</b></div>
+  <hr><div class="cl">Cena brutto</div><div class="cv">18 592 zł</div>
+  <div class="gw"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#E6A84A;fill:none;stroke-width:1.8;flex:none"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Zweryfikowany i objęty<b>Gwarancją China Auto Select</b></span></div></div>
+ <div class="csm-r"><div class="csm-x">×</div>
+  <h4>Zamów raport techniczny</h4><p class="csm-lead csm-zm" style="position:relative"><span class="marker">4</span>Zostaw dane kontaktowe. Raport wyślemy na e-mail, doradca zadzwoni, jeśli zechcesz go omówić.</p>
+  <div class="csm-in"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Imię</div>
+  <div class="csm-dw"><div class="csm-in"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span class="v">+48</span> <span class="gwz">*</span></div><div class="csm-in csm-zm"><span class="marker">1</span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Adres e-mail <span class="gwz">*</span></div></div>
+  <div class="csm-zg chk csm-zm"><span class="marker">2</span><i></i><span>Zgoda na kontakt w tej sprawie, także automatyczny… <u>Rozwiń</u> <span class="gwz">*</span></span></div>
+  <div style="position:relative" class="csm-zm"><span class="marker">3</span><div class="csm-btn">Zamów raport</div></div>
+ </div></div></div></div></div></div><ol class="fp-zm"><li>E-mail wymagany — na niego idzie raport</li><li>Zgoda w jednej linii z „Rozwiń”</li><li>Przycisk zgodny z tytułem okna (dziś „Poznaj ofertę”)</li><li>Opis mówi, gdzie przyjdzie raport</li></ol></div><div class="fp-blok"><p class="f-sl">KONW-2 · Zapytaj o ofertę</p><div class="fp"><div class="fp-kol"><p class="fp-l">Dziś · strona testowa 20.10</p><div class="skala" data-w="860"><div class="skala-in" style="width:860px;padding:20px;background:#ece9e3"><!-- KONW-2 · Zapytaj o ofertę — DZIŚ na stronie testowej (20.10), odtworzone 1:1 -->
+<style>
+.csm{width:820px;display:grid;grid-template-columns:256px 1fr;font-family:'Satoshi',sans-serif;border-radius:6px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.28);background:#fff;color:#141517}
+.csm *{box-sizing:border-box}
+.csm-l{background:#131416;color:#F0EDE8;padding:18px 18px 22px;display:flex;flex-direction:column}
+.csm-foto{height:165px;background:#222 url(img/reko/karta_auta/galeria_dzis_mobile.jpg) center/cover;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.csm-l small{display:block;margin-top:20px;font-size:10px;letter-spacing:.12em;font-weight:800;color:#E6A84A;text-transform:uppercase}
+.csm-l h5{margin:6px 0 2px;font-size:16px}.csm-l .nr{font-size:12px;color:#b9b5ad}.csm-l .nr b{color:#E6A84A}
+.csm-l hr{border:0;border-top:1px solid #2c2e33;margin:16px 0 12px}
+.csm-l .cl{font-size:10px;letter-spacing:.08em;color:#9a968e;text-transform:uppercase}.csm-l .cv{font-size:17px;font-weight:800;margin-top:2px}
+.csm-l .gw{display:flex;gap:8px;align-items:center;margin-top:auto;padding-top:14px;font-size:11px;color:#b9b5ad}.csm-l .gw b{display:block;color:#fff}
+.csm-r{padding:26px 28px 26px;position:relative}
+.csm-x{position:absolute;right:18px;top:18px;width:34px;height:34px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:18px}
+.csm-r h4{font-size:27px;line-height:1.15;margin:0 46px 10px 0;letter-spacing:-.01em}
+.csm-lead{font-size:12.5px;color:#5a5a5a;margin:0 0 16px;line-height:1.5}
+.csm-in{position:relative;border:1px solid #e3e3e3;border-radius:7px;height:42px;display:flex;align-items:center;gap:9px;padding:0 13px;font-size:14px;color:#8a8a8a;margin-bottom:10px}
+.csm-in .v{color:#141517}.csm-in svg{width:16px;height:16px;stroke:#8a8a8a;fill:none;stroke-width:1.7;flex:none}
+.csm-dw{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.csm-info{border:1px solid #f0dcb5;background:#fbf4e6;border-radius:7px;padding:9px 12px;font-size:12.5px;margin-bottom:10px;position:relative}
+.csm-info b{color:#9a6a12}
+.csm-zg{font-size:10.5px;color:#5a5a5a;line-height:1.5;margin:4px 0 14px;position:relative}
+.csm-zg.chk{display:flex;gap:10px;align-items:center;font-size:12px}.csm-zg.chk i{width:18px;height:18px;border:1.5px solid #cfcfcf;border-radius:4px;flex:none}
+.csm-btn{height:46px;background:#E6A84A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);position:relative}
+.csm-alt{margin-top:12px;text-align:center;position:relative}.csm-alt p{font-size:11.5px;color:#7a7a7a;margin:0 0 6px}
+.csm-alt div{display:flex;gap:8px}.csm-alt span{flex:1;height:38px;border:1.5px solid #E6A84A;color:#141517;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:2px}
+.csm .gwz{color:#c0392b;font-weight:700}
+.csm .var{background:rgba(232,172,76,.15);border:1px dashed rgba(232,172,76,.7);color:#9a6a12;padding:0 4px;border-radius:3px}
+.csm .marker{position:absolute;right:-9px;top:-9px;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#E8AC4C;color:#0A0D0F;font-size:11px;font-weight:900;z-index:2}
+.csm .csm-zm{outline:2px solid #E8AC4C;outline-offset:2px;border-radius:6px}
+</style>
+<div class="csm">
+ <div class="csm-l"><div class="csm-foto"></div><small>Wybrany samochód</small><h5>XPeng G6 2023</h5><div class="nr">Nr ogłoszenia <b>74</b></div>
+  <hr><div class="cl">Cena brutto</div><div class="cv">18 592 zł</div>
+  <div class="gw"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#E6A84A;fill:none;stroke-width:1.8;flex:none"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Zweryfikowany i objęty<b>Gwarancją China Auto Select</b></span></div></div>
+ <div class="csm-r"><div class="csm-x">×</div>
+  <h4>Poznaj najlepszą ofertę na XPeng G6 2023</h4><p class="csm-lead">Zostaw numer. Doradca pozna Twoje potrzeby i przygotuje dla Ciebie najlepszą ofertę.</p>
+  <div class="csm-in"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Imię</div>
+  <div class="csm-dw"><div class="csm-in"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span class="v">+48</span></div><div class="csm-in"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Adres e-mail (opcjonalnie)</div></div>
+  <div class="csm-zg">Klikając przycisk „Poznaj ofertę”, wyrażasz zgodę na przetwarzanie danych osobowych i zamawiasz kontakt w sprawie oferty China Auto Select oraz akceptujesz <u>Politykę Prywatności</u>.</div>
+  <div style="position:relative" class=""><div class="csm-btn">Poznaj ofertę</div></div>
+ </div></div></div></div></div><div class="fp-kol"><p class="fp-l">Projekt · zmiany na znacznikach</p><div class="skala" data-w="860"><div class="skala-in" style="width:860px;padding:20px;background:#ece9e3"><!-- KONW-2 · Zapytaj o ofertę — PROJEKT w wyglądzie strony testowej (20.10). Zmiany: 1. E-mail wymagany (standard telefon + e-mail) · 2. Zgoda w jednej linii z „Rozwiń” (kontakt także automatyczny) · 3. Przycisk = napis z karty: „Zapytaj o ofertę” · 4. Pod przyciskiem trzy inne drogi: Zamów rozmowę · Zadzwoń · WhatsApp. Reszta 1:1 jak dziś. -->
+<style>
+.csm{width:820px;display:grid;grid-template-columns:256px 1fr;font-family:'Satoshi',sans-serif;border-radius:6px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.28);background:#fff;color:#141517}
+.csm *{box-sizing:border-box}
+.csm-l{background:#131416;color:#F0EDE8;padding:18px 18px 22px;display:flex;flex-direction:column}
+.csm-foto{height:165px;background:#222 url(img/reko/karta_auta/galeria_dzis_mobile.jpg) center/cover;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.csm-l small{display:block;margin-top:20px;font-size:10px;letter-spacing:.12em;font-weight:800;color:#E6A84A;text-transform:uppercase}
+.csm-l h5{margin:6px 0 2px;font-size:16px}.csm-l .nr{font-size:12px;color:#b9b5ad}.csm-l .nr b{color:#E6A84A}
+.csm-l hr{border:0;border-top:1px solid #2c2e33;margin:16px 0 12px}
+.csm-l .cl{font-size:10px;letter-spacing:.08em;color:#9a968e;text-transform:uppercase}.csm-l .cv{font-size:17px;font-weight:800;margin-top:2px}
+.csm-l .gw{display:flex;gap:8px;align-items:center;margin-top:auto;padding-top:14px;font-size:11px;color:#b9b5ad}.csm-l .gw b{display:block;color:#fff}
+.csm-r{padding:26px 28px 26px;position:relative}
+.csm-x{position:absolute;right:18px;top:18px;width:34px;height:34px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:18px}
+.csm-r h4{font-size:27px;line-height:1.15;margin:0 46px 10px 0;letter-spacing:-.01em}
+.csm-lead{font-size:12.5px;color:#5a5a5a;margin:0 0 16px;line-height:1.5}
+.csm-in{position:relative;border:1px solid #e3e3e3;border-radius:7px;height:42px;display:flex;align-items:center;gap:9px;padding:0 13px;font-size:14px;color:#8a8a8a;margin-bottom:10px}
+.csm-in .v{color:#141517}.csm-in svg{width:16px;height:16px;stroke:#8a8a8a;fill:none;stroke-width:1.7;flex:none}
+.csm-dw{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.csm-info{border:1px solid #f0dcb5;background:#fbf4e6;border-radius:7px;padding:9px 12px;font-size:12.5px;margin-bottom:10px;position:relative}
+.csm-info b{color:#9a6a12}
+.csm-zg{font-size:10.5px;color:#5a5a5a;line-height:1.5;margin:4px 0 14px;position:relative}
+.csm-zg.chk{display:flex;gap:10px;align-items:center;font-size:12px}.csm-zg.chk i{width:18px;height:18px;border:1.5px solid #cfcfcf;border-radius:4px;flex:none}
+.csm-btn{height:46px;background:#E6A84A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);position:relative}
+.csm-alt{margin-top:12px;text-align:center;position:relative}.csm-alt p{font-size:11.5px;color:#7a7a7a;margin:0 0 6px}
+.csm-alt div{display:flex;gap:8px}.csm-alt span{flex:1;height:38px;border:1.5px solid #E6A84A;color:#141517;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:2px}
+.csm .gwz{color:#c0392b;font-weight:700}
+.csm .var{background:rgba(232,172,76,.15);border:1px dashed rgba(232,172,76,.7);color:#9a6a12;padding:0 4px;border-radius:3px}
+.csm .marker{position:absolute;right:-9px;top:-9px;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#E8AC4C;color:#0A0D0F;font-size:11px;font-weight:900;z-index:2}
+.csm .csm-zm{outline:2px solid #E8AC4C;outline-offset:2px;border-radius:6px}
+</style>
+<div class="csm">
+ <div class="csm-l"><div class="csm-foto"></div><small>Wybrany samochód</small><h5>XPeng G6 2023</h5><div class="nr">Nr ogłoszenia <b>74</b></div>
+  <hr><div class="cl">Cena brutto</div><div class="cv">18 592 zł</div>
+  <div class="gw"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#E6A84A;fill:none;stroke-width:1.8;flex:none"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Zweryfikowany i objęty<b>Gwarancją China Auto Select</b></span></div></div>
+ <div class="csm-r"><div class="csm-x">×</div>
+  <h4>Poznaj najlepszą ofertę na XPeng G6 2023</h4><p class="csm-lead">Zostaw numer. Doradca pozna Twoje potrzeby i przygotuje dla Ciebie najlepszą ofertę.</p>
+  <div class="csm-in"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Imię</div>
+  <div class="csm-dw"><div class="csm-in"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span class="v">+48</span> <span class="gwz">*</span></div><div class="csm-in csm-zm"><span class="marker">1</span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Adres e-mail <span class="gwz">*</span></div></div>
+  <div class="csm-zg chk csm-zm"><span class="marker">2</span><i></i><span>Zgoda na kontakt w tej sprawie, także automatyczny… <u>Rozwiń</u> <span class="gwz">*</span></span></div>
+  <div style="position:relative" class="csm-zm"><span class="marker">3</span><div class="csm-btn">Zapytaj o ofertę</div></div><div class="csm-alt csm-zm"><span class="marker">4</span><p>Wolisz inaczej?</p><div><span>Zamów rozmowę</span><span>Zadzwoń</span><span>WhatsApp</span></div></div>
+ </div></div></div></div></div></div><ol class="fp-zm"><li>E-mail wymagany (standard telefon + e-mail)</li><li>Zgoda w jednej linii z „Rozwiń” (kontakt także automatyczny)</li><li>Przycisk = napis z karty: „Zapytaj o ofertę”</li><li>Pod przyciskiem trzy inne drogi: Zamów rozmowę · Zadzwoń · WhatsApp</li></ol></div><div class="fp-blok"><p class="f-sl">KONW-3 · Zamów rozmowę</p><div class="fp"><div class="fp-kol"><p class="fp-l">Dziś · strona testowa 20.10</p><div class="fp-brak">Dziś na stronie testowej nie ma osobnego okna z formularzem.</div></div><div class="fp-kol"><p class="fp-l">Projekt · zmiany na znacznikach</p><div class="skala" data-w="860"><div class="skala-in" style="width:860px;padding:20px;background:#ece9e3"><!-- KONW-3 · Zamów rozmowę — PROJEKT w wyglądzie strony testowej (20.10). Zmiany: 1. Telefon + e-mail wymagane · 2. Zgoda w jednej linii z „Rozwiń” · 3. Przycisk „Zamów rozmowę” · 4. To samo okno co oferta, krótszy opis. Reszta 1:1 jak dziś. -->
+<style>
+.csm{width:820px;display:grid;grid-template-columns:256px 1fr;font-family:'Satoshi',sans-serif;border-radius:6px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.28);background:#fff;color:#141517}
+.csm *{box-sizing:border-box}
+.csm-l{background:#131416;color:#F0EDE8;padding:18px 18px 22px;display:flex;flex-direction:column}
+.csm-foto{height:165px;background:#222 url(img/reko/karta_auta/galeria_dzis_mobile.jpg) center/cover;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.csm-l small{display:block;margin-top:20px;font-size:10px;letter-spacing:.12em;font-weight:800;color:#E6A84A;text-transform:uppercase}
+.csm-l h5{margin:6px 0 2px;font-size:16px}.csm-l .nr{font-size:12px;color:#b9b5ad}.csm-l .nr b{color:#E6A84A}
+.csm-l hr{border:0;border-top:1px solid #2c2e33;margin:16px 0 12px}
+.csm-l .cl{font-size:10px;letter-spacing:.08em;color:#9a968e;text-transform:uppercase}.csm-l .cv{font-size:17px;font-weight:800;margin-top:2px}
+.csm-l .gw{display:flex;gap:8px;align-items:center;margin-top:auto;padding-top:14px;font-size:11px;color:#b9b5ad}.csm-l .gw b{display:block;color:#fff}
+.csm-r{padding:26px 28px 26px;position:relative}
+.csm-x{position:absolute;right:18px;top:18px;width:34px;height:34px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:18px}
+.csm-r h4{font-size:27px;line-height:1.15;margin:0 46px 10px 0;letter-spacing:-.01em}
+.csm-lead{font-size:12.5px;color:#5a5a5a;margin:0 0 16px;line-height:1.5}
+.csm-in{position:relative;border:1px solid #e3e3e3;border-radius:7px;height:42px;display:flex;align-items:center;gap:9px;padding:0 13px;font-size:14px;color:#8a8a8a;margin-bottom:10px}
+.csm-in .v{color:#141517}.csm-in svg{width:16px;height:16px;stroke:#8a8a8a;fill:none;stroke-width:1.7;flex:none}
+.csm-dw{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.csm-info{border:1px solid #f0dcb5;background:#fbf4e6;border-radius:7px;padding:9px 12px;font-size:12.5px;margin-bottom:10px;position:relative}
+.csm-info b{color:#9a6a12}
+.csm-zg{font-size:10.5px;color:#5a5a5a;line-height:1.5;margin:4px 0 14px;position:relative}
+.csm-zg.chk{display:flex;gap:10px;align-items:center;font-size:12px}.csm-zg.chk i{width:18px;height:18px;border:1.5px solid #cfcfcf;border-radius:4px;flex:none}
+.csm-btn{height:46px;background:#E6A84A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);position:relative}
+.csm-alt{margin-top:12px;text-align:center;position:relative}.csm-alt p{font-size:11.5px;color:#7a7a7a;margin:0 0 6px}
+.csm-alt div{display:flex;gap:8px}.csm-alt span{flex:1;height:38px;border:1.5px solid #E6A84A;color:#141517;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:2px}
+.csm .gwz{color:#c0392b;font-weight:700}
+.csm .var{background:rgba(232,172,76,.15);border:1px dashed rgba(232,172,76,.7);color:#9a6a12;padding:0 4px;border-radius:3px}
+.csm .marker{position:absolute;right:-9px;top:-9px;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#E8AC4C;color:#0A0D0F;font-size:11px;font-weight:900;z-index:2}
+.csm .csm-zm{outline:2px solid #E8AC4C;outline-offset:2px;border-radius:6px}
+</style>
+<div class="csm">
+ <div class="csm-l"><div class="csm-foto"></div><small>Wybrany samochód</small><h5>XPeng G6 2023</h5><div class="nr">Nr ogłoszenia <b>74</b></div>
+  <hr><div class="cl">Cena brutto</div><div class="cv">18 592 zł</div>
+  <div class="gw"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#E6A84A;fill:none;stroke-width:1.8;flex:none"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Zweryfikowany i objęty<b>Gwarancją China Auto Select</b></span></div></div>
+ <div class="csm-r"><div class="csm-x">×</div>
+  <h4>Zamów rozmowę</h4><p class="csm-lead csm-zm" style="position:relative"><span class="marker">4</span>Doradca oddzwoni w godzinach pracy.</p>
+  <div class="csm-in"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Imię</div>
+  <div class="csm-dw"><div class="csm-in"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span class="v">+48</span> <span class="gwz">*</span></div><div class="csm-in csm-zm"><span class="marker">1</span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Adres e-mail <span class="gwz">*</span></div></div>
+  <div class="csm-zg chk csm-zm"><span class="marker">2</span><i></i><span>Zgoda na kontakt w tej sprawie, także automatyczny… <u>Rozwiń</u> <span class="gwz">*</span></span></div>
+  <div style="position:relative" class="csm-zm"><span class="marker">3</span><div class="csm-btn">Zamów rozmowę</div></div>
+ </div></div></div></div></div></div><ol class="fp-zm"><li>Telefon + e-mail wymagane</li><li>Zgoda w jednej linii z „Rozwiń”</li><li>Przycisk „Zamów rozmowę”</li><li>To samo okno co oferta, krótszy opis</li></ol></div><div class="fp-blok"><p class="f-sl">KONW-4 · Zapytaj o finansowanie</p><div class="fp"><div class="fp-kol"><p class="fp-l">Dziś · strona testowa 20.10</p><div class="fp-brak">Dziś na stronie testowej nie ma osobnego okna z formularzem.</div></div><div class="fp-kol"><p class="fp-l">Projekt · zmiany na znacznikach</p><div class="skala" data-w="860"><div class="skala-in" style="width:860px;padding:20px;background:#ece9e3"><!-- KONW-4 · Zapytaj o finansowanie — PROJEKT w wyglądzie strony testowej (20.10). Zmiany: 1. Telefon + e-mail wymagane · 2. Zgoda w jednej linii z „Rozwiń” · 3. Przycisk „Zapytaj o finansowanie” (w zakładce Leasing zamiast „Poproś o ofertę”) · 4. Okno z wyliczeniem z suwaków zakładki Leasing. Reszta 1:1 jak dziś. -->
+<style>
+.csm{width:820px;display:grid;grid-template-columns:256px 1fr;font-family:'Satoshi',sans-serif;border-radius:6px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.28);background:#fff;color:#141517}
+.csm *{box-sizing:border-box}
+.csm-l{background:#131416;color:#F0EDE8;padding:18px 18px 22px;display:flex;flex-direction:column}
+.csm-foto{height:165px;background:#222 url(img/reko/karta_auta/galeria_dzis_mobile.jpg) center/cover;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.csm-l small{display:block;margin-top:20px;font-size:10px;letter-spacing:.12em;font-weight:800;color:#E6A84A;text-transform:uppercase}
+.csm-l h5{margin:6px 0 2px;font-size:16px}.csm-l .nr{font-size:12px;color:#b9b5ad}.csm-l .nr b{color:#E6A84A}
+.csm-l hr{border:0;border-top:1px solid #2c2e33;margin:16px 0 12px}
+.csm-l .cl{font-size:10px;letter-spacing:.08em;color:#9a968e;text-transform:uppercase}.csm-l .cv{font-size:17px;font-weight:800;margin-top:2px}
+.csm-l .gw{display:flex;gap:8px;align-items:center;margin-top:auto;padding-top:14px;font-size:11px;color:#b9b5ad}.csm-l .gw b{display:block;color:#fff}
+.csm-r{padding:26px 28px 26px;position:relative}
+.csm-x{position:absolute;right:18px;top:18px;width:34px;height:34px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:18px}
+.csm-r h4{font-size:27px;line-height:1.15;margin:0 46px 10px 0;letter-spacing:-.01em}
+.csm-lead{font-size:12.5px;color:#5a5a5a;margin:0 0 16px;line-height:1.5}
+.csm-in{position:relative;border:1px solid #e3e3e3;border-radius:7px;height:42px;display:flex;align-items:center;gap:9px;padding:0 13px;font-size:14px;color:#8a8a8a;margin-bottom:10px}
+.csm-in .v{color:#141517}.csm-in svg{width:16px;height:16px;stroke:#8a8a8a;fill:none;stroke-width:1.7;flex:none}
+.csm-dw{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.csm-info{border:1px solid #f0dcb5;background:#fbf4e6;border-radius:7px;padding:9px 12px;font-size:12.5px;margin-bottom:10px;position:relative}
+.csm-info b{color:#9a6a12}
+.csm-zg{font-size:10.5px;color:#5a5a5a;line-height:1.5;margin:4px 0 14px;position:relative}
+.csm-zg.chk{display:flex;gap:10px;align-items:center;font-size:12px}.csm-zg.chk i{width:18px;height:18px;border:1.5px solid #cfcfcf;border-radius:4px;flex:none}
+.csm-btn{height:46px;background:#E6A84A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);position:relative}
+.csm-alt{margin-top:12px;text-align:center;position:relative}.csm-alt p{font-size:11.5px;color:#7a7a7a;margin:0 0 6px}
+.csm-alt div{display:flex;gap:8px}.csm-alt span{flex:1;height:38px;border:1.5px solid #E6A84A;color:#141517;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:2px}
+.csm .gwz{color:#c0392b;font-weight:700}
+.csm .var{background:rgba(232,172,76,.15);border:1px dashed rgba(232,172,76,.7);color:#9a6a12;padding:0 4px;border-radius:3px}
+.csm .marker{position:absolute;right:-9px;top:-9px;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#E8AC4C;color:#0A0D0F;font-size:11px;font-weight:900;z-index:2}
+.csm .csm-zm{outline:2px solid #E8AC4C;outline-offset:2px;border-radius:6px}
+</style>
+<div class="csm">
+ <div class="csm-l"><div class="csm-foto"></div><small>Wybrany samochód</small><h5>XPeng G6 2023</h5><div class="nr">Nr ogłoszenia <b>74</b></div>
+  <hr><div class="cl">Cena brutto</div><div class="cv">18 592 zł</div>
+  <div class="gw"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#E6A84A;fill:none;stroke-width:1.8;flex:none"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Zweryfikowany i objęty<b>Gwarancją China Auto Select</b></span></div></div>
+ <div class="csm-r"><div class="csm-x">×</div>
+  <h4>Zapytaj o finansowanie</h4><p class="csm-lead">Zostaw dane kontaktowe. Doradca sprawdzi warunki u partnera finansowego i oddzwoni z kalkulacją.</p><div class="csm-info csm-zm"><span class="marker">4</span>Twoja kalkulacja: <b>leasing · 48 mies. · wpłata 10% · wykup 20% · 2 500 zł netto / mies.</b></div>
+  <div class="csm-in"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Imię</div>
+  <div class="csm-dw"><div class="csm-in"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span class="v">+48</span> <span class="gwz">*</span></div><div class="csm-in csm-zm"><span class="marker">1</span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Adres e-mail <span class="gwz">*</span></div></div>
+  <div class="csm-zg chk csm-zm"><span class="marker">2</span><i></i><span>Zgoda na kontakt w tej sprawie, także automatyczny… <u>Rozwiń</u> <span class="gwz">*</span></span></div>
+  <div style="position:relative" class="csm-zm"><span class="marker">3</span><div class="csm-btn">Zapytaj o finansowanie</div></div>
+ </div></div></div></div></div></div><ol class="fp-zm"><li>Telefon + e-mail wymagane</li><li>Zgoda w jednej linii z „Rozwiń”</li><li>Przycisk „Zapytaj o finansowanie” (w zakładce Leasing zamiast „Poproś o ofertę”)</li><li>Okno z wyliczeniem z suwaków zakładki Leasing</li></ol></div><div class="fp-blok"><p class="f-sl">KONW-5 · Zarezerwuj to auto</p><div class="fp"><div class="fp-kol"><p class="fp-l">Dziś · strona testowa 20.10</p><div class="skala" data-w="860"><div class="skala-in" style="width:860px;padding:20px;background:#ece9e3"><!-- KONW-5 · Zarezerwuj — DZIŚ na stronie testowej (20.10), odtworzone 1:1 -->
+<style>
+.csm{width:820px;display:grid;grid-template-columns:256px 1fr;font-family:'Satoshi',sans-serif;border-radius:6px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.28);background:#fff;color:#141517}
+.csm *{box-sizing:border-box}
+.csm-l{background:#131416;color:#F0EDE8;padding:18px 18px 22px;display:flex;flex-direction:column}
+.csm-foto{height:165px;background:#222 url(img/reko/karta_auta/galeria_dzis_mobile.jpg) center/cover;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.csm-l small{display:block;margin-top:20px;font-size:10px;letter-spacing:.12em;font-weight:800;color:#E6A84A;text-transform:uppercase}
+.csm-l h5{margin:6px 0 2px;font-size:16px}.csm-l .nr{font-size:12px;color:#b9b5ad}.csm-l .nr b{color:#E6A84A}
+.csm-l hr{border:0;border-top:1px solid #2c2e33;margin:16px 0 12px}
+.csm-l .cl{font-size:10px;letter-spacing:.08em;color:#9a968e;text-transform:uppercase}.csm-l .cv{font-size:17px;font-weight:800;margin-top:2px}
+.csm-l .gw{display:flex;gap:8px;align-items:center;margin-top:auto;padding-top:14px;font-size:11px;color:#b9b5ad}.csm-l .gw b{display:block;color:#fff}
+.csm-r{padding:26px 28px 26px;position:relative}
+.csm-x{position:absolute;right:18px;top:18px;width:34px;height:34px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:18px}
+.csm-r h4{font-size:27px;line-height:1.15;margin:0 46px 10px 0;letter-spacing:-.01em}
+.csm-lead{font-size:12.5px;color:#5a5a5a;margin:0 0 16px;line-height:1.5}
+.csm-in{position:relative;border:1px solid #e3e3e3;border-radius:7px;height:42px;display:flex;align-items:center;gap:9px;padding:0 13px;font-size:14px;color:#8a8a8a;margin-bottom:10px}
+.csm-in .v{color:#141517}.csm-in svg{width:16px;height:16px;stroke:#8a8a8a;fill:none;stroke-width:1.7;flex:none}
+.csm-dw{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.csm-info{border:1px solid #f0dcb5;background:#fbf4e6;border-radius:7px;padding:9px 12px;font-size:12.5px;margin-bottom:10px;position:relative}
+.csm-info b{color:#9a6a12}
+.csm-zg{font-size:10.5px;color:#5a5a5a;line-height:1.5;margin:4px 0 14px;position:relative}
+.csm-zg.chk{display:flex;gap:10px;align-items:center;font-size:12px}.csm-zg.chk i{width:18px;height:18px;border:1.5px solid #cfcfcf;border-radius:4px;flex:none}
+.csm-btn{height:46px;background:#E6A84A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);position:relative}
+.csm-alt{margin-top:12px;text-align:center;position:relative}.csm-alt p{font-size:11.5px;color:#7a7a7a;margin:0 0 6px}
+.csm-alt div{display:flex;gap:8px}.csm-alt span{flex:1;height:38px;border:1.5px solid #E6A84A;color:#141517;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:2px}
+.csm .gwz{color:#c0392b;font-weight:700}
+.csm .var{background:rgba(232,172,76,.15);border:1px dashed rgba(232,172,76,.7);color:#9a6a12;padding:0 4px;border-radius:3px}
+.csm .marker{position:absolute;right:-9px;top:-9px;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#E8AC4C;color:#0A0D0F;font-size:11px;font-weight:900;z-index:2}
+.csm .csm-zm{outline:2px solid #E8AC4C;outline-offset:2px;border-radius:6px}
+</style>
+<div class="csm">
+ <div class="csm-l"><div class="csm-foto"></div><small>Wybrany samochód</small><h5>XPeng G6 2023</h5><div class="nr">Nr ogłoszenia <b>74</b></div>
+  <hr><div class="cl">Cena brutto</div><div class="cv">18 592 zł</div>
+  <div class="gw"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#E6A84A;fill:none;stroke-width:1.8;flex:none"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Zweryfikowany i objęty<b>Gwarancją China Auto Select</b></span></div></div>
+ <div class="csm-r"><div class="csm-x">×</div>
+  <h4>Zapytaj o rezerwację</h4><p class="csm-lead">Zostaw dane kontaktowe. Doradca potwierdzi dostępność samochodu i wyjaśni warunki rezerwacji. Wysłanie formularza nie rezerwuje pojazdu.</p>
+  <div class="csm-in"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Imię</div>
+  <div class="csm-dw"><div class="csm-in"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span class="v">+48</span></div><div class="csm-in"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Adres e-mail (opcjonalnie)</div></div>
+  <div class="csm-zg">Klikając przycisk „Poznaj ofertę”, wyrażasz zgodę na przetwarzanie danych osobowych i zamawiasz kontakt w sprawie oferty China Auto Select oraz akceptujesz <u>Politykę Prywatności</u>.</div>
+  <div style="position:relative" class=""><div class="csm-btn">Poznaj ofertę</div></div>
+ </div></div></div></div></div><div class="fp-kol"><p class="fp-l">Projekt · zmiany na znacznikach</p><div class="skala" data-w="860"><div class="skala-in" style="width:860px;padding:20px;background:#ece9e3"><!-- KONW-5 · Zarezerwuj — PROJEKT w wyglądzie strony testowej (20.10). Zmiany: 1. E-mail wymagany (standard telefon + e-mail) · 2. Zgoda w jednej linii z „Rozwiń” · 3. Przycisk zgodny z tytułem okna (dziś „Poznaj ofertę”) · 4. Kwota rezerwacji widoczna przed wysłaniem. Reszta 1:1 jak dziś. -->
+<style>
+.csm{width:820px;display:grid;grid-template-columns:256px 1fr;font-family:'Satoshi',sans-serif;border-radius:6px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.28);background:#fff;color:#141517}
+.csm *{box-sizing:border-box}
+.csm-l{background:#131416;color:#F0EDE8;padding:18px 18px 22px;display:flex;flex-direction:column}
+.csm-foto{height:165px;background:#222 url(img/reko/karta_auta/galeria_dzis_mobile.jpg) center/cover;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.csm-l small{display:block;margin-top:20px;font-size:10px;letter-spacing:.12em;font-weight:800;color:#E6A84A;text-transform:uppercase}
+.csm-l h5{margin:6px 0 2px;font-size:16px}.csm-l .nr{font-size:12px;color:#b9b5ad}.csm-l .nr b{color:#E6A84A}
+.csm-l hr{border:0;border-top:1px solid #2c2e33;margin:16px 0 12px}
+.csm-l .cl{font-size:10px;letter-spacing:.08em;color:#9a968e;text-transform:uppercase}.csm-l .cv{font-size:17px;font-weight:800;margin-top:2px}
+.csm-l .gw{display:flex;gap:8px;align-items:center;margin-top:auto;padding-top:14px;font-size:11px;color:#b9b5ad}.csm-l .gw b{display:block;color:#fff}
+.csm-r{padding:26px 28px 26px;position:relative}
+.csm-x{position:absolute;right:18px;top:18px;width:34px;height:34px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:18px}
+.csm-r h4{font-size:27px;line-height:1.15;margin:0 46px 10px 0;letter-spacing:-.01em}
+.csm-lead{font-size:12.5px;color:#5a5a5a;margin:0 0 16px;line-height:1.5}
+.csm-in{position:relative;border:1px solid #e3e3e3;border-radius:7px;height:42px;display:flex;align-items:center;gap:9px;padding:0 13px;font-size:14px;color:#8a8a8a;margin-bottom:10px}
+.csm-in .v{color:#141517}.csm-in svg{width:16px;height:16px;stroke:#8a8a8a;fill:none;stroke-width:1.7;flex:none}
+.csm-dw{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.csm-info{border:1px solid #f0dcb5;background:#fbf4e6;border-radius:7px;padding:9px 12px;font-size:12.5px;margin-bottom:10px;position:relative}
+.csm-info b{color:#9a6a12}
+.csm-zg{font-size:10.5px;color:#5a5a5a;line-height:1.5;margin:4px 0 14px;position:relative}
+.csm-zg.chk{display:flex;gap:10px;align-items:center;font-size:12px}.csm-zg.chk i{width:18px;height:18px;border:1.5px solid #cfcfcf;border-radius:4px;flex:none}
+.csm-btn{height:46px;background:#E6A84A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);position:relative}
+.csm-alt{margin-top:12px;text-align:center;position:relative}.csm-alt p{font-size:11.5px;color:#7a7a7a;margin:0 0 6px}
+.csm-alt div{display:flex;gap:8px}.csm-alt span{flex:1;height:38px;border:1.5px solid #E6A84A;color:#141517;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:2px}
+.csm .gwz{color:#c0392b;font-weight:700}
+.csm .var{background:rgba(232,172,76,.15);border:1px dashed rgba(232,172,76,.7);color:#9a6a12;padding:0 4px;border-radius:3px}
+.csm .marker{position:absolute;right:-9px;top:-9px;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#E8AC4C;color:#0A0D0F;font-size:11px;font-weight:900;z-index:2}
+.csm .csm-zm{outline:2px solid #E8AC4C;outline-offset:2px;border-radius:6px}
+</style>
+<div class="csm">
+ <div class="csm-l"><div class="csm-foto"></div><small>Wybrany samochód</small><h5>XPeng G6 2023</h5><div class="nr">Nr ogłoszenia <b>74</b></div>
+  <hr><div class="cl">Cena brutto</div><div class="cv">18 592 zł</div>
+  <div class="gw"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#E6A84A;fill:none;stroke-width:1.8;flex:none"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Zweryfikowany i objęty<b>Gwarancją China Auto Select</b></span></div></div>
+ <div class="csm-r"><div class="csm-x">×</div>
+  <h4>Zapytaj o rezerwację</h4><p class="csm-lead">Zostaw dane kontaktowe. Doradca potwierdzi dostępność samochodu i wyjaśni warunki rezerwacji. Wysłanie formularza nie rezerwuje pojazdu.</p><div class="csm-info csm-zm"><span class="marker">4</span>Wpłata rezerwacyjna: <b><span class="var">[1 000 zł]</span></b>, resztę płacisz przy odbiorze w Polsce.</div>
+  <div class="csm-in"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Imię</div>
+  <div class="csm-dw"><div class="csm-in"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span class="v">+48</span> <span class="gwz">*</span></div><div class="csm-in csm-zm"><span class="marker">1</span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Adres e-mail <span class="gwz">*</span></div></div>
+  <div class="csm-zg chk csm-zm"><span class="marker">2</span><i></i><span>Zgoda na kontakt w tej sprawie, także automatyczny… <u>Rozwiń</u> <span class="gwz">*</span></span></div>
+  <div style="position:relative" class="csm-zm"><span class="marker">3</span><div class="csm-btn">Zapytaj o rezerwację</div></div>
+ </div></div></div></div></div></div><ol class="fp-zm"><li>E-mail wymagany (standard telefon + e-mail)</li><li>Zgoda w jednej linii z „Rozwiń”</li><li>Przycisk zgodny z tytułem okna (dziś „Poznaj ofertę”)</li><li>Kwota rezerwacji widoczna przed wysłaniem</li></ol></div><div class="fp-blok"><p class="f-sl">KONW-6 · Wyślij zapytanie</p><div class="fp"><div class="fp-kol"><p class="fp-l">Dziś · strona testowa 20.10</p><div class="skala" data-w="1140"><div class="skala-in" style="width:1140px;padding:20px;background:#ece9e3"><!-- KONW-6 · formularz kontaktowy — DZIŚ na stronie testowej (zrzut Tomka 19.10), odtworzony 1:1 -->
+<style>
+.cs6{width:1100px;background:#fff;font-family:'Satoshi',sans-serif;color:#141517;padding:24px;box-sizing:border-box}
+.cs6 *{box-sizing:border-box}
+.cs6-karta{border:1px solid #ececec;border-radius:12px;padding:44px 48px 40px}
+.cs6 h3{font-size:30px;font-weight:700;margin:0 0 10px;letter-spacing:-.01em}
+.cs6-sub{font-size:16px;color:#6b6b6b;margin:0 0 30px}
+.cs6-lbl{font-size:16px;font-weight:700;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.cs6-in{position:relative;border:1px solid #e3e3e3;border-radius:10px;height:58px;display:flex;align-items:center;gap:12px;padding:0 18px;font-size:17px;color:#8a8a8a;margin-bottom:16px}
+.cs6-in b{color:#141517;font-weight:700}.cs6-in .v{color:#141517}
+.cs6-in svg{width:20px;height:20px;stroke:#8a8a8a;fill:none;stroke-width:1.7;flex:none}
+.cs6-sel{justify-content:space-between}
+.cs6-dw{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cs6-ta{height:118px;align-items:flex-start;padding-top:16px;position:relative}
+.cs6-ta small{position:absolute;right:16px;bottom:12px;font-size:13px;color:#8a8a8a}
+.cs6-zg{display:flex;gap:14px;align-items:center;font-size:14px;color:#4a4a4a;margin:6px 0 28px}
+.cs6-zg i{width:24px;height:24px;border:1.5px solid #cfcfcf;border-radius:5px;flex:none}
+.cs6-zg u{text-decoration-color:#9a9a9a}
+.cs6-btn{height:60px;background:#E6A84A;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;color:#141517;clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px)}
+.cs6-alt{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.cs6-alt div{border:1px solid #e3e3e3;border-radius:10px;padding:16px 18px;display:flex;gap:16px;align-items:center;position:relative}
+.cs6-alt span.ik{width:48px;height:48px;border-radius:50%;border:1px solid #ececec;display:flex;align-items:center;justify-content:center;flex:none}
+.cs6-alt span.ik svg{width:22px;height:22px;fill:none;stroke-width:1.7}
+.cs6-alt b{display:block;font-size:17px}.cs6-alt p{margin:3px 0 0;font-size:14px;color:#6b6b6b}.cs6-alt p em{font-style:normal;color:#E6A84A;font-weight:700}
+.cs6 .gw{color:#c0392b;font-weight:700}
+.cs6 .var{background:rgba(232,172,76,.15);border:1px dashed rgba(232,172,76,.7);color:#9a6a12;padding:0 4px;border-radius:3px;font-style:normal}
+.cs6 .marker{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#E8AC4C;color:#0A0D0F;font-size:12px;font-weight:900;flex:none;position:absolute;left:-34px;top:50%;transform:translateY(-50%)}
+.cs6 .zm{outline:2px solid #E8AC4C;outline-offset:3px;border-radius:8px}
+</style>
+<div class="cs6"><div class="cs6-karta">
+  <h3>W czym możemy Ci pomóc?</h3>
+  <p class="cs6-sub">Wybierz temat i zostaw dane kontaktowe. Doradca oddzwoni i omówi z Tobą szczegóły.</p>
+  <div class="cs6-lbl">Temat rozmowy</div>
+  <div class="cs6-in cs6-sel"><b>Inne</b><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#141517"><path d="m6 9 6 6 6-6"/></svg></div>
+  <div class="cs6-in"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Imię</div>
+  <div class="cs6-dw"><div class="cs6-in"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span class="v">+48</span></div><div class="cs6-in"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Adres e-mail (opcjonalnie)</div></div>
+  <div class="cs6-lbl"><svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#141517;fill:none;stroke-width:1.8"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>Krótka wiadomość</div>
+  <div class="cs6-in cs6-ta">Napisz krótko, w czym możemy pomóc<small>0/300</small></div>
+  <div class="cs6-zg" style="position:relative"><i></i><span>Wyrażam zgodę na kontakt w sprawie zapytania i akceptuję <u>Politykę prywatności</u>.</span></div>
+  <div class="cs6-btn">Wyślij zapytanie</div>
+  <div class="cs6-alt">
+    <div><span class="ik"><svg viewBox="0 0 24 24" style="stroke:#E6A84A"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></span><span><b>Wolisz zadzwonić?</b><p>Zadzwoń do nas: <em>+48 123 123 123</em></p></span></div>
+    <div class=""><span class="ik"><svg viewBox="0 0 24 24" style="stroke:#25D366"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/></svg></span><span><b>Wolisz WhatsApp?</b><p>Napisz do nas: test@chinatest.pl</p></span></div>
+  </div>
+</div></div></div></div></div><div class="fp-kol"><p class="fp-l">Projekt · zmiany na znacznikach</p><div class="skala" data-w="1140"><div class="skala-in" style="width:1140px;padding:20px;background:#ece9e3"><!-- KONW-6 · formularz kontaktowy — PROJEKT na wyglądzie strony testowej (20.10). Zmiany: 1 e-mail wymagany (standard telefon + e-mail), 2 zgoda w jednej linii z „Rozwiń” (kontakt także automatyczny), 3 WhatsApp z numerem, nie z e-mailem. Reszta 1:1 jak dziś. -->
+<style>
+.cs6{width:1100px;background:#fff;font-family:'Satoshi',sans-serif;color:#141517;padding:24px;box-sizing:border-box}
+.cs6 *{box-sizing:border-box}
+.cs6-karta{border:1px solid #ececec;border-radius:12px;padding:44px 48px 40px}
+.cs6 h3{font-size:30px;font-weight:700;margin:0 0 10px;letter-spacing:-.01em}
+.cs6-sub{font-size:16px;color:#6b6b6b;margin:0 0 30px}
+.cs6-lbl{font-size:16px;font-weight:700;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.cs6-in{position:relative;border:1px solid #e3e3e3;border-radius:10px;height:58px;display:flex;align-items:center;gap:12px;padding:0 18px;font-size:17px;color:#8a8a8a;margin-bottom:16px}
+.cs6-in b{color:#141517;font-weight:700}.cs6-in .v{color:#141517}
+.cs6-in svg{width:20px;height:20px;stroke:#8a8a8a;fill:none;stroke-width:1.7;flex:none}
+.cs6-sel{justify-content:space-between}
+.cs6-dw{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cs6-ta{height:118px;align-items:flex-start;padding-top:16px;position:relative}
+.cs6-ta small{position:absolute;right:16px;bottom:12px;font-size:13px;color:#8a8a8a}
+.cs6-zg{display:flex;gap:14px;align-items:center;font-size:14px;color:#4a4a4a;margin:6px 0 28px}
+.cs6-zg i{width:24px;height:24px;border:1.5px solid #cfcfcf;border-radius:5px;flex:none}
+.cs6-zg u{text-decoration-color:#9a9a9a}
+.cs6-btn{height:60px;background:#E6A84A;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;color:#141517;clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px)}
+.cs6-alt{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.cs6-alt div{border:1px solid #e3e3e3;border-radius:10px;padding:16px 18px;display:flex;gap:16px;align-items:center;position:relative}
+.cs6-alt span.ik{width:48px;height:48px;border-radius:50%;border:1px solid #ececec;display:flex;align-items:center;justify-content:center;flex:none}
+.cs6-alt span.ik svg{width:22px;height:22px;fill:none;stroke-width:1.7}
+.cs6-alt b{display:block;font-size:17px}.cs6-alt p{margin:3px 0 0;font-size:14px;color:#6b6b6b}.cs6-alt p em{font-style:normal;color:#E6A84A;font-weight:700}
+.cs6 .gw{color:#c0392b;font-weight:700}
+.cs6 .var{background:rgba(232,172,76,.15);border:1px dashed rgba(232,172,76,.7);color:#9a6a12;padding:0 4px;border-radius:3px;font-style:normal}
+.cs6 .marker{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#E8AC4C;color:#0A0D0F;font-size:12px;font-weight:900;flex:none;position:absolute;left:-34px;top:50%;transform:translateY(-50%)}
+.cs6-dw .cs6-zm .marker{left:auto;right:-11px;top:-11px;transform:none}
+.cs6 .cs6-zm{outline:2px solid #E8AC4C;outline-offset:3px;border-radius:8px}
+</style>
+<div class="cs6"><div class="cs6-karta">
+  <h3>W czym możemy Ci pomóc?</h3>
+  <p class="cs6-sub">Wybierz temat i zostaw dane kontaktowe. Doradca oddzwoni i omówi z Tobą szczegóły.</p>
+  <div class="cs6-lbl">Temat rozmowy</div>
+  <div class="cs6-in cs6-sel"><b>Inne</b><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#141517"><path d="m6 9 6 6 6-6"/></svg></div>
+  <div class="cs6-in"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Imię</div>
+  <div class="cs6-dw"><div class="cs6-in"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span class="v">+48</span> <span class="gw" style="margin-left:auto">*</span></div><div class="cs6-in cs6-zm"><span class="marker">1</span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Adres e-mail <span class="gw">*</span></div></div>
+  <div class="cs6-lbl"><svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#141517;fill:none;stroke-width:1.8"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>Krótka wiadomość</div>
+  <div class="cs6-in cs6-ta">Napisz krótko, w czym możemy pomóc<small>0/300</small></div>
+  <div class="cs6-zg cs6-zm" style="position:relative"><span class="marker">2</span><i></i><span>Zgoda na kontakt w tej sprawie, także automatyczny… <u>Rozwiń</u> <span class="gw">*</span></span></div>
+  <div class="cs6-btn">Wyślij zapytanie</div>
+  <div class="cs6-alt">
+    <div><span class="ik"><svg viewBox="0 0 24 24" style="stroke:#E6A84A"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></span><span><b>Wolisz zadzwonić?</b><p>Zadzwoń do nas: <em>+48 123 123 123</em></p></span></div>
+    <div class="cs6-zm"><span class="marker">3</span><span class="ik"><svg viewBox="0 0 24 24" style="stroke:#25D366"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/></svg></span><span><b>Wolisz WhatsApp?</b><p>Napisz do nas: <em class="var">[numer WhatsApp]</em></p></span></div>
+  </div>
+</div></div></div></div></div></div><ol class="fp-zm"><li>e-mail wymagany (standard telefon + e-mail)</li><li>zgoda w jednej linii z „Rozwiń” (kontakt także automatyczny)</li><li>WhatsApp z numerem, nie z e-mailem</li></ol></div></section>
+<section class="blok"><h2>Które przyciski w którym widoku</h2><div class="mapa"><div class="mapa-w"><h4>Karta auta</h4><a href="#k-1" class="mapa-cta"><span class="dr-nr dr-nr--s">1</span>Zamów raport</a><a href="#k-3" class="mapa-cta"><span class="dr-nr dr-nr--s">3</span>Zamów rozmowę</a><a href="#k-4" class="mapa-cta"><span class="dr-nr dr-nr--s">4</span>Zapytaj o finansowanie</a><a href="#k-6" class="mapa-cta"><span class="dr-nr dr-nr--s">6</span>Wyślij zapytanie</a></div><div class="mapa-w"><h4>Lista aut</h4><a href="#k-1" class="mapa-cta"><span class="dr-nr dr-nr--s">1</span>Zamów raport</a></div><div class="mapa-w"><h4>Strona główna</h4><a href="#k-1" class="mapa-cta"><span class="dr-nr dr-nr--s">1</span>Zamów raport</a><a href="#k-2" class="mapa-cta"><span class="dr-nr dr-nr--s">2</span>Zapytaj o ofertę</a><a href="#k-3" class="mapa-cta"><span class="dr-nr dr-nr--s">3</span>Zamów rozmowę</a></div><div class="mapa-w"><h4>Karta auta (telefon)</h4><a href="#k-2" class="mapa-cta"><span class="dr-nr dr-nr--s">2</span>Zapytaj o ofertę</a><a href="#k-3" class="mapa-cta"><span class="dr-nr dr-nr--s">3</span>Zamów rozmowę</a><a href="#k-4" class="mapa-cta"><span class="dr-nr dr-nr--s">4</span>Zapytaj o finansowanie</a><a href="#k-5" class="mapa-cta"><span class="dr-nr dr-nr--s">5</span>Zarezerwuj to auto</a><a href="#k-6" class="mapa-cta"><span class="dr-nr dr-nr--s">6</span>Wyślij zapytanie</a></div><div class="mapa-w"><h4>Lista aut (telefon)</h4><a href="#k-3" class="mapa-cta"><span class="dr-nr dr-nr--s">3</span>Zamów rozmowę</a></div><div class="mapa-w"><h4>Strona Kontakt</h4><a href="#k-6" class="mapa-cta"><span class="dr-nr dr-nr--s">6</span>Wyślij zapytanie</a></div></div></section>
 <section class="konw" id="k-1" data-komentarz="konwersja-1">
 <header class="k-head"><span class="dr-nr dr-nr--l">1</span><div><p class="k-kod">KONW-1</p><h2>Zamów raport</h2>
 <p class="k-meta">ciepły (najlżejszy) · pomiar: <code>report_request</code></p></div></header>
@@ -407,7 +787,7 @@ h1{font-size:clamp(26px,4vw,40px);line-height:1.15;margin:8px 0 12px}
   <div class="k-kol"><h3>Przycisk</h3>
     <div class="ciemne"><span class="cs-btn">Zamów raport</span><span class="cs-btn cs-btn--2">Zamów raport</span><span class="ciemne-op">główny · drugorzędny</span></div>
     
-    <h3>Formularz</h3><p class="uw">Jedno pole i zgoda — <a href="#formularze">zobacz w części 2 · Formularze</a>.</p></div>
+    <h3>Formularz</h3><p class="uw">Telefon i e-mail (oba wymagane), zgoda w jednej linii — okno dziś i projekt: <a href="#formularze">część 2 · Formularze</a>.</p></div>
   <div class="k-kol"><h3>Po wysłaniu</h3><div class="ok-stan"><b>✓</b> Raport jest w drodze na [e-mail]. Sprawdź też folder Oferty lub Spam.</div>
     <h3>Co dostaje kupujący</h3><p>od razu: pełny raport Guazi egzemplarza (zdjęcia usterek, stan baterii SOH, historia); na stronie zostaje streszczenie</p>
     <h3>Wysyłane automatycznie (niewidoczne dla kupującego)</h3>
@@ -676,7 +1056,7 @@ h1{font-size:clamp(26px,4vw,40px);line-height:1.15;margin:8px 0 12px}
   <div class="k-kol"><h3>Przycisk</h3>
     <div class="ciemne"><span class="cs-btn">Zapytaj o ofertę</span><span class="cs-btn cs-btn--2">Zapytaj o ofertę</span><span class="ciemne-op">główny · drugorzędny</span></div>
     
-    <h3>Formularz</h3><p class="uw">Jedno pole i zgoda — <a href="#formularze">zobacz w części 2 · Formularze</a>.</p></div>
+    <h3>Formularz</h3><p class="uw">Telefon i e-mail (oba wymagane), zgoda w jednej linii — okno dziś i projekt: <a href="#formularze">część 2 · Formularze</a>.</p></div>
   <div class="k-kol"><h3>Po wysłaniu</h3><div class="ok-stan"><b>✓</b> Oferta jest w drodze na [e-mail]. Doradca zadzwoni na [numer] w godzinach pracy.</div>
     <h3>Co dostaje kupujący</h3><p>od razu na e-mail: cena do odbioru rozpisana na składowe, termin dostawy, rata przykładowa (raport — osobno, krok 2)</p>
     <h3>Wysyłane automatycznie (niewidoczne dla kupującego)</h3>
@@ -827,7 +1207,7 @@ h1{font-size:clamp(26px,4vw,40px);line-height:1.15;margin:8px 0 12px}
   <div class="k-kol"><h3>Przycisk</h3>
     <div class="ciemne"><span class="cs-btn">Zamów rozmowę</span><span class="cs-btn cs-btn--2">Zamów rozmowę</span><span class="ciemne-op">główny · drugorzędny</span></div>
     <p class="k-kanaly">Zadzwoń (tel: link) i WhatsApp — obok przycisku, bez formularza. W pasku na telefonie ikona słuchawki otwiera wybór: „Zadzwoń teraz” albo „Zamów rozmowę”.</p>
-    <h3>Formularz</h3><p class="uw">Jedno pole i zgoda — <a href="#formularze">zobacz w części 2 · Formularze</a>.</p></div>
+    <h3>Formularz</h3><p class="uw">Telefon i e-mail (oba wymagane), zgoda w jednej linii — okno dziś i projekt: <a href="#formularze">część 2 · Formularze</a>.</p></div>
   <div class="k-kol"><h3>Po wysłaniu</h3><div class="ok-stan"><b>✓</b> Dziękujemy. Doradca zadzwoni na [numer] [do 5 minut / o wybranej porze].</div>
     <h3>Co dostaje kupujący</h3><p>telefon od doradcy do 5 min (Rinvo)</p>
     <h3>Wysyłane automatycznie (niewidoczne dla kupującego)</h3>
@@ -1063,7 +1443,7 @@ h1{font-size:clamp(26px,4vw,40px);line-height:1.15;margin:8px 0 12px}
   <div class="k-kol"><h3>Przycisk</h3>
     <div class="ciemne"><span class="cs-btn">Zapytaj o finansowanie</span><span class="cs-btn cs-btn--2">Zapytaj o finansowanie</span><span class="ciemne-op">główny · drugorzędny</span></div>
     
-    <h3>Formularz</h3><p class="uw">Jedno pole i zgoda — <a href="#formularze">zobacz w części 2 · Formularze</a>.</p></div>
+    <h3>Formularz</h3><p class="uw">Telefon i e-mail (oba wymagane), zgoda w jednej linii — okno dziś i projekt: <a href="#formularze">część 2 · Formularze</a>.</p></div>
   <div class="k-kol"><h3>Po wysłaniu</h3><div class="ok-stan"><b>✓</b> Pytanie przyjęte. Doradca zadzwoni z kalkulacją od [partner finansowy].</div>
     <h3>Co dostaje kupujący</h3><p>kontakt doradcy z kalkulacją od partnera</p>
     <h3>Wysyłane automatycznie (niewidoczne dla kupującego)</h3>
@@ -1306,7 +1686,7 @@ h1{font-size:clamp(26px,4vw,40px);line-height:1.15;margin:8px 0 12px}
   <div class="k-kol"><h3>Przycisk</h3>
     <div class="ciemne"><span class="cs-btn">Zarezerwuj to auto</span><span class="cs-btn cs-btn--2">Zarezerwuj to auto</span><span class="ciemne-op">główny · drugorzędny</span></div>
     
-    <h3>Formularz</h3><p class="uw">Jedno pole i zgoda — <a href="#formularze">zobacz w części 2 · Formularze</a>.</p></div>
+    <h3>Formularz</h3><p class="uw">Telefon i e-mail (oba wymagane), zgoda w jednej linii — okno dziś i projekt: <a href="#formularze">część 2 · Formularze</a>.</p></div>
   <div class="k-kol"><h3>Po wysłaniu</h3><div class="ok-stan"><b>✓</b> Auto jest wstępnie zarezerwowane dla Ciebie. Doradca zadzwoni na [numer] z umową. Po potwierdzeniu rezerwacji auto znika z listy aut.</div>
     <h3>Co dostaje kupujący</h3><p>telefon doradcy z umową i danymi do zaliczki</p>
     <h3>Wysyłane automatycznie (niewidoczne dla kupującego)</h3>
@@ -1434,13 +1814,13 @@ h1{font-size:clamp(26px,4vw,40px);line-height:1.15;margin:8px 0 12px}
 </div></div></div></div></div></div><p class="proj-l"><a href="REKOMENDACJE_KARTA_AUTA.html#el-1">PDP-01 — otwórz projekt elementu →</a></p></div></div>
 <div class="kmt-slot-host" data-kmt-slot="konwersja-5"></div>
 </section><section class="konw" id="k-6" data-komentarz="konwersja-6">
-<header class="k-head"><span class="dr-nr dr-nr--l">6</span><div><p class="k-kod">KONW-6</p><h2>Zadaj pytanie</h2>
+<header class="k-head"><span class="dr-nr dr-nr--l">6</span><div><p class="k-kod">KONW-6</p><h2>Wyślij zapytanie</h2>
 <p class="k-meta">ciepły (pytanie ogólne, często bez konkretnego auta) · pomiar: <code>contact_form_submit</code></p><p class="k-dzis">Zastępuje dziś: „„Wyślij zapytanie” — formularz „W czym możemy Ci pomóc?” (strona testowa 19.10)”</p></div></header>
 <div class="k-grid">
   <div class="k-kol"><h3>Przycisk</h3>
-    <div class="ciemne"><span class="cs-btn">Zadaj pytanie</span><span class="cs-btn cs-btn--2">Zadaj pytanie</span><span class="ciemne-op">główny · drugorzędny</span></div>
+    <div class="ciemne"><span class="cs-btn">Wyślij zapytanie</span><span class="cs-btn cs-btn--2">Wyślij zapytanie</span><span class="ciemne-op">główny · drugorzędny</span></div>
     <p class="k-kanaly">Telefon, WhatsApp i e-mail obok formularza (pasek kontaktu HP-08 i strona Kontakt) — formularz jest dla tych, którzy wolą napisać, ale nie mają WhatsAppa ani nie chcą otwierać poczty.</p>
-    <h3>Formularz</h3><p class="uw">Jedno pole i zgoda — <a href="#formularze">zobacz w części 2 · Formularze</a>.</p></div>
+    <h3>Formularz</h3><p class="uw">Telefon i e-mail (oba wymagane), zgoda w jednej linii — okno dziś i projekt: <a href="#formularze">część 2 · Formularze</a>.</p></div>
   <div class="k-kol"><h3>Po wysłaniu</h3><div class="ok-stan"><b>✓</b> Dziękujemy. Odpowiedź przyjdzie na [e-mail / numer] [w ciągu X h].</div>
     <h3>Co dostaje kupujący</h3><p>odpowiedź doradcy e-mailem albo telefonem, w godzinach pracy</p>
     <h3>Wysyłane automatycznie (niewidoczne dla kupującego)</h3>
