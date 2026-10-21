@@ -1,7 +1,6 @@
 <!doctype html>
-<html lang="pl"><head>
-<meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ścieżkomat — China Select</title>
+<html lang="pl"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ścieżkomat China Select — wynik, założenia, silnik</title>
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#FBF6F1;--card:#fff;--ink:#111214;--muted:#6B5D5A;--line:#EFE3DA;--acc:#8A6D1F;--gold:#E8AC4C;--gold-d:#B9802A;--dark:#16171A}
@@ -124,13 +123,15 @@ table.kcf td{padding:4px;border-bottom:1px dashed var(--line)}table.kcf .num{fon
 .jak b{color:var(--ink)}.jak ul{margin:6px 0 0 18px;padding:0}
 footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin:4px 0 0 18px;padding:0}
 @media(max-width:700px){.tab thead{display:none}.tab tr{display:block;border-top:1px solid var(--line);padding:6px 0}.tab td{display:block;border:0;padding:3px 10px}}
-</style></head>
-<body>
-<!-- hub-backlink -->
-<div id="hub-backlink-bar" style="position:sticky;top:0;z-index:100;background:#3F4A44;padding:8px 16px;font:600 13px/1.4 'IBM Plex Mono',monospace;letter-spacing:.04em;">
-  <a href="../CC_HUB.html" style="color:#C9A84C;text-decoration:none;">← Hub China Select</a>
-</div>
-<!-- /hub-backlink -->
+</style><style>.sj-tabs{position:sticky;top:0;z-index:50;display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;background:#FBF6F1;border-bottom:1px solid #EFE3DA}
+.sj-tabs a{padding:8px 13px;border-radius:999px;border:1px solid #EFE3DA;background:#fff;text-decoration:none;color:#6B5D5A;font-size:13.5px;font-weight:700}
+.sj-tabs a.act{background:#16171A;color:#fff;border-color:#16171A}.sj-panel{display:none}.sj-panel.act{display:block}
+.sj-zal iframe{width:100%;border:0;display:block;min-height:600px}
+.sj-sil{max-width:900px;margin:0 auto;padding:24px 16px 50px}.sj-sil h2{margin:4px 0 8px;font-size:24px}.sj-sil p{color:#6B5D5A}
+.sj-kroki{display:grid;grid-template-columns:1fr;gap:10px;margin:14px 0}@media(min-width:760px){.sj-kroki{grid-template-columns:repeat(4,1fr)}}
+.sj-k{background:#fff;border:1px solid #EFE3DA;border-radius:12px;padding:12px;font-size:13.5px}.sj-k b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#16171A;color:#E8AC4C;margin-bottom:6px}
+.sj-go{display:inline-block;margin-top:6px;padding:12px 18px;border-radius:10px;background:#16171A;color:#fff;text-decoration:none;font-weight:700}</style></head>
+<body><nav class="sj-tabs" id="sj-tabs"><a href="#wynik" data-t="wynik" class="act">Wynik — przejście przez ścieżkę</a><a href="#zalozenia" data-t="zalozenia">Założenia — jak działa</a><a href="#silnik" data-t="silnik">Silnik — do klikania</a></nav><div class="sj-panel act" id="p-wynik">
 <header class="top wrap">
   <div class="t">China Select · narzędzie · Ścieżkomat v2.0 · 2026-10-12</div>
   <h1>Ścieżkomat — kto idzie dokąd, po co i co robi dalej</h1>
@@ -394,7 +395,13 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
 </section>
 </main>
 <footer class="wrap"><b>Źródła</b><ul><li>cs/CEP_BAZA.md v2 (segmenty, CEP, obawy, pytania discovery)</li><li>projekty/dane/reko_karta_auta.json, reko_lista_aut.json, reko_strona_glowna.json (elementy, nr = numer w PROJEKTY_ZMIAN)</li><li>projekty/dane/must_have.json</li><li>sciezki/SCIEZKA_S2_RODZINA_v0.md (kolumny: co myśli / co musi zobaczyć / akcja / stan dziś)</li><li>proces/proces.json (K01–K36, sprzeczności)</li><li>strategia reklamowa v1.1 (grupa 02, przekazy)</li><li>GEO_PDP_Optimizer/data: cep_baza, cdt (KCF), questions + scored (CQF v6), cs_v2 (CEV) — czytane przy budowie</li></ul><div style="margin-top:8px">Krok = kto · stoi gdzie (obszar/element) · z jakim pytaniem · co mu odpowiada (komunikacja) · co robi dalej (ruch + zdarzenie) · stan dziś. Element bez odpowiedzi na pytanie = dziura → zmiana elementu w PROJEKTY_ZMIAN.</div></footer>
-<script>
+</div><div class="sj-panel sj-zal" id="p-zalozenia"><iframe id="sj-pipe" src="PIPELINE_SCIEZKOMAT.html" title="Założenia Ścieżkomatu" scrolling="no"></iframe></div><div class="sj-panel" id="p-silnik"><div class="sj-sil"><div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6B5D5A">Ścieżkomat · silnik online</div>
+<h2>Mechanizm do przeklikania</h2><p>Ten sam mechanizm, który zrobił wynik z pierwszej zakładki, działa online. Zaczynasz od tego, co masz — jedna rzecz albo kilka — a silnik dobiera resztę i pokazuje ścieżkę.</p>
+<div class="sj-kroki"><div class="sj-k"><b>1</b><strong>Wsady</strong><br>checkboxy: segment, CEP, komunikat, auto, nośnik, strona, pytania, gotowa reklama, gotowa ścieżka</div>
+<div class="sj-k"><b>2</b><strong>Rekomendacja ścieżki</strong><br>wejście → reklama (nośniki, komunikat) → strona (która z opcji China Select i dlaczego) → po kliknięciu</div>
+<div class="sj-k"><b>3</b><strong>Budowa po akcepcie</strong><br>strona z klocków i treści z repozytorium; brak reklamy = brief reklamy; brak auta = dobór z listingu</div>
+<div class="sj-k"><b>4</b><strong>Projekt ścieżki</strong><br>kto idzie dokąd, po co, co robi dalej: kroki, pytania kupującego, elementy, dziury</div></div>
+<a class="sj-go" href="https://cc.83.168.110.128.sslip.io/" target="_blank" rel="noopener">Otwórz silnik →</a><p style="font-size:13px;margin-top:10px">Wejście na login (dostęp od Tomka). Online działa cały proces bez czatu z asystentem; treść stron dopisują agenci po akcepcie.</p></div></div><script>
 (function(){
   function draw(){
     var uc=document.querySelector('.uc.act'); if(!uc) return;
@@ -430,4 +437,9 @@ footer{padding:20px 16px 40px;color:var(--muted);font-size:12px}footer ul{margin
   setTimeout(draw,50);
 })();
 </script>
-</body></html>
+<script>(function(){var T=document.querySelectorAll('#sj-tabs a');function pokaz(t){T.forEach(function(a){a.classList.toggle('act',a.dataset.t===t)});
+document.querySelectorAll('.sj-panel').forEach(function(p){p.classList.toggle('act',p.id==='p-'+t)});if(t==='zalozenia')dopasuj();if(window.dispatchEvent)window.dispatchEvent(new Event('resize'));window.scrollTo(0,0);}
+T.forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();history.replaceState(null,'','#'+a.dataset.t);pokaz(a.dataset.t)})});
+function dopasuj(){var f=document.getElementById('sj-pipe');try{var d=f.contentDocument;if(d&&d.body){f.style.height=(d.documentElement.scrollHeight+20)+'px'}}catch(e){}}
+var f=document.getElementById('sj-pipe');f.addEventListener('load',function(){dopasuj();try{new ResizeObserver(dopasuj).observe(f.contentDocument.body)}catch(e){}});
+pokaz((location.hash||'#wynik').slice(1)||'wynik');})();</script></body></html>
