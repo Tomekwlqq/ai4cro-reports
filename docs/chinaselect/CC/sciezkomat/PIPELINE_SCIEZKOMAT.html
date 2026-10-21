@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Ścieżkomat — pipeline</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FBF6F1;--card:#fff;--ink:#111214;--muted:#6B5D5A;--line:#EFE3DA;--acc:#8A6D1F;--gold:#E8AC4C;--gold-d:#B9802A;--dark:#16171A;
+--d:#2E6FB0;--d-bg:#E7F0FA;--s:#8A6D1F;--s-bg:#FBF1DD;--p:#7A4BA6;--p-bg:#EFE6F8;--z:#2E8B57;--z-bg:#E6F4EC;--red:#B23A3A;--red-bg:#FBE5E5}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Satoshi",system-ui,sans-serif;line-height:1.45;font-size:15px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header{padding:24px 0 8px}
+.t{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{margin:4px 0 8px;font-size:28px;line-height:1.15}
+h2{margin:2px 0 6px;font-size:21px;line-height:1.2}
+h3{margin:0 0 4px;font-size:16px}
+p{margin:0 0 10px}
+.lead{color:var(--muted);max-width:820px}
+.lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:700}
+section{margin:26px 0}
+.sec-p{color:var(--muted);max-width:840px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0}
+.toc a{padding:6px 11px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:13px;text-decoration:none;color:var(--muted)}
+.toc a:hover{border-color:var(--gold-d);color:var(--ink)}
+.status{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:var(--s-bg);color:var(--s);border:1px solid #8A6D1F33}
+/* §1 schemat */
+.flow{display:grid;grid-template-columns:1fr;gap:10px;align-items:stretch}
+@media(min-width:960px){.flow{grid-template-columns:1.15fr 40px 1.25fr 40px 0.9fr 40px 1fr}}
+.arrow{display:grid;place-items:center;color:var(--gold-d);font-size:22px;font-weight:900}
+@media(max-width:959px){.arrow{transform:rotate(90deg);height:28px}}
+.starts{display:flex;flex-direction:column;gap:6px}
+.st{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:11px;padding:8px 10px;font-size:13px;cursor:pointer}
+.st b{display:grid;place-items:center;flex:0 0 26px;height:26px;border-radius:50%;background:var(--dark);color:var(--gold);font-weight:900;font-size:13px}
+.st.max b{background:var(--gold);color:var(--dark)}
+.st small{display:block;color:var(--muted);font-size:12px}
+.st:hover,.st.act{border-color:var(--gold-d);background:#FFF8EA}
+.rek{background:#fff;border:2px solid var(--dark);border-radius:14px;padding:12px 14px}
+.rek h3{display:flex;justify-content:space-between;align-items:baseline}
+.rek ul{list-style:none;margin:6px 0 0;padding:0;font-size:13px}
+.rek li{display:flex;gap:8px;align-items:baseline;padding:5px 0;border-top:1px dashed var(--line)}
+.rek li span:first-child{flex:0 0 108px;color:var(--muted);font-size:12px}
+.pv{display:inline-block;font-size:10.5px;font-weight:900;border-radius:5px;padding:0 5px;margin-left:2px}
+.pv.D{background:var(--d-bg);color:var(--d)}.pv.S{background:var(--s-bg);color:var(--s)}.pv.P{background:var(--p-bg);color:var(--p)}.pv.Z{background:var(--z-bg);color:var(--z)}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:13.5px}
+.box.walk{border-color:var(--gold-d);background:#FFF8EA}
+.box ul{margin:6px 0 0 16px;padding:0}
+.outs{display:flex;flex-direction:column;gap:6px}
+.out{background:#fff;border:1px solid var(--line);border-radius:11px;padding:8px 10px;font-size:13px}
+.out small{display:block;color:var(--muted);font-size:12px}
+/* §2 konfigurator */
+.cfg{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:960px){.cfg{grid-template-columns:330px 1fr}}
+.cfg-l{display:flex;flex-direction:column;gap:12px}
+.btns{display:flex;flex-wrap:wrap;gap:6px}
+.btn{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;font-size:13px;cursor:pointer;color:var(--muted);text-align:left}
+.btn b{color:var(--ink)}
+.btn.act{border-color:var(--dark);background:var(--dark);color:#fff}.btn.act b{color:var(--gold)}
+.mode-info .kv{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px;padding:6px 0;border-top:1px dashed var(--line);font-size:13.5px}
+.mode-info .kv span{color:var(--muted);font-size:12px}
+.lane{display:flex;flex-direction:column;gap:8px}
+.step{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;transition:opacity .15s}
+.step.off{opacity:.33}
+.step.off .step-b{display:none}
+.step .id{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--dark);color:var(--gold);font-weight:900;font-size:14px}
+.step.off .id{background:#E7E7E9;color:#9A9DA3}
+.step-h{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.step-h b{font-size:15px}
+.step-h .skip{font-size:12px;color:#9A9DA3}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;border:1px solid}
+.tag.jest{color:var(--z);background:var(--z-bg);border-color:#2E8B5733}
+.tag.czesc{color:var(--gold-d);background:#FBF1DD;border-color:#B9802A33}
+.tag.brak{color:var(--red);background:var(--red-bg);border-color:#B23A3A33}
+.tag.bramka{color:var(--p);background:var(--p-bg);border-color:#7A4BA633}
+.step-b{margin-top:6px;font-size:13.5px}
+.io{display:grid;grid-template-columns:1fr;gap:6px;margin-top:4px}
+@media(min-width:700px){.io{grid-template-columns:1fr 1fr}}
+.io div{background:#FBF8F4;border:1px solid var(--line);border-radius:9px;padding:7px 9px}
+.io span{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:2px}
+.eng{margin-top:6px;font-size:12.5px;color:var(--muted)}
+.eng code{font-size:12px;background:#F3EEE8;border:1px solid var(--line);border-radius:6px;padding:0 5px;overflow-wrap:anywhere}
+.note-mode{margin-top:6px;padding:7px 9px;border-radius:9px;background:#FFF8EA;border:1px solid #F0DDB3;font-size:13px}
+/* macierz */
+.mx{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px}
+.mx th,.mx td{padding:7px 6px;border-top:1px solid var(--line);text-align:center}
+.mx th{background:#FBF1DD;font-size:11px;letter-spacing:.04em;color:var(--muted)}
+.mx td:first-child,.mx th:first-child{text-align:left;padding-left:10px}
+.mx .on{color:var(--dark);font-weight:900}.mx .on::before{content:"●"}
+.mx .opt{color:var(--gold-d)}.mx .opt::before{content:"◐"}
+.mx .no{color:#D6D6DA}.mx .no::before{content:"·"}
+.mx-wrap{overflow-x:auto}
+/* §3 katalog */
+.cat{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:760px){.cat{grid-template-columns:1fr 1fr}}
+@media(min-width:1080px){.cat{grid-template-columns:1fr 1fr 1fr}}
+.el{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:13.5px}
+.el-h{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.el-h b{font-size:14.5px}
+.el .kv{display:grid;grid-template-columns:70px minmax(0,1fr);gap:8px;padding:5px 0;border-top:1px dashed var(--line);font-size:13px}
+.el .kv span{color:var(--muted);font-size:12px}
+.el code{font-size:11.5px;background:#F3EEE8;border:1px solid var(--line);border-radius:6px;padding:0 5px;overflow-wrap:anywhere}
+.el .luka{margin-top:6px;padding:7px 9px;border-radius:9px;background:var(--red-bg);border:1px solid #F2CACA;font-size:12.5px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+/* §4 przykład */
+.ex{display:flex;flex-direction:column;gap:8px}
+.ex-row{display:grid;grid-template-columns:1fr;gap:6px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px}
+@media(min-width:760px){.ex-row{grid-template-columns:150px minmax(0,1fr)}}
+.ex-row .k{font-weight:900}.ex-row .k small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.bar{display:flex;align-items:center;gap:8px;font-size:12.5px;margin:2px 0}
+.bar i{display:block;height:9px;border-radius:5px;background:var(--gold)}
+.bar span{flex:0 0 150px;color:var(--muted)}
+.warn{padding:7px 9px;border-radius:9px;background:var(--red-bg);border:1px solid #F2CACA;font-size:13px;margin-top:4px}
+.ok{padding:7px 9px;border-radius:9px;background:var(--z-bg);border:1px solid #CDE8D7;font-size:13px;margin-top:4px}
+/* §5–7 */
+.grid2{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:860px){.grid2{grid-template-columns:1fr 1fr}}
+.pvl{display:grid;grid-template-columns:34px minmax(0,1fr);gap:8px;align-items:start;padding:7px 0;border-top:1px dashed var(--line);font-size:13.5px}
+.pvl .pv{font-size:13px;padding:2px 6px;text-align:center}
+.dec{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px}
+.dec>b{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--gold);color:var(--dark);font-weight:900}
+.dec .rek2{margin-top:6px;padding:7px 9px;border-radius:9px;background:#FFF8EA;border:1px solid #F0DDB3;font-size:13px}
+.order{counter-reset:o;list-style:none;margin:0;padding:0}
+.order li{counter-increment:o;display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;padding:9px 0;border-top:1px dashed var(--line);font-size:14px}
+.order li::before{content:counter(o);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--dark);color:var(--gold);font-weight:900;font-size:13px}
+.order small{display:block;color:var(--muted);font-size:12.5px}
+
+/* §8 proces decyzyjny */
+.dflow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0 14px}
+.dflow a{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12.5px;text-decoration:none;color:var(--ink)}
+.dflow a b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--gold);color:var(--dark);font-size:11px;font-weight:900}
+.dflow i{color:var(--gold-d);font-style:normal;font-weight:900}
+.dp{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.dp-h{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.dp-h .nr{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--gold);color:var(--dark);font-weight:900}
+.dp-h h3{margin:0;font-size:16px}
+.dp-q{margin:6px 0 8px;font-size:15px;font-weight:700;border-left:4px solid var(--gold);padding-left:10px}
+.dp-g{display:grid;grid-template-columns:1fr;gap:8px}
+@media(min-width:900px){.dp-g{grid-template-columns:1fr 1.5fr 1fr}}
+.dp-g>div{background:#FBF8F4;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px}
+.dp-g span.k{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:3px}
+.dp-g ol,.dp-g ul{margin:2px 0 0 16px;padding:0}
+.tab-d{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:2px}
+.tab-d td,.tab-d th{border-top:1px dashed var(--line);padding:4px 5px;text-align:left;vertical-align:top}
+.tab-d th{font-size:10.5px;color:var(--muted)}
+.dp-ex{margin-top:8px;padding:8px 10px;border-radius:10px;background:#FFF8EA;border:1px solid #F0DDB3;font-size:13px}
+.dp-ex b.w{color:var(--dark);background:var(--gold);border-radius:6px;padding:0 6px}
+.kto{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;border:1px solid}
+.kto.sil{color:var(--d);background:var(--d-bg);border-color:#2E6FB033}.kto.br{color:var(--p);background:var(--p-bg);border-color:#7A4BA633}.kto.tw{color:var(--s);background:var(--s-bg);border-color:#8A6D1F33}.kto.cs{color:var(--red);background:var(--red-bg);border-color:#B23A3A33}
+footer{padding:20px 0 40px;color:var(--muted);font-size:12px}
+</style></head>
+<body>
+<div class="wrap">
+<header>
+  <div class="t">Narzędzie wspólne (China Select · Audi · EC5) · pipeline · 15.10.2026 · <span class="status">stan 21.10: mechanizm działa online (start → rekomendacja ścieżki → budowa → Ścieżkomat)</span></div>
+  <h1>Ścieżkomat — jak działa w zależności od punktu startu i poziomu</h1>
+  <p class="lead">Jedno narzędzie, jeden zapis ścieżki, wiele wejść. Wsadem może być CEP, segment, reklama, strona lub element, pytanie albo gotowa ścieżka. Od wsadu zależy, które pola Ścieżkomat dostaje gotowe, a które musi dobrać albo wymyślić. Poziom (MIN / STANDARD / MAX) mówi, jak daleko idzie: od samej mapy z dziurami do kompletu, czyli nośniki, komunikat, LP z naszego LP Makera, pomiar i plan testu.</p>
+  <nav class="toc">
+    <a href="#s1">1 · Schemat całości</a><a href="#s2">2 · Pipeline per wariant</a><a href="#s3">3 · Elementy procesu</a><a href="#s4">4 · Przykład MAX: Rodzina</a><a href="#s5">5 · Pochodzenie danych</a><a href="#s6">6 · Czego nie obiecujemy</a><a href="#s7">7 · Decyzje przed budową</a><a href="#s8">8 · Proces decyzyjny</a>
+  </nav>
+</header>
+
+<!-- §1 -->
+<section id="s1">
+  <div class="lbl">1 · Schemat całości</div>
+  <h2>Sześć wejść, jeden zapis ścieżki, wspólny koniec</h2>
+  <p class="sec-p">Każdy punkt startu wypełnia ten sam rekord ścieżki, czyli to, co dziś widać na stronie Ścieżkomatu dla Rodziny. Różnią się tylko tym, które pola są dane na wejściu. Każdy wariant kończy się przejściem (sprawdzeniem ścieżki konkretną osobą) i listą dziur. To jest wspólna bramka: żadna ścieżka nie idzie do produkcji bez przejścia.</p>
+  <div class="flow">
+    <div class="starts" id="starts1"></div>
+    <div class="arrow">→</div>
+    <div class="rek">
+      <h3>Rekord ścieżki <small class="t">jeden format dla wszystkich</small></h3>
+      <ul>
+        <li><span>Kto</span><div>segment · CEP · obawy <i class="pv D">D</i></div></li>
+        <li><span>Wejście</span><div>media · nośnik · format <i class="pv S">S</i><i class="pv P">P</i></div></li>
+        <li><span>Komunikat</span><div>hasło · przekazy · obietnica · co strona musi dowieźć <i class="pv S">S</i><i class="pv P">P</i></div></li>
+        <li><span>Miejsce lądowania</span><div>istniejąca strona albo nowa LP <i class="pv P">P</i></div></li>
+        <li><span>Kroki</span><div>element · pytanie · komunikacja · ruch i zdarzenie · etap CQF · stan dziś <i class="pv D">D</i><i class="pv P">P</i></div></li>
+        <li><span>Ogon</span><div>formularz · CRM · Rinvo · konsultant <i class="pv S">S</i></div></li>
+        <li><span>Pomiar</span><div>pola UTM · zdarzenia na strzałkach · ID leada <i class="pv S">S</i></div></li>
+        <li><span>Wynik</span><div>po starcie: ruch, leady, sprzedaż <i class="pv Z">Z</i></div></li>
+      </ul>
+    </div>
+    <div class="arrow">→</div>
+    <div class="box walk">
+      <h3>Przejście + dziury</h3>
+      Ścieżkę przechodzi konkretna osoba z pytaniami z CQF. Pytanie, na które żaden element nie odpowiada, to dziura.
+      <ul><li>bramka stratega: czy pytania to głos kupującego, czy ścieżka oddaje psychologię decyzji</li><li>Tomek akceptuje na HTML</li></ul>
+    </div>
+    <div class="arrow">→</div>
+    <div class="outs">
+      <div class="out"><b>Zmiany elementów</b><small>dziury → PROJEKTY_ZMIAN (jeden element = jeden projekt)</small></div>
+      <div class="out"><b>Brief reklamy</b><small>nośnik + komunikat → ads-strateg (kreacje, sędzia K7)</small></div>
+      <div class="out"><b>LP</b><small>LP Maker: argument → treść → wireframe; wdrożenie tylko z adapterem platformy</small></div>
+      <div class="out"><b>Pomiar</b><small>UTM + zdarzenia + ID leada GA4 ↔ CRM</small></div>
+      <div class="out"><b>Plan testu</b><small>2–3 nośniki × 2 komunikaty × LP A/B + kryteria odcięcia</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- §2 -->
+<section id="s2">
+  <div class="lbl">2 · Pipeline per wariant</div>
+  <h2>Wybierz punkt startu i poziom — zobaczysz, które kroki pracują</h2>
+  <p class="sec-p">Pipeline ma 13 kroków (M0–M12). Punkt startu decyduje, od którego kroku się zaczyna i które pola są dane. Poziom decyduje, czy Ścieżkomat tylko sprawdza (MIN), czy też dobiera (STANDARD), czy dodatkowo wymyśla komunikat i stawia LP (MAX). Wygaszone kroki w danym wariancie nie pracują.</p>
+  <div class="cfg">
+    <div class="cfg-l">
+      <div class="card">
+        <div class="lbl" style="margin-bottom:6px">Punkt startu</div>
+        <div class="btns" id="btn-start"></div>
+      </div>
+      <div class="card">
+        <div class="lbl" style="margin-bottom:6px">Poziom</div>
+        <div class="btns" id="btn-poz"></div>
+      </div>
+      <div class="card mode-info" id="mode-info"></div>
+    </div>
+    <div class="lane" id="lane"></div>
+  </div>
+  <h3 style="margin-top:22px">Macierz: punkt startu × krok (na poziomie MAX)</h3>
+  <p class="sec-p">● krok pracuje · ◐ krok pracuje tylko wtedy, gdy wsad czegoś nie podał · · krok pominięty, bo pole przychodzi gotowe we wsadzie</p>
+  <div class="mx-wrap"><table class="mx" id="mx"></table></div>
+</section>
+
+<!-- §3 -->
+<section id="s3">
+  <div class="lbl">3 · Elementy procesu</div>
+  <h2>Z czego to jest zbudowane — co już mamy, czego brakuje</h2>
+  <p class="sec-p">Większość klocków istnieje: baza CEP, CS, CQF, słownik touchpointów, rejestr elementów, LP Maker, strateg reklam, bramki. Ścieżkomat ich nie zastępuje, tylko je składa. Do zbudowania są trzy rzeczy: mapowanie pytanie → element, słownik nośników płatnych ze scorerem i adapter LP dla platformy China Select.</p>
+  <div class="filters" id="cat-f"></div>
+  <div class="cat" id="cat"></div>
+</section>
+
+<!-- §4 -->
+<section id="s4">
+  <div class="lbl">4 · Przykład MAX na prawdziwych danych</div>
+  <h2>Wsad: CEP „Rodzina przestała się mieścić” — co wyjdzie po kolei</h2>
+  <p class="sec-p">Liczby z plików CQF i bazy CEP kategorii „auta z importu z Chin” (stan na 15.10). Tam, gdzie dane się kończą, widać lukę — tak samo pokaże ją narzędzie.</p>
+  <div class="ex">
+    <div class="ex-row"><div class="k">M1 · Kontekst<small>baza CEP</small></div><div>Segment <b>S2 Rodzina</b> (grupa 02, 18 000 zł/mies.). Moment: „Urodziło się trzecie dziecko i do obecnego auta nie wchodzimy z bagażami”. Szuka: trzy rzędy, bezpieczeństwo, bagażnik. <b>Blokuje: bezpieczeństwo chińskiego auta (testy zderzeniowe).</b> Strona musi pokazać: trzy rzędy, ISOFIX, bagażnik przy rozłożonych fotelach, Euro NCAP. Klasa dowodu: prawdopodobne.</div></div>
+    <div class="ex-row"><div class="k">M2 · Pole pytań<small>CQF v6</small></div><div><b>24 pytania</b> w etapach 2–8:
+      <div class="bar"><span>2 Potrzeba/impuls</span><i style="width:60px"></i>3</div>
+      <div class="bar"><span>3 Rozpoznanie CEP</span><i style="width:60px"></i>3</div>
+      <div class="bar"><span>4 Nauka kategorii</span><i style="width:100px"></i>5</div>
+      <div class="bar"><span>5 Preselekcja</span><i style="width:60px"></i>3</div>
+      <div class="bar"><span>6 Porównywanie</span><i style="width:60px"></i>3</div>
+      <div class="bar"><span>7 Wybór sposobu zakupu</span><i style="width:80px"></i>4</div>
+      <div class="bar"><span>8 Zakup</span><i style="width:60px"></i>3</div>
+      Najwięcej pytań w etapie 4: ludzie dopiero uczą się kategorii („czy trzeci rząd jest realny dla dzieci”, „jakie normy bezpieczeństwa”). Dzisiejsza ścieżka Rodziny etap 4 pomija.</div></div>
+    <div class="ex-row"><div class="k">M3 · Gdzie pada pytanie<small>CQF → touchpointy</small></div><div>
+      <div class="bar"><span>karta auta (sklep)</span><i style="width:160px"></i>16</div>
+      <div class="bar"><span>wyniki organiczne Google</span><i style="width:130px"></i>13</div>
+      <div class="bar"><span>strona marki / modelu</span><i style="width:70px"></i>7</div>
+      <div class="bar"><span>AI Overview</span><i style="width:50px"></i>5</div>
+      <div class="bar"><span>„Podobne pytania” Google</span><i style="width:50px"></i>5</div>
+      <div class="bar"><span>porównywarka</span><i style="width:40px"></i>4</div>
+      Odpowiada w 21 z 24 przypadków nasza własna treść (karta, blog, FAQ, mail).
+      <div class="warn"><b>Luka:</b> 0 z 24 pytań ma dozwolony kanał płatny. CQF mówi, gdzie pytanie pada organicznie, ale nie wskazuje nośników płatnych. Wybór Meta i Google dla tego CEP-u idzie dziś tylko ze strategii reklamowej, nie z danych.</div></div></div>
+    <div class="ex-row"><div class="k">M4 · Nośniki płatne<small>słownik + scorer</small></div><div>Słownik touchpointów ma płatne media w czterech pozycjach (Meta Ads, Google Ads, salon, polecenie) i formularz Meta Lead Ads w konwersji. Nie rozróżnia Reels, karuzeli, video, Search i YouTube. <b>Dziś:</b> Meta feed / Reels ze strategii, grupa 02. <b>Po zbudowaniu słownika nośników:</b> 2–3 kandydatów z oceną (etap, format, budżet, mierzalność, koszt), np. Meta Reels video 15 s · Meta karuzela 3 kart · Google Search na frazy „7-osobowe”.</div></div>
+    <div class="ex-row"><div class="k">M5 · Komunikat<small>strategia → luka → generator</small></div><div>Strategia v1.1 ma przekazy grupy 02, więc idą <b>dosłownie</b>: „Trzy rzędy i 1000 km zasięgu. Bez kompromisu.” · „Sześć miejsc. Trzy rzędy. Nikt się nie kłóci o bagażnik.” · „Obejrzysz je z całą rodziną, zanim dopłacisz resztę.” Generator (argument LP Makera + silnik hooków ads-strateg) pracuje tylko na lukach. Tu brakuje przekazu o bezpieczeństwie, a to bloker numer jeden tego CEP-u. Propozycja przechodzi przez copy-quality-pl, psi i stratega.
+      <div class="warn"><b>Blokada:</b> przekaz „Obejrzysz je z całą rodziną” nie może iść w reklamę, dopóki proces oględzin ma trzy sprzeczne wersje (K28 / SP03).</div></div></div>
+    <div class="ex-row"><div class="k">M6 · Miejsce lądowania<small>para wchodząca → strona</small></div><div>Reklama pokazuje jeden model z obietnicą → <b>karta Li Auto L9</b>, a przy zestawie modeli rodzinnych (karuzela) → <b>lista aut z filtrem „6–7 miejsc”</b>. Warunek: L9 musi być w stocku. Na stagingu jest dziś karta XPeng G6, a karty L9 nie widzieliśmy (K05).</div></div>
+    <div class="ex-row"><div class="k">M7 · LP Maker<small>świat A → świat B</small></div><div>Gdy strona nie istnieje albo ma za mało, żeby domknąć obietnicę: <b>LP modelu „L9 dla rodziny”</b>. Świat A: <code>ARGUMENT.json</code> (potrzeba → cecha → powód → dowód → oferta), potem propozycja treści i wireframe (lp-strateg, lp-tresc), potem bramka psi. Świat B (postawienie strony) działa dziś tylko na Shopify GLOV. <b>Dla China Select kończymy na wireframe i briefie dla wykonawcy strony</b>, dopóki nie ma adaptera platformy.</div></div>
+    <div class="ex-row"><div class="k">M8 · Kroki<small>pytanie → element</small></div><div>Dla każdego etapu najmocniejsze pytanie CQF → element, który na nie odpowiada → komunikacja tego elementu → ruch i zdarzenie. Wynik to dzisiejsze 10 kroków, uzupełnione o etap 4 (nauka kategorii: krótki blok „trzy rzędy w praktyce” albo artykuł porównawczy jako wejście organiczne).</div></div>
+    <div class="ex-row"><div class="k">M9 · Przejście<small>dziury</small></div><div>10 dziur z dzisiejszego przebiegu: parametry rodzinne i Euro NCAP, cena do odbioru z rozbiciem, rata, gwarancja i serwis, raport egzemplarza, automat mailowy, zgoda pod Rinvo, czas reakcji, oględziny i zaliczka. Do tego jedna nowa: brak treści na etap 4. Każda trafia do projektu zmian swojego elementu.</div></div>
+    <div class="ex-row"><div class="k">M10–M11 · Pomiar i test<small>UTM · A/B</small></div><div>UTM z polami grupa · model · kreacja · wariant, 11 zdarzeń na strzałkach, ID leada GA4 ↔ CRM. Plan testu: 2 nośniki (Reels video vs karuzela) × 2 komunikaty (zasięg vs bezpieczeństwo) → karta L9 vs LP „L9 dla rodziny”. Kryterium odcięcia: koszt leada zakwalifikowanego, nie liczba formularzy.
+      <div class="ok">Wynik testu trafia z powrotem do rekordu ścieżki jako pole <b>Z</b> (zmierzone). Dopiero wtedy wiemy, co jest „najlepsze”.</div></div></div>
+  </div>
+</section>
+
+<!-- §5 -->
+<section id="s5">
+  <div class="grid2">
+    <div class="card">
+      <div class="lbl">5 · Pochodzenie danych</div>
+      <h2>Każde pole ma znacznik, skąd jest</h2>
+      <div class="pvl"><i class="pv D">D</i><div><b>Dane</b>: baza CEP, CS, CQF, CDT, rejestr elementów. Czytane przy budowie z plików, nigdy przepisywane ręcznie. Brak identyfikatora = błąd budowy.</div></div>
+      <div class="pvl"><i class="pv S">S</i><div><b>Strategia lub decyzja</b>: strategia reklamowa v1.1, decyzje China Select i Tomka. Używane dosłownie.</div></div>
+      <div class="pvl"><i class="pv P">P</i><div><b>Propozycja silnika</b>: dobór nośnika, strony, komunikat z generatora, LP. Do akceptacji, oznaczona na stronie innym kolorem.</div></div>
+      <div class="pvl"><i class="pv Z">Z</i><div><b>Zmierzone</b>: wynik po starcie (ruch, leady, sprzedaż z CRM). Jedyne pole, które rozstrzyga, co działa.</div></div>
+      <p class="sec-p" style="margin-top:8px">W trybie MAX prawie wszystko poza „Kto” jest propozycją (P), a strona musi to pokazywać. W trybie przejścia prawie wszystko jest dane (D, S).</p>
+    </div>
+    <div class="card" id="s6">
+      <div class="lbl">6 · Czego nie obiecujemy</div>
+      <h2>Trzy granice, które pipeline mówi wprost</h2>
+      <div class="pvl"><i class="pv P">1</i><div><b>„Najlepsze” nośniki i komunikaty to kandydaci do testu, nie wyrok.</b> Walidacja z 28.09 pokazała, że ani przebiegi, ani model nie przewidują wyniku A/B. MAX daje 2–3 nośniki, 2 komunikaty i LP w dwóch wersjach, z jawnymi kryteriami wyboru i odcięcia.</div></div>
+      <div class="pvl"><i class="pv P">2</i><div><b>LP Maker stawia stronę tylko tam, gdzie ma adapter platformy.</b> Dziś jest to Shopify GLOV. Dla China Select wynik to argument, treść, wireframe i brief dla wykonawcy. Wdrożenie przez adapter to wzorzec EC5: rdzeń plus adaptery.</div></div>
+      <div class="pvl"><i class="pv P">3</i><div><b>Zatwierdzona strategia wygrywa z generatorem.</b> Gdzie strategia ma przekazy, idą słowo w słowo. Generator wypełnia luki i przechodzi bramki (copy-quality-pl, psi, strateg) zanim zobaczy go Tomek.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- §7 -->
+<section id="s7">
+  <div class="lbl">7 · Decyzje przed budową</div>
+  <h2>Trzy decyzje i proponowana kolejność</h2>
+  <div class="grid2">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="dec"><b>1</b><div><b>Słownik nośników płatnych — budujemy osobno czy rozszerzamy słownik touchpointów?</b><div class="ok"><b>Rozstrzygnięte 15.10:</b> słownik GEO. Dopisane pole nosniki (10 nośników) w Meta Ads i Google Ads; touchpointów nadal 44, CQF bez zmian.</div><div class="rek2"><b>Było:</b> rozszerzamy istniejący słownik o grupę „nośniki płatne” (Reels, feed, karuzela, Lead Ads, Search, YouTube, Display, PMax) z formatem, etapami, kosztem i mierzalnością. Scorer na wzorze silnika formatów z warsztatu Hebe: kryteria z wagami → ranking → kandydaci. Jeden słownik dla GEO, Ścieżkomatu i reklam. Alternatywa: osobna lista w Ścieżkomacie — szybciej, ale dwa słowniki rozjadą się w miesiąc.</div></div></div>
+      <div class="dec"><b>2</b><div><b>LP Maker dla China Select kończy się na wireframe i briefie dla wykonawcy?</b><div class="ok"><b>Zaakceptowane 20.10.</b></div><div class="rek2"><b>Rekomendacja:</b> tak, dopóki nie znamy platformy strony. Adapter budujemy, gdy będzie dostęp do CMS-a. Świat A (argument, treść, wireframe) jest wspólny dla wszystkich platform i od razu daje wsad wykonawcy.</div></div></div>
+      <div class="dec"><b>3</b><div><b>Czy przy CEP-ach z wysokim ryzykiem (CEV ryzyko 0,85) generator ma obowiązkowo dokładać przekaz o blokerze?</b><div class="ok"><b>Zaakceptowane 20.10.</b></div><div class="rek2"><b>Rekomendacja:</b> tak, jako reguła. Jeśli żaden przekaz nie odpowiada na bloker CEP-u, M5 musi zaproponować jeden. Przy Rodzinie to bezpieczeństwo, którego w strategii brakuje.</div></div></div>
+    </div>
+    <div class="card">
+      <h3>Proponowana kolejność budowy</h3>
+      <ol class="order">
+        <li><div><b>Mapowanie pytanie → element</b> (M8)<small>Zasila trzy warianty naraz: od strony, od pytania i MAX. Bez tego narzędzie nie wie, która część strony odpowiada na które pytanie. Pierwszy przebieg na 24 pytaniach CEP-u Rodziny × 37 elementach.</small></div></li>
+        <li><div><b>Rekord ścieżki z pochodzeniem pól + punkt startu „od CEP” na poziomie STANDARD</b><small>Wsad CEP → kontekst, pole pytań, gdzie pada pytanie, kroki, przejście. Bez nośników i generatora. Jeden CEP od początku do końca, pokazuję, potem reszta.</small></div></li>
+        <li><div><b>Słownik nośników płatnych + scorer</b> (M4)<small>Po decyzji 1. Wtedy STANDARD dostaje dobór nośników.</small></div></li>
+        <li><div><b>Spięcie z LP Makerem i ads-strateg</b> (M5, M7)<small>Poziom MAX: komunikat na lukach, argument i wireframe LP, brief reklamy. Bramki psi, copy-quality-pl, strateg.</small></div></li>
+        <li><div><b>Pozostałe punkty startu</b> (od segmentu, od reklamy, od strony, od pytania)<small>To już tylko inne wejścia do tego samego rekordu.</small></div></li>
+        <li><div><b>Pomiar i plan testu</b> (M10–M11)<small>UTM z istniejącego generatora UTM (GLOV), zdarzenia, kryteria odcięcia. Wynik wraca jako pole Z.</small></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- §8 -->
+<section id="s8">
+  <div class="lbl">8 · Proces decyzyjny</div>
+  <h2>Jak Ścieżkomat rozstrzyga — siedem punktów wyboru</h2>
+  <p class="sec-p">Pipeline mówi, co po kolei. Ta sekcja mówi, jak w każdym punkcie wyboru zapada decyzja: co ją rozstrzyga, jakie są progi, co przy remisie i kto zatwierdza. Progi są propozycją do kalibracji na pierwszych przebiegach, nie prawdą objawioną. Każda decyzja zapisuje się w rekordzie ścieżki razem z powodem, żeby po teście było wiadomo, co zadziałało i dlaczego.</p>
+  <p class="sec-p"><span class="kto sil">silnik</span> liczy i proponuje · <span class="kto br">bramka</span> agent sprawdza (strateg, psi, copy-quality-pl) · <span class="kto tw">Tomek</span> akceptuje · <span class="kto cs">China Select</span> decyzje o procesie sprzedaży i ofercie</p>
+  <div class="dflow">
+    <a href="#d1"><b>D1</b>Które CEP-y</a><i>→</i><a href="#d2"><b>D2</b>Który nośnik</a><i>→</i><a href="#d3"><b>D3</b>Jaki komunikat</a><i>→</i><a href="#d4"><b>D4</b>Gdzie ląduje</a><i>→</i><a href="#d5"><b>D5</b>Czy LP</a><i>→</i><a href="#d6"><b>D6</b>Co z dziurą</a><i>→</i><a href="#d7"><b>D7</b>Co testujemy</a>
+  </div>
+
+  <div class="dp" id="d1"><div class="dp-h"><span class="nr">D1</span><h3>Które CEP-y bierzemy</h3><span class="kto sil">silnik</span><span class="kto tw">Tomek</span></div>
+    <div class="dp-q">Od segmentu: którym momentom zakupowym tego segmentu robimy ścieżki najpierw?</div>
+    <div class="dp-g">
+      <div><span class="k">Wchodzi</span>macierz CEP × segment, klasa dowodu, waga toru (udział CEP-u w zapytaniach kategorii), budżet grupy ze strategii</div>
+      <div><span class="k">Reguła</span><ol><li>Odpada klasa „hipoteza” — najpierw potwierdzenie głosem kupujących.</li><li>Ranking: waga toru × klasa dowodu (udowodnione 1,0 · prawdopodobne 0,7).</li><li>Bierzemy tyle CEP-ów, ile budżet grupy uniesie przy minimum 2 nośnikach na CEP (D2).</li><li>Obawa (np. „czy się nie rozsypie”) nie jest osobną ścieżką — dokłada się do ścieżek CEP-ów sytuacyjnych tego segmentu.</li></ol></div>
+      <div><span class="k">Wychodzi</span>lista CEP-ów z kolejnością i powodem; Tomek zatwierdza listę, nie każdy CEP osobno</div>
+    </div>
+    <div class="dp-ex"><b class="w">Rodzina</b> S2 ma 20 CEP-ów w macierzy. Sytuacyjne z klasą „prawdopodobne”: „rodzina przestała się mieścić”, „długie trasy”. Pięć obaw (dwie udowodnione) idzie do obu ścieżek, a nie osobno.</div>
+  </div>
+
+  <div class="dp" id="d2"><div class="dp-h"><span class="nr">D2</span><h3>Który nośnik</h3><span class="kto sil">silnik</span><span class="kto tw">Tomek</span></div>
+    <div class="dp-q">Z 10 nośników płatnych w słowniku — które 2–3 dla tego CEP-u?</div>
+    <div class="dp-g">
+      <div><span class="k">Wchodzi</span>etapy, w których ten CEP ma najwięcej pytań (CQF), nośniki z <code>touchpoints.json → nosniki</code> (stany, cel, kreacja, UTM, rozliczenie), budżet grupy, kanały dozwolone ze strategii</div>
+      <div><span class="k">Reguła</span><ol><li><b>Filtr:</b> etapy nośnika ∩ etapy ścieżki ≠ ∅ i kanał dozwolony w strategii.</li><li><b>Ocena</b> (wagi do kalibracji): dopasowanie etapu 35 · zgodność celu z temperaturą wejścia 25 (zimny → zasięg, ciepły → ruch, gorący → lead) · mierzalność do leada 20 · koszt względny 10 · pasuje do komunikatu 10.</li><li>Zawsze <b>jeden nośnik zimny</b> (etapy 2–4) i <b>jeden ciepły</b> (5–7), żeby test pokazał, gdzie ten CEP konwertuje.</li><li>Remis → wygrywa mierzalność.</li></ol></div>
+      <div><span class="k">Wychodzi</span>2–3 kandydaci z punktami i powodem; to kandydaci do testu, nie wyrok</div>
+    </div>
+    <div class="dp-ex"><b class="w">Rodzina</b> Pytania CEP-u leżą najgęściej w etapie 4 (nauka kategorii, 5 z 24). Kandydaci: Meta Reels video (etapy 2–4, zimny), Meta karuzela (3–6, ciepły, kilka modeli rodzinnych), Google Search na frazy „7-osobowe” (4–7, ciepły). Lead Ads odpada w pierwszej fali: obawa „kupuję auto, którego nie widziałem” wymaga strony z dowodem.</div>
+  </div>
+
+  <div class="dp" id="d3"><div class="dp-h"><span class="nr">D3</span><h3>Jaki komunikat</h3><span class="kto sil">silnik</span><span class="kto br">bramka</span><span class="kto tw">Tomek</span></div>
+    <div class="dp-q">Co mówi reklama — skąd bierzemy zdanie i czego nie wolno pominąć?</div>
+    <div class="dp-g">
+      <div><span class="k">Wchodzi</span>przekazy ze strategii, trigger i bloker CEP-u, psychologia kategorii (CEV), nośnik z D2, stan procesu (blokady China Select)</div>
+      <div><span class="k">Reguła</span><ol><li><b>Strategia dosłownie</b>, jeśli ma przekaz dla tej grupy i CEP-u.</li><li><b>Reguła blokera</b> (zaakceptowana 20.10): gdy ryzyko kategorii ≥ 0,7, a żaden przekaz nie odpowiada na bloker CEP-u → generator musi dołożyć jeden.</li><li><b>Blokada obietnicy:</b> przekaz obiecujący coś, czego proces nie dowozi (sprzeczność w decyzjach China Select), nie idzie w reklamę, dopóki sprzeczność nie zostanie rozstrzygnięta.</li><li>Generator (argument LP Makera + silnik hooków) tylko na lukach; dwa warianty do testu.</li><li>Bramki: copy-quality-pl → psi → strateg.</li></ol></div>
+      <div><span class="k">Wychodzi</span>hasło + przekazy + „co strona musi dowieźć” + oznaczenie pochodzenia (strategia / generator)</div>
+    </div>
+    <div class="dp-ex"><b class="w">Rodzina</b> Ryzyko 0,85 i bloker „bezpieczeństwo (testy zderzeniowe)”, a żaden z trzech przekazów grupy 02 o nim nie mówi → generator dokłada przekaz o bezpieczeństwie. „Obejrzysz je z całą rodziną, zanim dopłacisz resztę” zablokowane do czasu jednej wersji oględzin (K28 / SP03).</div>
+  </div>
+
+  <div class="dp" id="d4"><div class="dp-h"><span class="nr">D4</span><h3>Gdzie ląduje kliknięcie</h3><span class="kto sil">silnik</span><span class="kto tw">Tomek</span></div>
+    <div class="dp-q">Istniejąca strona czy coś nowego — i która?</div>
+    <div class="dp-g">
+      <div><span class="k">Wchodzi</span>nośnik i rodzaj kreacji (D2), komunikat (D3), mapa pytanie → element tego CEP-u, rejestr stron</div>
+      <div><span class="k">Reguła</span>
+        <table class="tab-d"><tr><th>Kreacja / obietnica</th><th>Strona domyślna</th></tr>
+        <tr><td>jeden model, cena, egzemplarz z feedu</td><td>karta auta</td></tr>
+        <tr><td>kilka modeli, potrzeba („7 miejsc”)</td><td>lista aut z filtrem z linku</td></tr>
+        <tr><td>ranking, „najlepsze X”</td><td>LP rankingowa</td></tr>
+        <tr><td>marka nieznana</td><td>LP marki</td></tr>
+        <tr><td>formularz natywny</td><td>brak strony → Rinvo i mail</td></tr></table>
+        <b>Test pokrycia:</b> strona przechodzi, gdy co najmniej <b>70%</b> pytań, dla których jest elementem głównym, jest pokryte po zmianach. Poniżej progu → D5.</div>
+      <div><span class="k">Wychodzi</span>strona docelowa + procent pokrycia + lista pytań bez odpowiedzi na tej stronie</div>
+    </div>
+    <div class="dp-ex"><b class="w">Rodzina</b> Karta auta jest elementem głównym dla 13 pytań, po zmianach odpowiada na 7, czyli <b>54%</b> — poniżej progu. Lista aut: 3 pytania, 0 pokrytych. Obie strony idą do D5.</div>
+  </div>
+
+  <div class="dp" id="d5"><div class="dp-h"><span class="nr">D5</span><h3>Poprawiamy stronę czy robimy LP</h3><span class="kto sil">silnik</span><span class="kto tw">Tomek</span></div>
+    <div class="dp-q">Brakuje odpowiedzi na stronie docelowej — dopisać do projektu zmian czy zamówić LP w LP Makerze?</div>
+    <div class="dp-g">
+      <div><span class="k">Wchodzi</span>pytania bez odpowiedzi z D4, elementy z lukami w projektach, obietnica komunikatu</div>
+      <div><span class="k">Reguła</span><ol><li><b>Najpierw strona:</b> jeśli luki skupiają się w 1–2 elementach → dopisujemy je do projektów zmian tych elementów. Taniej, działa dla każdej ścieżki, nie tylko dla tej.</li><li><b>LP</b>, gdy obietnica wymaga treści, której żaden element strony nie uniesie: opowieść do wideo, ranking, porównanie wielu modeli, scenariusz rodziny.</li><li>Gdy oba warunki → strona poprawiona to wariant A, LP to wariant B w teście (D7).</li><li>LP dla China Select kończy się na wireframe i briefie (decyzja 20.10).</li></ol></div>
+      <div><span class="k">Wychodzi</span>dopisane luki do projektów zmian i / albo zamówienie LP z rekordem ścieżki jako wsadem</div>
+    </div>
+    <div class="dp-ex"><b class="w">Rodzina</b> 6 z 6 luk karty siedzi w dwóch elementach (pasek parametrów: 5, blok ceny: 1) → dopisujemy do ich projektów; po tym karta odpowiada na 13 z 13. Obietnica wideo „trzy rzędy w praktyce” potrzebuje scenariusza rodziny, którego karta nie uniesie → <b>LP „L9 dla rodziny” jako wariant B</b> z LP Makera.</div>
+  </div>
+
+  <div class="dp" id="d6"><div class="dp-h"><span class="nr">D6</span><h3>Co robimy z dziurą</h3><span class="kto sil">silnik</span><span class="kto cs">China Select</span><span class="kto tw">Tomek</span></div>
+    <div class="dp-q">Przejście znalazło pytanie bez odpowiedzi — dokąd ono idzie?</div>
+    <div class="dp-g">
+      <div><span class="k">Wchodzi</span>stan pytania z mapy (luka w projekcie · nic w planie · częściowo / poza nami) i dziury z przejścia ścieżki</div>
+      <div><span class="k">Reguła</span>
+        <table class="tab-d"><tr><th>Rodzaj</th><th>Dokąd</th></tr>
+        <tr><td>element jest, projekt pomija</td><td>dopisek do projektu zmian elementu (jeden element = jeden projekt)</td></tr>
+        <tr><td>nic w planie, treść na naszej stronie</td><td>nowy element → benchmark → projekt</td></tr>
+        <tr><td>nic w planie, treść poza stroną</td><td>poradnik GEO / LP rankingowa → kolejka GEO</td></tr>
+        <tr><td>sprzeczność w procesie</td><td>pytanie do China Select z blokadą przekazu (D3)</td></tr>
+        <tr><td>nie nasze (fora, opinie)</td><td>bez działania; wzmacniamy opinie i polecenia</td></tr></table></div>
+      <div><span class="k">Wychodzi</span>każda dziura ma adres i właściciela; nic nie ląduje na osobnej liście życzeń</div>
+    </div>
+    <div class="dp-ex"><b class="w">Rodzina</b> 9 pytań → dopiski do 8 projektów zmian · 2 pytania → poradnik GEO · 1 → LP rankingowa (dane są w szkicu, brak Li Auto) · oględziny i zaliczka → pytanie do China Select.</div>
+  </div>
+
+  <div class="dp" id="d7"><div class="dp-h"><span class="nr">D7</span><h3>Co testujemy i kiedy kończymy</h3><span class="kto sil">silnik</span><span class="kto tw">Tomek</span></div>
+    <div class="dp-q">Jaki test, ile zmiennych naraz i po czym poznajemy zwycięzcę?</div>
+    <div class="dp-g">
+      <div><span class="k">Wchodzi</span>kandydaci nośników (D2), dwa komunikaty (D3), strona A i LP B (D5), budżet grupy</div>
+      <div><span class="k">Reguła</span><ol><li>Najwyżej <b>dwie zmienne naraz</b> (np. komunikat × strona); nośnik w osobnej fali.</li><li>Miernik: <b>koszt leada zakwalifikowanego</b> (Rinvo / konsultant), nie liczba formularzy.</li><li>Minimum próby przed decyzją: ustalane z budżetu grupy (np. po 30 leadach na wariant albo 14 dniach).</li><li>Kryterium odcięcia: wariant z kosztem leada zakwalifikowanego wyższym o 30% po minimum próby schodzi.</li><li>Wynik zapisuje się w rekordzie ścieżki jako pole Z i wraca do D2 / D3 jako waga.</li></ol></div>
+      <div><span class="k">Wychodzi</span>plan testu z kryterium odcięcia; po teście zwycięzca + lekcja w rekordzie</div>
+    </div>
+    <div class="dp-ex"><b class="w">Rodzina</b> Fala 1: komunikat (zasięg vs bezpieczeństwo) × strona (karta L9 poprawiona vs LP „L9 dla rodziny”) na jednym nośniku: Meta Reels. Fala 2: zwycięska para na karuzeli i Google Search.</div>
+  </div>
+</section>
+</div>
+<footer class="wrap">Źródła: <code>Projects/CC/sciezkomat/</code> (graf_cc.json, przebieg Rodziny), <code>GEO_PDP_Optimizer/data/</code> (cep_baza, cs_v2, cdt, questions, scored, touchpoints), <code>METODOLOGIA_CS_CQF_CJ.md</code> (K5 touchpoint jako wejście), agenci lp-strateg / lp-builder / ads-strateg / psi / strateg, oferta Audi Plichta (Ścieżkomat + Generator LP + UTMomat). Ustalenia Tomka: 06.10, 08.10 (para wchodząca albo wychodząca, od przodu albo od tyłu), 12.10 (graf, use case), 15.10 (warianty wsadu, MAX z LP Makerem).</footer>
+
+<script>
+const STARTS=[
+ {id:"cep",n:"A",nazwa:"Od CEP",max:true,wsad:"CEP (np. „Rodzina przestała się mieścić”) + opcjonalnie budżet, model, dozwolone kanały",daje:"cała ścieżka: nośniki, komunikat, miejsce lądowania lub LP, kroki, pomiar, plan testu",kierunek:"od przodu",start:"M0",
+  kroki:{M0:1,M1:1,M2:1,M3:1,M4:1,M5:1,M6:1,M7:1,M8:1,M9:1,M10:1,M11:1,M12:1},uwaga:"To jest wersja MAX z wiadomości Tomka 15.10. Jedyny wariant, w którym Ścieżkomat sam wybiera media, nośniki, komunikat i LP."},
+ {id:"seg",n:"B",nazwa:"Od segmentu",wsad:"segment (np. S2 Rodzina)",daje:"lista CEP-ów segmentu uszeregowana wagą, dla wybranych ścieżka jak od CEP",kierunek:"od przodu",start:"M1",
+  kroki:{M0:1,M1:1,M2:1,M3:1,M4:1,M5:2,M6:1,M7:2,M8:1,M9:1,M10:1,M11:1,M12:1},uwaga:"M1 rozwija segment na jego CEP-y (macierz CEP × segment, waga toru). Dalej każdy wybrany CEP idzie jak wariant A. Komunikat: najpierw przekazy grupy ze strategii."},
+ {id:"rek",n:"C",nazwa:"Od reklamy",wsad:"gotowa kreacja lub przekaz + kanał i format (para wchodząca)",daje:"rozpoznany CEP, miejsce lądowania, elementy i domknięcie obietnicy, dziury",kierunek:"od przodu",start:"M1",
+  kroki:{M0:1,M1:1,M2:1,M3:2,M4:0,M5:2,M6:1,M7:2,M8:1,M9:1,M10:1,M11:2,M12:1},uwaga:"M1 rozpoznaje CEP z treści przekazu (dopasowanie do triggerów i pytań; heurystyka nazwana, do akceptacji). Nośnik i komunikat są dane, więc M4 nie pracuje. M5 tylko na poziomie MAX: wariant B do testu."},
+ {id:"str",n:"D",nazwa:"Od strony / elementu",wsad:"strona albo element (np. karta auta / blok ceny) — para wychodząca",daje:"jakie pytania i CEP-y ten element łapie, jakie wejścia mogą tu prowadzić, czego brakuje",kierunek:"od tyłu",start:"M8",
+  kroki:{M0:1,M1:1,M2:1,M3:1,M4:1,M5:2,M6:0,M7:2,M8:1,M9:1,M10:1,M11:0,M12:1},uwaga:"Kierunek „od tyłu” z ustaleń 08.10. M8 czytane odwrotnie: element → pytania, na które odpowiada → CEP-y → skąd mogą przyjść ludzie (M3, M4). Miejsce lądowania jest dane, więc M6 nie pracuje."},
+ {id:"pyt",n:"E",nazwa:"Od pytania",wsad:"pytanie z CQF albo z rozmowy Rinvo / konsultanta",daje:"gdzie to pytanie pada, który element na nie odpowiada, kawałek ścieżki dalej",kierunek:"środek",start:"M3",
+  kroki:{M0:1,M1:1,M2:2,M3:1,M4:2,M5:2,M6:1,M7:2,M8:1,M9:1,M10:2,M11:0,M12:1},uwaga:"Use case kawałkowy: ktoś wchodzi w środku ścieżki (np. z Google na listę). Pytania z rozmów Rinvo to najcenniejszy wsad, bo to realny głos, a nie model."},
+ {id:"prz",n:"F",nazwa:"Przejście gotowej ścieżki",wsad:"zapisana ścieżka (rekord) — tak działa dziś przebieg Rodziny",daje:"dziury przypięte do elementów, sprawdzenie pomiaru",kierunek:"sprawdzenie",start:"M9",
+  kroki:{M0:1,M1:0,M2:0,M3:0,M4:0,M5:0,M6:0,M7:0,M8:0,M9:1,M10:2,M11:0,M12:1},uwaga:"Tryb sprawdzający. Każdy inny wariant też kończy się tym krokiem: żadna ścieżka nie idzie do produkcji bez przejścia."}
+];
+const POZ=[
+ {id:"min",nazwa:"MIN",opis:"tylko dane i dziury",kroki:["M0","M1","M2","M8","M9","M12"]},
+ {id:"std",nazwa:"STANDARD",opis:"+ dobór nośników, strony, pomiar",kroki:["M0","M1","M2","M3","M4","M6","M8","M9","M10","M12"]},
+ {id:"max",nazwa:"MAX",opis:"+ komunikat, LP z LP Makera, plan testu",kroki:["M0","M1","M2","M3","M4","M5","M6","M7","M8","M9","M10","M11","M12"]}
+];
+const STEPS=[
+ {id:"M0",nazwa:"Wsad",we:"to, co podaje człowiek: CEP / segment / reklama / strona / pytanie / ścieżka + ograniczenia (budżet, model, kanały)",wy:"rekord ścieżki z wypełnionymi polami wsadu, reszta pusta",sil:"formularz Ścieżkomatu",status:"czesc",pv:"S"},
+ {id:"M1",nazwa:"Kontekst CEP i segmentu",we:"id CEP-u lub segmentu",wy:"segment, moment, czego szuka, co blokuje, co strona musi pokazać, obawy, psychologia kategorii (CEV)",sil:"cep_baza + cs_v2 (czytane przy budowie)",status:"jest",pv:"D"},
+ {id:"M2",nazwa:"Pole pytań",we:"CEP",wy:"pytania CQF per etap 2–8 z priorytetem i klasą; etapy pull / push",sil:"CQF v6: questions + scored",status:"jest",pv:"D"},
+ {id:"M3",nazwa:"Gdzie pada pytanie",we:"pytania z etapami",wy:"touchpointy (organiczne, marki, porównywarki, AI) + kto odpowiada (my / obcy)",sil:"K5 v2: touchpoint jako wejście, touchpoints.json",status:"jest",pv:"D"},
+ {id:"M4",nazwa:"Nośniki płatne",we:"etapy ścieżki, budżet grupy, dozwolone kanały",wy:"2–3 kandydatów: media + nośnik + format, z oceną",sil:"touchpoints.json → pole nosniki (10 nośników Meta i Google, od 15.10) + scorer (wzór: silnik formatów z warsztatu Hebe)",status:"czesc",pv:"P",luka:"słownik nośników jest (10 pozycji, etapy do potwierdzenia danymi); scorer do zbudowania"},
+ {id:"M5",nazwa:"Komunikat",we:"CEP, bloker, nośnik, przekazy ze strategii",wy:"hasło, przekazy, obietnica, „co strona musi dowieźć”; strategia dosłownie, generator tylko na lukach, 2 warianty do testu",sil:"strategia v1.1 → lp-argument (potrzeba → cecha → powód → dowód → oferta) + silnik hooków ads-strateg",status:"czesc",pv:"S/P",bramka:"copy-quality-pl · psi · strateg"},
+ {id:"M6",nazwa:"Miejsce lądowania",we:"para wchodząca: nośnik + komunikat",wy:"istniejąca strona (karta, lista z filtrem, strona główna) albo zamówienie nowej LP; warunek: obietnica ma dowód na pierwszym ekranie",sil:"reguły pary (dawny dobieracz v1 jako podpowiedź) + rejestr stron",status:"czesc",pv:"P"},
+ {id:"M7",nazwa:"LP Maker",we:"rekord ścieżki: CEP, komunikat, nośnik, typ strony",wy:"świat A: ARGUMENT.json → propozycja treści → wireframe; świat B: strona na platformie (tylko z adapterem)",sil:"lp-strateg (lp-argument, lp-tresc) → lp-builder (lp-makieta, E1–E10)",status:"czesc",pv:"P",bramka:"psi po argumencie · lp-quality-check",luka:"świat B tylko Shopify GLOV; dla China Select brak adaptera (platforma nieznana)"},
+ {id:"M8",nazwa:"Kroki ścieżki",we:"pytania per etap, elementy stron",wy:"krok = element · pytanie · komunikacja · ruch i zdarzenie · etap CQF · stan dziś",sil:"mapowanie pytanie → element + rejestr elementów (reko_*.json)",status:"brak",pv:"D/P",luka:"pytania są, elementy są — nikt ich nie połączył; to klocek numer jeden do budowy"},
+ {id:"M9",nazwa:"Przejście i dziury",we:"rekord ścieżki",wy:"dziury przypięte do elementów → PROJEKTY_ZMIAN; mapa z drogą",sil:"graf_cc.json + build_graf.py (działa dla Rodziny)",status:"jest",pv:"P",bramka:"strateg"},
+ {id:"M10",nazwa:"Pomiar",we:"kroki ze zdarzeniami, pola leada",wy:"UTM, zdarzenia na strzałkach, ID leada GA4 ↔ CRM",sil:"generator UTM (wzór GLOV), most CRM",status:"czesc",pv:"S"},
+ {id:"M11",nazwa:"Plan testu",we:"kandydaci nośników, warianty komunikatu, warianty LP",wy:"2–3 nośniki × 2 komunikaty × LP A/B, kryterium odcięcia (koszt leada zakwalifikowanego)",sil:"do zbudowania jako szablon w rekordzie",status:"brak",pv:"P"},
+ {id:"M12",nazwa:"Akceptacja i produkcja",we:"rekord ścieżki + HTML",wy:"Tomek akceptuje → UAT → produkcja; po starcie wynik wraca jako pole Z",sil:"strona Ścieżkomatu (bramka akceptacji)",status:"jest",pv:"Z"}
+];
+const STATUS={jest:["jest","jest"],czesc:["częściowo","czesc"],brak:["do zbudowania","brak"]};
+const CAT=[
+ {n:"Baza CEP i segmentów",st:"jest",rola:"M1",gdzie:"GEO_PDP_Optimizer/data/cep_baza/auta_import_chiny.json",co:"28 CEP-ów, 8 segmentów, trigger, bloker, co strona musi pokazać, pytania z sieci ze źródłem"},
+ {n:"CS kategorii",st:"jest",rola:"M1",gdzie:"data/cs_v2/auta_import_chiny_v2.json · cs_auta_import_chiny.html",co:"psychologia kategorii (CEV), kryteria wyboru, ścieżki per CEP"},
+ {n:"CDT — hierarchia kryteriów",st:"jest",rola:"M5, M7",gdzie:"data/cdt/auta_import_chiny.json",co:"KCF z udziałem w zapytaniach i strefą treści (title / lead / przy cenie / spec)"},
+ {n:"CQF v6 — pole pytań",st:"jest",rola:"M2, M3",gdzie:"data/questions + data/scored · CQF_auta_import_chiny.html",co:"pytania × CEP × etap 2–8, priorytet, intencja, touchpointy, formaty, kto odpowiada"},
+ {n:"Słownik touchpointów",st:"jest",rola:"M3, M4",gdzie:"data/touchpoints.json",co:"44 touchpointy w grupach A–G; od 15.10 w Meta Ads i Google Ads pole nosniki: 10 nośników (feed, karuzela, Reels, katalog, Lead Ads, Search, PMax, YouTube, Demand Gen, Display) z UTM i rozliczeniem"},
+ {n:"Scorer nośników płatnych",st:"brak",rola:"M4",gdzie:"do zbudowania (czyta touchpoints.json → nosniki)",co:"ranking nośników pod CEP: etap, format, budżet grupy, mierzalność, koszt — kryteria z wagami (wzór: silnik formatów Hebe)"},
+ {n:"Rejestr elementów stron",st:"jest",rola:"M6, M8",gdzie:"CC/projekty/dane/reko_*.json · PROJEKTY_ZMIAN",co:"37 elementów w 3 obszarach; jeden element = jeden projekt"},
+ {n:"Mapowanie pytanie → element",st:"brak",rola:"M8 (oraz warianty D, E)",gdzie:"do zbudowania",co:"które pytanie CQF obsługuje który element; pytanie bez elementu = dziura albo brak obszaru (np. strona odpowiedzi GEO)"},
+ {n:"Strategia reklamowa",st:"jest",rola:"M5",gdzie:"strategia v1.1 (grupy 01–05)",co:"przekazy, budżety, modele-bohaterowie; używana dosłownie"},
+ {n:"ads-strateg + brief_maszyna",st:"jest",rola:"M5, brief reklamy",gdzie:"agent ads-strateg · tools/brief_maszyna.py (K0–K7)",co:"statyki, karuzele, UGC, silnik hooków, sędzia K7 z kryteriami odcięcia"},
+ {n:"LP Maker — świat A",st:"jest",rola:"M7",gdzie:"agent lp-strateg · skille lp-argument, lp-tresc",co:"ARGUMENT.json → propozycja treści → wireframe (każde zdanie ze źródłem)"},
+ {n:"LP Maker — świat B",st:"czesc",rola:"M7",gdzie:"agent lp-builder · skill lp-makieta",co:"strona na motywie testowym, bramki E1–E10 na zrzucie 390×844",luka:"tylko Shopify GLOV; adapter dla China Select do zbudowania"},
+ {n:"Bramki jakości",st:"jest",rola:"M5, M7, M9",gdzie:"agenci strateg, psi, copy-quality-pl, lp-quality-check, ai4cro-quality",co:"myślenie strategiczne, 14 sił psychologii, copy, wygląd LP, kanon"},
+ {n:"Graf i renderer Ścieżkomatu",st:"jest",rola:"M9, M12",gdzie:"CC/sciezkomat/graf_cc.json · _shared/sciezkomat/build_graf.py",co:"mapa z parametrami wejściowymi, kroki, dziury; dane CS/CQF czytane przy budowie"},
+ {n:"Pomiar: UTM i zdarzenia",st:"czesc",rola:"M10",gdzie:"generator UTM (GLOV) · pola pomiaru w rekordzie",co:"UTM z polami grupa · model · kreacja · wariant; zdarzenia na strzałkach",luka:"ID leada GA4 ↔ CRM czeka na most CRM"},
+ {n:"Ogon: CRM, Rinvo, konsultant",st:"czesc",rola:"ogon w rekordzie",gdzie:"CC/crm/ (osobny wątek)",co:"formularz → CRM → Rinvo ≤5 min → konsultant; pytania z rozmów jako wsad wariantu E"}
+];
+let S="cep",P="max";
+const $=s=>document.querySelector(s);
+function esc(t){return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function renderStarts1(){ $("#starts1").innerHTML=STARTS.map(s=>`<div class="st${s.max?" max":""}" data-s="${s.id}"><b>${s.n}</b><div><div><b style="all:unset;font-weight:700">${esc(s.nazwa)}</b>${s.max?' <span class="tag bramka">MAX</span>':""}</div><small>wsad: ${esc(s.wsad)}</small></div></div>`).join("");
+ document.querySelectorAll("#starts1 .st").forEach(e=>e.onclick=()=>{S=e.dataset.s;render();document.getElementById("s2").scrollIntoView({behavior:"smooth"})});}
+function render(){
+ $("#btn-start").innerHTML=STARTS.map(s=>`<button class="btn${s.id===S?" act":""}" data-s="${s.id}"><b>${s.n}</b> ${esc(s.nazwa)}</button>`).join("");
+ $("#btn-poz").innerHTML=POZ.map(p=>`<button class="btn${p.id===P?" act":""}" data-p="${p.id}"><b>${p.nazwa}</b> ${esc(p.opis)}</button>`).join("");
+ document.querySelectorAll("#btn-start .btn").forEach(b=>b.onclick=()=>{S=b.dataset.s;render()});
+ document.querySelectorAll("#btn-poz .btn").forEach(b=>b.onclick=()=>{P=b.dataset.p;render()});
+ const st=STARTS.find(x=>x.id===S), pz=POZ.find(x=>x.id===P);
+ let on=0;
+ $("#lane").innerHTML=STEPS.map(k=>{
+   const m=st.kroki[k.id], inPoz=pz.kroki.includes(k.id), dziala=m>0&&inPoz;
+   if(dziala) on++;
+   const why=!inPoz?"poza poziomem "+pz.nazwa:(m===0?"pole przychodzi we wsadzie":"");
+   const tag=STATUS[k.status];
+   return `<div class="step${dziala?"":" off"}"><div class="id">${k.id}</div><div>
+     <div class="step-h"><b>${esc(k.nazwa)}</b><span class="tag ${tag[1]}">${tag[0]}</span>${k.bramka&&dziala?`<span class="tag bramka">bramka: ${esc(k.bramka)}</span>`:""}${m===2&&dziala?'<span class="tag czesc">tylko gdy wsad nie podał</span>':""}${!dziala?`<span class="skip">— ${esc(why)}</span>`:""}</div>
+     <div class="step-b"><div class="io"><div><span>Wchodzi</span>${esc(k.we)}</div><div><span>Wychodzi</span>${esc(k.wy)} <i class="pv ${k.pv[0]}">${esc(k.pv)}</i></div></div>
+     <div class="eng">Silnik: <code>${esc(k.sil)}</code></div>${k.luka?`<div class="warn">Luka: ${esc(k.luka)}</div>`:""}${k.id===st.start&&S!=="cep"?`<div class="note-mode">Ten wariant zaczyna się tu: ${esc(st.uwaga)}</div>`:""}</div></div></div>`}).join("");
+ $("#mode-info").innerHTML=`<h3>${st.n} · ${esc(st.nazwa)} · ${pz.nazwa}</h3>
+   <div class="kv"><span>Wsad</span><div>${esc(st.wsad)}</div></div>
+   <div class="kv"><span>Daje</span><div>${esc(st.daje)}</div></div>
+   <div class="kv"><span>Kierunek</span><div>${esc(st.kierunek)}</div></div>
+   <div class="kv"><span>Pracuje</span><div><b>${on}</b> z ${STEPS.length} kroków</div></div>
+   <div class="kv"><span>Uwaga</span><div>${esc(st.uwaga)}</div></div>`;
+}
+function renderMx(){
+ const head="<tr><th>Punkt startu</th>"+STEPS.map(k=>`<th title="${esc(k.nazwa)}">${k.id}</th>`).join("")+"</tr>";
+ const rows=STARTS.map(s=>`<tr><td><b>${s.n}</b> ${esc(s.nazwa)}</td>`+STEPS.map(k=>`<td class="${["no","on","opt"][s.kroki[k.id]]}"></td>`).join("")+"</tr>").join("");
+ const names="<tr><td style='color:#6B5D5A;font-size:11px'>krok</td>"+STEPS.map(k=>`<td style="font-size:10px;color:#6B5D5A;line-height:1.15">${esc(k.nazwa)}</td>`).join("")+"</tr>";
+ $("#mx").innerHTML=head+rows+names;
+}
+let F="all";
+function renderCat(){
+ const f=[["all","wszystkie"],["jest","jest"],["czesc","częściowo"],["brak","do zbudowania"]];
+ $("#cat-f").innerHTML=f.map(x=>`<button class="btn${x[0]===F?" act":""}" data-f="${x[0]}">${x[1]} (${x[0]==="all"?CAT.length:CAT.filter(c=>c.st===x[0]).length})</button>`).join("");
+ document.querySelectorAll("#cat-f .btn").forEach(b=>b.onclick=()=>{F=b.dataset.f;renderCat()});
+ $("#cat").innerHTML=CAT.filter(c=>F==="all"||c.st===F).map(c=>{const t=STATUS[c.st];return `<div class="el"><div class="el-h"><b>${esc(c.n)}</b><span class="tag ${t[1]}">${t[0]}</span></div>
+  <div class="kv"><span>Robi</span><div>${esc(c.co)}</div></div><div class="kv"><span>Krok</span><div>${esc(c.rola)}</div></div><div class="kv"><span>Gdzie</span><div><code>${esc(c.gdzie)}</code></div></div>${c.luka?`<div class="luka">Luka: ${esc(c.luka)}</div>`:""}</div>`}).join("");
+}
+renderStarts1();render();renderMx();renderCat();
+</script>
+</body></html>
