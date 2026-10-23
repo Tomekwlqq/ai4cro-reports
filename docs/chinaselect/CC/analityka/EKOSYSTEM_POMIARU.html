@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ekosystem pomiaru China Select</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Układ: jedna kolumna dokumentu technicznego (~760px), tabele w przewijanych ramkach, schemat pętli jako siatka stacji. Tokeny z _shared/BRAND_STYLE_GUIDE (Warm·Gold). */
+:root {
+  --bg: #FBF6F1; --surface: #FFFFFF; --surface-2: #F7F0EA; --line: #EFE3DA;
+  --ink: #2B2326; --muted: #6B5D5A; --faint: #9C8D88;
+  --gold: #C9A84C; --gold-d: #8A6D1F; --gold-soft: rgba(201,168,76,.12); --gold-line: rgba(201,168,76,.38);
+  --ok: #236B43; --ok-soft: rgba(46,139,87,.12);
+  --warn: #8F641A; --warn-soft: rgba(176,124,34,.14);
+  --bad: #A4472B; --bad-soft: rgba(196,101,43,.12);
+  --info: #3A6691; --info-soft: rgba(74,127,181,.12);
+  --sans: 'Space Grotesk', -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', 'SF Mono', Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15130F; --surface: #1E1B16; --surface-2: #252119; --line: #342E25;
+  --ink: #F1ECE4; --muted: #BDB2A6; --faint: #8C8276;
+  --gold: #D6B65C; --gold-d: #E2C46E; --gold-soft: rgba(214,182,92,.12); --gold-line: rgba(214,182,92,.36);
+  --ok: #6CC495; --ok-soft: rgba(108,196,149,.14);
+  --warn: #E0B25A; --warn-soft: rgba(224,178,90,.14);
+  --bad: #EE9A78; --bad-soft: rgba(238,154,120,.14);
+  --info: #8DB6E0; --info-soft: rgba(141,182,224,.14);
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #15130F; --surface: #1E1B16; --surface-2: #252119; --line: #342E25;
+  --ink: #F1ECE4; --muted: #BDB2A6; --faint: #8C8276;
+  --gold: #D6B65C; --gold-d: #E2C46E; --gold-soft: rgba(214,182,92,.12); --gold-line: rgba(214,182,92,.36);
+  --ok: #6CC495; --ok-soft: rgba(108,196,149,.14);
+  --warn: #E0B25A; --warn-soft: rgba(224,178,90,.14);
+  --bad: #EE9A78; --bad-soft: rgba(238,154,120,.14);
+  --info: #8DB6E0; --info-soft: rgba(141,182,224,.14);
+  color-scheme: dark; }
+
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 72px; }
+main { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 48px; }
+section { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(30px, 5vw, 42px); font-weight: 700; letter-spacing: -.02em; }
+h2 { font-size: 24px; font-weight: 600; letter-spacing: -.01em; display: flex; gap: 12px; align-items: baseline; }
+h2 .nr { font-family: var(--mono); font-size: 14px; color: var(--gold-d); font-weight: 500; }
+h3 { font-size: 17px; font-weight: 600; margin-top: 6px; }
+p { margin: 0; max-width: 68ch; }
+ul, ol { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; max-width: 68ch; }
+code { font-family: var(--mono); font-size: .86em; background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; overflow-wrap: anywhere; }
+a { color: var(--gold-d); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+
+header { display: flex; flex-direction: column; gap: 14px; }
+.kicker { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-d); }
+.lead { font-size: 18px; color: var(--muted); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: var(--faint); font-family: var(--mono); }
+
+.tldr { background: var(--surface); border: 1px solid var(--gold-line); border-radius: 14px; padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; }
+.tldr h2 { font-size: 18px; }
+.tldr ol { gap: 10px; }
+
+/* pętla agenta */
+.loop { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; counter-reset: st; }
+.st { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 12px; display: flex; flex-direction: column; gap: 6px; position: relative; min-width: 0; }
+.st b { font-size: 15px; }
+.st span { font-size: 13px; color: var(--muted); line-height: 1.45; }
+.st::before { counter-increment: st; content: counter(st); font-family: var(--mono); font-size: 12px; color: var(--gold-d); }
+.st.agent { border-color: var(--gold-line); background: var(--gold-soft); }
+.back { font-family: var(--mono); font-size: 13px; color: var(--gold-d); border: 1px dashed var(--gold-line); border-radius: 10px; padding: 10px 14px; text-align: center; }
+@media (max-width: 720px) { .loop { grid-template-columns: 1fr; } }
+
+/* tabele */
+.tw { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.45; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+th { font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--surface-2); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pill { display: inline-block; font-family: var(--mono); font-size: 11.5px; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+.p-ok { background: var(--ok-soft); color: var(--ok); }
+.p-warn { background: var(--warn-soft); color: var(--warn); }
+.p-bad { background: var(--bad-soft); color: var(--bad); }
+.p-info { background: var(--info-soft); color: var(--info); }
+.p-gold { background: var(--gold-soft); color: var(--gold-d); }
+
+.note { border-left: 3px solid var(--gold); padding: 4px 0 4px 14px; color: var(--muted); font-size: 15px; max-width: 68ch; }
+
+/* fazy */
+.phases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.ph { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.ph.must { border-color: var(--gold-line); }
+.ph h3 { margin: 0; font-size: 16px; }
+.ph .when { font-family: var(--mono); font-size: 12px; color: var(--gold-d); }
+.ph ul { font-size: 14px; gap: 4px; }
+@media (max-width: 640px) { .phases { grid-template-columns: 1fr; } }
+
+/* pytania */
+.qhead { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.btn { font-family: var(--sans); font-size: 14px; font-weight: 500; color: var(--ink); background: var(--surface); border: 1px solid var(--gold-line); border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+.btn:hover { background: var(--gold-soft); }
+.qgroup { display: flex; flex-direction: column; gap: 10px; }
+.qgroup h3 { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-d); font-weight: 500; }
+.q { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 4px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.q .n { font-family: var(--mono); font-size: 13px; color: var(--gold-d); padding-top: 2px; }
+.q p { max-width: none; }
+.q .why { grid-column: 2; font-size: 13.5px; color: var(--muted); }
+#copyStatus { font-size: 13px; color: var(--ok); }
+textarea#qtext { width: 100%; min-height: 160px; font-family: var(--mono); font-size: 12px; }
+
+.known { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.known > div { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.known h3 { margin: 0; font-size: 15px; }
+.known ul { font-size: 14px; }
+@media (max-width: 640px) { .known { grid-template-columns: 1fr; } }
+
+footer { font-size: 13px; color: var(--faint); display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 18px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<main>
+<header>
+  <div class="kicker">China Select · pomiar, CRM i eksperymenty</div>
+  <h1>Ekosystem pomiaru China Select</h1>
+  <p class="lead">Jak dane ze strony, CRM i telefonu mają się spiąć w jedną pętlę, na której agent AI będzie testował i optymalizował stronę. Dokument dla zespołu technicznego, z pytaniami na końcu.</p>
+  <div class="meta"><span>23.10.2026</span><span>Repo: China-Auto/website @ 3077d5d</span><span>Przygotował: Tomek</span></div>
+</header>
+
+<div class="tldr">
+  <h2>W skrócie</h2>
+  <ol>
+    <li><strong>Wizja:</strong> strona działa na agencie AI, który na bieżąco czyta dane, sam prowadzi testy na zatwierdzonych wersjach i przesuwa ruch na te, które sprzedają.</li>
+    <li><strong>Baza w repo jest dobra:</strong> GTM, zdarzenie <code>lead_submitted</code> bez danych osobowych, <code>submission_id</code> jako klucz idempotencji, UTM w leadzie. Na tym budujemy, nic nie zaczynamy od nowa.</li>
+    <li><strong>Trzy rzeczy muszą być gotowe przed startem produkcji</strong>, bo nie da się ich dorobić wstecz: zgody (Consent Mode v2), zapamiętanie źródła wejścia z identyfikatorami kliknięć oraz przeniesienie tych pól z leada do Pipedrive.</li>
+    <li><strong>Prosimy o odpowiedzi na pytania z sekcji 8.</strong> Na ich podstawie przygotujemy kontrakt zdarzeń jako rozszerzenie Waszego <code>docs/analytics-gtm-ga4.md</code>.</li>
+  </ol>
+</div>
+
+<section id="wizja">
+  <h2><span class="nr">1</span>Wizja: strona, która sama się uczy</h2>
+  <p>Agent AI nie zgaduje. Pracuje w pętli: wyświetla zatwierdzoną wersję strony, mierzy, co z tego wyszło aż do sprzedaży, i przesuwa ruch na wersje, które dają lepsze leady. Pomiar jest więc dla agenta zmysłem i miarą sukcesu, a nie tylko raportem.</p>
+  <div class="loop" aria-label="Pętla agenta">
+    <div class="st"><b>Ruch</b><span>Meta, Google Ads, organic, portale. UTM i identyfikatory kliknięć zapamiętane przy wejściu.</span></div>
+    <div class="st"><b>Wersja strony</b><span>Przypisana w Cloudflare Worker, stała dla odwiedzającego, bez migania.</span></div>
+    <div class="st"><b>Zachowanie i lead</b><span>Zdarzenia do GTM i GA4, lead przez <code>/api/lead</code> z wariantem i źródłem.</span></div>
+    <div class="st"><b>Wynik sprzedaży</b><span>Pipedrive i Thulium: rozmowa, kwalifikacja, zadatek, umowa.</span></div>
+    <div class="st agent"><b>Agent AI</b><span>Czyta połączone dane w BigQuery i decyduje o rozdziale ruchu.</span></div>
+  </div>
+  <div class="back">↺ Agent zmienia udział wersji na stronie, a konwersje z CRM wracają do Meta i Google, żeby kampanie też uczyły się na sprzedaży.</div>
+  <p><strong>Miarą sukcesu jest lead jakościowy z Pipedrive, nie wysłany formularz.</strong> Agent nagradzany za formularze nauczy się zbierać tanie, słabe leady. <code>lead_submitted</code> zostaje szybkim sygnałem pomocniczym, a kwalifikacja i umowa pilnują, żeby nie odjechał od sprzedaży.</p>
+</section>
+
+<section id="stan">
+  <h2><span class="nr">2</span>Co już jest w repo</h2>
+  <p class="muted small">Przegląd gałęzi <code>main</code> z 23.10.2026. Nic nie zmienialiśmy w kodzie.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Element</th><th>Stan</th><th>Co dalej</th></tr></thead>
+    <tbody>
+      <tr><td>GTM</td><td><span class="pill p-ok">jest</span> <code>GoogleTagManager.tsx</code>, ładowany z <code>NEXT_PUBLIC_GTM_ID</code></td><td>Założyć kontener i podać ID. GA4 tylko przez GTM, tak jak w Waszej dokumentacji.</td></tr>
+      <tr><td>Zdarzenie leada</td><td><span class="pill p-ok">jest</span> <code>lead_submitted</code> po przyjęciu przez API, parametry bez danych osobowych</td><td>Zostaje bez zmian. Dodajemy kolejne zdarzenia (sekcja 5).</td></tr>
+      <tr><td>UTM w leadzie</td><td><span class="pill p-warn">częściowo</span> czytany z adresu strony, na której wysłano formularz</td><td>Zapamiętać pierwsze i ostatnie wejście. Dziś przejście ze strony głównej na kartę auta gubi źródło.</td></tr>
+      <tr><td>Zgody (cookies)</td><td><span class="pill p-bad">brak</span> nie ma Consent Mode ani banera zgód</td><td>Consent Mode v2 z domyślną odmową, ustawioną przed załadowaniem GTM.</td></tr>
+      <tr><td>Identyfikatory kliknięć i GA4</td><td><span class="pill p-bad">brak</span> <code>gclid</code>, <code>fbclid</code>, <code>_fbp</code>, <code>_fbc</code>, <code>ga_client_id</code></td><td>Bez nich nie da się odesłać kwalifikacji z CRM do Meta i Google ani połączyć leada z sesją w GA4.</td></tr>
+      <tr><td>Telefon i WhatsApp</td><td><span class="pill p-warn">częściowo</span> linki <code>tel:</code> i <code>wa.me</code> są, bez zdarzeń</td><td>Dodać zdarzenia kliknięć.</td></tr>
+      <tr><td>Thulium „Zamów rozmowę”</td><td><span class="pill p-info">nie widać w repo</span></td><td>Pytania 11–13.</td></tr>
+      <tr><td>Kalkulator</td><td><span class="pill p-warn">częściowo</span> <code>LeasingCalculatorPreview</code>, bez trzech zakładek</td><td>Forma finansowania (gotówka / leasing konsumencki / leasing firmowy) do zdarzenia i do leada.</td></tr>
+      <tr><td>Lead → CRM</td><td><span class="pill p-warn">otwarte</span> w <code>docs/OPEN-ISSUES.md</code></td><td>Pola z sekcji 4 muszą dojść do Pipedrive.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="ekosystem">
+  <h2><span class="nr">3</span>Ekosystem analityczny</h2>
+  <p>Wszystko z darmowych narzędzi albo w darmowych progach. Płacimy tylko za licencje, które i tak są w planie (Pipedrive, Thulium).</p>
+  <div class="tw"><table>
+    <thead><tr><th>Warstwa</th><th>Narzędzie</th><th>Rola</th><th>Koszt</th><th>Kto</th></tr></thead>
+    <tbody>
+      <tr><td>Zgody</td><td>CookieConsent v3 (open source) + Google Consent Mode v2</td><td>Zgodny z prawem pomiar w UE. Bez sygnału zgody Google Ads i Meta tracą dane. Clarity też przyjmuje sygnał zgody dla użytkowników z EOG.</td><td class="num">0 zł</td><td>Wy (kod)</td></tr>
+      <tr><td>Zbieranie</td><td>GTM + Google tag gateway w Cloudflare</td><td>Tagi ładowane z domeny strony, mniej strat na blokerach i w Safari. Kilka kliknięć w panelu Cloudflare.</td><td class="num">0 zł</td><td>GTM: my · Cloudflare: Wy</td></tr>
+      <tr><td>Zachowanie</td><td>GA4 + Microsoft Clarity</td><td>Lejek, źródła, mapy kliknięć, nagrania sesji. Retencja GA4 ustawiona od razu na 14 miesięcy (domyślnie 2).</td><td class="num">0 zł</td><td>my</td></tr>
+      <tr><td>Wyszukiwarki</td><td>Google Search Console + Bing Webmaster Tools</td><td>Indeksacja tysięcy kart aut z feedu, zapytania, błędy. Bing ma znaczenie także dla wyszukiwania w asystentach AI, np. Copilot.</td><td class="num">0 zł</td><td>my · weryfikacja domeny: Wy</td></tr>
+      <tr><td>Konwersje z serwera</td><td>Meta Conversions API z <code>/api/lead</code> + rozszerzone konwersje Google Ads dla leadów</td><td>Lead powstaje już na serwerze (Worker), więc wysyłka z serwera nie wymaga osobnej infrastruktury. Deduplikacja przez <code>submission_id</code>.</td><td class="num">0 zł</td><td>Wy (Worker) · my (GTM)</td></tr>
+      <tr><td>CRM i telefon</td><td>Pipedrive + Thulium</td><td>Kwalifikacja, rozmowy, zadatek, zaliczka, umowa. Źródło prawdy o sprzedaży.</td><td class="num">licencje</td><td>konfiguracja wspólnie</td></tr>
+      <tr><td>Konwersje z CRM</td><td>Pipedrive → n8n → Meta CAPI i import offline do Google Ads</td><td>Kampanie optymalizują się na lead jakościowy i umowę, nie na formularz.</td><td class="num">0 zł (n8n na VPS)</td><td>my</td></tr>
+      <tr><td>Magazyn danych</td><td>BigQuery: dzienny eksport GA4, eksport GSC, transfer Google Ads, wydatki Meta przez n8n, deale z Pipedrive</td><td>Jedno miejsce, gdzie koszt, sesja, wariant i sprzedaż są połączone. Z tego czyta agent.</td><td class="num">≈ 0 zł w darmowym progu*</td><td>my</td></tr>
+      <tr><td>Eksperymenty</td><td>GrowthBook (open source) albo Wasz silnik</td><td>Przypisanie wersji, statystyka, bandyty, wyniki liczone w BigQuery.</td><td class="num">0 zł (własny hosting)</td><td>do ustalenia z Wami</td></tr>
+      <tr><td>Agent AI</td><td>do ustalenia</td><td>Czyta BigQuery, rozdziela ruch między zatwierdzone wersje.</td><td class="num">—</td><td>do ustalenia</td></tr>
+      <tr><td>Widoki</td><td>Nasze huby raportowe</td><td>Widoki dla właścicieli i handlowców, z definicją przy każdej liczbie.</td><td class="num">0 zł</td><td>my</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">* BigQuery w darmowym progu: 10 GB danych i 1 TB zapytań miesięcznie. Potrzebne jest konto rozliczeniowe, bo w wersji próbnej (sandbox) tabele kasują się po 60 dniach. Eksport GA4 działa tylko od dnia włączenia i nie przenosi historii, dlatego włączamy go od pierwszego dnia produkcji.</p>
+  <p class="note">Server-side GTM odkładamy świadomie. To około 40–45 USD miesięcznie za serwer, a Google zaleca co najmniej dwa. Większość korzyści dają konwersje wysyłane z Workera i z CRM. Wracamy do tematu, gdy dojdą trzy lub więcej platform reklamowych albo dane pokażą duże straty na blokerach.</p>
+</section>
+
+<section id="klucze">
+  <h2><span class="nr">4</span>Klucze, które łączą dane</h2>
+  <p>To najważniejsza sekcja dla Was. Jeśli te pola nie pojadą z leadem do Pipedrive, agent i kampanie będą widziały formularze, ale nie sprzedaż.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Pole</th><th>Skąd</th><th>dataLayer</th><th>/api/lead</th><th>Pipedrive</th></tr></thead>
+    <tbody>
+      <tr><td><code>submission_id</code></td><td>UUID formularza</td><td><span class="pill p-ok">jest</span></td><td><span class="pill p-ok">jest</span></td><td><span class="pill p-gold">dodać</span></td></tr>
+      <tr><td><code>utm_*</code> pierwszego i ostatniego wejścia</td><td>adres wejścia, zapamiętany w ciasteczku po zgodzie</td><td>—</td><td><span class="pill p-warn">zmienić</span></td><td><span class="pill p-gold">dodać</span></td></tr>
+      <tr><td><code>landing_page</code>, <code>referrer</code>, data wejścia</td><td>pierwsze wejście</td><td>—</td><td><span class="pill p-gold">dodać</span></td><td><span class="pill p-gold">dodać</span></td></tr>
+      <tr><td><code>gclid</code>, <code>gbraid</code>, <code>wbraid</code></td><td>adres wejścia z Google Ads</td><td>—</td><td><span class="pill p-gold">dodać</span></td><td><span class="pill p-gold">dodać</span></td></tr>
+      <tr><td><code>_fbc</code> (z <code>fbclid</code>), <code>_fbp</code></td><td>ciasteczka Meta</td><td>—</td><td><span class="pill p-gold">dodać</span></td><td><span class="pill p-gold">dodać</span></td></tr>
+      <tr><td><code>ga_client_id</code>, <code>ga_session_id</code></td><td>ciasteczka <code>_ga</code> i <code>_ga_&lt;ID&gt;</code></td><td>—</td><td><span class="pill p-gold">dodać</span></td><td><span class="pill p-gold">dodać</span></td></tr>
+      <tr><td><code>experiment_id</code>, <code>variant_id</code></td><td>przypisanie wersji w Workerze</td><td><span class="pill p-gold">dodać</span></td><td><span class="pill p-gold">dodać</span></td><td><span class="pill p-gold">dodać</span></td></tr>
+      <tr><td><code>financing_mode</code></td><td>zakładka kalkulatora</td><td><span class="pill p-gold">dodać</span></td><td><span class="pill p-gold">dodać</span></td><td><span class="pill p-gold">dodać</span></td></tr>
+      <tr><td><code>consent_state</code></td><td>baner zgód</td><td><span class="pill p-gold">dodać</span></td><td><span class="pill p-gold">dodać</span></td><td><span class="pill p-gold">dodać</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Zasada z Waszej dokumentacji zostaje: żadnych danych osobowych w dataLayer i GA4. Telefon i e-mail trafiają do Meta i Google tylko zahashowane (SHA-256), tylko z serwera i tylko przy zgodzie marketingowej.</p>
+</section>
+
+<section id="zdarzenia">
+  <h2><span class="nr">5</span>Zdarzenia w trzech warstwach</h2>
+  <p>Nazwy w dataLayer proponujemy w Waszej konwencji (angielski, snake_case, czas przeszły jak <code>lead_submitted</code>). Mapowanie na nazwy w GA4 i platformach reklamowych robimy po naszej stronie, w GTM. Pełny kontrakt z parametrami dostarczymy po Waszych odpowiedziach.</p>
+  <h3>Strona (dataLayer → GTM)</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Zdarzenie</th><th>Kiedy</th><th>Kluczowe parametry</th></tr></thead>
+    <tbody>
+      <tr><td><code>lead_submitted</code> <span class="pill p-ok">jest</span></td><td>lead przyjęty przez API</td><td>jak dziś + <code>financing_mode</code>, <code>experiment_id</code>, <code>variant_id</code></td></tr>
+      <tr><td><code>form_started</code></td><td>pierwsza interakcja z polem formularza</td><td><code>form_location</code>, <code>lead_type</code></td></tr>
+      <tr><td><code>phone_clicked</code></td><td>kliknięcie <code>tel:</code></td><td><code>click_location</code>, <code>offer_number</code></td></tr>
+      <tr><td><code>whatsapp_clicked</code></td><td>kliknięcie <code>wa.me</code></td><td><code>click_location</code>, <code>offer_number</code></td></tr>
+      <tr><td><code>callback_requested</code></td><td>numer wysłany w widgecie Thulium „Zamów rozmowę”</td><td><code>offer_number</code> (jeśli widget to umożliwia)</td></tr>
+      <tr><td><code>calculator_tab_selected</code></td><td>zmiana zakładki kalkulatora</td><td><code>financing_mode</code>, <code>offer_number</code></td></tr>
+      <tr><td><code>calculator_changed</code></td><td>zmiana parametrów (raz na kilka sekund, nie przy każdym ruchu suwaka)</td><td><code>financing_mode</code>, okres, wpłata</td></tr>
+      <tr><td><code>experiment_exposed</code></td><td>wersja faktycznie wyświetlona</td><td><code>experiment_id</code>, <code>variant_id</code></td></tr>
+    </tbody>
+  </table></div>
+  <h3>CRM (Pipedrive → n8n)</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Zdarzenie</th><th>Kiedy</th><th>Dokąd</th></tr></thead>
+    <tbody>
+      <tr><td><code>lead_qualified</code></td><td>handlowiec oznacza lead jako jakościowy (definicja do ustalenia z właścicielami)</td><td>BigQuery, Meta CAPI, Google Ads offline</td></tr>
+      <tr><td><code>offer_sent</code></td><td>wysłana oferta na konkretne auto</td><td>BigQuery</td></tr>
+      <tr><td><code>deposit_paid</code></td><td>zadatek 1 000 zł opłacony przez mini stronę</td><td>BigQuery, Meta, Google Ads</td></tr>
+      <tr><td><code>advance_paid</code></td><td>zaliczka 20%</td><td>BigQuery, Meta, Google Ads</td></tr>
+      <tr><td><code>contract_signed</code> / <code>lead_lost</code></td><td>umowa albo utrata leada z powodem</td><td>BigQuery</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Telefon (Thulium → Pipedrive)</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Zdarzenie</th><th>Kiedy</th><th>Uwagi</th></tr></thead>
+    <tbody>
+      <tr><td><code>call_connected</code></td><td>oddzwonienie lub połączenie odebrane</td><td>czas od leada do rozmowy, długość rozmowy</td></tr>
+      <tr><td><code>call_missed</code></td><td>połączenie nieodebrane, poza godzinami pracy</td><td>strażnik obietnicy „oddzwonimy w 30 sekund”</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="eksperymenty">
+  <h2><span class="nr">6</span>Eksperymenty i agent</h2>
+  <ul>
+    <li><strong>Przypisanie na brzegu:</strong> wersję wybiera Cloudflare Worker przed wyrenderowaniem strony i zapisuje w ciasteczku. Odwiedzający widzi zawsze tę samą wersję, bez migania.</li>
+    <li><strong>Ekspozycja:</strong> <code>experiment_exposed</code> wysyłamy tylko wtedy, gdy wersja naprawdę się wyświetliła. Inaczej wyniki mieszają ludzi, którzy zmiany nie widzieli.</li>
+    <li><strong>Nagroda:</strong> lead jakościowy z Pipedrive. Sygnały pomocnicze: <code>lead_submitted</code>, <code>callback_requested</code>. Strażnicy: odsetek odrzuconych leadów i szybkość strony.</li>
+  </ul>
+  <h3>Ile ruchu potrzeba na jeden test</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Konwersja bazowa</th><th>Sesji na wersję</th><th>Przykład</th></tr></thead>
+    <tbody>
+      <tr><td class="num">3%</td><td class="num">≈ 13 000</td><td>wysłany formularz, dobra karta auta</td></tr>
+      <tr><td class="num">2%</td><td class="num">≈ 20 000</td><td>wysłany formularz</td></tr>
+      <tr><td class="num">1%</td><td class="num">≈ 40 000</td><td>wysłany formularz, ruch zimny</td></tr>
+      <tr><td class="num">0,6%</td><td class="num">≈ 66 000</td><td>lead jakościowy (przy 30% leadów)</td></tr>
+      <tr><td class="num">0,3%</td><td class="num">≈ 133 000</td><td>zadatek</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted small">Wykrycie poprawy o 20% względem bazy, poziom istotności 95%, moc testu 80%. Konwersje to założenia do sprawdzenia po starcie, nie dane.</p>
+  <p class="note">Wniosek: wielu klasycznych testów naraz nie zmieścimy w ruchu na starcie. Lepiej sprawdzą się bandyty, czyli stopniowe przesuwanie ruchu na lepszą wersję. Do tego mało testów równolegle i testy dużych zmian zamiast drobiazgów.</p>
+  <h3>Granice autonomii agenta</h3>
+  <ul>
+    <li>Agent sam rozdziela ruch wyłącznie między wersje zatwierdzone wcześniej przez człowieka.</li>
+    <li>Nowe wersje przechodzą przez środowisko testowe i akceptację przed publikacją.</li>
+    <li>Agent nigdy nie generuje ceny, warunków gwarancji, terminów importu ani warunków finansowania.</li>
+    <li>Nowa wersja zaczyna od ograniczonego udziału w ruchu. Jest wyłącznik awaryjny, który przywraca wersję bazową.</li>
+  </ul>
+</section>
+
+<section id="fazy">
+  <h2><span class="nr">7</span>Kolejność wdrożenia</h2>
+  <div class="phases">
+    <div class="ph must"><span class="when">Faza 0 · przed startem produkcji</span><h3>Fundament, którego nie da się dorobić wstecz</h3><ul>
+      <li>konta GTM, GA4, Google Ads, Meta (piksel)</li>
+      <li>baner zgód i Consent Mode v2</li>
+      <li>zapamiętanie wejścia i nowe pola leada (sekcja 4)</li>
+      <li>lead → Pipedrive z tymi polami</li>
+      <li>osobne środowisko GTM dla stagingu</li></ul></div>
+    <div class="ph must"><span class="when">Faza 1 · dzień startu</span><h3>Pomiar strony i konwersje z serwera</h3><ul>
+      <li>zdarzenia strony z sekcji 5</li>
+      <li>Meta CAPI i rozszerzone konwersje Google Ads</li>
+      <li>eksport GA4 do BigQuery, Clarity, GSC, Bing</li>
+      <li>Google tag gateway w Cloudflare</li></ul></div>
+    <div class="ph"><span class="when">Faza 2 · pierwsze tygodnie</span><h3>Sprzedaż wraca do danych</h3><ul>
+      <li>zdarzenia z Pipedrive i Thulium</li>
+      <li>konwersje offline do Meta i Google Ads</li>
+      <li>wydatki z kampanii w BigQuery</li>
+      <li>pierwsze widoki: koszt leada jakościowego per kampania</li></ul></div>
+    <div class="ph"><span class="when">Faza 3 · gdy jest ruch</span><h3>Eksperymenty i agent</h3><ul>
+      <li>warstwa przypisań i statystyki</li>
+      <li>pierwszy test na dużej zmianie</li>
+      <li>agent z ograniczoną autonomią</li>
+      <li>przegląd wyników co tydzień</li></ul></div>
+  </div>
+</section>
+
+<section id="pytania">
+  <div class="qhead">
+    <h2><span class="nr">8</span>Pytania do Was</h2>
+    <div><button class="btn" id="copyBtn" type="button">Kopiuj pytania jako tekst</button> <span id="copyStatus" role="status"></span></div>
+  </div>
+  <textarea id="qtext" hidden readonly aria-label="Pytania jako tekst"></textarea>
+
+  <div class="qgroup" data-g="A. Strona">
+    <h3>A. Strona</h3>
+    <div class="q"><span class="n">1</span><p>Kto i kiedy zakłada kontener GTM, usługę GA4 oraz konta Google Ads i Meta? Prosimy o dostęp dla Tomka: edycja w GTM, administrator w GA4.</p><span class="why">Bez kont nie przetestujemy niczego przed startem.</span></div>
+    <div class="q"><span class="n">2</span><p>Czy planujecie baner zgód? Jeśli nie, czy pasuje Wam CookieConsent v3 (open source) z Consent Mode v2 i domyślną odmową przed załadowaniem GTM? Kto przygotowuje treść polityki cookies?</p><span class="why">Bez sygnału zgody Meta, Google Ads i Clarity w UE dostają niepełne dane.</span></div>
+    <div class="q"><span class="n">3</span><p>Czy możecie zapamiętać pierwsze i ostatnie wejście w ciasteczku własnej domeny (po zgodzie) i dołączać je do <code>POST /api/lead</code>? Chodzi o <code>utm_*</code>, <code>gclid</code>, <code>gbraid</code>, <code>wbraid</code>, <code>fbclid</code>, stronę wejścia, referrer i datę.</p><span class="why">Dziś UTM jest czytany z adresu strony z formularzem, więc przejście ze strony głównej na kartę auta gubi źródło.</span></div>
+    <div class="q"><span class="n">4</span><p>Czy do payloadu leada możecie dodać: <code>ga_client_id</code> i <code>ga_session_id</code>, <code>_fbp</code> i <code>_fbc</code>, <code>financing_mode</code> z kalkulatora oraz <code>consent_state</code>?</p><span class="why">To klucze, które łączą lead z sesją w GA4 i z kliknięciem w reklamę.</span></div>
+    <div class="q"><span class="n">5</span><p>Czy możecie wysyłać zdarzenie <code>Lead</code> do Meta Conversions API z <code>/api/lead</code>, z <code>event_id = submission_id</code>, i ten sam identyfikator dawać w pikselu? Telefon i e-mail tylko zahashowane i tylko przy zgodzie marketingowej.</p><span class="why">Konwersja z serwera nie ginie na blokerach, a wspólny identyfikator zapobiega podwójnemu liczeniu.</span></div>
+    <div class="q"><span class="n">6</span><p>Kto ma dostęp do panelu Cloudflare? Czy możemy włączyć Google tag gateway?</p><span class="why">Tagi z domeny strony to więcej danych bez dodatkowych kosztów.</span></div>
+    <div class="q"><span class="n">7</span><p>Kto buduje drogę leada z WordPressa do Pipedrive (wtyczka, webhook, n8n)? Pola z pytań 3 i 4 muszą trafić do Pipedrive.</p><span class="why">W <code>OPEN-ISSUES</code> dostarczanie do CRM jest otwarte, więc to dobry moment.</span></div>
+    <div class="q"><span class="n">8</span><p>Czy pasuje Wam, że zdarzenia z sekcji 5 dostarczymy jako rozszerzenie <code>docs/analytics-gtm-ga4.md</code> (nazwy, parametry, test odbiorczy)?</p><span class="why">Jedna dokumentacja zamiast dwóch.</span></div>
+    <div class="q"><span class="n">9</span><p>Czy staging dostanie osobne środowisko GTM, żeby testy nie trafiały do produkcyjnego GA4? Jak wykluczacie ruch wewnętrzny?</p><span class="why">Testy i ruch zespołu zaśmiecają dane, na których uczy się agent.</span></div>
+    <div class="q"><span class="n">10</span><p>Kiedy startuje produkcja? Do testów (Tag Assistant, DebugView) potrzebujemy dostępu do stagingu za Basic Auth.</p><span class="why">Faza 0 musi się zmieścić przed startem.</span></div>
+  </div>
+
+  <div class="qgroup" data-g="B. Thulium">
+    <h3>B. Thulium</h3>
+    <div class="q"><span class="n">11</span><p>Czy widget „Zamów rozmowę” wysyła zdarzenia JavaScript (otwarcie, podanie numeru), które można przekazać do dataLayer?</p><span class="why">Bez tego zamówienie rozmowy będzie widoczne tylko w Thulium, nie na stronie.</span></div>
+    <div class="q"><span class="n">12</span><p>Jak formularz uruchamia oddzwonienie w 30 sekund? Strona woła bezpośrednio API Thulium, czy idzie to przez Pipedrive albo n8n?</p><span class="why">Od tego zależy, gdzie powstaje zdarzenie rozmowy i jak je połączyć z leadem.</span></div>
+    <div class="q"><span class="n">13</span><p>Czy rozmowa może nieść <code>submission_id</code> albo stronę i UTM, żeby przypięła się do właściwego leada w Pipedrive, a nie tworzyła duplikatu po numerze telefonu?</p><span class="why">Duplikaty psują liczenie leadów i nagrodę agenta.</span></div>
+  </div>
+
+  <div class="qgroup" data-g="C. Pipedrive">
+    <h3>C. Pipedrive</h3>
+    <div class="q"><span class="n">14</span><p>Kto jest administratorem Pipedrive? Potrzebujemy dostępu do konfiguracji pól i etapów: źródło, identyfikatory kliknięć, <code>ga_client_id</code>, <code>submission_id</code>, forma finansowania, wariant.</p><span class="why">Pipedrive jest źródłem prawdy o sprzedaży.</span></div>
+  </div>
+
+  <div class="qgroup" data-g="D. Eksperymenty i agent AI">
+    <h3>D. Eksperymenty i agent AI</h3>
+    <div class="q"><span class="n">15</span><p>Czy agent AI jest w Waszym planie? Kto go buduje i gdzie podejmuje decyzję: w Workerze czy w osobnej usłudze?</p><span class="why">Od tego zależy, skąd agent czyta dane i jak szybko reaguje.</span></div>
+    <div class="q"><span class="n">16</span><p>Co będzie „wersją”: komponent, tekst, układ, kolejność sekcji? Jak wersje są definiowane i zatwierdzane?</p><span class="why">Pomiar musi wiedzieć, co dokładnie porównuje.</span></div>
+    <div class="q"><span class="n">17</span><p>Czy przypisanie do wersji może trafiać do dataLayer i do payloadu leada (<code>experiment_id</code>, <code>variant_id</code>)?</p><span class="why">Bez tego wiadomo, która wersja zebrała formularze, ale nie wiadomo, która sprzedała auto.</span></div>
+    <div class="q"><span class="n">18</span><p>Macie własny silnik eksperymentów, czy rozważycie GrowthBook (open source, liczy wyniki w BigQuery, ma bandyty)?</p><span class="why">Nie chcemy budować drugi raz czegoś, co już macie.</span></div>
+  </div>
+
+  <div class="qgroup" data-g="E. Do właścicieli">
+    <h3>E. Do właścicieli (biznesowo)</h3>
+    <div class="q"><span class="n">19</span><p>Czym jest „lead jakościowy”? Kto go oznacza w Pipedrive i w jakim czasie od zgłoszenia?</p><span class="why">Na tym zdarzeniu uczą się kampanie i agent.</span></div>
+    <div class="q"><span class="n">20</span><p>Jaka jest prognoza ruchu i budżetów na pierwsze 3 miesiące, per kanał (Meta, Google, portale)?</p><span class="why">Od tego zależy, ile testów da się prowadzić naraz.</span></div>
+  </div>
+</section>
+
+<section id="zalozenia">
+  <h2><span class="nr">9</span>Co wiemy i co zakładamy</h2>
+  <p class="muted">Poprawcie nas tam, gdzie się mylimy.</p>
+  <div class="known">
+    <div><h3>Wiemy</h3><ul>
+      <li>Strona stoi na Next.js w Cloudflare Workers, a leady idą przez <code>/api/lead</code> do WordPressa.</li>
+      <li><code>lead_submitted</code> i <code>submission_id</code> już działają.</li>
+      <li>CRM to Pipedrive, telefon to Thulium.</li>
+      <li>Rezerwacji na stronie nie ma, zadatek i zaliczka idą przez link do mini strony z płatnością.</li></ul></div>
+    <div><h3>Zakładamy</h3><ul>
+      <li>Lead trafi do Pipedrive przez n8n.</li>
+      <li>Widget Thulium da się podpiąć pod dataLayer.</li>
+      <li>Konwersje z sekcji 6 to szacunki, nie dane.</li>
+      <li>GrowthBook działa w Cloudflare Workers. Nie sprawdzaliśmy tego w praktyce.</li></ul></div>
+    <div><h3>Może być inaczej</h3><ul>
+      <li>Baner zgód może być planowany poza repo.</li>
+      <li>Inne gałęzie mogą już mieć część tych rzeczy.</li>
+      <li>Ruch płatny może być na tyle duży, że klasyczne testy A/B się zmieszczą.</li></ul></div>
+    <div><h3>Najbardziej pomoże</h3><ul>
+      <li>Data startu produkcji.</li>
+      <li>Odpowiedzi na pytania 3, 4, 7 i 12.</li>
+      <li>Prognoza ruchu (pytanie 20).</li></ul></div>
+  </div>
+</section>
+
+<footer>
+  <span>Źródła: przegląd repo China-Auto/website (main, 3077d5d, 23.10.2026) · <a href="https://blog.cloudflare.com/google-tag-gateway-for-advertisers/" target="_blank" rel="noopener">Cloudflare: Google tag gateway</a> · <a href="https://cloud.google.com/bigquery/docs/sandbox" target="_blank" rel="noopener">BigQuery sandbox</a> · <a href="https://developers.google.com/tag-platform/learn/sst-fundamentals/7-planning-infrastructure" target="_blank" rel="noopener">Google: koszty server-side tagging</a> · <a href="https://github.com/growthbook/growthbook" target="_blank" rel="noopener">GrowthBook</a></span>
+  <span>Wersja robocza do uzgodnienia. Kontrakt zdarzeń powstanie po Waszych odpowiedziach.</span>
+</footer>
+</main>
+
+<script>
+(function () {
+  var btn = document.getElementById('copyBtn');
+  var status = document.getElementById('copyStatus');
+  var area = document.getElementById('qtext');
+  function buildText() {
+    var out = ['Pytania: ekosystem pomiaru China Select (23.10.2026)', ''];
+    document.querySelectorAll('.qgroup').forEach(function (g) {
+      out.push(g.getAttribute('data-g'));
+      g.querySelectorAll('.q').forEach(function (q) {
+        out.push(q.querySelector('.n').textContent + '. ' + q.querySelector('p').textContent.replace(/\s+/g, ' ').trim());
+      });
+      out.push('');
+    });
+    return out.join('\n');
+  }
+  btn.addEventListener('click', function () {
+    var text = buildText();
+    function fallback() {
+      area.value = text; area.hidden = false; area.focus(); area.select();
+      status.textContent = 'Zaznaczone. Skopiuj skrótem klawiszowym.';
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { status.textContent = 'Skopiowane.'; }, fallback);
+    } else { fallback(); }
+  });
+})();
+</script>
+<!--KOMENTARZE--><script>window.KOMENTARZE_STRONA="EKOSYSTEM_POMIARU.html";</script><script>/* Komentarze zespołu China Select — widżet samodzielny (bez bibliotek).
+ *
+ * Kontrakt API (ten sam lokalnie i na Workerze):
+ *   GET  <API>?strona=<klucz>  -> [{id, strona, kotwica, autor, typ, tekst, ts}]   (JEDNO na wczytanie)
+ *   POST <API> {strona, kotwica, autor, typ, tekst} -> rekord
+ * Endpoint: localhost/127.0.0.1 -> ten sam serwer (/api/komentarze); inaczej window.KOMENTARZE_API;
+ *           file:// i strony w internecie -> wspólny Worker zespołu (cc-komentarze.waleqq.workers.dev).
+ * Klucz strony: window.KOMENTARZE_STRONA albo nazwa pliku HTML z adresu (np. REKOMENDACJE_STRONA_GLOWNA.html).
+ * Kotwice: elementy z data-komentarz="<id>"; gdy strona nie ma żadnego -> section[id] plus h2 spoza tych sekcji.
+ * Zawsze też wątek całej strony (kotwica "cala-strona") w przycisku u dołu.
+ * Wygląd: Warm·Gold, jasny. Panele rozwijają się w treści (nie zasłaniają jej na stałe).
+ */
+(function () {
+  'use strict';
+  if (window.__komentarzeInit) return;
+  window.__komentarzeInit = true;
+
+  var OSOBY = ['Kamil', 'Aniela', 'Tomek', 'Kacper', 'Bartek', 'Marta'];
+  // zapis w bazie = klucz z OSOBY; na ekranie = NAZWA, każda osoba ma swój kolor
+  var NAZWA = { Tomek: 'Tomek (Tomcio)' };
+  var KOLOR = { Kamil: '#1F6FB2', Aniela: '#B0306E', Tomek: '#C2571A', Kacper: '#2E7D4F', Bartek: '#6A4BB8', Marta: '#B8322A' };
+  function nazwa(n) { return NAZWA[n] || n; }
+  // Ocena osoby (Tomek 15.10): jeden wpis na osobę i element, aktualizowany — '' = Jestem OK, na_pozniej, na_ab
+  var OCENY = { '': { ik: '👍', kr: 'OK', dl: 'jestem OK' }, na_pozniej: { ik: '⏳', kr: 'później', dl: 'na później' }, na_ab: { ik: '🧪', kr: 'A/B', dl: 'na A/B' }, do_zmiany: { ik: '🔧', kr: 'do zmiany', dl: 'do zmiany' } };
+  function ocena(r) { return OCENY[r.tekst || ''] || OCENY['']; }
+  // Kod propozycji z kotwicy: karta_auta-1 → PDP-01, konwersja-3 → KONW-3
+  var PREF = { strona_glowna: 'HP', lista_aut: 'PLP', karta_auta: 'PDP', konwersja: 'KONW' };
+  function kodProp(k) { var m = /^(.*)-([0-9]+)([a-z]*)$/.exec(k || ''); if (!m || !PREF[m[1]]) return ''; return PREF[m[1]] + '-' + (m[1] === 'konwersja' ? m[2] : ('0' + m[2]).slice(-2)) + m[3]; }
+  function imie(n, cls) {
+    var b = el('b', cls || 'kmt-imie', nazwa(n));
+    b.style.color = KOLOR[n] || '#111214';
+    return b;
+  }
+  var LS_KEY = 'cc_komentarze_osoba';
+  var MAX = 2000;
+  var CALA = 'cala-strona';
+
+  /* ---------- styl ---------- */
+  var CSS = [
+    '.kmt,.kmt *{box-sizing:border-box}',
+    '.kmt{font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#111214}',
+    '.kmt-anchor{margin:14px 0 0;max-width:760px}',
+    '.kmt-btn{appearance:none;cursor:pointer;border:1px solid #B9802A;background:#FFFBF2;color:#111214;border-radius:999px;padding:7px 14px;font-weight:600;font-size:13px;line-height:1;font-family:inherit;min-height:36px}',
+    '.kmt-btn:hover{background:#FDF0D3}',
+    '.kmt-btn[aria-expanded="true"]{background:#E8AC4C}',
+    '.kmt-panel{margin-top:8px;border:1px solid #E8AC4C;background:#FFFBF2;border-radius:10px;padding:12px}',
+    '.kmt-lista{margin:0 0 10px;padding:0;list-style:none;max-height:320px;overflow:auto}',
+    '.kmt-wpis{padding:8px 0;border-bottom:1px solid rgba(185,128,42,.25)}',
+    '.kmt-wpis:last-child{border-bottom:0}',
+    '.kmt-meta{font-size:12px;color:#7a5a1e}',
+    '.kmt-meta b{color:#111214}',
+    '.kmt-tekst{white-space:pre-wrap;word-break:break-word;margin-top:2px}',
+    '.kmt-akc{font-weight:600}',
+    '.kmt-imie{font-weight:800}',
+    /* kto się odniósł — przy każdej propozycji */
+    '.kmt-kto{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 10px;font-size:12px}',
+    '.kmt-kto-t{font-weight:700;color:#7a5a1e;margin-right:2px}',
+    '.kmt-kto-chip{border-radius:999px;padding:3px 9px;border:1.5px solid currentColor;font-weight:700;background:#fff}',
+    '.kmt-kto-chip.brak{color:#9aa0a6;border-style:dashed;font-weight:500;background:transparent}',
+    /* slot pod projektem: panel otwarty, wyraźny, wystający */
+    '.kmt-slot{margin:20px 0 8px;padding:16px 18px 14px;border:2px solid #E8AC4C;border-left-width:8px;border-radius:12px;background:#FFF6E2;box-shadow:0 6px 20px rgba(185,128,42,.22)}',
+    '.kmt-zamk{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 12px;padding:10px 14px;border-radius:10px;background:#1f3b2c;color:#fff;font:700 14px/1.35 inherit}',
+    '.kmt-zamk small{font-weight:500;opacity:.85;font-size:12px}',
+    '.kmt-zamkniety{outline:3px solid #1f3b2c;outline-offset:4px;border-radius:12px}',
+    '.kmt-oceny{display:flex;flex-wrap:wrap;gap:6px;width:100%;margin-top:6px}',
+    '.kmt-slot-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:10px}',
+    '.kmt-slot-t{font-weight:800;font-size:19px;line-height:1.25;color:#111214}',
+    '.kmt-slot-s{font-size:13px;color:#7a5a1e}',
+    '.kmt-slot-n{margin-left:auto;font-size:13px;font-weight:700;color:#7a5a1e}',
+    '.kmt-slot .kmt-panel{margin-top:0;background:#fff;border-color:rgba(185,128,42,.45)}',
+    '.kmt-slot .kmt-akcja{font-size:15px;min-height:46px;padding:10px 18px}',
+    '.kmt-slot .kmt-pole{font-size:16px;min-height:88px}',
+    '.kmt-slot .kmt-wiersz{gap:10px}',
+    '.kmt-odsw{appearance:none;border:0;background:transparent;color:#7a5a1e;font:600 12px/1 inherit;font-family:inherit;text-decoration:underline;cursor:pointer;margin-left:10px}',
+    '@media(max-width:600px){.kmt-slot{padding:12px;border-left-width:6px}.kmt-slot-t{font-size:17px}.kmt-slot-s{display:block;flex-basis:100%}.kmt-slot-n{margin-left:0}.kmt-kto{font-size:12px}.kmt-kto-chip{padding:3px 7px}.kmt-wiersz{flex-direction:column;align-items:stretch}.kmt-sel{max-width:none;width:100%;min-height:46px;font-size:16px}.kmt-akcja{width:100%;min-height:48px;font-size:16px}.kmt-licznik{margin-left:0;text-align:right}.kmt-lista{max-height:240px}}',
+    '.kmt-akc-lista{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}',
+    '.kmt-akc-chip{font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;background:#fff;border:1.5px solid currentColor}',
+    '@media(max-width:600px){.kmt-slot{margin:16px 0 8px;padding:12px}.kmt-slot-t{font-size:16px}}',
+    '.kmt-pusto{color:#7a5a1e;font-size:13px;padding:4px 0 8px}',
+    '.kmt-pole{width:100%;min-height:72px;resize:vertical;border:1px solid #B9802A;border-radius:8px;padding:8px;font:inherit;background:#fff;color:#111214}',
+    '.kmt-wiersz{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center}',
+    '.kmt-akcja{appearance:none;cursor:pointer;border:1px solid #B9802A;background:#E8AC4C;color:#111214;border-radius:8px;padding:8px 14px;font-weight:600;font-size:13px;line-height:1;font-family:inherit;min-height:38px}',
+    '.kmt-akcja--2{background:#FFFBF2}',
+    '.kmt-sel{appearance:auto;min-height:46px;border:1.5px solid #B9802A;border-radius:8px;padding:6px 10px;font:600 15px/1 inherit;font-family:inherit;background:#fff;color:#7a5a1e;max-width:300px}',
+    '.kmt-akcja:disabled{opacity:.5;cursor:not-allowed}',
+    '.kmt-licznik{margin-left:auto;font-size:12px;color:#7a5a1e}',
+    '.kmt-err{color:#9A3B2F;font-size:13px;margin-top:6px}',
+    '.kmt-info{font-size:12px;color:#7a5a1e;margin-top:6px}',
+    /* pasek pływający u dołu */
+    '.kmt-pasek{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;background:#FFFBF2;border-top:2px solid #E8AC4C;box-shadow:0 -2px 12px rgba(17,18,20,.12);padding:8px 12px}',
+    '.kmt-pasek-in{display:flex;flex-wrap:nowrap;gap:6px 8px;align-items:center;max-width:1280px;margin:0 auto;overflow-x:auto}',
+    '.kmt-pasek-tyt{font-size:12px;font-weight:700;color:#7a5a1e}',
+    '.kmt-osoby{display:flex;gap:6px;overflow-x:auto;max-width:100%;align-items:center}\n.kmt-pasek-tyt{white-space:nowrap}\n.kmt-kr{display:none}',
+    '.kmt-osoba{appearance:none;cursor:pointer;border:1px solid #B9802A;background:#fff;color:#111214;border-radius:999px;padding:6px 12px;font-weight:600;font-size:13px;line-height:1;font-family:inherit;min-height:34px;white-space:nowrap}',
+    '.kmt-osoba[aria-pressed="true"]{background:#E8AC4C}',
+    '.kmt-pasek .kmt-btn{min-height:34px;padding:6px 12px}',
+    '.kmt-min{margin-left:auto}',
+    '.kmt-pill{position:fixed;right:12px;bottom:12px;z-index:2147483000;border:1px solid #B9802A;background:#FFFBF2;color:#111214;border-radius:999px;padding:8px 14px;font-weight:600;font-size:13px;line-height:1;font-family:inherit;cursor:pointer;box-shadow:0 2px 10px rgba(17,18,20,.18)}',
+    '.kmt-cala{max-width:1100px;margin:8px auto 0;max-height:55vh;overflow:auto}',
+    '.kmt-cala .kmt-panel{margin-top:0}',
+    '.kmt-nota{position:fixed;left:12px;right:12px;bottom:12px;z-index:2147483000;background:#FFFBF2;border:1px solid #E8AC4C;border-radius:10px;padding:8px 12px;font:13px/1.4 -apple-system,sans-serif;color:#111214;max-width:520px}',
+    '@media(max-width:600px){.kmt-pasek{padding:5px 8px}.kmt-pasek-in{gap:4px 6px}.kmt-osoby{flex:1 1 100%}.kmt-osoba{padding:5px 10px;min-height:32px;font-size:12px}.kmt-pasek .kmt-btn{padding:5px 9px;font-size:12px;min-height:32px}.kmt-dl{display:none}.kmt-kr{display:inline}.kmt-min{margin-left:0}.kmt-cala{max-height:45vh}}'
+  ].join('\n');
+
+  function stylDodaj() {
+    var st = document.createElement('style');
+    st.id = 'kmt-style';
+    st.textContent = CSS;
+    document.head.appendChild(st);
+  }
+
+  /* ---------- pomocnicze ---------- */
+  function el(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt != null) e.textContent = txt;
+    return e;
+  }
+  function lsGet() { try { return localStorage.getItem(LS_KEY) || ''; } catch (e) { return ''; } }
+  function lsSet(v) { try { localStorage.setItem(LS_KEY, v); } catch (e) { /* tryb prywatny */ } }
+  function dataPl(ts) {
+    var d = new Date(ts);
+    if (isNaN(d)) return ts;
+    return d.toLocaleString('pl-PL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  }
+  function slug(t) {
+    return String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50) || 'sekcja';
+  }
+  function kluczStrony() {
+    if (window.KOMENTARZE_STRONA) return String(window.KOMENTARZE_STRONA);
+    var m = document.querySelector('meta[name="komentarze-strona"]');
+    if (m && m.content) return m.content;
+    var p = decodeURIComponent(location.pathname).split('/').filter(Boolean);
+    return p.length ? p[p.length - 1] : 'index.html';
+  }
+  function endpoint() {
+    var h = location.hostname;
+    // localhost = serwer lokalny (testy); pliki otwierane z dysku i strony w internecie = wspólny Worker zespołu
+    if (h === 'localhost' || h === '127.0.0.1' || h === '[::1]') return location.origin + '/api/komentarze';
+    return window.KOMENTARZE_API || 'https://cc-komentarze.waleqq.workers.dev/api/komentarze';
+  }
+
+  /* ---------- stan ---------- */
+  var STRONA = kluczStrony();
+  var API = endpoint();
+  // Tomek 12.10: imię NIE jest zapamiętywane — każdy wybiera z listy przy swoim komentarzu (bez domyślnego imienia)
+  var osoba = '';
+  try { localStorage.removeItem(LS_KEY); } catch (e) {}
+  var dane = [];            // wszystkie rekordy tej strony
+  var kotwice = {};         // id -> {btn, panel, lista, host}
+  var pasek, cala, calaBtn, status;
+
+  function rekordy(k) { return dane.filter(function (r) { return r.kotwica === k; }); }
+  function liczby(k) {
+    var rs = rekordy(k), kom = 0, akc = {};
+    var oc = { '': 0, na_pozniej: 0, na_ab: 0, do_zmiany: 0 };
+    rs.forEach(function (r) { if (r.typ === 'komentarz') kom++; else { akc[r.autor] = 1; oc[r.tekst || ''] = (oc[r.tekst || ''] || 0) + 1; } });
+    return { kom: kom, akc: oc[''], pozn: oc.na_pozniej, ab: oc.na_ab, zm: oc.do_zmiany };
+  }
+  function etykieta(k) { var n = liczby(k); return '💬 ' + n.kom + ' · 👍 ' + n.akc + (n.pozn ? ' · ⏳ ' + n.pozn : '') + (n.ab ? ' · 🧪 ' + n.ab : '') + (n.zm ? ' · 🔧 ' + n.zm : ''); }
+
+  /* ---------- API ---------- */
+  function pobierz() {
+    return fetch(API + '?strona=' + encodeURIComponent(STRONA), { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (rows) { dane = Array.isArray(rows) ? rows : []; odswiezWidok(); setStatus(''); })
+      .catch(function () { setStatus('Nie można pobrać komentarzy (serwer nie odpowiada).'); });
+  }
+  function wyslij(kotwica, typ, tekst) {
+    return fetch(API, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ strona: STRONA, kotwica: kotwica, autor: osoba, typ: typ, tekst: tekst })
+    }).then(function (r) {
+      return r.json().then(function (j) {
+        if (!r.ok) throw new Error(j && j.blad ? j.blad : 'HTTP ' + r.status);
+        return j;
+      });
+    });
+  }
+  function setStatus(t) { if (status) status.textContent = t; }
+
+  /* ---------- panel jednej kotwicy ---------- */
+  function zbudujPanel(k, tytul) {
+    var panel = el('div', 'kmt-panel');
+    if (tytul) { var h = el('div', 'kmt-meta'); h.appendChild(el('b', null, tytul)); panel.appendChild(h); }
+    var kto = el('div', 'kmt-kto');
+    panel.appendChild(kto);
+    var lista = el('ul', 'kmt-lista');
+    panel.appendChild(lista);
+    var pole = el('textarea', 'kmt-pole');
+    pole.maxLength = MAX;
+    pole.placeholder = 'Twój komentarz…';
+    pole.setAttribute('aria-label', 'Komentarz');
+    panel.appendChild(pole);
+    var w = el('div', 'kmt-wiersz');
+    var sel = el('select', 'kmt-sel');
+    sel.setAttribute('aria-label', 'Kto komentuje');
+    var o0 = el('option', null, 'Komentarz od: — niewybrana osoba —'); o0.value = ''; sel.appendChild(o0);
+    OSOBY.forEach(function (n) { var o = el('option', null, 'Komentarz od: ' + nazwa(n)); o.value = n; if (n === osoba) o.selected = true; sel.appendChild(o); });
+    sel.addEventListener('change', function () { osoba = sel.value; kolorujSel(sel); document.querySelectorAll('.kmt-sel').forEach(function (x) { if (x !== sel) { x.value = osoba; kolorujSel(x); } }); });
+    kolorujSel(sel);
+    w.appendChild(sel);
+    var dodaj = el('button', 'kmt-akcja', '💬 Dodaj komentarz');
+    dodaj.type = 'button';
+    dodaj.setAttribute('data-kmt', 'dodaj');
+    var oceny = el('div', 'kmt-oceny');
+    var przyciski = [['', '👍 Jestem OK'], ['do_zmiany', '🔧 Do zmiany'], ['na_pozniej', '⏳ Na później'], ['na_ab', '🧪 Na A/B']].map(function (x) {
+      var b = el('button', 'kmt-akcja kmt-akcja--2', x[1]); b.type = 'button'; b.setAttribute('data-kmt', 'ocena'); b.setAttribute('data-ocena', x[0]); oceny.appendChild(b); return b;
+    });
+    var lic = el('span', 'kmt-licznik', '0/' + MAX);
+    w.appendChild(dodaj); w.appendChild(lic); w.appendChild(oceny);
+    panel.appendChild(w);
+    var err = el('div', 'kmt-err'); err.hidden = true;
+    panel.appendChild(err);
+    var info = el('div', 'kmt-info'); info.hidden = true;
+    panel.appendChild(info);
+
+    pole.addEventListener('input', function () { lic.textContent = pole.value.length + '/' + MAX; });
+
+    function pokazErr(t) { err.textContent = t; err.hidden = !t; }
+    function wymagajOsoby() {
+      if (osoba) return true;
+      pokazErr('Wybierz, od kogo jest komentarz (lista obok przycisku).');
+      return false;
+    }
+    function dopisz(rec) {
+      var i = -1; dane.forEach(function (r, j) { if (r.id === rec.id) i = j; });
+      if (i >= 0) dane[i] = rec; else dane.push(rec);
+      odswiezWidok();
+    }
+    dodaj.addEventListener('click', function () {
+      pokazErr('');
+      if (!wymagajOsoby()) return;
+      var t = pole.value.trim();
+      if (!t) { pokazErr('Wpisz treść komentarza.'); return; }
+      dodaj.disabled = true;
+      wyslij(k, 'komentarz', t).then(function (rec) { pole.value = ''; lic.textContent = '0/' + MAX; dopisz(rec); })
+        .catch(function (e) { pokazErr('Nie zapisano: ' + e.message); })
+        .then(function () { dodaj.disabled = false; });
+    });
+    przyciski.forEach(function (b) {
+      b.addEventListener('click', function () {
+        pokazErr('');
+        if (!wymagajOsoby()) return;
+        b.disabled = true;
+        var v = b.getAttribute('data-ocena');
+        wyslij(k, 'akceptacja', v).then(function (rec) {
+          info.hidden = !rec.duplikat; info.textContent = rec.duplikat ? 'Ocena „' + OCENY[v].dl + '” już zapisana: ' + nazwa(osoba) + '.' : '';
+          dopisz(rec);
+        }).catch(function (e) { pokazErr('Nie zapisano: ' + e.message); })
+          .then(function () { b.disabled = false; });
+      });
+    });
+    return { panel: panel, lista: lista, kto: kto };
+  }
+
+  function rysujKto(k, box) {
+    // kto się odniósł: OK / komentarz / nic — zawsze wszystkie 6 osób, żeby było widać, kogo brakuje
+    if (!box) return;
+    while (box.firstChild) box.removeChild(box.firstChild);
+    var st = {};
+    rekordy(k).forEach(function (r) { st[r.autor] = st[r.autor] || {}; st[r.autor][r.typ] = r.typ === 'akceptacja' ? ocena(r) : 1; });
+    var n = OSOBY.filter(function (o) { return st[o]; }).length;
+    box.appendChild(el('span', 'kmt-kto-t', 'Odnieśli się ' + n + ' z ' + OSOBY.length + ':'));
+    OSOBY.forEach(function (o) {
+      var c = el('span', 'kmt-kto-chip' + (st[o] ? '' : ' brak'), nazwa(o) + (st[o] ? (st[o].akceptacja ? ' ' + st[o].akceptacja.ik + ' ' + st[o].akceptacja.kr : '') + (st[o].komentarz ? ' 💬' : '') : ''));
+      if (st[o]) c.style.color = KOLOR[o];
+      box.appendChild(c);
+    });
+  }
+
+  function rysujListe(k) {
+    var o = kotwice[k];
+    if (!o) return;
+    var lista = o.lista;
+    rysujKto(k, o.kto);
+    while (lista.firstChild) lista.removeChild(lista.firstChild);
+    var rs = rekordy(k).slice().sort(function (a, b) { return String(a.ts).localeCompare(String(b.ts)); });
+    if (!rs.length) {
+      var li0 = el('li', 'kmt-pusto', 'Brak komentarzy. Bądź pierwszy.');
+      lista.appendChild(li0);
+    }
+    rs.forEach(function (r) {
+      var li = el('li', 'kmt-wpis');
+      var m = el('div', 'kmt-meta');
+      m.appendChild(imie(r.autor));
+      m.appendChild(document.createTextNode(' · ' + dataPl(r.ts)));
+      li.appendChild(m);
+      if (r.typ === 'akceptacja') { var oc = ocena(r); var a = el('div', 'kmt-tekst kmt-akc', oc.ik + ' '); a.appendChild(imie(r.autor)); a.appendChild(document.createTextNode(' — ' + oc.dl)); li.appendChild(a); }
+      else li.appendChild(el('div', 'kmt-tekst', r.tekst));
+      lista.appendChild(li);
+    });
+  }
+
+  function odswiezWidok() {
+    // strona-gospodarz (np. zakładka „Do wdrożenia” na liście zmian) dostaje aktualne rekordy
+    try { document.dispatchEvent(new CustomEvent('kmt:dane', { detail: dane })); } catch (e) {}
+    Object.keys(kotwice).forEach(function (k) {
+      var o = kotwice[k];
+      if (o.btn) o.btn.textContent = etykieta(k);
+      if (o.licz) o.licz.textContent = etykieta(k);
+      rysujListe(k);
+      ustawStatus(k, o.host);
+    });
+    if (calaBtn) ustawCalaBtn();
+  }
+  // Status elementu (Tomek 14.10): „Jestem OK” od Tomka = zmiana zamknięta, wdrażamy. Ta sama zasada co zakładka „Do wdrożenia”.
+  var ZATWIERDZA = 'Tomek';
+  var STATUS = { '': ['✅ ZAMKNIĘTE · WDRAŻAMY', '#1f3b2c'], na_pozniej: ['⏳ NA PÓŹNIEJ', '#6b665c'], na_ab: ['🧪 DO TESTU A/B', '#5b3fa8'], do_zmiany: ['🔧 DO ZMIANY — po ustaleniach', '#c2410c'] };
+  function ustawStatus(k, host) {
+    if (!host) return;
+    var ok = rekordy(k).filter(function (r) { return r.typ === 'akceptacja' && r.autor === ZATWIERDZA; })[0];
+    var b = host.querySelector(':scope > .kmt-zamk');
+    var v = ok ? (ok.tekst || '') : null;
+    host.classList.toggle('kmt-zamkniety', v === '');
+    if (b && (v === null || b.getAttribute('data-v') !== v)) { b.parentNode.removeChild(b); b = null; }
+    if (v === null || b) return;
+    var st = STATUS[v] || STATUS[''];
+    b = el('div', 'kmt kmt-zamk', (kodProp(k) ? kodProp(k) + ' · ' : '') + st[0]);
+    b.setAttribute('data-v', v); b.style.background = st[1];
+    var d = new Date(ok.ts);
+    b.appendChild(el('small', null, 'decyzja: ' + nazwa(ZATWIERDZA) + (isNaN(d) ? '' : ', ' + d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' }))));
+    host.insertBefore(b, host.firstChild);
+  }
+  function ustawCalaBtn() {
+    while (calaBtn.firstChild) calaBtn.removeChild(calaBtn.firstChild);
+    calaBtn.appendChild(el('span', 'kmt-dl', 'Komentarze do całej strony'));
+    calaBtn.appendChild(el('span', 'kmt-kr', 'Cała strona'));
+    calaBtn.appendChild(document.createTextNode(' \u00B7 ' + etykieta(CALA)));
+  }
+
+  function przelacz(o) {
+    var otwarty = o.panel.hidden;
+    o.panel.hidden = !otwarty;
+    o.btn.setAttribute('aria-expanded', otwarty ? 'true' : 'false');
+  }
+
+  /* ---------- kotwice w treści ---------- */
+  function znajdzKotwice() {
+    var wl = Array.prototype.slice.call(document.querySelectorAll('[data-komentarz]'));
+    var tryb = 'atrybut';
+    if (!wl.length) {
+      tryb = 'auto';
+      var sek = Array.prototype.slice.call(document.querySelectorAll('section[id]')).filter(function (x, i, arr) {
+        return !x.closest('.kmt,.kmt-pasek') && !arr.some(function (y) { return y !== x && y.contains(x); });
+      });
+      // nagłówki h2 spoza wybranych sekcji też dostają kotwicę (np. strony z jedną-dwiema sekcjami z id)
+      var h2 = Array.prototype.slice.call(document.querySelectorAll('h2')).filter(function (h) {
+        return !h.closest('.kmt,.kmt-pasek') && !sek.some(function (s) { return s.contains(h); });
+      });
+      wl = sek.concat(h2).sort(function (a, b) {
+        return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+      }).slice(0, 80);
+      var uzyte = {};
+      wl.forEach(function (x, i) {
+        var id = x.id || slug(x.textContent);
+        if (uzyte[id] || (!x.id && document.getElementById(id))) id = id + '-' + (i + 1);
+        uzyte[id] = 1;
+        if (!x.id && x.tagName === 'H2') x.id = id;
+        x.setAttribute('data-komentarz', id);
+      });
+    }
+    return { elementy: wl, tryb: tryb };
+  }
+
+  function wstawKotwice(host) {
+    var k = host.getAttribute('data-komentarz');
+    if (!k || k === CALA || kotwice[k]) return;
+    var slot = document.querySelector('[data-kmt-slot="' + k + '"]');
+    if (slot) {
+      // pole komentarzy tuż pod projektem: otwarte od razu, z wezwaniem
+      var sw = el('div', 'kmt kmt-slot');
+      var hh = el('div', 'kmt-slot-h');
+      hh.appendChild(el('span', 'kmt-slot-t', kodProp(k) ? 'Twoja opinia o propozycji ' + kodProp(k) : 'Twoja opinia o tej propozycji'));
+      hh.appendChild(el('span', 'kmt-slot-s', 'Wybierz imię, dopisz uwagę albo oceń: „Jestem OK”, „Do zmiany”, „Na później” lub „Na A/B”. Widzi to cały zespół.'));
+      var od = el('button', 'kmt-odsw', 'odśwież'); od.type = 'button'; od.addEventListener('click', function () { pobierz(); }); hh.appendChild(od);
+      var licz = el('span', 'kmt-slot-n', etykieta(k));
+      hh.appendChild(licz);
+      sw.appendChild(hh);
+      var ps = zbudujPanel(k, null);
+      sw.appendChild(ps.panel);
+      slot.appendChild(sw);
+      kotwice[k] = { btn: null, licz: licz, panel: ps.panel, lista: ps.lista, kto: ps.kto, host: host };
+      return;
+    }
+    var wrap = el('div', 'kmt kmt-anchor');
+    var btn = el('button', 'kmt-btn', etykieta(k));
+    btn.type = 'button';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('data-kmt-btn', k);
+    var p = zbudujPanel(k, null);
+    p.panel.hidden = true;
+    wrap.appendChild(btn); wrap.appendChild(p.panel);
+    var o = { btn: btn, panel: p.panel, lista: p.lista, kto: p.kto, host: host };
+    kotwice[k] = o;
+    btn.addEventListener('click', function () { przelacz(o); });
+    if (host.tagName === 'H2' || host.tagName === 'H3') host.insertAdjacentElement('afterend', wrap);
+    else host.appendChild(wrap);
+  }
+
+  /* ---------- pasek pływający ---------- */
+  function zbudujPasek() {
+    pasek = el('div', 'kmt kmt-pasek');
+    pasek.setAttribute('data-kmt-pasek', '1');
+    cala = el('div', 'kmt-cala'); cala.hidden = true;
+    var pc = zbudujPanel(CALA, 'Cała strona');
+    pc.panel.hidden = false;
+    cala.appendChild(pc.panel);
+    kotwice[CALA] = { btn: null, panel: cala, lista: pc.lista, kto: pc.kto, host: null };
+    pasek.appendChild(cala);
+
+    var inn = el('div', 'kmt-pasek-in');
+    var oso = el('div', 'kmt-osoby'); oso.hidden = true;
+    oso.appendChild(el('span', 'kmt-pasek-tyt', 'Komentujesz jako:'));
+    var przyciski = OSOBY.map(function (n) {
+      var b = el('button', 'kmt-osoba', nazwa(n));
+      b.setAttribute('data-osoba', n);
+      b.style.color = KOLOR[n]; b.style.borderColor = KOLOR[n];
+      b.type = 'button';
+      b.setAttribute('aria-pressed', n === osoba ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        osoba = n; lsSet(n);
+        przyciski.forEach(function (x) { kolorujOsobe(x, x.getAttribute('data-osoba') === n); });
+      });
+      kolorujOsobe(b, n === osoba);
+      oso.appendChild(b);
+      return b;
+    });
+    inn.appendChild(oso);
+
+    calaBtn = el('button', 'kmt-btn');
+    ustawCalaBtn();
+    calaBtn.type = 'button';
+    calaBtn.setAttribute('aria-expanded', 'false');
+    calaBtn.setAttribute('data-kmt-btn', CALA);
+    calaBtn.addEventListener('click', function () {
+      var otw = cala.hidden;
+      cala.hidden = !otw;
+      calaBtn.setAttribute('aria-expanded', otw ? 'true' : 'false');
+      dopasujPadding();
+    });
+    inn.appendChild(calaBtn);
+
+    var odsw = el('button', 'kmt-btn', 'Odśwież komentarze');
+    odsw.type = 'button';
+    odsw.setAttribute('data-kmt', 'odswiez');
+    odsw.addEventListener('click', function () { setStatus('Odświeżam…'); pobierz(); });
+    inn.appendChild(odsw);
+
+    status = el('span', 'kmt-info');
+    inn.appendChild(status);
+
+    var min = el('button', 'kmt-btn kmt-min', 'Zwiń');
+    min.type = 'button';
+    min.addEventListener('click', function () {
+      pasek.hidden = true; pill.hidden = false; dopasujPadding();
+    });
+    inn.appendChild(min);
+    pasek.appendChild(inn);
+
+    var pill = el('button', 'kmt kmt-pill', '💬 Komentarze do całej strony');
+    pill.type = 'button';
+    pill.hidden = true;
+    pill.addEventListener('click', function () { pasek.hidden = false; pill.hidden = true; cala.hidden = false; calaBtn.setAttribute('aria-expanded', 'true'); dopasujPadding(); });
+
+    document.body.appendChild(pasek);
+    document.body.appendChild(pill);
+    // Tomek 12.10: bez paska z wyborem osoby — osoba wybierana w polu komentarza; pasek schowany, zostaje przycisk
+    pasek.hidden = true; pill.hidden = false;
+  }
+  function kolorujSel(sel) {
+    var n = sel.value; sel.style.color = n ? KOLOR[n] : '#7a5a1e'; sel.style.borderColor = n ? KOLOR[n] : '#B9802A'; sel.style.fontWeight = n ? '800' : '600';
+  }
+  function kolorujOsobe(b, wyb) {
+    var n = b.getAttribute('data-osoba');
+    b.setAttribute('aria-pressed', wyb ? 'true' : 'false');
+    b.style.background = wyb ? KOLOR[n] : '#fff';
+    b.style.color = wyb ? '#fff' : KOLOR[n];
+  }
+  function dopasujPadding() {
+    // miejsce pod paskiem, żeby nie zasłaniał końca strony
+    var h = pasek && !pasek.hidden ? pasek.offsetHeight : 0;
+    document.body.style.paddingBottom = h ? (h + 8) + 'px' : '';
+  }
+
+  function nota(tekst) {
+    var n = el('div', 'kmt kmt-nota', tekst);
+    var x = el('button', 'kmt-btn', 'OK');
+    x.type = 'button'; x.style.marginLeft = '8px'; x.style.minHeight = '28px'; x.style.padding = '4px 10px';
+    x.addEventListener('click', function () { n.remove(); });
+    n.appendChild(x);
+    document.body.appendChild(n);
+  }
+
+  /* ---------- start ---------- */
+  function start() {
+    stylDodaj();
+    if (!API) {
+      if (location.protocol === 'file:') nota('Komentarze działają po uruchomieniu serwera.');
+      else nota('Komentarze: serwer jeszcze niepodłączony.');
+      return;
+    }
+    // Tomek 12.10: bez paska i bez komentarzy do całej strony — komentuje się konkretną propozycję
+    var z = znajdzKotwice();
+    z.elementy.forEach(wstawKotwice);
+    dopasujPadding();
+    window.addEventListener('resize', dopasujPadding);
+    pobierz();   // JEDNO zapytanie GET na wczytanie; dalej tylko przycisk „Odśwież komentarze"
+    // Kotwice zmieniane dynamicznie (np. para w H2H po zmianie sklepu/widoku) — bez nowego zapytania do serwera
+    if (window.MutationObserver) {
+      new MutationObserver(function (muts) {
+        var zmiana = false;
+        muts.forEach(function (m) {
+          if (m.type === 'attributes' && m.target.hasAttribute && m.target.hasAttribute('data-komentarz')) {
+            var host = m.target, stary = m.oldValue;
+            if (stary && kotwice[stary] && kotwice[stary].host === host) {
+              var w = kotwice[stary].btn && kotwice[stary].btn.parentNode;
+              if (w && w.parentNode) w.parentNode.removeChild(w);
+              delete kotwice[stary];
+            }
+            wstawKotwice(host); zmiana = true;
+          } else if (m.type === 'childList') {
+            Array.prototype.forEach.call(m.addedNodes, function (n) {
+              if (n.nodeType !== 1 || (n.closest && n.closest('.kmt'))) return;
+              if (n.hasAttribute('data-komentarz')) { wstawKotwice(n); zmiana = true; }
+              Array.prototype.forEach.call(n.querySelectorAll ? n.querySelectorAll('[data-komentarz]') : [], function (x) { wstawKotwice(x); zmiana = true; });
+            });
+          }
+        });
+        if (zmiana) odswiezWidok();
+      }).observe(document.body, { attributes: true, attributeFilter: ['data-komentarz'], attributeOldValue: true, subtree: true, childList: true });
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script><!--/KOMENTARZE-->
+</body>
+</html>
