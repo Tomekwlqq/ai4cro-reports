@@ -120,15 +120,61 @@ textarea#qtext { width: 100%; min-height: 160px; font-family: var(--mono); font-
 
 footer { font-size: 13px; color: var(--faint); display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 18px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+.nav { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 8px max(16px, env(safe-area-inset-left, 0px)); }
+.nav ul { list-style: none; margin: 0 auto; padding: 0; max-width: 780px; display: flex; flex-direction: row; flex-wrap: nowrap; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.nav a { display: block; white-space: nowrap; font-size: 13.5px; text-decoration: none; color: var(--muted); padding: 6px 10px; border-radius: 8px; }
+.nav a:hover { background: var(--surface-2); color: var(--ink); }
+.nav a.hot { background: var(--gold); color: #1E1B16; font-weight: 600; }
+section[id], .tldr { scroll-margin-top: 64px; }
+.kacper { background: var(--gold-soft); border: 2px solid var(--gold); border-radius: 16px; padding: 22px 22px 18px; display: flex; flex-direction: column; gap: 12px; }
+.kacper .hint { color: var(--muted); font-size: 14px; }
+.ql { display: flex; flex-direction: column; gap: 10px; }
+.qk { background: var(--surface); border: 1px solid var(--gold-line); border-radius: 12px; padding: 12px 14px; display: grid; grid-template-columns: 30px minmax(0,1fr); gap: 2px 10px; }
+.qk .n { font-family: var(--mono); font-weight: 600; color: var(--gold-d); }
+.qk p { font-weight: 500; }
+.qk .why { grid-column: 2; font-size: 13.5px; color: var(--muted); font-weight: 400; }
+.qk.own { border-style: dashed; }
+.qk > :not(.n):not(p):not(.why) { grid-column: 1 / -1; }
+.subh { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-d); margin-top: 6px; }
+.ck { display: flex; flex-direction: column; gap: 8px; }
+.ckbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; font-size: 14px; }
+.ckbar select { font: inherit; padding: 5px 8px; border-radius: 8px; border: 1px solid var(--gold-line); background: var(--surface); color: var(--ink); }
+.ckbar .need { color: var(--bad); font-weight: 600; }
+.ckprog { font-family: var(--mono); font-size: 13px; color: var(--gold-d); }
+.ci { display: grid; grid-template-columns: 24px minmax(0,1fr); gap: 2px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.ci input { width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--ok); cursor: pointer; }
+.ci label { cursor: pointer; overflow-wrap: anywhere; }
+.ci.done { background: var(--surface-2); }
+.ci.done label { color: var(--muted); text-decoration: line-through; }
+.ci .m { grid-column: 2; display: flex; flex-wrap: wrap; gap: 8px; font-size: 12.5px; color: var(--faint); align-items: center; }
+.ow { font-family: var(--mono); font-size: 11.5px; padding: 1px 8px; border-radius: 99px; }
+.ow.k { background: var(--info-soft); color: var(--info); }
+.ow.t { background: var(--gold-soft); color: var(--gold-d); }
+.ow.w { background: var(--bad-soft); color: var(--bad); }
+.dalej { gap: 10px; } #co-dalej { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; }
+.ckmsg { font-size: 13px; color: var(--bad); }
 </style>
 </head>
 <body>
+<nav class="nav" aria-label="Spis treści"><ul>
+<li><a href="#co-dalej">Co dalej</a></li>
+<li><a class="hot" href="#pytania">Pytania do Kacpra</a></li>
+<li><a href="#checklista">Checklista</a></li>
+<li><a href="#wizja">Wizja</a></li>
+<li><a href="#stan">Stan repo</a></li>
+<li><a href="#ekosystem">Narzędzia</a></li>
+<li><a href="#klucze">Pola leada</a></li>
+<li><a href="#zdarzenia">Zdarzenia</a></li>
+<li><a href="#eksperymenty">Eksperymenty</a></li>
+<li><a href="#fazy">Kolejność</a></li>
+</ul></nav>
 
 <main>
 <header>
   <div class="kicker">China Select · pomiar, CRM i eksperymenty</div>
   <h1>Ekosystem pomiaru China Select</h1>
-  <p class="lead">Jak dane ze strony, CRM i telefonu mają się spiąć w jedną pętlę, na której agent AI będzie testował i optymalizował stronę. Dokument dla zespołu technicznego, z pytaniami na końcu.</p>
+  <p class="lead">Jak dane ze strony, CRM i telefonu mają się spiąć w jedną pętlę, na której agent AI będzie testował i optymalizował stronę. Dla Kacpra: na górze co dalej, pytania i checklista, niżej szczegóły.</p>
   <div class="meta"><span>23.10.2026</span><span>Repo: China-Auto/website @ 3077d5d</span><span>Przygotował: Tomek</span></div>
 </header>
 
@@ -138,12 +184,65 @@ footer { font-size: 13px; color: var(--faint); display: flex; flex-direction: co
     <li><strong>Wizja:</strong> strona działa na agencie AI, który na bieżąco czyta dane, sam prowadzi testy na zatwierdzonych wersjach i przesuwa ruch na te, które sprzedają.</li>
     <li><strong>Baza w repo jest dobra:</strong> GTM, zdarzenie <code>lead_submitted</code> bez danych osobowych, <code>submission_id</code> jako klucz idempotencji, UTM w leadzie. Na tym budujemy, nic nie zaczynamy od nowa.</li>
     <li><strong>Trzy rzeczy muszą być gotowe przed startem produkcji</strong>, bo nie da się ich dorobić wstecz: zgody (Consent Mode v2), zapamiętanie źródła wejścia z identyfikatorami kliknięć oraz przeniesienie tych pól z leada do Pipedrive.</li>
-    <li><strong>Prosimy o odpowiedzi na pytania z sekcji 8.</strong> Na ich podstawie przygotujemy kontrakt zdarzeń jako rozszerzenie Waszego <code>docs/analytics-gtm-ga4.md</code>.</li>
+    <li><strong>Kacper: zacznij od <a href="#pytania">pytań</a></strong> (odpowiedź w komentarzu pod pytaniem), potem <a href="#checklista">checklista</a>.</li>
   </ol>
 </div>
 
-<section id="wizja">
-  <h2><span class="nr">1</span>Wizja: strona, która sama się uczy</h2>
+<section id="co-dalej">
+  <h2>Co dalej: 4 kroki do pierwszych danych</h2>
+  <ol class="dalej">
+    <li><strong>Tomek zakłada GTM i GA4</strong> (darmowe, ok. 15 minut na koncie Google China Select) i daje Kacprowi ID kontenera <code>GTM-…</code>.</li>
+    <li><strong>Kacper wpisuje to ID</strong> w <code>NEXT_PUBLIC_GTM_ID</code> i wdraża. Od tej chwili każdy wysłany formularz (<code>lead_submitted</code>) jest liczony, bo kod już to ma.</li>
+    <li><strong>Kacper odpowiada na <a href="#pytania">pytania</a></strong>, najważniejsze: data startu, baner zgód, kto robi połączenie z Pipedrive.</li>
+    <li><strong>Kacper dokłada źródło wejścia do leada i baner zgód</strong>, a Tomek ustawia GA4, Clarity i test na stagingu. Wtedy wiemy, z której reklamy przyszedł lead.</li>
+  </ol>
+  <p class="muted small">Reszta (Pipedrive, Thulium, BigQuery, agent AI) idzie po tych krokach. Pełna lista jest w <a href="#checklista">checkliście</a>.</p>
+</section>
+
+<section id="pytania" class="kacper">
+  <h2>Pytania do Kacpra</h2>
+  <p class="hint">Odpowiedz w komentarzu pod pytaniem. Najpierw wybierz z listy, kim jesteś, potem wpisz odpowiedź. Tomek zobaczy ją po odświeżeniu strony.</p>
+  <div class="ql">
+<div class="qk" id="pytanie-1" data-komentarz="pytanie-1"><span class="n">1</span><p>Kto zakłada konta GTM, GA4, Google Ads i Meta? Kto jest adminem Pipedrive?</p><span class="why">Prosimy o dostęp dla Tomka: edycja w GTM, administrator w GA4.</span></div>
+<div class="qk" id="pytanie-2" data-komentarz="pytanie-2"><span class="n">2</span><p>Kiedy startuje strona?</p><span class="why">Wszystko z etapu „przed startem” musi być gotowe przed tą datą.</span></div>
+<div class="qk" id="pytanie-3" data-komentarz="pytanie-3"><span class="n">3</span><p>Planujecie baner zgód (Consent Mode v2)? Kto pisze politykę cookies?</p><span class="why">Propozycja: CookieConsent v3 (open source).</span></div>
+<div class="qk" id="pytanie-4" data-komentarz="pytanie-4"><span class="n">4</span><p>Czy lead może nieść źródło wejścia (UTM, gclid, fbclid) i identyfikatory GA4 i Meta?</p><span class="why">Dziś UTM jest brany tylko z adresu strony z formularzem, więc przejście na kartę auta gubi źródło.</span></div>
+<div class="qk" id="pytanie-5" data-komentarz="pytanie-5"><span class="n">5</span><p>Kto robi połączenie leada z Pipedrive: wtyczka, webhook czy n8n?</p><span class="why">Pola źródła muszą dojść do Pipedrive.</span></div>
+<div class="qk" id="pytanie-6" data-komentarz="pytanie-6"><span class="n">6</span><p>Czy możecie wysyłać leady do Meta z serwera (Conversions API, event_id = submission_id)?</p></div>
+<div class="qk" id="pytanie-7" data-komentarz="pytanie-7"><span class="n">7</span><p>Thulium: czy „Zamów rozmowę” daje zdarzenie na stronie i jak oddzwonienie łączy się z leadem w Pipedrive?</p></div>
+<div class="qk" id="pytanie-8" data-komentarz="pytanie-8"><span class="n">8</span><p>Agent AI: kto go buduje, co będzie „wersją” strony i kto ją zatwierdza?</p></div>
+<div class="subh">Do właścicieli</div>
+<div class="qk own" id="pytanie-9" data-komentarz="pytanie-9"><span class="n">9</span><p>Co to jest lead jakościowy i kto go oznacza w Pipedrive?</p><span class="why">Na tym uczą się kampanie i agent.</span></div>
+<div class="qk own" id="pytanie-10" data-komentarz="pytanie-10"><span class="n">10</span><p>Ile ruchu i budżetu planujecie na pierwsze 3 miesiące?</p><span class="why">Od tego zależy, ile testów da się prowadzić naraz.</span></div>
+  </div>
+</section>
+
+<section id="checklista">
+  <h2>Checklista</h2>
+  <div class="ckbar"><label>Jestem: <select id="ja"><option value="">wybierz</option><option>Kacper</option><option>Tomek</option><option>Kamil</option><option>Aniela</option><option>Bartek</option><option>Marta</option></select></label><span class="ckprog" id="ckprog">…</span></div>
+  <span class="ckmsg" id="ckmsg" role="status"></span>
+  <div class="ck">
+<div class="subh">Przed startem strony</div>
+<div class="ci" data-z="z01"><input type="checkbox" id="ck-z01"><label for="ck-z01">Ustalić datę startu strony</label><div class="m"><span class="ow t">Tomek</span><span class="st"></span></div></div>
+<div class="ci" data-z="z02"><input type="checkbox" id="ck-z02"><label for="ck-z02">Dostępy: GTM, GA4, Google Ads, Meta, Pipedrive, Thulium</label><div class="m"><span class="ow t">Tomek</span><span class="st"></span></div></div>
+<div class="ci" data-z="z03"><input type="checkbox" id="ck-z03"><label for="ck-z03">Baner zgód z Consent Mode v2 (domyślnie odmowa, ustawiona przed GTM)</label><div class="m"><span class="ow k">Kacper</span><span class="st"></span></div></div>
+<div class="ci" data-z="z04"><input type="checkbox" id="ck-z04"><label for="ck-z04">Lead zapamiętuje źródło wejścia (UTM, gclid, fbclid) i identyfikatory GA4 i Meta</label><div class="m"><span class="ow k">Kacper</span><span class="st"></span></div></div>
+<div class="ci" data-z="z05"><input type="checkbox" id="ck-z05"><label for="ck-z05">Lead trafia do Pipedrive razem z tymi polami</label><div class="m"><span class="ow k">Kacper</span><span class="st"></span></div></div>
+<div class="ci" data-z="z06"><input type="checkbox" id="ck-z06"><label for="ck-z06">Konto Google Cloud pod BigQuery</label><div class="m"><span class="ow t">Tomek</span><span class="st"></span></div></div>
+<div class="subh">Na start</div>
+<div class="ci" data-z="z07"><input type="checkbox" id="ck-z07"><label for="ck-z07">Lista zdarzeń dla Kacpra, dopisana do docs/analytics-gtm-ga4.md</label><div class="m"><span class="ow t">Tomek</span><span class="st"></span></div></div>
+<div class="ci" data-z="z08"><input type="checkbox" id="ck-z08"><label for="ck-z08">Zdarzenia na stronie: telefon, WhatsApp, formularz, kalkulator, „Zamów rozmowę”</label><div class="m"><span class="ow k">Kacper</span><span class="st"></span></div></div>
+<div class="ci" data-z="z09"><input type="checkbox" id="ck-z09"><label for="ck-z09">Leady wysyłane do Meta z serwera (Conversions API)</label><div class="m"><span class="ow k">Kacper</span><span class="st"></span></div></div>
+<div class="ci" data-z="z10"><input type="checkbox" id="ck-z10"><label for="ck-z10">Ustawić GA4, Clarity, Search Console i eksport do BigQuery</label><div class="m"><span class="ow t">Tomek</span><span class="st"></span></div></div>
+<div class="subh">Po starcie</div>
+<div class="ci" data-z="z11"><input type="checkbox" id="ck-z11"><label for="ck-z11">Sprzedaż z Pipedrive i Thulium wraca do Meta, Google i BigQuery</label><div class="m"><span class="ow t">Tomek</span><span class="st"></span></div></div>
+<div class="ci" data-z="z12"><input type="checkbox" id="ck-z12"><label for="ck-z12">Wersja strony zapisywana w leadzie (pod testy agenta)</label><div class="m"><span class="ow k">Kacper</span><span class="st"></span></div></div>
+  </div>
+  <p class="muted small">Odhaczenie zapisuje się na wspólnym serwerze. Lista odświeża się sama co 30 sekund.</p>
+</section>
+
+<section id="wizja" data-komentarz="sekcja-wizja">
+  <h2>Wizja: strona, która sama się uczy</h2>
   <p>Agent AI nie zgaduje. Pracuje w pętli: wyświetla zatwierdzoną wersję strony, mierzy, co z tego wyszło aż do sprzedaży, i przesuwa ruch na wersje, które dają lepsze leady. Pomiar jest więc dla agenta zmysłem i miarą sukcesu, a nie tylko raportem.</p>
   <div class="loop" aria-label="Pętla agenta">
     <div class="st"><b>Ruch</b><span>Meta, Google Ads, organic, portale. UTM i identyfikatory kliknięć zapamiętane przy wejściu.</span></div>
@@ -156,8 +255,8 @@ footer { font-size: 13px; color: var(--faint); display: flex; flex-direction: co
   <p><strong>Miarą sukcesu jest lead jakościowy z Pipedrive, nie wysłany formularz.</strong> Agent nagradzany za formularze nauczy się zbierać tanie, słabe leady. <code>lead_submitted</code> zostaje szybkim sygnałem pomocniczym, a kwalifikacja i umowa pilnują, żeby nie odjechał od sprzedaży.</p>
 </section>
 
-<section id="stan">
-  <h2><span class="nr">2</span>Co już jest w repo</h2>
+<section id="stan" data-komentarz="sekcja-stan">
+  <h2>Co już jest w repo</h2>
   <p class="muted small">Przegląd gałęzi <code>main</code> z 23.10.2026. Nic nie zmienialiśmy w kodzie.</p>
   <div class="tw"><table>
     <thead><tr><th>Element</th><th>Stan</th><th>Co dalej</th></tr></thead>
@@ -175,8 +274,8 @@ footer { font-size: 13px; color: var(--faint); display: flex; flex-direction: co
   </table></div>
 </section>
 
-<section id="ekosystem">
-  <h2><span class="nr">3</span>Ekosystem analityczny</h2>
+<section id="ekosystem" data-komentarz="sekcja-ekosystem">
+  <h2>Ekosystem analityczny</h2>
   <p>Wszystko z darmowych narzędzi albo w darmowych progach. Płacimy tylko za licencje, które i tak są w planie (Pipedrive, Thulium).</p>
   <div class="tw"><table>
     <thead><tr><th>Warstwa</th><th>Narzędzie</th><th>Rola</th><th>Koszt</th><th>Kto</th></tr></thead>
@@ -198,8 +297,8 @@ footer { font-size: 13px; color: var(--faint); display: flex; flex-direction: co
   <p class="note">Server-side GTM odkładamy świadomie. To około 40–45 USD miesięcznie za serwer, a Google zaleca co najmniej dwa. Większość korzyści dają konwersje wysyłane z Workera i z CRM. Wracamy do tematu, gdy dojdą trzy lub więcej platform reklamowych albo dane pokażą duże straty na blokerach.</p>
 </section>
 
-<section id="klucze">
-  <h2><span class="nr">4</span>Klucze, które łączą dane</h2>
+<section id="klucze" data-komentarz="sekcja-klucze">
+  <h2>Klucze, które łączą dane</h2>
   <p>To najważniejsza sekcja dla Was. Jeśli te pola nie pojadą z leadem do Pipedrive, agent i kampanie będą widziały formularze, ale nie sprzedaż.</p>
   <div class="tw"><table>
     <thead><tr><th>Pole</th><th>Skąd</th><th>dataLayer</th><th>/api/lead</th><th>Pipedrive</th></tr></thead>
@@ -218,8 +317,8 @@ footer { font-size: 13px; color: var(--faint); display: flex; flex-direction: co
   <p class="note">Zasada z Waszej dokumentacji zostaje: żadnych danych osobowych w dataLayer i GA4. Telefon i e-mail trafiają do Meta i Google tylko zahashowane (SHA-256), tylko z serwera i tylko przy zgodzie marketingowej.</p>
 </section>
 
-<section id="zdarzenia">
-  <h2><span class="nr">5</span>Zdarzenia w trzech warstwach</h2>
+<section id="zdarzenia" data-komentarz="sekcja-zdarzenia">
+  <h2>Zdarzenia w trzech warstwach</h2>
   <p>Nazwy w dataLayer proponujemy w Waszej konwencji (angielski, snake_case, czas przeszły jak <code>lead_submitted</code>). Mapowanie na nazwy w GA4 i platformach reklamowych robimy po naszej stronie, w GTM. Pełny kontrakt z parametrami dostarczymy po Waszych odpowiedziach.</p>
   <h3>Strona (dataLayer → GTM)</h3>
   <div class="tw"><table>
@@ -256,8 +355,8 @@ footer { font-size: 13px; color: var(--faint); display: flex; flex-direction: co
   </table></div>
 </section>
 
-<section id="eksperymenty">
-  <h2><span class="nr">6</span>Eksperymenty i agent</h2>
+<section id="eksperymenty" data-komentarz="sekcja-eksperymenty">
+  <h2>Eksperymenty i agent</h2>
   <ul>
     <li><strong>Przypisanie na brzegu:</strong> wersję wybiera Cloudflare Worker przed wyrenderowaniem strony i zapisuje w ciasteczku. Odwiedzający widzi zawsze tę samą wersję, bez migania.</li>
     <li><strong>Ekspozycja:</strong> <code>experiment_exposed</code> wysyłamy tylko wtedy, gdy wersja naprawdę się wyświetliła. Inaczej wyniki mieszają ludzi, którzy zmiany nie widzieli.</li>
@@ -285,8 +384,8 @@ footer { font-size: 13px; color: var(--faint); display: flex; flex-direction: co
   </ul>
 </section>
 
-<section id="fazy">
-  <h2><span class="nr">7</span>Kolejność wdrożenia</h2>
+<section id="fazy" data-komentarz="sekcja-fazy">
+  <h2>Kolejność wdrożenia</h2>
   <div class="phases">
     <div class="ph must"><span class="when">Faza 0 · przed startem produkcji</span><h3>Fundament, którego nie da się dorobić wstecz</h3><ul>
       <li>konta GTM, GA4, Google Ads, Meta (piksel)</li>
@@ -312,56 +411,8 @@ footer { font-size: 13px; color: var(--faint); display: flex; flex-direction: co
   </div>
 </section>
 
-<section id="pytania">
-  <div class="qhead">
-    <h2><span class="nr">8</span>Pytania do Was</h2>
-    <div><button class="btn" id="copyBtn" type="button">Kopiuj pytania jako tekst</button> <span id="copyStatus" role="status"></span></div>
-  </div>
-  <textarea id="qtext" hidden readonly aria-label="Pytania jako tekst"></textarea>
-
-  <div class="qgroup" data-g="A. Strona">
-    <h3>A. Strona</h3>
-    <div class="q"><span class="n">1</span><p>Kto i kiedy zakłada kontener GTM, usługę GA4 oraz konta Google Ads i Meta? Prosimy o dostęp dla Tomka: edycja w GTM, administrator w GA4.</p><span class="why">Bez kont nie przetestujemy niczego przed startem.</span></div>
-    <div class="q"><span class="n">2</span><p>Czy planujecie baner zgód? Jeśli nie, czy pasuje Wam CookieConsent v3 (open source) z Consent Mode v2 i domyślną odmową przed załadowaniem GTM? Kto przygotowuje treść polityki cookies?</p><span class="why">Bez sygnału zgody Meta, Google Ads i Clarity w UE dostają niepełne dane.</span></div>
-    <div class="q"><span class="n">3</span><p>Czy możecie zapamiętać pierwsze i ostatnie wejście w ciasteczku własnej domeny (po zgodzie) i dołączać je do <code>POST /api/lead</code>? Chodzi o <code>utm_*</code>, <code>gclid</code>, <code>gbraid</code>, <code>wbraid</code>, <code>fbclid</code>, stronę wejścia, referrer i datę.</p><span class="why">Dziś UTM jest czytany z adresu strony z formularzem, więc przejście ze strony głównej na kartę auta gubi źródło.</span></div>
-    <div class="q"><span class="n">4</span><p>Czy do payloadu leada możecie dodać: <code>ga_client_id</code> i <code>ga_session_id</code>, <code>_fbp</code> i <code>_fbc</code>, <code>financing_mode</code> z kalkulatora oraz <code>consent_state</code>?</p><span class="why">To klucze, które łączą lead z sesją w GA4 i z kliknięciem w reklamę.</span></div>
-    <div class="q"><span class="n">5</span><p>Czy możecie wysyłać zdarzenie <code>Lead</code> do Meta Conversions API z <code>/api/lead</code>, z <code>event_id = submission_id</code>, i ten sam identyfikator dawać w pikselu? Telefon i e-mail tylko zahashowane i tylko przy zgodzie marketingowej.</p><span class="why">Konwersja z serwera nie ginie na blokerach, a wspólny identyfikator zapobiega podwójnemu liczeniu.</span></div>
-    <div class="q"><span class="n">6</span><p>Kto ma dostęp do panelu Cloudflare? Czy możemy włączyć Google tag gateway?</p><span class="why">Tagi z domeny strony to więcej danych bez dodatkowych kosztów.</span></div>
-    <div class="q"><span class="n">7</span><p>Kto buduje drogę leada z WordPressa do Pipedrive (wtyczka, webhook, n8n)? Pola z pytań 3 i 4 muszą trafić do Pipedrive.</p><span class="why">W <code>OPEN-ISSUES</code> dostarczanie do CRM jest otwarte, więc to dobry moment.</span></div>
-    <div class="q"><span class="n">8</span><p>Czy pasuje Wam, że zdarzenia z sekcji 5 dostarczymy jako rozszerzenie <code>docs/analytics-gtm-ga4.md</code> (nazwy, parametry, test odbiorczy)?</p><span class="why">Jedna dokumentacja zamiast dwóch.</span></div>
-    <div class="q"><span class="n">9</span><p>Czy staging dostanie osobne środowisko GTM, żeby testy nie trafiały do produkcyjnego GA4? Jak wykluczacie ruch wewnętrzny?</p><span class="why">Testy i ruch zespołu zaśmiecają dane, na których uczy się agent.</span></div>
-    <div class="q"><span class="n">10</span><p>Kiedy startuje produkcja? Do testów (Tag Assistant, DebugView) potrzebujemy dostępu do stagingu za Basic Auth.</p><span class="why">Faza 0 musi się zmieścić przed startem.</span></div>
-  </div>
-
-  <div class="qgroup" data-g="B. Thulium">
-    <h3>B. Thulium</h3>
-    <div class="q"><span class="n">11</span><p>Czy widget „Zamów rozmowę” wysyła zdarzenia JavaScript (otwarcie, podanie numeru), które można przekazać do dataLayer?</p><span class="why">Bez tego zamówienie rozmowy będzie widoczne tylko w Thulium, nie na stronie.</span></div>
-    <div class="q"><span class="n">12</span><p>Jak formularz uruchamia oddzwonienie w 30 sekund? Strona woła bezpośrednio API Thulium, czy idzie to przez Pipedrive albo n8n?</p><span class="why">Od tego zależy, gdzie powstaje zdarzenie rozmowy i jak je połączyć z leadem.</span></div>
-    <div class="q"><span class="n">13</span><p>Czy rozmowa może nieść <code>submission_id</code> albo stronę i UTM, żeby przypięła się do właściwego leada w Pipedrive, a nie tworzyła duplikatu po numerze telefonu?</p><span class="why">Duplikaty psują liczenie leadów i nagrodę agenta.</span></div>
-  </div>
-
-  <div class="qgroup" data-g="C. Pipedrive">
-    <h3>C. Pipedrive</h3>
-    <div class="q"><span class="n">14</span><p>Kto jest administratorem Pipedrive? Potrzebujemy dostępu do konfiguracji pól i etapów: źródło, identyfikatory kliknięć, <code>ga_client_id</code>, <code>submission_id</code>, forma finansowania, wariant.</p><span class="why">Pipedrive jest źródłem prawdy o sprzedaży.</span></div>
-  </div>
-
-  <div class="qgroup" data-g="D. Eksperymenty i agent AI">
-    <h3>D. Eksperymenty i agent AI</h3>
-    <div class="q"><span class="n">15</span><p>Czy agent AI jest w Waszym planie? Kto go buduje i gdzie podejmuje decyzję: w Workerze czy w osobnej usłudze?</p><span class="why">Od tego zależy, skąd agent czyta dane i jak szybko reaguje.</span></div>
-    <div class="q"><span class="n">16</span><p>Co będzie „wersją”: komponent, tekst, układ, kolejność sekcji? Jak wersje są definiowane i zatwierdzane?</p><span class="why">Pomiar musi wiedzieć, co dokładnie porównuje.</span></div>
-    <div class="q"><span class="n">17</span><p>Czy przypisanie do wersji może trafiać do dataLayer i do payloadu leada (<code>experiment_id</code>, <code>variant_id</code>)?</p><span class="why">Bez tego wiadomo, która wersja zebrała formularze, ale nie wiadomo, która sprzedała auto.</span></div>
-    <div class="q"><span class="n">18</span><p>Macie własny silnik eksperymentów, czy rozważycie GrowthBook (open source, liczy wyniki w BigQuery, ma bandyty)?</p><span class="why">Nie chcemy budować drugi raz czegoś, co już macie.</span></div>
-  </div>
-
-  <div class="qgroup" data-g="E. Do właścicieli">
-    <h3>E. Do właścicieli (biznesowo)</h3>
-    <div class="q"><span class="n">19</span><p>Czym jest „lead jakościowy”? Kto go oznacza w Pipedrive i w jakim czasie od zgłoszenia?</p><span class="why">Na tym zdarzeniu uczą się kampanie i agent.</span></div>
-    <div class="q"><span class="n">20</span><p>Jaka jest prognoza ruchu i budżetów na pierwsze 3 miesiące, per kanał (Meta, Google, portale)?</p><span class="why">Od tego zależy, ile testów da się prowadzić naraz.</span></div>
-  </div>
-</section>
-
-<section id="zalozenia">
-  <h2><span class="nr">9</span>Co wiemy i co zakładamy</h2>
+<section id="zalozenia" data-komentarz="sekcja-zalozenia">
+  <h2>Co wiemy i co zakładamy</h2>
   <p class="muted">Poprawcie nas tam, gdzie się mylimy.</p>
   <div class="known">
     <div><h3>Wiemy</h3><ul>
@@ -393,30 +444,45 @@ footer { font-size: 13px; color: var(--faint); display: flex; flex-direction: co
 
 <script>
 (function () {
-  var btn = document.getElementById('copyBtn');
-  var status = document.getElementById('copyStatus');
-  var area = document.getElementById('qtext');
-  function buildText() {
-    var out = ['Pytania: ekosystem pomiaru China Select (23.10.2026)', ''];
-    document.querySelectorAll('.qgroup').forEach(function (g) {
-      out.push(g.getAttribute('data-g'));
-      g.querySelectorAll('.q').forEach(function (q) {
-        out.push(q.querySelector('.n').textContent + '. ' + q.querySelector('p').textContent.replace(/\s+/g, ' ').trim());
-      });
-      out.push('');
+  var API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? location.origin + '/api/komentarze' : 'https://cc-komentarze.waleqq.workers.dev/api/komentarze';
+  var STRONA = 'EKOSYSTEM_POMIARU.html#checklista', KEY = 'cc_komentarze_osoba';
+  var stan = {}, sel = document.getElementById('ja'), msg = document.getElementById('ckmsg');
+  function ja() { try { return localStorage.getItem(KEY) || ''; } catch (e) { return sel.value; } }
+  function setJa(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+  sel.value = ja();
+  sel.addEventListener('change', function () { setJa(sel.value); msg.textContent = ''; document.querySelectorAll('.kmt-sel').forEach(function (x) { x.value = sel.value; }); });
+  function data(ts) { var d = new Date(ts); return isNaN(d) ? '' : d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' }); }
+  function render() {
+    var items = document.querySelectorAll('.ci'), done = 0;
+    items.forEach(function (c) {
+      var s = stan[c.dataset.z], on = !!(s && s.done);
+      if (on) done++;
+      c.classList.toggle('done', on);
+      c.querySelector('input').checked = on;
+      c.querySelector('.st').textContent = s ? (on ? '✓ ' : '↺ ') + s.autor + ' · ' + data(s.ts) : '';
     });
-    return out.join('\n');
+    document.getElementById('ckprog').textContent = done + ' z ' + items.length + ' zrobione';
   }
-  btn.addEventListener('click', function () {
-    var text = buildText();
-    function fallback() {
-      area.value = text; area.hidden = false; area.focus(); area.select();
-      status.textContent = 'Zaznaczone. Skopiuj skrótem klawiszowym.';
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { status.textContent = 'Skopiowane.'; }, fallback);
-    } else { fallback(); }
+  function load() {
+    return fetch(API + '?strona=' + encodeURIComponent(STRONA), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (rows) {
+      stan = {};
+      (rows || []).forEach(function (r) { stan[r.kotwica] = { done: r.tekst === 'zrobione', autor: r.autor, ts: r.ts }; });
+      render();
+    }).catch(function () { msg.textContent = 'Nie udało się wczytać stanu checklisty.'; });
+  }
+  document.querySelectorAll('.ci input').forEach(function (cb) {
+    cb.addEventListener('change', function () {
+      var id = cb.closest('.ci').dataset.z, kto = ja();
+      if (!kto) { cb.checked = !cb.checked; msg.textContent = 'Najpierw wybierz, kim jesteś (pole „Jestem”).'; sel.focus(); return; }
+      var tekst = cb.checked ? 'zrobione' : 'otwarte';
+      fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ strona: STRONA, kotwica: id, autor: kto, typ: 'komentarz', tekst: tekst }) })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (row) { stan[id] = { done: tekst === 'zrobione', autor: kto, ts: row.ts }; msg.textContent = ''; render(); })
+        .catch(function () { cb.checked = !cb.checked; msg.textContent = 'Nie zapisało się. Spróbuj jeszcze raz.'; });
+    });
   });
+  load();
+  setInterval(function () { if (document.visibilityState === 'visible') load(); }, 30000);
 })();
 </script>
 <!--KOMENTARZE--><script>window.KOMENTARZE_STRONA="EKOSYSTEM_POMIARU.html";</script><script>/* Komentarze zespołu China Select — widżet samodzielny (bez bibliotek).
