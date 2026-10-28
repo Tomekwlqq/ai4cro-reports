@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pomiar GA4 — flagi i dublowanie zdarzeń</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Titan+One&display=swap");
+:root{--roz:#F6BECB;--roz-j:#FDF0F3;--koral:#E86249;--cz:#101010;--sz:#55504E;--j:#8A8482;--tlo:#EFEDEA;--karta:#fff;--linia:#ECE8E5}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+body{background:var(--tlo);color:var(--cz);font:16px/1.6 "Montserrat",system-ui,sans-serif;overflow-wrap:anywhere}
+.pasek{background:var(--roz);text-align:center;font:600 11px/1.3 "Montserrat";letter-spacing:.14em;padding:9px 16px}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px 64px}
+header{padding:28px 0 8px}
+.kicker{font:600 12px/1 "Montserrat";letter-spacing:.16em;text-transform:uppercase}
+h1{font:400 clamp(30px,6vw,48px)/1.05 "Titan One","Montserrat";text-transform:uppercase;color:var(--roz);margin:10px 0 12px}
+.lead{font-size:17px;color:var(--sz);max-width:760px}
+h2{font:400 24px/1.15 "Titan One","Montserrat";text-transform:uppercase;color:var(--roz);margin:40px 0 12px}
+h2 .n{color:var(--koral);margin-right:8px}
+.karta{background:var(--karta);border-radius:10px;padding:20px;box-shadow:0 1px 2px rgba(16,16,16,.05),0 4px 14px rgba(16,16,16,.05);margin:12px 0}
+ul.pkt{list-style:none} ul.pkt>li{position:relative;padding:0 0 12px 22px} ul.pkt>li::before{content:"";position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:var(--koral)}
+.liczby{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:14px 0}
+.liczba{background:var(--karta);border-radius:10px;padding:16px;box-shadow:0 1px 2px rgba(16,16,16,.05)}
+.liczba .v{font:700 30px/1 "Montserrat";color:var(--koral)} .liczba .l{font-size:13px;color:var(--sz);margin-top:6px}
+table{width:100%;border-collapse:collapse;background:var(--karta);border-radius:10px;overflow:hidden;font-size:14px}
+th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--j);padding:10px 12px;border-bottom:1px solid var(--linia)}
+td,th{overflow-wrap:break-word;word-break:normal} td:first-child,th:first-child{min-width:9em}
+td{padding:10px 12px;border-bottom:1px solid var(--linia);vertical-align:top}
+tr.mocny td{background:var(--roz-j);font-weight:700}
+.bar{display:block;height:6px;width:var(--w);background:var(--roz);border-radius:3px;margin-bottom:4px}
+.u{font-size:13px;color:var(--sz)}
+ol.reko{list-style:none;counter-reset:r} ol.reko>li{counter-increment:r;background:var(--karta);border-radius:10px;padding:18px 18px 16px 58px;margin:12px 0;position:relative;box-shadow:0 1px 2px rgba(16,16,16,.05),0 4px 14px rgba(16,16,16,.05)}
+ol.reko>li::before{content:counter(r);position:absolute;left:16px;top:16px;width:30px;height:30px;border-radius:50%;background:var(--koral);color:#fff;font:700 15px/30px "Montserrat";text-align:center}
+.t{font-weight:700;font-size:17px;margin-bottom:6px}
+.r{margin:4px 0;color:var(--sz)} .r b{color:var(--cz)}
+.small{font-size:13px;color:var(--sz)}
+.kb{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:14px} .kd{min-width:130px} .kd.ja{font-weight:700}
+.kt{flex:1;height:14px;background:var(--tlo);border-radius:7px;overflow:hidden} .kf{display:block;height:100%;width:var(--w);background:var(--roz)}
+footer{margin-top:40px;font-size:12px;color:var(--j)}
+@media(max-width:700px){
+ table,thead,tbody,tr,td{display:block;width:100%} tr:first-child{display:none}
+ tr{border-bottom:8px solid var(--tlo)} td{border:0;padding:6px 12px}
+ td::before{content:attr(data-l);display:block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--j)}
+ ol.reko>li{padding-left:52px}
+}
+
+.wrap{max-width:900px} .back{display:none} h1{margin-top:10px} h2{margin-top:36px} h3{font:700 16px/1.3 Montserrat;margin:20px 0 8px}
+p{margin:0 0 12px} ul,ol{margin:0 0 14px 22px} li{margin:4px 0} blockquote{border-left:4px solid var(--roz);margin:12px 0;padding:6px 14px;color:var(--sz)}
+.table-wrap{margin:10px 0 18px} code{background:#F8F8F6;border-radius:4px;padding:1px 5px;font-size:13px} pre{background:#F8F8F6;border-radius:8px;padding:12px;font-size:13px;overflow:auto}
+hr{border:0;border-top:1px solid var(--linia);margin:24px 0} em{color:var(--sz)}
+@media(max-width:700px){.table-wrap table,.table-wrap thead,.table-wrap tbody,.table-wrap tr,.table-wrap td{display:block;width:100%!important} .table-wrap thead{display:none}
+ .table-wrap tr{border-radius:8px;margin:0 0 12px;padding:6px 10px;background:#fff} .table-wrap td{border:0!important;padding:5px 0!important}
+ .table-wrap td[data-l]:not([data-l=""])::before{content:attr(data-l);display:block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#8A8482;margin-bottom:2px}}
+</style>
+<!--nakladka-beng--><link rel="stylesheet" href="../hub/nakladka_beng.css"></head>
+<body>
+<!-- hub-backlink -->
+<div id="hub-backlink-bar" style="position:sticky;top:0;z-index:100;background:#F6BECB;padding:8px 16px;font:700 12px/1.4 Montserrat,system-ui,sans-serif;letter-spacing:.04em;">
+  <a href="../BENGSHOP_HUB_KLIENT.html" style="color:#101010;text-decoration:none;">← Hub Bengshop</a>
+</div>
+<!-- /hub-backlink -->
+<div class="wrap">
+<h1>Bengshop — pomiar GA4: flagi i dublowanie zdarzeń</h1><p><em>Źródło liczb: <code>data/ga4/baseline_2026-10-12.json</code>. Poniżej flagi jakości pomiaru — NIE wnioski. Każdą sprawdzić przed użyciem liczby w raporcie.</em></p><p><strong>Bengshop (377029689, Shoper) — flagi pomiaru z pobrania bazowego 2026-10-12:</strong></p><ul><li><code>checkouts</code> = 3 w 10.2025, od 11.2025 ~1–2 tys./mies. → <code>begin_checkout</code> wdrożony ok. listopada 2025; lejka do checkoutu nie porównywać sprzed 11.2025.</li><li><code>addToCarts</code> ~2× od 06.2026 (05: 3 733 → 06: 7 355, 08: 8 290) przy płaskich sesjach i transakcjach → <strong>wyjaśnione 12.10 (niżej): dublowanie od 19–20.05.2026, dwa tagi do tego samego GA4.</strong></li><li><code>view_cart</code> ≈ <code>add_to_cart</code> (30 dni: 6 747 vs 6 793) → podejrzenie, że ATC strzela przy wejściu do koszyka (Shoper otwiera koszyk po dodaniu?).</li><li><code>add_shipping_info</code> = <code>add_payment_info</code> co do sztuki (1 367) → wysyłane razem jednym krokiem, nie dwoma.</li><li>Landing <code>/pl/basket</code> (94 trans.) i <code>/pl/login</code> (22 trans.) + <code>(not set)</code> 2 203 sesji → zrywanie sesji (powrót z bramki płatności / logowanie Google-FB). Sprawdzić listę wykluczeń referrerów.</li><li>Na stronie 2× GA4 (<code>G-FCH23QZ222</code>, <code>G-MZKZB79D9C</code>) + 2× GTM; property ma 1 stream → drugi ID wysyła gdzie indziej (bengshop.eu? stara konfiguracja Shopera?). <strong>Wyjaśnione 12.10 (niżej):</strong> G-FCH23QZ222 dostaje zdarzenia z dwóch tagów (integracja Shopera + GTM klienta); pozostałe ID należą do Shopera.</li></ul><p><strong>Bengshop — dublowanie eventów e-commerce POTWIERDZONE (2026-10-12):</strong></p><ul><li>Data pęknięcia: <strong>2026-05-19/20</strong>. <code>view_item</code>/sesję 1,4–2,0 → 2,9–3,6 z dnia na dzień; <code>add_to_cart</code>/sesję 0,13–0,18 → 0,23–0,43. <code>purchase</code> bez zmian (GA4 deduplikuje po transaction_id) → dlatego przychód się zgadza, a lejek nie. 2026-06-18 = skok sprzedaży (2 037 sesji, 160 zakupów), nie zmiana pomiaru.</li><li>Mechanizm (test headless na żywej PDP, mobile): do <code>G-FCH23QZ222</code> (= stream 5230814204 property 377029689, potwierdzone Admin API) w JEDNYM pakiecie idą 2× <code>view_item</code> i 2× <code>view_item_list</code> przy 1× <code>page_view</code> (to jest zmierzone). Kto wysyła (wniosek z kodu, do potwierdzenia w GTM): (a) natywna integracja Shopera <code>clientGoogleAnalyticsV4</code> (trackingId G-FCH23QZ222, isGtm=1), (b) kontener klienta <code>GTM-WHCND2H</code> (dataLayer; tagi GA4 G-FCH23QZ222 + Google Ads AW-670885759).</li><li>Pozostałe ID to NIE dublowanie tego property: <code>GTM-T68LWS</code> = kontener Shopera (shopLayer → G-7BS8B27X65), <code>G-MZKZB79D9C</code> = analityka kampanii Shopera.</li><li>Konsekwencja: od 20.05.2026 view_item, view_item_list, add_to_cart, select_item (prawdopodobnie) liczone ~2×. Lejek, CR produktu i „spadek konwersji z koszyka” po 05.2026 = artefakt. Porównania przed/po 20.05 tylko na sesjach i purchase.</li><li><code>begin_checkout</code> działa od 2025-11-03 (wcześniej 1–7/mies.).</li><li>Historia zmian kodu: Wayback nie ma zapisów 2026. Dokładne „kto i co” zmienił 19.05 → historia wersji GTM-WHCND2H (dostęp do GTM) albo log integracji w panelu Shopera.</li></ul>
+</div>
+</body>
+</html>

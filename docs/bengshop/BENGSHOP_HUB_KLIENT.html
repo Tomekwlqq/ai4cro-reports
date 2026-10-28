@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bengshop — analiza i propozycje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Titan+One&amp;display=swap" rel="stylesheet">
+<style>
+/* ── tokeny z BRAND_STYLE_GUIDE — motyw Warm · Gold, jasny tryb ── */
+:root{
+  --bg:#FBF6F1;--surface:#FFFFFF;--surface-2:#F7F0EA;
+  --line:#EFE3DA;--line-soft:#F4EBE4;
+  --ink:#2B2326;--muted:#6B5D5A;--faint:#9C8D88;
+  --v:#C9A84C;--v-d:#8A6D1F;--v-soft:rgba(201,168,76,.10);
+  --dark:#3F4A44;
+  --r-md:12px;--r-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Space Grotesk",system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+
+/* ── Layout ── */
+.wrap{max-width:1200px;margin:0 auto;padding:28px 16px 80px}
+
+/* ── Header ── */
+.hub-header{margin-bottom:32px}
+.kicker{font:600 12px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--v-d);display:block;margin-bottom:8px}
+.hub-title{font-size:clamp(24px,4vw,36px);font-weight:700;line-height:1.15;margin-bottom:8px}
+.hub-lead{font-size:16px;line-height:1.55;color:var(--ink);max-width:860px;margin:6px 0 4px}
+.hub-status{font-size:14px;color:var(--muted);padding:8px 12px;background:var(--surface);border:1px solid var(--line);border-radius:999px;display:inline-block}
+
+
+/* ── Wejścia do mini hubów (portal, nie kafel) ── */
+.portale{display:grid;gap:14px;margin:4px 0 28px}
+.portal{display:flex;flex-direction:column;gap:16px;text-decoration:none;color:#F4EFE7;
+  background:linear-gradient(135deg,#3F4A44 0%,#2F3833 100%);border-radius:var(--r-lg);padding:22px 22px 20px;
+  border:1px solid #2F3833;box-shadow:0 6px 18px rgba(43,35,38,.14);transition:transform .15s ease,box-shadow .15s ease}
+.portal:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(43,35,38,.2)}
+.portal__kicker{font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:#C9A84C}
+.portal__tytul{font-size:clamp(22px,3.4vw,30px);font-weight:700;line-height:1.15;margin:8px 0 6px;color:#fff}
+.portal__opis{font-size:15px;color:#DCD3C7;max-width:62ch}
+.portal__status{margin-top:10px;font:500 13px/1.4 "IBM Plex Mono",monospace;color:#F1D98F}
+.portal__chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.portal__chip{font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;padding:6px 9px 6px 12px;border-radius:999px;background:var(--tb,rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.16);color:var(--ta,#EDE6DA);box-shadow:inset 4px 0 0 var(--ta,transparent)}
+.portal__side{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;border-top:1px solid rgba(255,255,255,.14);padding-top:14px}
+.portal__num{font:600 34px/1 "IBM Plex Mono",monospace;color:#C9A84C}
+.portal__numlbl,.portal__date{font-size:13px;color:#CFC6B9}
+.portal__btn{margin-left:auto;font:600 13px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;background:#C9A84C;color:#2B2326;padding:11px 16px;border-radius:999px}
+@media(min-width:760px){
+  .portal{flex-direction:row;align-items:stretch;padding:26px 28px}
+  .portal__main{flex:1}
+  .portal__side{flex-direction:column;align-items:flex-end;justify-content:center;border-top:0;border-left:1px solid rgba(255,255,255,.14);padding:0 0 0 24px;min-width:190px}
+  .portal__btn{margin-left:0;margin-top:10px}
+}
+
+/* ── Archiwum ── */
+.archiwum{margin-top:36px;border-top:1px solid var(--line);padding-top:18px}
+.archiwum summary{cursor:pointer;font:600 13px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:10px 0;list-style:none}
+.archiwum summary::-webkit-details-marker{display:none}
+.archiwum summary::before{content:"▸ ";color:var(--v-d)}
+.archiwum[open] summary::before{content:"▾ "}
+.archiwum__opis{font-size:14px;color:var(--faint);margin:2px 0 14px}
+.kafle--archiwum .kafel{opacity:.72;filter:saturate(.6)}
+.kafle--archiwum .kafel:hover{opacity:1;filter:none}
+
+/* ── Filtry ── */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+/* Filtry w kodzie kolorów kafli (08.10): tło = tło typu, pasek z lewej = akcent typu — jak na kaflu */
+.filter-btn{
+  font:600 12px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;
+  padding:9px 14px 9px 16px;border:1px solid var(--line);border-radius:999px;
+  background:var(--tb,var(--surface));color:var(--ink);cursor:pointer;
+  box-shadow:inset 5px 0 0 var(--ta,var(--line));
+  transition:all .15s ease;
+}
+.filter-btn:hover:not(.filter-active){
+  border-color:var(--ta,var(--v));
+}
+.filter-btn.filter-active{
+  background:var(--ta,var(--v-d));
+  border-color:var(--ta,var(--v-d));
+  box-shadow:none;
+  color:#fff;
+}
+
+/* ── Siatka kafli ── */
+.kafle{display:grid;gap:14px;grid-template-columns:1fr}
+.kafle-sekcje{display:block}
+.sekcja{margin:0 0 30px}
+.sekcja__t{font-size:19px;font-weight:700;margin:0 0 4px;padding-top:14px;border-top:2px solid var(--line)}
+.sekcja__o{font-size:14px;color:var(--muted);margin:0 0 14px;max-width:820px}
+.sekcja.sekcja--pusta{display:none}
+@media(min-width:600px){.kafle{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.kafle{grid-template-columns:repeat(3,1fr)}}
+
+/* ── Kafel — kolory z CSS var ustawianych inline per kafel ── */
+.kafel{
+  background:var(--kafel-bg,var(--surface));
+  border:1px solid var(--line);
+  border-left:5px solid var(--kafel-accent,var(--line));
+  border-radius:var(--r-lg);
+  padding:18px;display:flex;flex-direction:column;gap:10px;
+  transition:border-color .15s,box-shadow .15s;cursor:pointer;
+}
+.kafel:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.kafel--broken{opacity:.6;border-style:dashed}
+.kafel--hidden{display:none}
+
+.kafel__badges{display:flex;flex-wrap:wrap;gap:6px}
+.kafel__tytul{font-size:15px;font-weight:700;line-height:1.3;color:var(--ink)}
+.kafel__opis{font-size:13px;color:var(--muted);line-height:1.5;flex:1}
+.kafel__meta{font:600 11px/1 "IBM Plex Mono",monospace;color:var(--faint);margin-top:auto}
+.kafel__data{}
+
+/* ── Plakietki ── */
+.badge{
+  display:inline-block;font:600 11px/1 "IBM Plex Mono",monospace;
+  padding:3px 8px;border-radius:999px;white-space:nowrap;letter-spacing:.05em;
+}
+/* Plakietka typu — biały bg + tekst i ramka w kolorze akcentu typu (z CSS var kafla) */
+.badge-typ{
+  background:#fff;
+  color:var(--kafel-accent,var(--muted));
+  border:1px solid var(--kafel-accent,var(--line));
+  text-transform:uppercase;
+}
+.badge-ok   {background:#E3F2E9;color:#236B43}
+.badge-warn {background:#FBEBDD;color:#A4521F}
+.badge-q    {background:#EEE8E3;color:var(--muted)}
+.badge-new  {background:#C9A84C;color:#fff;font-weight:700;animation:pulse 2s ease infinite}
+.badge-intern{background:#F6E1E1;color:#A33}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.75}}
+
+/* ── Licznik ── */
+.kafle-count{font:14px/1 "IBM Plex Mono",monospace;color:var(--muted);margin-bottom:12px}
+/* Motyw BENG — kolory i kroje z projektu nowej strony (XD, 14.10.2026): róż #F6BECB, koral logo #E86249, czerń #101010, tło #F8F8F6.
+   Nagłówki w projekcie: gruby krój display → zamiennik Titan One; tekst → Montserrat. */
+:root{--bg:#EFEDEA;--surface:#FFFFFF;--surface-2:#F8F8F6;--line:#ECE8E5;--line-soft:#F4F1EE;
+  --ink:#101010;--muted:#55504E;--faint:#8A8482;--v:#E86249;--v-d:#C8452E;--v-soft:rgba(246,190,203,.25);--r-md:4px;--r-lg:6px}
+body{font-family:"Montserrat",system-ui,sans-serif;background:var(--bg)}
+.wrap{padding-top:0}
+html,body{overflow-x:clip}
+.hub-header{margin:0 0 28px;padding:0 0 22px}
+.hub-header::before{content:"BENG POLE DANCE SHOP · BENGSHOP.PL";display:block;margin:0 calc(50% - 50vw) 22px;padding:9px 16px;background:#F6BECB;
+  font:600 11px/1.3 "Montserrat",sans-serif;letter-spacing:.14em;text-align:center;color:#101010}
+.kicker{font:600 12px/1 "Montserrat",sans-serif;letter-spacing:.16em;color:#101010}
+.hub-title{font-family:"Titan One","Montserrat",sans-serif;font-weight:400;text-transform:uppercase;color:#F6BECB;
+  font-size:clamp(30px,6vw,52px);letter-spacing:.01em;line-height:1.02;-webkit-text-stroke:0}
+.hub-lead{font-size:15px;color:var(--muted)}
+.hub-status{border-radius:4px;font-family:"Montserrat",sans-serif}
+.sekcja__t{font-family:"Titan One","Montserrat",sans-serif;font-weight:400;text-transform:uppercase;color:#F6BECB;font-size:26px;border-top:0;padding-top:6px}
+.sekcja__o{color:var(--muted)}
+.kafel{--kafel-accent:#E86249 !important;--kafel-bg:#FFFFFF !important;background:#fff;border:0;border-radius:10px;padding:22px 22px 18px;
+  box-shadow:0 1px 2px rgba(16,16,16,.05),0 4px 14px rgba(16,16,16,.05);transition:transform .15s ease,box-shadow .15s ease;gap:12px}
+.kafel:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(16,16,16,.06),0 12px 28px rgba(232,98,73,.14)}
+.kafel__tytul{font-family:"Montserrat",sans-serif;font-weight:700;font-size:17px;line-height:1.3;text-transform:none;color:#101010}
+.kafel:hover .kafel__tytul{color:#E86249}
+.kafel__meta{color:#9A9390;font-weight:600;letter-spacing:.04em;padding-top:12px;border-top:1px solid #F1EEEB}
+.kafle{gap:18px}
+.kafel__opis{font-size:13.5px}
+.kafel__meta,.kafle-count,.badge,.filter-btn,.archiwum summary{font-family:"Montserrat",sans-serif}
+.badge{border-radius:4px;padding:4px 8px;font-size:10.5px;letter-spacing:.08em}
+.badge-typ{background:#F6BECB;border:0;color:#101010}
+.badge-ok{background:#EEF6F0}
+.badge-q,.badge-warn{background:#F4F1EE;color:#55504E}
+.badge-new{background:#E86249}
+.badge-intern{background:#101010;color:#fff}
+.filter-btn{--tb:#fff !important;--ta:#E86249 !important;border:0;box-shadow:0 1px 2px rgba(16,16,16,.06);border-radius:4px;letter-spacing:.06em}
+.filter-btn.filter-active{box-shadow:none}
+.hub-status{background:#fff;border:0}
+/* Diagnoza (28.10): dwa główne dokumenty większe, po pół szerokości */
+.sekcja[data-sekcja="diagnoza"] .kafle{grid-template-columns:1fr}
+@media(min-width:600px){.sekcja[data-sekcja="diagnoza"] .kafle{grid-template-columns:repeat(2,1fr)}}
+.sekcja[data-sekcja="diagnoza"] .kafel{padding:30px 28px 24px;background:#FDF0F3 !important;--kafel-bg:#FDF0F3 !important;border-left:5px solid #E86249}
+.sekcja[data-sekcja="diagnoza"] .kafel__tytul{font-size:24px}
+.sekcja[data-sekcja="diagnoza"] .kafel__opis{font-size:16px;color:#101010}
+/* Rozwiązania (28.10): zbiorcza strona na całą szerokość, wyróżniona jak diagnoza */
+.sekcja[data-sekcja="rekomendacje"] .kafel:first-child{grid-column:1/-1;padding:30px 28px 24px;background:#FDF0F3 !important;--kafel-bg:#FDF0F3 !important;border-left:5px solid #E86249}
+.sekcja[data-sekcja="rekomendacje"] .kafel:first-child .kafel__tytul{font-size:24px}
+.sekcja[data-sekcja="rekomendacje"] .kafel:first-child .kafel__opis{font-size:16px;color:#101010}
+
+/* QA 28.10: reszta IBM Plex z generatora huba → Montserrat */
+.szukaj__x,.szukaj__licznik,.wynik__gora,.wynik__wsk,.kafle-count,.filter-btn,.badge,.kafel__meta{font-family:"Montserrat",sans-serif!important}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hub-header">
+    <span class="kicker">Bengshop · AI4CRO</span>
+    <h1 class="hub-title">Bengshop — analiza i propozycje</h1>
+    <p class="hub-lead">Ruch i sprzedaż z Google rosną od maja. Problemem jest struktura sklepu: za dużo kategorii i trudne menu.</p>
+  </header>
+
+  <nav class="filters" id="filters" aria-label="Filtruj po typie">
+    <button class="filter-btn filter-active" data-typ="wszystkie" style="--tb:#FBF3E0;--ta:#8A6D1F">Wszystkie 22</button>
+    <button class="filter-btn" data-typ="analiza" style="--tb:#F5EDF0;--ta:#8A4F5D">Analiza 4</button>
+    <button class="filter-btn" data-typ="dokument" style="--tb:#F5EBE5;--ta:#7A4E35">Dokument 11</button>
+    <button class="filter-btn" data-typ="projekt" style="--tb:#FBF3E0;--ta:#8A6D1F">Projekt 3</button>
+    <button class="filter-btn" data-typ="rekomendacje" style="--tb:#FBF3E0;--ta:#8A6D1F">Rekomendacje 3</button>
+    <button class="filter-btn" data-typ="wnioski" style="--tb:#EAF3EC;--ta:#2F6B45">Wnioski 1</button>
+  </nav>
+
+  <div class="kafle-count" id="kafle-count">22 pozycji</div>
+
+  <main class="kafle-sekcje" id="kafle">
+    <section class="sekcja" data-sekcja="diagnoza"><h2 class="sekcja__t">1. Diagnoza</h2><p class="sekcja__o">Odpowiedzi na tezy i najważniejsze wnioski.</p><div class="kafle"><a class="kafel" href="research/TEZY.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-ok">Gotowe</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Tezy i odpowiedzi</h3>
+  <p class="kafel__opis">15 tez: co się potwierdziło, a co nie.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/WNIOSKI.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-ok">Gotowe</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Wnioski z analiz</h3>
+  <p class="kafel__opis">18 najważniejszych ustaleń, przy każdym źródło.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a></div></section>
+<section class="sekcja" data-sekcja="analizy"><h2 class="sekcja__t">2. Analizy</h2><p class="sekcja__o">Na czym opierają się wnioski.</p><div class="kafle"><a class="kafel" href="research/GOOGLE_2026.html" data-typ="analiza"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Ruch z Google w 2026</h3>
+  <p class="kafel__opis">Od maja +29% kliknięć, +33% sprzedaży.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">20.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/ANALIZA_KATEGORII.html" data-typ="analiza"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza</span>
+    <span class="badge badge-ok">Gotowe</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Kategorie: ile razy powtarza się ten sam produkt</h3>
+  <p class="kafel__opis">Produkt leży średnio w 6 miejscach menu; 231 par kategorii z tym samym asortymentem.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/TRESCI_ANALIZA.html" data-typ="analiza"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Treści kategorii i kart</h3>
+  <p class="kafel__opis">Teksty nie szkodzą w Google, nie pomagają klientkom.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">14.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/SCIEZKI_ZAKUPOWE.html" data-typ="analiza"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Ścieżki zakupowe</h3>
+  <p class="kafel__opis">Decyzja zapada na karcie produktu.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">13.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/HEATMAPY_HP.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Mapa: strona główna</h3>
+  <p class="kafel__opis">44% tapnięć to menu.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">23.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/HEATMAPY_KATEGORIA.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Mapa: Buty do exotic</h3>
+  <p class="kafel__opis">Co ósme tapnięcie to zgoda na cookies.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">23.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/HEATMAPY_KARTA.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Mapa: szorty Basic</h3>
+  <p class="kafel__opis">Do koszyka 8% odsłon.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">23.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/HEATMAPY_KARTA_SOHOT.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Mapa: szorty So Hot</h3>
+  <p class="kafel__opis">Do koszyka 20% odsłon.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">23.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/HEATMAPY_KOSZYK.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Mapa: koszyk</h3>
+  <p class="kafel__opis">1 422 tapnięcia w już wybraną płatność.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">23.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/PARTNER_PORÓWNANIE.html" data-typ="wnioski"
+   style="--kafel-bg:#EAF3EC;--kafel-accent:#2F6B45">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Wnioski</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Analiza partnera</h3>
+  <p class="kafel__opis">Co napisał partner i co z tego bierzemy.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">20.10.2026</span>
+  </div>
+</a></div></section>
+<section class="sekcja" data-sekcja="rekomendacje"><h2 class="sekcja__t">3. Rozwiązania</h2><p class="sekcja__o">Co zmienić.</p><div class="kafle"><a class="kafel" href="research/ROZWIAZANIA.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-ok">Gotowe</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Co proponuję</h3>
+  <p class="kafel__opis">19 propozycji w jednym miejscu: od szybkich poprawek po nowe menu.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/KATEGORIE_PORZADEK.html" data-typ="rekomendacje"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Rekomendacje</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Kategorie: co usuwam i dlaczego</h3>
+  <p class="kafel__opis">Krok 1 przed nowym menu: usuwam 16, scalam 44, 27 zostaje.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/MENU_PO_PORZADKU.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Menu po porządku</h3>
+  <p class="kafel__opis">Krok 2: drzewo dziś i po zmianie — 127 → 79 pozycji, te same nazwy, kolejność wg popytu.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/SPECYFIKACJA_SPODENKI.html" data-typ="rekomendacje"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Rekomendacje</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Tabela cech: spodenki</h3>
+  <p class="kafel__opis">12 podkategorii → 1 lista z filtrami.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">23.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/PROPOZYCJA_KARTA_SPOTKANIE.html" data-typ="rekomendacje"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Rekomendacje</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Karta produktu</h3>
+  <p class="kafel__opis">Tabela cech, pytania, podpis Magdy.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">23.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/MAGDA_W_SKLEPIE.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Magda w sklepie</h3>
+  <p class="kafel__opis">Cztery ekrany: dziś i z Magdą.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a></div></section>
+<section class="sekcja" data-sekcja="dane"><h2 class="sekcja__t">Pomiar i dane</h2><div class="kafle"><a class="kafel" href="live/BENGSHOP_LIVE.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Pulpit dzień po dniu</h3>
+  <p class="kafel__opis">Ruch i sprzedaż, odświeżany co rano.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">20.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/PROJEKT_ANALITYKI_LIVE.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Projekt pulpitu</h3>
+  <p class="kafel__opis">Co mierzę i skąd.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">20.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="research/POMIAR_GA4.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Jakość pomiaru GA4</h3>
+  <p class="kafel__opis">Co jest liczone podwójnie.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">12.10.2026</span>
+  </div>
+</a></div></section>
+<section class="sekcja" data-sekcja="materialy"><h2 class="sekcja__t">Materiały i dostępy</h2><div class="kafle"><a class="kafel" href="research/MATERIALY_KLIENTKI.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Materiały i dostępy</h3>
+  <p class="kafel__opis">Co dostaliśmy od Magdy.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">14.10.2026</span>
+  </div>
+</a></div></section>
+  </main>
+
+  
+
+  </div>
+<script>
+(function(){
+  var btns  = document.querySelectorAll('.filter-btn');
+  var kafle = document.querySelectorAll('#kafle .kafel');
+  var count = document.getElementById('kafle-count');
+
+  function setFilter(typ) {
+    var visible = 0;
+    kafle.forEach(function(k) {
+      var match = typ === 'wszystkie' || k.dataset.typ === typ;
+      k.classList.toggle('kafel--hidden', !match);
+      if (match) visible++;
+    });
+    count.textContent = visible + ' pozycji';
+    document.querySelectorAll('#kafle .sekcja').forEach(function(s) {
+      s.classList.toggle('sekcja--pusta', !s.querySelector('.kafel:not(.kafel--hidden)'));
+    });
+    btns.forEach(function(b) {
+      b.classList.toggle('filter-active', b.dataset.typ === typ);
+    });
+    // Stan w hash URL
+    if (typ !== 'wszystkie') {
+      history.replaceState(null, '', location.pathname + location.search + '#' + encodeURIComponent(typ));
+    } else {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+  }
+
+  // Odczyt hasha przy starcie
+  var initTyp = decodeURIComponent(location.hash.slice(1)) || 'wszystkie';
+  setFilter(initTyp);
+
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      setFilter(btn.dataset.typ);
+    });
+  });
+
+  // Obsługa przycisku wstecz/naprzód
+  window.addEventListener('hashchange', function() {
+    var typ = decodeURIComponent(location.hash.slice(1)) || 'wszystkie';
+    setFilter(typ);
+  });
+})();
+</script>
+</body>
+</html>
