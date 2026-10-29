@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dobór banku energii</title>
+<meta name="description" content="Sześć pytań, wynik od razu: pojemność, modele do Twojego falownika, cena z montażem, dotacja, zwrot. Bez podawania kontaktu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{--canvas:#eef1ee;--paper:#fff;--ink:#15211c;--mut:#5e6b66;--line:#d6ddd8;--teal:#0f6b6e;--teal2:#e1f0ef;--amber:#c96a06;--amber2:#fdf0dd;--red:#b42318;--red2:#fbe9e7;--ok:#1f7a4d;--ok2:#e4f3ea;--r:14px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--canvas);color:var(--ink);font-family:Archivo,system-ui,sans-serif;font-size:17px;line-height:1.45;-webkit-text-size-adjust:100%}
+body{min-height:100dvh;overflow-x:hidden}
+button,input{font:inherit;color:inherit}
+.app{max-width:560px;margin:0 auto;padding:0 16px 112px}
+.top{position:sticky;top:0;z-index:5;background:var(--canvas);padding:14px 0 10px}
+.brand{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--mut)}
+.brand b{color:var(--ink);font-weight:600;font-stretch:87.5%;letter-spacing:.01em}
+.bar{height:6px;background:var(--line);border-radius:6px;margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--teal);width:0;transition:width .3s}
+.screen{display:none;animation:in .25s ease-out}
+.screen.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.screen{animation:none}.bar i{transition:none}}
+h1{font-size:27px;line-height:1.2;font-weight:600;font-stretch:87.5%;margin:22px 0 8px;letter-spacing:-.01em}
+.sub{color:var(--mut);margin:0 0 20px;font-size:16px}
+.tiles{display:grid;gap:10px}
+.tile{width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:var(--r);padding:16px 16px;min-height:62px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tile small{display:block;color:var(--mut);font-size:14px;margin-top:2px}
+.tile:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.tile[aria-pressed=true]{border-color:var(--teal);background:var(--teal2)}
+.tile[aria-pressed=true]::after{content:"";width:22px;height:22px;flex:none;border-radius:50%;background:var(--teal) center/14px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E")}
+.field{background:var(--paper);border:1.5px solid var(--line);border-radius:var(--r);padding:16px;margin-top:12px}
+.field label{display:block;font-size:15px;color:var(--mut);margin-bottom:8px}
+.big{display:flex;align-items:baseline;gap:8px;font-size:34px;font-weight:600;font-stretch:87.5%;font-variant-numeric:tabular-nums}
+.big span{font-size:17px;color:var(--mut);font-weight:400;font-stretch:100%}
+input[type=range]{width:100%;margin:12px 0 4px;accent-color:var(--teal);height:32px}
+.hint{font-size:14px;color:var(--mut);margin-top:6px}
+.search{width:100%;padding:14px 14px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--paper);margin-bottom:10px}
+.search:focus{outline:3px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+.list{display:grid;gap:8px;max-height:none}
+.list .tile{min-height:54px;padding:12px 16px}
+.pill{display:inline-block;font-size:12.5px;padding:3px 8px;border-radius:20px;background:var(--canvas);color:var(--mut);white-space:nowrap}
+.pill.hy{background:var(--ok2);color:var(--ok)}
+.pill.ac{background:var(--amber2);color:var(--amber)}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:linear-gradient(180deg,rgba(238,241,238,0),var(--canvas) 30%);padding:18px 16px calc(14px + env(safe-area-inset-bottom))}
+.nav .in{max-width:560px;margin:0 auto;display:flex;gap:10px}
+.btn{flex:1;border:0;border-radius:var(--r);padding:16px 18px;font-weight:600;font-size:17px;cursor:pointer;min-height:54px}
+.btn.p{background:var(--ink);color:#fff}
+.btn.p:disabled{background:#b9c2bd;cursor:not-allowed}
+.btn.s{background:transparent;border:1.5px solid var(--line);flex:0 0 auto;padding:16px 16px}
+.btn:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+/* wynik */
+.hero{background:var(--ink);color:#fff;border-radius:18px;padding:22px 20px;margin-top:16px}
+.hero .k{font-size:15px;opacity:.78}
+.hero .n{font-size:64px;line-height:1;font-weight:700;font-stretch:87.5%;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:6px 0 2px}
+.hero .n span{font-size:24px;font-weight:400;letter-spacing:0;margin-left:6px;opacity:.85}
+.hero p{margin:12px 0 0;font-size:15.5px;opacity:.9}
+.why{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:6px}
+.why li{display:flex;gap:10px;font-size:15px;opacity:.95}
+.why li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--amber);margin-top:8px}
+.sec{background:var(--paper);border:1.5px solid var(--line);border-radius:var(--r);padding:18px 16px;margin-top:12px}
+.sec h2{font-size:19px;margin:0 0 4px;font-weight:600;font-stretch:87.5%}
+.sec .lead{color:var(--mut);font-size:15px;margin:0 0 12px}
+.models{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.models li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 12px;border:1.5px solid var(--line);border-radius:12px}
+.models li b{font-weight:600;display:block}
+.models li small{color:var(--mut);font-size:13.5px}
+.models li.best{border-color:var(--teal);background:var(--teal2)}
+.rcpt{font-variant-numeric:tabular-nums}
+.rcpt .row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:15.5px}
+.rcpt .row>div:last-child{flex:none;white-space:nowrap}
+.rcpt .row small{display:block;color:var(--mut);font-size:13.5px}
+.rcpt .row.sum{border-bottom:0;border-top:2px solid var(--ink);font-weight:600;font-size:18px;padding-top:12px;margin-top:2px}
+.rcpt .row.minus{color:var(--ok)}
+.rcpt .row.pay{background:var(--amber2);margin:8px -16px -18px;padding:14px 16px 16px;border-radius:0 0 var(--r) var(--r);border:0;font-weight:700;font-size:20px}
+.note{display:block;padding:12px 14px;border-radius:12px;font-size:14.5px;margin-top:12px}
+.note.ok{background:var(--ok2);color:#145436}
+.note.warn{background:var(--amber2);color:#7a4103}
+.note.bad{background:var(--red2);color:#7f1d15}
+.note b{font-weight:600}
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.kpi div{background:var(--canvas);border-radius:12px;padding:12px}
+.kpi .v{font-size:26px;font-weight:600;font-stretch:87.5%;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi .l{font-size:13.5px;color:var(--mut);margin-top:3px}
+.cta{display:grid;gap:10px;margin-top:14px}
+.cta .btn.p{width:100%}
+.cta .btn.o{background:var(--paper);border:1.5px solid var(--ink)}
+.mail{display:flex;gap:8px;margin-top:10px}
+.mail input{flex:1;padding:13px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--paper);min-width:0}
+.mail .btn{flex:0 0 auto;padding:12px 14px;min-height:0}
+details{border-top:1px solid var(--line);margin-top:10px;padding-top:10px}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;padding:6px 0}
+details p,details li{font-size:14.5px;color:var(--mut)}
+details ol{padding-left:18px;margin:6px 0}
+.src{font-size:13.5px;color:var(--mut);margin-top:14px}
+.src a{color:var(--teal);word-break:break-all}
+.sr{position:absolute;left:-9999px}
+@media (min-width:720px){.app{max-width:640px}h1{font-size:32px}.hero .n{font-size:76px}}
+
+/* --- nakładka STYL F „Lekki marketplace energii” (27.10.2026): te same ekrany i liczby. Biel, granat, kobalt = akcja i wybór, zieleń = pieniądze z dotacji. Pismo Host Grotesk, cyfry tabelaryczne. Zero gradientów, zero ciemnych bloków. --- */
+:root{--canvas:#fff;--paper:#fff;--ink:#13203a;--mut:#5b667a;--line:#e3e7ef;--line2:#cdd3de;--well:#f4f6fa;--volt:#2251f0;--volt-h:#1a41c9;--volt-2:#eef2ff;--leaf:#0a7a4b;--leaf-2:#e7f5ec;--teal:#2251f0;--teal2:#eef2ff;--ok:#0a7a4b;--ok2:#e7f5ec;--amber:#5b667a;--amber2:#f4f6fa;--r:12px}
+html,body{font-family:"Host Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.5;font-weight:400;background:#fff}
+h1,.sec h2,.kpi .v,.big,.hero .n,.brand b{font-stretch:100%!important;letter-spacing:-.02em}
+#kwpV,#billV,#sprzV{font-stretch:100%!important;font-weight:650!important;color:var(--ink)!important}
+.big,.hero .n,.kpi .v,.rcpt .row>div:last-child,.batt small,.batt .sc,#step{font-variant-numeric:tabular-nums lining-nums}
+.app{padding-bottom:104px}
+.top{background:#fff;border-bottom:1px solid var(--line);padding:10px 0 0;margin:0 -16px;padding-left:16px;padding-right:16px}
+.brand{align-items:center;font-size:14px}
+.logo{font-weight:650;font-size:20px;letter-spacing:-.035em;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;min-height:44px}.logo em{font-style:normal;color:var(--volt)}.logo .mark{display:none}
+.brand .t{display:block;font-size:13px;color:var(--mut);margin-top:-8px;padding-bottom:6px}
+#step{color:var(--ink);font-weight:600}
+.bar{height:3px;background:var(--line);border-radius:0;margin:8px -16px 0}.bar i{background:var(--volt);border-radius:0 2px 2px 0}
+h1{font-size:26px;font-weight:600;line-height:1.2;margin:24px 0 8px}
+.sub{font-size:15.5px;color:var(--mut);margin:0 0 20px;max-width:56ch}
+.tiles,.list{gap:8px}
+.tile{background:#fff;border:1px solid var(--line2);border-radius:var(--r);padding:14px 16px;min-height:60px;font-weight:500}
+.tile small{font-weight:400;font-size:14px;color:var(--mut)}
+.tile:hover{border-color:var(--volt)}
+.tile[aria-pressed=true]{border:1.5px solid var(--volt);background:var(--volt-2);padding:13.5px 15.5px}
+.list .tile[aria-pressed=true]{padding:11.5px 15.5px}
+.tile[aria-pressed=true]>span:first-child{color:var(--ink)}
+.tile[aria-pressed=true]::after{background-color:var(--volt)}
+.list .tile{min-height:56px;padding:12px 16px}
+.field{background:var(--well);border:0;border-radius:var(--r);padding:16px;margin-top:16px}
+.field label{font-size:14.5px;color:var(--mut)}
+.big{font-weight:650}
+input[type=range]{accent-color:var(--volt);height:44px;margin:4px 0 0}
+.hint{font-size:14px}
+.search{border:1px solid var(--line2);border-radius:10px;padding:13px 14px;margin:0 0 12px;min-height:48px}
+.search:focus{outline:2px solid var(--volt);outline-offset:1px;border-color:var(--volt)}
+.pill{background:none;padding:0;font-size:13px;color:var(--mut);border-radius:0}
+.pill.hy,.pill.ac{background:none}.pill.hy{color:var(--volt);font-weight:500}.pill.ac{color:var(--mut)}
+.nav{background:#fff;box-shadow:0 -1px 0 var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+.btn{border-radius:10px;font-weight:600;font-size:16px;min-height:52px;padding:14px 18px}
+.btn.p{background:var(--volt);color:#fff}.btn.p:hover{background:var(--volt-h)}
+.btn.p:disabled{background:var(--line);color:var(--mut)}
+.btn.s{background:#fff;border:1px solid var(--line2);color:var(--ink);padding:14px 18px}.btn.s:hover{border-color:var(--ink)}
+#back[style*="hidden"]{display:none}
+.btn:focus-visible,.tile:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+/* wynik */
+.hero{background:var(--well);color:var(--ink);border-radius:14px;padding:20px 18px;margin-top:16px}
+.hero .k{opacity:1;color:var(--mut);font-size:14.5px}
+.hero .n{font-weight:650;font-size:60px;margin:4px 0 10px;color:var(--ink)}
+.hero .n span{opacity:1;color:var(--mut);font-weight:500;font-size:22px}
+.hero p{opacity:1;color:var(--mut);font-size:15px}
+.why li{opacity:1;color:var(--ink);font-size:15px}.why li::before{background:var(--volt);width:6px;height:6px;margin-top:9px}
+.sec{background:#fff;border:0;border-top:1px solid var(--line);border-radius:0;padding:22px 0 18px;margin-top:20px}
+.sec h2{font-size:20px;font-weight:600}
+.sec .lead{font-size:15px}
+.models{gap:8px}
+.models li{border:1px solid var(--line2);border-radius:10px;padding:12px 14px}
+.models li.best{border-color:var(--volt);background:var(--volt-2)}
+.models li b{font-weight:600}
+.rcpt .row{border-bottom:0;border-top:1px solid var(--line);padding:11px 0;font-size:15px;align-items:baseline;background:none}
+.sec.rcpt .lead+.row{border-top:0}
+.rcpt .row>div:last-child{font-weight:600}
+.rcpt .row small{font-size:13px}
+.rcpt .row.sum{border-top:1px solid var(--ink);font-size:16px;font-weight:600}
+.rcpt .row.minus,.rcpt .row.minus small{color:var(--leaf)}
+.rcpt .row.minus>div:last-child{background:var(--leaf-2);border-radius:5px;padding:1px 7px;margin-right:-7px}
+.rcpt .row.pay{background:none;border-top:1px solid var(--ink);margin:0;padding:12px 0 4px;border-radius:0;font-size:16.5px;font-weight:600;color:var(--ink)}
+.rcpt .row.pay>div:last-child{color:var(--leaf);font-size:24px;font-weight:650}
+.note{border-radius:10px;padding:12px 14px;font-size:14.5px;background:var(--well);color:var(--ink);border:0}
+.note.ok{background:var(--leaf-2);color:#075c38}
+.note.warn{background:var(--well);color:var(--ink)}
+.note.bad{background:#fdeceb;color:#8f241b}
+.kpi{gap:8px}
+.kpi div{background:var(--well);border-radius:10px;padding:14px}
+.kpi div div{background:none;padding:0;border-radius:0}
+.kpi .v{font-weight:650;font-size:26px}
+.kpi>div:first-child .v{color:var(--leaf)}
+.cta{gap:6px}
+.cta .btn.o{background:#fff;border:1px solid var(--line2);color:var(--ink)}
+.mail input{border:1px solid var(--line2);border-radius:10px;min-height:52px}
+details{border-top:1px solid var(--line)}
+summary{min-height:44px;display:flex;align-items:center;font-weight:600}
+.src a{color:var(--volt)}
+/* element własny: bateria pojemności (ta sama co w sklepie) */
+.batt{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:4px 14px;margin:2px 0 12px}
+.batt .cell{position:relative;flex:none;width:200px;height:28px;padding:3px;border:2px solid var(--ink);border-radius:7px;background:var(--volt-2)}
+.batt .cell::after{content:"";position:absolute;right:-7px;top:50%;width:4px;height:11px;margin-top:-5.5px;background:var(--ink);border-radius:0 2px 2px 0}
+.batt .cell::before{content:"";position:absolute;inset:3px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M25 0v10M50 0v10M75 0v10' stroke='%23fff' stroke-width='2.4' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;pointer-events:none}
+.batt .cell i{display:block;height:100%;background:var(--volt);border-radius:3px;min-width:3px}
+.batt small{font-size:14px;color:var(--ink);font-weight:600;white-space:nowrap}
+.batt .sc{grid-column:1;display:flex;justify-content:space-between;width:200px;font-size:12px;color:var(--mut)}
+.batt .sc i{font-style:normal;width:0;display:flex;justify-content:center}
+@media (min-width:720px){h1{font-size:30px}.hero .n{font-size:72px}.hero{padding:24px}}
+</style>
+</head>
+<body><a href="../../GRZEJEKO_HUB.html" data-zwrotka="hub" style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;background:#f4f6fa;border-bottom:1px solid #e3e7ef;color:#2251f0;font:600 14px/1.2 'Host Grotesk',system-ui,sans-serif;text-decoration:none">← Hub grzejeko</a>
+<div class="app">
+  <div class="top">
+    <div class="brand"><div><a class="logo" href="index.html" aria-label="grzejeko.pl, strona główna">grzej<em>eko</em></a><span class="t">Dobór banku energii</span></div><span id="step">1 z 6</span></div>
+    <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+  </div>
+
+  <!-- 1 PV -->
+  <section class="screen on" data-s="1" aria-labelledby="h1">
+    <h1 id="h1">Masz fotowoltaikę?</h1>
+    <p class="sub">Bank ładuje się nadwyżką z dachu. Bez paneli ładuje się z sieci i prawie nigdy się nie zwraca.</p>
+    <div class="tiles" role="group" aria-label="Fotowoltaika">
+      <button class="tile" data-k="pv" data-v="tak"><span>Tak, mam<small>Podasz moc instalacji</small></span></button>
+      <button class="tile" data-k="pv" data-v="plan"><span>Jeszcze nie, planuję<small>Policzymy dla typowej instalacji</small></span></button>
+      <button class="tile" data-k="pv" data-v="nie"><span>Nie mam i nie planuję<small>Pokażemy, czemu to słaby interes</small></span></button>
+    </div>
+    <div class="field" id="pvField" hidden>
+      <label for="kwp">Moc instalacji</label>
+      <div class="big"><span id="kwpV" style="font-size:34px;color:var(--ink);font-weight:600;font-stretch:87.5%">6,0</span><span>kWp</span></div>
+      <input type="range" id="kwp" min="2" max="15" step="0.5" value="6" aria-label="Moc instalacji w kWp">
+      <div class="hint">Jest na umowie z instalatorem albo w aplikacji falownika. Typowy dom: 5–8 kWp.</div>
+    </div>
+  </section>
+
+  <!-- 2 falownik -->
+  <section class="screen" data-s="2" aria-labelledby="h2">
+    <h1 id="h2">Jaki masz falownik?</h1>
+    <p class="sub">Od tego zależy, czy bank podłącza się wprost (DC), czy przez własny falownik (AC). To różnica kilku tysięcy złotych.</p>
+    <input class="search" id="q" type="search" placeholder="Szukaj: Huawei, Fronius, Deye…" aria-label="Szukaj falownika" autocomplete="off">
+    <div class="list" id="invList" role="group" aria-label="Falownik"></div>
+  </section>
+
+  <!-- 3 zużycie -->
+  <section class="screen" data-s="3" aria-labelledby="h3">
+    <h1 id="h3">Ile płacisz za prąd?</h1>
+    <p class="sub">Średni rachunek za miesiąc, bez dopłat za PV. Z tego policzymy, ile prądu zużywasz wieczorem i w nocy.</p>
+    <div class="field">
+      <label for="bill">Rachunek miesięczny</label>
+      <div class="big"><span id="billV" style="font-size:34px;color:var(--ink);font-weight:600;font-stretch:87.5%">350</span><span>zł</span></div>
+      <input type="range" id="bill" min="100" max="900" step="10" value="350" aria-label="Rachunek miesięczny w złotych">
+      <div class="hint" id="billHint"></div>
+    </div>
+  </section>
+
+  <!-- 4 backup -->
+  <section class="screen" data-s="4" aria-labelledby="h4">
+    <h1 id="h4">Prąd ma działać, gdy w sieci go nie ma?</h1>
+    <p class="sub">Zasilanie awaryjne wybranych obwodów: lodówka, piec, router, światło. Wymaga dodatkowej skrzynki i falownika, który to umie.</p>
+    <div class="tiles" role="group" aria-label="Zasilanie awaryjne">
+      <button class="tile" data-k="backup" data-v="tak"><span>Tak, chcę zasilanie awaryjne<small>Dolicza skrzynkę backup</small></span></button>
+      <button class="tile" data-k="backup" data-v="nie"><span>Nie, wystarczy oszczędzanie<small>Prostszy montaż</small></span></button>
+    </div>
+  </section>
+
+  <!-- 5 PC / EV -->
+  <section class="screen" data-s="5" aria-labelledby="h5">
+    <h1 id="h5">Pompa ciepła albo auto elektryczne?</h1>
+    <p class="sub">Teraz albo w planach na 3 lata. Oba zużywają prąd głównie wieczorem i w nocy, więc rosną wymagania wobec banku.</p>
+    <div class="tiles" role="group" aria-label="Pompa ciepła lub auto">
+      <button class="tile" data-k="extra" data-v="nie"><span>Żadne z tych</span></button>
+      <button class="tile" data-k="extra" data-v="pc"><span>Pompa ciepła<small>Zimą bank pokryje tylko część</small></span></button>
+      <button class="tile" data-k="extra" data-v="ev"><span>Auto elektryczne<small>Ładowanie nocą z banku</small></span></button>
+      <button class="tile" data-k="extra" data-v="oba"><span>Pompa i auto</span></button>
+    </div>
+  </section>
+
+  <!-- 6 rozliczenie -->
+  <section class="screen" data-s="6" aria-labelledby="h6">
+    <h1 id="h6">Jak rozliczasz prąd z PV?</h1>
+    <p class="sub">Net-billing: sprzedajesz nadwyżkę tanio, kupujesz drogo, więc bank zarabia na różnicy. Net-metering: sieć jest Twoim magazynem i bank zarabia mało.</p>
+    <div class="tiles" role="group" aria-label="System rozliczeń">
+      <button class="tile" data-k="roz" data-v="nb"><span>Net-billing<small>Instalacja po 1 kwietnia 2022 albo przejście</small></span></button>
+      <button class="tile" data-k="roz" data-v="nm"><span>Net-metering (opusty)<small>Instalacja sprzed kwietnia 2022</small></span></button>
+      <button class="tile" data-k="roz" data-v="nw"><span>Nie wiem<small>Policzymy jak dla net-billingu</small></span></button>
+    </div>
+  </section>
+
+  <!-- wynik -->
+  <section class="screen" data-s="7" aria-labelledby="h7" id="result"></section>
+</div>
+
+<div class="nav" id="nav">
+  <div class="in">
+    <button class="btn s" id="back" type="button" aria-label="Wstecz">Wstecz</button>
+    <button class="btn p" id="next" type="button" disabled>Dalej</button>
+  </div>
+</div>
+
+<script>
+/* ===== dane (przykłady klas, nie oferta; ceny i modele do decyzji D6/D7) ===== */
+const INV = [
+ {id:"huawei_l1",   n:"Huawei SUN2000 …-L1",       typ:"hy", bat:"Huawei LUNA2000 (moduły 5 kWh)",    cls:[5,10,15]},
+ {id:"huawei_ktl",  n:"Huawei SUN2000 …-KTL (sieciowy)", typ:"ac"},
+ {id:"fronius_gen24",n:"Fronius GEN24 Plus",        typ:"hy", bat:"BYD Battery-Box HVS / HVM",       cls:[5.1,10.2,16.6]},
+ {id:"fronius_symo",n:"Fronius Symo / Primo (sieciowy)", typ:"ac"},
+ {id:"solaredge_h", n:"SolarEdge Home Hub",         typ:"hy", bat:"SolarEdge Home Battery",         cls:[9.2,18.4]},
+ {id:"solaredge_s", n:"SolarEdge SE (sieciowy)",    typ:"ac"},
+ {id:"sma_sb",      n:"SMA Sunny Boy / Tripower",   typ:"ac"},
+ {id:"goodwe_et",   n:"GoodWe ET / EH / BT",        typ:"hy", bat:"GoodWe Lynx Home F / U",         cls:[5.4,10.8,16.4]},
+ {id:"goodwe_dns",  n:"GoodWe DNS / SDT (sieciowy)",typ:"ac"},
+ {id:"sofar_hyd",   n:"Sofar HYD …-KTL",            typ:"hy", bat:"Sofar BTS E5 / E10 / E15",       cls:[5,10,15]},
+ {id:"sofar_ktl",   n:"Sofar KTLX (sieciowy)",      typ:"ac"},
+ {id:"deye_sun",    n:"Deye SUN …-SG (hybrydowy)",  typ:"hy", bat:"Deye RW-M6.1 / SE-G5.1",        cls:[5.1,10.2,15.3]},
+ {id:"growatt_sph", n:"Growatt SPH / MOD-XH",       typ:"hy", bat:"Growatt ARK / APX",             cls:[5,10,15]},
+ {id:"growatt_min", n:"Growatt MIN / MID (sieciowy)",typ:"ac"},
+ {id:"sungrow_sh",  n:"Sungrow SH-RT / SH-RS",      typ:"hy", bat:"Sungrow SBR 096 / 128 / 160",    cls:[9.6,12.8,16]},
+ {id:"sungrow_sg",  n:"Sungrow SG (sieciowy)",      typ:"ac"},
+ {id:"foxess_h",    n:"FoxESS H1 / H3",             typ:"hy", bat:"FoxESS ECS / EP (moduły 4 kWh)", cls:[8.1,12.1,16.1]},
+ {id:"solax_hyb",   n:"SolaX X1 / X3 Hybrid",       typ:"hy", bat:"SolaX Triple Power",            cls:[5.8,11.6,17.4]},
+ {id:"solax_boost", n:"SolaX Boost / MIC (sieciowy)",typ:"ac"},
+ {id:"kostal",      n:"Kostal Plenticore",          typ:"hy", bat:"BYD Battery-Box HVS / HVM",       cls:[5.1,10.2,16.6]},
+ {id:"brak",        n:"Nie mam jeszcze falownika",  typ:"new"},
+ {id:"niewiem",     n:"Nie wiem, jaki mam",         typ:"nw"},
+];
+const CLS = [ // klasy pojemności i cena przykładowa klasy (brutto, bez montażu)
+ {kwh:5,  cena:13000, nazwa:"5 kWh"},
+ {kwh:10, cena:24900, nazwa:"10 kWh"},
+ {kwh:15, cena:33000, nazwa:"15 kWh"},
+ {kwh:20, cena:40000, nazwa:"20 kWh"},
+];
+const P = { // założenia (suwak zmienia cenę sprzedaży)
+ cenaKupna:0.80, cenaSprzedazy:0.35, kwhNaKwp:1000, udzialWieczor:0.60, dod:0.90,
+ montazDC:4500, montazAC:6500, backupBox:2200, ems:1500, zamianaFalownika:8500, ladowarkaAC:5500,
+ dotacjaKwh:800, dotacjaMaxNB:16000, dotacjaMaxNM:8000, dotacjaProc:0.30, dotacjaLimitKwh:3000,
+};
+const SRC = {
+ 1:["pvkalkulator.pl — kompatybilność magazynów z falownikami","https://pvkalkulator.pl/magazyn-energii-10kwh","2026-10-23"],
+ 2:["fotowoltaikaonline.pl — ceny kupna 0,79 / 0,95 zł i sprzedaży","https://fotowoltaikaonline.pl/magazyn-energii","2026-10-23"],
+ 3:["solar-max.pl — sprzedaż ok. 0,35 zł vs zakup ok. 0,70 zł/kWh","https://solar-max.pl/blog/magazyn-energii-do-fotowoltaiki-jak-dobrac-pojemnosc-w-systemie-net-billing","2026-10-23"],
+ 4:["sollab.pl — RCEm poniżej 0,15 zł/kWh latem","https://sollab.pl/fotowoltaika-5kw-z-magazynem-energii/","2026-10-23"],
+ 5:["eco-sol.pl — Mój Prąd: 800 zł/kWh, max 16 000 zł net-billing, 8 000 zł net-metering","https://eco-sol.pl/artykuly/fotowoltaika/program-moj-prad-dotacje-do-fotowoltaiki-pomp-ciepla-klimatyzacji/","2026-10-21"],
+ 6:["columbusenergy.pl — dotacja do 30% kosztów kwalifikowanych","https://columbusenergy.pl/blog/przydomowe-magazyny-energii-zasady-dofinansowania/","2026-10-23"],
+ 7:["gramwzielone.pl — projekt nowego programu: warunek pracy wyspowej, EMS, falownik z UE","https://www.gramwzielone.pl/magazynowanie-energii/20352787/kiedy-wystartuja-dotacje-na-domowe-magazyny-energii-pilka-jest-po-stronie-ebi","2026-10-23"],
+ 8:["fotowoltaikaonline.pl — ceny magazynów 5 / 10 / 20 kWh","https://fotowoltaikaonline.pl/magazyn-energii-cena","2026-10-23"],
+};
+
+/* ===== stan ===== */
+const st = {pv:null,kwp:6,inv:null,bill:350,backup:null,extra:null,roz:null,sprz:P.cenaSprzedazy};
+let s = 1;
+const $ = (q,r=document)=>r.querySelector(q), $$=(q,r=document)=>[...r.querySelectorAll(q)];
+const pln = n=>Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,"\u00a0")+"\u00a0zł";
+const f1 = n=>n.toLocaleString("pl-PL",{minimumFractionDigits:1,maximumFractionDigits:1});
+
+/* ===== ekrany ===== */
+function show(n){
+  s=n; $$(".screen").forEach(e=>e.classList.toggle("on",+e.dataset.s===n));
+  $("#step").textContent = n<=6 ? `${n} z 6` : "wynik";
+  $("#bar").style.width = (Math.min(n,7)-1)/6*100+"%";
+  $("#back").style.visibility = n===1?"hidden":"visible";
+  $("#nav").style.display = n===7?"none":"";
+  $("#next").textContent = n===6?"Pokaż wynik":"Dalej";
+  validate(); window.scrollTo({top:0});
+  if(n===7) render();
+}
+function validate(){
+  const ok = {1:st.pv!==null,2:st.inv!==null,3:true,4:st.backup!==null,5:st.extra!==null,6:st.roz!==null}[s];
+  $("#next").disabled = !ok;
+}
+$$(".tile[data-k]").forEach(b=>b.addEventListener("click",()=>{
+  const k=b.dataset.k; st[k]=b.dataset.v;
+  $$(`.tile[data-k=${k}]`).forEach(x=>x.setAttribute("aria-pressed",x===b));
+  if(k==="pv"){ $("#pvField").hidden = st.pv!=="tak"; }
+  validate();
+}));
+$("#kwp").addEventListener("input",e=>{st.kwp=+e.target.value;$("#kwpV").textContent=f1(st.kwp)});
+$("#bill").addEventListener("input",e=>{st.bill=+e.target.value;$("#billV").textContent=st.bill;billHint()});
+function billHint(){const kwh=st.bill*12/P.cenaKupna;$("#billHint").textContent=`To około ${Math.round(kwh/100)*100} kWh rocznie, z czego wieczorem i nocą ${Math.round(kwh*P.udzialWieczor/365*10)/10} kWh dziennie.`}
+billHint();
+$("#next").addEventListener("click",()=>show(s+1));
+$("#back").addEventListener("click",()=>show(s-1));
+
+/* lista falowników z szukajką */
+function invRender(q=""){
+  const L=$("#invList"); L.innerHTML="";
+  INV.filter(i=>i.n.toLowerCase().includes(q.toLowerCase())).forEach(i=>{
+    const b=document.createElement("button"); b.className="tile"; b.type="button";
+    b.setAttribute("aria-pressed", st.inv===i.id);
+    const tag = i.typ==="hy"?'<span class="pill hy">hybrydowy · bank DC</span>':i.typ==="ac"?'<span class="pill ac">sieciowy · bank AC</span>':'<span class="pill">pokażemy obie drogi</span>';
+    b.innerHTML=`<span>${i.n}</span>${tag}`;
+    b.addEventListener("click",()=>{st.inv=i.id;invRender($("#q").value);validate()});
+    L.appendChild(b);
+  });
+  if(!L.children.length) L.innerHTML='<p class="hint">Nie ma na liście. Wybierz „Nie wiem, jaki mam” i wyślij nam zdjęcie tabliczki przy zamówieniu.</p>';
+}
+$("#q").addEventListener("input",e=>invRender(e.target.value));
+invRender();
+
+/* ===== rachunek ===== */
+function calc(){
+  const inv = INV.find(i=>i.id===st.inv);
+  const kwp = st.pv==="tak"?st.kwp: st.pv==="plan"?6:0;
+  const rocznie = st.bill*12/P.cenaKupna;                      // kWh/rok
+  let wiecz = rocznie*P.udzialWieczor/365;                        // kWh wieczór+noc dziennie
+  const why=[];
+  why.push(`Z rachunku ${st.bill} zł wychodzi ok. ${Math.round(rocznie/100)*100} kWh rocznie, czyli ${f1(wiecz)} kWh dziennie po zmroku.`);
+  if(st.extra==="pc"||st.extra==="oba"){wiecz+=3; why.push("Pompa ciepła: doliczone 3 kWh na noc. Zimą pompa bierze więcej, ale wtedy PV nie ma czym ładować banku, więc większy bank nic tu nie da.");}
+  if(st.extra==="ev"||st.extra==="oba"){wiecz+=5; why.push("Auto elektryczne: doliczone 5 kWh, typowe 30 km dziennie ładowane w nocy.");}
+  const potrzeba = wiecz/P.dod;                                    // kWh pojemności (90% użytecznej)
+  // nadwyżka z PV: produkcja dzienna (średnia kwi–wrz ≈ 4,2 kWh/kWp) minus zużycie dzienne w dzień
+  const nadw = kwp>0 ? Math.max(0, kwp*4.2 - rocznie*(1-P.udzialWieczor)/365) : 0;
+  const limitPV = kwp>0 ? Math.min(nadw, kwp*1.6) : Infinity;   // reguła: 1–1,5 kWh pojemności na każdy kWp, inaczej bank stoi pusty poza latem
+  let cel = Math.min(potrzeba, limitPV);
+  if(kwp>0 && limitPV<potrzeba) why.push(`Potrzeba wychodzi ${f1(potrzeba)} kWh, ale instalacja ${f1(kwp)} kWp naładuje przez większość roku najwyżej ok. ${f1(limitPV)} kWh dziennie. Większy bank stałby w połowie pusty, więc zatrzymujemy się na tym, co dach realnie odda.`);
+  else if(kwp>0) why.push(`Instalacja ${f1(kwp)} kWp ma wiosną i latem ok. ${f1(nadw)} kWh nadwyżki dziennie, więc bank tej wielkości naładuje się do pełna.`);
+  if(st.pv==="plan") why.push("Liczymy dla planowanej instalacji 6 kWp. Gdy będzie umowa z instalatorem, wpisz moc z umowy.");
+  // klasa: u znanego producenta jego klasa (najbliższa ≥ cel), inaczej klasa rynkowa; cena = cena klasy rynkowej przeliczona na kWh
+  const generic = CLS.find(c=>c.kwh>=cel) || CLS[CLS.length-1];
+  let cls = {...generic};
+  if(inv && inv.typ==="hy"){
+    const own = inv.cls.find(c=>c>=cel) || inv.cls[inv.cls.length-1];
+    const ref = CLS.reduce((a,c)=>Math.abs(c.kwh-own)<Math.abs(a.kwh-own)?c:a, CLS[0]);
+    cls = {kwh:own, cena:Math.round(ref.cena/ref.kwh*own/100)*100, nazwa:f1(own).replace(",0","")+" kWh"};
+  }
+  // droga AC/DC
+  let droga = inv?inv.typ:"nw";
+  const poz = [{n:`Bank energii ${cls.nazwa}`, d:"przykładowa cena klasy, bez montażu", v:cls.cena}];
+  if(droga==="hy"){ poz.push({n:"Montaż DC do falownika hybrydowego", d:"kable, zabezpieczenia, uruchomienie, zgłoszenie do OSD", v:P.montazDC}); }
+  else if(droga==="ac"){ poz.push({n:"Falownik ładujący (AC)", d:"bank podłącza się obok Twojego sieciowego falownika", v:P.ladowarkaAC}); poz.push({n:"Montaż AC", d:"kable, zabezpieczenia, uruchomienie, zgłoszenie do OSD", v:P.montazAC}); }
+  else if(droga==="new"){ poz.push({n:"Falownik hybrydowy", d:"w cenie instalacji PV, tu liczony jako dopłata", v:P.zamianaFalownika}); poz.push({n:"Montaż DC", d:"kable, zabezpieczenia, uruchomienie", v:P.montazDC}); }
+  else { poz.push({n:"Montaż (DC albo AC, do ustalenia po zdjęciu falownika)", d:"liczymy wariant droższy, żeby nie zaniżać", v:P.montazAC}); }
+  poz.push({n:"Sterownik EMS", d:"warunek dotacji i rozsądnego ładowania w net-billingu", v:P.ems});
+  if(st.backup==="tak") poz.push({n:"Skrzynka zasilania awaryjnego", d:"wybrane obwody działają przy braku prądu z sieci", v:P.backupBox});
+  const suma = poz.reduce((a,p)=>a+p.v,0);
+  const zlKwh = suma/cls.kwh;
+  // dotacja
+  const nm = st.roz==="nm";
+  const limit = nm?P.dotacjaMaxNM:P.dotacjaMaxNB;
+  const warunek = zlKwh<=P.dotacjaLimitKwh;
+  const kwalif = Math.min(suma, cls.kwh*P.dotacjaLimitKwh);           // koszt kwalifikowany liczony najwyżej do 3 000 zł/kWh
+  const dotacja = (st.pv==="nie")?0:Math.min(cls.kwh*P.dotacjaKwh, kwalif*P.dotacjaProc, limit);
+  // oszczędność roczna
+  const magazynowane = Math.min(cls.kwh*P.dod, kwp>0?nadw:0, wiecz)*365*0.85; // 85% dni roboczych banku (zima słabo)
+  let zysk1kwh;
+  if(st.pv==="nie") zysk1kwh = 0.15;                              // tylko taryfa nocna, umownie
+  else if(nm) zysk1kwh = P.cenaKupna*0.2;                         // net-metering: ratuje 20% opustu
+  else zysk1kwh = Math.max(0, P.cenaKupna - st.sprz);             // net-billing: różnica kupno/sprzedaż
+  const oszcz = magazynowane*zysk1kwh;
+  const netto = suma - dotacja;
+  const zwrot = oszcz>0? netto/oszcz : Infinity;
+  return {inv,kwp,rocznie,wiecz,potrzeba,nadw,cls,droga,poz,suma,zlKwh,warunek,dotacja,limit,nm,magazynowane,zysk1kwh,oszcz,netto,zwrot,why};
+}
+
+function render(){
+  const r = calc();
+  const R = $("#result");
+  const modele = r.inv && r.inv.typ==="hy"
+    ? `<li class="best"><div><b>${r.inv.bat}</b><small>bank DC do Twojego ${r.inv.n}, klasa ${r.cls.nazwa}</small></div><span class="pill hy">pasuje</span></li>
+       <li><div><b>Zestaw AC innej marki</b><small>też zadziała, ale ma własny falownik i niższą sprawność</small></div><span class="pill ac">drożej</span></li>`
+    : r.inv && r.inv.typ==="ac"
+    ? `<li class="best"><div><b>Bank z własnym falownikiem (AC)</b><small>np. Deye / Pylontech / Huawei LUNA z ładowarką, podłącza się obok ${r.inv.n}</small></div><span class="pill ac">pasuje</span></li>
+       <li><div><b>Wymiana falownika na hybrydowy + bank DC</b><small>dopłata ok. ${pln(P.zamianaFalownika)}, za to wyższa sprawność i prostszy układ</small></div><span class="pill">alternatywa</span></li>`
+    : r.inv && r.inv.typ==="new"
+    ? `<li class="best"><div><b>Falownik hybrydowy + bank DC tej samej marki</b><small>najprostszy układ, gdy PV dopiero powstaje: Huawei, Sofar, GoodWe, Deye, Fronius z BYD</small></div><span class="pill hy">pasuje</span></li>`
+    : `<li class="best"><div><b>Do ustalenia po zdjęciu falownika</b><small>jeśli hybrydowy: bank DC tej marki; jeśli sieciowy: bank AC. Oba warianty poniżej.</small></div><span class="pill">obie drogi</span></li>`;
+
+  const dot = r.pv==="nie" ? `<div class="note bad"><b>Bez PV nie ma dotacji.</b> Program Mój Prąd jest dla prosumentów.</div>`
+    : r.warunek ? `<div class="note ok"><b>Dotacja Mój Prąd: ${pln(r.dotacja)}.</b> 800 zł za kWh, nie więcej niż 30% kosztów i ${pln(r.limit)} (${r.nm?"net-metering":"net-billing"}). Koszt ${pln(r.zlKwh).replace('\u00a0zł','')} zł/kWh mieści się w progu 3 000 zł/kWh.</div>`
+    : `<div class="note warn"><b>Dotacja Mój Prąd: ${pln(r.dotacja)}.</b> Koszt ${pln(r.zlKwh).replace('\u00a0zł','')} zł/kWh jest powyżej progu 3 000 zł/kWh, więc 30% liczy się tylko od ${pln(r.cls.kwh*P.dotacjaLimitKwh)}. Bez skrzynki backup albo w tańszej klasie wchodzi pełna stawka.</div>`;
+  const wysp = st.backup==="nie" ? `<div class="note warn">W projekcie nowego programu pojawił się wymóg pracy wyspowej. Jeśli wejdzie, bank bez zasilania awaryjnego może nie dostać dotacji. Sprawdzimy to przed zamówieniem.</div>` : "";
+  const nmNote = r.nm ? `<div class="note warn"><b>W net-meteringu bank zarabia mało.</b> Sieć oddaje Ci 80% nadwyżki za darmo, więc bank ratuje tylko brakujące 20%. Sens ma głównie zasilanie awaryjne. Przejście na net-billing zmienia rachunek, ale to decyzja na lata.</div>` : "";
+  const noPv = st.pv==="nie" ? `<div class="note bad"><b>Bez fotowoltaiki ten zakup się nie broni.</b> Bank ładowany z sieci zarabia tylko na różnicy taryf, kilkanaście groszy na kWh. Najpierw panele, potem bank. Wynik niżej pokazujemy dla porządku.</div>` : "";
+
+  R.innerHTML = `
+  <div class="hero">
+    <div class="k">Twój bank energii</div>
+    <div class="n">${r.cls.kwh}<span>kWh</span></div>
+    <div class="batt" role="img" aria-label="pojemność ${f1(r.cls.kwh).replace(",0","")} kWh z 20 kWh"><span class="cell"><i style="width:${Math.min(100,r.cls.kwh/20*100).toFixed(0)}%"></i></span><small>${f1(r.cls.kwh).replace(",0","")} z 20 kWh</small><span class="sc" aria-hidden="true"><i>0</i><i>5</i><i>10</i><i>15</i><i>20</i></span></div>
+    <p>Pojemność, nie moc. kWh mówi, ile prądu bank przechowa; kW, jak szybko go odda.</p>
+    <ul class="why">${r.why.map(w=>`<li>${w}</li>`).join("")}</ul>
+  </div>
+  ${noPv}${nmNote}
+  <div class="sec"><h2>Pasuje do Twojego falownika</h2><p class="lead">${r.inv?r.inv.n:"falownik nieznany"}</p><ul class="models">${modele}</ul></div>
+  <div class="sec rcpt"><h2>Ile to kosztuje</h2><p class="lead">Każda pozycja osobno. Ceny klas są przykładowe, konkretne modele i cennik montażu wchodzą z ofertą sklepu.</p>
+    ${r.poz.map(p=>`<div class="row"><div>${p.n}<small>${p.d}</small></div><div>${pln(p.v)}</div></div>`).join("")}
+    <div class="row sum"><div>Razem z montażem</div><div>${pln(r.suma)}</div></div>
+    <div class="row minus"><div>Dotacja Mój Prąd<small>wraca na konto po montażu i wniosku</small></div><div>− ${pln(r.dotacja)}</div></div>
+    <div class="row pay"><div>Twój koszt</div><div>${pln(r.netto)}</div></div>
+  </div>
+  ${dot}${wysp}
+  <div class="sec"><h2>Oszczędność i zwrot</h2><p class="lead">Bank przechowa rocznie ok. ${Math.round(r.magazynowane).toLocaleString("pl-PL")} kWh. Każda z nich jest warta ${r.zysk1kwh.toFixed(2).replace(".",",")} zł: tyle tracisz, oddając ją do sieci zamiast zużyć wieczorem. Zasilania awaryjnego nie wyceniamy, choć dla wielu to główny powód.</p>
+    <div class="kpi"><div><div class="v">${pln(r.oszcz)}</div><div class="l">rocznie w kieszeni</div></div><div><div class="v">${isFinite(r.zwrot)?f1(r.zwrot)+" lat":"brak"}</div><div class="l">zwrot po dotacji</div></div></div>
+    ${!r.nm && st.pv!=="nie" ? `<div class="field" style="margin-top:12px"><label for="sprz">Cena, po jakiej sprzedajesz nadwyżkę (RCEm)</label><div class="big"><span id="sprzV" style="font-size:28px;color:var(--ink);font-weight:600;font-stretch:87.5%">${r.zysk1kwh>0?(P.cenaKupna-r.zysk1kwh).toFixed(2).replace(".",","):"0,00"}</span><span>zł/kWh</span></div><input type="range" id="sprz" min="0.10" max="0.80" step="0.05" value="${st.sprz}" aria-label="Cena sprzedaży nadwyżki"><div class="hint">W 2025 r. ok. 0,25–0,35 zł, latem poniżej 0,15 zł. Im taniej sprzedajesz, tym szybciej bank się zwraca. Zakup liczymy po 0,80 zł/kWh z dystrybucją.</div></div>`:""}
+  </div>
+  <div class="sec"><h2>Co dalej</h2><p class="lead">Bez telefonu od handlowca. Cena, którą widzisz, jest ceną do koszyka.</p>
+    <div class="cta">
+      <button class="btn p" type="button" onclick="alert('Prototyp: tu bank ${r.cls.nazwa} trafia do koszyka w Medusie z pozycją montażu.')">Dodaj do koszyka: bank ${r.cls.nazwa} z montażem</button>
+      <button class="btn o" type="button" onclick="alert('Prototyp: tu otwiera się karta klasy ${r.cls.nazwa} z pełnym opisem.')">Zobacz cenę z montażem: bank ${r.cls.nazwa}</button>
+    </div>
+    <div class="mail"><input type="email" placeholder="E-mail (nieobowiązkowo)" aria-label="E-mail, nieobowiązkowo"><button class="btn s" type="button" onclick="alert('Prototyp: wynik jako link.')">Wyślij</button></div>
+  </div>
+  <div class="sec">
+    <details><summary>Jak to policzyliśmy</summary>
+      <ol>
+        <li>Zużycie roczne = rachunek × 12 ÷ 0,80 zł/kWh (cena z dystrybucją). Wieczorem i nocą zużywasz ok. 60% tego.</li>
+        <li>Pojemność = zużycie po zmroku ÷ 0,90 (bank oddaje ok. 90% pojemności). Pompa +3 kWh, auto +5 kWh.</li>
+        <li>Górne ograniczenie = co dach odda: nadwyżka wiosną i latem (4,2 kWh dziennie z każdego kWp minus zużycie w dzień), nie więcej niż 1,6 kWh pojemności na każdy kWp.</li>
+        <li>Oszczędność = zmagazynowane kWh × (cena zakupu − cena sprzedaży). W net-meteringu tylko 20% ceny zakupu.</li>
+        <li>Dotacja = 800 zł/kWh, nie więcej niż 30% kosztów i limit programu; warunek: koszt ≤ 3 000 zł/kWh.</li>
+      </ol>
+      <p>To szacunek na podstawie typowego profilu domu. Dokładny wynik daje odczyt z falownika za rok albo z licznika.</p>
+    </details>
+    <details><summary>Źródła (data odczytu)</summary><ol>${Object.values(SRC).map(x=>`<li>${x[0]} · <a href="${x[1]}" rel="nofollow">${x[1].replace(/^https?:\/\//,"").slice(0,48)}…</a> · ${x[2]}</li>`).join("")}</ol></details>
+    <p class="src">Prototyp grzejeko.pl, 26.10.2026. Ceny klas i montażu przykładowe; cennik montażu i modele do ustalenia (decyzje D6, D7).</p>
+    <button class="btn s" type="button" style="margin-top:12px;width:100%" onclick="location.reload()">Policz od nowa</button>
+  </div>`;
+  const sl = $("#sprz"); if(sl) sl.addEventListener("input",e=>{st.sprz=+e.target.value;render();$("#sprz").focus()});
+}
+show(1);
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Moduł pisania K0</title>
+<style>
+:root{--bg:#fbfaf7;--ink:#1d1d1f;--mut:#5f5f66;--line:#e2ded5;--card:#fff;--ok:#1f7a4d;--stop:#b3261e;--wait:#9a6b00;--acc:#c96f4a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17171a;--ink:#ececef;--mut:#a3a3ab;--line:#33333a;--card:#202024;--ok:#5fc18f;--stop:#f2786f;--wait:#e0b44c;--acc:#e09a7a}}
+:root[data-theme="dark"]{--bg:#17171a;--ink:#ececef;--mut:#a3a3ab;--line:#33333a;--card:#202024;--ok:#5fc18f;--stop:#f2786f;--wait:#e0b44c;--acc:#e09a7a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:26px;line-height:1.2;margin:0 0 6px}h2{font-size:19px;margin:32px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+p,li{color:var(--ink)}.sub{color:var(--mut);margin:0 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.card h3{margin:0 0 6px;font-size:16px}.k{font-size:13px;color:var(--mut)}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;border:1px solid currentColor}
+.ok{color:var(--ok)}.stop{color:var(--stop)}.wait{color:var(--wait)}
+.wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}th,td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+th{color:var(--mut);font-weight:600}
+ol.chain{padding-left:20px}ol.chain li{margin:4px 0}
+code{font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px;word-break:break-all}
+.dec{border-left:3px solid var(--acc);padding:10px 12px;background:var(--card);margin:10px 0;border-radius:0 8px 8px 0}
+.dec b{display:block;margin-bottom:4px}
+</style>
+</head>
+<body>
+<!-- hub-backlink -->
+<div id="hub-backlink-bar" style="position:sticky;top:0;z-index:100;background:#f4f6fa;padding:8px 16px;font:500 13px/1.4 'Host Grotesk',system-ui,sans-serif;letter-spacing:.04em;">
+  <a href="../GRZEJEKO_HUB.html" style="color:#13203a;text-decoration:none;">← Hub grzejeko</a>
+</div>
+<!-- /hub-backlink --><main>
+<h1>Moduł pisania grzejeko — K0</h1>
+<p class="sub">26.10.2026 · B3 · dwa elementy przeszły cały łańcuch · wynik = szkice do zatwierdzenia, nic nie jest live</p>
+
+<div class="grid">
+<div class="card"><h3>Karta <code>bank-energii-10kwh</code></h3>
+<p><span class="tag ok">brama GO po domknięciu</span> <span class="tag ok">K1–K10: 0 błędów</span></p>
+<p class="k">Domknięcie 26.10 (decyzje sesji głównej): ulga wycięta, domeny z tekstu usunięte (tylko [n] + przypis pod blokiem), 885 → 434 słów. 6 bloków · 52 liczby, 0 bez źródła · 3 z 8 pytań zamknięte (5 czeka na model i dostawcę albo na kalkulator oszczędności) · geo_check 66/164 (przed cięciem 80; krótszy tekst) · PSI 62 pkt (przed domknięciem)</p>
+<p class="k">Brama na gotowym tekście: 0×P1, 3×P2 (8 000 vs 16 000 zł bez wyjaśnienia, „drugi nabór”, wymóg 2 kWh/kWp bez zastrzeżenia — cięcie zdjęło „rozstrzyga regulamin”).</p></div>
+<div class="card"><h3>Poradnik: „Jak nie pomylić się przy wyborze magazynu energii — na co patrzeć poza pojemnością?”</h3>
+<p><span class="tag ok">brama GO (runda 3)</span> <span class="tag ok">K1–K10: 0 błędów</span></p>
+<p class="k">Pytanie P1, priorytet 70,5 (id <code>cep_dofinansowanie:4:1fb52b</code>, stoi pod 6 CEP) · 6 bloków, 9 sekcji · 84 liczby, 0 bez źródła · 25 źródeł · pytanie główne + 1 sąsiednie zamknięte, 5 sąsiednich bez faktów w bazie · humanizacja: 17 pól (1 cofnięte: „Tak,”) · geo_check 60/85</p></div>
+</div>
+
+<h2>Co moduł robi</h2>
+<ol class="chain">
+<li><b>Sprawdza, czy już nie ma</b>: wersję opublikowaną, prototyp K0, inny poradnik na to samo pytanie.</li>
+<li><b>Składa kontekst</b>: wycinki CS banków, CEP elementu, pytania z pola wybrane rankingiem <code>score_questions</code> (forum i pytania o cudze firmy odpadają).</li>
+<li><b>Bierze fakty u źródła</b>: 60 dosłownych wycinków z <code>ec5.db</code> z adresem i datą. Model pisze tylko z ich numerów.</li>
+<li><b>Pisze szkic w blokach</b>: Sonnet 5.5, agent <code>kopirajter</code>.</li>
+<li><b>Kontrole skryptem K1–K10</b>: liczba bez faktu albo spoza cytatu, cena własna (S1), teksty zastępcze, pytania rozliczone, typy bloków, koszt z liczbą (S8), domena źródła = domena faktu.</li>
+<li><b>Pytania</b>: Haiku 5.5 sprawdza, czy przypięty blok naprawdę odpowiada.</li>
+<li><b>Brama GO/STOP</b>: <code>copy-quality-pl</code> z cytatami faktów + <code>geo_check</code> jako sygnał; STOP → poprawka (maks. 2 rundy).</li>
+<li><b>Humanizacja</b> z tokenami niezmiennymi; pole, w którym zmieniła się liczba albo doszło słowo wzmacniające twierdzenie („przysługuje”, „Tak,”), wraca do wersji sprzed. Tekst po humanizacji nie przechodzi ponownie bramy języka.</li>
+<li><b>Zapis</b>: <code>szkic.json</code> w formacie z README sklepu (<code>zrodla [n]</code>, bloki <code>proposal</code>) + <code>szkic.md</code> + raport z diffem + zrzut 390.</li>
+<li><b>PSI</b>: karta 14 sił jako sygnał.</li>
+</ol>
+<p class="k">Stan łańcucha: <code>python3 tools/pisanie/pisz.py --stan</code></p>
+
+<h2>Czego jeszcze nie robi</h2>
+<ul>
+<li><b>Nie działa przez <code>claude -p</code></b>: sesja OAuth CLI wygasła, więc każdy krok modelu szedł mostem (subagent z jawnym modelem, ręczne wznowienie). Ścieżka <code>claude -p</code> w kodzie jest, ale nieprzetestowana (0 udanych wywołań). Pierwszy przebieg po <code>/login</code> to test: zacznij od Haiku na pytaniach.</li>
+<li>Nie zna modelu ani dostawcy, więc karta jest klasowa: moc, gwarancja, wymiary i zgodne falowniki są w <code>braki</code>.</li>
+<li>Nie ma Voice DNA grzejeko: głos to zasady SejfZone i uniwersalne CL, a pętla nauki zacznie się od Twoich korekt.</li>
+<li>Nie pilnuje długości: karta urosła z 764 do 879 słów przy widełkach 250–450 (to tylko sygnał).</li>
+<li>Retrieval faktów to LIKE, nie semantyka. Bywają wycinki z nawigacji stron, np. „nabór od 20 października” na karcie stoi na takim wycinku.</li>
+<li>Szkic karty powstał w trybie „rozbudowa wersji opublikowanej”, ale model dostał układ prototypu, a nie treść <code>dane.json</code>. W kolejnych przebiegach już dostaje.</li>
+<li>Nie publikuje, nie liczy kalkulatorów i nie robi UAT w edytorze (reszta kryterium B3).</li>
+</ul>
+
+<h2>Koszt jednego elementu</h2>
+<div class="wrap"><table>
+<tr><th></th><th>Karta</th><th>Poradnik</th></tr>
+<tr><td>Wywołania modeli</td><td>10 (+ psi + 1 powtórzona brama)</td><td>10</td></tr>
+<tr><td>Tokeny, most (licznik harnessu, z narzutem startu agentów)</td><td>793 tys.</td><td>640 tys.</td></tr>
+<tr><td>Czas pracy modeli</td><td>27 min</td><td>20 min</td></tr>
+<tr><td>Szacunek przez <code>claude -p</code> (same prompty i odpowiedzi)</td><td>≈ 89 tys. we / 24 tys. wy</td><td>≈ 94 tys. we / 25 tys. wy</td></tr>
+</table></div>
+<p class="k">Najdroższe kroki: szkic (≈ 130 tys. przez most) i każda runda bramy z poprawką (≈ 150 tys.). Dwie rundy poprawek = połowa kosztu.</p>
+
+<h2>Decyzje</h2>
+<div class="dec"><b>1 · Rozstrzygnięte 26.10 (sesja główna)</b>Ulga wycięta · P1 tylko za claimy prawne/finansowe/liczbowe bez źródła · atrybucja tylko [n]. Otwarte: cięcie zjadło zastrzeżenia „rozstrzyga regulamin” — przywrócić je jako wyjątek od „bez dopisywania”?</div>
+
+<div class="dec"><b>2 · Poradnik pod zasady v2</b>Poradnik ma jeszcze domeny w tekście (zasady v1). Ta sama runda <code>--domknij</code> (≈ 280 tys. tokenów mostem) albo zostawić do odbioru.</div>
+
+<h2>Pliki</h2>
+<ul>
+<li>Karta: <code>grzejeko/tresc/karty/bank-energii-10kwh/</code> → <code>szkic.json</code>, <code>szkic.md</code>, <code>RAPORT_PISANIA.md</code>, <code>zrzut_390.png</code></li>
+<li>Poradnik: <code>grzejeko/tresc/poradniki/jak-nie-pomylic-sie-przy-wyborze-magazynu-energii/</code> (te same pliki)</li>
+<li>Kod: <code>tools/pisanie/</code> → <code>pisz.py</code>, <code>fakty.py</code>, <code>kontrole.py</code>, <code>llm.py</code>, <code>render.py</code>, <code>prompty/</code>, <code>elementy.json</code></li>
+<li>Plan i inwentarz: <code>tools/pisanie/BUILD_PLAN_PISANIE.md</code>, <code>INWENTARZ.md</code></li>
+</ul>
+</main></body></html>

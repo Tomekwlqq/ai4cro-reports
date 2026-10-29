@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>grzejeko.pl — plan ekosystemu</title>
+<style>
+:root{--bg:#f7f6f2;--card:#fff;--ink:#1c1b18;--mut:#6b6960;--line:#e4e1d8;--acc:#1f7a4d;--acc2:#e8f3ec;--warn:#b45309;--warn2:#fff4e5;--blue:#1d4ed8;--blue2:#e8eefc;--red:#b91c1c;--red2:#fde8e8}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+body{padding:0 16px 48px}
+.wrap{max-width:980px;margin:0 auto}
+header{padding:28px 0 12px}
+h1{font-size:26px;margin:0 0 6px;line-height:1.2}
+h2{font-size:20px;margin:36px 0 12px;padding-top:12px;border-top:2px solid var(--ink)}
+h3{font-size:16px;margin:20px 0 8px}
+.sub{color:var(--mut);font-size:14px}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 4px}
+nav a{display:inline-block;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);text-decoration:none;font-size:13px}
+nav a:hover{border-color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.grid{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:720px){.grid.c2{grid-template-columns:1fr 1fr}.grid.c3{grid-template-columns:1fr 1fr 1fr}}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--acc2);color:var(--acc);font-weight:600;margin-right:6px}
+.tag.w{background:var(--warn2);color:var(--warn)}.tag.b{background:var(--blue2);color:var(--blue)}.tag.r{background:var(--red2);color:var(--red)}.tag.g{background:#eee;color:#444}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}
+th,td{text-align:left;vertical-align:top;padding:8px 8px;border-bottom:1px solid var(--line)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
+@media(max-width:719px){table.stack thead{display:none}table.stack tr{display:block;border:1px solid var(--line);border-radius:10px;margin:8px 0;padding:6px 8px;background:var(--card)}table.stack td{display:block;border:0;padding:4px 0}table.stack td::before{content:attr(data-l);display:block;font-size:11px;color:var(--mut);text-transform:uppercase}}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.flow .step{flex:1 1 150px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
+.flow .step b{display:block;font-size:13px;color:var(--acc)}
+.flow .step .m{font-size:12px;color:var(--mut)}
+.kpi{display:flex;flex-wrap:wrap;gap:10px}
+.kpi div{flex:1 1 140px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.kpi b{display:block;font-size:22px}
+.kpi span{font-size:12px;color:var(--mut)}
+details{border:1px solid var(--line);border-radius:10px;background:var(--card);margin:8px 0}
+summary{cursor:pointer;padding:10px 14px;font-weight:600}
+details>div{padding:0 14px 12px}
+ul{margin:6px 0 6px 18px;padding:0}li{margin:3px 0}
+.why{border-left:3px solid var(--acc);padding:6px 12px;background:var(--acc2);border-radius:0 8px 8px 0;margin:8px 0;font-size:14px}
+.warn{border-left:3px solid var(--warn);padding:6px 12px;background:var(--warn2);border-radius:0 8px 8px 0;margin:8px 0;font-size:14px}
+.tc{background:#1c1b18;color:#f1efe8;border-radius:12px;padding:14px 16px;font-size:14px}
+.tc h2{border-color:#555;color:#fff;margin-top:0}
+.tc b{color:#a7e3c4}
+code{font-size:13px;background:#eee;padding:1px 5px;border-radius:4px}
+.cal{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;margin:8px 0;font-size:11px}
+.cal div{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:4px 2px;text-align:center;min-height:36px}
+.cal .on{background:var(--acc2);border-color:var(--acc);color:var(--acc);font-weight:600}
+.cal .x{background:var(--warn2);border-color:var(--warn);color:var(--warn)}
+.legend{font-size:12px;color:var(--mut)}
+</style>
+</head>
+<body>
+<!-- hub-backlink -->
+<div id="hub-backlink-bar" style="position:sticky;top:0;z-index:100;background:#f4f6fa;padding:8px 16px;font:500 13px/1.4 'Host Grotesk',system-ui,sans-serif;letter-spacing:.04em;">
+  <a href="../GRZEJEKO_HUB.html" style="color:#13203a;text-decoration:none;">← Hub grzejeko</a>
+</div>
+<!-- /hub-backlink --><div class="wrap">
+<header>
+<h1>grzejeko.pl — ekosystem, narzędzia, plan działania</h1>
+<div class="sub">Stan na 21.10.2026 · cel: 31.12.2026 · dokument roboczy do akceptacji · źródła: <code>product/CEL_GRZEJEKO.md</code>, <code>BUILD_PLAN_GRZEJEKO.md</code>, <code>research/pompy_ciepla/IDEE_pompy.md</code>, analiza konkurencji (hub Own_shop), CS pomp, stack RFB</div>
+<nav>
+<a href="#cel">1 · Cel i odwrócenie</a><a href="#eko">2 · Ekosystem</a><a href="#geo">3 · Jak wygrać GEO/LLM</a><a href="#narz">4 · Narzędzia</a><a href="#plan">5 · Plan działania</a><a href="#tresci">6 · Zbieranie treści</a><a href="#dec">7 · Decyzje Tomka</a><a href="#tc">Truth Checker</a>
+</nav>
+</header>
+
+<h2 id="cel">1 · Cel i odwrócenie kategorii</h2>
+<div class="card">
+<div class="why" style="font-size:16px"><b>Teza w jednym zdaniu (Tomek):</b> „Wszyscy komplikują, żeby mieć pięć wizyt i wyciągnąć jak najwięcej kasy.” grzejeko robi odwrotnie: prosto, jawnie, bez wizyt, których nie potrzebujesz.</div>
+<div class="why" style="font-size:16px"><b>Misja (Tomek):</b> „Dać jak najwięcej jasności — przez narzędzia, opisy produktów, treść, instrukcje — żeby ludzie świadomie sobie wybierali z pełną kontrolą kosztów.” Cztery formy treści: <b>narzędzia</b> · <b>opisy produktów</b> · <b>treść</b> · <b>instrukcje</b>. Miara każdej strony: czy po niej klient wie więcej i zna koszt.</div>
+<p><b>Do 31.12.2026:</b> człowiek wybiera i kupuje <b>sobie</b> pompę ciepła (monoblok powietrze-woda 6–14 kW) <b>albo bank energii</b> (kategoria #2 od 23.10, „dokładnie to samo”, jeden sklep) na grzejeko.pl jak każdy inny produkt, widzi <b>koszt całkowity</b> zanim kliknie, a montaż dokłada do koszyka jako usługę naszej firmy z uprawnieniami. <b>Odwrócenie dotyczy sposobu sprzedaży, nie montażu:</b> klient kupuje pompę, my montujemy — zamiast „kupuje montaż, a pompa jest przy okazji”. To nie jest sklep dla majsterkowiczów. Strona ma być tym, co Google i modele językowe cytują, gdy ktoś pyta „jaka pompa do domu 150 m²”, „ile kosztuje ogrzewanie pompą”, „czy dostanę dotację”.</p>
+<div class="grid c2">
+<div class="card" style="margin:0"><span class="tag r">Kategoria dziś</span><ul><li>95% firm sprzedaje <b>montaż</b>; pompa jest przy okazji.</li><li>Ceny „od”, wycena po wizycie handlowca, klient nie wie do końca.</li><li>Firmy z kompleksową ofertą (montaż + dotacja) chowają ceny; ceny jawne mają tylko „czyści” dystrybutorzy bez doradztwa (analiza konkurencji, hub Own_shop §3).</li><li>Treść GEO-ready mają portale, które <b>nie sprzedają</b> (pompy.app, czysteogrzewanie.pl); sklepy nie mają żadnego poradnika parametrycznego.</li></ul></div>
+<div class="card" style="margin:0"><span class="tag">grzejeko.pl</span><ul><li><b>Pompa = produkt z ceną</b> i od niej się zaczyna. Montaż = usługa do pompy, robiona przez nas, „ale nie tak jak inni”: nie kombajn (wizyty, audyt, dobór, projekt), tylko jawne <b>„ile powinien kosztować montaż”</b>.</li><li><b>Klient sam wybiera, co najważniejsze</b> (koszt roczny · cisza · zasilanie · grzejniki czy podłogówka · marka) i dostaje pompę pod swoje priorytety.</li><li><b>Koszt całkowity na karcie:</b> pompa · montaż standard · co w cenie · co poza · dotacja · netto po dotacji.</li><li><b>Kalkulatory + poradnik zamiast handlowca:</b> „jak wybrać i kupić sobie pompę”.</li><li><b>Trzy poziomy obsługi</b> (decyzja Tomka z lipca, <code>IDEE_pompy.md</code>): pod klucz · sprzęt + umówiony instalator · sam sprzęt (DIY / mam instalatora).</li><li>Benchmark najbliższy idei: sprzedawca z Allegro ze sklepem pomp (adres do podania).</li></ul></div>
+</div>
+<div class="why">Dlaczego to ma szansę: sprzedaż pompy jak produktu — z ceną, wyborem i kosztem całkowitym — nie robi <b>nikt</b> z graczy z montażem; sklep z cenami jawnymi + dotacją + konfiguratorem = białe pole potwierdzone w analizie konkurencji (hub Own_shop §5). Regulacja pracuje za nas: monoblok sprzedaje się online bez ograniczeń F-gazowych, od 2027 zakaz R32 &lt;12 kW przesuwa rynek na R290 monobloki.</div>
+<div class="warn"><b>Doprecyzowanie Tomka (21.10):</b> „tu nie chodzi o samodzielny montaż, tu chodzi o sposób sprzedaży”. Montaż robi nasza firma, więc gwarancja producenta nie jest ryzykiem dla rdzenia. Poziom „sam sprzęt / mam instalatora” zostaje jako opcja z Idei, nie jako teza; warunki gwarancji per marka sprawdzamy w A2 tylko pod tę opcję.</div>
+</div>
+
+<h2 id="eko">2 · Ekosystem sprzedażowy</h2>
+<div class="card">
+<h3>Ścieżka klienta (docelowa)</h3>
+<div class="flow">
+<div class="step"><b>1 · Wejście</b>pytanie w Google / ChatGPT / Perplexity<span class="m">„ile kosztuje ogrzewanie pompą”, „jaka moc do 150 m²”, „dotacja 2026”</span></div>
+<div class="step"><b>2 · Poradnik</b>odpowiedź na to jedno pytanie, z liczbami i datą<span class="m">pole pytań z CS: 300–500 pytań = 300–500 stron/akapitów</span></div>
+<div class="step"><b>3 · Kalkulator</b>koszt roczny vs gaz/pellet/prąd · widełki mocy · koszt całkowity · dotacja netto · zwrot<span class="m">wynik = 2–3 pasujące monobloki</span></div>
+<div class="step"><b>4 · Karta produktu</b>koszt całkowity, co w cenie, specyfikacja, FAQ z pola pytań<span class="m">Medusa (cena, warianty) + CMS (treść)</span></div>
+<div class="step"><b>5 · Montaż</b>trzy poziomy: pod klucz · sprzęt + instalator · sam sprzęt<span class="m">kod pocztowy → w zasięgu / wycena</span></div>
+<div class="step"><b>6 · Dotacja</b>Czyste Powietrze / Mój Prąd: co, jak, papiery z montażu<span class="m">u nas, nie na 3 innych stronach</span></div>
+<div class="step"><b>7 · Zakup</b>płatność (Stripe, potem P24/raty) albo wycena<span class="m">zamówienie w panelu, pomiar GA4</span></div>
+</div>
+<h3>Trzy warstwy, które to trzymają</h3>
+<div class="grid c3">
+<div class="card" style="margin:0"><span class="tag b">A · Analityczna</span><ul><li>Rynek: kto sprzedaje pompę online z ceną (liczba, nie teza).</li><li>Konkurencja: benchmark „odwrócenia” — Allegro, kuppanpompe, strefapompciepla, cieplo.app, 2 instalatorów; pary layoutów, 4 widoki.</li><li>CS banków energii v6.1 (z CS magazynów z lipca): pojemność, backup, LiFePO4, zgodność z falownikiem, dotacje KPO / Fundusz Modernizacyjny.</li><li>CS pomp v6.1 monoblok (samodzielny zakup) + oś „eko”: 25–40 CEP w 5 torach, KCF, drzewo doboru, pole pytań 300+.</li><li>Spec kalkulatorów: wejścia, wzory, stałe ze źródłem.</li><li>Plan treści z pola pytań.</li></ul></div>
+<div class="card" style="margin:0"><span class="tag b">B · Narzędziowa</span><ul><li>Schemat sklepu jako stany ekranu (7 stanów ścieżki), mobile-first.</li><li>Instancja EC5: Medusa (pieniądze) + sklep Next z RFB + edytor kart z doświadczeń GLOV; treść w plikach (zestaw modułów + repo GLOV), bez Payload.</li><li>Montaż w koszyku (wzór: subskrypcja w RFB), moduł „koszt całkowity” na karcie.</li><li>Agent treści: szkic z CS → UAT w edytorze → Tomek zatwierdza → live.</li><li>Kalkulatory jako moduły z jednego pliku konfiguracji.</li></ul></div>
+<div class="card" style="margin:0"><span class="tag b">C · Sprzedażowa</span><ul><li>Oferta v1: 1–2 marki, 10–20 SKU, ceny, dostępność, warunki dostawcy.</li><li>Montaż: zasięg, cena standard, co w cenie, poziomy obsługi.</li><li>Treści: karty + 15–20 poradników + kalkulatory live.</li><li>Start: domena, HTTPS, płatności, regulamin/zwroty/RODO, GA4 + Clarity, feed GMC.</li><li>Sonda: pierwsze 10 wycen/zamówień.</li></ul></div>
+</div>
+</div>
+
+<h2 id="geo">3 · Jak wygrać GEO / LLM</h2>
+<div class="card">
+<p>Modele cytują strony, które <b>odpowiadają na jedno konkretne pytanie, liczbami, z datą i źródłem, od kogoś, kto ma prawo to mówić</b>. Nasz kanon GEO (geo_check, E1–E21) to mierzy. Dla grzejeko to się składa tak:</p>
+<table class="stack">
+<thead><tr><th>Co</th><th>Jak u nas</th><th>Miara</th></tr></thead>
+<tbody>
+<tr><td data-l="Co"><b>Pole pytań jako mapa treści</b></td><td data-l="Jak">CS v6.1 → 300–500 pytań; każde pytanie = akapit z odpowiedzią (liczba + data + źródło), poradniki grupują pytania wg CEP. Pytania „ludzie pytają też” z harvestu = cele bezpośrednie.</td><td data-l="Miara">pokrycie pola pytań na stronie (% pytań z odpowiedzią); dziś: 0</td></tr>
+<tr><td data-l="Co"><b>Treść parametryczna, nie markowa</b></td><td data-l="Jak">„strefa × izolacja × metraż × instalacja grzewcza → moc → modele → koszt roczny”. Kalkulatory są tą treścią w formie narzędzia; każdy wynik ma wersję tekstową (tabele „dom 100/150/200 m²”).</td><td data-l="Miara">geo_check na poradnikach &gt; 60%, na kartach &gt; 60%</td></tr>
+<tr><td data-l="Co"><b>Fakty transakcyjne</b></td><td data-l="Jak">cena + data na karcie i w poradniku (E20); „ile naprawdę kosztuje z montażem” z datą aktualizacji — tego nikt w kategorii nie publikuje.</td><td data-l="Miara">100% kart z ceną i datą</td></tr>
+<tr><td data-l="Co"><b>Kto mówi (E-E-A-T)</b></td><td data-l="Jak">autor = firma montażowa z uprawnieniami (certyfikaty, zdjęcia z montaży, zrealizowane instalacje jako case study w formacie „Warszawa, 10 kW, 4 osoby”).</td><td data-l="Miara">E18 w geo_check: 4 wymiary</td></tr>
+<tr><td data-l="Co"><b>Dotacja spięta z zakupem</b></td><td data-l="Jak">„Czyste Powietrze krok po kroku z zakupem w jednym miejscu” — luka wskazana w analizie konkurencji; lista ZUM, papiery z montażu.</td><td data-l="Miara">poradnik dotacyjny w top10 + cytowany</td></tr>
+<tr><td data-l="Co"><b>Dostęp i struktura</b></td><td data-l="Jak">storefront renderowany po stronie serwera (boty AI nie wykonują JS), FAQ widoczne w HTML, JSON-LD z modułów karty (@ec5/content), roboty AI wpuszczone.</td><td data-l="Miara">E7, E17, E19 na zielono</td></tr>
+<tr><td data-l="Co"><b>Pomiar widoczności w AI</b></td><td data-l="Jak">30 pytań kontrolnych z pola pytań odpytywane co miesiąc w ChatGPT / Perplexity / AI Overview (moduł ai-visibility w semrush_killer + narzędzia DataForSEO LLM mentions).</td><td data-l="Miara">liczba cytowań grzejeko / 30; start: 0</td></tr>
+</tbody></table>
+<div class="why"><b>Silnik, który sam się uczy (wizja Tomka 23.10, założenia z wątku analityka CC):</b> strona wyświetla zatwierdzone wersje modułów, mierzy wynik aż do zamówienia w Medusie i przesuwa ruch na te, które sprzedają. LLM pisze nowych kandydatów, o zwycięzcy decyduje pomiar, publikuje tylko Tomek. Nagroda: opłacone zamówienie, osobno zamówienie z montażem; na start nagroda pośrednia (kalkulator → montaż w koszyku → płatność), bo zamówień będzie mało. Przed startem musi być: zgody, źródło wejścia z identyfikatorami kliknięć, klucze w zamówieniu, BigQuery od dnia 1. Szczegóły: <code>BUILD_PLAN_GRZEJEKO.md</code> → „Silnik samooptymalizacji”.</div>
+<div class="why">Przewaga, której portale nie skopiują: <b>my sprzedajemy</b>. pompy.app ma głębię, ale kończy na leadzie dla instalatora. Treść parametryczna + cena + koszyk + montaż + dotacja w jednym miejscu to to, czego model nie znajdzie nigdzie indziej, więc ma powód nas cytować przy pytaniach „ile” i „gdzie kupić”.</div>
+</div>
+
+<h2 id="narz">4 · Narzędzia — co mamy, co dokładamy</h2>
+<div class="grid c2">
+<div class="card" style="margin:0"><span class="tag">Mamy (używamy, nie budujemy)</span>
+<table class="stack"><thead><tr><th>Narzędzie</th><th>Rola w grzejeko</th></thead><tbody>
+<tr><td data-l="Narzędzie">Z RFB: Medusa (koszyk, płatności, zamówienia) + sklep Next + Stripe + checkout firmowy. <b>Bez Payload</b> (Tomek 23.10)</td><td data-l="Rola">instancja grzejeko = kopia + <code>shop.config</code>; Stripe/Paddle i checkout B2B już przetestowane</td></tr>
+<tr><td data-l="Narzędzie"><code>@ec5/content</code> — 15 modułów karty + JSON-LD</td><td data-l="Rola">karty produktów, wzorzec rodziny „monoblok”</td></tr>
+<tr><td data-l="Narzędzie">Kanon CS (GEO): metodologia v6.1, silnik drzewa, pole pytań, bramki</td><td data-l="Rola">CS pomp v6.1, pole pytań, drzewo doboru</td></tr>
+<tr><td data-l="Narzędzie">Pisanie treści (wzór SejfZone): geo-blog-writer, qa-content-check, validate_article.py, humanizer</td><td data-l="Rola">agent treści grzejeko, bramka jakości</td></tr>
+<tr><td data-l="Narzędzie">geo_check E1–E21</td><td data-l="Rola">bramka GEO każdej strony przed publikacją</td></tr>
+<tr><td data-l="Narzędzie">DataForSEO: dfs_kw.py, semrush_killer.py, <b>harvest_serp.py (dziś)</b></td><td data-l="Rola">frazy, SERP, PAA, AI Overview, widoczność w AI</td></tr>
+<tr><td data-l="Narzędzie">scrape.py + ec5.db (curl, zero LLM)</td><td data-l="Rola">masowe zbieranie źródeł do CS i poradników</td></tr>
+<tr><td data-l="Narzędzie">LP maker (GLOV) + edytor kart (RFB)</td><td data-l="Rola">LP kategorii i karty; edytor = nakładka na Medusę i CMS</td></tr>
+<tr><td data-l="Narzędzie">Łańcuch UX CRO_HUB (zrzuty, H2H)</td><td data-l="Rola">benchmark odwrócenia</td></tr>
+<tr><td data-l="Narzędzie">Agenci: strateg (bramka sensu), psi (14 sił), kopirajter, ai4cro-ux</td><td data-l="Rola">bramki na CS, poradnikach, kartach</td></tr>
+<tr><td data-l="Narzędzie">yt-fetch.sh, GA4/Clarity MCP, publish_web.sh</td><td data-l="Rola">transkrypty YouTube do źródeł; pomiar; publikacja dokumentów</td></tr>
+</tbody></table></div>
+<div class="card" style="margin:0"><span class="tag w">Dokładamy (nowe, małe, z kontraktem)</span>
+<table class="stack"><thead><tr><th>Element</th><th>Kontrakt</th></thead><tbody>
+<tr><td data-l="Element"><b>Kalkulatory ×5</b> (koszt roczny vs paliwa · widełki mocy · koszt całkowity · dotacja netto · zwrot w latach)</td><td data-l="Kontrakt">jeden plik <code>cs/kalkulatory.json</code>: wejścia, wzór, stałe ze źródłem, przypadki testowe; kod JS czyta ten plik; każdy kalkulator ma wersję tekstową (tabela) dla botów</td></tr>
+<tr><td data-l="Element"><b>Moduł „koszt całkowity”</b> na karcie</td><td data-l="Kontrakt">pompa · montaż standard · w cenie · poza · dotacja · netto; cena z datą (E20)</td></tr>
+<tr><td data-l="Element"><b>Montaż w koszyku</b></td><td data-l="Kontrakt">produkt-usługa Medusy dokładany z karty (wzór subskrypcji N-Analytics w RFB), pole kodu pocztowego → zasięg / wycena; trzy poziomy obsługi</td></tr>
+<tr><td data-l="Element"><b>Agent treści grzejeko</b></td><td data-l="Kontrakt">czyta CS + pole pytań + źródła z harvestu; pisze szkic z <code>sources[]</code>; zapis tylko jako szkic w CMS; Tomek publikuje</td></tr>
+<tr><td data-l="Element"><b>Harvest treści</b> (dziś uruchomiony)</td><td data-l="Kontrakt">frazy → SERP (organic, PAA, AI Overview, related) → pula URL → curl → tekst → ec5.db; raport liczbowy; bez LLM</td></tr>
+<tr><td data-l="Element"><b>Pomiar AI</b></td><td data-l="Kontrakt">30 pytań kontrolnych, raz w miesiącu, tabela cytowań</td></tr>
+</tbody></table>
+<div class="why"><b>Moduły do standardów (23.10):</b> dziewięć sprawdzeń, każde zatrzymuje publikację: jawny schemat typu · dane strukturalne (produkt i oferta z ceną i datą z Medusy, FAQ, instrukcja, montaż jako usługa) · źródło z datą przy każdej liczbie · szkic → zatwierdzenie → publikacja · widoczne bez JavaScriptu · telefon 390 px · ocena GEO ≥ 60% · strona odsłania koszt · dane firmy montażowej (czeka na Ciebie). Najpierw jedna karta pompy przez cały łańcuch. Plan: <code>BUILD_PLAN_GRZEJEKO.md</code> → „Moduły do standardów”.</div>
+<div class="warn">Nie budujemy: własnego frontu w Astro/MDX (plan z sierpnia), Payload (Tomek 23.10: treść na modułach i repo z GLOV), drugiej listy zdjęć obok Medusy (lekcja z RFB 19.10), konfiguratora jako aplikacji z audytem OZC (cieplo.app to ma; my robimy widełki + koszt, dokładny dobór idzie z montażem).</div>
+</div>
+</div>
+
+<h2 id="plan">5 · Plan działania — 10 tygodni</h2>
+<div class="card">
+<div class="cal">
+<div class="on">T1<br>K0</div><div class="on">T2<br>A·K0</div><div class="on">T3<br>A·B1</div><div class="on">T4<br>B2</div><div class="on">T5<br>B2·B3</div><div class="on">T6<br>B3·C1</div><div class="on">T7<br>C2</div><div class="on">T8<br>C2</div><div class="x">T9<br>C3·święta</div><div class="x">T10<br>start</div>
+</div>
+<div class="legend">T = tydzień od 21.10 · zielone = robota · pomarańczowe = święta jako bufor, nie plan</div>
+
+<details open><summary>K0 · Tydzień 1 — jeden element przez wszystkie trzy warstwy, przed oczami Tomka</summary><div>
+<p>Z istniejącego CS (10 CEP, 172 pytania) i tego, co harvest przyniesie w tym tygodniu:</p>
+<ul>
+<li><b>1 karta pompy</b> (monoblok przykładowy, ceny ze scrapu) z kosztem całkowitym i montażem jako usługą do dołożenia — „zaczynam od pompy”.</li>
+<li><b>1 strona „Ile powinien kosztować montaż pompy ciepła”</b> — jawny rozkład kosztu (robocizna, hydraulika, elektryka, bufor/CWU, uruchomienie, co podbija cenę, co jest naciąganiem), z datą i źródłami.</li>
+<li><b>1 poradnik wyboru „sam decydujesz, co najważniejsze”</b> — priorytety → jak każdy zmienia wybór monobloku; tabela kosztu rocznego vs gaz/pellet/prąd w środku (pełny kalkulator w A4).</li>
+</ul>
+<p>Jako 3 strony HTML na prototypie, na telefon. <b>Kotwica:</b> Tomek przechodzi ścieżkę i mówi, co jest „totalnie dla ludzi”, a co nie. Batch nie rusza przed tym.</p>
+</div></details>
+
+<details><summary>A · Tygodnie 1–3 — warstwa analityczna</summary><div>
+<table class="stack"><thead><tr><th>Krok</th><th>Wynik</th><th>Jak sprawdzę</th></tr></thead><tbody>
+<tr><td data-l="Krok">A1 benchmark odwrócenia</td><td data-l="Wynik"><code>BENCHMARK_ODWROCENIA.html</code>: 6 sklepów × 4 widoki, pary layoutów, tabela transparentności kosztów</td><td data-l="Jak">24 zrzuty w folderze; tabela 6 wierszy „koszt całkowity widoczny: tak/nie”; 390 px bez scrolla</td></tr>
+<tr><td data-l="Krok">A2 rynek: kto sprzedaje online z ceną</td><td data-l="Wynik">5 fraz × top20 = 100 wierszy z klasą {cena w koszyku / „od” / tylko wycena}; warunki gwarancji per marka (pod opcję „mam instalatora”)</td><td data-l="Jak">liczba policzona z tabeli, nie zgadnięta</td></tr>
+<tr><td data-l="Krok">A3 CS v6.1 monoblok (samodzielny zakup) + „eko”</td><td data-l="Wynik">lista CEP z torami do odbioru → KCF, tiery, drzewo → pole pytań</td><td data-l="Jak">≥ 25 CEP, 5 torów niepustych, ≥ 300 pytań, bramki PASS, strateg bez P0</td></tr>
+<tr><td data-l="Krok">A4 spec kalkulatorów</td><td data-l="Wynik"><code>kalkulatory.json</code>: 5 narzędzi</td><td data-l="Jak">każdy ≥ 3 przypadki policzone ręcznie, każda stała ze źródłem i datą</td></tr>
+<tr><td data-l="Krok">A5 plan treści</td><td data-l="Wynik">20–30 poradników + szablony kart z pola pytań, priorytet = wolumen × tor</td><td data-l="Jak">lista z liczbą pytań pokrytych per poradnik</td></tr>
+</tbody></table></div></details>
+
+<details><summary>B · Tygodnie 2–6 — warstwa narzędziowa</summary><div>
+<table class="stack"><thead><tr><th>Krok</th><th>Wynik</th><th>Jak sprawdzę</th></tr></thead><tbody>
+<tr><td data-l="Krok">B1 schemat sklepu</td><td data-l="Wynik"><code>SCHEMAT_SKLEPU.html</code>: 7 stanów ścieżki na skorupie kafla/karty z RFB, mobile-first</td><td data-l="Jak">7 stanów na 390 px, 0 scrolli wewnętrznych; Tomek: „to ten kierunek”</td></tr>
+<tr><td data-l="Krok">B2 instancja EC5 grzejeko</td><td data-l="Wynik">kopia stacku RFB + <code>shop.config</code>; montaż w koszyku; serwer, domena, HTTPS</td><td data-l="Jak">zamówienie testowe nr 1: pompa + montaż, kwota = suma; karta pod grzejeko.pl po HTTPS</td></tr>
+<tr><td data-l="Krok">B3 narzędzia treści</td><td data-l="Wynik">agent treści + edytor + kalkulatory z <code>kalkulatory.json</code></td><td data-l="Jak">1 poradnik szkic → UAT → live, 100% zdań ze źródłem; kalkulator 3/3 przypadki co do złotówki</td></tr>
+</tbody></table></div></details>
+
+<details><summary>C · Tygodnie 5–10 — ekosystem sprzedażowy</summary><div>
+<table class="stack"><thead><tr><th>Krok</th><th>Wynik</th><th>Jak sprawdzę</th></tr></thead><tbody>
+<tr><td data-l="Krok">C1 oferta v1 <span class="tag w">Tomek</span></td><td data-l="Wynik">dostawca, 10–20 SKU, ceny; cennik montażu standard + zasięg; „co płacisz naprawdę”</td><td data-l="Jak">tabela SKU z ceną zakupu, sprzedaży, czasem dostawy; cennik montażu podpisany</td></tr>
+<tr><td data-l="Krok">C2 treści w sklepie</td><td data-l="Wynik">karty 10–20, 15 poradników, kalkulatory live; UAT → live</td><td data-l="Jak">geo_check na 5 kartach &gt; 60%; 100% kart z ceną i datą</td></tr>
+<tr><td data-l="Krok">C3 start i sonda</td><td data-l="Wynik">płatności, regulamin/zwroty/RODO, GA4 + Clarity, feed GMC; ruch testowy na 5 fraz</td><td data-l="Jak">GA4 widzi zakup lub wycenę; 10 wycen/zamówień w pierwszym tygodniu</td></tr>
+</tbody></table></div></details>
+
+<h3>Czego nie robimy do grudnia</h3>
+<ul><li><s>magazyny energii</s> → od 23.10 <b>banki energii są w zakresie</b> jako kategoria #2 (ten sam model, ten sam sklep); pompy nadal pierwsze (K0 od pompy)</li><li>konfigurator jako aplikacja z audytem OZC</li><li>kanał B2B dla instalatorów (oś kanału zostaje w treści)</li><li>splity (od 2027 zakaz R32 &lt;12 kW; monoblok-first)</li><li>własny front w Astro/MDX</li></ul>
+</div>
+
+<h2 id="tresci">6 · Zbieranie treści — uruchomione 21.10</h2>
+<div class="card">
+<p>Pierwszy rzut leci w tle: <b>98 fraz</b> (40 z bazy wg wolumenu + 58 tematów: monoblok, DIY, montaż, gwarancja, koszty, dotacje, eko, 18 marek) → wyniki Google PL (organiczne, „ludzie pytają też”, AI Overview, powiązane) → pula adresów bez FB/YT/Allegro → curl → tekst → <code>research/ec5.db</code>. Raport: <code>research/serp_harvest/RAPORT.md</code>.</p>
+<div class="kpi" id="kpi">
+<div><b id="k_fraz">98</b><span>fraz w harvest #1</span></div>
+<div><b id="k_url">—</b><span>adresów w puli</span></div>
+<div><b id="k_paa">—</b><span>pytań „ludzie pytają też”</span></div>
+<div><b id="k_aio">—</b><span>AI Overview</span></div>
+</div>
+<h3>Harvest #2 — banki energii (23.10)</h3><p>Frazy z DataForSEO (sugestie dla „magazyn energii”, „bank energii”, „do fotowoltaiki”) + tematy: cena, pojemność, dobór, dotacje, montaż, falownik, LiFePO4, backup, 13 marek, zestawy z pompą → <code>research/serp_harvest_banki/</code>.</p>
+<h3>Kolejne rzuty (po K0)</h3>
+<ul>
+<li><b>Producenci:</b> karty techniczne monobloków (moc, COP/SCOP, temp. zasilania, czynnik, hałas, cena katalogowa) — z adresów, które harvest przyniesie dla fraz markowych; parser deterministyczny do tabeli KCF.</li>
+<li><b>Fora i grupy:</b> elektroda, forum muratordom, grupy FB (tylko to, co publiczne i da się pobrać) — blokery, lęki, język klienta.</li><li><b>YouTube:</b> transkrypty 20–30 filmów (testy, „rachunki po roku”, montaż krok po kroku) przez yt-fetch.sh.</li>
+<li><b>Allegro:</b> listingi i opinie (osobna ścieżka, bo blokuje curl) — benchmark #1 od Tomka.</li>
+<li><b>Dotacje:</b> regulaminy Czyste Powietrze / Mój Prąd z datą wersji — stałe do kalkulatora dotacji.</li>
+<li><b>Opinie użytkowników:</b> Ceneo, Opineo, Google — do CEV i blokerów.</li>
+</ul>
+<div class="why">Reguła: zbieranie = skrypty (curl, parser), nigdy model. Model dopiero czyta zebrane i pisze. Każdy fakt w poradniku ma adres i datę z tej bazy.</div>
+</div>
+
+<h2 id="dec">7 · Decyzje Tomka (blokują C, nie blokują K0)</h2>
+<div class="card">
+<table class="stack"><thead><tr><th>#</th><th>Decyzja</th><th>Status</th></tr></thead><tbody>
+<tr><td data-l="#">D4</td><td data-l="Decyzja">Medusa do koszyka, płatności i zamówień; treść na zestawie modułów i repo z GLOV, bez Payload</td><td data-l="Status"><span class="tag">✅ Tomek 23.10</span></td></tr>
+<tr><td data-l="#">D5</td><td data-l="Decyzja">Domena grzejeko.pl — Twoja? (DNS na aftermarket.pl, strona 403)</td><td data-l="Status"><span class="tag w">czeka</span></td></tr>
+<tr><td data-l="#">D6</td><td data-l="Decyzja">Dostawca i marki: TIM / Onninen / producent PL</td><td data-l="Status"><span class="tag w">czeka</span></td></tr>
+<tr><td data-l="#">D7</td><td data-l="Decyzja">Montaż: zasięg, cena standard, co w cenie, trzy poziomy obsługi</td><td data-l="Status"><span class="tag w">czeka (firma)</span></td></tr>
+<tr><td data-l="#">D8</td><td data-l="Decyzja">Link do sprzedawcy z Allegro (benchmark #1)</td><td data-l="Status"><span class="tag w">czeka</span></td></tr>
+<tr><td data-l="#">D9</td><td data-l="Decyzja">Kalkulator mocy: widełki (my) vs audyt OZC (cieplo.app)</td><td data-l="Status"><span class="tag g">rozstrzyga K0</span></td></tr>
+<tr><td data-l="#">D10</td><td data-l="Decyzja">Płatności: Stripe na start, P24 / raty jako krok 2</td><td data-l="Status"><span class="tag g">rozstrzyga C3</span></td></tr>
+</tbody></table>
+</div>
+
+<div class="tc" id="tc">
+<h2>Truth Checker</h2>
+<p><b>Co wiem z tego, co podałeś:</b> cel i termin; firma montażowa z uprawnieniami; „odwrócenie” kategorii = sposób sprzedaży (pompa jako produkt, montaż od nas jako usługa), nie DIY; transparentne koszty, kalkulatory i poradnik „kup sobie”; start od kontentu „eko”; wygrać GEO/LLM; benchmark = sprzedawca z Allegro; koncepcje z lipca (3 poziomy montażu, 5 kalkulatorów, konfigurator) i analiza konkurencji z GEO są Twoje i aktualne.</p>
+<p><b>Co zakładam:</b> stack z RFB przenosi się na drugą instancję bez przebudowy; monoblok 6–14 kW = rdzeń; „kontent kategorialny” = CS + pole pytań + poradniki + kalkulatory, nie blog o wszystkim; 2 wieczory tygodniowo da się utrzymać przy CC jako projekcie #1.</p>
+<p><b>Co może być błędne:</b> że klient wysokobiletowy kupi pompę w koszyku bez rozmowy (nikt tego w PL nie udowodnił — stąd sonda w C3); że „samodzielny zakup + nasz montaż” da się sprzedać bez handlowca przy 20–40 tys. zł; że dostawcy odpowiedzą w 2 tygodnie (od czerwca nie odpowiedzieli); że 10 tygodni ze świętami wystarczy na C2 (15 poradników to realna robota).</p>
+<p><b>Co zweryfikować zanim ruszysz pieniądze:</b> domena (D5); cennik i zasięg montażu (D7); czy sprzedawca z Allegro faktycznie sprzedaje bez montażu i jak mu idzie (opinie, liczba sprzedanych).</p>
+<p><b>Co poprawiłbym z jednym inputem:</b> link do sprzedawcy z Allegro i jedno zdanie o montażu (zasięg + widełki ceny) — wtedy K0 ma prawdziwą kartę z prawdziwym kosztem całkowitym, a nie przykładową.</p>
+</div>
+
+<script>
+// liczby z harvestu, jeśli raport już istnieje (plik obok) — bez tego zostają kreski
+fetch('../research/serp_harvest/RAPORT.md').then(r=>r.ok?r.text():'').then(t=>{if(!t)return;const g=(re)=>{const m=t.match(re);return m?m[1]:'—'};
+document.getElementById('k_url').textContent=g(/URL unikalnych: (\d+)/);document.getElementById('k_paa').textContent=g(/PAA: (\d+)/);document.getElementById('k_aio').textContent=g(/AI Overview: (\d+)/);}).catch(()=>{});
+</script>
+</div></body></html>

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>grzejeko.pl — hub projektu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+/* ── tokeny z BRAND_STYLE_GUIDE — motyw Warm · Gold, jasny tryb ── */
+:root{
+  --bg:#FBF6F1;--surface:#FFFFFF;--surface-2:#F7F0EA;
+  --line:#EFE3DA;--line-soft:#F4EBE4;
+  --ink:#2B2326;--muted:#6B5D5A;--faint:#9C8D88;
+  --v:#C9A84C;--v-d:#8A6D1F;--v-soft:rgba(201,168,76,.10);
+  --dark:#3F4A44;
+  --r-md:12px;--r-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Space Grotesk",system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+
+/* ── Layout ── */
+.wrap{max-width:1200px;margin:0 auto;padding:28px 16px 80px}
+
+/* ── Header ── */
+.hub-header{margin-bottom:32px}
+.kicker{font:600 12px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--v-d);display:block;margin-bottom:8px}
+.hub-title{font-size:clamp(24px,4vw,36px);font-weight:700;line-height:1.15;margin-bottom:8px}
+.hub-lead{font-size:16px;line-height:1.55;color:var(--ink);max-width:860px;margin:6px 0 4px}
+.hub-status{font-size:14px;color:var(--muted);padding:8px 12px;background:var(--surface);border:1px solid var(--line);border-radius:999px;display:inline-block}
+
+
+/* ── Wejścia do mini hubów (portal, nie kafel) ── */
+.portale{display:grid;gap:14px;margin:4px 0 28px}
+.portal{display:flex;flex-direction:column;gap:16px;text-decoration:none;color:#F4EFE7;
+  background:linear-gradient(135deg,#3F4A44 0%,#2F3833 100%);border-radius:var(--r-lg);padding:22px 22px 20px;
+  border:1px solid #2F3833;box-shadow:0 6px 18px rgba(43,35,38,.14);transition:transform .15s ease,box-shadow .15s ease}
+.portal:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(43,35,38,.2)}
+.portal__kicker{font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:#C9A84C}
+.portal__tytul{font-size:clamp(22px,3.4vw,30px);font-weight:700;line-height:1.15;margin:8px 0 6px;color:#fff}
+.portal__opis{font-size:15px;color:#DCD3C7;max-width:62ch}
+.portal__status{margin-top:10px;font:500 13px/1.4 "IBM Plex Mono",monospace;color:#F1D98F}
+.portal__chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.portal__chip{font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;padding:6px 9px 6px 12px;border-radius:999px;background:var(--tb,rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.16);color:var(--ta,#EDE6DA);box-shadow:inset 4px 0 0 var(--ta,transparent)}
+.portal__side{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;border-top:1px solid rgba(255,255,255,.14);padding-top:14px}
+.portal__num{font:600 34px/1 "IBM Plex Mono",monospace;color:#C9A84C}
+.portal__numlbl,.portal__date{font-size:13px;color:#CFC6B9}
+.portal__btn{margin-left:auto;font:600 13px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;background:#C9A84C;color:#2B2326;padding:11px 16px;border-radius:999px}
+@media(min-width:760px){
+  .portal{flex-direction:row;align-items:stretch;padding:26px 28px}
+  .portal__main{flex:1}
+  .portal__side{flex-direction:column;align-items:flex-end;justify-content:center;border-top:0;border-left:1px solid rgba(255,255,255,.14);padding:0 0 0 24px;min-width:190px}
+  .portal__btn{margin-left:0;margin-top:10px}
+}
+
+/* ── Archiwum ── */
+.archiwum{margin-top:36px;border-top:1px solid var(--line);padding-top:18px}
+.archiwum summary{cursor:pointer;font:600 13px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:10px 0;list-style:none}
+.archiwum summary::-webkit-details-marker{display:none}
+.archiwum summary::before{content:"▸ ";color:var(--v-d)}
+.archiwum[open] summary::before{content:"▾ "}
+.archiwum__opis{font-size:14px;color:var(--faint);margin:2px 0 14px}
+.kafle--archiwum .kafel{opacity:.72;filter:saturate(.6)}
+.kafle--archiwum .kafel:hover{opacity:1;filter:none}
+
+/* ── Filtry ── */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+/* Filtry w kodzie kolorów kafli (08.10): tło = tło typu, pasek z lewej = akcent typu — jak na kaflu */
+.filter-btn{
+  font:600 12px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;
+  padding:9px 14px 9px 16px;border:1px solid var(--line);border-radius:999px;
+  background:var(--tb,var(--surface));color:var(--ink);cursor:pointer;
+  box-shadow:inset 5px 0 0 var(--ta,var(--line));
+  transition:all .15s ease;
+}
+.filter-btn:hover:not(.filter-active){
+  border-color:var(--ta,var(--v));
+}
+.filter-btn.filter-active{
+  background:var(--ta,var(--v-d));
+  border-color:var(--ta,var(--v-d));
+  box-shadow:none;
+  color:#fff;
+}
+
+/* ── Siatka kafli ── */
+.kafle{display:grid;gap:14px;grid-template-columns:1fr}
+.kafle-sekcje{display:block}
+.sekcja{margin:0 0 30px}
+.sekcja__t{font-size:19px;font-weight:700;margin:0 0 4px;padding-top:14px;border-top:2px solid var(--line)}
+.sekcja__o{font-size:14px;color:var(--muted);margin:0 0 14px;max-width:820px}
+.sekcja.sekcja--pusta{display:none}
+@media(min-width:600px){.kafle{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.kafle{grid-template-columns:repeat(3,1fr)}}
+
+/* ── Kafel — kolory z CSS var ustawianych inline per kafel ── */
+.kafel{
+  background:var(--kafel-bg,var(--surface));
+  border:1px solid var(--line);
+  border-left:5px solid var(--kafel-accent,var(--line));
+  border-radius:var(--r-lg);
+  padding:18px;display:flex;flex-direction:column;gap:10px;
+  transition:border-color .15s,box-shadow .15s;cursor:pointer;
+}
+.kafel:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.kafel--broken{opacity:.6;border-style:dashed}
+.kafel--hidden{display:none}
+
+.kafel__badges{display:flex;flex-wrap:wrap;gap:6px}
+.kafel__tytul{font-size:15px;font-weight:700;line-height:1.3;color:var(--ink)}
+.kafel__opis{font-size:13px;color:var(--muted);line-height:1.5;flex:1}
+.kafel__meta{font:600 11px/1 "IBM Plex Mono",monospace;color:var(--faint);margin-top:auto}
+.kafel__data{}
+
+/* ── Plakietki ── */
+.badge{
+  display:inline-block;font:600 11px/1 "IBM Plex Mono",monospace;
+  padding:3px 8px;border-radius:999px;white-space:nowrap;letter-spacing:.05em;
+}
+/* Plakietka typu — biały bg + tekst i ramka w kolorze akcentu typu (z CSS var kafla) */
+.badge-typ{
+  background:#fff;
+  color:var(--kafel-accent,var(--muted));
+  border:1px solid var(--kafel-accent,var(--line));
+  text-transform:uppercase;
+}
+.badge-ok   {background:#E3F2E9;color:#236B43}
+.badge-warn {background:#FBEBDD;color:#A4521F}
+.badge-q    {background:#EEE8E3;color:var(--muted)}
+.badge-new  {background:#C9A84C;color:#fff;font-weight:700;animation:pulse 2s ease infinite}
+.badge-intern{background:#F6E1E1;color:#A33}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.75}}
+
+/* ── Licznik ── */
+.kafle-count{font:14px/1 "IBM Plex Mono",monospace;color:var(--muted);margin-bottom:12px}
+/* SKÓRKA „sklep” 29.10 — Tomek: „chcę zgodną z aktualnym dizajnem sklepu, jaki tu wklejałem” (koszyk :8001).
+   Biel, Host Grotesk, granatowe grube nagłówki, szare panele bez ramek, kobalt tylko na linkach i przyciskach, czarne kółka jak kroki koszyka.
+   Zero łuczków (kolorowych krawędzi), zero kart z cieniem, zero wersalików i mono. Poranny motyw: .bak-20261029-przed-skorka-sklep */
+:root{--bg:#ffffff;--surface:#ffffff;--surface-2:#f4f6fa;--line:#e3e7ef;--line-soft:#eef1f6;--ink:#0f1a2e;--muted:#5b667a;--faint:#8a94a6;--v:#2251f0;--v-d:#1a41c9;--v-soft:#eef2ff;--dark:#0f1a2e;--r-md:12px;--r-lg:16px}
+body{font-family:"Host Grotesk",system-ui,sans-serif;background:#fff;color:var(--ink)}
+.wrap{max-width:1200px}
+.hub-header h1,h1{font-family:"Host Grotesk",system-ui,sans-serif;font-weight:800;letter-spacing:-.025em;color:var(--ink)}
+.kicker{font:500 14px/1.3 "Host Grotesk",system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--muted)!important}
+.sekcja__t{font-size:24px;font-weight:800;letter-spacing:-.02em;border-top:0;padding-top:28px}
+.sekcja__o{color:var(--muted)}
+.kafle-count{font:14px/1.3 "Host Grotesk",system-ui,sans-serif;color:var(--muted)}
+.filter-btn{font:600 14px/1 "Host Grotesk",system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;background:#fff!important;color:var(--ink)!important;border:1px solid var(--line)!important;border-radius:999px!important;padding:10px 16px!important;box-shadow:none!important}
+.filter-btn:hover:not(.filter-active){border-color:var(--ink)!important}
+.filter-btn.filter-active{background:var(--ink)!important;border-color:var(--ink)!important;color:#fff!important}
+.kafel{background:#fff!important;border:1px solid var(--line)!important;border-radius:16px!important;box-shadow:none!important;transition:border-color .12s}
+.kafel:hover{box-shadow:none!important;border-color:var(--ink)!important;transform:none!important}
+.kafel__tytul{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.kafel__meta{font:500 12.5px/1.3 "Host Grotesk",system-ui,sans-serif;color:var(--faint)}
+.badge{font:600 12px/1.2 "Host Grotesk",system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;border:0!important;border-radius:6px!important;padding:3px 8px!important;animation:none!important}
+.badge-typ{background:var(--surface-2)!important;color:var(--ink)!important}
+.badge-ok{background:#e7f5ec!important;color:#0a7a4b!important}
+.badge-new{background:var(--v-soft)!important;color:var(--v)!important}
+.badge-q,.badge-warn{background:var(--surface-2)!important;color:var(--muted)!important}
+.portal{background:var(--surface-2)!important;color:var(--ink)!important;border:0!important;box-shadow:none!important}
+.portal__kicker,.portal__chip{font-family:"Host Grotesk",system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--muted)!important}
+.archiwum summary{font:600 14px/1 "Host Grotesk",system-ui,sans-serif;letter-spacing:0;text-transform:none}
+.stan-pasek{background:var(--surface-2)!important;border:0!important;border-radius:16px!important;padding:20px 22px!important}
+.stan-pasek:hover{outline:1px solid var(--ink)}
+.sp-t{font-size:20px!important;font-weight:800!important}
+.stan-pasek .kr{border-radius:50%!important}
+
+.stan-pasek{display:block;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:0 0 24px;color:var(--ink);background:#fff;transition:border-color .12s}
+.stan-pasek:hover{border-color:var(--v)}
+.sp-t{font-size:18px;font-weight:600;letter-spacing:-.01em;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.sp-d{font-size:13.5px;font-weight:400;color:var(--muted)}
+.sp-liczby{display:flex;flex-wrap:wrap;gap:8px 20px;margin:10px 0 8px;font-size:14px;color:var(--muted)}
+.sp-l{display:inline-flex;align-items:center;gap:7px}.sp-l b{color:var(--ink);font-weight:600;font-size:16px}
+.sp-w{font-size:14px;line-height:1.45;margin-top:2px}.sp-w span{color:var(--muted)}
+.sp-link{margin-top:10px;font-size:14px;color:var(--v);font-weight:500}
+.stan-pasek .kr{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--line-soft,#cdd3de);background:#fff;position:relative;display:inline-block;flex:0 0 auto}
+.stan-pasek .kr-dziala{background:var(--v);border-color:var(--v)}
+.stan-pasek .kr-dziala::after{content:"";position:absolute;left:4.5px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.stan-pasek .kr-robota{border-color:var(--v);background:linear-gradient(90deg,var(--v) 50%,#fff 50%)}
+.stan-pasek .kr-plan{border-style:dashed;border-color:#cdd3de}
+.stan-pasek .kr-tomek{background:var(--ink);border-color:var(--ink)}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hub-header">
+    <span class="kicker">grzejeko.pl · pompy ciepła i banki energii z ceną</span>
+    <h1 class="hub-title">grzejeko.pl — hub projektu</h1>
+    <p class="hub-lead">Sklep z pompami ciepła i bankami energii sprzedawanymi online jak zwykły produkt: montaż jako osobna pozycja z ceną, dotacja policzona przed zakupem, dobór do falownika bez kontaktu. Tu leżą analizy konkurencji, projekt sklepu i plany budowy.</p>
+  </header>
+
+  <a class="stan-pasek" href="STAN_PROJEKTU.html"><div class="sp-t">Gdzie jesteśmy <span class="sp-d">stan na 29.10.2026 · cel 31.12.2026</span></div><div class="sp-liczby"><span class="sp-l"><span class="kr kr-dziala" role="img" aria-label="działa"></span><b>27</b> działa</span><span class="sp-l"><span class="kr kr-robota" role="img" aria-label="w robocie"></span><b>14</b> w robocie</span><span class="sp-l"><span class="kr kr-plan" role="img" aria-label="w planie"></span><b>6</b> w planie</span><span class="sp-l"><span class="kr kr-tomek" role="img" aria-label="czeka na Ciebie"></span><b>5</b> czeka na Ciebie</span></div><div class="sp-w"><span>W robocie teraz:</span> nic.</div><div class="sp-w"><span>Czeka na Ciebie:</span> serwer, strony prawne po polsku, oferta, firma montażowa, domena grzejeko.pl.</div><div class="sp-link">Pełna lista: ścieżka klienta, witryna, maszynownia, decyzje</div></a>
+
+  <nav class="filters" id="filters" aria-label="Filtruj po typie">
+    <button class="filter-btn filter-active" data-typ="wszystkie" style="--tb:#FBF3E0;--ta:#8A6D1F">Wszystkie 34</button>
+    <button class="filter-btn" data-typ="analiza ux" style="--tb:#F5EDF0;--ta:#8A4F5D">Analiza UX 8</button>
+    <button class="filter-btn" data-typ="best practices" style="--tb:#EEF3F9;--ta:#3A6691">Best practices 1</button>
+    <button class="filter-btn" data-typ="cs" style="--tb:#EBF3F1;--ta:#3F6B62">CS 1</button>
+    <button class="filter-btn" data-typ="dokument" style="--tb:#F5EBE5;--ta:#7A4E35">Dokument 5</button>
+    <button class="filter-btn" data-typ="porównanie" style="--tb:#F1EBF4;--ta:#6A4D65">Porównanie 3</button>
+    <button class="filter-btn" data-typ="proces" style="--tb:#E5F2EB;--ta:#236B43">Proces 3</button>
+    <button class="filter-btn" data-typ="projekt" style="--tb:#FBF3E0;--ta:#8A6D1F">Projekt 10</button>
+    <button class="filter-btn" data-typ="wzorce" style="--tb:#EEF3F9;--ta:#3A6691">Wzorce z rynku 1</button>
+    <button class="filter-btn" data-typ="stan projektu" style="--tb:#F4EBE4;--ta:#6B5D5A">stan projektu 2</button>
+  </nav>
+
+  <div class="kafle-count" id="kafle-count">34 pozycji</div>
+
+  <main class="kafle-sekcje" id="kafle">
+    <section class="sekcja" data-sekcja="stan"><h2 class="sekcja__t">Stan projektu</h2><p class="sekcja__o">Jedna strona z kratkami: co działa w sklepie, co jest w robocie, co w planie, co czeka na Twoją decyzję.</p><div class="kafle"><a class="kafel" href="centrum/CENTRUM_OPERACJI.html" data-typ="stan projektu"
+   style="--kafel-bg:#F4EBE4;--kafel-accent:#6B5D5A">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Stan projektu</span>
+    <span class="badge badge-ok">Gotowe</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Centrum operacji: % do startu, bloki zadań, schemat narzędziowni</h3>
+  <p class="kafel__opis">Pulpit do startu sklepu na serwerze: procent liczony z zadań, 7 bloków z listami i kratkami, Twoje decyzje na górze; schemat 50 maszyn i elementów witryny ze statusem i połączeniami.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">29.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="STAN_PROJEKTU.html" data-typ="stan projektu"
+   style="--kafel-bg:#F4EBE4;--kafel-accent:#6B5D5A">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Stan projektu</span>
+    <span class="badge badge-ok">Gotowe</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Gdzie jesteśmy: co działa, co w robocie, co czeka na Ciebie</h3>
+  <p class="kafel__opis">Ścieżka klienta (7 kroków), witryna (18 elementów) i maszynownia (32 maszyny) z kratkami: 28 działa, 12 w robocie, 7 w planie, 3 czeka na Ciebie. Plus decyzje i sesje w toku.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">29.10.2026</span>
+  </div>
+</a></div></section>
+<section class="sekcja" data-sekcja="konkurencja"><h2 class="sekcja__t">Konkurencja i wzorce z rynku</h2><p class="sekcja__o">8 sklepów energetyki domowej przez łańcuch UX, zestawienie best practice, 14 reguł lekkości z Amazon/Walmart/Allegro.</p><div class="kafle"><a class="kafel" href="konkurencja/LISTA_POPRAWEK_H2H.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Lista poprawek z head-to-head</h3>
+  <p class="kafel__opis">Element, u ilu z 8 rywali jest, co mamy w sklepie i w F2, co robimy. Plus 6 praktyk rynku do wzięcia.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="konkurencja/BENCHMARK_H2H.html" data-typ="porównanie"
+   style="--kafel-bg:#F1EBF4;--kafel-accent:#6A4D65">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Porównanie</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Head-to-head kategorii: grzejeko kontra 8 sklepów</h3>
+  <p class="kafel__opis">Całe layouty obok siebie na telefonie: strona główna, lista, karta. Nasz żywy sklep (styl F) i strona główna projektu F2 kontra każdy z 8 rywali; elementy wspólne, tylko u nas, tylko u nich.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="konkurencja/marketplaces/ANALIZA_LEKKOSCI_MARKETPLACES.html" data-typ="wzorce"
+   style="--kafel-bg:#EEF3F9;--kafel-accent:#3A6691">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Wzorce z rynku</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Lekkość i czytelność: Amazon, Walmart, Allegro</h3>
+  <p class="kafel__opis">14 reguł wspólnego mianownika (pismo, cena, kolor, kafle, filtry, nagłówek) z pomiaru DOM Amazona i archiwum Walmart/Allegro; co z nich łamał nasz projekt.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">27.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="konkurencja/BEST_PRACTICE_RYNKU_ENERGETYKA.html" data-typ="best practices"
+   style="--kafel-bg:#EEF3F9;--kafel-accent:#3A6691">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Best practices</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Best practice rynku: 8 sklepów × 7 funkcji</h3>
+  <p class="kafel__opis">Kto ma dobór bez kontaktu, cenę z montażem, dotację policzoną, zgodność z falownikiem; higiena rynku (≥ 60%); 26 wycinków z wnioskami i Truth Checkerem.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">26.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="konkurencja/UX_BENCH_GEOPOWER.html" data-typ="analiza ux"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza UX</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">GeoPower (geopower.pl): audyt UX</h3>
+  <p class="kafel__opis">Łańcuch EEL na 3 widokach mobile (home, lista, karta): elementy, kolejność, ocena regułami. Najlepsze u nich: dobór banku bez kontaktu (8 pytań).</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">26.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="konkurencja/UX_BENCH_BOXT.html" data-typ="analiza ux"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza UX</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Boxt (UK) (boxt.co.uk): audyt UX</h3>
+  <p class="kafel__opis">Łańcuch EEL na 3 widokach mobile (home, lista, karta): elementy, kolejność, ocena regułami. Najlepsze u nich: cena z montażem przed kontaktem, dobór online.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">26.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="konkurencja/UX_BENCH_SOLVOLTE.html" data-typ="analiza ux"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza UX</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Solvolte (solvolte.pl): audyt UX</h3>
+  <p class="kafel__opis">Łańcuch EEL na 3 widokach mobile (home, lista, karta): elementy, kolejność, ocena regułami. Najlepsze u nich: montaż jako produkt z ceną.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">26.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="konkurencja/UX_BENCH_COLUMBUSENERGY.html" data-typ="analiza ux"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza UX</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Columbus Energy (columbusenergy.pl): audyt UX</h3>
+  <p class="kafel__opis">Łańcuch EEL na 3 widokach mobile (home, lista, karta): elementy, kolejność, ocena regułami. Najlepsze u nich: warunki dotacji opisane po ludzku.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">26.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="konkurencja/UX_BENCH_KUPPANPOMPE.html" data-typ="analiza ux"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza UX</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">KupPanPompe (kuppanpompe.pl): audyt UX</h3>
+  <p class="kafel__opis">Łańcuch EEL na 3 widokach mobile (home, lista, karta): elementy, kolejność, ocena regułami. Najlepsze u nich: kwoty dotacji przy produkcie.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">26.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="konkurencja/UX_BENCH_SKLEPSOLTECH.html" data-typ="analiza ux"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza UX</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Soltech (sklepsoltech.pl): audyt UX</h3>
+  <p class="kafel__opis">Łańcuch EEL na 3 widokach mobile (home, lista, karta): elementy, kolejność, ocena regułami. Najlepsze u nich: wniosek o dotację jako usługa.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">26.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="konkurencja/UX_BENCH_SOFAR_SKLEP.html" data-typ="analiza ux"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza UX</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Sofar sklep (sofar-sklep.pl): audyt UX</h3>
+  <p class="kafel__opis">Łańcuch EEL na 3 widokach mobile (home, lista, karta): elementy, kolejność, ocena regułami. Najlepsze u nich: zgodność bank ↔ falownik jedną linią.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">26.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="konkurencja/UX_BENCH_BRIDOM.html" data-typ="analiza ux"
+   style="--kafel-bg:#F5EDF0;--kafel-accent:#8A4F5D">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Analiza UX</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Bridom (bridom.pl): audyt UX</h3>
+  <p class="kafel__opis">Łańcuch EEL na 3 widokach mobile (home, lista, karta): elementy, kolejność, ocena regułami. Najlepsze u nich: szeroki katalog, filtry po parametrach.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">26.10.2026</span>
+  </div>
+</a></div></section>
+<section class="sekcja" data-sekcja="projekt"><h2 class="sekcja__t">Projekt sklepu (styl F i F2)</h2><p class="sekcja__o">F2 z 28.10: trzy fronty jednego sklepu i podstrony „Jak zacząć”. Styl F z 27.10: strona główna, listing, karta, konfigurator. Ceny klas i montażu przykładowe.</p><div class="kafle"><a class="kafel" href="projekt/zmiany/REKOMENDACJE_KAFEL_PRODUKTU.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Kafel produktu: 14 wariantów do testów A/B + głosowanie na start</h3>
+  <p class="kafel__opis">Benchmark kafli 19 sklepów energii i SejfZone, kafel startowy i 14 wariantów jako prawdziwe komponenty (telefon i komputer), trzy pierwsze testy. Głosują Tomek, Rafał i Bartek.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">29.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="projekt/zmiany/PROJEKTY_ZMIAN.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    <span class="badge badge-new">NOWE</span>
+  </div>
+  <h3 class="kafel__tytul">Projekt zmian: strona główna, lista, karta (łańcuch CRO)</h3>
+  <p class="kafel__opis">29 elementów w formacie „dziś | projekt” ze znacznikami, najlepsze na rynku z wycinkami, 145 testów A/B; benchmark 8 sklepów PL + 3 UE; Twoje wymagania z 28.10 przypięte do elementów.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="projekt/styl_F2/index.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">F2: strona główna „Dom bez rachunków”</h3>
+  <p class="kafel__opis">Przełącznik trzech linii w nagłówku, logo ze znakiem, pasek zaufania, najczęściej kupowane, jak zacząć, narzędzia, paragon, filmy, rankingi, artykuły z typem, opinie, ekspert.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="projekt/styl_F2/banki.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">F2: front „Banki energii”</h3>
+  <p class="kafel__opis">Ten sam szablon z danymi banków: 4 klasy, kafel z kosztem po dotacji z montażem, narzędzia banków.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="projekt/styl_F2/pompy.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">F2: front „Pompy ciepła”</h3>
+  <p class="kafel__opis">Szablon w akcencie ciepła: pompy 6–12 kW (cena dziś tylko dla 8 kW), narzędzia pomp, dotacja Czyste Powietrze.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="projekt/styl_F2/jak-zaczac-bank.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">F2: Jak zacząć kupowanie banku energii</h3>
+  <p class="kafel__opis">Podstrona treściowa z modelu treści: 6 kroków, każdy kończy się narzędziem albo produktem; kafle z katalogu, film, ekspert, źródła liczb.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="projekt/styl_F2/jak-zaczac-pompa.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">F2: Jak zacząć kupowanie pompy ciepła</h3>
+  <p class="kafel__opis">Ten sam szablon dla pomp: rachunki, moc, gotowość domu, Czyste Powietrze, ceny z montażem.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">28.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="projekt/porownanie_E3_F_390.png" data-typ="porównanie"
+   style="--kafel-bg:#F1EBF4;--kafel-accent:#6A4D65">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Porównanie</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">E3 vs F na telefonie (390 px)</h3>
+  <p class="kafel__opis">Moja iteracja po regułach UX (zieleń energii, Space Grotesk) obok propozycji dizajnera (kobalt, zieleń dotacji, Host Grotesk). Wybór: F; E3 = kandydat A/B.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">27.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="projekt/porownanie_E3_F_1280.png" data-typ="porównanie"
+   style="--kafel-bg:#F1EBF4;--kafel-accent:#6A4D65">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Porównanie</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">E3 vs F listing na desktopie (1280 px)</h3>
+  <p class="kafel__opis">To samo zestawienie na szerokim ekranie.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">27.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="projekt/styl_F/index.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Strona główna (styl F)</h3>
+  <p class="kafel__opis">Hero z tezą, dwa wejścia, cztery kroki, paragon montażu, dotacje, poradniki, pytania z pola. Zdjęcia poglądowe do czasu packshotów (D6).</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">27.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="projekt/styl_F/listing_banki.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Listing banków energii (styl F)</h3>
+  <p class="kafel__opis">Cztery klasy; kafel: zdjęcie, zgodne marki, bateria pojemności, cena + zł/kWh, z montażem, po dotacji. Filtry zawijane, wyszukiwarka w nagłówku.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">27.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="projekt/styl_F/karta_bank_10kwh.html" data-typ="projekt"
+   style="--kafel-bg:#FBF3E0;--kafel-accent:#8A6D1F">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Projekt</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Karta banku 10 kWh (styl F)</h3>
+  <p class="kafel__opis">Treść z modułu pisania: ile to kosztuje (paragon), dla kogo, falownik, parametry, dotacja, rynek, pytania, źródła [n]. Przyklejony panel zakupu, sticky CTA na telefonie.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">27.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="projekt/styl_F/konfigurator_bank.html" data-typ="proces"
+   style="--kafel-bg:#E5F2EB;--kafel-accent:#236B43">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Proces</span>
+    <span class="badge badge-q">Do przeglądu</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Konfigurator: dobór banku do falownika (styl F)</h3>
+  <p class="kafel__opis">6 pytań (PV, falownik, rachunek, backup, pompa/auto, rozliczenie), wynik z paragonem, dotacją i zwrotem, bez kontaktu. 22 falowniki, 4 klasy.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">27.10.2026</span>
+  </div>
+</a></div></section>
+<section class="sekcja" data-sekcja="plany"><h2 class="sekcja__t">Plany i raporty budowy</h2><p class="sekcja__o">Co, w jakiej kolejności i czym mierzone; stan środowiska i modułu pisania.</p><div class="kafle"><a class="kafel" href="plany/RAPORT_K0_PISANIE.html" data-typ="proces"
+   style="--kafel-bg:#E5F2EB;--kafel-accent:#236B43">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Proces</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Moduł pisania z agentem: K0</h3>
+  <p class="kafel__opis">Karta banku 10 kWh i poradnik przez łańcuch: kontekst CS → fakty → szkic → kontrole → brama jakości → humanizacja.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">26.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="plany/RAPORT_M0_M1.html" data-typ="proces"
+   style="--kafel-bg:#E5F2EB;--kafel-accent:#236B43">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Proces</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Środowisko lokalne: raport M0/M1</h3>
+  <p class="kafel__opis">Medusa + Next + edytor kart bez Payload; karta czyta pliki treści, ceny z Medusy; smoke 10/10.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">26.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="plany/PLAN_SKLEPU_I_TRESCI.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Plan sklepu i treści</h3>
+  <p class="kafel__opis">38 stron sklepu i 51 wpisów bloga z pola pytań i CS; kolejność, kto pisze, czym mierzymy.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">26.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="plany/MAPA_SYSTEMU_GRZEJEKO.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Przekrój: witryna i maszynownia</h3>
+  <p class="kafel__opis">32 maszyny w 5 blokach i 18 elementów witryny dla 3 odbiorców; klik = powiązania.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">23.10.2026</span>
+  </div>
+</a>
+<a class="kafel" href="plany/PLAN_EKOSYSTEMU_GRZEJEKO.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Plan ekosystemu grzejeko.pl</h3>
+  <p class="kafel__opis">Trzy warstwy: analityczna, narzędziowa, ekosystem sprzedażowy.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">21.10.2026</span>
+  </div>
+</a></div></section>
+<section class="sekcja" data-sekcja="wiedza"><h2 class="sekcja__t">Wiedza o kategoriach (sierpień)</h2><p class="sekcja__o">Standardy kategorii, rynek i pytania otwarte na żywych hubach.</p><div class="kafle"><a class="kafel" href="https://tomekwlqq.github.io/ai4cro-reports/own_shop/OWN_SHOP_HUB.html" data-typ="cs"
+   style="--kafel-bg:#EBF3F1;--kafel-accent:#3F6B62">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">CS</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">Hub kategorii: CS, rynek, konkurencja, idee</h3>
+  <p class="kafel__opis">Pompy ciepła i magazyny energii: standard kategorii (§8 z silnika), jak działa rynek, konkurencja z sierpnia, lista pomysłów.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">18.8.2026</span>
+  </div>
+</a>
+<a class="kafel" href="https://tomekwlqq.github.io/ai4cro-reports/own_shop/ECOMMS5_KNOWLEDGE_BOARD.html" data-typ="dokument"
+   style="--kafel-bg:#F5EBE5;--kafel-accent:#7A4E35">
+  <div class="kafel__badges">
+    <span class="badge badge-typ">Dokument</span>
+    <span class="badge badge-ok">Gotowe</span>
+    
+  </div>
+  <h3 class="kafel__tytul">EC5 Knowledge Board: co wiemy, czego nie</h3>
+  <p class="kafel__opis">Rejestr faktów z dowodami i pytań z definicją domknięcia.</p>
+  <div class="kafel__meta">
+    <span class="kafel__data">7.8.2026</span>
+  </div>
+</a></div></section>
+  </main>
+
+  
+
+  
+
+</div>
+<script>
+(function(){
+  var btns  = document.querySelectorAll('.filter-btn');
+  var kafle = document.querySelectorAll('#kafle .kafel');
+  var count = document.getElementById('kafle-count');
+
+  function setFilter(typ) {
+    var visible = 0;
+    kafle.forEach(function(k) {
+      var match = typ === 'wszystkie' || k.dataset.typ === typ;
+      k.classList.toggle('kafel--hidden', !match);
+      if (match) visible++;
+    });
+    count.textContent = visible + ' pozycji';
+    document.querySelectorAll('#kafle .sekcja').forEach(function(s) {
+      s.classList.toggle('sekcja--pusta', !s.querySelector('.kafel:not(.kafel--hidden)'));
+    });
+    btns.forEach(function(b) {
+      b.classList.toggle('filter-active', b.dataset.typ === typ);
+    });
+    // Stan w hash URL
+    if (typ !== 'wszystkie') {
+      history.replaceState(null, '', location.pathname + location.search + '#' + encodeURIComponent(typ));
+    } else {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+  }
+
+  // Odczyt hasha przy starcie
+  var initTyp = decodeURIComponent(location.hash.slice(1)) || 'wszystkie';
+  setFilter(initTyp);
+
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      setFilter(btn.dataset.typ);
+    });
+  });
+
+  // Obsługa przycisku wstecz/naprzód
+  window.addEventListener('hashchange', function() {
+    var typ = decodeURIComponent(location.hash.slice(1)) || 'wszystkie';
+    setFilter(typ);
+  });
+})();
+</script>
+</body>
+</html>

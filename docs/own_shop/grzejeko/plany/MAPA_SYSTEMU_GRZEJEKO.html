@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>grzejeko.pl — przekrój: witryna i maszynownia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+<style>
+:root{
+ --paper:#EEF3F1; --salon:#FBFCFB; --piwnica:#DFE8E4; --grid:rgba(18,38,46,.06);
+ --ink:#12262E; --mut:#5B6F76; --rule:rgba(18,38,46,.16);
+ --flow:#0E8F7E; --new:#D79A00; --work:#2F62D0; --plan:#8FA1A6; --lock:#B4233C;
+ --pipe:#0E8F7E;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;font-variation-settings:"wdth" 100;font-size:16px;line-height:1.5}
+body{padding:0 16px 120px;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.wrap{max-width:1180px;margin:0 auto}
+:focus-visible{outline:3px solid var(--work);outline-offset:2px}
+
+/* nagłówek */
+.head{padding:28px 0 6px;display:grid;gap:14px}
+@media(min-width:900px){.head{grid-template-columns:1.2fr 1fr;align-items:end}}
+h1{margin:0;font-size:clamp(28px,5vw,46px);line-height:1.02;font-weight:800;font-variation-settings:"wdth" 118;letter-spacing:-.01em}
+.lead{margin:8px 0 0;color:var(--mut);max-width:60ch}
+.stan{background:var(--salon);border:1.5px solid var(--rule);border-radius:12px;padding:12px 14px}
+.stan p{margin:0 0 8px;font-size:14px}
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:#e7ecea}
+.bar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 8px;margin-top:10px}
+.legend button{font:inherit;font-size:13px;display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 8px;border-radius:999px;border:1.5px solid var(--rule);background:#fff;color:var(--ink);cursor:pointer}
+.legend button[aria-pressed=true]{border-color:var(--ink);background:var(--ink);color:#fff}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block;border:2px solid currentColor}
+
+/* przekrój domu */
+.dom{position:relative;margin-top:22px}
+.dach{display:block;width:100%;height:56px}
+.poziom{position:relative;border-left:2.5px solid var(--ink);border-right:2.5px solid var(--ink);padding:16px 14px 18px}
+.salon{background:var(--salon)}
+.piwnica{background:var(--piwnica);background-image:linear-gradient(rgba(18,38,46,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(18,38,46,.07) 1px,transparent 1px);background-size:16px 16px;border-bottom:2.5px solid var(--ink);border-radius:0 0 6px 6px}
+.strop{height:26px;border-left:2.5px solid var(--ink);border-right:2.5px solid var(--ink);background:repeating-linear-gradient(135deg,var(--ink) 0 2px,transparent 2px 9px),#cfd9d5;display:flex;align-items:center;justify-content:center}
+.strop span{background:var(--paper);padding:1px 10px;border-radius:999px;font-size:12.5px;color:var(--ink)}
+.grunt{height:10px;background:repeating-linear-gradient(90deg,#9db0a9 0 6px,transparent 6px 12px);margin:0 -6px}
+.poziom h2{margin:0;font-size:clamp(20px,3vw,26px);font-weight:800;font-variation-settings:"wdth" 116;line-height:1.1}
+.poziom .opis{margin:4px 0 14px;color:var(--mut);font-size:14px;max-width:70ch}
+.izby{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:760px){.salon .izby{grid-template-columns:repeat(3,1fr)}.piwnica .izby{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1120px){.piwnica .izby{grid-template-columns:repeat(5,1fr)}}
+.izba{position:relative;border:1.5px solid var(--rule);border-radius:10px;padding:10px 10px 6px;background:rgba(255,255,255,.55)}
+.piwnica .izba{background:rgba(255,255,255,.7)}
+.izba h3{margin:0 0 2px;font-size:15px;font-weight:700;font-variation-settings:"wdth" 108}
+.izba .postep{font-size:12px;color:var(--mut);margin-bottom:6px}
+
+/* moduły jak w drzewku technologii */
+.m{position:relative;display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:start;width:100%;text-align:left;margin:6px 0;padding:8px 10px 8px 8px;border-radius:9px;background:#fff;border:1.5px solid var(--rule);font:inherit;color:var(--ink);cursor:pointer;transition:opacity .2s,box-shadow .2s,transform .15s}
+.m:hover{transform:translateY(-1px)}
+.m b{display:block;font-size:14px;font-weight:650;line-height:1.25}
+.m small{display:block;font-size:12.5px;color:var(--mut);line-height:1.35;margin-top:2px}
+.ic{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;margin-top:1px}
+.ic svg{width:14px;height:14px}
+.m.jest{border-color:rgba(14,143,126,.55)}.m.jest .ic{background:var(--flow);color:#fff}
+.m.dzis{border-color:var(--new);box-shadow:0 0 0 3px rgba(215,154,0,.18)}.m.dzis .ic{background:var(--new);color:#fff}
+.m.dost{border-color:rgba(47,98,208,.55);background:repeating-linear-gradient(135deg,#fff 0 8px,#f3f6fd 8px 16px)}.m.dost .ic{background:#fff;color:var(--work);border:2px solid var(--work)}
+.m.bud{border-style:dashed;border-color:var(--plan);background:rgba(255,255,255,.6)}.m.bud b{color:#3d5158}.m.bud .ic{border:2px dashed var(--plan);color:var(--plan)}
+.m.tom{border-color:rgba(180,35,60,.6)}.m.tom .ic{background:#fff;color:var(--lock);border:2px solid var(--lock)}
+.m.hid{display:none}
+.dom.wybor .m{opacity:.28}
+.dom.wybor .m.on{opacity:1}
+.dom.wybor .m.sel{opacity:1;box-shadow:0 0 0 3px var(--ink)}
+#rury{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:1}
+.m{z-index:2}.izba h3,.izba .postep,.poziom h2,.poziom .opis,.strop span{position:relative;z-index:2}
+#rury path{fill:none;stroke-width:2.6;stroke-linecap:round}
+#rury path.flow{stroke-dasharray:7 9;animation:plyn 1.1s linear infinite}
+@keyframes plyn{to{stroke-dashoffset:-32}}
+@media (prefers-reduced-motion:reduce){#rury path.flow{animation:none}.m{transition:none}}
+
+/* pętla */
+.petla{margin:26px 0 0;background:var(--salon);border:1.5px solid var(--rule);border-radius:12px;padding:14px}
+.petla h2{margin:0 0 4px;font-size:20px;font-weight:800;font-variation-settings:"wdth" 116}
+.petla p{margin:0 0 10px;color:var(--mut);font-size:14px}
+.tor{display:grid;grid-template-columns:1fr;gap:8px;counter-reset:k}
+@media(min-width:760px){.tor{grid-template-columns:repeat(5,1fr)}}
+.tor div{position:relative;border:1.5px solid var(--rule);border-radius:10px;padding:10px 10px 10px 40px;background:#fff;font-size:14px;counter-increment:k}
+.tor div::before{content:counter(k);position:absolute;left:10px;top:10px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center}
+.tor div small{display:block;color:var(--mut);font-size:12.5px}
+
+/* panel szczegółów */
+#panel{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:0 12px 12px;pointer-events:none}
+#panel .k{pointer-events:auto;max-width:1180px;margin:0 auto;background:var(--ink);color:#EEF3F1;border-radius:14px;padding:14px 16px;box-shadow:0 10px 40px rgba(18,38,46,.35);transform:translateY(130%);transition:transform .25s ease}
+#panel.open .k{transform:none}
+#panel h4{margin:0;font-size:18px;font-weight:750;font-variation-settings:"wdth" 110;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#panel .st{font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:rgba(255,255,255,.12)}
+#panel .x{float:right;background:none;border:0;color:#EEF3F1;font-size:24px;line-height:1;cursor:pointer}
+#panel dl{margin:8px 0 0;display:grid;grid-template-columns:1fr;gap:2px 14px;font-size:14px}
+@media(min-width:760px){#panel dl{grid-template-columns:130px 1fr}}
+#panel dt{color:#9fb3b9;font-size:12.5px;padding-top:2px}#panel dd{margin:0 0 4px}
+#panel code{font-size:12.5px;background:rgba(255,255,255,.1);padding:1px 6px;border-radius:4px;word-break:break-all}
+#panel .chips button{font:inherit;font-size:12.5px;margin:2px 4px 2px 0;padding:3px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#EEF3F1;cursor:pointer}
+.stopka{margin-top:26px;font-size:12.5px;color:var(--mut)}
+@media(max-width:600px){#panel{padding:0 8px 8px}#panel .k{padding:10px 12px;border-radius:12px}#panel h4{font-size:16px}#panel dl{font-size:13px;margin-top:4px}#panel dt{font-size:11.5px}#panel dd{margin-bottom:2px}#panel .chips button{font-size:12px;padding:2px 7px;margin:1px 3px 1px 0}}
+@media (prefers-reduced-motion:reduce){#panel .k{transition:none}}
+</style>
+</head>
+<body>
+<!-- hub-backlink -->
+<div id="hub-backlink-bar" style="position:sticky;top:0;z-index:100;background:#f4f6fa;padding:8px 16px;font:500 13px/1.4 'Host Grotesk',system-ui,sans-serif;letter-spacing:.04em;">
+  <a href="../GRZEJEKO_HUB.html" style="color:#13203a;text-decoration:none;">← Hub grzejeko</a>
+</div>
+<!-- /hub-backlink --><div class="wrap">
+
+<header class="head">
+ <div>
+  <h1>Przekrój grzejeko</h1>
+  <p class="lead">Na górze salon, czyli to, co widzi klient, Google i Ty. Pod stropem kotłownia, czyli maszyny, które to wszystko produkują. Kliknij moduł, żeby zobaczyć, którymi rurami jest połączony.</p>
+ </div>
+ <div class="stan">
+  <p id="stan_txt">Stan modułów</p>
+  <div class="bar" id="bar"></div>
+  <div class="legend" id="legend"></div>
+ </div>
+</header>
+
+<div class="dom" id="dom">
+ <svg class="dach" viewBox="0 0 1000 56" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0 56 L500 4 L1000 56" fill="none" stroke="#12262E" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+  <rect x="760" y="10" width="34" height="30" fill="#EEF3F1" stroke="#12262E" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+ </svg>
+ <section class="poziom salon" aria-labelledby="h_w">
+  <h2 id="h_w">Salon: co widać</h2>
+  <p class="opis">Trzech odbiorców. Klient kupuje, Google i modele AI czytają i cytują, Ty zatwierdzasz.</p>
+  <div class="izby" id="W"></div>
+ </section>
+ <div class="strop"><span>strop: tu maszynownia oddaje gotowe rzeczy</span></div>
+ <section class="poziom piwnica" aria-labelledby="h_m">
+  <h2 id="h_m">Kotłownia: co produkuje</h2>
+  <p class="opis">Klient tego nie widzi. Tu powstaje wiedza o kategorii, treść, ceny i decyzje, co testować.</p>
+  <div class="izby" id="M"></div>
+ </section>
+ <div class="grunt"></div>
+ <svg id="rury" aria-hidden="true"></svg>
+</div>
+
+<section class="petla" aria-labelledby="h_p">
+ <h2 id="h_p">Obieg, który sam się poprawia</h2>
+ <p>Jak woda w instalacji: krąży w kółko i za każdym okrążeniem strona jest trochę lepsza. LLM proponuje, pomiar decyduje, publikujesz Ty.</p>
+ <div class="tor">
+  <div>Pomiar<small>zachowania i zamówienia</small></div>
+  <div>Silnik testów<small>rozdziela ruch między wersje</small></div>
+  <div>Agent<small>pisze nowe wersje modułów</small></div>
+  <div>Ty<small>zatwierdzasz w edytorze</small></div>
+  <div>Witryna<small>pokazuje nową wersję</small></div>
+ </div>
+</section>
+
+<p class="stopka">Rysunek z 25.10.2026, stany sprawdzone w plikach tego dnia. Silnik wiedzy w szczegółach: <code>GEO_PDP_Optimizer/MAPA_CALOSCI_GEO.html</code>. Plan: <code>Own_shop/BUILD_PLAN_GRZEJEKO.md</code>.</p>
+</div>
+
+<div id="panel" aria-live="polite"><div class="k"><button class="x" aria-label="Zamknij" onclick="zamknij()">×</button><div id="pbody"></div></div></div>
+
+<script>
+const N={
+// ===== MASZYNOWNIA =====
+dfs:{z:"M",b:"zb",s:"jest",n:"DataForSEO",k:"frazy, wolumeny, wyniki Google",co:"Frazy z wolumenem, wyniki wyszukiwania z pytaniami i AI Overview.",g:"GEO dataforseo_client · Own_shop/tools/dfs_kw.py",st:"Działa. Koszt dotąd: 0,67 USD za dwa harvesty i 0,05 USD za silnik CEP."},
+harvest:{z:"M",b:"zb",s:"jest",n:"Harvest wyników Google",k:"frazy → wyniki → pula adresów",co:"98 fraz pomp i 90 fraz banków → organiczne, „ludzie pytają też”, AI Overview, powiązane.",g:"Own_shop/tools/harvest_serp.py",st:"Pompy 21.10, banki 23.10."},
+scrape:{z:"M",b:"zb",s:"jest",n:"Pobieranie stron",k:"curl, tekst, bez modelu",co:"Pobiera strony z puli i wyciąga tekst do bazy.",g:"Own_shop/tools/scrape.py",st:"2 193 strony w bazie, 1 805 z pełnym tekstem."},
+ec5db:{z:"M",b:"zb",s:"jest",n:"Baza wiedzy ec5.db",k:"strony, frazy, źródła z datą",co:"Jedno miejsce na zebrane źródła; każda liczba w treści ma tu adres i datę.",g:"Own_shop/research/ec5.db",st:"Działa."},
+pzs:{z:"M",b:"zb",s:"jest",n:"Pytania ze stron",k:"harvest treści przed CS i CQF",co:"Wyciąga pytania z treści pobranych stron, odsiewa menu i newsy. Twoja metoda z 25.10.",g:"Own_shop/tools/pytania_ze_stron.py",st:"Banki: 2 482 pytania (194 z ramki Google)."},
+fund:{z:"M",b:"wi",s:"jest",n:"Fundament kategorii",k:"problemy, frazy, sytuacje",co:"Po co kategoria istnieje, jakie problemy załatwia, z jakich sytuacji klient wchodzi.",g:"GEO_PDP_Optimizer/FUND_magazyn_energii.md",st:"Banki gotowe (17 sytuacji z matrycy i harvestu). Pompy: z sierpnia."},
+cep:{z:"M",b:"wi",s:"jest",n:"Silnik CEP",k:"5 torów sytuacji klienta",co:"Rdzeń, fundament, dedukcja, soczewki społeczne, wzorce ogólne → sytuacje wejścia klienta.",g:"GEO tools/cep_tory.py",st:"Banki: 58 kandydatów (25.10)."},
+cs:{z:"M",b:"wi",s:"dost",n:"Standard kategorii (CS)",k:"16 sekcji: cechy, ceny, obawy, ton",co:"Pełny opis kategorii: cechy decydujące, ceny, co jest naciąganiem, ton pisania pod AI.",g:"GEO WPIS_CS_magazyn_energii_V2.md",st:"Banki: 16 sekcji złożone, 3 czekają na silniki. Pompy: stary kanon."},
+pytania:{z:"M",b:"wi",s:"jest",n:"Silnik pytań",k:"sytuacja × etap decyzji",co:"Dla każdej sytuacji pytania na etapach: potrzeba, rozpoznanie, nauka, preselekcja, porównanie, wybór sklepu, zakup.",g:"GEO perception_paths_v5 · dump_questions.py",st:"Banki: 1 177 pytań, 57 sytuacji."},
+natura:{z:"M",b:"wi",s:"dost",n:"Natura pytań",k:"czy temat żyje w sieci",co:"Sprawdza, czy pytanie ma ślad w wynikach, podpowiedziach Google, dyskusjach.",g:"GEO tools/natura_pytan.py",st:"Banki: w toku (tryb darmowy)."},
+uzup:{z:"M",b:"wi",s:"dost",n:"Uzupełnienie pola ze stron",k:"czego silnik nie pokrył",co:"Pytania ze stron, których silnik nie pokrył, wchodzą do pola z adresem źródła.",g:"Own_shop/tools/pole_uzupelnij_ze_stron.py",st:"Banki: 149 do dopisania po naturze."},
+cdt:{z:"M",b:"wi",s:"dost",n:"Drzewo doboru",k:"kolejność cech = kolejność w treści",co:"Najpierw obawy do rozwiania, potem atrybuty zawężania (pojemność, moc, falownik).",g:"GEO tools/build_cdt.py",st:"Banki: następny krok."},
+cqf:{z:"M",b:"wi",s:"dost",n:"Widok pola pytań (CQF v6)",k:"wszystkie pytania na jednej mapie",co:"Standard wizualizacji pola pytań.",g:"GEO tools/prototyp_cqf_v6.py",st:"Banki: po uzupełnieniu."},
+kalk:{z:"M",b:"wi",s:"dost",n:"Reguły kalkulatorów",k:"jeden plik: wzory i stałe ze źródłem",co:"Koszt ogrzewania, dobór pojemności, koszt całkowity, dotacja netto, zwrot, dom bez rachunków.",g:"do zrobienia: Own_shop/cs/kalkulatory.json",st:"Dwa działają w prototypie."},
+pisanie:{z:"M",b:"pi",s:"jest",n:"Pipeline pisania",k:"zasada z SejfZone, nowe klocki",co:"Sprawdź, czy nie ma → kontekst → fakty u źródła → szkic → brama GO/STOP → humanizacja → szkic do zatwierdzenia.",g:"SejfZone/METODA_pipeline_pisania_artykulu.md (zasada)",st:"Do złożenia na nowych klockach; wyjście = moduły."},
+kopi:{z:"M",b:"pi",s:"jest",n:"Kopirajter + reguły języka",k:"głos klienta, każda fraza ze źródłem",co:"Agent piszący z rdzeniem metody i regułami z Twoich korekt.",g:"agent kopirajter · skill copy-rdzen · COPY_LEARNINGS",st:"Działa w GLOV."},
+bramki:{z:"M",b:"pi",s:"jest",n:"Bramki oceny",k:"język · psychologia · sens",co:"Bramka języka, 14 sił psychologii sprzedaży, ocena sensu standardu.",g:"agenci copy-quality-pl · psi · strateg",st:"Działa w GLOV i CRO."},
+human:{z:"M",b:"pi",s:"jest",n:"Humanizacja",k:"brzmi jak ekspert, nie jak AI",co:"Faza z SejfZone, którą zostawiamy.",g:"SejfZone FAZA 5",st:"Działa."},
+kontrola:{z:"M",b:"pi",s:"dost",n:"Kontrola i ocena GEO",k:"nie wypuszcza strony z brakami",co:"Braki w treści, liczba bez źródła, strona bez kosztu, ocena GEO ≥ 60%.",g:"edytor kontrola.py · GEO geo_check.py",st:"Do rozszerzenia o źródła i koszt."},
+nauka:{z:"M",b:"pi",s:"jest",n:"Pętla nauki copy",k:"Twoje korekty → reguły",co:"Korekty trafiają do poczekalni, pełnomocnik zamienia je w reguły.",g:"_shared/petla_nauki_copy",st:"Działa w nocy."},
+medusa:{z:"M",b:"ma",s:"jest",n:"Medusa",k:"produkt, cena, koszyk, zamówienie",co:"Silnik sprzedaży: warianty, ceny, stany, zdjęcia, płatności, zamówienia.",g:"wzór: NOTEL_RFBenchmark/test-env/rfb-shop",st:"Działa na RFB; instancja grzejeko do postawienia."},
+repo:{z:"M",b:"ma",s:"jest",n:"Repo treści",k:"moduły stron w plikach",co:"Treść każdej strony w plikach jak w GLOV, szkic i opublikowane.",g:"do zrobienia: grzejeko/tresc/",st:"Interfejs jest, adaptera nie ma."},
+typy:{z:"M",b:"ma",s:"dost",n:"Typy modułów",k:"schemat pól + dane dla Google",co:"18 typów z pakietu EC5 + 3 z GLOV + 6 grzejeko (koszt całkowity, montaż, dotacja, kalkulator, priorytety, dla kogo).",g:"ecomms5-template/packages/content/schema",st:"Do rozszerzenia."},
+edytor:{z:"M",b:"ma",s:"jest",n:"Edytor treści",k:"nakładka na repo i Medusę",co:"Twój edytor z GLOV: oceny, wersje z autorem, silnik testowy, kontrola, asystent.",g:"start z NOTEL_RFBenchmark/test-env/edytor",st:"Własna kopia grzejeko do zrobienia."},
+proto:{z:"M",b:"ma",s:"jest",n:"Generator prototypu",k:"7 stron z 22 źródłami",co:"Pierwsza ścieżka pompy i banku na telefon.",g:"Own_shop/prototyp/build_prototyp.py",st:"23.10."},
+pomiar:{z:"M",b:"uc",s:"dost",n:"Pomiar",k:"zgody, GA4, Clarity, BigQuery",co:"Źródło wejścia i identyfikatory kliknięć zapisane w zamówieniu.",g:"wzór: CC/analityka/EKOSYSTEM_POMIARU.html",st:"Przed startem, nie da się dorobić wstecz."},
+testy:{z:"M",b:"uc",s:"bud",n:"Silnik testów",k:"wersje modułów, rozdział ruchu",co:"Stała wersja dla odwiedzającego; ruch na wersje, które sprzedają.",g:"wzór z CC: GrowthBook",st:"Po starcie."},
+agent:{z:"M",b:"uc",s:"bud",n:"Agent kandydatów",k:"LLM proponuje, pomiar decyduje",co:"Pisze nowe wersje modułów jako szkice ze źródłami.",g:"reużywa pipeline pisania i edytor",st:"Ostatni element pętli."},
+aivis:{z:"M",b:"uc",s:"jest",n:"Widoczność w AI",k:"czy AI nas cytuje",co:"Pytania kontrolne odpytywane w ChatGPT, Perplexity, AI Overview.",g:"GEO semrush_killer (ai-visibility), reverse_llm.py",st:"Narzędzie jest."},
+oferta:{z:"M",b:"uc",s:"tom",n:"Oferta: dostawca i SKU",k:"marki, ceny, dostępność",co:"Od kogo kupujemy pompy i banki, po ile, z jakim czasem dostawy.",g:"Own_shop/product/OFERTA_V1.md (do zrobienia)",st:"Czeka na Ciebie."},
+firma:{z:"M",b:"uc",s:"tom",n:"Firma montażowa",k:"cennik, zasięg, uprawnienia",co:"Ceny montażu standard, zasięg, dane do wiarygodności strony.",g:"—",st:"Czeka na Ciebie."},
+domena:{z:"M",b:"uc",s:"tom",n:"Domena grzejeko.pl",k:"własność, DNS",co:"Zarejestrowana 26.02.2026, DNS na aftermarket.pl.",g:"—",st:"Czeka na potwierdzenie."},
+// ===== WITRYNA =====
+w_start:{z:"W",b:"kl",s:"jest",n:"Strona główna",k:"teza: bez pięciu wizyt",f:["cs","repo","typy","medusa","domena"]},
+w_kat:{z:"W",b:"kl",s:"jest",n:"Kategorie: pompy, banki",k:"lista z ceną i kosztem całkowitym",f:["medusa","cdt","cs","oferta"]},
+w_poradnik:{z:"W",b:"kl",s:"dost",n:"Poradnik wyboru",k:"sam decydujesz, co najważniejsze",f:["cs","pytania","uzup","natura","pisanie","kopi","bramki","human","kontrola","repo","edytor"]},
+w_kalk:{z:"W",b:"kl",s:"dost",n:"Kalkulatory",k:"koszt, pojemność, zwrot",f:["kalk","cs","ec5db"]},
+w_montaz:{z:"W",b:"kl",s:"jest",n:"Ile powinien kosztować montaż",k:"rozkład, naciąganie, liczba wizyt",f:["firma","ec5db","pisanie","kontrola","cs"]},
+w_instr:{z:"W",b:"kl",s:"bud",n:"Instrukcje krok po kroku",k:"zakup → montaż → dotacja → uruchomienie",f:["pisanie","cs","firma","kopi","human"]},
+w_karta:{z:"W",b:"kl",s:"jest",n:"Karta produktu",k:"koszt całkowity, 3 poziomy montażu",f:["medusa","typy","repo","cdt","cs","kalk","kontrola","oferta"]},
+w_koszyk:{z:"W",b:"kl",s:"dost",n:"Koszyk z montażem i płatność",k:"pompa + montaż, Stripe",f:["medusa","firma","oferta","pomiar"]},
+w_dotacja:{z:"W",b:"kl",s:"jest",n:"Dotacje",k:"program, limit, warunki, papiery",f:["ec5db","cs","pisanie","firma"]},
+w_jsonld:{z:"W",b:"ai",s:"dost",n:"Dane strukturalne",k:"produkt, oferta z ceną i datą, FAQ, instrukcja",f:["medusa","typy"]},
+w_faq:{z:"W",b:"ai",s:"dost",n:"Odpowiedzi do cytowania",k:"pytanie → liczba → data → źródło",f:["pytania","uzup","natura","pisanie","kontrola"]},
+w_feedy:{z:"W",b:"ai",s:"bud",n:"Feedy i katalog dla agentów",k:"Google, Bing, Ceneo, ChatGPT",f:["medusa","oferta"]},
+w_cyt:{z:"W",b:"ai",s:"bud",n:"Cytowania w AI",k:"czy ChatGPT i AI Overview nas podają",f:["aivis","w_faq","w_jsonld"]},
+w_edytor:{z:"W",b:"ty",s:"jest",n:"Edytor: zatwierdzanie",k:"szkic → zatwierdź → live",f:["edytor","repo","medusa","kontrola","agent"]},
+w_cqf:{z:"W",b:"ty",s:"jest",n:"Standard i pole pytań kategorii",k:"CS, CQF, hub",f:["cs","pytania","natura","uzup","cqf","cdt"]},
+w_proto:{z:"W",b:"ty",s:"jest",n:"Prototyp ścieżki",k:"7 stron na telefon",f:["proto","ec5db","cs"]},
+w_raporty:{z:"W",b:"ty",s:"bud",n:"Raporty pomiaru",k:"co sprzedaje, co testować",f:["pomiar","testy"]},
+w_plany:{z:"W",b:"ty",s:"jest",n:"Plany i ta mapa",k:"BUILD_PLAN, plan ekosystemu",f:[]}
+};
+// opisy witryny
+const WO={w_start:"Teza i wejście do dwóch kategorii.",w_kat:"Lista pomp i banków z ceną i kosztem całkowitym.",w_poradnik:"Poradnik „sam decydujesz, co najważniejsze”. W prototypie dla pompy i banku.",w_kalk:"Kalkulatory jako narzędzie i jako tabela tekstowa dla botów.",w_montaz:"Jawny rozkład kosztu montażu: pozycje, co podbija cenę, co jest naciąganiem, ile wizyt trzeba.",w_instr:"Co po kolei, z czasem i kosztem każdego kroku.",w_karta:"Karta z kosztem całkowitym: produkt, dodatki, poziom montażu, dotacja.",w_koszyk:"Montaż jako usługa w koszyku, płatność, zamówienie w Medusie.",w_dotacja:"Aktualny program, limit, warunki, papiery z montażu.",w_jsonld:"Dane strukturalne generowane z modułów i z Medusy przy wyświetleniu.",w_faq:"Jedno pytanie, jedna odpowiedź z liczbą i datą, widoczne w HTML bez JavaScriptu.",w_feedy:"Feedy produktowe i publiczny katalog Medusy.",w_cyt:"Wynik pracy całej maszynowni widziany z zewnątrz.",w_edytor:"Tu zatwierdzasz szkice agenta i publikujesz.",w_cqf:"Standard kategorii, pole pytań i hub — do przeglądu.",w_proto:"Prototyp z 23.10 do Twojego odbioru.",w_raporty:"Co sprzedaje, jakie wersje wygrywają.",w_plany:"BUILD_PLAN_GRZEJEKO, plan ekosystemu, ta mapa."};
+const WG={w_poradnik:"Own_shop/prototyp/*_poradnik.html",w_kalk:"w poradnikach prototypu",w_montaz:"Own_shop/prototyp/*_montaz.html",w_karta:"Own_shop/prototyp/*_karta.html",w_cqf:"GEO CQF_magazyn_energii.html (po łańcuchu)",w_proto:"Own_shop/prototyp/index.html",w_plany:"Own_shop/BUILD_PLAN_GRZEJEKO.md · product/PLAN_EKOSYSTEMU_GRZEJEKO.html"};
+
+const SL={jest:"działa",dzis:"zrobione (stan 2026-10-29)",dost:"przerabiamy",bud:"w planie",tom:"czeka na Ciebie"};
+const KOL={jest:"#0E8F7E",dzis:"#D79A00",dost:"#2F62D0",bud:"#8FA1A6",tom:"#B4233C"};
+const IKO={
+ jest:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="4" fill="currentColor"/></svg>',
+ dzis:'<svg viewBox="0 0 16 16"><path d="M8 1.5l1.9 4.1 4.4.5-3.3 3 .9 4.4L8 11.3 4.1 13.5l.9-4.4-3.3-3 4.4-.5z" fill="currentColor"/></svg>',
+ dost:'<svg viewBox="0 0 16 16"><path d="M3 13l1-3 6-6 2 2-6 6-3 1zM10 4l2 2" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg>',
+ bud:'<svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+ tom:'<svg viewBox="0 0 16 16"><rect x="3.5" y="7" width="9" height="7" rx="1.5" fill="currentColor"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" stroke="currentColor" stroke-width="1.8" fill="none"/></svg>'
+};
+const IZBY={W:[["kl","Klient w sklepie"],["ai","Google i modele AI"],["ty","Ty"]],M:[["zb","Zbieranie"],["wi","Wiedza o kategorii"],["pi","Pisanie"],["ma","Magazyny i edycja"],["uc","Uczenie i biznes"]]};
+const FEEDS={};for(const [id,x] of Object.entries(N)) if(x.f) x.f.forEach(m=>{(FEEDS[m]=FEEDS[m]||[]).push(id)});
+const dom=document.getElementById('dom'),svg=document.getElementById('rury');
+let wybrany=null,filtr='all';
+
+function rysuj(){
+ for(const z of ["W","M"]){
+  const box=document.getElementById(z);
+  for(const [iid,nazwa] of IZBY[z]){
+   const el=Object.entries(N).filter(([,x])=>x.z===z&&x.b===iid);
+   const got=el.filter(([,x])=>x.s==='jest'||x.s==='dzis').length;
+   const d=document.createElement('div');d.className='izba';
+   d.innerHTML='<h3>'+nazwa+'</h3><div class="postep">'+got+' z '+el.length+' działa</div>';
+   for(const [id,x] of el){
+    const b=document.createElement('button');b.className='m '+x.s;b.dataset.id=id;b.dataset.s=x.s;
+    b.setAttribute('aria-label',x.n+', '+SL[x.s]);
+    b.innerHTML='<span class="ic">'+IKO[x.s]+'</span><span><b>'+x.n+'</b><small>'+x.k+'</small></span>';
+    b.onclick=()=>wybierz(id);d.appendChild(b);
+   }
+   box.appendChild(d);
+  }
+ }
+ const cnt={jest:0,dzis:0,dost:0,bud:0,tom:0};Object.values(N).forEach(x=>cnt[x.s]++);
+ const all=Object.keys(N).length;
+ document.getElementById('stan_txt').textContent='Stan modułów: '+(cnt.jest+cnt.dzis)+' z '+all+' działa';
+ document.getElementById('bar').innerHTML=Object.keys(cnt).map(k=>'<i style="width:'+(cnt[k]/all*100)+'%;background:'+KOL[k]+'" title="'+SL[k]+': '+cnt[k]+'"></i>').join('');
+ const lg=document.getElementById('legend');
+ lg.innerHTML='<button aria-pressed="true" data-f="all">wszystkie</button>'+Object.keys(cnt).map(k=>'<button aria-pressed="false" data-f="'+k+'"><span class="sw" style="color:'+KOL[k]+'"></span>'+SL[k]+' '+cnt[k]+'</button>').join('');
+ lg.querySelectorAll('button').forEach(b=>b.onclick=()=>{filtr=b.dataset.f;lg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));zamknij();document.querySelectorAll('.m').forEach(m=>m.classList.toggle('hid',filtr!=='all'&&m.dataset.s!==filtr));});
+}
+
+function srodek(el,gora){const r=el.getBoundingClientRect(),d=dom.getBoundingClientRect();return {x:r.left-d.left+r.width/2,y:(gora?r.top:r.bottom)-d.top};}
+function rury(id){
+ svg.innerHTML='';if(!id)return;
+ const x=N[id];const w=dom.getBoundingClientRect();svg.setAttribute('viewBox','0 0 '+w.width+' '+w.height);
+ const pary=[];
+ if(x.z==='W')(x.f||[]).forEach(m=>{if(N[m]&&N[m].z==='M')pary.push([m,id]);else if(N[m])pary.push([m,id]);});
+ else (FEEDS[id]||[]).forEach(t=>pary.push([id,t]));
+ for(const [a,b] of pary){
+  const ea=document.querySelector('.m[data-id="'+a+'"]'),eb=document.querySelector('.m[data-id="'+b+'"]');
+  if(!ea||!eb||ea.classList.contains('hid')||eb.classList.contains('hid'))continue;
+  const za=N[a].z==='M',zb=N[b].z==='M';
+  const p1=srodek(ea,za),p2=srodek(eb,!zb?false:true);
+  const dy=Math.max(40,Math.abs(p1.y-p2.y)*.45);
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  const c1y=za?p1.y-dy:p1.y+dy, c2y=zb?p2.y-dy:p2.y+dy;
+  path.setAttribute('d','M'+p1.x+' '+p1.y+' C'+p1.x+' '+c1y+' '+p2.x+' '+c2y+' '+p2.x+' '+p2.y);
+  const kol=KOL[N[a].s];
+  path.setAttribute('stroke',kol);
+  path.setAttribute('class',(N[a].s==='jest'||N[a].s==='dzis')?'flow':'');
+  if(N[a].s==='bud'||N[a].s==='tom')path.setAttribute('stroke-dasharray','2 6');
+  svg.appendChild(path);
+ }
+}
+function chip(i){return '<button onclick="wybierz(\''+i+'\')">'+N[i].n+'</button>';}
+function wybierz(id){
+ wybrany=id;const x=N[id];const rel=new Set([id,...(x.f||[]),...(FEEDS[id]||[])]);
+ dom.classList.add('wybor');
+ document.querySelectorAll('.m').forEach(m=>{m.classList.toggle('on',rel.has(m.dataset.id));m.classList.toggle('sel',m.dataset.id===id);});
+ let h='<h4>'+x.n+' <span class="st" style="color:'+KOL[x.s]+';background:#fff">'+SL[x.s]+'</span></h4><dl>';
+ if(x.z==='M'){
+  h+='<dt>Co robi</dt><dd>'+x.co+'</dd><dt>Gdzie leży</dt><dd><code>'+x.g+'</code></dd><dt>Stan</dt><dd>'+x.st+'</dd>';
+  h+='<dt>Zasila w salonie</dt><dd class="chips">'+((FEEDS[id]||[]).map(chip).join('')||'nic bezpośrednio')+'</dd>';
+ }else{
+  h+='<dt>Co widać</dt><dd>'+(WO[id]||x.k)+'</dd>'+(WG[id]?'<dt>Gdzie</dt><dd><code>'+WG[id]+'</code></dd>':'');
+  h+='<dt>Zasilane przez</dt><dd class="chips">'+((x.f||[]).map(chip).join('')||'—')+'</dd>';
+ }
+ document.getElementById('pbody').innerHTML=h+'</dl>';
+ document.getElementById('panel').classList.add('open');
+ rury(id);
+}
+function zamknij(){wybrany=null;dom.classList.remove('wybor');document.querySelectorAll('.m').forEach(m=>m.classList.remove('on','sel'));document.getElementById('panel').classList.remove('open');svg.innerHTML='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')zamknij();});
+window.addEventListener('resize',()=>{if(wybrany)rury(wybrany);});
+rysuj();
+</script>
+</body></html>

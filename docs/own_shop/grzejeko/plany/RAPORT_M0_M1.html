@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>grzejeko M0/M1 — raport</title>
+<style>
+:root{--ink:#111827;--body:#374151;--muted:#6b7280;--line:#e5e7eb;--panel:#f6f7f9;--ok:#15803d;--warn:#b45309;--bad:#b91c1c;--accent:#C2410C;--bg:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#f3f4f6;--body:#d1d5db;--muted:#9ca3af;--line:#374151;--panel:#1f2937;--bg:#111827}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--body);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+main{max-width:920px;margin:0 auto;padding:24px 16px 64px}h1{color:var(--ink);font-size:26px;margin:0 0 4px}h2{color:var(--ink);font-size:19px;margin:32px 0 10px;border-top:1px solid var(--line);padding-top:20px}
+.sub{color:var(--muted);margin:0 0 16px}.box{background:var(--panel);border-radius:12px;padding:12px 14px;margin:10px 0}.warn{border-left:4px solid var(--warn)}.ok{border-left:4px solid var(--ok)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{color:var(--ink);font-weight:600}
+td code,li code,p code{font-size:12.5px;background:var(--panel);padding:1px 4px;border-radius:4px;overflow-wrap:anywhere}.t{overflow-x:auto}
+.ok-t{color:var(--ok);font-weight:600}.w-t{color:var(--warn);font-weight:600}.b-t{color:var(--bad);font-weight:600}
+img{max-width:100%;border:1px solid var(--line);border-radius:8px}.zrzuty{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+</style>
+</head>
+<body>
+<!-- hub-backlink -->
+<div id="hub-backlink-bar" style="position:sticky;top:0;z-index:100;background:#f4f6fa;padding:8px 16px;font:500 13px/1.4 'Host Grotesk',system-ui,sans-serif;letter-spacing:.04em;">
+  <a href="../GRZEJEKO_HUB.html" style="color:#13203a;text-decoration:none;">← Hub grzejeko</a>
+</div>
+<!-- /hub-backlink --><main>
+<h1>grzejeko-shop · M0 / M1 / M1b</h1>
+<p class="sub">26.10.2026 · sesja „środowisko” · lokalnie: Medusa :9001 · Next :8001 · edytor :8913 · Postgres :5434 · Redis :6381</p>
+
+<div class="box ok"><b>Zrobione:</b>
+(a) <code>curl -s http://localhost:8001/pl/products/bank-energii-10kwh</code> → <code>&lt;h1&gt;</code> „Magazyn energii 10 kWh LiFePO4”, „24 900 zł”, <code>application/ld+json</code> Product/Offer z <code>"price":"24900.00"</code>, <code>PLN</code> i <code>validFrom</code> z chwili renderu.
+(b) <code>node scripts/smoke.mjs</code> → <span class="ok-t">PASS 10/10</span>, w tym [3b]: zmiana ceny w Medusie widoczna od razu.
+Do tego <code>scripts/test-adapter.mjs</code> <span class="ok-t">10/10</span> i Playwright headless 390 px <span class="ok-t">2/2</span> (scrollWidth 390, 0 przewijań wewnętrznych, 0 błędów JS).
+M1b: edytor :8913 otwiera kartę z ceną z Medusy, zapisuje tylko <code>szkic.json</code>, a <code>/preview</code> pokazuje szkic.</div>
+
+<div class="box warn"><b>Incydent — złamałem zakaz „nic w NOTEL_RFBenchmark”.</b> Edycja <code>import_medusa.py</code> w kopii się wywaliła, a następna linia odpaliła skrypt z domyślnymi ścieżkami RFB. W <code>NOTEL_RFBenchmark/test-env/edytor_kart/</code> nadpisał pliki 11 kart: <code>dane.json</code> zostały puste, a <code>edytor.json</code> straciły znaczniki <code>rodzina=software</code> (n-analytics, rfb-professional-n-analytics-portal) i <code>packshot_zaslepka</code> (rfb-dps-case, rfb-hw-cube, rfb-probe-mkii-m2m). <b>Moja ocena „produkcja bezpieczna” była błędna:</b> wrzutki RFB z tego dnia przeniosły zepsute <code>edytor.json</code> na serwer. <b>Naprawione 26.10 przez sesję RFB:</b> wszystkie 11 <code>dane.json</code> z serwera, <code>edytor.json</code> lokalnie i na serwerze z kopii z 13:14; edytor na serwerze znów widzi 3 aplikacje i 10 urządzeń. Kopia grzejeko odmawia już zapisu do katalogu RFB.</div>
+
+<h2>1. Co wycięte z Payload</h2>
+<p><b>Storefront — usunięte pliki (25):</b></p>
+<div class="t"><table>
+<tr><th>Katalog</th><th>Pliki</th></tr>
+<tr><td><code>src/app/(payload)/</code></td><td><code>layout.tsx</code>, <code>custom.scss</code>, <code>admin/[[...segments]]/page.tsx</code>, <code>admin/[[...segments]]/not-found.tsx</code>, <code>admin/importMap.js</code>, <code>api/[...slug]/route.ts</code>, <code>api/rfb-formulki/route.ts</code></td></tr>
+<tr><td><code>src/collections/</code></td><td><code>RfbProducts.ts</code>, <code>Media.ts</code>, <code>Users.ts</code>, <code>ContentStatusDashboard.tsx</code>, <code>ContentStatusTable.tsx</code></td></tr>
+<tr><td><code>src/globals/</code></td><td><code>CardMasters.ts</code>, <code>LegalTexts.ts</code>, <code>MailTemplates.ts</code>, <code>SalesRules.ts</code></td></tr>
+<tr><td><code>src/migrations/</code></td><td><code>index.ts</code>, <code>20261009_092045_initial.{ts,json}</code>, <code>20261011_082836_card_masters.{ts,json}</code>, <code>20261026_100000_mail_templates.ts</code>, <code>20261026_120000_legal_texts.ts</code>, <code>20261026_140000_sales_rules.ts</code></td></tr>
+<tr><td><code>src/</code></td><td><code>payload.config.ts</code></td></tr>
+</table></div>
+<p><b>Storefront — konfiguracja:</b></p>
+<ul>
+<li><code>next.config.js</code> bez <code>withPayload</code>; <code>tsconfig.json</code> bez aliasu <code>@payload-config</code>.</li>
+<li>Z <code>package.json</code> wypadły: <code>payload</code>, <code>@payloadcms/db-postgres</code>, <code>@payloadcms/next</code>, <code>@payloadcms/richtext-lexical</code>, <code>pg</code>, <code>@types/pg</code>, <code>graphql</code>.</li>
+<li><code>.npmrc</code>: <code>legacy-peer-deps=true</code>, bo <code>@ec5/content</code> deklaruje <code>payload</code> jako peer. Po instalacji <code>node_modules/payload</code> nie istnieje.</li>
+</ul>
+<p><b>Storefront — odczyty Payload zastąpione plikami</b> (te same typy zwrotne):</p>
+<ul>
+<li><code>getPayloadModules</code> → <code>getTrescKarty</code> (adapter);</li>
+<li><code>reguly-serwer.ts</code> → <code>tresc/reguly.json</code>;</li>
+<li><code>formulki-serwer.ts</code> → <code>tresc/formulki.json</code>;</li>
+<li><code>card-masters.ts</code> → <code>tresc/wzorce_kart.json</code>.</li>
+</ul>
+Strona startowa RFB (<code>RfbHomepage</code>, czytała Payload dla 13 handle RFB) zastąpiona listą produktów z Medusy.
+<p><b>Backend:</b></p>
+<ul>
+<li>usunięty <code>subscribers/product-sync-payload.ts</code>;</li>
+<li><code>rfb-mail</code> bez <code>cms_url</code> — teksty maili zostają domyślne z kodu;</li>
+<li>seedy i dane katalogu RFB zastąpione przez <code>seed-grzejeko.ts</code>.</li>
+</ul>
+<p><b>Edytor:</b> bez <code>maile.py</code>, <code>sprzedaz.py</code>, stron <code>maile/sprzedaz.html</code> i ich tras. <code>karta_medusa.py</code>: klient Payload REST → <code>PlikKlient</code>.</p>
+
+<h2>2. Interfejs treści: jak RFB go dziś realizuje, jak działa adapter grzejeko</h2>
+<p><code>@ec5/content/adapter/types.ts</code> definiuje <code>ContentAdapter</code> z trzema operacjami (<code>readPublished</code>, <code>saveDraft</code> z tokenem konfliktu, <code>listStatus</code>) i <code>ConflictError</code>. <b>W RFB nie ma żadnej klasy, która go implementuje</b> — grep po <code>readPublished|ContentAdapter</code> w RFB i <code>ecomms5-template</code> znajduje tylko sam plik typów. Trzy operacje są rozrzucone po różnych kawałkach:</p>
+<div class="t"><table>
+<tr><th>Operacja</th><th>RFB dziś (Payload)</th><th>grzejeko (pliki)</th></tr>
+<tr><td>readPublished</td><td>storefront: <code>getPayloadModules()</code> → Payload Local API <code>payload.find({collection:"products", draft})</code> → <code>blocksToModules()</code></td><td><code>adapterPlikowy.readPublished(handle)</code> → <code>tresc/karty/&lt;handle&gt;/dane.json</code>; token = sha1 pliku; odczyt bez cache</td></tr>
+<tr><td>saveDraft</td><td>edytor Python: <code>karta_medusa.zapisz_szkic</code> → PATCH <code>/api/products/:id?draft=true</code>; token = odcisk treści</td><td>sklep: <code>adapterPlikowy.saveDraft</code> (sha1, <code>ConflictError</code>, zapis atomowy, <code>approved</code> → <code>proposal</code>); edytor: <code>PlikKlient.zapisz_szkic</code> (odcisk treści, jak w RFB) → <b>tylko</b> <code>szkic.json</code></td></tr>
+<tr><td>listStatus</td><td>panel Payload <code>ContentStatusDashboard</code> + edytor <code>stan_kart()</code></td><td><code>adapterPlikowy.listStatus()</code> skanuje <code>tresc/karty/*</code></td></tr>
+<tr><td>publikacja</td><td>przycisk „Publish” (Payload <code>_status: published</code>)</td><td>poza interfejsem i poza edytorem (403) — Tomek: <code>szkic.json</code> → <code>dane.json</code></td></tr>
+</table></div>
+<p>Plik = <code>ProductContent</code> (<code>handle</code>, <code>title</code>, <code>layout: ModuleBlock[]</code>) + <code>zrodla</code>. Bloki są w tym samym formacie co Payload w RFB, więc sklep dalej używa <code>blocksToModules()</code>. Typy spoza schematu przechodzą 1:1. Kod: <code>apps/storefront/src/lib/tresc/adapter-plikowy.ts</code>, <code>katalog.ts</code>. Format opisany w <code>README.md</code> → „Format treści”. Kształt <code>koszt_calkowity</code> i <code>dla_kogo</code> uzgodniony z sesją „moduł pisania” (notatka w folderze sesji).</p>
+
+<h2>3. Mapowanie modułów prototypu (<code>prototyp/bank_karta.html</code>, <code>pompa_karta.html</code>)</h2>
+<div class="t"><table>
+<tr><th>Prototyp</th><th>Moduł</th><th>Uwagi</th></tr>
+<tr><td>tagi kategorii + akapit pod H1</td><td><code>hero.tagline</code>, <code>hero.lede</code></td><td>H1, podtytuł i opis — z Medusy</td></tr>
+<tr><td>tabela parametrów</td><td><code>specs.groups[Parametry]</code></td><td>bez wiersza „cena za kWh” — liczy go sklep z ceny Medusy (S1)</td></tr>
+<tr><td>„od 24 000 zł” (cena w boksie)</td><td>— (Medusa)</td><td>cena przykładowa → produkt w Medusie 24 900 / 32 900 zł; JSON-LD Offer z Medusy</td></tr>
+<tr><td>„Koszt całkowity — Ty składasz”</td><td><code>koszt_calkowity</code> (nowy typ grzejeko)</td><td>pozycje z odwołaniem <code>medusa</code>, montaż jako <code>grupa:"montaz"</code>, widełki rynkowe ze źródłem; bank: cena za kWh i zapas do progu 3 000 zł/kWh liczone z ceny Medusy</td></tr>
+<tr><td>„Dla kogo (a dla kogo nie)”</td><td><code>dla_kogo</code> (nowy typ: <code>tak[]</code>, <code>tak_ale[]</code>, <code>nie[]</code>)</td><td>—</td></tr>
+<tr><td>„Pytania, które ludzie zadają”</td><td><code>faq.items[{q,a}]</code></td><td>w HTML, <b>bez FAQPage</b> (kanon GEO E7/E8)</td></tr>
+<tr><td>„Skąd te liczby” + odnośniki [n]</td><td><code>zrodla{n:{opis,url,pobrane}}</code> + <code>sources[]</code> bloków</td><td>bank: 9 źródeł [14–22], pompa: 7 [1,3,6–10]; każdy [n] w tekście ma źródło (sprawdzone skryptem)</td></tr>
+<tr><td>„Możliwa dotacja CP do 50 900 zł” (pompa)</td><td><code>koszt_calkowity.widelki_rynkowe</code></td><td>wiersz „Dotacja Czyste Powietrze”</td></tr>
+</table></div>
+
+<h2>4. Czego nie dało się przenieść i dlaczego</h2>
+<ul>
+<li><b>Interaktywna suma (checkboksy/radio + „Razem”).</b> Wymaga EMS, zasobnika, bufora i montażu jako produktów Medusy. Brakuje oferty (D6) i cen montażu (D7). Ceny własne w module są zakazane (S1), więc pozycje pokazują „do ustalenia” albo „0 zł”, a widełki rynkowe stoją osobno.</li>
+<li><b>Ceny własne z prototypu</b> („od 24 000 zł”, „EMS 2 000 zł*”, „montaż 4 500 / 7 000 zł*”) — nie przeniesione celowo (S1, D15).</li>
+<li><b>Zdjęcia.</b> Prototyp ma tylko zrzuty stron, zdjęć produktu brak. Karta działa bez zdjęć.</li>
+<li><b>Poradniki i strony montażu</b> (4 z 7 stron K0) — poza zakresem M0, to M6.</li>
+<li><b>Przycisk „Do koszyka” z prototypu</b> → zwykły „Dodaj do koszyka” Medusy. Montaż w koszyku = B2.</li>
+<li><b>Rebranding:</b> szyld, tytuły, nawigacja i strona startowa — grzejeko. Stopka, maile i teksty prawne zostają z RFB (B1).</li>
+</ul>
+
+<h2>5. Decyzje techniczne podjęte po drodze</h2>
+<ul>
+<li>Ceny brutto: region Polska z <code>is_tax_inclusive</code> + preferencja ceny PLN, VAT 23%. Bez tego Medusa doliczałaby VAT do 24 900. VAT 8% na montaż w budownictwie mieszkaniowym = decyzja przy D7.</li>
+<li>Format kwot pl: bez groszy dla pełnych złotych, zwykła spacja zamiast NBSP (wyszukiwalne w HTML), <code>whitespace-nowrap</code> przeciw łamaniu.</li>
+<li>Karta i boks zakupu czytają Medusę bez cache (<code>listProducts({swieze:true})</code>), bo JSON-LD niesie datę odczytu. Bez tego cena była nieświeża do 60 s — złapał to test zmiany ceny.</li>
+<li>FAQPage wycięty (kanon GEO E7/E8). S2 w BUILD_PLAN go wymienia — <b>do korekty planu</b>.</li>
+<li>Skrzynka maili poza <code>apps/backend</code>. Plik w katalogu backendu restartował <code>medusa develop</code> przy każdym zamówieniu.</li>
+<li>Zrzuty przez kanoniczny <code>capture_core.launch_ladder</code> (L0, headless). Bez nowego skryptu: hook duplikatów zablokował <code>zrzut_390.py</code>, a <code>capture_core</code> wystarczył.</li>
+</ul>
+
+<h2>6. Zrzuty (390 px, headless)</h2>
+<div class="zrzuty">
+<figure><img src="assets/logs_ui_karta_bank-energii-10kwh_390_fold.png" alt="Karta banku 390 px, pierwszy ekran"><figcaption>bank — pierwszy ekran</figcaption></figure>
+<figure><img src="assets/logs_ui_karta_pompa-ciepla-8kw_390_fold.png" alt="Karta pompy 390 px, pierwszy ekran"><figcaption>pompa — pierwszy ekran</figcaption></figure>
+<figure><img src="assets/logs_ui_edytor_bank_1440.png" alt="Edytor grzejeko z podglądem szkicu"><figcaption>edytor :8913 + podgląd szkicu</figcaption></figure>
+</div>
+<p>Pełne strony: <code>logs/ui/karta_*_390.png</code>.</p>
+
+<h2>7. Otwarte</h2>
+<ul>
+<li><b>Tomek:</b> D6 (SKU, dostawca), D7 (montaż: cena, zasięg, VAT) — odblokowują sumę kosztu całkowitego; przejście karty na telefonie; korekta S2 (FAQPage).</li>
+<li><b>M2:</b> pola typów grzejeko w panelu edytora (dziś „Tekst (bez tytułu)”); renderery <code>dotacja</code>, <code>kroki</code>, <code>cta</code> (łańcuch pisania już je produkuje).</li>
+<li><b>Reszta M0:</b> <code>geo_check</code> na karcie (nie uruchamiałem).</li>
+<li><b>Lista funkcji asystenta i kontroli GLOV do przeniesienia:</b> <code>README.md</code> → „Edytor kart”, tabela 12 pozycji + 2 „nie dotyczy”.</li>
+<li><b>Serwery</b> (Medusa, Next, edytor) chodzą jako zadania w tle tej sesji. Po jej zamknięciu mogą stanąć. Start: <code>README.md</code> → „Start”. Docker <code>grzejeko_*</code> ma <code>restart: unless-stopped</code>.</li>
+</ul>
+</main></body></html>
