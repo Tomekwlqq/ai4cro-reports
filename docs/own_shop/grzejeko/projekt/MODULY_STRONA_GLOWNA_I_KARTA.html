@@ -49,7 +49,10 @@ function wytnij(f){var d,w;try{d=f.contentDocument;w=f.contentWindow}catch(e){re
  if(L.sel)el=d.querySelector(L.sel);
  if(!el&&L.od){el=d.querySelector(L.od);koniec=L.do?d.querySelector(L.do):null}
  if(!el&&L.h){var hs=[].slice.call(d.querySelectorAll('h1,h2'));for(var i=0;i<hs.length;i++){if(hs[i].textContent.indexOf(L.h)>-1){
-   var sec=hs[i].closest('section');el=(sec&&sec.getBoundingClientRect().height<1400)?sec:hs[i];if(el===hs[i])koniec=hs[i+1]||null;break}}}
+   var sec=hs[i].closest('section');el=(sec&&sec.getBoundingClientRect().height<1400)?sec:hs[i];
+   if(el===hs[i]){var t0=hs[i].getBoundingClientRect().top;koniec=null;
+    for(var j=i+1;j<hs.length;j++){if(hs[j].offsetParent&&hs[j].getBoundingClientRect().top>t0+10){koniec=hs[j];break}}
+    if(!koniec)koniec=d.querySelector('[data-testid="grzejeko-footer"]')}break}}}
  if(!el&&L.txt){var it=d.evaluate("//*[contains(text(),'"+L.txt.replace(/'/g,"")+"')]",d,null,9,null).singleNodeValue;el=it}
  for(var u=0;el&&u<(L.up||0);u++)el=el.parentElement;
  var fb=f.closest('figure');if(!el){fb.innerHTML='<figcaption>Dziś w sklepie</figcaption><div class="brak">Tego modułu nie ma w kopii sklepu z 30.10.</div>';return}
