@@ -24,7 +24,7 @@ h3{font:700 18px/1.3 "Nunito Sans";margin-bottom:4px}
 .chip b{color:var(--pom)}
 
 /* proces */
-.proces{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:26px}
+.proces{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:26px}
 @media(max-width:980px){.proces{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:460px){.proces{grid-template-columns:1fr}}
 .pk{background:var(--krem);border-radius:16px;padding:14px 12px}
@@ -102,6 +102,20 @@ td:first-child{font-weight:700;width:24%}
 .st li{padding:5px 0;font-size:15px;display:flex;gap:8px}
 .st li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;margin-top:9px;background:var(--ok)}
 .st.brak li::before{background:#C99400}
+.sciezka{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:18px}
+.sciezka .o{background:#fff;border-radius:999px;padding:9px 16px;font-weight:800;font-size:15px}
+.sciezka .o small{display:block;font-weight:600;font-size:12px;color:var(--t2)}
+.sciezka .s{color:var(--pom);font-weight:800}
+.dod{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+@media(max-width:720px){.dod{grid-template-columns:1fr}}
+.dd{border-radius:20px;padding:22px;background:var(--nie)}.dd.r{background:var(--fio)}
+.dd .et{font:800 11px/1 "Nunito Sans";letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.dd p{font-size:15px;color:var(--t2);margin-top:6px}
+.dd .ile{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.dd .ile span{background:#fff;border-radius:999px;padding:5px 12px;font-weight:800;font-size:13px}
+.poza{margin-top:22px;background:var(--krem);border-radius:20px;padding:20px 22px}
+.poza ul{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+@media(max-width:720px){.poza ul{grid-template-columns:1fr 1fr}}
+.poza li{background:#fff;border-radius:14px;padding:10px 12px;font-weight:800;font-size:14px;color:var(--t2)}
 footer{padding:28px 0 40px;border-top:1px solid var(--linia)}
 </style>
 </head>
@@ -110,8 +124,14 @@ footer{padding:28px 0 40px;border-top:1px solid var(--linia)}
 <header class="hero">
  <div class="w">
   <span class="nad">Ecommerce Studio · wersja uproszczona</span>
-  <h1>LP Maker: z produktu robi stronę sprzedażową i reklamy do niej. Sam.</h1>
-  <p class="lead">Na wejściu link do karty produktu albo sam produkt, bez briefu. Maszyna sama poznaje kategorię, proponuje pomysły, pisze brief, składa stronę z modułów i reklamy do niej, a potem sama się sprawdza. Człowiek wybiera pomysł i zatwierdza publikację. Każda poprawka uczy maszynę na następny raz.</p>
+  <h1>LP Maker: z produktu albo słabej karty robi stronę, na którą warto kierować ruch. Sam.</h1>
+  <p class="lead">Jedna ścieżka, bez kombajnu. Maszyna proponuje pomysł, ustala, skąd klient przyjdzie i co usłyszy, a potem składa stronę, która ten komunikat odbiera. Na wejściu link do produktu albo do słabej karty, bez briefu. Człowiek wybiera pomysł i zatwierdza publikację.</p>
+  <div class="sciezka">
+   <span class="o">Pomysł<small>sytuacja zakupu</small></span><span class="s">→</span>
+   <span class="o">Punkt wejścia<small>skąd klient przyjdzie</small></span><span class="s">→</span>
+   <span class="o">Komunikat<small>co usłyszy</small></span><span class="s">→</span>
+   <span class="o">Strona<small>z produktu albo słabej karty</small></span>
+  </div>
   <div class="chipy">
    <span class="chip">Strona LED Therapy (GLOV), działa od 17.09: <b>ok. 5× lepsza sprzedaż</b> niż karta produktu</span>
    <span class="chip">Człowiek: <b>2 decyzje</b>, reszta to maszyna</span>
@@ -122,18 +142,43 @@ footer{padding:28px 0 40px;border-top:1px solid var(--linia)}
 <section>
  <div class="w">
   <span class="nad">Proces</span>
-  <h2>Od produktu do opublikowanej strony i reklam</h2>
-  <p class="lead">Siedem kroków. Pięć robi AI, dwa to decyzje człowieka. Nikt nie pisze briefu ani pierwszej wersji tekstu.</p>
+  <h2>Od produktu do opublikowanej strony</h2>
+  <p class="lead">Sześć kroków. Cztery robi AI, dwa to decyzje człowieka. Nikt nie pisze briefu ani pierwszej wersji tekstu.</p>
   <div class="proces">
-   <div class="pk"><div class="gora"><div class="nr">1</div><div class="kto">AI</div></div><b>Poznaje produkt i kategorię</b><span>czyta kartę, pobiera słowa kluczowe, robi mini-CS i sytuacje zakupu (CEP)</span></div>
-   <div class="pk"><div class="gora"><div class="nr">2</div><div class="kto">AI</div></div><b>Proponuje pomysły</b><span>5–10 pomysłów na stronę, każdy z jednym argumentem i oceną</span></div>
+   <div class="pk"><div class="gora"><div class="nr">1</div><div class="kto">AI</div></div><b>Poznaje produkt i kategorię</b><span>czyta kartę (także słabą) albo sam produkt, słowa kluczowe, mini-CS i sytuacje zakupu (CEP)</span></div>
+   <div class="pk"><div class="gora"><div class="nr">2</div><div class="kto">AI</div></div><b>Proponuje pomysły</b><span>każdy pomysł to cała ścieżka: punkt wejścia, komunikat i strona</span></div>
    <div class="pk czl"><div class="gora"><div class="nr">3</div><div class="kto">Człowiek</div></div><b>Wybiera pomysł</b><span>jedno kliknięcie „Biorę”; tylko tu akceptuje się kierunek</span></div>
-   <div class="pk"><div class="gora"><div class="nr">4</div><div class="kto">AI</div></div><b>Pisze brief i stronę</b><span>brief z argumentu, potem strona z modułów, teksty i grafiki</span></div>
-   <div class="pk"><div class="gora"><div class="nr">5</div><div class="kto">AI</div></div><b>Robi reklamy do strony</b><span>agent reklam: brief, statyki 4:5 / 1:1 / 9:16, teksty, link z oznaczeniem do pomiaru</span></div>
-   <div class="pk"><div class="gora"><div class="nr">6</div><div class="kto">AI</div></div><b>Sprawdza sam siebie</b><span>sędziowie: psychologia sprzedaży, język, zasady strony, reklama</span></div>
-   <div class="pk czl"><div class="gora"><div class="nr">7</div><div class="kto">Człowiek</div></div><b>Zatwierdza i publikuje</b><span>podgląd, ewentualne poprawki czatem lub głosem, publikacja w Shopify</span></div>
+   <div class="pk"><div class="gora"><div class="nr">4</div><div class="kto">AI</div></div><b>Pisze komunikat i stronę</b><span>strona z modułów, teksty i grafiki; ten sam komunikat, który klient zobaczył przy wejściu</span></div>
+   <div class="pk"><div class="gora"><div class="nr">5</div><div class="kto">AI</div></div><b>Sprawdza sam siebie</b><span>sędziowie: psychologia sprzedaży, język, zasady strony</span></div>
+   <div class="pk czl"><div class="gora"><div class="nr">6</div><div class="kto">Człowiek</div></div><b>Zatwierdza i publikuje</b><span>podgląd, poprawki czatem lub głosem, publikacja w Shopify</span></div>
   </div>
   <div class="legenda"><span><i style="background:#FAF8F3;border:1px solid #ECE8E0"></i>robi maszyna</span><span><i style="background:#FFF0EC"></i>decyduje człowiek</span></div>
+ </div>
+</section>
+
+<section>
+ <div class="w">
+  <span class="nad">Opcjonalnie</span>
+  <h2>Dokładasz, jeśli chcesz</h2>
+  <p class="lead">Ścieżka działa bez dodatków. Każdy dodatek niesie ten sam komunikat i prowadzi na tę samą stronę.</p>
+  <div class="dod">
+   <div class="dd r">
+    <div class="et">Dodatek</div>
+    <h3>Reklamy</h3>
+    <p>Statyki 4:5 i 9:16 z komunikatem ścieżki, teksty i link z oznaczeniem do pomiaru. Sędzia reklam odrzuca słabe, zanim pójdą do testu. Wysyłka do Mety jako wstrzymana kampania (w budowie).</p>
+    <div class="ile"><span>0</span><span>3</span><span>6</span><span>ile chcesz</span></div>
+   </div>
+   <div class="dd">
+    <div class="et">Dodatek</div>
+    <h3>Newsletter</h3>
+    <p>Mail z tym samym komunikatem do obecnej bazy klientów, z przyciskiem na stronę. Dobry punkt wejścia przy nowościach i okazjach (do złożenia).</p>
+   </div>
+  </div>
+  <div class="poza">
+   <b>Czego tu nie ma i dlaczego</b>
+   <p class="male" style="margin-top:4px">Strona ma odebrać ruch z wybranego punktu wejścia i zamienić go w sprzedaż. Pozycjonowanie i automatyzacja to osobne produkty. Za dużo w jednym nie działa.</p>
+   <ul><li>SEO</li><li>GEO (widoczność w AI)</li><li>Marketing automation</li><li>Prowadzenie sociali</li></ul>
+  </div>
  </div>
 </section>
 
@@ -148,7 +193,7 @@ footer{padding:28px 0 40px;border-top:1px solid var(--linia)}
     <path d="M262 190a104 104 0 0 1-92 64" stroke="#FF6A4D" stroke-width="5" stroke-linecap="round"/>
     <path d="M100 228a104 104 0 0 1-34-78" stroke="#FF6A4D" stroke-width="5" stroke-linecap="round"/>
     <path d="M70 108a104 104 0 0 1 64-58" stroke="#FF6A4D" stroke-width="5" stroke-linecap="round"/>
-    <rect x="110" y="18" width="120" height="40" rx="20" fill="#FFE39A"/><text x="170" y="43" text-anchor="middle" font-family="Nunito Sans" font-weight="800" font-size="14" fill="#1B1A17">Strona i reklamy</text>
+    <rect x="110" y="18" width="120" height="40" rx="20" fill="#FFE39A"/><text x="170" y="43" text-anchor="middle" font-family="Nunito Sans" font-weight="800" font-size="14" fill="#1B1A17">Strona</text>
     <rect x="232" y="128" width="104" height="40" rx="20" fill="#FFF0EC"/><text x="284" y="153" text-anchor="middle" font-family="Nunito Sans" font-weight="800" font-size="14" fill="#1B1A17">Poprawka</text>
     <rect x="108" y="240" width="124" height="40" rx="20" fill="#E7F3EA"/><text x="170" y="265" text-anchor="middle" font-family="Nunito Sans" font-weight="800" font-size="14" fill="#1B1A17">Nocna weryfikacja</text>
     <rect x="4" y="128" width="104" height="40" rx="20" fill="#EEF2FB"/><text x="56" y="153" text-anchor="middle" font-family="Nunito Sans" font-weight="800" font-size="14" fill="#1B1A17">Nowa reguła</text>
@@ -159,7 +204,7 @@ footer{padding:28px 0 40px;border-top:1px solid var(--linia)}
     <li><b>Poprawka trafia do poczekalni</b><span>Każda zmiana człowieka w tekście, kolejności czy grafice jest zapisywana z kontekstem: co było, co jest, na jakiej stronie.</span></li>
     <li><b>W nocy weryfikator decyduje</b><span>Agent-pełnomocnik ocenia, czy to reguła na przyszłość, pojedyncza obserwacja czy przypadek. Działa osobno dla stron, reklam, psychologii sprzedaży i języka.</span></li>
     <li><b>Reguła wraca do silników</b><span>Następna strona i reklama powstają już z tą wiedzą. Człowiek nie musi niczego zatwierdzać ani pamiętać.</span></li>
-    <li><b>Wyniki sprzedaży domykają pętlę</b><span>Reklamy mają oznaczenie wariantu, więc wiadomo, który pomysł i który moduł zarobił. To trafia do tej samej bazy.</span></li>
+    <li><b>Wyniki sprzedaży domykają pętlę</b><span>Linki z punktów wejścia mają oznaczenie wariantu, więc wiadomo, który pomysł i który moduł zarobił. To trafia do tej samej bazy.</span></li>
    </ul>
   </div>
  </div>
@@ -179,25 +224,22 @@ footer{padding:28px 0 40px;border-top:1px solid var(--linia)}
    </div>
    <div class="gr g2">
     <div class="gt"><svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke="#1F8F5A" stroke-width="3" stroke-linejoin="round"><rect x="10" y="5" width="28" height="9" rx="2" fill="#fff"/><rect x="10" y="17" width="28" height="9" rx="2"/><rect x="10" y="29" width="13" height="14" rx="2"/><rect x="25" y="29" width="13" height="14" rx="2"/></svg><h3>Twórcy (agenci)</h3></div>
-    <div class="komp"><b>Generator pomysłów</b><span>z CEP-ów 5–10 pomysłów na stronę, każdy z argumentem</span></div>
+    <div class="komp"><b>Generator pomysłów</b><span>z CEP-ów 5–10 ścieżek: punkt wejścia, komunikat, argument</span></div>
     <div class="komp"><b>Strateg strony</b><span>brief: argument, oś komunikacji, oferta, kolejność decyzji kupującego</span></div>
     <div class="komp"><b>Kopirajter</b><span>teksty językiem klientek, każde zdanie ze źródłem (opinie, korekty)</span></div>
     <div class="komp"><b>Składacz strony</b><span>moduły, kolejność, teksty i zdjęcia na miejscach</span></div>
     <div class="komp"><b>Grafik</b><span>produkt w użyciu na bazie prawdziwego zdjęcia, kadry, napisy</span></div>
-    <div class="komp"><b>Agent reklam</b><span>brief kreacji, statyki w 3 formatach, teksty, para reklama → strona</span></div>
    </div>
    <div class="gr g3">
     <div class="gt"><svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke="#FF6A4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="18" fill="#fff"/><path d="M16 24l6 6 11-12"/></svg><h3>Sędziowie</h3></div>
     <div class="komp"><b>Psychologia sprzedaży</b><span>karta 14 sił: czego stronie brakuje, żeby sprzedawała</span></div>
     <div class="komp"><b>Kontrola języka</b><span>czy tekst brzmi jak człowiek, a nie producent; czy obietnice mają pokrycie</span></div>
     <div class="komp"><b>Zasady strony</b><span>zero modułów samym tekstem, zdjęcia na miejscach, czytelność na telefonie</span></div>
-    <div class="komp"><b>Sędzia reklam</b><span>twarde kryteria odrzucenia, zanim reklama pójdzie do testu</span></div>
    </div>
    <div class="gr g4">
     <div class="gt"><svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke="#6B4FB0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="15" y="4" width="18" height="40" rx="4" fill="#fff"/><path d="M21 38h6"/></svg><h3>Sterowanie</h3></div>
     <div class="komp"><b>Edytor z modułami</b><span>przesuń, ukryj, duplikuj, cofnij; podgląd telefon i komputer</span></div>
     <div class="komp"><b>Asystent</b><span>poprawki zwykłym językiem, czatem albo głosem, także z telefonu</span></div>
-    <div class="komp"><b>Wejście dla agentów</b><span>każda akcja to komenda, więc asystent AI klienta (jego Claude czy ChatGPT) może zlecać strony sam</span></div>
     <div class="komp"><b>Publikacja</b><span>do Shopify w dwóch krokach: plan i podgląd, potem zatwierdzenie</span></div>
    </div>
    <div class="gr g5" style="grid-column:1/-1">
@@ -242,7 +284,7 @@ footer{padding:28px 0 40px;border-top:1px solid var(--linia)}
    <thead><tr><th>Kto</th><th>Co robi</th><th>Czego nie ma, a my mamy</th></tr></thead>
    <tbody>
     <tr><td>Kreatory stron (Replo, GemPages, PageFly)</td><td>ładny szablon, pola do wypełnienia</td><td>nie wiedzą, co ma być na stronie i dlaczego; tu każdy moduł ma powód z danych o kategorii</td></tr>
-    <tr><td>Generatory AI (Lovable, Shopify Magic)</td><td>strona albo tekst z polecenia</td><td>nie znają kategorii ani psychologii sprzedaży, nie robią reklam, nie uczą się na poprawkach</td></tr>
+    <tr><td>Generatory AI (Lovable, Shopify Magic)</td><td>strona albo tekst z polecenia</td><td>nie znają kategorii ani psychologii sprzedaży, nie wiedzą, skąd przyjdzie klient, nie uczą się na poprawkach</td></tr>
     <tr><td>Agencja</td><td>brief, strona, reklamy; 2–6 tygodni, 5–15 tys. zł</td><td>to samo w godzinę, bez briefu od klienta, za ułamek ceny; wiedza nie odchodzi z pracownikiem</td></tr>
    </tbody>
   </table>
@@ -258,7 +300,7 @@ footer{padding:28px 0 40px;border-top:1px solid var(--linia)}
    <div class="ko glowny">
     <div class="et">Pierwszy klient</div>
     <h3>Marki z własnym produktem na Shopify</h3>
-    <p>Od ok. 1 000 do 20 000 zamówień miesięcznie, właściciel sam puszcza reklamy. Dostaje stronę i reklamy do każdego produktu i każdej okazji w godzinę zamiast w tygodnie, bez pisania briefu i bez agencji.</p>
+    <p>Od ok. 1 000 do 20 000 zamówień miesięcznie, właściciel sam puszcza reklamy. Dostaje stronę do każdego produktu i każdej okazji w godzinę zamiast w tygodnie, bez pisania briefu i bez agencji.</p>
    </div>
    <div class="ko">
     <div class="et">Drugi</div>
@@ -277,7 +319,7 @@ footer{padding:28px 0 40px;border-top:1px solid var(--linia)}
 
 <section>
  <div class="w">
-  <span class="nad">Stan na 3.11.2026</span>
+  <span class="nad">Stan na 4.11.2026</span>
   <h2>Co jest, co trzeba złożyć</h2>
   <div class="stan">
    <div class="st jest">
@@ -285,11 +327,11 @@ footer{padding:28px 0 40px;border-top:1px solid var(--linia)}
     <ul>
      <li>edytor z modułami, asystent w czacie, widok na telefon</li>
      <li>pomysły z produktu i budowa strony po „Biorę”</li>
-     <li>agent reklam: statyki, teksty, sędzia</li>
+     <li>dodatek reklamy: statyki, teksty, sędzia (bez wysyłki do Mety)</li>
      <li>sędziowie: psychologia sprzedaży, język, zasady strony</li>
      <li>nocna pętla nauki dla stron, reklam i języka</li>
      <li>publikacja do Shopify, import karty produktu</li>
-     <li>silnik CEP i słowa kluczowe (projekt GEO)</li>
+     <li>silnik CEP i słowa kluczowe</li>
     </ul>
    </div>
    <div class="st brak">
@@ -298,8 +340,8 @@ footer{padding:28px 0 40px;border-top:1px solid var(--linia)}
      <li>mini-CS uruchamiany z edytora, w godzinę</li>
      <li>jeden przebieg „produkt → pomysły” bez ręcznych kroków</li>
      <li>wejście „sam produkt” bez sklepu</li>
-     <li>kreator reklam z wysyłką do Mety (plan gotowy)</li>
-     <li>wejście dla zewnętrznych agentów (klucz i opis narzędzi)</li>
+     <li>wysyłka reklam do Mety (plan gotowy)</li>
+     <li>dodatek newsletter</li>
      <li>pomiar wyników przed i po w edytorze</li>
     </ul>
    </div>
@@ -308,7 +350,7 @@ footer{padding:28px 0 40px;border-top:1px solid var(--linia)}
 </section>
 
 <footer>
- <div class="w"><p class="male">LP Maker · wersja uproszczona Ecommerce Studio · 3.11.2026</p></div>
+ <div class="w"><p class="male">LP Maker · wersja uproszczona Ecommerce Studio · 4.11.2026</p></div>
 </footer>
 
 <style>
