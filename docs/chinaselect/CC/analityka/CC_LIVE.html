@@ -422,11 +422,13 @@ i.nm{background:repeating-linear-gradient(45deg,#E3E2DE 0 4px,#F3F2EF 4px 8px)}
 </div>
 <div class="wrap">
   <div class="live-sec">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
-    <div style="font-size:14px;font-weight:800"><span class="live-pulse"></span>Teraz na stronie <span id="cc-pob" style="font-weight:400;font-size:11px;color:var(--faint)"></span></div>
-    <span class="sbadge sbadge-ga4">GA4 NA ŻYWO</span></div>
-  <div id="cc-live"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:14px;font-weight:800"><span class="live-pulse"></span>Live — dziś, wczoraj, dzień po dniu <span style="font-weight:400;font-size:11px;color:var(--faint)">· stan z 2026-11-07 12:05 · odświeżanie co 2 h</span></div>
+    <span><span class="sbadge sbadge-ga4">GA4 NA ŻYWO</span> <span class="sbadge sbadge-bq">BIGQUERY</span> <span class="sbadge sbadge-pd">PIPEDRIVE</span></span></div>
+  <div class="live-tabs"><button class="live-tab active" data-k="20261107">🔴 Dziś</button><button class="live-tab" data-k="20261106">Wczoraj</button><button class="live-tab" data-k="20261105">05.11</button><button class="live-tab" data-k="M202611">Listopad 2026 narastająco</button></div>
+  <div id="live-content"></div>
 </div>
+<h2 class="sek sek-ruch" style="margin:26px 0 10px"><span class="r">A</span><span class="typ">Okresy</span>Analiza okresów — wybierz daty i porównaj z poprzednim</h2>
 <div class="dpanel">
     <div class="dpanel-row">
       <div class="dp-group">
@@ -1425,7 +1427,7 @@ function ccSplit(z,b,big){const t=(z||0)+(b||0);if(!t)return `<div class="ccbar$
 function ccWyniki(s,e,cs,ce){
   const A=ccAkcje(s,e),C=(cs&&ce)?ccAkcje(cs,ce):null;
   const fz=x=>x==null?'—':n(x);
-  let h=ccH('wyn','R01',`Formularze, kliknięcia, akcje · ${s} – ${e}`,false);
+  let h=ccH('wyn','R01',`Formularze, kliknięcia, akcje · ${s===e?s:s+' – '+e}`,false);
   h+=`<div class="what">Liczone w sztukach. <span class="lg"><i class="zg"></i>ze zgodą</span> = widzi GA4 (osoba zgodziła się na cookies). <span class="lg"><i class="bz"></i>bez zgody</span> = formularze, które są w Pipedrive, a GA4 ich nie widzi. <span class="lg"><i class="nm"></i>nie mierzymy</span> — GA4 nie zbiera nic przed zgodą.</div>`;
   const zrd={Formularze:ccSrc.bq+ccSrc.pd,'Kliknięcia':ccSrc.bq,Akcje:ccSrc.pd+ccSrc.plan};
   h+='<div class="lkgrid lkgrid-3">';
@@ -1842,16 +1844,52 @@ function refreshData(){
 document.addEventListener('DOMContentLoaded',()=>loadData(true));
 
 </script>
-<script>window.__CC_TERAZ__={"aktywni_30min": 0, "minuty": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "zdarzenia": {}, "strony": []};window.__CC_POB__="2026-11-07 12:05";</script>
+<script>window.__CC_TERAZ__={"aktywni_30min": 0, "minuty": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "zdarzenia": {}, "strony": []};window.__CC_ZD__={"20261105": {"zd": [{"ev": "user_engagement", "zdarzenia": 7, "sesje": 5}, {"ev": "session_start", "zdarzenia": 6, "sesje": 6}, {"ev": "page_view", "zdarzenia": 6, "sesje": 6}, {"ev": "first_visit", "zdarzenia": 5, "sesje": 5}], "anon": {"first_visit": 4, "session_start": 4, "page_view": 4, "user_engagement": 2}, "anon_ost": "18:39", "straz": {"zdarzenia_bez_sesji": 0, "lead_bez_submission_id": 0, "lead_bez_typu": 0, "kontakt_bez_placement": 0, "page_view_na_sesje": 1.0}}, "20261106": {"zd": [{"ev": "page_view", "zdarzenia": 91, "sesje": 20}, {"ev": "user_engagement", "zdarzenia": 50, "sesje": 16}, {"ev": "session_start", "zdarzenia": 10, "sesje": 10}, {"ev": "first_visit", "zdarzenia": 7, "sesje": 7}, {"ev": "scroll", "zdarzenia": 6, "sesje": 6}], "anon": {"first_visit": 44, "session_start": 44, "page_view": 54, "user_engagement": 18, "scroll": 2}, "anon_ost": "15:27", "straz": {"zdarzenia_bez_sesji": 0, "lead_bez_submission_id": 0, "lead_bez_typu": 0, "kontakt_bez_placement": 0, "page_view_na_sesje": 4.14}}, "20261107": {"zd": [{"ev": "page_view", "zdarzenia": 27, "sesje": 4}, {"ev": "session_start", "zdarzenia": 4, "sesje": 4}, {"ev": "user_engagement", "zdarzenia": 4, "sesje": 3}, {"ev": "scroll", "zdarzenia": 2, "sesje": 2}, {"ev": "first_visit", "zdarzenia": 1, "sesje": 1}], "anon": {}, "anon_ost": null, "straz": {"zdarzenia_bez_sesji": 0, "lead_bez_submission_id": 0, "lead_bez_typu": 0, "kontakt_bez_placement": 0, "page_view_na_sesje": 6.75}}};window.__CC_DZIS__="20261107";</script>
 <script>
-(function(){const TZ=window.__CC_TERAZ__||{};const el=document.getElementById('cc-live');if(!el)return;
- const tile=(tn,tv,ts,st)=>`<div class="tile"><div class="tn">${tn}</div><div class="tv"${st?` style="${st}"`:''}>${tv}</div><div class="ts">${ts||''}</div></div>`;
- if(TZ.blad||TZ.aktywni_30min==null){el.innerHTML='<div class="live-nodata">GA4 na żywo chwilowo niedostępne.</div>';return;}
- const z=TZ.zdarzenia||{};let h='<div class="tiles">'+tile('Aktywni teraz',n(TZ.aktywni_30min),'ostatnie 30 min','color:var(--accent-d)')
+(function(){
+const TZ=window.__CC_TERAZ__||{},ZD=window.__CC_ZD__||{},DZIS=window.__CC_DZIS__;
+const iso=k=>k.slice(0,4)+'-'+k.slice(4,6)+'-'+k.slice(6,8);
+const tile=(tn,tv,ts,st)=>`<div class="tile"><div class="tn">${tn}</div><div class="tv"${st?` style="${st}"`:''}>${tv}</div><div class="ts">${ts||''}</div></div>`;
+const EVPL={page_view:'Odsłona strony',session_start:'Start sesji',first_visit:'Pierwsza wizyta',user_engagement:'Zaangażowanie (czas na stronie)',scroll:'Przewinięcie 90%',
+ generate_lead:'Formularz wysłany',contact_click:'Klik w telefon / WhatsApp',form_start:'Zaczęty formularz',view_item:'Karta auta',click:'Klik w link wychodzący',file_download:'Pobranie pliku',view_search_results:'Wyszukiwanie'};
+function teraz(){
+ let h=`<div class="lsep"><span class="sbadge sbadge-ga4">GA4 NA ŻYWO</span>Teraz na stronie — ostatnie 30 minut</div>`;
+ if(TZ.blad||TZ.aktywni_30min==null)return h+'<div class="live-nodata">GA4 na żywo chwilowo niedostępne.</div>';
+ const z=TZ.zdarzenia||{};h+='<div class="tiles">'+tile('Aktywni teraz',n(TZ.aktywni_30min),'ostatnie 30 min','color:var(--accent-d)')
   +tile('Formularze',n(z.generate_lead||0),'30 min')+tile('Kliknięcia',n(z.contact_click||0),'telefon / WhatsApp, 30 min')+tile('Odsłony',n(z.page_view||0),'30 min')+'</div>';
  const mn=TZ.minuty||[],mx=Math.max(1,...mn);h+='<div class="ccmins">'+mn.map((v,i)=>`<i title="${29-i} min temu: ${v}" style="height:${Math.max(4,v/mx*100)}%"></i>`).join('')+'</div><div class="ts" style="font-size:10px;color:var(--faint)">aktywni minuta po minucie — od 30 min temu do teraz · tylko osoby po zgodzie na cookies</div>';
  const st=TZ.strony||[];if(st.length)h+='<div class="tiles" style="margin-top:8px">'+st.map(s=>tile(String(s.strona).replace(/ \| China Select$/,'').slice(0,40),n(s.uzytkownicy),'ogląda teraz')).join('')+'</div>';
- el.innerHTML=h;const pb=document.getElementById('cc-pob');if(pb)pb.textContent='· stan z '+(window.__CC_POB__||'');})();
+ return h;}
+function zdarzenia(keys){
+ const Z={},S={},B={};let ost=null;
+ keys.forEach(k=>{const x=ZD[k];if(!x)return;(x.zd||[]).forEach(e=>{Z[e.ev]=(Z[e.ev]||0)+e.zdarzenia;S[e.ev]=(S[e.ev]||0)+e.sesje;});
+  Object.entries(x.anon||{}).forEach(([e,v])=>{B[e]=(B[e]||0)+v;});if(x.anon_ost)ost=x.anon_ost;});
+ const evs=[...new Set([...Object.keys(Z),...Object.keys(B)])].sort((a,b)=>((Z[b]||0)+(B[b]||0))-((Z[a]||0)+(B[a]||0)));
+ let h=ccH('ruch','Z','Zdarzenia — wolumeny (ze zgodą i bez zgody)');
+ h+=`<div class="what">Ile razy coś się wydarzyło na stronie. <span class="lg"><i class="zg"></i>ze zgodą</span> = pełne zdarzenia GA4 · <span class="lg"><i class="bz"></i>bez zgody</span> = anonimowe pingi (Consent Mode)${ost?`, ostatni o ${ost}`:''}.</div>`;
+ if(!evs.length)return h+'<div class="live-nodata">brak zdarzeń</div>';
+ h+='<div class="lkgrid lkgrid-4">'+evs.map(e=>`<div class="lkcard"><div class="ll">${EVPL[e]||e}</div><div class="lv">${n((Z[e]||0)+(B[e]||0))}</div>${ccSplit(Z[e]||0,B[e]||0)}<div class="ls">ze zgodą ${n(Z[e]||0)}${S[e]?` (w ${n(S[e])} sesjach)`:''} · bez zgody ${n(B[e]||0)}</div></div>`).join('')+'</div>';
+ return h;}
+function straznik(keys){
+ const T={zdarzenia_bez_sesji:'Zdarzenia bez sesji',lead_bez_submission_id:'Formularz bez numeru zgłoszenia',lead_bez_typu:'Formularz bez typu',kontakt_bez_placement:'Klik bez miejsca na stronie'};
+ const s={};keys.forEach(k=>{const x=(ZD[k]||{}).straz||{};Object.keys(T).forEach(t=>{s[t]=(s[t]||0)+(x[t]||0);});});
+ const zle=Object.values(s).some(v=>v>0);
+ let h=ccH('sc','S','Strażnik pomiaru — czy dane są całe');
+ h+='<div class="tiles">'+Object.entries(T).map(([t,lab])=>tile(lab,s[t]?n(s[t]):'0',s[t]?'do sprawdzenia':'w porządku',s[t]?'color:var(--bad)':'color:var(--good-d)')).join('')+'</div>';
+ h+=zle?'<div class="concl c-amber"><span class="lab">Uwaga</span>Część zdarzeń przychodzi niepełna — liczby wyżej mogą być zaniżone.</div>':'<div class="concl c-green"><span class="lab">OK</span>Pomiar kompletny — każde zdarzenie ma sesję, każdy formularz numer i typ.</div>';
+ return h;}
+function dzien(k){
+ let keys,s,e,cs=null,ce=null,etyk;
+ if(k[0]==='M'){const m=k.slice(1);keys=Object.keys(ZD).filter(x=>x.startsWith(m)).sort();s=iso(keys[0]);e=iso(keys[keys.length-1]);etyk='Miesiąc narastająco';}
+ else{keys=[k];s=e=iso(k);const pd=new Date(s+'T12:00:00');pd.setDate(pd.getDate()-1);cs=ce=pd.toISOString().slice(0,10);if(!DAILY[cs]){cs=ce=null;}}
+ const A=aggregateRange(s,e);let h='';
+ if(k===DZIS)h+=teraz();
+ h+=ccWyniki(s,e,cs,ce)+ccLejek(s,e)+ccKanaly(A)+ccWejscia(A)+ccAuta(A)+ccUrzadzenia(A)+ccGodziny(A)+zdarzenia(keys)+straznik(keys);
+ return h;}
+function pokaz(k){const el=document.getElementById('live-content');try{el.innerHTML=dzien(k);}catch(err){el.innerHTML='<div class="live-nodata">Błąd widoku dnia: '+err.message+'</div>';console.error(err);}}
+document.querySelectorAll('.live-sec .live-tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.live-sec .live-tab').forEach(x=>x.classList.toggle('active',x===b));pokaz(b.dataset.k);});
+(function czekaj(i){if(typeof DAILY!=='undefined'&&Object.keys(DAILY).length){const b=document.querySelector('.live-sec .live-tab.active');if(b)pokaz(b.dataset.k);}else if(i<100)setTimeout(()=>czekaj(i+1),50);})(0);
+})();
 </script>
 <script>document.querySelectorAll('#cc-stale .bz-nav .bz-btn').forEach(b=>b.onclick=()=>{document.querySelectorAll('#cc-stale .bz-nav .bz-btn').forEach(x=>x.classList.toggle('on',x===b));
 document.querySelectorAll('.bz-sek').forEach(s=>s.hidden=s.id!=='bz-'+b.dataset.z)});
