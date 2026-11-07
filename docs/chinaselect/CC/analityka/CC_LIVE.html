@@ -423,9 +423,9 @@ i.nm{background:repeating-linear-gradient(45deg,#E3E2DE 0 4px,#F3F2EF 4px 8px)}
 <div class="wrap">
   <div class="live-sec">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-    <div style="font-size:14px;font-weight:800"><span class="live-pulse"></span>Live — dziś, wczoraj, dzień po dniu <span style="font-weight:400;font-size:11px;color:var(--faint)">· stan z 2026-11-07 12:05 · odświeżanie co 2 h</span></div>
+    <div style="font-size:14px;font-weight:800"><span class="live-pulse"></span>Live — dziś i wczoraj <span style="font-weight:400;font-size:11px;color:var(--faint)">· stan z 2026-11-07 12:05 · odświeżanie co 2 h</span></div>
     <span><span class="sbadge sbadge-ga4">GA4 NA ŻYWO</span> <span class="sbadge sbadge-bq">BIGQUERY</span> <span class="sbadge sbadge-pd">PIPEDRIVE</span></span></div>
-  <div class="live-tabs"><button class="live-tab active" data-k="20261107">🔴 Dziś</button><button class="live-tab" data-k="20261106">Wczoraj</button><button class="live-tab" data-k="20261105">05.11</button><button class="live-tab" data-k="M202611">Listopad 2026 narastająco</button></div>
+  <div class="live-tabs"><button class="live-tab active" data-k="20261107">🔴 Dziś 07.11</button><button class="live-tab" data-k="20261106">Wczoraj 06.11</button></div>
   <div id="live-content"></div>
 </div>
 <h2 class="sek sek-ruch" style="margin:26px 0 10px"><span class="r">A</span><span class="typ">Okresy</span>Analiza okresów — wybierz daty i porównaj z poprzednim</h2>
@@ -1879,12 +1879,33 @@ function straznik(keys){
  h+=zle?'<div class="concl c-amber"><span class="lab">Uwaga</span>Część zdarzeń przychodzi niepełna — liczby wyżej mogą być zaniżone.</div>':'<div class="concl c-green"><span class="lab">OK</span>Pomiar kompletny — każde zdarzenie ma sesję, każdy formularz numer i typ.</div>';
  return h;}
 function dzien(k){
- let keys,s,e,cs=null,ce=null,etyk;
- if(k[0]==='M'){const m=k.slice(1);keys=Object.keys(ZD).filter(x=>x.startsWith(m)).sort();s=iso(keys[0]);e=iso(keys[keys.length-1]);etyk='Miesiąc narastająco';}
- else{keys=[k];s=e=iso(k);const pd=new Date(s+'T12:00:00');pd.setDate(pd.getDate()-1);cs=ce=pd.toISOString().slice(0,10);if(!DAILY[cs]){cs=ce=null;}}
- const A=aggregateRange(s,e);let h='';
+ const d=iso(k),D=DAILY[d]||{},kp=D.kpi||{},ak=D.akcje||{},x=ZD[k]||{};
+ const pd=new Date(d+'T12:00:00');pd.setDate(pd.getDate()-1);const cs=pd.toISOString().slice(0,10),has=!!DAILY[cs];
+ let h='';
  if(k===DZIS)h+=teraz();
- h+=ccWyniki(s,e,cs,ce)+ccLejek(s,e)+ccKanaly(A)+ccWejscia(A)+ccAuta(A)+ccUrzadzenia(A)+ccGodziny(A)+zdarzenia(keys)+straznik(keys);
+ // spływ leadów: formularze, kliknięcia, akcje (zgoda / bez zgody) — klocki z donutem
+ h+=ccWyniki(d,d,has?cs:null,has?cs:null);
+ // co wpadło do Pipedrive tego dnia (bez testów)
+ const fp=ak.formy_pd||{},rv=ak.rinvo||0,pdTot=Object.values(fp).reduce((a,v)=>a+v,0)+rv;
+ const NZ={vehicle_offer:'Zapytanie o konkretne auto',vehicle_search:'Szukam auta (dobór)',financing:'Finansowanie',cooperation:'Współpraca',other:'Inne pytanie'};
+ h+=`<div class="lsep"><span class="sbadge sbadge-pd">PIPEDRIVE</span>Spływ leadów do Pipedrive — ${k===DZIS?'dziś':'tego dnia'} (bez testów)</div><div class="tiles">`
+  +tile('Leady w Pipedrive',n(pdTot),'wszystkie źródła',pdTot?'color:var(--good-d)':'')
+  +Object.entries(NZ).map(([t,lab])=>tile(lab,n(fp[t]||0),'formularz WWW',fp[t]?'':'color:var(--faint)')).join('')
+  +tile('Telefon — Rinvo',n(rv),'voicebot',rv?'':'color:var(--faint)')+'</div>';
+ // ruch dnia
+ const ses=kp.sessions||0,anon=ak.anon_wizyty||0,fn=D.funnel||{};
+ h+=`<div class="lsep"><span class="sbadge sbadge-bq">BIGQUERY</span>Ruch ${k===DZIS?'dziś do teraz':'tego dnia'}</div><div class="tiles">`
+  +tile('Sesje ze zgodą',n(ses),'widzi GA4')+tile('Wizyty bez zgody',n(anon),'anonimowe pingi')
+  +tile('Doszli do oferty',ccP(fn.view_item||0,ses,0),`${n(fn.view_item||0)} sesji`)
+  +tile('Otworzyli kartę auta',ccP(fn.add_to_cart||0,ses,0),`${n(fn.add_to_cart||0)} sesji`)
+  +tile('Średni czas',kp.avgSessionDuration_s?Math.floor(kp.avgSessionDuration_s/60)+':'+String(Math.round(kp.avgSessionDuration_s%60)).padStart(2,'0'):'—','na sesję')+'</div>';
+ // kanały dnia
+ const ch=(D.channels||[]).slice(0,6),tc=ch.reduce((a,c)=>a+c.sessions,0);
+ if(ch.length)h+=`<div class="lsep"><span class="sbadge sbadge-bq">BIGQUERY</span>Kanały ${k===DZIS?'dziś':'tego dnia'}</div><div class="tiles">`+ch.map((c,i)=>tile(c.channel,ccP(c.sessions,tc,0),`${n(c.sessions)} sesji${c.transactions?' · '+n(c.transactions)+' formularzy':''}`,i===0?'color:var(--accent-d)':'')).join('')+'</div>';
+ // auta dnia
+ const au=(D.products||[]).slice(0,6);
+ if(au.length)h+=`<div class="lsep"><span class="sbadge sbadge-bq">BIGQUERY</span>Najczęściej oglądane auta</div><div class="tiles">`+au.map(p=>tile(String(p.name).replace('/oferta/','').replace(/-/g,' ').slice(0,30),n(p.viewed)+' sesji',p.purchased?n(p.purchased)+' formularzy':(p.atc?n(p.atc)+' kliknięć':'bez kontaktu'))).join('')+'</div>';
+ if(!ses&&!pdTot)h+='<div class="live-nodata">GA4 domyka dzień z opóźnieniem — dane dnia rosną co 2 h.</div>';
  return h;}
 function pokaz(k){const el=document.getElementById('live-content');try{el.innerHTML=dzien(k);}catch(err){el.innerHTML='<div class="live-nodata">Błąd widoku dnia: '+err.message+'</div>';console.error(err);}}
 document.querySelectorAll('.live-sec .live-tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.live-sec .live-tab').forEach(x=>x.classList.toggle('active',x===b));pokaz(b.dataset.k);});
