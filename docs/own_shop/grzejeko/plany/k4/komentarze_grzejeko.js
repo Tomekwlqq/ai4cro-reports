@@ -15,10 +15,10 @@
   if (window.__komentarzeInit) return;
   window.__komentarzeInit = true;
 
-  var OSOBY = ['Tomek', 'Rafał', 'Bartek', 'Testerka'];
+  var OSOBY = ['Tomek', 'Rafał', 'Bartek', 'Magda'];
   // zapis w bazie = klucz z OSOBY; na ekranie = NAZWA, każda osoba ma swój kolor
   var NAZWA = {};
-  var KOLOR = { Tomek: '#C2571A', Rafał: '#1F6FB2', Bartek: '#6A4BB8', Testerka: '#B0306E' };
+  var KOLOR = { Tomek: '#C2571A', Rafał: '#1F6FB2', Bartek: '#6A4BB8', Magda: '#B0306E', Testerka: '#B0306E' };
   function nazwa(n) { return NAZWA[n] || n; }
   // Ocena osoby (Tomek 15.10): jeden wpis na osobę i element, aktualizowany — '' = Jestem OK, na_pozniej, na_ab
   var OCENY = { '': { ik: '👍', kr: 'OK', dl: 'jestem OK' }, na_pozniej: { ik: '⏳', kr: 'później', dl: 'na później' }, na_ab: { ik: '🧪', kr: 'A/B', dl: 'na A/B' }, do_zmiany: { ik: '🔧', kr: 'do zmiany', dl: 'do zmiany' } };
