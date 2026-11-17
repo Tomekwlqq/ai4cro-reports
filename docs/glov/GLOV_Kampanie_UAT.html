@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GLOV — Kampanie (UAT)</title>
+<style>
+[data-theme="light"]{--bg:#f7f7f8;--card:#fff;--line:#e6e6e9;--txt:#0a0a0a;--txt2:#5b5b66;--muted:#8a8a95;
+ --meta:#0866ff;--meta-bg:#eaf2ff;--goo:#1e8e3e;--goo-bg:#e8f5ec;--shop:#5e8e3e;--shop-bg:#f1f7ea;
+ --mer:#7c3aed;--mer-bg:#f3edff;--warm:#c2410c;--warm-bg:#fff1e8;--teal:#0f766e;--teal-bg:#e6f6f4;
+ --z:#16a34a;--y:#d97706;--r:#dc2626;--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04)}
+[data-theme="dark"]{--bg:#0f1115;--card:#181b22;--line:#2a2f3a;--txt:#e8eaed;--txt2:#a3a9b3;--muted:#6b7280;
+ --meta:#5b9bff;--meta-bg:#14223a;--goo:#3ecf6e;--goo-bg:#12261a;--shop:#9bc46a;--shop-bg:#1c2614;
+ --mer:#a78bfa;--mer-bg:#221a38;--warm:#fb923c;--warm-bg:#2d1a0f;--teal:#2dd4bf;--teal-bg:#0f2624;
+ --z:#3ecf8e;--y:#fbbf24;--r:#f87171;--shadow:0 1px 3px rgba(0,0,0,.4)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.45 -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:16px}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.top h1{font-size:20px;margin:0;font-weight:800;letter-spacing:-.01em}
+.chip{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--warm-bg);color:var(--warm)}
+.sp{flex:1}
+.theme{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:8px;padding:5px 10px;cursor:pointer}
+.werdykt{background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);font-size:16px;margin-bottom:14px}
+.werdykt b{font-weight:800}
+h2{font-size:15px;margin:22px 0 10px;font-weight:800}
+h2 small{font-weight:500;color:var(--muted);font-size:12px;margin-left:6px}
+.kafle{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.kafel{border-radius:14px;padding:12px 14px;box-shadow:var(--shadow)}
+.kafel .l{font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.03em}
+.kafel .v{font-size:30px;font-weight:800;line-height:1.1;margin:6px 0 2px;letter-spacing:-.02em}
+.kafel .d{font-size:12px;font-weight:700}
+.kafel .m{font-size:13px;color:var(--txt2);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.kafel .m b{color:var(--txt)}
+.up{color:var(--z)}.dn{color:var(--r)}.neu{color:var(--muted)}
+.split{display:flex;height:6px;border-radius:3px;overflow:hidden;margin-top:6px;background:var(--line)}
+.split i{display:block}
+.leg{font-size:11px;color:var(--txt2);margin-top:4px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:0}
+.karta{background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.tabs{display:inline-flex;background:var(--bg);border-radius:9px;padding:3px;margin-bottom:10px}
+.tabs button{border:0;background:none;color:var(--txt2);font-weight:700;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:13px}
+.tabs button.on{background:var(--card);color:var(--txt);box-shadow:var(--shadow)}
+.pasek{display:grid;grid-template-columns:150px 1fr 70px;align-items:center;gap:10px;margin:7px 0;font-size:13px}
+.pasek .bar{height:16px;border-radius:5px;background:var(--line);position:relative;overflow:hidden}
+.pasek .bar i{position:absolute;inset:0 auto 0 0;border-radius:5px}
+.pasek .n{text-align:right;font-weight:800}
+.nota{font-size:12px;color:var(--txt2);margin-top:8px}
+svg text{fill:var(--txt2);font-size:11px}
+.kamp{display:grid;grid-template-columns:16px minmax(0,1fr) 110px 160px 140px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.kamp.h{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;padding-top:0}
+.kamp .nm{font-weight:600;overflow-wrap:anywhere;min-width:0}
+.kamp .mb{height:5px;border-radius:3px;background:var(--line);margin-top:5px;overflow:hidden}
+.kamp .mb i{display:block;height:100%;border-radius:3px}
+.pl{font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;margin-right:6px;display:inline-block}
+.pl.meta{background:var(--meta-bg);color:var(--meta)}.pl.google{background:var(--goo-bg);color:var(--goo)}
+.sw{width:12px;height:12px;border-radius:50%}
+.sw.z{background:var(--z)}.sw.y{background:var(--y)}.sw.r{background:var(--r)}.sw.n{background:var(--line)}
+.kamp .num{text-align:right;font-variant-numeric:tabular-nums}
+.kamp .big{font-size:17px;font-weight:800}
+.kamp .gr{color:var(--txt2)}
+.kamp .sub{display:block;font-size:11px;color:var(--muted);font-weight:600}
+.mob{display:none}
+.wiecej{margin-top:10px;border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:8px;padding:7px 14px;font-weight:700;cursor:pointer}
+.ukryj{display:none!important}
+.zm{display:grid;grid-template-columns:92px 70px minmax(0,1fr);gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
+.zm .t{color:var(--muted);font-variant-numeric:tabular-nums}
+.typ{font-size:10px;font-weight:800;padding:2px 6px;border-radius:5px;text-align:center;align-self:start}
+.typ.budżet{background:var(--warm-bg);color:var(--warm)}.typ.start,.typ.nowa{background:var(--goo-bg);color:var(--goo)}
+.typ.stop{background:#fde8e8;color:var(--r)}.typ.cel,.typ.ustawienie{background:var(--mer-bg);color:var(--mer)}
+[data-theme="dark"] .typ.stop{background:#3a1515}
+.def{font-size:12px;color:var(--txt2);line-height:1.6}
+.def b{color:var(--txt)}
+.zr{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 0}
+.zr span{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--bg)}
+.zr span.stary{background:#fde8e8;color:var(--r)}
+@media(max-width:600px){
+ .wrap{padding:10px}.kafel .v{font-size:26px}
+ .pasek{grid-template-columns:110px 1fr 56px}
+ .kamp{grid-template-columns:14px minmax(0,1fr) 110px;row-gap:4px}
+ .kamp .nm{grid-column:2/4}.kamp .c3{grid-column:2/3;text-align:left}.kamp .c4{grid-column:3/4}
+ .kamp .c5{grid-column:2/4;text-align:left}.kamp .c5 .sub{display:inline;margin-left:6px}
+ .kamp.h{display:none}.mob{display:inline}
+ .zm{grid-template-columns:auto minmax(0,1fr)}.zm .t{grid-column:1/3}.zm .typ{grid-column:1}.zm .opis{grid-column:2}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="top">
+  <a href="GLOV_HUB.html" style="font-weight:700;text-decoration:none;color:inherit;opacity:.7">← Hub</a>
+  <h1>GLOV · Kampanie</h1><span class="chip">UAT · wersja robocza</span>
+  <span class="sp"></span><span id="dzienLbl" style="font-weight:700"></span>
+  <button class="theme" id="themeBtn">🌙</button>
+ </div>
+
+ <div class="werdykt" id="werdykt"></div>
+
+ <h2 id="hKafle"></h2>
+ <div class="kafle" id="kafle"></div>
+
+ <h2>Kto ile sobie przypisuje <small>platformy liczą zakupy po swojemu, sklep liczy zamówienia</small></h2>
+ <div class="karta">
+  <div class="tabs" id="recTabs"><button data-k="mtd" class="on">Miesiąc</button><button data-k="dzien">Wczoraj</button></div>
+  <div id="rec"></div>
+  <div class="nota" id="recNota"></div>
+ </div>
+
+ <h2>30 dni: wydatek i MER <small>słupki = wydatek Meta + Google, linia = MER, ● = zmiana w kampaniach</small></h2>
+ <div class="karta"><div id="wykres"></div></div>
+
+ <h2>Kampanie <small id="kampOkres"></small></h2>
+ <div class="karta" id="kamp"></div>
+
+ <h2>Dziennik zmian <small>budżety, włączenia, cele — Meta i Google</small></h2>
+ <div class="karta" id="zmiany"></div>
+
+ <h2>Skąd te liczby</h2>
+ <div class="karta def" id="def"></div>
+</div>
+<script>
+const DANE={"dzien": "2026-11-16", "stan": "2026-11-17", "mtd_dni": 16, "dzienD": {"date": "2026-11-16", "sp_meta": 2418.33, "sp_google": 752.65, "spend": 3170.98, "pu_meta": 66, "pu_google": 19.81, "va_meta": 10050.92, "va_google": 3174.77, "rev": 14666.1, "gross": 20788.94, "disc": -9222.68, "orders": 96, "new": 48, "tt_orders": 14, "tt_rev": 724.5, "ga4_tr": 108}, "wD": {"mer": 4.63, "cpo": 33.03, "cac": 66.06, "przyp": 0.89}, "tydz_temu": {"date": "2026-11-09", "sp_meta": 406.27, "sp_google": 183.67, "spend": 589.94, "pu_meta": 8, "pu_google": 4.5, "va_meta": 1266.7, "va_google": 854.06, "rev": 6168.56, "gross": 8473.87, "disc": -3293.56, "orders": 33, "new": 10, "tt_orders": 12, "tt_rev": 550.8, "ga4_tr": 42}, "wT": {"mer": 10.46, "cpo": 17.88, "cac": 58.99, "przyp": 0.38}, "mtd": {"sp_meta": 19979.72, "sp_google": 5651.13, "spend": 25630.85, "pu_meta": 434, "pu_google": 168.57, "va_meta": 60025.16, "va_google": 22414.13, "rev": 110873.85, "gross": 155100.08, "disc": -67578.79, "orders": 775, "new": 372, "tt_orders": 238, "tt_rev": 11873.1, "ga4_tr": 978}, "wM": {"mer": 4.33, "cpo": 33.07, "cac": 68.9, "przyp": 0.78}, "seria": [{"date": "2026-10-18", "sp_meta": 847.29, "sp_google": 130.83, "spend": 978.12, "pu_meta": 10, "pu_google": 3.77, "va_meta": 2115.9, "va_google": 442.86, "rev": 4399.61, "gross": 4507.84, "disc": -1010.04, "orders": 23, "new": 15, "tt_orders": 4, "tt_rev": 205.5, "ga4_tr": 25, "mer": 4.5, "cpo": 42.53, "cac": 65.21, "przyp": 0.6}, {"date": "2026-10-19", "sp_meta": 736.38, "sp_google": 75.34, "spend": 811.72, "pu_meta": 14, "pu_google": 5.6, "va_meta": 2268.65, "va_google": 667.76, "rev": 2875.03, "gross": 3028.42, "disc": -730.59, "orders": 19, "new": 13, "tt_orders": 6, "tt_rev": 366.3, "ga4_tr": 25, "mer": 3.54, "cpo": 42.72, "cac": 62.44, "przyp": 1.03}, {"date": "2026-10-20", "sp_meta": 741.59, "sp_google": 90.91, "spend": 832.5, "pu_meta": 7, "pu_google": 7.62, "va_meta": 1116.8, "va_google": 1468.32, "rev": 2250.59, "gross": 2298.72, "disc": -519.81, "orders": 13, "new": 11, "tt_orders": 5, "tt_rev": 235.5, "ga4_tr": 18, "mer": 2.7, "cpo": 64.04, "cac": 75.68, "przyp": 1.12}, {"date": "2026-10-21", "sp_meta": 684.51, "sp_google": 104.93, "spend": 789.44, "pu_meta": 7, "pu_google": 4.1, "va_meta": 625.45, "va_google": 541.52, "rev": 1701.93, "gross": 2035.67, "disc": -471.01, "orders": 15, "new": 11, "tt_orders": 8, "tt_rev": 422.1, "ga4_tr": 22, "mer": 2.16, "cpo": 52.63, "cac": 71.77, "przyp": 0.74}, {"date": "2026-10-22", "sp_meta": 656.54, "sp_google": 106.86, "spend": 763.4, "pu_meta": 9, "pu_google": 0.5, "va_meta": 847.11, "va_google": 82.12, "rev": 1557.28, "gross": 1347.46, "disc": -252.03, "orders": 15, "new": 10, "tt_orders": 5, "tt_rev": 284.4, "ga4_tr": 18, "mer": 2.04, "cpo": 50.89, "cac": 76.34, "przyp": 0.63}, {"date": "2026-10-23", "sp_meta": 618.03, "sp_google": 119.56, "spend": 737.59, "pu_meta": 10, "pu_google": 6.93, "va_meta": 1581.46, "va_google": 1060.76, "rev": 2533.67, "gross": 2516.02, "disc": -529.54, "orders": 18, "new": 11, "tt_orders": 10, "tt_rev": 426.0, "ga4_tr": 28, "mer": 3.44, "cpo": 40.98, "cac": 67.05, "przyp": 0.94}, {"date": "2026-10-24", "sp_meta": 642.55, "sp_google": 107.98, "spend": 750.53, "pu_meta": 10, "pu_google": 4.8, "va_meta": 1674.97, "va_google": 319.44, "rev": 3104.48, "gross": 2967.64, "disc": -536.24, "orders": 18, "new": 11, "tt_orders": 7, "tt_rev": 342.3, "ga4_tr": 23, "mer": 4.14, "cpo": 41.7, "cac": 68.23, "przyp": 0.82}, {"date": "2026-10-25", "sp_meta": 866.04, "sp_google": 165.02, "spend": 1031.06, "pu_meta": 12, "pu_google": 7.09, "va_meta": 1495.85, "va_google": 924.11, "rev": 3182.38, "gross": 3129.74, "disc": -586.29, "orders": 23, "new": 17, "tt_orders": 9, "tt_rev": 450.0, "ga4_tr": 30, "mer": 3.09, "cpo": 44.83, "cac": 60.65, "przyp": 0.83}, {"date": "2026-10-26", "sp_meta": 570.84, "sp_google": 99.93, "spend": 670.77, "pu_meta": 2, "pu_google": 1.07, "va_meta": 582.32, "va_google": 152.46, "rev": 994.95, "gross": 821.18, "disc": -51.07, "orders": 6, "new": 4, "tt_orders": 14, "tt_rev": 468.0, "ga4_tr": 20, "mer": 1.48, "cpo": 111.8, "cac": 167.69, "przyp": 0.51}, {"date": "2026-10-27", "sp_meta": 727.01, "sp_google": 114.21, "spend": 841.22, "pu_meta": 3, "pu_google": 4.25, "va_meta": 394.24, "va_google": 451.63, "rev": 691.44, "gross": 612.72, "disc": -92.51, "orders": 7, "new": 4, "tt_orders": 12, "tt_rev": 581.7, "ga4_tr": 19, "mer": 0.82, "cpo": 120.17, "cac": 210.31, "przyp": 1.04}, {"date": "2026-10-28", "sp_meta": 705.69, "sp_google": 120.84, "spend": 826.53, "pu_meta": 6, "pu_google": 5.61, "va_meta": 678.29, "va_google": 462.05, "rev": 1682.66, "gross": 1419.31, "disc": -145.55, "orders": 14, "new": 10, "tt_orders": 3, "tt_rev": 128.7, "ga4_tr": 17, "mer": 2.04, "cpo": 59.04, "cac": 82.65, "przyp": 0.83}, {"date": "2026-10-29", "sp_meta": 711.92, "sp_google": 104.98, "spend": 816.9, "pu_meta": 5, "pu_google": 1.74, "va_meta": 914.1, "va_google": 274.74, "rev": 1463.13, "gross": 1343.06, "disc": -155.71, "orders": 10, "new": 6, "tt_orders": 17, "tt_rev": 977.7, "ga4_tr": 27, "mer": 1.79, "cpo": 81.69, "cac": 136.15, "przyp": 0.67}, {"date": "2026-10-30", "sp_meta": 726.21, "sp_google": 109.15, "spend": 835.36, "pu_meta": 1, "pu_google": 0.0, "va_meta": 62.8, "va_google": 0.0, "rev": 307.46, "gross": 390.46, "disc": -8.1, "orders": 4, "new": 2, "tt_orders": 18, "tt_rev": 927.9, "ga4_tr": 21, "mer": 0.37, "cpo": 208.84, "cac": 417.68, "przyp": 0.25}, {"date": "2026-10-31", "sp_meta": 664.26, "sp_google": 158.44, "spend": 822.7, "pu_meta": 2, "pu_google": 2.08, "va_meta": 175.6, "va_google": 253.36, "rev": 913.04, "gross": 788.86, "disc": -47.0, "orders": 7, "new": 4, "tt_orders": 24, "tt_rev": 1172.4, "ga4_tr": 31, "mer": 1.11, "cpo": 117.53, "cac": 205.68, "przyp": 0.58}, {"date": "2026-11-01", "sp_meta": 889.97, "sp_google": 160.85, "spend": 1050.82, "pu_meta": 5, "pu_google": 2.05, "va_meta": 435.45, "va_google": 270.52, "rev": 1314.43, "gross": 1021.05, "disc": -30.68, "orders": 12, "new": 10, "tt_orders": 15, "tt_rev": 846.0, "ga4_tr": 25, "mer": 1.25, "cpo": 87.57, "cac": 105.08, "przyp": 0.59}, {"date": "2026-11-02", "sp_meta": 700.45, "sp_google": 145.69, "spend": 846.14, "pu_meta": 4, "pu_google": 3.0, "va_meta": 484.0, "va_google": 350.68, "rev": 1238.21, "gross": 957.49, "disc": -9.74, "orders": 10, "new": 5, "tt_orders": 12, "tt_rev": 600.6, "ga4_tr": 22, "mer": 1.46, "cpo": 84.61, "cac": 169.23, "przyp": 0.7}, {"date": "2026-11-03", "sp_meta": 663.99, "sp_google": 151.46, "spend": 815.45, "pu_meta": 1, "pu_google": 6.0, "va_meta": 219.8, "va_google": 640.69, "rev": 728.99, "gross": 579.83, "disc": -32.35, "orders": 6, "new": 4, "tt_orders": 5, "tt_rev": 235.5, "ga4_tr": 11, "mer": 0.89, "cpo": 135.91, "cac": 203.86, "przyp": 1.17}, {"date": "2026-11-04", "sp_meta": 604.27, "sp_google": 137.5, "spend": 741.77, "pu_meta": 0, "pu_google": 1.2, "va_meta": 0.0, "va_google": 105.32, "rev": 1334.79, "gross": 1074.6, "disc": -24.38, "orders": 9, "new": 5, "tt_orders": 12, "tt_rev": 936.9, "ga4_tr": 20, "mer": 1.8, "cpo": 82.42, "cac": 148.35, "przyp": 0.13}, {"date": "2026-11-05", "sp_meta": 491.59, "sp_google": 114.96, "spend": 606.55, "pu_meta": 3, "pu_google": 2.55, "va_meta": 619.54, "va_google": 353.93, "rev": 1135.39, "gross": 2125.47, "disc": -1115.55, "orders": 11, "new": 9, "tt_orders": 18, "tt_rev": 857.1, "ga4_tr": 29, "mer": 1.87, "cpo": 55.14, "cac": 67.39, "przyp": 0.5}, {"date": "2026-11-06", "sp_meta": 400.33, "sp_google": 126.07, "spend": 526.4, "pu_meta": 6, "pu_google": 3.94, "va_meta": 1038.86, "va_google": 503.74, "rev": 1750.84, "gross": 1493.42, "disc": -128.29, "orders": 11, "new": 7, "tt_orders": 9, "tt_rev": 374.2, "ga4_tr": 18, "mer": 3.33, "cpo": 47.85, "cac": 75.2, "przyp": 0.9}, {"date": "2026-11-07", "sp_meta": 361.73, "sp_google": 125.63, "spend": 487.36, "pu_meta": 7, "pu_google": 0.37, "va_meta": 390.7, "va_google": 86.15, "rev": 1071.87, "gross": 1478.56, "disc": -769.65, "orders": 12, "new": 9, "tt_orders": 11, "tt_rev": 483.9, "ga4_tr": 21, "mer": 2.2, "cpo": 40.61, "cac": 54.15, "przyp": 0.61}, {"date": "2026-11-08", "sp_meta": 490.74, "sp_google": 209.87, "spend": 700.61, "pu_meta": 5, "pu_google": 6.01, "va_meta": 976.95, "va_google": 791.56, "rev": 2476.09, "gross": 2121.56, "disc": -192.84, "orders": 15, "new": 11, "tt_orders": 15, "tt_rev": 661.5, "ga4_tr": 30, "mer": 3.53, "cpo": 46.71, "cac": 63.69, "przyp": 0.73}, {"date": "2026-11-09", "sp_meta": 406.27, "sp_google": 183.67, "spend": 589.94, "pu_meta": 8, "pu_google": 4.5, "va_meta": 1266.7, "va_google": 854.06, "rev": 6168.56, "gross": 8473.87, "disc": -3293.56, "orders": 33, "new": 10, "tt_orders": 12, "tt_rev": 550.8, "ga4_tr": 42, "mer": 10.46, "cpo": 17.88, "cac": 58.99, "przyp": 0.38}, {"date": "2026-11-10", "sp_meta": 439.27, "sp_google": 234.33, "spend": 673.6, "pu_meta": 12, "pu_google": 3.23, "va_meta": 2157.3, "va_google": 449.41, "rev": 4284.68, "gross": 5388.97, "disc": -2034.39, "orders": 29, "new": 13, "tt_orders": 17, "tt_rev": 804.3, "ga4_tr": 46, "mer": 6.36, "cpo": 23.23, "cac": 51.82, "przyp": 0.53}, {"date": "2026-11-11", "sp_meta": 272.65, "sp_google": 300.94, "spend": 573.59, "pu_meta": 18, "pu_google": 19.44, "va_meta": 2630.9, "va_google": 1996.95, "rev": 8943.06, "gross": 12284.67, "disc": -5070.66, "orders": 54, "new": 26, "tt_orders": 22, "tt_rev": 1061.7, "ga4_tr": 71, "mer": 15.59, "cpo": 10.62, "cac": 22.06, "przyp": 0.69}, {"date": "2026-11-12", "sp_meta": 2661.34, "sp_google": 364.12, "spend": 3025.46, "pu_meta": 71, "pu_google": 24.0, "va_meta": 9916.51, "va_google": 2561.69, "rev": 15007.83, "gross": 22145.0, "disc": -10544.4, "orders": 108, "new": 42, "tt_orders": 20, "tt_rev": 942.2, "ga4_tr": 126, "mer": 4.96, "cpo": 28.01, "cac": 72.03, "przyp": 0.88}, {"date": "2026-11-13", "sp_meta": 3100.56, "sp_google": 719.94, "spend": 3820.5, "pu_meta": 78, "pu_google": 21.62, "va_meta": 10250.13, "va_google": 2468.73, "rev": 15621.64, "gross": 24196.87, "disc": -11284.84, "orders": 119, "new": 50, "tt_orders": 22, "tt_rev": 1163.4, "ga4_tr": 135, "mer": 4.09, "cpo": 32.11, "cac": 76.41, "przyp": 0.84}, {"date": "2026-11-14", "sp_meta": 2998.14, "sp_google": 1060.12, "spend": 4058.26, "pu_meta": 70, "pu_google": 21.69, "va_meta": 9203.28, "va_google": 3132.39, "rev": 15652.11, "gross": 22765.37, "disc": -10738.61, "orders": 116, "new": 56, "tt_orders": 16, "tt_rev": 750.3, "ga4_tr": 127, "mer": 3.86, "cpo": 34.98, "cac": 72.47, "przyp": 0.79}, {"date": "2026-11-15", "sp_meta": 3080.09, "sp_google": 863.33, "spend": 3943.42, "pu_meta": 80, "pu_google": 29.16, "va_meta": 10384.12, "va_google": 4673.54, "rev": 19479.26, "gross": 28204.41, "disc": -13086.17, "orders": 134, "new": 67, "tt_orders": 18, "tt_rev": 880.2, "ga4_tr": 147, "mer": 4.94, "cpo": 29.43, "cac": 58.86, "przyp": 0.81}, {"date": "2026-11-16", "sp_meta": 2418.33, "sp_google": 752.65, "spend": 3170.98, "pu_meta": 66, "pu_google": 19.81, "va_meta": 10050.92, "va_google": 3174.77, "rev": 14666.1, "gross": 20788.94, "disc": -9222.68, "orders": 96, "new": 48, "tt_orders": 14, "tt_rev": 724.5, "ga4_tr": 108, "mer": 4.63, "cpo": 33.03, "cac": 66.06, "przyp": 0.89}], "kampanie": [{"plat": "meta", "name": "zakup_acq_blackweek_flow", "dzis": 870.96, "dzis_pu": 25, "dzis_va": 3363.44, "mtd": 4636.44, "mtd_va": 15881.85, "spend": 4636.43, "purch": 126, "value": 15881.85, "spend0": null, "roas": 3.43, "roas_sr": 3.65, "swiatlo": "y"}, {"plat": "meta", "name": "zakup_acq_blackweek_katalog", "dzis": 454.36, "dzis_pu": 15, "dzis_va": 3232.64, "mtd": 2592.39, "mtd_va": 12230.59, "spend": 2592.39, "purch": 79, "value": 12230.59, "spend0": null, "roas": 4.72, "roas_sr": 3.65, "swiatlo": "z"}, {"plat": "meta", "name": "zakup_acq_body_flow", "dzis": 320.31, "dzis_pu": 2, "dzis_va": 287.3, "mtd": 2532.23, "mtd_va": 5810.18, "spend": 1896.17, "purch": 32, "value": 5106.33, "spend0": 484.79, "roas": 2.69, "roas_sr": 3.65, "swiatlo": "y"}, {"plat": "meta", "name": "zakup_acq_hair_flow", "dzis": 310.27, "dzis_pu": 15, "dzis_va": 2019.45, "mtd": 1959.95, "mtd_va": 6705.85, "spend": 1691.29, "purch": 47, "value": 6031.95, "spend0": 205.12, "roas": 3.57, "roas_sr": 3.65, "swiatlo": "y"}, {"plat": "meta", "name": "zakup_acq_nanoglass_flow", "dzis": 299.72, "dzis_pu": 5, "dzis_va": 422, "mtd": 2584.49, "mtd_va": 4049.2, "spend": 1916.91, "purch": 39, "value": 3867.7, "spend0": 447.21, "roas": 2.02, "roas_sr": 3.65, "swiatlo": "y"}, {"plat": "google", "name": "pmax_all", "dzis": 257.83, "dzis_pu": 2.72, "dzis_va": 314.01, "mtd": 2220.89, "mtd_va": 3831.93, "spend": 1924.17, "purch": 16.59, "value": 2803.58, "spend0": 225.82, "roas": 1.46, "roas_sr": 4.3, "swiatlo": "r"}, {"plat": "google", "name": "pla_all", "dzis": 221.09, "dzis_pu": 2.78, "dzis_va": 441.58, "mtd": 1090.61, "mtd_va": 4287.59, "spend": 770.19, "purch": 31.6, "value": 3527.03, "spend0": 236.37, "roas": 4.58, "roas_sr": 4.3, "swiatlo": "z"}, {"plat": "google", "name": "search_brand_phrase", "dzis": 121.28, "dzis_pu": 1.09, "dzis_va": 217.95, "mtd": 1144.3, "mtd_va": 3241.3, "spend": 671.31, "purch": 18.77, "value": 2361.72, "spend0": 383.73, "roas": 3.52, "roas_sr": 4.3, "swiatlo": "y"}, {"plat": "meta", "name": "zakup_acq_lunaeye_flow", "dzis": 100.55, "dzis_pu": 2, "dzis_va": 351.8, "mtd": 1662.68, "mtd_va": 3712.21, "spend": 745.3, "purch": 17, "value": 3151.64, "spend0": 705.05, "roas": 4.23, "roas_sr": 3.65, "swiatlo": "z"}, {"plat": "google", "name": "search_brand_exact", "dzis": 72.31, "dzis_pu": 13.22, "dzis_va": 2201.23, "mtd": 703.51, "mtd_va": 10644.89, "spend": 537.92, "purch": 68.93, "value": 9409.53, "spend0": 136.07, "roas": 17.49, "roas_sr": 4.3, "swiatlo": "z"}, {"plat": "google", "name": "dgen_remarketing_produkty | Black Week 2026", "dzis": 62.16, "dzis_pu": 0.0, "dzis_va": 0.0, "mtd": 310.88, "mtd_va": 5.62, "spend": 310.88, "purch": 0.06, "value": 5.62, "spend0": null, "roas": 0.02, "roas_sr": 4.3, "swiatlo": "r"}, {"plat": "meta", "name": "zakup_acq_blackweek_bundle", "dzis": 62.14, "dzis_pu": 2, "dzis_va": 374.3, "mtd": 511.33, "mtd_va": 1389.48, "spend": 511.33, "purch": 10, "value": 1389.48, "spend0": null, "roas": 2.72, "roas_sr": 3.65, "swiatlo": "y"}, {"plat": "google", "name": "search_generic_pumeks", "dzis": 12.98, "dzis_pu": 0.0, "dzis_va": 0.0, "mtd": 98.31, "mtd_va": 402.8, "spend": 52.86, "purch": 3.0, "value": 350.0, "spend0": 26.97, "roas": 6.62, "roas_sr": 4.3, "swiatlo": "z"}, {"plat": "google", "name": "search_generic_rękawiczka", "dzis": 5.0, "dzis_pu": 0.0, "dzis_va": 0.0, "mtd": 18.07, "mtd_va": 0.0, "spend": 18.07, "purch": 0.0, "value": 0.0, "spend0": null, "roas": 0.0, "roas_sr": 4.3, "swiatlo": "r"}, {"plat": "meta", "name": "zakup_acq_katalog_flow", "dzis": 0, "dzis_pu": 0, "dzis_va": 0, "mtd": 1126.42, "mtd_va": 6521.08, "spend": 209.46, "purch": 21, "value": 3208.9, "spend0": 591.78, "roas": 15.32, "roas_sr": 3.65, "swiatlo": "z"}, {"plat": "meta", "name": "zakup_acq_blackweek_gratisdnia", "dzis": 0, "dzis_pu": 0, "dzis_va": 0, "mtd": 638.47, "mtd_va": 3295.93, "spend": 638.47, "purch": 22, "value": 3295.93, "spend0": null, "roas": 5.16, "roas_sr": 3.65, "swiatlo": "z"}, {"plat": "meta", "name": "ruch_acq_bawelna_rossmann", "dzis": 0, "dzis_pu": 0, "dzis_va": 0, "mtd": 525.11, "mtd_va": 0, "spend": 53.59, "purch": 0, "value": 0, "spend0": 352.18, "roas": 0.0, "roas_sr": 3.65, "swiatlo": "r"}, {"plat": "meta", "name": "zasieg_acq_coolnails_rossmann", "dzis": 0, "dzis_pu": 0, "dzis_va": 0, "mtd": 375.07, "mtd_va": 0, "spend": 0, "purch": 0, "value": 0, "spend0": 159.84, "roas": null, "roas_sr": 3.65, "swiatlo": "n"}, {"plat": "meta", "name": "zasieg_acq_bawelna_rossmann", "dzis": 0, "dzis_pu": 0, "dzis_va": 0, "mtd": 310.09, "mtd_va": 0, "spend": 31.52, "purch": 0, "value": 0, "spend0": 207.35, "roas": 0.0, "roas_sr": 3.65, "swiatlo": "r"}, {"plat": "meta", "name": "zakup_acq_ugc_flow", "dzis": 0, "dzis_pu": 0, "dzis_va": 0, "mtd": 278.41, "mtd_va": 428.8, "spend": 47.52, "purch": 2, "value": 428.8, "spend0": 171.67, "roas": 9.02, "roas_sr": 3.65, "swiatlo": "z"}, {"plat": "meta", "name": "ruch_acq_coolnails_rossmann", "dzis": 0, "dzis_pu": 0, "dzis_va": 0, "mtd": 246.71, "mtd_va": 0, "spend": 0, "purch": 0, "value": 0, "spend0": 93.93, "roas": null, "roas_sr": 3.65, "swiatlo": "n"}, {"plat": "google", "name": "search_competitor_rękawiczka", "dzis": 0, "dzis_pu": 0, "dzis_va": 0, "mtd": 64.56, "mtd_va": 0.0, "spend": 10.03, "purch": 0.0, "value": 0.0, "spend0": 40.2, "roas": 0.0, "roas_sr": 4.3, "swiatlo": "r"}], "zmiany": [{"kiedy": "2026-11-16 18:35", "plat": "meta", "typ": "budżet", "co": "k_20-55_broad-adv_auto (zestaw)", "zmiana": "700 → 850 zł/d"}, {"kiedy": "2026-11-16 18:35", "plat": "meta", "typ": "budżet", "co": "k_20-55_broad-adv_auto (zestaw, katalog BW)", "zmiana": "400 → 500 zł/d"}, {"kiedy": "2026-11-16 17:21", "plat": "google", "typ": "budżet", "co": "search_brand_phrase", "zmiana": "zmiana: budżet dzienny"}, {"kiedy": "2026-11-16 17:21", "plat": "google", "typ": "cel", "co": "pmax_all", "zmiana": "zmiana: docelowy ROAS"}, {"kiedy": "2026-11-13 17:46", "plat": "google", "typ": "cel", "co": "pmax_all", "zmiana": "zmiana: docelowy ROAS"}, {"kiedy": "2026-11-13 17:32", "plat": "meta", "typ": "budżet", "co": "k_20-55_broad-adv_auto (zestaw, katalog BW)", "zmiana": "300 → 400 zł/d"}, {"kiedy": "2026-11-13 17:27", "plat": "meta", "typ": "budżet", "co": "all_18-65_interakcje30_auto (zestaw)", "zmiana": "50 → 150 zł/d"}, {"kiedy": "2026-11-13 17:26", "plat": "meta", "typ": "budżet", "co": "k_20-55_broad-adv_auto (zestaw)", "zmiana": "100 → 200 zł/d"}, {"kiedy": "2026-11-12 10:22", "plat": "google", "typ": "ustawienie", "co": "dgen_konkurencja", "zmiana": "zmiana: status (wł./wył.)"}, {"kiedy": "2026-11-12 10:22", "plat": "google", "typ": "budżet", "co": "pmax_all", "zmiana": "zmiana: budżet dzienny"}, {"kiedy": "2026-11-12 09:59", "plat": "meta", "typ": "budżet", "co": "k_20-55_broad-adv_auto (zestaw)", "zmiana": "925 → 700 zł/d"}, {"kiedy": "2026-11-12 08:39", "plat": "google", "typ": "cel", "co": "pla_all", "zmiana": "zmiana: docelowy ROAS"}, {"kiedy": "2026-11-12 08:39", "plat": "google", "typ": "ustawienie", "co": "dgen_remarketing_produkty | Black Week 2026", "zmiana": "zmiana: status (wł./wył.)"}, {"kiedy": "2026-11-12 08:39", "plat": "google", "typ": "ustawienie", "co": "search_generic_rękawiczka", "zmiana": "zmiana: status (wł./wył.)"}, {"kiedy": "2026-11-12 08:39", "plat": "google", "typ": "budżet", "co": "search_generic_rękawiczka", "zmiana": "zmiana: budżet dzienny"}, {"kiedy": "2026-11-12 08:37", "plat": "meta", "typ": "start", "co": "Black Week: blackweek_flow, _katalog, _bundle, _gratisdnia + hair, body, nanoglass, lunaeye", "zmiana": "włączone"}, {"kiedy": "2026-11-12 08:32", "plat": "meta", "typ": "stop", "co": "katalog_flow, coolnails_rossmann (ruch), 3× adc_* (stare Advantage)", "zmiana": "wyłączone"}, {"kiedy": "2026-11-12 08:32", "plat": "meta", "typ": "budżet", "co": "zakup_acq_hair_flow", "zmiana": "30 → 350 zł/d"}, {"kiedy": "2026-11-11 16:02", "plat": "meta", "typ": "budżet", "co": "zakup_acq_body_flow", "zmiana": "70 → 350 zł/d"}, {"kiedy": "2026-11-11 15:21", "plat": "meta", "typ": "nowa", "co": "zakup_acq_blackweek_katalog", "zmiana": "utworzona"}, {"kiedy": "2026-11-11 14:35", "plat": "meta", "typ": "budżet", "co": "zakup_acq_katalog_flow", "zmiana": "60 → 150 zł/d"}, {"kiedy": "2026-11-11 13:56", "plat": "google", "typ": "nowa", "co": "dgen_remarketing_produkty | Black Week 2026", "zmiana": "utworzona"}, {"kiedy": "2026-11-11 11:45", "plat": "google", "typ": "ustawienie", "co": "search_competitor_rękawiczka", "zmiana": "zmiana: status (wł./wył.)"}, {"kiedy": "2026-11-11 11:36", "plat": "google", "typ": "ustawienie", "co": "search_brand_phrase", "zmiana": "zmiana: sieć wyszukiwania"}, {"kiedy": "2026-11-11 11:36", "plat": "google", "typ": "budżet", "co": "search_brand_phrase", "zmiana": "zmiana: budżet dzienny"}, {"kiedy": "2026-11-11 10:46", "plat": "meta", "typ": "stop", "co": "nanoglass_flow, ugc_flow, bawelna_rossmann (ruch, zasięg), body, lunaeye", "zmiana": "wyłączone przed BW"}, {"kiedy": "2026-11-10 16:22", "plat": "google", "typ": "ustawienie", "co": "search_brand_exact", "zmiana": "zmiana: rotacja reklam"}, {"kiedy": "2026-11-10 16:05", "plat": "meta", "typ": "nowa", "co": "zakup_acq_blackweek_flow, _bundle, _gratisdnia", "zmiana": "utworzone"}, {"kiedy": "2026-11-10 16:05", "plat": "google", "typ": "budżet", "co": "search_brand_exact", "zmiana": "zmiana: budżet dzienny"}, {"kiedy": "2026-11-10 16:05", "plat": "google", "typ": "ustawienie", "co": "search_brand_exact", "zmiana": "zmiana: strategia: udział w wyświetleniach"}, {"kiedy": "2026-11-05 10:59", "plat": "meta", "typ": "budżet", "co": "zakup_acq_katalog_flow", "zmiana": "140 → 60 zł/d"}, {"kiedy": "2026-11-04 23:41", "plat": "meta", "typ": "stop", "co": "zasieg_acq_coolnails_rossmann", "zmiana": "wyłączona"}, {"kiedy": "2026-10-26 17:45", "plat": "meta", "typ": "budżet", "co": "zasieg_acq_coolnails_rossmann", "zmiana": "200 → 100 zł/d"}, {"kiedy": "2026-10-26 17:40", "plat": "meta", "typ": "stop", "co": "zakup_acq_flight_promo", "zmiana": "wyłączona"}, {"kiedy": "2026-10-19 18:14", "plat": "meta", "typ": "budżet", "co": "zakup_acq_ugc_flow", "zmiana": "50 → 25 zł/d"}, {"kiedy": "2026-10-19 16:15", "plat": "google", "typ": "ustawienie", "co": "pmax_all", "zmiana": "zmiana: kierowanie geo"}, {"kiedy": "2026-10-19 16:14", "plat": "google", "typ": "ustawienie", "co": "search_generic_rękawiczka", "zmiana": "zmiana: status (wł./wył.)"}, {"kiedy": "2026-10-19 14:33", "plat": "meta", "typ": "budżet", "co": "zakup_acq_katalog_flow", "zmiana": "120 → 140 zł/d"}, {"kiedy": "2026-10-19 14:32", "plat": "meta", "typ": "budżet", "co": "zakup_acq_hair_flow", "zmiana": "20 → 30 zł/d"}, {"kiedy": "2026-10-19 11:18", "plat": "meta", "typ": "stop", "co": "zakup_acq_oczyszczanie_flow", "zmiana": "wyłączona"}], "zrodla": {"meta": "2026-11-16", "google": "2026-11-16", "shopify": "2026-11-16", "ga4": "2026-11-16"}, "google_konwersja": ["glov.co (GA4) (web) purchase"]};
+const zl=v=>v==null?'—':Math.round(v).toLocaleString('pl-PL')+' zł';
+const n0=v=>v==null?'—':Math.round(v).toLocaleString('pl-PL');
+const n1=v=>v==null?'—':(+v).toLocaleString('pl-PL',{minimumFractionDigits:1,maximumFractionDigits:1});
+const n2=v=>v==null?'—':(+v).toLocaleString('pl-PL',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct=(a,b)=>(a==null||!b)?null:(a-b)/b*100;
+const DNI=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
+const MIES=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+const dlabel=s=>{const d=new Date(s+'T12:00');return `${d.getDate()} ${MIES[d.getMonth()]}`};
+const D=DANE.dzienD,T=DANE.tydz_temu,M=DANE.mtd,wD=DANE.wD,wT=DANE.wT||{},wM=DANE.wM;
+const dow=DNI[new Date(DANE.dzien+'T12:00').getDay()];
+document.getElementById('dzienLbl').textContent=`${dow}, ${dlabel(DANE.dzien)}`;
+
+// delta vs ten sam dzień tydzień temu; lepiej = zielone (dla kosztów odwrotnie)
+const SK=['nd','pn','wt','śr','cz','pt','sb'];
+// tryb: 'w_gore' (więcej = lepiej) | 'w_dol' (mniej = lepiej) | 'neutral' (wydatek)
+function delta(a,b,tryb){const p=pct(a,b);if(p==null)return '<span class="neu">brak porównania</span>';
+ let cls='neu';if(tryb!=='neutral'&&Math.abs(p)>=3)cls=((tryb==='w_dol')?p<0:p>0)?'up':'dn';
+ const t=new Date(T.date+'T12:00');
+ return `<span class="${cls}">${p>0?'▲':'▼'} ${Math.abs(p).toFixed(0)}% vs ${SK[t.getDay()]} ${t.getDate()}.${String(t.getMonth()+1).padStart(2,'0')}</span>`}
+
+// WERDYKT — reguły na liczbach, bez LLM
+(function(){
+ const sp=D.spend,spT=T?T.spend:null,mer=wD.mer,merT=wT.mer;
+ let s=`Wczoraj reklamy kosztowały <b>${zl(sp)}</b>, sklep sprzedał za <b>${zl(D.rev)}</b> — każda złotówka reklamy to <b>${n2(mer)} zł</b> sprzedaży (MER).`;
+ if(spT){const k=sp/spT;
+  if(k>1.5&&merT)s+=` Wydatek ${n1(k)}× większy niż tydzień temu (Black Week), MER ${mer>=merT?'trzyma się':'niższy'}: ${n2(merT)} → ${n2(mer)}.`;
+  else if(k<0.67)s+=` Wydatek o ${Math.round((1-k)*100)}% mniejszy niż tydzień temu.`;}
+ const best=DANE.kampanie.filter(k=>k.swiatlo==='r'&&k.spend>300&&k.dzis>0).sort((a,b)=>b.spend-a.spend)[0];
+ if(best)s+=` Do sprawdzenia: <b>${best.name}</b> — ${zl(best.spend)} w 7 dni przy ROAS ${n2(best.roas)} (średnia ${best.plat==='meta'?'Meta':'Google'}: ${n2(best.roas_sr)}).`;
+ document.getElementById('werdykt').innerHTML=s;})();
+
+// KAFLE
+document.getElementById('hKafle').innerHTML=`Wczoraj, ${DANE.dzien.slice(8)}.${DANE.dzien.slice(5,7)} <small>pod kreską: miesiąc narastająco</small>`;
+const sm=D.sp_meta/D.spend*100;
+const K=[
+ {l:'Wydatek na reklamy',bg:'--warm-bg',v:zl(D.spend),d:delta(D.spend,T&&T.spend,'neutral'),
+  x:`<div class="split"><i style="width:${sm}%;background:var(--meta)"></i><i style="width:${100-sm}%;background:var(--goo)"></i></div>
+     <div class="leg"><span class="dot" style="background:var(--meta)"></span>Meta ${zl(D.sp_meta)} · <span class="dot" style="background:var(--goo)"></span>Google ${zl(D.sp_google)}</div>`,
+  m:`Miesiąc: <b>${zl(M.spend)}</b>`},
+ {l:'Sprzedaż sklepu',bg:'--shop-bg',v:zl(D.rev),d:delta(D.rev,T&&T.rev),
+  x:`<div class="leg">po rabatach (${zl(-D.disc)} rabatów) · TikTok Shop osobno: ${zl(D.tt_rev)}</div>`,m:`Miesiąc: <b>${zl(M.rev)}</b>`},
+ {l:'MER',bg:'--mer-bg',v:n2(wD.mer),d:delta(wD.mer,wT.mer),
+  x:`<div class="leg">sprzedaż sklepu ÷ wydatek na reklamy</div>`,m:`Miesiąc: <b>${n2(wM.mer)}</b>`},
+ {l:'Zamówienia sklepu',bg:'--meta-bg',v:n0(D.orders),d:delta(D.orders,T&&T.orders),
+  x:`<div class="leg">w tym nowi klienci: ${n0(D.new)} (${Math.round(D.new/D.orders*100)}%)</div>`,m:`Miesiąc: <b>${n0(M.orders)}</b>`},
+ {l:'Koszt zamówienia',bg:'--teal-bg',v:zl(wD.cpo),d:delta(wD.cpo,wT.cpo,'w_dol'),
+  x:`<div class="leg">wydatek ÷ wszystkie zamówienia sklepu</div>`,m:`Miesiąc: <b>${zl(wM.cpo)}</b>`},
+ {l:'Koszt nowego klienta',bg:'--goo-bg',v:zl(wD.cac),d:delta(wD.cac,wT.cac,'w_dol'),
+  x:`<div class="leg">wydatek ÷ zamówienia nowych klientów</div>`,m:`Miesiąc: <b>${zl(wM.cac)}</b>`},
+];
+document.getElementById('kafle').innerHTML=K.map(k=>`<div class="kafel" style="background:var(${k.bg})">
+ <div class="l">${k.l}</div><div class="v">${k.v}</div><div class="d">${k.d}</div>${k.x}<div class="m">${k.m}</div></div>`).join('');
+
+// UZGODNIENIE
+function rec(k){const x=k==='mtd'?M:D,w=k==='mtd'?wM:wD;
+ const R=[['Meta',x.pu_meta,'--meta'],['Google',x.pu_google,'--goo'],
+  ['Meta + Google',x.pu_meta+x.pu_google,'--warm'],['GA4 Polska',x.ga4_tr,'--mer'],['Sklep: zamówienia',x.orders,'--shop']];
+ const mx=Math.max(...R.map(r=>r[1]||0));
+ document.getElementById('rec').innerHTML=R.map(r=>`<div class="pasek"><span>${r[0]}</span>
+  <div class="bar"><i style="width:${(r[1]||0)/mx*100}%;background:var(${r[2]})"></i></div><span class="n">${n0(r[1])}</span></div>`).join('');
+ document.getElementById('recNota').innerHTML=`Platformy razem przypisują sobie <b>${Math.round(w.przyp*100)}%</b> zamówień sklepu. `+
+  (k==='dzien'?'Wczorajsze liczby platform jeszcze rosną (zakup liczony na dzień kliknięcia) — pewniejszy jest miesiąc. ':'')+
+  'GA4 od 23.09 zawiera też zamówienia TikTok Shop, stąd jest wyżej niż sklep.';}
+document.querySelectorAll('#recTabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#recTabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');rec(b.dataset.k)});
+rec('mtd');
+
+// WYKRES 30 dni (SVG, bez bibliotek)
+(function(){const S=DANE.seria,mobi=innerWidth<600,W=mobi?620:1100,H=mobi?380:300,pl=mobi?56:46,pr=mobi?50:40,pt=mobi?44:34,pb=mobi?40:34,iw=W-pl-pr,ih=H-pt-pb,n=S.length,bw=iw/n*.68;
+ const maxS=Math.max(...S.map(s=>s.spend))*1.1,CAP=8,maxM=Math.min(Math.max(...S.map(s=>s.mer||0))*1.15,CAP),fs=mobi?18:11;
+ const x=i=>pl+iw*(i+.5)/n,yS=v=>pt+ih-(v/maxS)*ih,yM=v=>pt+ih-(Math.min(v,maxM)/maxM)*ih;
+ const zm={};DANE.zmiany.forEach(z=>{const d=z.kiedy.slice(0,10);(zm[d]=zm[d]||[]).push(z)});
+ let g='';for(let t=0;t<=4;t++){const v=maxS*t/4;g+=`<line x1="${pl}" x2="${W-pr}" y1="${yS(v)}" y2="${yS(v)}" stroke="var(--line)"/><text x="${pl-6}" y="${yS(v)+4}" text-anchor="end" font-size="${fs}">${Math.round(v/100)/10}k</text>`;}
+ S.forEach((s,i)=>{const ym=yS(s.sp_meta),yg=yS(s.sp_meta+s.sp_google);
+  g+=`<rect x="${x(i)-bw/2}" y="${ym}" width="${bw}" height="${pt+ih-ym}" fill="var(--meta)" rx="2"><title>${s.date}: Meta ${zl(s.sp_meta)}</title></rect>`;
+  g+=`<rect x="${x(i)-bw/2}" y="${yg}" width="${bw}" height="${ym-yg}" fill="var(--goo)" rx="2"><title>${s.date}: Google ${zl(s.sp_google)}</title></rect>`;
+  if(zm[s.date]){const ty=zm[s.date].map(z=>z.typ),lab=ty.includes('start')?'start':(ty.includes('nowa')?'nowe':(ty.includes('stop')?'stop':''));
+   if(lab&&(!mobi||lab==='start'))g+=`<text x="${x(i)}" y="${pt-22}" text-anchor="middle" font-size="${fs}" style="fill:var(--warm);font-weight:700">${lab}</text>`;}
+  if(zm[s.date])g+=`<circle cx="${x(i)}" cy="${pt-8}" r="${Math.min(3+zm[s.date].length,8)}" fill="var(--warm)"><title>${s.date}\n${zm[s.date].map(z=>`${z.plat}: ${z.co} — ${z.zmiana}`).join('\n')}</title></circle>`;
+  if(i%(mobi?7:5)===n%(mobi?7:5)||i===n-1){const d=new Date(s.date+'T12:00');g+=`<text x="${x(i)}" y="${H-12}" text-anchor="middle" font-size="${fs}">${d.getDate()}.${String(d.getMonth()+1).padStart(2,'0')}</text>`;}});
+ const pts=S.map((s,i)=>s.mer?`${x(i)},${yM(s.mer)}`:null).filter(Boolean).join(' ');
+ g+=`<polyline points="${pts}" fill="none" stroke="var(--mer)" stroke-width="2.5" stroke-linejoin="round"/>`;
+ S.forEach((s,i)=>{if(s.mer){g+=`<circle cx="${x(i)}" cy="${yM(s.mer)}" r="3" fill="var(--mer)"><title>${s.date}: MER ${n2(s.mer)}, sprzedaż ${zl(s.rev)}</title></circle>`;
+  if(s.mer>maxM)g+=`<text x="${x(i)}" y="${yM(s.mer)-7}" text-anchor="middle" font-size="${fs}" style="fill:var(--mer);font-weight:700">↑${n1(s.mer)}</text>`;}});
+ for(let t=0;t<=4;t++){const v=maxM*t/4;g+=`<text x="${W-pr+6}" y="${yM(v)+4}" style="fill:var(--mer)" font-size="${fs}">${n1(v)}</text>`;}
+ document.getElementById('wykres').innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Wydatek i MER, 30 dni">${g}</svg>
+ <div class="leg"><span class="dot" style="background:var(--meta)"></span>Meta <span class="dot" style="background:var(--goo);margin-left:10px"></span>Google <span class="dot" style="background:var(--mer);margin-left:10px"></span>MER (prawa oś) <span class="dot" style="background:var(--warm);margin-left:10px"></span>zmiany w kampaniach (najedź)</div>`;})();
+
+// KAMPANIE — dzień = jednostka: wczoraj duża liczba, obok miesiąc; ROAS 7 dni jako światło
+const zak=v=>!v?'0 zak.':(v<1?'<1 zak.':Math.round(v)+' zak.');
+(function(){const L=DANE.kampanie,maxM=Math.max(...L.map(k=>k.mtd));
+ document.getElementById('kampOkres').textContent='sortowane po wydatku wczoraj · światło = ROAS z panelu (7 dni) wobec średniej platformy';
+ const widac=(k,i)=>i<8||(k.dzis>0&&(k.swiatlo==='r'||k.swiatlo==='y'));
+ let h=`<div class="kamp h"><span></span><span>Kampania · pasek = wydatek w miesiącu</span><span class="num">Wczoraj</span><span class="num">Miesiąc</span><span class="num">ROAS 7 dni</span></div>`;
+ L.forEach((k,i)=>{const p=pct(k.spend,k.spend0);
+  const tr=k.spend0==null?(k.spend?'<span class="sub" style="color:var(--goo)">nowa w tym tygodniu</span>':''):`<span class="sub">wydatek 7 dni ${p>0?'▲':'▼'} ${Math.abs(p).toFixed(0)}%</span>`;
+  h+=`<div class="kamp ${widac(k,i)?'':'ukryj ex'}"><span class="sw ${k.swiatlo}" title="ROAS 7 dni ${n2(k.roas)} vs średnia ${n2(k.roas_sr)}"></span>
+   <span class="nm"><span class="pl ${k.plat}">${k.plat==='meta'?'META':'GOOGLE'}</span>${k.name}
+    <div class="mb"><i style="width:${k.mtd/maxM*100}%;background:var(--${k.plat==='meta'?'meta':'goo'})"></i></div></span>
+   <span class="num c3"><span class="big">${zl(k.dzis)}</span><span class="sub">wczoraj · ${zak(k.dzis_pu)}</span></span>
+   <span class="num c4 gr">${zl(k.mtd)}<span class="sub">miesiąc · przyp. ${zl(k.mtd_va)}</span></span>
+   <span class="num c5"><span class="mob">ROAS 7 dni </span><b>${k.roas==null?'—':n2(k.roas)}</b>${tr}</span></div>`});
+ const ile=L.filter((k,i)=>!widac(k,i)).length;
+ document.getElementById('kamp').innerHTML=h+(ile?`<button class="wiecej" onclick="document.querySelectorAll('.kamp.ex').forEach(e=>e.classList.toggle('ukryj'));this.textContent=this.textContent.startsWith('Pokaż')?'Zwiń':'Pokaż wszystkie (${L.length})'">Pokaż wszystkie (${L.length})</button>`:'')+
+ `<div class="nota">ROAS z panelu = wartość zakupów, którą platforma sama sobie przypisała ÷ wydatek, ostatnie 7 dni. Zielone ≥ średnia platformy, żółte ≥ połowa średniej, czerwone poniżej, szare = brak wydatku w 7 dni.</div>`;})();
+
+// DZIENNIK ZMIAN
+document.getElementById('zmiany').innerHTML=DANE.zmiany.map((z,i)=>{const d=new Date(z.kiedy.replace(' ','T'));
+ return `<div class="zm ${i<10?'':'ukryj zx'}"><span class="t">${d.getDate()}.${String(d.getMonth()+1).padStart(2,'0')} ${z.kiedy.slice(11,16)}</span>
+ <span class="typ ${z.typ}">${z.typ.toUpperCase()}</span>
+ <span class="opis"><span class="pl ${z.plat}">${z.plat==='meta'?'META':'GOOGLE'}</span><b>${z.co}</b> — ${z.zmiana}</span></div>`}).join('')+
+ (DANE.zmiany.length>10?`<button class="wiecej" onclick="document.querySelectorAll('.zm.zx').forEach(e=>e.classList.toggle('ukryj'));this.remove()">Pokaż starsze (${DANE.zmiany.length-10})</button>`:'');
+
+// DEFINICJE + świeżość źródeł
+(function(){const Z=DANE.zrodla,ok=d=>d>=DANE.dzien;
+ document.getElementById('def').innerHTML=`
+ <b>Wydatek</b> = Meta (kwota wydana) + Google (koszt). <b>Sprzedaż sklepu</b> = Shopify, kanał sklep internetowy, to, co zapłacił klient: po rabatach, z dostawą, minus zwroty. TikTok Shop liczony osobno i nie wchodzi do MER. Hub GLOV pokazuje sprzedaż przed rabatami, dlatego jego liczby są wyższe.<br>
+ <b>MER</b> = sprzedaż sklepu ÷ wydatek. <b>Koszt zamówienia</b> = wydatek ÷ zamówienia sklepu. <b>Koszt nowego klienta</b> = wydatek ÷ zamówienia od klientów kupujących pierwszy raz.<br>
+ <b>Zakupy wg Meta</b> = zakupy przypisane przez Meta (ustawienie konta). <b>Wg Google</b> = jedyna akcja zakupu w Google Ads: „${DANE.google_konwersja.join(', ')}”, czyli zakupy z GA4 przypisane Google. Obie platformy liczą zakup na dzień kliknięcia, więc ostatnie dni jeszcze rosną.<br>
+ <b>GA4</b> = transakcje GA4 w Polsce; od 23.09 zawierają zamówienia TikTok Shop, a 29.09–05.10 mają dziurę w pomiarze.
+ <div class="zr">${Object.entries(Z).map(([k,v])=>`<span class="${ok(v)?'':'stary'}">${k}: dane do ${v}</span>`).join('')}<span>pobrano ${DANE.stan}</span></div>`;})();
+
+// motyw
+const r=document.documentElement,tb=document.getElementById('themeBtn'),sv=localStorage.getItem('glov-theme')||'light';
+r.setAttribute('data-theme',sv);tb.textContent=sv==='light'?'🌙':'☀️';
+tb.onclick=()=>{const n=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',n);localStorage.setItem('glov-theme',n);tb.textContent=n==='light'?'🌙':'☀️'};
+</script>
+</body>
+</html>
