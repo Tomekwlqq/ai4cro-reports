@@ -1,0 +1,219 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#ffffff"><title>GLOV · analityka</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+:root{--ak:#E7AB4B;--ak-d:#B97A12;--tx:#111214;--mu:#55595e;--fa:#9a9ea3;--ln:#e6e6e6;--dk:#111214}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%;background:#fff}
+body{font:16px/1.45 Satoshi,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--tx);display:flex;flex-direction:column;overflow:hidden}
+.hd{background:var(--dk);display:flex;align-items:center;justify-content:space-between;height:60px;padding:env(safe-area-inset-top) 12px 0 16px;flex:none}
+.lg{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;letter-spacing:.42em;font-size:12px;line-height:1.1;text-transform:uppercase}
+.lg i{width:20px;height:26px;background:var(--ak);clip-path:polygon(55% 0,10% 58%,45% 58%,35% 100%,90% 40%,55% 40%)}
+.lg span:last-child{color:var(--ak)}
+.pp{background:var(--ak);color:var(--tx);font-weight:700;font-size:14px;border-radius:999px;padding:8px 14px;text-decoration:none;white-space:nowrap}
+.nv{flex:none;display:flex;gap:6px;padding:8px 12px;background:#1d1f22;overflow:hidden}
+.nv a,.nv span{flex:1;text-align:center;font-size:13px;font-weight:600;padding:7px 4px;border-radius:999px;text-decoration:none;color:#e9e9ea;white-space:nowrap}
+.nv span{background:var(--ak);color:var(--tx);font-weight:700}
+.tor{flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.tor::-webkit-scrollbar{display:none}
+.ek{flex:0 0 100%;scroll-snap-align:start;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:16px 16px 24px;display:flex;flex-direction:column}
+h1{font-size:24px;font-weight:600;line-height:1.25;letter-spacing:-.2px}
+.sn{font-size:13px;color:var(--mu);margin:0 0 12px}
+.wn{display:flex;align-items:flex-start;gap:10px;font-size:15px;font-weight:500;line-height:1.35;border-radius:6px;padding:11px 14px;margin-bottom:12px;background:#f4f4f5}
+.wn.ok{background:#e9f5ee}.wn.uwaga{background:#fdf5e3}.wn.alarm{background:#fdeceb}
+.wn i,.op i{width:9px;height:9px;border-radius:50%;flex:none;margin-top:6px}
+.kr{flex:1;max-height:190px;border:1px solid var(--ln);border-radius:6px;padding:14px 16px 12px;margin-bottom:10px;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.kr h3{font-size:19px;font-weight:700;letter-spacing:-.2px;line-height:1.25}
+.op{display:flex;gap:8px;font-size:14px;color:var(--mu);padding-bottom:10px;border-bottom:1px solid var(--ln)}
+.ceny{display:flex;justify-content:space-between;gap:12px;margin-top:auto;padding-top:10px}
+.ceny span{display:block;font-size:14px;color:var(--mu)}
+.ceny b{display:block;font-size:24px;font-weight:700;letter-spacing:-.3px;line-height:1.2}
+.ceny .gl b{font-size:32px;color:var(--ak-d)}
+.ceny small{display:block;font-size:13px;color:var(--mu)}
+.pr{text-align:right}
+.dol{flex:none;background:var(--dk);padding-bottom:env(safe-area-inset-bottom)}
+.tab{display:flex}
+.tab a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 0 8px;color:#e9e9ea;font-size:13px;text-decoration:none}
+.tab a.on{color:var(--ak)}
+@media(max-height:740px){.hw b{font-size:36px}.mz b{font-size:22px}.mz{padding:8px 10px}.nv{padding:5px 10px}.nv a,.nv span{padding:5px 3px;font-size:12px}.hero p{font-size:13px}h1{font-size:20px}.sn{display:none}.wn{padding:8px 12px;margin-bottom:8px;font-size:14px}.kr{padding:10px 12px 8px;margin-bottom:8px}.kr h3{font-size:16px}.op{font-size:13px;padding-bottom:6px}.ceny b{font-size:20px}.ceny .gl b{font-size:24px}.ceny small{display:none}}
+@media(min-width:700px){body{max-width:420px;margin:0 auto;border-left:1px solid var(--ln);border-right:1px solid var(--ln)}}
+
+.ek h1{font-size:24px;font-weight:700;letter-spacing:-.4px}
+.ek .sn{font-size:12px;color:#8a8f94;letter-spacing:.01em}
+.h1r{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.wi{flex:none;font-size:13px;font-weight:700;color:#7a4f00;text-decoration:none;border-bottom:1.5px solid var(--ak);padding-bottom:1px}
+.zd{display:inline-flex;align-items:center;gap:5px;color:#55595e}.zd i{width:7px;height:7px;border-radius:50%}.zd.alarm{color:#c0392b;font-weight:700}
+.ek .sn{margin-bottom:10px}
+.tbl{position:relative;border:1px solid var(--ln);border-radius:8px;background:#fff;overflow:hidden}
+.tbl:before{content:"";position:absolute;top:0;bottom:0;right:92px;width:92px;background:#fdf0d8}
+.th,.tr{position:relative;display:grid;grid-template-columns:1fr 92px 92px;align-items:center}
+.th{padding:9px 0 8px}
+.th b{text-align:center;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#3f4347}
+.th b.d{color:#7a4f00}
+.th small{display:block;font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;color:#8a8f94;margin-top:1px}
+.th b.d small{color:#9a742a}
+.tr{border-top:1px solid rgba(0,0,0,.08);padding:11px 0 10px;min-height:60px}
+.tr span{padding:0 8px 0 14px;font-size:15px;font-weight:500;line-height:1.25;color:#1c1e21}
+.tr span small{display:block;font-size:12px;font-weight:400;color:#6b7075;margin-top:2px;line-height:1.3}
+.tr b{text-align:center;font-weight:700;line-height:1;letter-spacing:-.8px;font-variant-numeric:tabular-nums}
+.tr b.d{font-size:32px;color:#111214}
+.tr b.mi{font-size:26px;font-weight:600;color:#3f4347}
+.tr.gl{min-height:78px}.tr.gl span{font-size:17px;font-weight:700}
+.tr.gl b.d{font-size:46px;letter-spacing:-1.6px}.tr.gl b.mi{font-size:34px;letter-spacing:-1px}
+.tr b.z0,.tz b.z0{color:#b3b6ba}
+.tr.al{background:#fdeceb}.tr.al span{color:#8e2318;font-weight:700}.tr.al span small{color:#a5483e}.tr.al b,.tr.al b.z0{color:#c0392b}
+.trz{margin-top:12px;border:1px solid var(--ln);border-radius:8px;background:#f7f7f8;padding:2px 14px}
+.trz h4{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#3f4347;padding:9px 0 7px}
+.tz{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid rgba(0,0,0,.08);padding:9px 0}
+.tz span{font-size:15px;font-weight:500;line-height:1.25}.tz span small{display:block;font-size:12px;font-weight:400;color:#6b7075}
+.tz b{font-size:26px;font-weight:700;letter-spacing:-.6px;min-width:64px;text-align:center}
+.wn span{flex:1}
+@media(max-height:740px){.tr{min-height:50px;padding:7px 0}.tr.gl{min-height:60px}.tr b.d{font-size:26px}.tr b.mi{font-size:22px}.tr.gl b.d{font-size:36px}.tr.gl b.mi{font-size:28px}.tr span{font-size:14px}.tr.gl span{font-size:15px}.tz{padding:6px 0}.tz b{font-size:22px}.trz{margin-top:8px}.th{padding:6px 0}}
+
+.th b i{font-style:normal}
+.tbl .tr.pw{margin-top:4px;min-height:38px;padding:4px 0}
+@media(max-height:740px){.tbl .tr.pw{min-height:32px;padding:2px 0;margin-top:3px}}
+.tr span{min-width:0}.tr.zi span{overflow:hidden}.tr.zi span em{flex:1 1 0;min-width:0;white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.2}
+.tr.pw.k-bi span{padding-left:14px}
+@media(max-height:700px){.ek .sn{display:none}.ek h1{margin-bottom:6px}.tbl .tr span small{display:none}}
+.tg{display:inline-flex;align-self:center;background:#ececee;border-radius:999px;padding:3px;gap:2px;margin-left:2px;width:max-content}
+.tg button{border:0;background:none;font:inherit;font-size:13px;font-weight:700;color:#55595e;padding:6px 12px;border-radius:999px;cursor:pointer}
+.tg button.on{background:var(--dk);color:#fff}.tgrow{display:flex;justify-content:space-between;align-items:center;padding:2px 0 8px}.tgrow .tg{margin-left:0}.tg.tgm{background:#f6e3b4}.tg.tgm button{color:#7a4f00}.tg.tgm button.on{background:var(--ak);color:#111214}
+.ek[data-dz="w"] .od,.ek[data-dz="m"] .od,.ek[data-dz="m"] .ow{display:none}.ek:not([data-dz="w"]) .ow{display:none}.ek:not([data-dz="m"]) .om{display:none}
+.ek[data-dz="w"] .tbl:before{background:#eef0f3}
+.tr span em{font-style:normal;display:block;min-width:0}
+.tr.zi{min-height:54px;padding:7px 0}
+.tr.zi span{display:flex;align-items:center;gap:10px}
+.tr.zi img{width:52px;height:40px;object-fit:cover;border-radius:5px;flex:none;background:#ddd}
+.tr.pw{min-height:40px;padding:5px 0;margin-top:5px}.tr.pw span{font-size:14px;padding-left:22px}.tr.pw b.d{font-size:24px}.tr.pw b.mi{font-size:21px}
+.tr.pw span small,.tr.zi span small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:0}
+.tr.k-bi b.d{color:#111214}
+.ns{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#3f4347;padding:12px 2px 0}
+@media(max-height:740px){.tr.pw{min-height:34px;padding:3px 0;margin-top:4px}.tr.pw b.d{font-size:20px}.tr.pw b.mi{font-size:18px}.tr.pw span small,.tr.zi span small{display:none}.tr.zi{min-height:46px;padding:5px 0}.tr.zi img{width:44px;height:34px}.ns{padding-top:7px;font-size:11px}}
+@media(max-height:700px){.tr.t3{display:none}}
+.tbl .tr.zi{min-height:50px;padding:5px 0}.tr span{white-space:normal}.tr.zi span em{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+@media(max-height:700px){.tz span small{display:none}.tz{padding:4px 0}.tz b{font-size:20px}.trz h4{padding:4px 0 3px}.trz{margin-top:4px;padding:0 12px}.tbl .tr{min-height:44px;padding:5px 0}.tbl .tr.pw{min-height:32px;padding:3px 0}}
+.tbl{border:0;background:none;overflow:visible}.tbl:before{display:none}
+.th{padding:2px 0 2px}
+.tr{border:0;border-radius:8px;margin-top:8px;min-height:64px}
+.tr.k-dk{background:var(--dk)}.tr.k-dk span{color:#fff}.tr.k-dk span small{color:#9a9ea3}.tr.k-dk b.d{color:var(--ak)}.tr.k-dk b.mi{color:#fff}.tr.k-dk b.z0{color:#6b7075}
+.tr.k-ty{background:var(--ak)}.tr.k-ty span{color:#2b1f05}.tr.k-ty span small{color:#5a420d}.tr.k-ty b.mi{color:#4a3508}.tr.k-ty b.z0{color:rgba(43,31,5,.35)}
+.tr.k-sz{background:#f1f1f2}
+.tr.k-ty2{background:#fdf0d8}.tr.k-ty2 span{color:#6b4a0a}.tr.k-ty2 b.d{color:#7a4f00}.tr.k-ty2 b.mi{color:#8a6a2a}.tr.k-ty2 b.z0{color:rgba(122,79,0,.35)}
+.tr.k-bi{background:#fff;box-shadow:inset 0 0 0 1px var(--ln)}
+.tr.al{background:#c0392b}.tr.al span,.tr.al span small,.tr.al b,.tr.al b.mi,.tr.al b.z0{color:#fff}.tr.al span small{opacity:.85}
+.trz{margin-top:8px}
+@media(max-height:740px){.tr{margin-top:5px;min-height:48px}.wn{padding:8px 12px;margin-bottom:8px;font-size:14px}}
+.tbl .tr.gl{min-height:62px}.ns{padding-top:9px}.tr b{white-space:nowrap}
+.tr b.dl{font-size:24px;letter-spacing:-.6px}.tr.gl b.dl{font-size:28px;letter-spacing:-.8px}.tr.pw b.dl{font-size:19px}
+.tr b.dl2{font-size:20px;letter-spacing:-.5px}.tr.gl b.dl2{font-size:23px;letter-spacing:-.7px}.tr.pw b.dl2{font-size:17px;letter-spacing:-.3px}
+.tr b.dl3{font-size:17px;letter-spacing:-.4px}.tr.gl b.dl3{font-size:20px;letter-spacing:-.6px}.tr.pw b.dl3{font-size:15px;letter-spacing:-.3px}
+@media(max-height:740px){.tr b.dl3,.tr.gl b.dl3{font-size:16px}.tr.pw b.dl3{font-size:14px}}
+@media(max-height:740px){.tr b.dl{font-size:21px}.tr.gl b.dl{font-size:24px}.tr b.dl2{font-size:18px}.tr.gl b.dl2{font-size:20px}.tr.pw b.dl,.tr.pw b.dl2{font-size:16px}}
+@media(max-height:700px){.tbl .tr.gl{min-height:48px;padding:5px 0}.ek .ns{padding-top:4px}.tbl .tr.pw{min-height:29px;padding:1px 0;margin-top:3px}.tbl .th{padding:2px 0}}
+
+@font-face{font-family:Moderat;font-weight:400;font-display:swap;src:url(https://glov.co/cdn/shop/t/37/assets/Moderat-Regular.woff2) format("woff2")}
+@font-face{font-family:Moderat;font-weight:500;font-display:swap;src:url(https://glov.co/cdn/shop/t/37/assets/Moderat-Medium.woff2) format("woff2")}
+@font-face{font-family:Moderat;font-weight:700;font-display:swap;src:url(https://glov.co/cdn/shop/t/37/assets/Moderat-Bold.woff2) format("woff2")}
+:root{--ak:#7F63C4;--tx:#262626;--mu:#6b6b6b;--dk:#262626;--bg:#E6EBF2;--ac:#7F63C4;--ac2:#3E5590}
+body{font-family:Moderat,'Helvetica Neue',Helvetica,Arial,sans-serif;background:#fff}
+/* 01 packshot = błękitno-szare tło, akcent lawenda/granat · 02 korzyści = beż, akcent bordo · 03 promocje = róż, akcent fuksja */
+.ek.t-packshot{--bg:#E6EBF2;--ac:#7F63C4;--ac2:#3E5590}
+.ek.t-korzysci{--bg:#E5CDBE;--ac:#7B1F3F;--ac2:#8C5A44}
+.ek.t-promocja{--bg:#EAD5D5;--ac:#C2408E;--ac2:#8E4A6A}
+.hd{background:#fff;border-bottom:0}.lg img{height:24px;width:auto;display:block}
+.pp{background:#fff;color:var(--tx);box-shadow:inset 0 0 0 1.5px var(--tx)}
+.nv{background:#fff;padding-top:0}.nv a{color:#555}.nv span{background:var(--tx);color:#fff}
+.ek{background:var(--bg)}
+h1{font-weight:700;color:var(--ac2)}
+.sn{color:rgba(0,0,0,.55)}
+.wi{color:var(--ac);border-bottom-color:var(--ac)}
+.th b{color:rgba(0,0,0,.55)}.th b.d{color:var(--ac)}.th b.d small{color:rgba(0,0,0,.45)}
+.tg{background:rgba(255,255,255,.65)}.tg button{color:#555}.tg button.on{background:var(--ac);color:#fff}
+.tg.tgm{background:rgba(255,255,255,.65)}.tg.tgm button{color:var(--ac2)}.tg.tgm button.on{background:var(--ac2);color:#fff}
+.ek[data-dz="w"] .tbl:before{background:none}
+/* 17.11 v3 (Tomek: „pobaw się tłami, gradienty, perłowe efekty, ładna czcionka”): tło = masa perłowa na kolorze kategorii,
+   wiersze = matowe szkło, liczba główna = perłowy połysk; nagłówki pochyłym szeryfem jak w reklamach GLOV („Efekt gładkich stóp od razu”) */
+.ek.t-korzysci{--ac3:#C46A7E;background:radial-gradient(110% 45% at 0% 0%,rgba(255,255,255,.85),transparent 60%),radial-gradient(70% 40% at 100% 18%,rgba(234,205,214,.9),transparent 70%),radial-gradient(90% 55% at 15% 85%,rgba(226,232,244,.75),transparent 65%),radial-gradient(60% 40% at 95% 95%,rgba(246,226,196,.9),transparent 70%),linear-gradient(165deg,#EEDCCF 0%,#E2C6B3 55%,#D9BBA8 100%)}
+.ek.t-promocja{--ac3:#9B6BD0;background:radial-gradient(110% 45% at 0% 0%,rgba(255,255,255,.88),transparent 60%),radial-gradient(70% 40% at 100% 20%,rgba(222,212,240,.9),transparent 70%),radial-gradient(90% 55% at 10% 85%,rgba(248,228,214,.85),transparent 65%),radial-gradient(60% 40% at 95% 95%,rgba(214,226,242,.8),transparent 70%),linear-gradient(165deg,#F2DFDF 0%,#E9CFD3 55%,#E0C2CA 100%)}
+.ek.t-packshot{--ac3:#C07AB8;background:radial-gradient(110% 45% at 0% 0%,rgba(255,255,255,.9),transparent 60%),radial-gradient(70% 40% at 100% 20%,rgba(226,214,242,.95),transparent 70%),radial-gradient(90% 55% at 10% 85%,rgba(240,224,232,.8),transparent 65%),radial-gradient(60% 40% at 95% 95%,rgba(210,230,236,.9),transparent 70%),linear-gradient(165deg,#EEF1F7 0%,#E1E7F0 55%,#D6DDEB 100%)}
+.hd,.nv{background:linear-gradient(180deg,#fff,#fbf8f6)}
+.dol{background:linear-gradient(0deg,#fff,#fbf8f6);box-shadow:0 -1px 0 rgba(0,0,0,.04)}
+h1{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-weight:600;font-size:29px;letter-spacing:-.3px;line-height:1.1}
+.ns{font-size:11px;letter-spacing:.14em;display:flex;align-items:center;gap:8px}.ns:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,currentColor,transparent);opacity:.35}
+.tg,.tg.tgm{background:rgba(255,255,255,.5);box-shadow:inset 0 0 0 1px rgba(255,255,255,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.tg button.on,.tg.tgm button.on{background:linear-gradient(135deg,var(--ac),var(--ac3));box-shadow:0 2px 8px rgba(0,0,0,.12)}
+/* wiersz główny = hasło z reklamy: bez boxu, duża liczba z perłowym połyskiem */
+.tr.k-dk{background:none;box-shadow:none;border-radius:0;min-height:88px;border-bottom:1px solid rgba(255,255,255,.85)}
+.tr.k-dk span{color:var(--ac2);font-weight:700;font-size:17px}.tr.k-dk span small{color:rgba(0,0,0,.5);font-weight:400}
+.tr.k-dk b.d{font-size:36px;letter-spacing:-1.2px;background:linear-gradient(120deg,var(--ac) 10%,var(--ac3) 60%,var(--ac) 95%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 0 rgba(255,255,255,.7))}
+.tr.k-dk b.mi{color:var(--ac2);font-size:24px}
+.tr.k-dk b.d.dl{font-size:30px}.tr.k-dk b.d.dl2{font-size:26px;letter-spacing:-.8px}.tr.k-dk b.d.dl3{font-size:21px}
+.tr.k-dk b.mi.dl2{font-size:21px;letter-spacing:-.6px}.tr.k-dk b.mi.dl3{font-size:18px}
+/* pozostałe wiersze = matowe szkło z białą krawędzią */
+.tr.k-ty,.tr.k-sz,.tr.k-ty2,.tr.k-bi{background:linear-gradient(135deg,rgba(255,255,255,.78),rgba(255,255,255,.42));box-shadow:inset 0 0 0 1px rgba(255,255,255,.85),0 3px 12px rgba(90,60,70,.07);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-radius:14px}
+.tr.k-ty span,.tr.k-sz span,.tr.k-ty2 span,.tr.k-bi span{color:var(--tx)}
+.tr.k-ty span small,.tr.k-sz span small,.tr.k-ty2 span small,.tr.k-bi span small{color:rgba(0,0,0,.5)}
+.tr.k-ty b.d,.tr.k-sz b.d,.tr.k-ty2 b.d,.tr.k-bi b.d{color:var(--tx)}
+.tr.k-ty b.mi,.tr.k-sz b.mi,.tr.k-ty2 b.mi,.tr.k-bi b.mi{color:var(--ac2)}
+.tr b.z0,.tr.k-ty b.z0,.tr.k-ty2 b.z0{color:rgba(0,0,0,.25)}
+.ns{color:var(--ac);letter-spacing:.14em}
+.wn{background:rgba(255,255,255,.6)}
+.tab a{color:#777}.tab a.on{color:var(--tx);font-weight:700}
+.tbl .tr span,.tbl .tr.pw span,.tbl .tr.pw.k-bi span{padding-left:16px}.tbl .tr.k-dk span{padding-left:4px}
+/* 17.11 v4 „na elegancko”: szeryf w liczbach głównych, cieńsze cyfry, menu bez czarnych pigułek, lżejsze szkło */
+h1{font-weight:500;font-size:30px}
+.hd{height:56px}.pp{background:none;box-shadow:none;color:var(--tx);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.35);border-radius:0}
+.nv{gap:0;padding:0 12px 6px;border-bottom:1px solid rgba(0,0,0,.06)}
+.nv a,.nv span{font-size:12px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;border-radius:0;padding:8px 2px;color:#8a8a8a}
+.nv span{background:none;color:var(--tx);font-weight:600;box-shadow:inset 0 -1.5px 0 var(--tx)}
+.tg,.tg.tgm{background:rgba(255,255,255,.35);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.tg button,.tg.tgm button{font-weight:500;letter-spacing:.02em;color:#6b6b6b}
+.tg button.on,.tg.tgm button.on{background:#fff;color:var(--ac2);box-shadow:0 1px 6px rgba(80,50,60,.12)}
+.th b{font-weight:500;letter-spacing:.14em;font-size:11px}
+.tr.k-dk{min-height:96px;border-bottom:1px solid rgba(0,0,0,.08)}
+.tr.k-dk span{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-weight:500;font-size:19px}
+.tr.k-dk b.d,.tr.k-dk b.mi{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.5px}
+.tr.k-dk b.d{font-size:38px}.tr.k-dk b.d.dl{font-size:32px}.tr.k-dk b.d.dl2{font-size:28px}.tr.k-dk b.d.dl3{font-size:22px}
+.tr.k-dk b.mi{font-weight:500;font-size:25px}.tr.k-dk b.mi.dl2{font-size:22px}.tr.k-dk b.mi.dl3{font-size:19px}
+.tr.k-ty,.tr.k-sz,.tr.k-ty2,.tr.k-bi{background:rgba(255,255,255,.42);box-shadow:inset 0 0 0 1px rgba(255,255,255,.7);border-radius:12px;margin-top:6px}
+.tr span em,.tr span{font-weight:400}
+.tbl .tr b.d{font-weight:500;letter-spacing:-.3px}.tbl .tr b.mi{font-weight:400}
+.tr.k-dk b.d{font-weight:600}
+.ns{font-weight:500;font-size:10.5px;letter-spacing:.2em;padding-top:16px}
+.tab a{font-size:11px;letter-spacing:.06em}.tab a svg{stroke-width:1.4}
+.tr b.zl:after{content:"\00a0zł";font-size:.52em;font-weight:500;letter-spacing:0;opacity:.75}
+.tr.k-dk b.zl:after{content:none}  /* w wierszu głównym waluta idzie do podpisu — duża liczba szeryfem nie mieści się z jednostką */
+.tr b.zl.z0:after{content:""}
+</style></head><body>
+<header class="hd"><div class="lg"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGsAAAAdCAYAAACtxJLQAAAFdElEQVR4nN2aCYxeUxSAv6liSkTTCGEYTVNTg7ZRewmSilBjEktjiSD2raFRVTGxpEyZ2mILLWrLVIitBEVTbYqEolo0ilEtGjSUhFK0cuTc5uR67937lvkzvy9peu7779y3nHvPPcttGD2ihQj6A23AMED+4E/gS+B7YD7QQ/3QBuwGNAO/ASuBt4ElOcYYAKyj9xkC7AS8A6zvF+h8I/C3KudZoBM4FBilL30FsAzYCPwAXBnxAC8B7+m48nffAi/Su0zWj7tR3+My4ADgSOBm4EP9TRS2XWCsW4B3tf86HatKPgW6VJZFMBj4V08NKStrBLAA2FbbvwITgBkpNxAFdgNNerNzgIWBhxoOvAlso+05wFFUyy6qgIEyM4GZwAUJ/fYDXgB2AH4HHgPOC4z9GnCEyot0jLJ0AFP0OcRqbaET7WVgaZKy7gIuMe1LgTsjb9YOPKFmYmSEaTkdeMS0G6iOKfrywio1eyHkw0xVebma/SzeAg5SeYm+cxnEJH8EjE360TeD4zxFdeZQlDAbOBvYADwZ0d83f9tTDYcYRa2IVJRwEzBL5RbdK0KT01qjmG0gjWPUEtya1sGurMG6/zSaB7+q4I2vBa4DtlTzk4XYfscwndFlGAB8Z8xrkTHtipGPNzGj7ydAq8oySTejGLLnbw1sldbBrqy5RlEbSihKuF7/353as9Ao6vOCyj/ZyBfrKkvjBu97yqougjg292Z1cMo6WN1Ex+WUZ7Y6HLVkqHqqjhNK7B3fqNyozkca3aavcF+B+z0IrA2s4E3KGm+uidm6g/KIo1FrJhp5dc7YKekDOloi3HnHnrp/5eF44OlQJ6essZ45rIJZ6nLWknFGnldyLOulCqdk9PUn9z05vdaBGu4EldVqbDwa8NUjTcCgCt+jR2Mux3GB/u8bOc++Nd4zo5nKGuNdk/RRPdLutd+oYMyvjLx3oO/5XtuGQGnsq4kH69BkKkvyZJaPqU9Geu2vKxhTHA3HzoG+izR745gUMf4E9VhD2Z5NyrJeIJrcrEeavfaaCsb8y8gurMlCsj0OCXBPi3Asbo99mFAil5IR+avAL2pafTP1f2ROQvoqjS6dAJmxlV/66I3yxnxN7grH1iCrjmbx+wIPA2caNz6tnCKx7DN5BpaV9Zl3bUfKcbRRFDVSFAmTzlUMyrC5kaXyEJtqw8uv+rTrt78wz8P0S/D+9qAckshN2qB7mw8qfg9/H/QndRorPXOYVJLp0BhUyiC5lLXUmzVl6zI2EVmLaqpD6m8WKS6WRZLbDildxGL3qkavLY7HPlnZ9ZCD8ZS5llhLqQN6vOBS9soyDNfin80BxrJYc31JplFW3R9FMkVOWdeYa3tRvzxuZJm9ZfDTP3lTZzO81eXyi615PMAkZa0y6RnxEG+jPpnsORjOKyuCLesHk6wJTPK2l4c0uR3MrsfEWWeYIDB0/qAvs8DIVxccY4wJguWDn1hwnOeNLGWokwoq/j/KWmay1lKxnE59cpjxQod6mfhYHqiotpc06YPZ9dgMxnPAoyqfG4jA+zIHGnm6KbvHMM94gbI13F/iOWRV/mjaUdn1POkmMYdnaWl/akJdJ4RE7UWp6sDMamC05gcHqtstZijEK8DhKouS9q/gWez+FJVdTyPt3KAgP7yuccEaNQ0zU840jNIMcpt+HFd8PDXiGeyBmRWeyxtLNzAto8zRrPvxXDVrtrLQXwPXTq3rrVfZnSOpgrV6IMavcORCHjSN5fqScsrnIn2hLLP4swbY0/T8RSziJZVlccZvu6oZ7NL9LC24lfLG3fqvajpypKsKrawkBmn80qSZCtnIf9IXraIkUQuGaCwp+5JkWL7Qs+61zLYU4h9noxO/9WcOsAAAAABJRU5ErkJggg==" alt="GLOV"></div></header>
+<nav class="nv"><a href="GLOV_HUB.html">← HUB GLOV</a><span>Quick view</span></nav>
+<div class="tor" id="tor"><section class="ek t-korzysci" id="e0"><div class="h1r"><h1>Wydatki i sprzedaż</h1></div><p class="sn">stan na 17.11 20:12 · <span class="zd ok"><i style="background:#1f8a4c" title="w normie"></i>dane aktualne</span></p><div class="tbl"><div class="th"><span class="tg"><button type="button" class="on" data-dz="d">Dziś</button><button type="button" data-dz="w">Wczoraj</button></span><b class="d"><i data-d="Dziś" data-w="Wczoraj">Dziś</i><small data-d="17.11" data-w="16.11">17.11</small></b><b class="mi">Listopad<small>od 1. do dziś</small></b></div><div class="tr gl k-dk"><span><em>Przychód razem<small>zł brutto, wszystkie kanały</small></em></span><b class="d dl2 zl" data-w="23 817">13 085</b><b class="mi dl3 zl">208 021</b></div><div class="tr pw k-ty"><span><em>Wydatki na reklamy<small>Meta + Google</small></em></span><b class="d dl zl" data-w="3 173">2 639</b><b class="mi dl2 zl">28 271</b></div><div class="tr pw k-bi"><span><em>ROAS<small>wszystkie kanały</small></em></span><b class="d" data-w="7,5">5,0</b><b class="mi">7,4</b></div><div class="tr pw k-sz"><span><em>ROAS sklepu glov.pl<small>tylko sklep</small></em></span><b class="d" data-w="6,6">4,2</b><b class="mi">5,9</b></div><div class="tr pw k-ty2"><span><em>Koszt jednego koszyka<small>reklamy / zamówienia</small></em></span><b class="d zl" data-w="24">26</b><b class="mi zl">19</b></div><div class="ns">Meta</div><div class="tr pw k-bi"><span><em>Wydatek Meta</em></span><b class="d dl zl" data-w="2 420">2 179</b><b class="mi dl2 zl">22 160</b></div><div class="tr pw k-ty"><span><em>Zakupy wg Meta<small>liczone przez Meta</small></em></span><b class="d" data-w="66">37</b><b class="mi">471</b></div><div class="tr pw k-sz"><span><em>ROAS Meta<small>liczony przez Meta</small></em></span><b class="d" data-w="4,2">2,0</b><b class="mi">2,9</b></div><div class="ns">Google</div><div class="tr pw k-ty2"><span><em>Wydatek Google</em></span><b class="d zl" data-w="753">460</b><b class="mi dl zl">6 111</b></div><div class="tr pw k-bi"><span><em>Zakupy wg Google<small>liczone przez Google Ads</small></em></span><b class="d" data-w="21">2</b><b class="mi">173</b></div><div class="tr pw k-ty"><span><em>ROAS Google<small>liczony przez Google Ads</small></em></span><b class="d" data-w="4,3">0,5</b><b class="mi">3,7</b></div><div class="tr pw k-sz"><span><em>Wizyty z reklam Google<small>GA4, Polska</small></em></span><b class="d" data-w="505">586</b><b class="mi dl">5 362</b></div></div></section><section class="ek t-promocja" id="e1"><div class="h1r"><h1>Ile sprzedaliśmy</h1></div><p class="sn">stan na 17.11 20:12 · <span class="zd ok"><i style="background:#1f8a4c" title="w normie"></i>dane aktualne</span></p><div class="tbl"><div class="th"><span class="tg"><button type="button" class="on" data-dz="d">Dziś</button><button type="button" data-dz="w">Wczoraj</button></span><b class="d"><i data-d="Dziś" data-w="Wczoraj">Dziś</i><small data-d="17.11" data-w="16.11">17.11</small></b><b class="mi">Listopad<small>od 1. do dziś</small></b></div><div class="tr gl k-dk"><span><em>Przychód razem<small>zł brutto, wszystkie kanały</small></em></span><b class="d dl2 zl" data-w="23 817">13 085</b><b class="mi dl3 zl">208 021</b></div><div class="tr pw k-ty"><span><em>Zamówienia razem</em></span><b class="d" data-w="132">101</b><b class="mi dl">1 520</b></div><div class="ns">Przychód wg kanału</div><div class="tr pw k-sz"><span><em>Sklep glov.pl</em></span><b class="d dl2 zl" data-w="20 789">11 039</b><b class="mi dl3 zl">166 139</b></div><div class="tr pw k-ty2"><span><em>TikTok Shop</em></span><b class="d zl" data-w="598">479</b><b class="mi dl2 zl">10 925</b></div><div class="tr pw k-bi"><span><em>Allegro</em></span><b class="d dl zl" data-w="2 180">1 260</b><b class="mi dl2 zl">24 466</b></div><div class="tr pw k-ty"><span><em>Hebe</em></span><b class="d zl" data-w="250">307</b><b class="mi dl zl">6 491</b></div><div class="ns">Zamówienia wg kanału</div><div class="tr pw k-sz"><span><em>Sklep glov.pl</em></span><b class="d" data-w="96">66</b><b class="mi">841</b></div><div class="tr pw k-ty2"><span><em>TikTok Shop</em></span><b class="d" data-w="14">12</b><b class="mi">250</b></div><div class="tr pw k-bi"><span><em>Allegro</em></span><b class="d" data-w="17">16</b><b class="mi">298</b></div><div class="tr pw k-ty"><span><em>Hebe</em></span><b class="d" data-w="5">7</b><b class="mi">131</b></div><div class="tr pw k-sz"><span><em>Średni koszyk sklepu<small>na zamówienie</small></em></span><b class="d zl" data-w="217">167</b><b class="mi zl">198</b></div></div></section><section class="ek t-packshot" id="e2"><div class="h1r"><h1>Kto wchodzi na glov.pl</h1></div><p class="sn">stan na 17.11 20:12 · <span class="zd ok"><i style="background:#1f8a4c" title="w normie"></i>dane aktualne</span></p><div class="tbl"><div class="th"><span class="tg"><button type="button" class="on" data-dz="d">Dziś</button><button type="button" data-dz="w">Wczoraj</button></span><b class="d"><i data-d="Dziś" data-w="Wczoraj">Dziś</i><small data-d="17.11" data-w="16.11">17.11</small></b><b class="mi">Listopad<small>od 1. do dziś</small></b></div><div class="tr gl k-dk"><span><em>Wizyty<small>GA4, Polska</small></em></span><b class="d dl" data-w="2 823">2 826</b><b class="mi dl2">27 345</b></div><div class="ns">Skąd przyszli</div><div class="tr pw k-ty"><span><em>Meta (reklamy)</em></span><b class="d dl3" data-w="1 761 · 62%">1 482 · 52%</b><b class="mi dl3">14 050 · 51%</b></div><div class="tr pw k-sz"><span><em>Google (reklamy)</em></span><b class="d dl3" data-w="505 · 18%">586 · 20%</b><b class="mi dl3">5 362 · 20%</b></div><div class="tr pw k-ty2"><span><em>Google bez reklamy</em></span><b class="d dl3" data-w="256 · 9%">280 · 9%</b><b class="mi dl3">3 209 · 12%</b></div><div class="tr pw k-bi"><span><em>Wejścia wprost</em></span><b class="d dl3" data-w="120 · 4%">129 · 4%</b><b class="mi dl3">1 429 · 5%</b></div><div class="tr pw k-ty"><span><em>Mail i SMS</em></span><b class="d dl2" data-w="3 · 0%">3 · 0%</b><b class="mi dl3">469 · 2%</b></div><div class="tr pw k-sz"><span><em>Nieprzypisane</em></span><b class="d dl3" data-w="117 · 4%">322 · 11%</b><b class="mi dl3">2 259 · 8%</b></div><div class="tr pw k-ty2"><span><em>Inne</em></span><b class="d dl3" data-w="61 · 2%">24 · 0%</b><b class="mi dl3">567 · 2%</b></div><div class="tr pw k-bi"><span><em>Wyszli bez zaangażowania<small>współczynnik odrzuceń GA4</small></em></span><b class="d" data-w="36%">37%</b><b class="mi">31%</b></div></div></section><section class="ek t-korzysci" id="e3"><div class="h1r"><h1>Od wejścia do zakupu</h1></div><p class="sn">stan na 17.11 20:12 · <span class="zd ok"><i style="background:#1f8a4c" title="w normie"></i>dane aktualne</span></p><div class="tbl"><div class="th"><span class="tg"><button type="button" class="on" data-dz="d">Dziś</button><button type="button" data-dz="w">Wczoraj</button></span><b class="d"><i data-d="Dziś" data-w="Wczoraj">Dziś</i><small data-d="17.11" data-w="16.11">17.11</small></b><b class="mi">Listopad<small>od 1. do dziś</small></b></div><div class="tr gl k-dk"><span><em>Wizyty<small>GA4, Polska</small></em></span><b class="d dl" data-w="2 823">2 826</b><b class="mi dl2">27 345</b></div><div class="tr pw k-ty"><span><em>Dodali do koszyka<small>zdarzenia add_to_cart</small></em></span><b class="d" data-w="1 328">786</b><b class="mi dl2">13 069</b></div><div class="tr pw k-sz"><span><em>Weszli do kasy</em></span><b class="d" data-w="305">153</b><b class="mi dl">2 671</b></div><div class="tr pw k-ty2"><span><em>Kupili<small>zakupy zliczone przez GA4</small></em></span><b class="d" data-w="108">59</b><b class="mi dl">1 037</b></div><div class="tr pw k-bi"><span><em>Konwersja<small>zakupy / wizyty</small></em></span><b class="d" data-w="3,8%">2,1%</b><b class="mi">3,8%</b></div><div class="ns">Kontrola pomiaru</div><div class="tr pw k-ty"><span><em>Zamówienia w Shopify<small>wszystkie z kasy glov.pl</small></em></span><b class="d" data-w="107">81</b><b class="mi dl">1 058</b></div><div class="tr pw k-sz"><span><em>GA4 widzi zakupów<small>GA4 / Shopify</small></em></span><b class="d" data-w="101%">73%</b><b class="mi">98%</b></div></div></section><section class="ek t-packshot" id="e4"><div class="h1r"><h1>Co się sprzedaje</h1></div><p class="sn">stan na 17.11 20:12 · <span class="zd ok"><i style="background:#1f8a4c" title="w normie"></i>dane aktualne</span></p><div class="tbl"><div class="tgrow"><span class="tg"><button type="button" class="on" data-dz="d">Dziś</button><button type="button" data-dz="w">Wczoraj</button></span><span class="tg tgm"><button type="button" data-dz="m">Ranking miesiąca</button></span></div><div class="th"><span></span><b class="d"><i data-d="Dziś" data-w="Wczoraj">Dziś</i><small data-d="17.11" data-w="16.11">17.11</small></b><b class="mi">Listopad<small>od 1. do dziś</small></b></div><div class="ns">Najczęściej kupowane (sztuki)</div><div class="tr k-dk od"><span><em>Tarka-pumeks do stóp z nano szkła<small>2 633 zł</small></em></span><b class="d">66</b><b class="mi">768</b></div><div class="tr k-ty od"><span><em>Rękawiczka do demakijażu i…<small>1 037 zł</small></em></span><b class="d">26</b><b class="mi">255</b></div><div class="tr k-sz od"><span><em>Rękawica do peelingu i mycia ciała<small>1 198 zł</small></em></span><b class="d">24</b><b class="mi">221</b></div><div class="tr k-ty2 od"><span><em>Biodegradowalna szczotka do włosów…<small>559 zł</small></em></span><b class="d">14</b><b class="mi">128</b></div><div class="tr k-bi od"><span><em>Depilator z nano szkła GLOV<small>439 zł</small></em></span><b class="d">11</b><b class="mi">107</b></div><div class="tr k-ty od"><span><em>Stalowy pilnik do paznokci GLOV…<small>224 zł</small></em></span><b class="d">9</b><b class="mi">9</b></div><div class="tr k-sz ow"><span><em>Tarka-pumeks do stóp z nano szkła<small>2 953 zł</small></em></span><b class="d z0" data-w="74">—</b><b class="mi">768</b></div><div class="tr k-ty2 ow"><span><em>Rękawiczka do demakijażu i…<small>1 277 zł</small></em></span><b class="d z0" data-w="32">—</b><b class="mi">255</b></div><div class="tr k-bi ow"><span><em>Naklejki do urządzeń LED<small>477 zł</small></em></span><b class="d z0" data-w="32">—</b><b class="mi">70</b></div><div class="tr k-ty ow"><span><em>Rękawica do peelingu i mycia ciała<small>1 198 zł</small></em></span><b class="d z0" data-w="24">—</b><b class="mi">221</b></div><div class="tr k-sz ow"><span><em>Biodegradowalna szczotka do włosów…<small>878 zł</small></em></span><b class="d z0" data-w="22">—</b><b class="mi">128</b></div><div class="tr k-ty2 ow"><span><em>Szczotka do włosów długich, gęstych i…<small>678 zł</small></em></span><b class="d z0" data-w="17">—</b><b class="mi">88</b></div><div class="tr k-bi om"><span><em>Tarka-pumeks do stóp z nano szkła<small>30 699 zł w listopadzie</small></em></span><b class="d">66</b><b class="mi">768</b></div><div class="tr k-ty om"><span><em>Rękawiczka do demakijażu i…<small>10 203 zł w listopadzie</small></em></span><b class="d">26</b><b class="mi">255</b></div><div class="tr k-sz om"><span><em>Rękawica do peelingu i mycia ciała<small>11 028 zł w listopadzie</small></em></span><b class="d">24</b><b class="mi">221</b></div><div class="tr k-ty2 om"><span><em>Biodegradowalna szczotka do włosów…<small>5 107 zł w listopadzie</small></em></span><b class="d">14</b><b class="mi">128</b></div><div class="tr k-bi om"><span><em>Depilator z nano szkła GLOV<small>4 269 zł w listopadzie</small></em></span><b class="d">11</b><b class="mi">107</b></div><div class="tr k-ty om"><span><em>Szczotka do włosów długich, gęstych i…<small>3 511 zł w listopadzie</small></em></span><b class="d">6</b><b class="mi">88</b></div></div></section></div>
+<footer class="dol"><nav class="tab"><a href="#e0" data-i="0"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg>Wynik</a><a href="#e1" data-i="1"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18l-2 12H5z"/><path d="M8 7a4 4 0 0 1 8 0"/></svg>Sprzedaż</a><a href="#e2" data-i="2"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10M10 19V5M16 19v-7M22 19H2"/></svg>Ruch</a><a href="#e3" data-i="3"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h3l2 11h11l2-8H7"/><circle cx="10" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg>Koszyk</a><a href="#e4" data-i="4"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Produkty</a></nav></footer><script>
+const tor=document.getElementById('tor'),zak=[...document.querySelectorAll('.tab a')];
+function zaznacz(){const i=Math.round(tor.scrollLeft/tor.clientWidth);zak.forEach((a,j)=>a.classList.toggle('on',j===i));}
+tor.addEventListener('scroll',()=>requestAnimationFrame(zaznacz));zaznacz();
+zak.forEach(a=>a.addEventListener('click',ev=>{ev.preventDefault();tor.scrollTo({left:tor.clientWidth*+a.dataset.i,behavior:'smooth'});}));
+</script><script>
+(function(){
+  function kl(v){var n=String(v).length;return n>=7?"dl3":n==6?"dl2":n==5?"dl":""}
+  function zero(v){return ["0","0,0","+0","0%","—"].indexOf(String(v).trim())>=0}
+  function ustaw(dz0){
+    document.querySelectorAll(".ek").forEach(function(ek){
+      if(!ek.querySelector(".tg"))return;
+      var dz=(dz0=="m"&&!ek.querySelector('.tg button[data-dz="m"]'))?"d":dz0;  // „Miesiąc” działa tylko na ekranie z rankingami; reszta zostaje na „Dziś”
+      ek.setAttribute("data-dz",dz);
+      ek.querySelectorAll(".tg button").forEach(function(b){b.classList.toggle("on",b.getAttribute("data-dz")==dz)});
+      ek.querySelectorAll(".th [data-d]").forEach(function(e){e.textContent=e.hasAttribute("data-"+dz)?e.getAttribute("data-"+dz):e.getAttribute("data-d")});
+      ek.querySelectorAll(".tr b.d").forEach(function(b){
+        if(!b.hasAttribute("data-d"))b.setAttribute("data-d",b.textContent);
+        var v=dz=="w"?(b.hasAttribute("data-w")?b.getAttribute("data-w"):"—"):b.getAttribute("data-d");
+        b.textContent=v;b.classList.remove("dl","dl2","dl3","z0");var k=kl(v);if(k)b.classList.add(k);if(zero(v))b.classList.add("z0");
+      });
+    });
+    try{sessionStorage.setItem("qv-dz",dz0)}catch(e){}
+  }
+  document.addEventListener("click",function(e){var b=e.target.closest(".tg button");if(b)ustaw(b.getAttribute("data-dz"))});
+  try{var z0=sessionStorage.getItem("qv-dz");if(z0=="w"||z0=="m")ustaw(z0)}catch(e){}
+})();
+</script></body></html>
