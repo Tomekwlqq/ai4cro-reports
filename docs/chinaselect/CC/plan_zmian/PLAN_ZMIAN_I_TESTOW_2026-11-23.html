@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plan zmian i testów China Select · 2026-11-23</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:#1d1d1f;font:16px/1.55 'Nunito Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:16px 16px 56px}
+a{color:#7a5a00;text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}
+.zwrotka{display:inline-block;margin:4px 0 12px;font-weight:700;font-size:14px}
+h1{font-size:30px;line-height:1.15;margin:4px 0 6px;letter-spacing:-.01em}
+h2{font-size:22px;line-height:1.2;margin:36px 0 10px}
+h3{font-size:17px;line-height:1.3;margin:0;font-weight:800}
+.data{color:#6b6b70;font-size:14px;margin:0 0 14px}
+.start{background:#faf6ea;border-radius:16px;padding:16px 18px;margin:12px 0 8px}
+.start p{margin:0 0 10px}.start p:last-child{margin:0}
+.blok{background:#f6f6f7;border-radius:16px;padding:14px 18px;margin:12px 0}
+.blok ul{margin:6px 0 0;padding-left:20px}.blok li{margin:5px 0}
+.blok h3{margin-bottom:4px}
+table.kol{width:100%;border-collapse:collapse;margin-top:8px;table-layout:fixed}
+table.kol th{text-align:left;font-size:13px;color:#6b6b70;padding:8px 10px;border-bottom:1px solid #e4e4e7}
+table.kol td{padding:10px;border-bottom:1px solid #eeeeef;vertical-align:top;overflow-wrap:anywhere}
+table.kol th:nth-child(1){width:34%}table.kol th:nth-child(2){width:26%}table.kol th:nth-child(3){width:18%}
+.chip{display:inline-block;font-size:12.5px;font-weight:700;border-radius:999px;padding:3px 10px;background:#eee;color:#333;line-height:1.35}
+.s-ok{background:#e1f2e6;color:#14532d}.s-los{background:#fdf0d2;color:#6b4a00}.s-zd{background:#fdf0d2;color:#6b4a00}.s-nie{background:#ececee;color:#4a4a50}
+.pr1{background:#1d1d1f;color:#fff}.pr2{background:#e6e6ea}.pr3{background:#f3f3f5;color:#55555b}
+.chip.kto{background:#f3f3f5;font-weight:600}
+.koszyki{display:grid;grid-template-columns:1fr;gap:20px}
+.kosz{background:#fff;min-width:0}
+.kosz>h2{margin-top:30px}
+.kosz>.opis{margin:0 0 10px;color:#55555b}
+.poz{background:#f8f8f9;border-radius:16px;padding:14px 16px;margin:0 0 12px;min-width:0}
+.poz header{display:flex;gap:10px;align-items:baseline}
+.id{font-weight:800;font-size:13px;background:#1d1d1f;color:#fff;border-radius:8px;padding:1px 8px;flex:0 0 auto}
+.co{margin:8px 0 8px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+dl{margin:0}.f{margin:0 0 7px}
+dt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#6b6b70}
+dd{margin:0;overflow-wrap:anywhere}
+.zr li{margin:4px 0}.zr ul{padding-left:20px;margin:4px 0 0}
+.k0 ul{margin:2px 0 8px;padding-left:20px}.k0 b{display:block;margin-top:6px}
+.tc dt{font-size:13px;text-transform:none;letter-spacing:0;color:#1d1d1f;font-weight:800;margin-top:8px}
+@media(min-width:960px){
+  .koszyki{grid-template-columns:1fr 1fr;gap:28px}
+  h1{font-size:36px}
+}
+@media(max-width:700px){
+  table.kol,table.kol thead,table.kol tbody,table.kol tr,table.kol td{display:block;width:100%}
+  table.kol thead{display:none}
+  table.kol tr{background:#f8f8f9;border-radius:14px;padding:8px 12px;margin:0 0 10px}
+  table.kol td{border:0;padding:4px 0}
+  table.kol td::before{content:attr(data-l);display:block;font-size:12px;font-weight:800;color:#6b6b70;text-transform:uppercase;letter-spacing:.04em}
+  h1{font-size:26px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="zwrotka" href="../CC_HUB.html">← Hub China Select</a>
+<h1>Plan zmian i testów China Select</h1>
+<p class="data">23.11.2026 · 28 pozycji, zmiany konieczne i cztery koszyki · stan danych: kampanie, GA4 i Clarity z 23.11, żywa strona sprawdzona 23.11</p>
+
+<h2 style="margin-top:8px">Co robić najpierw i dlaczego</h2>
+<div class="start"><p>Najpierw trzy ruchy, które nie czekają na losowanie wariantów: poprawka banera na stronie modelu (Kacper; 309 dotknięć na 13 273 odsłon, wada widoczna w każdym kanale), zmiana adresu kampanii ogólnej Demand Gen ze strony głównej na listę ofert (Bartek; para mierzona osobno) oraz decyzja o Demand Gen: kreacje, kierowanie, budżet (Bartek i Tomek; 7 730 zł od 1.11, 3 zgłoszenia).</p><p>Pierwszy test elementu to widoczny przycisk „Zobacz to auto” na kaflu oferty. Rusza dopiero po losowaniu wariantów (Kacper) i po wdrożeniu poprawki banera, bo dwie zmiany w jednym oknie zamazują wynik.</p><p>Różnice między Metą, wyszukiwarką i Demand Gen na tej samej stronie modelu robi typ kampanii, nie strona. Słaby wynik jednego kanału jest więc decyzją reklamową (Bartek i Tomek), nie poprawką strony.</p><p>Większość nowych elementów (serwis i części, raport Guazi, gwarant, kwoty w cenie) czeka na decyzje i fakty Kamila oraz Guazi, nie na pracę przy stronie. Tam, gdzie fakty są (stan baterii, Euro NCAP, menu i CarPlay), element można zacząć od razu.</p></div>
+
+<h2>Kolejność</h2>
+<p>Pozycje priorytetu 1; na górze te, które można zacząć od razu.</p>
+<table class="kol">
+<thead><tr><th>Pozycja</th><th>Kto</th><th>Status</th><th>Wynik po</th></tr></thead>
+<tbody>
+<tr>
+  <td data-l="Pozycja"><a href="#K-1"><b>K-1</b> Zgoda na marketing po drodze, nie tylko w formularzu</a></td>
+  <td data-l="Kto">Tomek (miejsca i projekt), Kamil z kancelarią Linke (treść zgody), Kacper (wdrożenie i pole w Pipedrive)</td>
+  <td data-l="Status"><span class="chip s-ok">można zacząć od razu</span></td>
+  <td data-l="Wynik">—</td>
+</tr><tr>
+  <td data-l="Pozycja"><a href="#K-2"><b>K-2</b> Budowa zaufania wielopoziomowa</a></td>
+  <td data-l="Kto">Tomek (mapa poziomów i projekt), Kamil (dane: gwarant, serwis, raporty Guazi, opinie), Kacper (wdrożenie), Bartek (te same dowody w reklamach)</td>
+  <td data-l="Status"><span class="chip s-ok">można zacząć od razu</span></td>
+  <td data-l="Wynik">—</td>
+</tr><tr>
+  <td data-l="Pozycja"><a href="#N-4"><b>N-4</b> Demand Gen ogólna: lista ofert zamiast strony głównej</a></td>
+  <td data-l="Kto">Bartek (zmiana adresu), Tomek (pomiar pary)</td>
+  <td data-l="Status"><span class="chip s-ok">można zacząć od razu</span></td>
+  <td data-l="Wynik">+50%: 7 dni; +30%: 18 dni (porównanie okresów)</td>
+</tr><tr>
+  <td data-l="Pozycja"><a href="#R-5"><b>R-5</b> Demand Gen: decyzja o kreacjach, kierowaniu i budżecie</a></td>
+  <td data-l="Kto">Bartek (kreacje, kierowanie, budżet), Tomek (pomiar, zestawienie kliknięć i wizyt)</td>
+  <td data-l="Status"><span class="chip s-ok">można zacząć od razu</span></td>
+  <td data-l="Wynik">decyzja Bartka i Tomka po jednym zestawieniu</td>
+</tr><tr>
+  <td data-l="Pozycja"><a href="#T-1"><b>T-1</b> Baner strony modelu: dotknięcie przewija do ofert</a></td>
+  <td data-l="Kto">Kacper (szablon strony modelu)</td>
+  <td data-l="Status"><span class="chip s-ok">można zacząć od razu</span></td>
+  <td data-l="Wynik">mapa po 7 dniach od wdrożenia</td>
+</tr><tr>
+  <td data-l="Pozycja"><a href="#T-2"><b>T-2</b> Kafel oferty: widoczny przycisk „Zobacz to auto”</a></td>
+  <td data-l="Kto">Kacper (komponent i losowanie wariantów), Tomek (projekt przycisku, pomiar)</td>
+  <td data-l="Status"><span class="chip s-los">czeka na losowanie wariantów</span></td>
+  <td data-l="Wynik">+20%: 2 dni; +10%: 8 dni</td>
+</tr>
+</tbody></table>
+
+<div class="blok"><h3>Stan na 23.11</h3><ul><li>Konta reklamowe 23.11: Meta cel „leady” (CS_META_LEAD) aktywna; Meta cel „ruch” (CS_META_LPV) i 37 kampanii Demand Gen modeli wstrzymane; Demand Gen segmentowy i ogólny (5 kampanii) oraz wyszukiwarka (11) włączone. To stan, nie pozycje planu.</li><li>Pary „auta do 100 tys.” i „rata do 1000 zł” już istnieją w Mecie (cs_meta_lpv_filtry_do_100_tys_adv: 367 wizyt GA4 od 1.11; cs_meta_lead_filtry_do_100_tys_adv: 12; cs_meta_lpv_filtry_rata_do_1000_adv: 6) i w wyszukiwarce (cs_g_srch_filtr_do100: 60 wizyt, adres z priceTo=100000). GA4 zapisuje adres bez parametrów (/samochody), więc adresu reklam Mety nie widać w danych.</li><li>Kafel oferty nie ma widocznego przycisku: cała karta jest linkiem, a napisy „Poznaj szczegóły” i „Zobacz więcej” są niewidoczne (sprawdzone 23.11 na telefonie 440 px).</li><li>Losowania wariantów na stronie nie widać: po wejściu bez zgody na cookies jedyne ciasteczko to cookieyes-consent, a skrypty analityczne się wtedy nie ładują. To nie rozstrzyga sprawy (stan z 06.11 „brak”, do potwierdzenia przez Kacpra).</li><li>Ruch po wstrzymaniu Mety „ruch” i Demand Gen modeli: 23.11 do 16:05 było 1 335 sesji ogółem (Meta 235, Demand Gen 718), a cała doba 22.11 miała 4 428 (Meta 1 809, Demand Gen 1 997). Mniej niż doba po zmianie, więc czasy testów poniżej liczone są z ruchu 16–22.11 i po dwóch pełnych dobach trzeba je przeliczyć; przy ruchu o połowę mniejszym czas jest dwa razy dłuższy.</li></ul></div>
+<div class="blok"><h3>Zasady</h3><ul><li>Poprawka strony tylko dla wady widocznej w ruchu z każdego kanału. Słaby wynik jednego kanału na tej samej stronie to decyzja reklamowa: kreacje, kierowanie, strona docelowa, budżet.</li><li>Nowa ścieżka to reklama, strona i własny UTM, mierzone jako para. Reklamę robi Bartek, stronę projektuje Tomek, wdraża Kacper.</li><li>Status startu: gdy test potrzebuje i losowania wariantów, i zdarzenia z planu zdarzeń, ma status „czeka na plan zdarzeń” (późniejsza z dwóch bramek); w opisie zależności są obie. Testy A/B na samym komputerze są niewykonalne (około 950 sesji w listopadzie wobec 16 022 na telefonie), więc testy planowane są na telefonie, a komputer dostaje tę samą zmianę bez osobnego testu.</li></ul></div>
+<div class="blok k0"><h3>Krok 0: co już jest na żywej stronie (MUST HAVE, 2026-11-23)</h3>
+<p>Sprawdzenie żywej strony chinaselect.pl (telefon 440×897, Playwright bez okna, baner cookies ukryty stylem): strona główna, /samochody, strony modeli BYD Song L DM-i i Xiaomi SU7, dwie karty aut. Wpis w projekty/dane/must_have_stan.json. Pozycje „tak” nie wchodzą do planu jako zmiana.</p>
+<b>Tak (3)</b><ul><li>HP-02a Partner Guazi i raporty</li><li>PLP-09 Rata na kaflu</li><li>PDP-15 Dane sprzedawcy na karcie</li></ul>
+<b>Prawie (4)</b><ul><li>HP-09 Stopka (brak osobnego linku o prawie odstąpienia)</li><li>PDP-01 Blok ceny (brak kwot składników)</li><li>PDP-13 Finansowanie (kalkulator jest, brak nazwanego partnera)</li><li>PLP-07 Etykieta ceny na kaflu (do dyskusji)</li></ul>
+<b>Częściowo (5)</b><ul><li>HP-08 Pasek kontaktu (jest obietnica 30 minut, nie ma „Zamów rozmowę” ani widgetu)</li><li>PDP-06 Gwarancja (jest 12 miesięcy, brak gwaranta)</li><li>PDP-12 Rezerwacja</li><li>PDP-16 Pytania o to auto</li><li>PDP-17 Zgody RODO (brak zgody na kontakt automatyczny)</li></ul>
+<b>Nie (3)</b><ul><li>PDP-02 Raport Guazi tego auta</li><li>PDP-07 Serwis i części w Polsce</li><li>PDP-19 Znane usterki modelu (do dyskusji)</li></ul>
+</div>
+
+<div class="koszyki">
+<section class="kosz" id="koszyk-konieczne">
+<h2>0. Zmiany konieczne <span class="chip">2 poz.</span></h2>
+<p class="opis">Tomek 23.11: dwie zmiany obowiązkowe, niezależnie od wyników testów — zgoda na marketing po drodze i wielopoziomowa budowa zaufania.</p>
+<article class="poz" data-id="K-1" id="K-1">
+  <header>
+    <span class="id">K-1</span>
+    <h3>Zgoda na marketing po drodze, nie tylko w formularzu</h3>
+  </header>
+  <p class="co">Ustalić i wdrożyć miejsca na ścieżce, w których kupujący może dać zgodę na marketing, także wtedy, gdy nie wysyła zgłoszenia: (1) formularz zapytania — osobna, niezaznaczona zgoda marketingowa obok zgody na kontakt automatyczny (E-7); (2) strona po wysłaniu zgłoszenia — „powiadamiaj mnie o nowych egzemplarzach tego modelu”; (3) wynik kalkulatora raty — „wyślij wyliczenie na e-mail”; (4) karta auta sprzedanego albo model bez ofert — „powiadom o podobnym aucie”; (5) raport inspekcji za kontakt (E-4).</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr1">priorytet 1</span>
+    <span class="chip kto">Tomek (miejsca i projekt), Kamil z kancelarią Linke (treść zgody), Kacper (wdrożenie i pole w Pipedrive)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Strona modelu (kalkulator, formularz), karta auta (blok zakupowy, kalkulator), strona po wysłaniu zgłoszenia; pole zgody w osobie w Pipedrive.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Od 1.11 do 23.11 z 15 765 wizyt z reklam powstało 20 zgłoszeń — reszta wychodzi bez śladu kontaktu. Kalkulator używa 22–31 na 100 odsłon, które do niego dochodzą (heatmapy 17–23.11), więc wyliczenie raty to naturalny moment na e-mail. W formularzu jest dziś jedna informacja pod przyciskiem, bez osobnych zgód (żywa strona 23.11), a pola zgód w osobach w Pipedrive były puste (przegląd 30.10).</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Kontakty ze zgodą marketingową na tydzień (osobno: ze zgłoszeniem i bez zgłoszenia); odsetek zgłoszeń ze zgodą.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>10 808 sesji GA4 na stronach modeli i 3 315 z wejściem na kartę (16–22.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Zmiana konieczna: każda wizyta bez zgłoszenia może zostawić kontakt, a bez zgody nie ma do kogo wrócić.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Projekt miejsc można zacząć od razu; treść zgody czeka na Kamila i kancelarię (razem z E-7). Bez zgody nie ma wysyłki ani dopasowanych odbiorców w reklamach.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/kampanie/typy_wydajnosc.json; analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.md; projekty/dane/must_have_stan.json (PDP-17, 23.11); crm/research/R14_lejek_leady/MAPA_LEADOW.md (sekcja 6)</dd></div>
+  </dl>
+</article><article class="poz" data-id="K-2" id="K-2">
+  <header>
+    <span class="id">K-2</span>
+    <h3>Budowa zaufania wielopoziomowa</h3>
+  </header>
+  <p class="co">Jeden system dowodów zaufania na pięciu poziomach (firma; to auto; pieniądze i proces; po zakupie; dowód społeczny), oparty na sześciu wartościach wyprowadzonych z haseł Kamila (propozycja do akceptu Tomka) i rozpisany na 12 obszarów od reklamy do obsługi po zgłoszeniu: pytanie kupującego, poziom, wartość, stan żywej strony 23.11 ze zrzutem, brak, element (ZA-01…ZA-20, połączone z E-1…E-6, PDP-, HP-), kto i pomiar. Pełny plan: zaufanie/ZAUFANIE_PLAN.html (źródło zaufanie/zaufanie_2026-11-23.json).</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr1">priorytet 1</span>
+    <span class="chip kto">Tomek (mapa poziomów i projekt), Kamil (dane: gwarant, serwis, raporty Guazi, opinie), Kacper (wdrożenie), Bartek (te same dowody w reklamach)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Reklama → strona modelu (poziomy 1–3 skrótem) → karta auta (poziom 2 i 3 w bloku zakupowym, 4 pod nim) → formularz (poziom 1: kto oddzwoni i kiedy) → strona po wysłaniu (poziom 3: co dalej).</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Dowody są dziś pojedyncze i puste: „Raport techniczny” na karcie to nieklikalna plakietka, „Ochrona gwarancyjna” bez treści (żywa strona 23.11); na 150 stronach modeli serwis i części, Euro NCAP i wartość przy odsprzedaży 0/150, stan baterii 9/150 (GEO 11.11). Na karcie auta najczęściej dotykane są „Pokaż więcej” i galeria (heatmapy 17–23.11) — kupujący szukają szczegółów konkretnego auta. Spina pozycje E-2, E-3, E-4, E-5, E-6 i R-4 w jedną kolejność.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Na typ strony, przed i po wdrożeniu poziomu: wejście na kartę auta, otwarcie formularza (po planie zdarzeń), zgłoszenia na 1000 wizyt; osobno w każdym kanale.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>10 808 sesji GA4 na stronach modeli i 3 315 z wejściem na kartę (16–22.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Zmiana konieczna: przy imporcie auta z Chin brak zaufania blokuje zgłoszenie bardziej niż układ strony.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Kolejność w zaufanie/ZAUFANIE_PLAN.html: faza 0 — 9 pozycji bez nowych danych od Kamila (pastylki raport · ochrona · dostawa otwierają okno; linia zaufania w pasku przyklejonym; nagłówek okna formularza; „co dalej” po wysłaniu); faza 1 — jedna liczba wszędzie (10 obietnic w kilku wersjach, w reklamach i na stronie; pilne: czy „reszta płatności po dostarczeniu auta” ze strony głównej jest prawdą dla gotówki); faza 2 — dane od Kamila (E-3…E-6, doradcy, partner finansowy); faza 3 — opinie i odsprzedaż. Wdrażać poziomami i mierzyć przed/po na typie strony, osobno w każdym kanale, nie jednym testem A/B.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>projekty/dane/must_have_stan.json (23.11); STATUS.md (GEO 11.11, 150 stron modeli); analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.md; zaufanie/ZAUFANIE_PLAN.html (23.11)</dd></div>
+  </dl>
+</article>
+</section><section class="kosz" id="koszyk-sciezki">
+<h2>1. Nowe ścieżki <span class="chip">6 poz.</span></h2>
+<p class="opis">Reklama, strona i własny UTM, mierzone jako para.</p>
+<article class="poz" data-id="N-4" id="N-4">
+  <header>
+    <span class="id">N-4</span>
+    <h3>Demand Gen ogólna: lista ofert zamiast strony głównej</h3>
+  </header>
+  <p class="co">Kampanię ogólną Demand Gen skierować na listę ofert zamiast na stronę główną.</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr1">priorytet 1</span>
+    <span class="chip kto">Bartek (zmiana adresu), Tomek (pomiar pary)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Demand Gen ogólna (CS_DG_OGOLNA) → /samochody (lista ofert z filtrem) zamiast strony głównej.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Strona główna z Demand Gen: 1 221 wizyt GA4 od 1.11, 15,0% wchodzi na kartę, 0 zgłoszeń, koszt 852 zł. Z listy wchodzi na kartę 31,4% wizyt z Mety (414 wizyt) i 30,9% z wyszukiwarki (330). Ruchu Demand Gen na liście jeszcze nie ma, więc to hipoteza.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Wejście na kartę auta, wizyty GA4 pary (zgłoszenia za rzadkie).</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>898 sesji GA4 na tydzień z Demand Gen na stronie głównej (16–22.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>+50%: 7 dni; +30%: 18 dni (porównanie okresów, nie losowanie, więc wynik mniej pewny niż w teście A/B).</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Jedna zmiana adresu w reklamie, zero pracy na stronie, a 852 zł poszło bez zgłoszenia.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Decyzja reklamowa: plan niczego w kampaniach nie zmienia, zmianę robi Bartek.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.md (test 4, sekcja 6); analityka/kampanie/typy_wydajnosc.json</dd></div>
+  </dl>
+</article><article class="poz" data-id="N-1" id="N-1">
+  <header>
+    <span class="id">N-1</span>
+    <h3>Auta do 100 tys. zł: strona z treścią wokół listy</h3>
+  </header>
+  <p class="co">Dla istniejących reklam „do 100 tys.” (Meta i wyszukiwarka) zbudować stronę z treścią wokół listy z filtrem ceny zamiast gołej listy.</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr2">priorytet 2</span>
+    <span class="chip kto">Tomek (projekt strony), Kacper (wdrożenie), Bartek (adres i UTM reklam)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Reklama Meta (CS_META_LPV, CS_META_LEAD) i wyszukiwarka (cs_g_srch_filtr_do100) → /samochody?priceTo=100000&amp;sort=cheapest (lista ofert z filtrem; adres potwierdzony tylko dla wyszukiwarki).</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Pary już są: razem 439 wizyt GA4 od 1.11 (Meta ruch 367, Meta leady 12, wyszukiwarka 60), 0 zgłoszeń, koszt 1–23.11: 491 zł, 108 zł i 158 zł. Na kartę wchodzi 29,5% wizyt z Mety ruch (jak z reklam modeli), więc goła lista nic nie dokłada. Próg ceny jest w frazach: powiązane wyszukiwania „auta z Chin do 30 tys.”, filar A strategii kontentowej („auta z Chin do 100 / 150 / 200 tys. do odbioru”).</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Wejście na kartę auta i zgłoszenia na 1000 wizyt, liczone na parze (wizyty GA4).</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>ok. 130 wizyt GA4 na tydzień (439 wizyt od 1.11 do 23.11); Meta ruch jest wstrzymana, więc dziś mniej.</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>— (nowa para, ocena na liczbach pary; przy tym ruchu bez testu)</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Ruch jest mały (ok. 130 wizyt tygodniowo), więc to budowa strony pod przyszły budżet, nie szybki zysk.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Start to projekt strony (Tomek); para rusza po wdrożeniu (Kacper). Przed budową Bartek potwierdza w Mecie, czy reklamy mają priceTo w adresie.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/heatmapy/2026-11-23/dane_ga4/pary_2026-11-23_1020.json; analityka/kampanie/typy_wydajnosc.json; kontent/STRATEGIA_KONTENTOWA_v0.md (filar A)</dd></div>
+  </dl>
+</article><article class="poz" data-id="N-3" id="N-3">
+  <header>
+    <span class="id">N-3</span>
+    <h3>Meta marka → strona marki zamiast strony modelu</h3>
+  </header>
+  <p class="co">Reklamy Mety dla marek skierować na stronę marki zamiast na stronę modelu i mierzyć jako osobne pary.</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr2">priorytet 2</span>
+    <span class="chip kto">Bartek (adres reklam i UTM), Tomek (pomiar pary), Kacper (sprawdza P1-5 przed przeniesieniem ruchu)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Meta (kampanie marek) → strona marki (/samochody/&lt;marka&gt;).</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Meta ruch marka: 1 847 wizyt na stronę modelu, 31,7% na kartę, 1 zgłoszenie za 1 236 zł. Strona marki dostaje dziś ruch z wyszukiwarki (332 wizyty, 38,9% na kartę, najwyżej) i z Mety leady marka (85 wizyt, 41,2%, 1 zgłoszenie za 328 zł; mała próba). Zgłoszeń ze strony marki z wyszukiwarki: 0, więc jedyny dowód to wejście na kartę.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Wejście na kartę auta (wizyty GA4, para) i zgłoszenia na 1000 wizyt.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>ok. 127 wizyt GA4 na tydzień na stronach marek (417 wizyt od 1.11 do 23.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Zmiana adresu w reklamie, ale dowód to jeden wskaźnik (wejście na kartę) na małej próbie.</dd></div>
+    <div class="f"><dt>Konflikt z</dt><dd>T-2</dd></div>
+    <div class="f"><dt>Uwaga</dt><dd>Audyt SEO 11.11 (P1-5): w jednym przebiegu strony marek Deepal i Denza zwróciły noindex; Kacper sprawdza przyczynę, zanim na strony marek pójdzie więcej ruchu. Przenoszenie ruchu ze stron modeli nie w oknie testu kafla (T-2).</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/kampanie/typy_wydajnosc.json; seo/AUDYT_TECHNICZNY_SEO_2026-11-11.md (P1-5)</dd></div>
+  </dl>
+</article><article class="poz" data-id="N-6" id="N-6">
+  <header>
+    <span class="id">N-6</span>
+    <h3>Reklama konkretnego egzemplarza → karta auta</h3>
+  </header>
+  <p class="co">Reklama konkretnego egzemplarza prowadząca na kartę auta, porównywana z reklamą modelu.</p>
+  <div class="chips">
+    <span class="chip s-nie">niewykonalne teraz</span>
+    <span class="chip pr pr2">priorytet 2</span>
+    <span class="chip kto">Bartek (reklama), Kacper (obsługa sprzedanego egzemplarza), Tomek (pomiar)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Meta lub wyszukiwarka → /oferta/&lt;egzemplarz&gt; (karta auta).</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Karta auta nie jest stroną docelową żadnej z 196 par od 1.11. Na karcie kalkulator jest dostępny dla 73,2% odsłon (13,5% na stronie modelu z Mety) i używa go 24,7 na 100 (851 z 3 441); 11 z 28 zgłoszeń z 17–23.11 przyszło z przycisku na karcie.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Zgłoszenia na 1000 wizyt, para egzemplarz kontra para modelu.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>0 (brak par z kartą jako stroną docelową); wejścia na kartę: 3 315 sesji GA4 na tydzień (16–22.11), z wnętrza stron.</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Karta daje najwięcej zgłoszeń z przycisku (11 z 28), ale brakuje wejścia z reklamy.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Powód: sprzedane auto zwraca pustą stronę 404 (audyt SEO 11.11; nie sprawdzono na prawdziwym sprzedanym egzemplarzu). Reklama musi mieć obsłużony wariant „sprzedane” (Kacper).</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.md (sekcje 2, 5, 6); seo/AUDYT_TECHNICZNY_SEO_2026-11-11.md (P2: sprzedana oferta)</dd></div>
+  </dl>
+</article><article class="poz" data-id="N-2" id="N-2">
+  <header>
+    <span class="id">N-2</span>
+    <h3>Rata do 1000 zł: osobna para</h3>
+  </header>
+  <p class="co">Osobna para „rata do 1000 zł”: reklama i lista z filtrem raty.</p>
+  <div class="chips">
+    <span class="chip s-nie">niewykonalne teraz</span>
+    <span class="chip pr pr3">priorytet 3</span>
+    <span class="chip kto">Bartek (reklama), Kacper (filtr raty w adresie), Tomek (decyzja: netto czy brutto w przekazie)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Meta (cs_meta_lpv_filtry_rata_do_1000_adv) → /samochody z filtrem Rata.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Para istnieje, ma 6 wizyt GA4 od 1.11 (1 weszła na kartę): za mało na jakąkolwiek ocenę. Rata na kaflach jest netto (np. 869 zł netto przy 89 400 zł brutto), więc „do 1000 zł” dla osoby prywatnej mówi o innej kwocie niż na stronie; wg kafli 1000 zł netto to ok. 103 tys. zł ceny (89 400 zł → 869 zł, 121 400 zł → 1 179 zł). Filtr Raty jest w panelu filtrów (pola od 800 do 8 500 zł), ale próba z 23.11 nie zmieniła adresu strony.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Wejście na kartę auta i zgłoszenia na 1000 wizyt, na parze.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>ok. 2 wizyty GA4 na tydzień (6 od 1.11 do 23.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Para ma 6 wizyt, a przekaz „do 1000 zł” wymaga rozstrzygnięcia netto / brutto.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Powód: nieustalone, czy rata w reklamie jest netto czy brutto; filtr raty z adresu niepotwierdzony.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/heatmapy/2026-11-23/dane_ga4/pary_2026-11-23_1020.json; sprawdzenie żywej strony 23.11 (projekty/dane/must_have_stan.json, PLP-09)</dd></div>
+  </dl>
+</article><article class="poz" data-id="N-5" id="N-5">
+  <header>
+    <span class="id">N-5</span>
+    <h3>Demand Gen segmentowy: strony segmentów</h3>
+  </header>
+  <p class="co">Dla kampanii segmentowych Demand Gen zbudować strony segmentów (z systemu treści) jako strony docelowe par.</p>
+  <div class="chips">
+    <span class="chip s-nie">niewykonalne teraz</span>
+    <span class="chip pr pr3">priorytet 3</span>
+    <span class="chip kto">Tomek (projekt), Kamil (akcept merytoryczny), Kacper (wdrożenie), Bartek (adres reklam)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Demand Gen segmentowy (S1–S4) → strona segmentu zamiast strony modelu.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Demand Gen segmentowy: 4 839 wizyt GA4 od 1.11 na strony modeli, 17,0% wchodzi na kartę, koszt 3 665 zł, 3 zgłoszenia (1 222 zł za zgłoszenie). Strategia kontentowa (5b) zakłada, że strony-filary pracują jako strony docelowe reklam; punkt R4 Ścieżkomatu jest otwarty.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Wejście na kartę auta i zgłoszenia na 1000 wizyt, na parze.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>ok. 1 470 wizyt GA4 na tydzień (4 839 od 1.11 do 23.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Stron segmentów nie ma, a teksty czekają na decyzje.</dd></div>
+    <div class="f"><dt>Konflikt z</dt><dd>T-2</dd></div>
+    <div class="f"><dt>Uwaga</dt><dd>Powód: strony segmentów nie istnieją; teksty z systemu treści czekają na akcept Kamila i na decyzje (cena do odbioru, zaliczka, gwarancja). Przeniesienie ruchu ze stron modeli nie w oknie testu kafla (T-2).</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>kontent/STRATEGIA_KONTENTOWA_v0.md (5b); kombajn/BUILD_PLAN_KOMBAJN.md (R4); analityka/kampanie/typy_wydajnosc.json</dd></div>
+  </dl>
+</article>
+</section><section class="kosz" id="koszyk-testy">
+<h2>2. Testy elementów <span class="chip">7 poz.</span></h2>
+<p class="opis">Strona modelu, kafel oferty, formularz zapytania i karta auta (blok zakupowy). Telefon; komputer dostaje tę samą zmianę bez osobnego testu.</p>
+<article class="poz" data-id="T-1" id="T-1">
+  <header>
+    <span class="id">T-1</span>
+    <h3>Baner strony modelu: dotknięcie przewija do ofert</h3>
+  </header>
+  <p class="co">Dotknięcie banera na stronie modelu ma robić to samo co przycisk „Dostępne samochody” (przewijać do ofert).</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr1">priorytet 1</span>
+    <span class="chip kto">Kacper (szablon strony modelu)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Strona modelu (szablon), baner na górze; telefon i komputer, ta sama zmiana.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>309 dotknięć w baner na 13 273 odsłon Clarity (17–23.11, telefon) w ruchu z Mety (204), Demand Gen (87) i wyszukiwarki (18); dotknięcie nic nie robi (sprawdzone 23.11 na BYD Song L DM-i i BYD Sealion 7). Ten sam wzorzec był na mapie z 14.11. Wada widoczna w każdym kanale.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Dotknięcia banera na 100 odsłon (mapa Clarity), po 7 dniach od wdrożenia.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>10 808 sesji GA4 na stronach modeli (16–22.11, wszystkie kanały).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Poprawka bez testu, jedna zmiana w szablonie, wada widoczna w każdym kanale.</dd></div>
+    <div class="f"><dt>Konflikt z</dt><dd>T-2</dd></div>
+    <div class="f"><dt>Uwaga</dt><dd>Wdrożyć przed startem testu kafla (T-2), żeby nie mieszać dwóch zmian w jednym oknie.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.md (sekcja 3)</dd></div>
+  </dl>
+</article><article class="poz" data-id="T-7" id="T-7">
+  <header>
+    <span class="id">T-7</span>
+    <h3>Formularz zapytania: dlaczego z Demand Gen się otwiera, a nie wysyła</h3>
+  </header>
+  <p class="co">Obejrzeć nagrania sesji z dotknięciem „Zapytaj o model” osobno z Mety i z Demand Gen, a potem, po zdarzeniu form_open, sprawdzić pola formularza testem.</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr2">priorytet 2</span>
+    <span class="chip kto">Tomek (nagrania Clarity i pomiar), Kacper (zdarzenie form_open, losowanie wariantów dla kroku 2)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Formularz „Poznaj ofertę” (okno otwierane z przycisku przyklejonego) na stronie modelu i karcie auta.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Dwa liczniki rozchodzą się co do kierunku: z Demand Gen dotyka się „Zapytaj o model” częściej niż z Mety (0,81 wobec 0,18 na 100 odsłon Clarity), a zgłoszeń na 1000 wizyt GA4 jest mniej (0,46 wobec 2,10). Przy 40 i 14 dotknięciach oraz 3 i 13 zgłoszeniach to hipoteza, że okno jest otwierane i nie wysyłane. Formularz ma dziś 3 pola (imię, telefon, e-mail); propozycje pól są w konwersja.json (KONW-2 imię opcjonalne, KONW-6 temat i wiadomość).</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Krok 1: odsetek nagranych sesji, w których okno zostało otwarte i zamknięte bez wysłania. Krok 2: zgłoszenia na 1000 wizyt i otwarcia formularza (form_open).</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>10 808 sesji GA4 na stronach modeli (16–22.11); otwarć formularza brak w danych do czasu zdarzenia form_open.</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>— (krok 1: jedno pobranie nagrań; krok 2 do policzenia po pierwszym tygodniu zdarzeń form_open)</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Krok 1 to jedno pobranie nagrań, a rozstrzyga, czy poprawiać wejście do formularza, czy sam formularz.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Status dotyczy kroku 1. Krok 2 (test pól formularza) czeka na plan zdarzeń i losowanie wariantów; jeden test naraz z T-3 (to samo wejście do zapytania).</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.md (sekcje 5 i 7, pkt 1); projekty/dane/konwersja.json; sprawdzenie żywej strony 23.11</dd></div>
+  </dl>
+</article><article class="poz" data-id="T-2" id="T-2">
+  <header>
+    <span class="id">T-2</span>
+    <h3>Kafel oferty: widoczny przycisk „Zobacz to auto”</h3>
+  </header>
+  <p class="co">Dodać pod zdjęciami kafla widoczny przycisk „Zobacz to auto” i sprawdzić, czy zwiększa wejścia na kartę auta.</p>
+  <div class="chips">
+    <span class="chip s-los">czeka na losowanie wariantów</span>
+    <span class="chip pr pr1">priorytet 1</span>
+    <span class="chip kto">Kacper (komponent i losowanie wariantów), Tomek (projekt przycisku, pomiar)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Kafel oferty (strona modelu, lista ofert i strona główna używają tego samego komponentu).</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Dziś cała karta kafla jest linkiem, bez widocznego przycisku (sprawdzone 23.11). Auto otwiera 25,2 na 100 odsłon z Mety, 18,2 z Demand Gen i 20,4 z wyszukiwarki, a strzałki zdjęć są dotykane równie często (35,7, 38,2 i 15,0 na 100). Z Mety na liście dotykane są głównie strzałki zdjęć (38,7%), rzadziej otwarcie auta (16,1%).</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Wejście na kartę auta (wizyty GA4, baza 22,4%).</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>10 808 sesji GA4 na stronach modeli (16–22.11, wszystkie kanały).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>+20%: 2 dni; +10%: 8 dni (przy ruchu o połowę mniejszym dwa razy dłużej).</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Jedyny test z wynikiem w kilka dni i dotyczy każdego kanału.</dd></div>
+    <div class="f"><dt>Konflikt z</dt><dd>T-1, T-3, T-4, N-3, N-5, R-5</dd></div>
+    <div class="f"><dt>Uwaga</dt><dd>Losowanie 2 wariantów, ciasteczko i wariant w zdarzeniach GA4 i w zgłoszeniu Pipedrive: Kacper. Jeden test naraz w tej strefie ekranu; ruch na stronach modeli w oknie testu bez przenoszenia (N-3, N-5, R-5).</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.md (test 1)</dd></div>
+  </dl>
+</article><article class="poz" data-id="T-3" id="T-3">
+  <header>
+    <span class="id">T-3</span>
+    <h3>Drugie wejście do zapytania pod ofertami</h3>
+  </header>
+  <p class="co">Dołożyć przycisk „Zapytaj o model” bezpośrednio pod karuzelą ofert na stronie modelu.</p>
+  <div class="chips">
+    <span class="chip s-zd">czeka na plan zdarzeń</span>
+    <span class="chip pr pr2">priorytet 2</span>
+    <span class="chip kto">Kacper (komponent, losowanie, zdarzenie), Tomek (projekt, pomiar)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Strona modelu, pod karuzelą ofert (telefon; komputer ta sama zmiana).</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Formularz w treści leży na ok. 70% wysokości strony: dochodzi do niego 5,9% odsłon z Mety (461 z 7 828) i 8,6% z Demand Gen (426 z 4 961). 24 z 28 zgłoszeń z 17–23.11 przyszło z przycisków przyklejonych (strona modelu 13, karta 11), a formularz w treści dał 2. Skutek wyższego wejścia nieznany, stąd test.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Zgłoszenia na stronie modelu (baza 0,135%: 18 zgłoszeń na 13 301 wizyt od 1.11); pośrednio zdarzenie form_open.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>10 808 sesji GA4 na stronach modeli (16–22.11, wszystkie kanały). Sama Meta: 5 928 sesji.</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>+100%: 23 dni; +50%: 76 dni (ok. 11 tyg.). Sama Meta: 27 i 89 dni. Mniejsze zmiany tylko przez zdarzenie form_open.</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Wynik dopiero przy podwojeniu zgłoszeń, ale to jedyne wejście do zapytania wyżej niż 70% strony.</dd></div>
+    <div class="f"><dt>Konflikt z</dt><dd>T-2, T-4</dd></div>
+    <div class="f"><dt>Uwaga</dt><dd>Zależności: plan zdarzeń (odłożony 18.11) i losowanie wariantów. Ta sama strefa ekranu co T-2 i T-4. Podstawą jest ruch ze wszystkich kanałów, bo wada (formularz poza zasięgiem) jest widoczna i w Mecie, i w Demand Gen. Baza 0,135% liczona z wizyt, ruch z sesji.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.md (sekcje 3, 4 test 3, 5)</dd></div>
+  </dl>
+</article><article class="poz" data-id="T-4" id="T-4">
+  <header>
+    <span class="id">T-4</span>
+    <h3>Kalkulator raty wyżej na stronie modelu</h3>
+  </header>
+  <p class="co">Na stronie modelu przenieść wybór okresu z ratą pod karuzelę ofert.</p>
+  <div class="chips">
+    <span class="chip s-zd">czeka na plan zdarzeń</span>
+    <span class="chip pr pr3">priorytet 3</span>
+    <span class="chip kto">Kacper (komponent, losowanie, zdarzenie), Tomek (projekt, pomiar)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Strona modelu, kalkulator raty pod karuzelą ofert (cały ruch stron modeli; telefon, komputer ta sama zmiana).</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Do kalkulatora dochodzi mało odsłon w każdym kanale: 13,5% z Mety (1 057 z 7 828) i 19,7% z Demand Gen (976 z 4 961); kto dojdzie, używa go (31,5 dotknięcia na 100 z Mety, 22,5 z Demand Gen). Wada widoczna w obu kanałach, więc test na całym ruchu stron modeli.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Użycie kalkulatora (zdarzenie calculator_interaction z planu zdarzeń; baza ok. 4,3% = (333 + 220) / (7 828 + 4 961) odsłon z Clarity, górne przybliżenie).</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>10 808 sesji GA4 na stronach modeli (16–22.11, wszystkie kanały).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>+30%: 6 dni; +50%: 3 dni (przy ruchu o połowę mniejszym dwa razy dłużej).</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Wynik pośredni (użycie kalkulatora), nie zgłoszenia.</dd></div>
+    <div class="f"><dt>Konflikt z</dt><dd>T-2, T-3</dd></div>
+    <div class="f"><dt>Uwaga</dt><dd>Zależności: plan zdarzeń i losowanie wariantów. Ta sama strefa ekranu co T-2 i T-3. Baza z odsłon Clarity (inna jednostka niż sesje); po wdrożeniu zdarzenia przeliczyć na sesjach.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.md (test 2)</dd></div>
+  </dl>
+</article><article class="poz" data-id="T-5" id="T-5">
+  <header>
+    <span class="id">T-5</span>
+    <h3>Karta auta: „Co zawiera cena?” rozwinięte od razu</h3>
+  </header>
+  <p class="co">W bloku zakupowym karty auta pokazać „Co zawiera cena?” rozwinięte zamiast zwiniętego.</p>
+  <div class="chips">
+    <span class="chip s-zd">czeka na plan zdarzeń</span>
+    <span class="chip pr pr3">priorytet 3</span>
+    <span class="chip kto">Kacper (komponent, losowanie, zdarzenie), Tomek (projekt, pomiar)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Karta auta, blok ceny (na telefonie pod galerią, na komputerze prawa kolumna).</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Kandydat z taktyk z 09.10 (test 1, priorytet 1: cena do odbioru jako główna bariera, 53,2% fraz o koszcie). Na żywej stronie 23.11 lista jest zwinięta i ma 6 pozycji bez kwot. Bez dowodu z map: nie wiadomo, ile osób otwiera „Co zawiera cena?”; sprawdzić w Clarity przed testem.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Zgłoszenie z karty auta (baza 0,32%).</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>3 315 sesji GA4 z wejściem na kartę auta (16–22.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>+100%: 31 dni; +50%: 104 dni (ok. 15 tyg.).</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Brak dowodu z map i wynik dopiero po kilku tygodniach.</dd></div>
+    <div class="f"><dt>Konflikt z</dt><dd>T-6</dd></div>
+    <div class="f"><dt>Uwaga</dt><dd>Zależności: plan zdarzeń i losowanie wariantów. Ta sama strona co T-6, jeden test naraz. Komputer: ta sama zmiana bez osobnego testu.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>projekty/TAKTYKI_TESTY_KARTA_AUTA_20261009.md (element 1, test 1); sprawdzenie żywej strony 23.11</dd></div>
+  </dl>
+</article><article class="poz" data-id="T-6" id="T-6">
+  <header>
+    <span class="id">T-6</span>
+    <h3>Karta auta: szczegóły rozwinięte od razu</h3>
+  </header>
+  <p class="co">Na karcie auta pokazać szczegóły rozwinięte od razu zamiast za przyciskiem „Pokaż więcej”.</p>
+  <div class="chips">
+    <span class="chip s-nie">niewykonalne teraz</span>
+    <span class="chip pr pr3">priorytet 3</span>
+    <span class="chip kto">Kacper (komponent, losowanie, zdarzenie), Tomek (projekt, pomiar)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Karta auta, tabela szczegółów (wszystkie źródła).</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>„Pokaż więcej” to najczęściej dotykany element karty po galerii: 812 dotknięć, 23,6 na 100 odsłon.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Zgłoszenie z karty auta (baza 0,32%); pośrednio form_open.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>3 315 sesji GA4 z wejściem na kartę auta (16–22.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>+100%: 31 dni; +50%: 104 dni (ok. 15 tyg.).</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Na zgłoszeniach wynik po miesiącu przy podwojeniu, po ponad trzech miesiącach przy +50%.</dd></div>
+    <div class="f"><dt>Konflikt z</dt><dd>T-5</dd></div>
+    <div class="f"><dt>Uwaga</dt><dd>Powód: na zgłoszeniach test jest za długi, a metryka pośrednia (form_open) czeka na plan zdarzeń.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.md (test 5)</dd></div>
+  </dl>
+</article>
+</section><section class="kosz" id="koszyk-elementy">
+<h2>3. Nowe elementy <span class="chip">7 poz.</span></h2>
+<p class="opis">Braki wobec normy rynku i luki z 150 stron modeli, po sprawdzeniu na żywej stronie.</p>
+<article class="poz" data-id="E-2" id="E-2">
+  <header>
+    <span class="id">E-2</span>
+    <h3>Euro NCAP i polskie menu / CarPlay na stronie modelu</h3>
+  </header>
+  <p class="co">Na stronie modelu dodać wynik Euro NCAP oraz informację o polskim menu i CarPlay, ustalone dla każdego modelu osobno.</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr2">priorytet 2</span>
+    <span class="chip kto">Tomek (zlecenie researchu), Kacper (szablon)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Strona modelu (szablon), sekcja o używaniu auta w Polsce.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Ocena GEO z 11.11: Euro NCAP 0 ze 150 stron modeli, polskie menu i CarPlay 1 ze 150. Ścieżka S2 Rodzina wymaga wyniku Euro NCAP i ISOFIX, a „czy będzie po polsku” to obawa prawdopodobna.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Obecność pól na stronach modeli (ocena GEO).</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>10 808 sesji GA4 na stronach modeli (16–22.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Dwa elementy z luką 0 i 1 ze 150 stron, jeden szablon, dane publiczne.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Research dla każdego modelu osobno; brak wyniku Euro NCAP zapisywany jako „brak oceny”, bez zgadywania. Odpowiedzi o menu i CarPlay w FAQ klienta są „do potwierdzenia”.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>STATUS.md (wpis GEO z 11.11); sciezki/SCIEZKA_S2_RODZINA_v0.md; kontent/STRATEGIA_KONTENTOWA_v0.md (filar C)</dd></div>
+  </dl>
+</article><article class="poz" data-id="E-1" id="E-1">
+  <header>
+    <span class="id">E-1</span>
+    <h3>Stan baterii na stronie modelu</h3>
+  </header>
+  <p class="co">Na stronie modelu pokazać zakres stanu baterii z ofert tego modelu.</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr3">priorytet 3</span>
+    <span class="chip kto">Tomek (zlecenie treści z danych oferty), Kacper (szablon)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Strona modelu (szablon), sekcja o ofertach i danych modelu.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Ocena GEO z 11.11: stan baterii jest na 9 ze 150 stron modeli. Karta auta pokazuje już stan baterii egzemplarza (93% i 95,5% na dwóch sprawdzonych kartach 23.11), więc dane są w feedzie.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Obecność pola na stronach modeli (ocena GEO); wpływ na zgłoszenia nie jest mierzony.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>10 808 sesji GA4 na stronach modeli (16–22.11), ruch, który zobaczy element.</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Dane są, ale brak dowodu, że ten element rusza zgłoszenia.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Zakres z ofert modelu liczony z danych feedu; bez ofert pole zostaje puste.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>STATUS.md (wpis GEO z 11.11); sprawdzenie żywej strony 23.11</dd></div>
+  </dl>
+</article><article class="poz" data-id="E-3" id="E-3">
+  <header>
+    <span class="id">E-3</span>
+    <h3>Serwis i części w Polsce</h3>
+  </header>
+  <p class="co">Dodać na karcie auta i stronie modelu nazwany serwis w Polsce i czas sprowadzenia części.</p>
+  <div class="chips">
+    <span class="chip s-zd">czeka na decyzję lub dane od Kamila</span>
+    <span class="chip pr pr2">priorytet 2</span>
+    <span class="chip kto">Kamil (prezes China Select: umowy z partnerami serwisowymi), Tomek (projekt), Kacper (wdrożenie)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Karta auta (blok zaufania) i strona modelu.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Obawa udowodniona: serwis i części pojawiają się w 30 z 692 wypowiedzi (15 ze śladem). Ocena GEO z 11.11: 0 ze 150 stron modeli. Na żywej stronie 23.11 element nie istnieje (PDP-07: nie).</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Obecność elementu; wpływ do sprawdzenia testem po wdrożeniu.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>3 315 sesji GA4 z wejściem na kartę auta (16–22.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Największa luka wobec obaw kupujących, ale blokada leży poza stroną.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Powód: brak umów z partnerami serwisowymi (nazwy, miasta, zakres) i czasów dostaw części; pytania w FAQ klienta (q78–q81) są „do potwierdzenia”.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>projekty/dane/must_have.json (karta_auta 7); projekty/dane/must_have_stan.json (23.11); kontent/STRATEGIA_KONTENTOWA_v0.md (klaster 4)</dd></div>
+  </dl>
+</article><article class="poz" data-id="E-4" id="E-4">
+  <header>
+    <span class="id">E-4</span>
+    <h3>Raport Guazi tego auta: streszczenie i pełny raport za e-mail</h3>
+  </header>
+  <p class="co">Na karcie auta pokazać streszczenie raportu inspekcji i dać pełny raport za podanie kontaktu.</p>
+  <div class="chips">
+    <span class="chip s-zd">czeka na decyzję lub dane od Kamila</span>
+    <span class="chip pr pr2">priorytet 2</span>
+    <span class="chip kto">Kamil i Zoe (Guazi: dostęp do raportów i zgoda), Tomek (projekt), Kacper (wdrożenie)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Karta auta, obok plakietki „Raport techniczny”.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>„Raport techniczny” to dziś nieklikalna plakietka (sprawdzone 23.11), choć raport z 100+ punktów kontroli jest głównym argumentem zaufania przy partnerstwie z Guazi. Taktyki z 09.10 mają dla tego elementu dwa testy (priorytet 1 i 2).</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Prośby o pełny raport i zgłoszenia z karty auta.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>3 315 sesji GA4 z wejściem na kartę auta (16–22.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Mocny argument zaufania, ale zależy od dostępu do danych Guazi.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Powód: potrzebny dostęp do raportów Guazi per egzemplarz (ocena, stan baterii, zdjęcia) i zgoda na ich pokazywanie.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>projekty/dane/must_have.json (karta_auta 2); projekty/TAKTYKI_TESTY_KARTA_AUTA_20261009.md (element 2); projekty/dane/must_have_stan.json (23.11)</dd></div>
+  </dl>
+</article><article class="poz" data-id="E-5" id="E-5">
+  <header>
+    <span class="id">E-5</span>
+    <h3>Kwoty składników w „Co zawiera cena?”</h3>
+  </header>
+  <p class="co">Przy każdej pozycji „Co zawiera cena?” podać kwotę (cło, akcyza, VAT, transport, rejestracja).</p>
+  <div class="chips">
+    <span class="chip s-zd">czeka na decyzję lub dane od Kamila</span>
+    <span class="chip pr pr2">priorytet 2</span>
+    <span class="chip kto">Kamil (decyzja o modelu ceny do odbioru), Tomek (projekt), Kacper (wdrożenie)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Karta auta, rozwijana lista „Co zawiera cena?”; potem strona z rozbiciem kosztu (filar A).</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Na żywej stronie 23.11 lista ma 6 pozycji bez kwot i zdanie „Dokładną cenę i zakres potwierdzi doradca”. Klaster „koszt i cło” ma najwięcej wypowiedzi kupujących (18 w Google PAA i 10 organicznych).</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Zgłoszenia z karty auta; potem test A/B (T-5).</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>3 315 sesji GA4 z wejściem na kartę auta (16–22.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Najczęstsze pytanie kupujących, ale puste pola zostają puste do decyzji o modelu ceny.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Powód: brak decyzji o modelu ceny do odbioru (stawka cła dla modelu, składniki). Bez niej kwot nie wpisujemy.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>projekty/dane/must_have_stan.json (PDP-01, 23.11); kontent/STRATEGIA_KONTENTOWA_v0.md (klaster 1, filar A)</dd></div>
+  </dl>
+</article><article class="poz" data-id="E-6" id="E-6">
+  <header>
+    <span class="id">E-6</span>
+    <h3>Gwarancja: nazwany gwarant i zakres</h3>
+  </header>
+  <p class="co">Przy plakietce „Ochrona gwarancyjna” podać, kto gwarantuje, na ile i co obejmuje.</p>
+  <div class="chips">
+    <span class="chip s-zd">czeka na decyzję lub dane od Kamila</span>
+    <span class="chip pr pr2">priorytet 2</span>
+    <span class="chip kto">Kamil (wskazanie gwaranta i zakresu), Tomek (projekt), Kacper (wdrożenie)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Karta auta i strona główna (sekcja „Dlaczego warto?”).</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Na żywej stronie 23.11 jest plakietka, „Gwarancja 12 miesięcy” (w „Co zawiera cena?”) i „możliwość płatnego rozszerzenia do 36 miesięcy”, bez nazwy gwaranta i zakresu. Pytania o gwarancję w Polsce: 9 w Google PAA i 13 organicznych.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Zgłoszenia z karty auta.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>3 315 sesji GA4 z wejściem na kartę auta (16–22.11).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Odznaka bez treści nie buduje zaufania, ale potrzebuje nazwanego gwaranta.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Powód: nazwany gwarant i zakres. Do tego czasu treść zostaje bez nazwy.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>projekty/dane/must_have.json (karta_auta 6); projekty/dane/must_have_stan.json (PDP-06, 23.11); kontent/STRATEGIA_KONTENTOWA_v0.md (klaster 3)</dd></div>
+  </dl>
+</article><article class="poz" data-id="E-7" id="E-7">
+  <header>
+    <span class="id">E-7</span>
+    <h3>Zgoda na kontakt automatyczny w formularzach</h3>
+  </header>
+  <p class="co">Dodać do formularzy osobną zgodę na kontakt automatyczny i jeden blok zgód we wszystkich formularzach.</p>
+  <div class="chips">
+    <span class="chip s-zd">czeka na decyzję lub dane od Kamila</span>
+    <span class="chip pr pr3">priorytet 3</span>
+    <span class="chip kto">Kamil z kancelarią Linke (treść klauzul i administrator danych), Kacper (wdrożenie)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Formularz „Poznaj ofertę” (karta auta, strona modelu) i pozostałe formularze.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Formularz 23.11 wymienia administratora (CHINA SELECT EUROPE sp. z o.o.), ale ma jedną informację pod przyciskiem i nie ma osobnej zgody na kontakt automatyczny. Bez niej Rinvo nie może automatycznie kontaktować zgłoszeń (lista braków P1, priorytet 20).</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>—</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>10 808 sesji GA4 na stronach modeli i 3 315 z wejściem na kartę (16–22.11); zgłoszeń 20 od 1.11 do 23.11 (rekordy Pipedrive dopasowane do par).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Wymóg dla automatyzacji, nie zmiana konwersji.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Powód: potrzebna treść klauzul od prawnika.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>projekty/dane/must_have.json (karta_auta 17); projekty/dane/must_have_stan.json (PDP-17, 23.11)</dd></div>
+  </dl>
+</article>
+</section><section class="kosz" id="koszyk-ruch">
+<h2>4. Nowe źródła ruchu i kontent <span class="chip">6 poz.</span></h2>
+<p class="opis">SEO i treści, decyzje o Demand Gen, ogłoszenia (Bartek).</p>
+<article class="poz" data-id="R-5" id="R-5">
+  <header>
+    <span class="id">R-5</span>
+    <h3>Demand Gen: decyzja o kreacjach, kierowaniu i budżecie</h3>
+  </header>
+  <p class="co">Rozstrzygnąć, co dalej z Demand Gen: kreacje, kierowanie, strona docelowa albo budżet, zanim jakakolwiek kampania modelowa zostanie wznowiona.</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr1">priorytet 1</span>
+    <span class="chip kto">Bartek (kreacje, kierowanie, budżet), Tomek (pomiar, zestawienie kliknięć i wizyt)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Demand Gen (segmentowy i ogólny włączone; 37 kampanii modelowych wstrzymanych) → strony modeli i strona główna.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Demand Gen od 1.11: 7 695 wizyt GA4, koszt 7 730 zł, 3 zgłoszenia (ok. 2 580 zł za zgłoszenie), a Meta z celem „leady” ok. 227 zł (10 zgłoszeń). Modele: 24 891 kliknięć w Google Ads, ale 1 635 wizyt GA4 (ok. 15 do 1; segmentowy ok. 1,8 do 1), z tego YouTube ok. 21 440 kliknięć za ok. 1 955 zł. Na tej samej stronie modelu na kartę wchodzi 17,0% wizyt z Demand Gen segment i 11,2% z modeli, wobec 32% z wyszukiwarki i Mety marek: różnicę robi kanał, nie strona.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Koszt zgłoszenia i wejście na kartę auta na parach; wizyty GA4 dzień po dniu wobec kliknięć YouTube i Discover.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>ok. 2 340 wizyt GA4 na tydzień z Demand Gen (7 695 od 1.11 do 23.11); po wstrzymaniu modeli mniej.</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Największy koszt bez zgłoszeń, a do rozstrzygnięcia wystarczy jedno zestawienie.</dd></div>
+    <div class="f"><dt>Konflikt z</dt><dd>T-2</dd></div>
+    <div class="f"><dt>Uwaga</dt><dd>To decyzja reklamowa, nie poprawka strony. Kliknięcia Google Ads i wizyty GA4 (tylko zgoda na cookies) to różne jednostki; stosunek 15 do 1 nie jest dowodem, tylko powodem do sprawdzenia miejsc wyświetleń. Zmiany ruchu na stronach modeli nie w oknie testu kafla (T-2).</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>analityka/kampanie/KAMPANIE_2026-11-23.md; analityka/kampanie/typy_wydajnosc.json; analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.md</dd></div>
+  </dl>
+</article><article class="poz" data-id="R-1" id="R-1">
+  <header>
+    <span class="id">R-1</span>
+    <h3>Strony modeli w Google: indeksacja i dane strukturalne</h3>
+  </header>
+  <p class="co">Dodać do szablonu strony modelu dane strukturalne (AggregateOffer) i monitorować indeksację stron modeli bez polskiego salonu.</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr2">priorytet 2</span>
+    <span class="chip kto">Kacper (szablon), Bartek (SEO i Search Console), Tomek (pomiar)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Strony modeli (150), szablon; ruch organiczny z Google.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Audyt SEO z 11.11: 0 z 8 sprawdzonych stron modeli w indeksie (2 z 20 stron ogółem); 150 stron modeli ma tylko Organization, WebSite, BreadcrumbList i FAQPage, bez Product, Vehicle i Offer; oferty /oferta/ są noindex. Strategia SEO Bartka (18.11): start od modeli bez salonu, np. Zeekr 9X 35 780, Xiaomi SU7 16 050 wyszukań miesięcznie.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Liczba stron modeli w indeksie i wyświetlenia (Search Console).</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>981 sesji GA4 „bez reklamy” w listopadzie (obejmuje też wejścia bezpośrednie).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Bez indeksacji strony modeli nie dostaną ruchu organicznego; zmiana to jeden szablon.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Stan indeksacji jest z 11.11; dziś nie sprawdzano (Search Console).</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>seo/AUDYT_TECHNICZNY_SEO_2026-11-11.md (P1-1, P1-3); seo/strategia_bartek_2026-11-18/strategia.txt</dd></div>
+  </dl>
+</article><article class="poz" data-id="R-3" id="R-3">
+  <header>
+    <span class="id">R-3</span>
+    <h3>Treść „Cło i podatki” (pierwszy filar kosztu)</h3>
+  </header>
+  <p class="co">Dokończyć pierwszy tekst z systemu treści o cle i podatkach przy imporcie auta z Chin i opublikować go po akceptie.</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr2">priorytet 2</span>
+    <span class="chip kto">Tomek (dokończenie w systemie treści), Kamil (akcept merytoryczny), Kacper (wdrożenie)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Strona-filar A (koszt i cło), linkowana ze stron modeli i kart aut.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>„Koszt i cło” to największy klaster pytań kupujących (18 w Google PAA i 10 organicznych). Przegląd AI pojawia się w 29 z 30 sprawdzonych wyszukań, a najlepiej radzi sobie treść z unikalnymi liczbami. Tekst przeszedł łańcuch systemu treści 17.11, ale nie jest gotowy do publikacji: brakuje 10% cła, stawek łącznych, przykładu i przypisów przy tabelach.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Pozycja i wyświetlenia strony (Search Console), cytowania w odpowiedziach AI.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>—</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Największy klaster pytań, a brakujące elementy tekstu to publiczne stawki, nie decyzje.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Tekst nie obiecuje liczb z grupy „czeka na decyzje” (cena do odbioru, czas importu, zaliczka, gwarancja); to osobne pozycje (E-5, E-6).</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>kontent/BUILD_PLAN_SYSTEM_TRESCI.md; kontent/STRATEGIA_KONTENTOWA_v0.md (filar A); seo/strategia_bartek_2026-11-18/strategia.txt</dd></div>
+  </dl>
+</article><article class="poz" data-id="R-2" id="R-2">
+  <header>
+    <span class="id">R-2</span>
+    <h3>Boty wyszukiwarek AI: dostęp w Cloudflare</h3>
+  </header>
+  <p class="co">Sprawdzić dostęp botów wyszukiwarek AI do strony: PerplexityBot dostaje 403 z warstwy Cloudflare mimo braku wpisu w robots.txt.</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr3">priorytet 3</span>
+    <span class="chip kto">Kacper (Cloudflare), Tomek i właściciele (decyzja o blokadzie botów trenujących)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Cloudflare (Bot / AI Crawl Control) i robots.txt całej strony.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Audyt 11.11: GPTBot, ClaudeBot i PerplexityBot dostają 403 (test curl, bez weryfikacji IP), a OAI-SearchBot, ChatGPT-User i Claude-SearchBot przechodzą. Przegląd AI pojawia się w 29 z 30 sprawdzonych wyszukań (strategia SEO 18.11).</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Odpowiedź 200 dla prawdziwego bota (logi Cloudflare) i cytowania w odpowiedziach AI.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>—</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Mała robota w Cloudflare, ale efekt (cytowania AI) odległy.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Blokada botów trenujących (GPTBot, ClaudeBot) może być świadoma; decyzja właścicieli. Test curl nie weryfikuje IP, więc 403 do potwierdzenia w logach.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>seo/AUDYT_TECHNICZNY_SEO_2026-11-11.md (P1-4); seo/strategia_bartek_2026-11-18/strategia.txt</dd></div>
+  </dl>
+</article><article class="poz" data-id="R-6" id="R-6">
+  <header>
+    <span class="id">R-6</span>
+    <h3>Ogłoszenia OtoMoto jako źródło z własnym UTM</h3>
+  </header>
+  <p class="co">Ogłoszenia na OtoMoto jako osobne źródło ruchu z własnym UTM, mierzone jak pary reklamowe.</p>
+  <div class="chips">
+    <span class="chip s-ok">można zacząć od razu</span>
+    <span class="chip pr pr3">priorytet 3</span>
+    <span class="chip kto">Bartek (ogłoszenia i treści ogłoszeń), Tomek (pomiar)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>OtoMoto (ogłoszenia) → strona modelu lub karta auta.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Ogłoszenia (OtoMoto, OLX) zajmują 55 z 300 pozycji top 10 dla 30 fraz (18%); w powiązanych wyszukiwaniach jest „auta z Chin OTOMOTO / OLX”; wg strategii SEO Otomoto ma ogłoszenie bez treści, a nikt nie łączy oferty z ceną w PL i dobrą treścią.</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Wizyty z UTM ogłoszeń i zgłoszenia na 1000 wizyt.</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>0 (źródło nie istnieje).</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Działka Bartka, bez pewności, że ogłoszenie pozwala na link z UTM.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Do sprawdzenia przez Bartka: czy OtoMoto pozwala na link z UTM do chinaselect.pl; bez tego pomiar pary nie jest możliwy.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>seo/strategia_bartek_2026-11-18/strategia.txt; kontent/STRATEGIA_KONTENTOWA_v0.md (powiązane wyszukiwania)</dd></div>
+  </dl>
+</article><article class="poz" data-id="R-4" id="R-4">
+  <header>
+    <span class="id">R-4</span>
+    <h3>Treść o wartości auta z Chin po roku i dwóch</h3>
+  </header>
+  <p class="co">Przygotować treść o utracie wartości aut z Chin na danych cenowych tych samych modeli, a potem sekcję o odsprzedaży na stronach modeli.</p>
+  <div class="chips">
+    <span class="chip s-nie">niewykonalne teraz</span>
+    <span class="chip pr pr3">priorytet 3</span>
+    <span class="chip kto">Tomek (zebranie danych), Kamil (akcept merytoryczny), Kacper (wdrożenie)</span>
+  </div>
+  <dl>
+    <div class="f"><dt>Gdzie</dt><dd>Strona-filar B (utrata wartości) i sekcja na stronie modelu.</dd></div>
+    <div class="f"><dt>Dlaczego (dowód)</dt><dd>Wartość przy odsprzedaży jest na 0 ze 150 stron modeli (ocena GEO 11.11). W głosie kupujących wraca obawa „nikt nie wie, jaka będzie utrata wartości”; strategia kontentowa wymaga danych, nie obietnicy (ceny tych samych modeli w ogłoszeniach po roku i dwóch).</dd></div>
+    <div class="f"><dt>Metryka</dt><dd>Obecność sekcji; pozycja strony-filaru (Search Console).</dd></div>
+    <div class="f"><dt>Ruch na tydzień</dt><dd>—</dd></div>
+    <div class="f"><dt>Czas do wyniku</dt><dd>—</dd></div>
+    <div class="f"><dt>Priorytet, dlaczego tak</dt><dd>Brak danych, a efekt dopiero po publikacji.</dd></div>
+    
+    <div class="f"><dt>Uwaga</dt><dd>Powód: brak zebranych cen tych samych modeli po roku i dwóch; zebranie to osobne zadanie.</dd></div>
+    <div class="f"><dt>Źródło</dt><dd>STATUS.md (wpis GEO z 11.11); kontent/STRATEGIA_KONTENTOWA_v0.md (filar B)</dd></div>
+  </dl>
+</article>
+</section>
+</div>
+
+<h2>Konflikty</h2>
+<div class="blok"><ul><li><b>K1</b> (T-1, T-2): Poprawka banera wchodzi przed startem testu kafla, żeby w jednym oknie nie mieszać dwóch zmian na stronie modelu.</li><li><b>K2</b> (T-2, T-3, T-4): Ta sama strefa ekranu strony modelu (karuzela ofert, kafel, kalkulator): jeden test naraz.</li><li><b>K3</b> (T-2, N-3, N-5, R-5): Test kafla na stronach modeli i jednoczesne przenoszenie ruchu z tych stron (Meta marek na strony marek, Demand Gen segmentowy na strony segmentów, decyzje o Demand Gen): nie w tym samym oknie.</li><li><b>K4</b> (T-5, T-6): Dwa testy na tej samej karcie auta i tej samej metryce (zgłoszenie z karty): jeden naraz.</li></ul></div>
+
+<h2>Źródła</h2>
+<div class="blok zr"><h3>Cztery częściowe plany, które ten dokument zastępuje</h3><ul><li><a href="../projekty/LISTA_ZMIAN_UX.html">Lista zmian UX z MUST HAVE (13 + 2 do dyskusji)</a></li><li><a href="../projekty/TAKTYKI_TESTY_KARTA_AUTA_20261009.md">Taktyki i testy A/B z 09.10 — karta auta</a> · <a href="../projekty/TAKTYKI_TESTY_STRONA_GLOWNA_20261009.md">strona główna</a> · <a href="../projekty/TAKTYKI_TESTY_LISTA_AUT_20261009.md">lista aut</a></li><li><a href="../analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.html">Kolejność i kandydaci do testów z heatmap 23.11</a></li><li><a href="../kombajn/BUILD_PLAN_KOMBAJN.md">Reaktywacja Ścieżkomatu R0–R5 (plan ścieżek)</a></li></ul>
+<h3 style="margin-top:12px">Dane i pozostałe pliki</h3><ul><li><a href="../analityka/kampanie/typy_wydajnosc.json">Typ kampanii → typ strony (wizyty, karta, zgłoszenia, koszt)</a></li><li><a href="../analityka/kampanie/KAMPANIE_2026-11-23.md">Wszystkie kampanie Bartka, 1–23.11</a></li><li><a href="../analityka/heatmapy/2026-11-23/WNIOSKI_HEATMAPY_2026-11-23.md">Wnioski z heatmap 23.11</a></li><li><a href="../analityka/heatmapy/2026-11-23/dane_ga4/pary_2026-11-23_1020.json">Pary reklama → strona (GA4 + Pipedrive, 23.11)</a></li><li><a href="../analityka/live/cc_live.json">Sesje GA4 po dniach i kanałach</a></li><li><a href="../projekty/dane/must_have_stan.json">MUST HAVE: lista i stan na żywej stronie</a></li><li><a href="../analityka/PLAN_ZDARZEN_GA4_2026-11-15.md">Plan zdarzeń GA4 (odłożony 18.11)</a></li><li><a href="../kontent/STRATEGIA_KONTENTOWA_v0.md">Strategia kontentowa</a></li><li><a href="../kontent/BUILD_PLAN_SYSTEM_TRESCI.md">System treści (plan budowy)</a></li><li><a href="../seo/strategia_bartek_2026-11-18/strategia.txt">Strategia SEO Bartka z 18.11</a></li><li><a href="../seo/AUDYT_TECHNICZNY_SEO_2026-11-11.md">Audyt techniczny SEO z 11.11</a></li><li><a href="../sciezki/SCIEZKA_S2_RODZINA_v0.md">Ścieżka S2 Rodzina</a></li><li><a href="../projekty/dane/konwersja.json">Formularze i konwersja (KONW-1…6)</a></li><li><a href="../zaufanie/ZAUFANIE_PLAN.html">Plan zaufania obszar po obszarze — rozwinięcie K-2 (23.11)</a></li></ul></div>
+
+<div class="blok tc"><h3>Truth Checker</h3><dl><dt>Co wiem</dt><dd>Liczby z typy_wydajnosc.json, KAMPANIE_2026-11-23.md, wniosków z heatmap i par GA4 z 23.11 zgadzają się z tymi plikami; czasy testów przeliczone funkcją n_na_wariant (5% istotności, moc 80%) i sprawdzone przy budowie dokumentu. Na żywej stronie 23.11 (telefon 440 px) potwierdzone: rata na kaflu, kalkulator na karcie i stronie modelu, brak widocznego przycisku na kaflu, nieklikalna plakietka „Raport techniczny”, formularz z administratorem danych bez osobnej zgody na kontakt automatyczny, brak widgetu rozmowy.</dd><dt>Co zakładam</dt><dd>Że ruch z 16–22.11 jest przybliżeniem ruchu w oknie testu (tydzień obejmuje dni startu kampanii i dni przed wstrzymaniem Mety „ruch” oraz Demand Gen modeli). Że osoby ze zgodą na cookies zachowują się jak reszta ruchu. Że rata na kaflach jest netto także w reklamach „rata do 1000 zł”.</dd><dt>Co może być błędne</dt><dd>Ruch na tydzień: po wstrzymaniu kampanii mniej niż doba danych (23.11 do 16:05 było 1 335 sesji wobec 4 428 całej doby 22.11); przy ruchu o połowę mniejszym czasy testów są dwa razy dłuższe. Zgłoszeń jest pojedyncze sztuki (20 od 1.11), więc koszty zgłoszeń to wskazówki. Baza 0,135% w T-3 liczona z wizyt, a ruch z sesji; baza 4,3% w T-4 z odsłon Clarity. Stan indeksacji i botów AI (R-1, R-2) jest z audytu 11.11. Wskazanie czterech „zastępowanych planów” to interpretacja wykonawcy.</dd><dt>Co zweryfikować</dt><dd>Czy strona losuje warianty (Kacper). Czy reklamy Mety „do 100 tys.” mają priceTo w adresie (Bartek). Czy filtr raty działa z adresu (Kacper). Ruch na stronach modeli po dwóch pełnych dobach od wstrzymania kampanii. Indeksację stron modeli w Search Console dziś. Czy OtoMoto pozwala na link z UTM. Ilu użytkowników otwiera „Co zawiera cena?” (Clarity), zanim ruszy T-5. Komputer (1440) nie był sprawdzany w kroku 0.</dd><dt>Co poprawić z jednym inputem</dt><dd>Odpowiedź Kacpra, czy strona losuje warianty i kiedy może to zrobić, rozstrzyga status T-2 do T-6 (pięć z siedmiu pozycji testowych).</dd></dl></div>
+</div>
+
+<style>
+#pub-lightbox-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;cursor:zoom-out}
+#pub-lightbox-overlay.open{display:flex}
+#pub-lightbox-overlay img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+#pub-lightbox-close{position:fixed;top:16px;right:20px;font-size:36px;color:#fff;cursor:pointer;line-height:1;user-select:none;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+</style>
+<div id="pub-lightbox-overlay"><span id="pub-lightbox-close">&times;</span><img id="pub-lightbox-img" src="" alt=""></div>
+<script>
+(function(){
+  var ov=document.getElementById('pub-lightbox-overlay');
+  var im=document.getElementById('pub-lightbox-img');
+  document.querySelectorAll('a.pub-lightbox-trigger').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var img=a.querySelector('img');
+      if(img){im.src=img.src;ov.classList.add('open');}
+    });
+  });
+  document.getElementById('pub-lightbox-close').addEventListener('click',function(){ov.classList.remove('open');im.src='';});
+  ov.addEventListener('click',function(e){if(e.target===ov){ov.classList.remove('open');im.src='';}});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){ov.classList.remove('open');im.src='';}});
+})();
+</script>
+</body>
+</html>
