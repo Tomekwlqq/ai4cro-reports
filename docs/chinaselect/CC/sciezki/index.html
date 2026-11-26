@@ -28,6 +28,8 @@
 @media(min-width:701px) and (max-width:1200px){.mac{min-width:0;width:100%;font-size:12.5px}.mac button{padding-left:4px;padding-right:4px;min-width:0}.mac th,.mac td{padding-left:2px;padding-right:2px}}
 @media(max-width:600px){.kan.kanaly,.kan.kanaly tbody{display:block;width:100%}.kan.kanaly tr:first-child{display:none}.kan.kanaly tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px 8px;padding:8px 0;border-bottom:1px solid #e6e6e6}
 .kan.kanaly tr>*{display:block;padding:0 4px!important;border:0!important;min-width:0;overflow-wrap:anywhere}.kan.kanaly tr>:first-child{grid-column:1/-1;font-weight:700}.kan.kanaly tr>:not(:first-child):before{content:attr(data-l);display:block;font-size:10px;line-height:1.25;color:#6b7075;font-weight:500}}
+.sc-main .kan,.sc-main .kan.kanaly,.sc-main .kan.kontr{font-size:12.5px}.sc-main .kan th,.sc-main .kan td{padding:3px 6px!important;line-height:1.3;vertical-align:middle}.sc-main .kan th{font-size:10px!important}.sc-main .kan .zr{font-size:8.5px;padding:0 4px}.sc-main .kan td br{display:none}.sc-main .kan td small{margin-left:5px}.sc-main .note{font-size:12px}
+@media(max-width:600px){.sc-main .kan.kontr{table-layout:fixed;width:100%;min-width:0}.sc-main .kan.kontr th,.sc-main .kan.kontr td{overflow-wrap:anywhere;white-space:normal;font-size:11.5px;padding:3px!important}.sc-main .kan.kontr th{letter-spacing:0}.sc-main .kan.kontr tr>:first-child{width:46%}.sc-main .kan.kontr td br{display:block}.sc-main .kan.kontr td small{margin-left:0}}
 /* panel boczny zwarty: sekcje, zakres, filtry i dni widać naraz, bez przewijania w środku */
 @media(min-width:1000px){.sc-grid .cs-side{padding:12px 14px!important}.sc-grid .cs-side h3{font-size:14px!important;margin:0 0 2px!important}.sc-grid .cs-side .cs-grp{margin:9px 0 3px!important;padding-top:0!important}
 .sc-grid .cs-side .cs-it{padding:4px 0!important;min-height:0!important;gap:8px!important}.sc-grid .cs-side .cs-it .tx span{display:none!important}.sc-grid .cs-side .cs-it .tx b{font-size:12.5px!important;line-height:1.3}.sc-grid .cs-side .cs-it .ic{width:13px!important;height:13px!important;flex:none}
@@ -181,20 +183,25 @@
 <section class="uk-b-only" id="koszty"><h2>Koszty kanałów i kampanii</h2><style>
 .rk{--rk-t:#1c2430;--rk-m:#5d6b7c;--rk-l:#dde3ea;--rk-bg:#f6f8fa;--rk-ok:#1e7a46;--rk-bad:#b3261e;--rk-w:#8a6100;font:14px/1.45 -apple-system,system-ui,"Segoe UI",sans-serif;color:var(--rk-t);max-width:100%;box-sizing:border-box}
 .rk *{box-sizing:border-box}
-.rk h2{font-size:20px;margin:0 0 4px}.rk h3{font-size:16px;margin:22px 0 6px}
+.rk h2{font-size:18px;margin:0 0 4px}.rk h3{font-size:14.5px;margin:16px 0 5px}
 .rk .rk-sub{color:var(--rk-m);font-size:12.5px;margin:0 0 12px}
 .rk .rk-per{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0}
 .rk .rk-per button{border:1px solid var(--rk-l);background:#fff;border-radius:16px;padding:6px 12px;font:inherit;cursor:pointer;color:var(--rk-t)}
 .rk .rk-per button.on{background:var(--rk-t);color:#fff;border-color:var(--rk-t)}
 .rk .rk-per input{border:1px solid var(--rk-l);border-radius:8px;padding:5px 6px;font:inherit;max-width:140px}
 .rk .rk-big{display:flex;flex-wrap:wrap;gap:10px 28px;margin:6px 0 10px}
-.rk .rk-big div{min-width:130px}.rk .rk-big b{display:block;font-size:30px;line-height:1.1}.rk .rk-big span{color:var(--rk-m);font-size:12px}
-.rk .rk-tw{overflow-x:auto;max-width:100%;border:1px solid var(--rk-l);border-radius:8px;background:#fff}
-.rk table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
-.rk th,.rk td{padding:6px 8px;border-bottom:1px solid var(--rk-l);text-align:right;white-space:nowrap}
-.rk th:first-child,.rk td:first-child{text-align:left;position:sticky;left:0;background:#fff;max-width:230px;overflow:hidden;text-overflow:ellipsis}
-.rk th{background:var(--rk-bg);font-weight:600;font-size:12px;vertical-align:bottom}
-.rk td.nd{color:var(--rk-m);font-style:italic}
+.rk .rk-big div{min-width:130px}.rk .rk-big b{display:block;font-size:22px;line-height:1.15}.rk .rk-big span{color:var(--rk-m);font-size:12px}
+/* 26.11 Tomek: „wszystko pozmniejszać, nie widać, że jest więcej pod scrollem; zawijaj długie kolumny” — zero przewijania w tabelach */
+.rk .rk-tw{max-width:100%;border:1px solid var(--rk-l);border-radius:8px;background:#fff}
+.rk table{border-collapse:collapse;width:100%;font-size:12px;line-height:1.3}
+.rk table th,.rk table td{padding:4px 4px!important;border-bottom:1px solid var(--rk-l);text-align:right;vertical-align:top}
+.rk table td{white-space:nowrap}.rk table th{white-space:normal;background:var(--rk-bg);font-weight:600;font-size:10px!important;letter-spacing:0!important;text-transform:none!important;line-height:1.2;vertical-align:bottom}
+.rk table th:first-child,.rk table td:first-child{text-align:left;white-space:normal;overflow-wrap:anywhere;max-width:180px;padding-left:8px!important}
+.rk table th .zr{display:table;margin:0 0 2px auto;font-size:8px;letter-spacing:0;padding:0 3px}.rk table th .st{display:block;font-size:9px}.rk table td .zr{font-size:8px;padding:0 4px}
+@media(max-width:760px){.rk table,.rk tbody{display:block}.rk thead,.rk tr:has(>th){display:none}.rk table tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px 8px;padding:7px 8px;border-bottom:1px solid var(--rk-l)}
+ .rk table td{display:block;border:0;padding:0!important;text-align:left;white-space:normal;overflow-wrap:anywhere}.rk table td:first-child{grid-column:1/-1;max-width:none;font-weight:700;padding:0!important}
+ .rk table td:not(:first-child):before{content:attr(data-l);display:block;font-size:9.5px;color:var(--rk-m);line-height:1.2}.rk table td[colspan]{grid-column:span 2}}
+.rk table td.nd{color:var(--rk-m);font-style:italic;font-size:10.5px;white-space:normal;min-width:48px}
 .rk .g{color:var(--rk-ok);font-weight:600}.rk .b{color:var(--rk-bad);font-weight:600}.rk .z{color:var(--rk-m)}
 .rk .st{font-size:10.5px;color:var(--rk-m);font-weight:400}
 .rk .rk-note{background:var(--rk-bg);border-left:3px solid var(--rk-l);padding:8px 10px;margin:8px 0;font-size:12.5px;color:var(--rk-m)}
@@ -214,7 +221,7 @@ function fm(n,d){if(n==null||!isFinite(n))return '—';return n.toLocaleString('
 function zl(n){return n==null?'—':fm(n,2);}
 function dm(s){return s.slice(8)+'.'+s.slice(5,7);}
 function stamp(){return X.pobrano?dm(X.pobrano.slice(0,10))+' '+X.pobrano.slice(11,16):'brak';}
-var per={a:last,b:last,tryb:'dzis'};
+var per={a:Math.max(0,last-6),b:last,tryb:'7'}; // 26.11 Tomek: domyślny widok reklam = tydzień
 function idx(s){var i=dni.indexOf(s);return i;}
 function setPer(t){per.tryb=t;
  if(t==='dzis'){per.a=last;per.b=last;}
@@ -274,7 +281,7 @@ function draw(){
    h+='<div class="rk-tw"><table><thead><tr><th>Kampania ('+(c==='Meta'?'grupa reklam':'kampania')+' = utm_campaign)</th><th>Koszt, zł<br><span class="st">z '+stamp()+'</span></th><th><span class="zr zr-meta">Meta</span><span class="zr zr-gads">Google</span><br>Wyśw.</th><th><span class="zr zr-meta">Meta</span><span class="zr zr-gads">Google</span><br>Klik.</th><th class="k-ga4"><span class="zr zr-ga4">GA4</span><br>Wizyty</th><th class="k-ga4"><span class="zr zr-ga4">GA4</span><br>Form.</th><th class="k-pd"><span class="zr zr-pd">Pipedrive</span><br>Zgł.</th><th>Koszt klik., zł</th><th>Koszt zgł., zł</th><th>Klik. na 1 wizytę</th><th>Koszt klik. vs norma typu</th><th>Koszt zgł. vs norma typu</th></tr></thead><tbody>';
    g.forEach(function(m){
     var okK=ocenia&&!m.reszta&&m.kl>=100&&s.kl>0,okZ=okK&&m.pd>=2&&s.pd>=3;
-    h+='<tr><td title="'+m.k+'">'+m.k+'</td><td title="koszt z '+stamp()+'">'+zl(m.koszt)+'</td><td>'+fm(m.wys)+'</td><td>'+fm(m.kl)+'</td><td>'+ge(m)+fm(m.ses)+'</td><td>'+ge(m)+fm(m.form)+'</td><td>'+fm(m.pd)+'</td><td>'+zl(kk(m))+'</td><td>'+(m.pd?zl(kz(m)):'—')+'</td>'+kpw(m)
+    h+='<tr><td title="'+m.k+'">'+m.k.replace(/_/g,'_<wbr>')+'</td><td title="koszt z '+stamp()+'">'+zl(m.koszt)+'</td><td>'+fm(m.wys)+'</td><td>'+fm(m.kl)+'</td><td>'+ge(m)+fm(m.ses)+'</td><td>'+ge(m)+fm(m.form)+'</td><td>'+fm(m.pd)+'</td><td>'+zl(kk(m))+'</td><td>'+(m.pd?zl(kz(m)):'—')+'</td>'+kpw(m)
      +(m.reszta?'<td class="nd" colspan="2">grupy bez danych dziennych</td>':ratioCell(okK?kk(m)/kk(s):null)+ratioCell(okZ?kz(m)/kz(s):null))+'</tr>';});
    h+='</tbody></table></div><div class="rk-note">Norma typu „'+t+'” (kanał '+c+') = średnia tej grupy za okres: koszt kliknięcia '+zl(kk(s))+' zł, koszt zgłoszenia '+(s.pd?zl(kz(s))+' zł':'—')+'. x1,00 = jak grupa; zielone ≤ x0,75, czerwone ≥ x1,33. „za mało danych”: grupa &lt; 3 kampanii, kampania &lt; 100 kliknięć, &lt; 2 zgłoszeń lub &lt; 3 zgłoszeń w grupie.</div>';});});
  // wykres dzienny
@@ -288,6 +295,9 @@ function draw(){
   h+='<div><div class="t">'+c+'</div><div class="s">maks. dzień '+zl(mx)+' zł · razem od '+dm(dni[0])+': '+zl(tt)+' zł</div>'+sv+'</div>';});
  h+='</div>';
  var el=root.querySelector('.rk-body');el.innerHTML=h;
+ // telefon: wiersz = karta, więc każda komórka niesie nazwę swojej kolumny
+ [].forEach.call(el.querySelectorAll('table'),function(tb){var n=[].map.call(tb.querySelectorAll('th'),function(th){var c=th.cloneNode(true);[].forEach.call(c.querySelectorAll('.zr,.st'),function(x){x.remove()});return c.textContent.trim()});
+  [].forEach.call(tb.querySelectorAll('tr'),function(tr){var i=0;[].forEach.call(tr.children,function(td){if(td.tagName==='TD')td.setAttribute('data-l',n[i]||'');i+=td.colSpan||1})})});
  root.querySelectorAll('.rk-per button').forEach(function(bt){bt.className=bt.getAttribute('data-t')===per.tryb?'on':'';});
  var di=root.querySelector('#rk-od'),dd=root.querySelector('#rk-do');di.value=dni[a];dd.value=dni[b];}
 function init(){
